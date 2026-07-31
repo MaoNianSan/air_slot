@@ -1,0 +1,22 @@
+from __future__ import annotations
+
+from dataclasses import dataclass, asdict
+from typing import Any
+
+
+@dataclass
+class Failure:
+    code: str
+    module: str
+    message: str
+    severity: str = "ERROR"
+    episode_id: str | None = None
+    snapshot_id: str | None = None
+    details: dict[str, Any] | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+class FormalRunBlocked(RuntimeError):
+    pass

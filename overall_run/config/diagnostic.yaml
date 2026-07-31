@@ -1,0 +1,19 @@
+recovery_cases:
+  max_train_cases: null
+  max_validation_cases: null
+  max_evaluation_cases: null
+  minimum_non_degenerate_cases: 8
+modes:
+  diagnostic:
+    max_formal_core_flights: null
+    formal_samples: 128
+    bootstrap_replicates: 500
+diagnostic:
+  natural_prevalence: true
+  evaluation_row_cap: null
+  training_fractions:
+  - 0.25
+  - 0.5
+  - 0.75
+  - 1.0
+  bootstrap: 500

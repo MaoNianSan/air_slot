@@ -1,0 +1,27 @@
+paths:
+  output_root: output/m1_tail_diagnostic_current_lineage
+  intermediate_root: output/m1_tail_diagnostic_current_lineage/intermediate
+
+runtime:
+  progress_level: normal
+  state_workers: 3
+
+splits:
+  train: ["2022-02-01", "2022-05-01"]
+  validation: ["2022-05-01", "2022-06-01"]
+  test: ["2022-06-01", "2022-07-01"]
+
+sources:
+  flightlist:
+    patterns: ["flightlist_2022*.csv.gz", "flightlist_2022*.csv", "*.parquet"]
+  state_vectors:
+    patterns: ["date=*/hour=*/states_*.csv.tar", "date=*/hour=*/*.csv.tar"]
+
+validation:
+  strict_core_support: true
+
+diagnostic_scope:
+  consumer: M1
+  snapshot_scope: PRIMARY_CORE_ONLY
+  rule_batch_rows: 2000
+  evidence_batch_rows: 500

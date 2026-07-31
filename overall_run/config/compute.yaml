@@ -1,0 +1,113 @@
+random_seed: 20260718
+workers: 1
+batch_size: 64
+modes:
+  fast:
+    max_flights_per_core_airport: 40
+    max_formal_core_flights: 240
+    formal_samples: 256
+    bootstrap_replicates: 200
+  full:
+    max_formal_core_flights: 1200
+    formal_samples: 1024
+    bootstrap_replicates: 1000
+  precision:
+    max_flights: 200
+    formal_samples: 16384
+    bootstrap_replicates: 0
+  adapt_full:
+    max_formal_core_flights: 1200
+    formal_samples: 1024
+    bootstrap_replicates: 1000
+m1_tuning:
+  max_snapshots: 30000
+  max_estimators: 2000
+  early_stopping_rounds: 100
+  tie_relative_tolerance: 0.005
+  curated_configs:
+  - id: LGB_Q_01
+    num_leaves: 15
+    max_depth: 8
+    min_child_samples: 100
+    learning_rate: 0.05
+    feature_fraction: 0.7
+    bagging_fraction: 0.8
+    reg_lambda: 1.0
+  - id: LGB_Q_02
+    num_leaves: 15
+    max_depth: -1
+    min_child_samples: 250
+    learning_rate: 0.03
+    feature_fraction: 1.0
+    bagging_fraction: 1.0
+    reg_lambda: 5.0
+  - id: LGB_Q_03
+    num_leaves: 31
+    max_depth: 8
+    min_child_samples: 100
+    learning_rate: 0.05
+    feature_fraction: 1.0
+    bagging_fraction: 0.8
+    reg_lambda: 1.0
+  - id: LGB_Q_04
+    num_leaves: 31
+    max_depth: 12
+    min_child_samples: 50
+    learning_rate: 0.03
+    feature_fraction: 0.7
+    bagging_fraction: 1.0
+    reg_lambda: 0.0
+  - id: LGB_Q_05
+    num_leaves: 31
+    max_depth: -1
+    min_child_samples: 250
+    learning_rate: 0.05
+    feature_fraction: 0.7
+    bagging_fraction: 0.8
+    reg_lambda: 5.0
+  - id: LGB_Q_06
+    num_leaves: 63
+    max_depth: 8
+    min_child_samples: 250
+    learning_rate: 0.03
+    feature_fraction: 1.0
+    bagging_fraction: 0.8
+    reg_lambda: 5.0
+  - id: LGB_Q_07
+    num_leaves: 63
+    max_depth: 12
+    min_child_samples: 100
+    learning_rate: 0.03
+    feature_fraction: 0.7
+    bagging_fraction: 1.0
+    reg_lambda: 1.0
+  - id: LGB_Q_08
+    num_leaves: 63
+    max_depth: -1
+    min_child_samples: 50
+    learning_rate: 0.05
+    feature_fraction: 1.0
+    bagging_fraction: 0.8
+    reg_lambda: 0.0
+  - id: LGB_Q_09
+    num_leaves: 31
+    max_depth: 12
+    min_child_samples: 250
+    learning_rate: 0.03
+    feature_fraction: 1.0
+    bagging_fraction: 1.0
+    reg_lambda: 5.0
+  - id: LGB_Q_10
+    num_leaves: 15
+    max_depth: 12
+    min_child_samples: 50
+    learning_rate: 0.05
+    feature_fraction: 0.7
+    bagging_fraction: 1.0
+    reg_lambda: 0.0
+m2_unit_scale:
+  fast_max_snapshots: 1000
+  diagnostic_max_snapshots: 10000
+  adapt_full_max_snapshots: 10000
+  full_max_snapshots: 10000
+  formal_samples: 256

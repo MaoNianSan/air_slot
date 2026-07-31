@@ -1,0 +1,91 @@
+# ===== Python =====
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints*
+
+# pyenv / virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# ===== IDE & Editor =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.spyproject/
+*.sublime-workspace
+
+# ===== OS =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ===== Environment & Secrets =====
+.env
+.env.*
+!.env.example
+*.local
+
+# ===== Project Specific =====
+# Generated output logs
+output_logs/
+
+# Raw data from external sources (can be re-downloaded, total ~80 GB)
+# Includes: eurostat, opensky, metar, iem_metar, ourairports
+data/raw/
+
+# Staging / temporary folders
+.staging/
+*.tmp
+*.bak
+*.backup

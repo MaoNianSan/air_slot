@@ -1,0 +1,653 @@
+project:
+  name: air_slot_overall_run
+  version: 2.1.0
+paths:
+  pre_output: ../pre/output
+cohort:
+  core_airports:
+  - EHAM
+  - LFPG
+  - EDDF
+  - LEMD
+  - LEBL
+  - EDDM
+  primary_stages:
+  - t1
+  - t2
+  - t3
+  primary_ratios:
+  - 0.2
+  - 0.5
+  - 0.8
+  roles:
+    train:
+    - train
+    - model
+    validation:
+    - validation
+    test:
+    - test
+    - final_test
+m1:
+  quantiles:
+  - 0.01
+  - 0.025
+  - 0.05
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  - 0.9
+  - 0.95
+  - 0.975
+  - 0.99
+  tuning_quantiles:
+  - 0.1
+  - 0.5
+  - 0.9
+  formal_target: y_movement_raw
+  sensitivity_target: y_movement_model
+  formal_target_contract_version: Y_MOVEMENT_RAW_V1_20260725
+  split_candidates:
+  - split
+  - subset_role
+  flight_id_candidates:
+  - flight_id
+  - episode_id
+  airport_candidates:
+  - airport
+  - destination
+  - estarrivalairport
+  stage_candidates:
+  - snapshot_stage
+  - stage
+  time_candidates:
+  - decision_time_utc
+  - decision_time
+  - snapshot_time_utc
+  prohibited_patterns:
+  - lastseen
+  - y_movement
+  - outcome
+  - future_
+  - successor_
+  - action_
+  - scenario_
+  - residual_
+  - score_
+  - rank_
+  feature_allowlist:
+  - elapsed_ratio
+  - current_latitude
+  - current_longitude
+  - current_altitude
+  - current_velocity
+  - vertical_rate
+  - trajectory_coverage
+  - state_observation_age
+  - state_record_count
+  - state_source_coverage
+  - state_source_coverage_status
+  - state_is_imputed
+  - state_imputation_method
+  - state_imputation_gap_minutes
+  - wind_speed
+  - wind_gust
+  - visibility
+  - ceiling
+  - precipitation_flag
+  - weather_code
+  - temperature_dewpoint_spread
+  - metar_age
+  - weather_observed
+  - weather_imputed
+  - weather_evidence_status
+  - airport_flow_pressure
+  - flow_source_coverage
+  - continuity_exposure
+  - turnaround_margin
+  - execution_window_margin
+  - lead_time_margin
+  - window_margin_complete
+  - airport
+  - origin
+  - destination
+  - aircraft_group
+  - month
+  - time_bin
+  - snapshot_stage
+  - runway_count
+  - infrastructure_flexibility
+  - airport_scale
+  - evidence_completeness
+  - observed_feature_count
+  - causally_interpolated_count
+  - calibration_imputed_count
+  - structural_missing_count
+  - temporal_missing_count
+  required_feature_groups:
+    progress:
+    - elapsed_ratio
+    - snapshot_ratio
+    motion:
+    - current_velocity
+    - velocity
+    trajectory_quality:
+    - trajectory_coverage
+    weather:
+    - wind_speed
+    flow:
+    - airport_flow_pressure
+    - airport_flow
+    continuity:
+    - continuity_exposure
+    turnaround:
+    - turnaround_margin
+    lead_margin:
+    - lead_time_margin
+    window_margin:
+    - execution_window_margin
+    aircraft_context:
+    - aircraft_group
+    infrastructure:
+    - infrastructure_flexibility
+    - runway_count
+  trigger:
+    delay_threshold_minutes: 15.0
+    exceedance_probability: 0.5
+    window_probability: 0.5
+  calibration:
+    hierarchy:
+    - airport_stage
+    - stage
+    - global
+    minimum_support: 200
+  historical_baseline:
+    minimum_support: 200
+    hierarchy:
+    - airport_stage_time_bin
+    - airport_stage
+    - stage
+    - global
+m2:
+  graph_edges:
+    F_to_P: 0.15   # IATA(2025): EU ATM airline:passenger cost=60:40
+    F_to_R: 0.10   # Ball et al.(2010): resource recovery 8-12% of delay cost
+    P_to_R: 0.05   # Kafle & Zou(2016): secondary propagation decay ~0.5
+  channel_scale_min_positive: 200
+  flight:
+    threshold_base: 15.0
+    threshold_exposure_slope: 20.0
+    threshold_min: 5.0
+    threshold_max: 25.0
+    time_scale: 15.0
+    scale: 15.0
+  passenger:
+    threshold: 12.0
+    saturation: 25.0
+    scale: 1.0
+  resource:
+    threshold: 18.0
+    saturation: 35.0
+    scale: 1.0
+  resource_stress:
+    alpha_flow: 0.55
+    alpha_infra: 0.3
+    alpha_scarcity: 0.15
+  required_anchor_groups:
+    turnaround_margin:
+    - turnaround_margin
+    - b_turn
+    - turnaround_buffer
+    - turn_margin
+    continuity:
+    - continuity_exposure
+    - c_cont
+    - aircraft_continuity
+    - continuity_proxy
+    window_margin:
+    - execution_window_margin
+    - m_window
+    - window_margin
+    passenger_load:
+    - estimated_passenger_load
+    connection:
+    - connection_pressure_proxy
+    rebooking:
+    - rebooking_scarcity_proxy
+    flow:
+    - airport_flow_pressure
+    - airport_flow
+    - flow_pressure
+    - p_flow
+    - local_flow_count
+    infrastructure:
+    - infrastructure_flexibility
+    - airport_flexibility
+    - runway_count
+    - airport_scale
+    resource_available:
+    - resource_available_r
+  unit_costs_rmb:
+    F: 1.0
+    P: 1.0
+    R: 1.0
+m3:
+  resource_profiles:
+    scarce:
+      F: 0.35
+      P: 0.35
+      R: 0.45
+    normal:
+      F: 0.8
+      P: 0.7
+      R: 0.85
+    ample:
+      F: 0.95
+      P: 0.95
+      R: 0.95
+  primary_resource_profile: normal
+  required_rule_groups:
+    capacity_threshold:
+    - capacity_threshold
+    - q_cap
+    - capacity_reference
+    capacity_span:
+    - capacity_span
+    - flow_q95_minus_q05
+    - capacity_reference_p05
+    - capacity_reference_p95
+    window_status:
+    - action_window_open
+    - window_open
+    - execution_window_open
+    window_margin:
+    - action_window_margin
+    - execution_window_margin
+    - window_margin
+    lead_margin:
+    - lead_time_margin
+    - m_lead
+    - remaining_lead_time
+    authority:
+    - authority_allowed
+    - is_authorized
+    - authority_permitted
+    resource_state:
+    - resource_profile_id
+    - resource_available_f
+    - r_available_f
+    evidence_status:
+    - rule_evidence_status
+  actions:
+  - id: A00
+    family: 'null'
+    time: 0
+    window: 0
+    lead: 0
+    nu_f: 0.0
+    nu_p: 0.0
+    nu_r: 0.0
+    cap: 0.0
+    req_f: 0.0
+    req_p: 0.0
+    req_r: 0.0
+    burden: 0.0
+    priority: 0
+    capacity_required: false
+    window_type: none
+  - id: A11
+    family: hold
+    time: 10
+    window: 10
+    lead: 10
+    nu_f: 0.4
+    nu_p: 0.0
+    nu_r: 0.2
+    cap: 0.05
+    req_f: 0.25
+    req_p: 0.0
+    req_r: 0.25
+    burden: 0.25
+    priority: 1
+    capacity_required: true
+    window_type: flight_timing
+  - id: A12
+    family: hold
+    time: 20
+    window: 20
+    lead: 20
+    nu_f: 0.8
+    nu_p: 0.0
+    nu_r: 0.4
+    cap: 0.1
+    req_f: 0.5
+    req_p: 0.0
+    req_r: 0.5
+    burden: 0.5
+    priority: 2
+    capacity_required: true
+    window_type: flight_timing
+  - id: A21
+    family: retime
+    time: 15
+    window: 15
+    lead: 20
+    nu_f: 0.5
+    nu_p: 0.0
+    nu_r: 0.25
+    cap: 0.05
+    req_f: 0.5
+    req_p: 0.0
+    req_r: 0.25
+    burden: 0.35
+    priority: 3
+    capacity_required: true
+    window_type: flight_timing
+  - id: A22
+    family: retime
+    time: 30
+    window: 30
+    lead: 40
+    nu_f: 1.0
+    nu_p: 0.0
+    nu_r: 0.5
+    cap: 0.1
+    req_f: 0.75
+    req_p: 0.0
+    req_r: 0.5
+    burden: 0.7
+    priority: 4
+    capacity_required: true
+    window_type: flight_timing
+  - id: A31
+    family: protect
+    time: 0
+    window: 0
+    lead: 15
+    nu_f: 0.0
+    nu_p: 0.5
+    nu_r: 0.2
+    cap: 0.0
+    req_f: 0.0
+    req_p: 0.25
+    req_r: 0.25
+    burden: 0.3
+    priority: 5
+    capacity_required: false
+    window_type: passenger_service
+  - id: A32
+    family: protect
+    time: 0
+    window: 0
+    lead: 30
+    nu_f: 0.0
+    nu_p: 1.0
+    nu_r: 0.5
+    cap: 0.0
+    req_f: 0.0
+    req_p: 0.5
+    req_r: 0.5
+    burden: 0.6
+    priority: 6
+    capacity_required: false
+    window_type: passenger_service
+  - id: A41
+    family: support
+    time: 0
+    window: 0
+    lead: 15
+    nu_f: 0.25
+    nu_p: 0.1
+    nu_r: 0.5
+    cap: 0.0
+    req_f: 0.25
+    req_p: 0.0
+    req_r: 0.5
+    burden: 0.35
+    priority: 7
+    capacity_required: false
+    window_type: resource_support
+  - id: A42
+    family: support
+    time: 0
+    window: 0
+    lead: 30
+    nu_f: 0.5
+    nu_p: 0.2
+    nu_r: 1.0
+    cap: 0.0
+    req_f: 0.5
+    req_p: 0.25
+    req_r: 0.75
+    burden: 0.7
+    priority: 8
+    capacity_required: false
+    window_type: resource_support
+  - id: A51
+    family: combined
+    time: 10
+    window: 10
+    lead: 15
+    nu_f: 0.4
+    nu_p: 0.5
+    nu_r: 0.4
+    cap: 0.05
+    req_f: 0.25
+    req_p: 0.25
+    req_r: 0.5
+    burden: 0.55
+    priority: 9
+    capacity_required: true
+    window_type: combined
+  - id: A52
+    family: combined
+    time: 15
+    window: 15
+    lead: 20
+    nu_f: 0.7
+    nu_p: 0.1
+    nu_r: 0.6
+    cap: 0.05
+    req_f: 0.5
+    req_p: 0.0
+    req_r: 0.75
+    burden: 0.65
+    priority: 10
+    capacity_required: true
+    window_type: combined
+  - id: A61
+    family: cancel
+    time: 0
+    window: 0
+    lead: 30
+    nu_f: 0.8
+    nu_p: 0.2
+    nu_r: 0.4
+    cap: 0.0
+    req_f: 0.0
+    req_p: 0.4
+    req_r: 0.3
+    burden: 0.8
+    priority: 11
+    capacity_required: false
+    window_type: none
+  - id: A62
+    family: cancel
+    time: 0
+    window: 0
+    lead: 30
+    nu_f: 0.95
+    nu_p: 0.5
+    nu_r: 0.6
+    cap: 0.0
+    req_f: 0.0
+    req_p: 0.5
+    req_r: 0.2
+    burden: 0.95
+    priority: 12
+    capacity_required: false
+    window_type: none
+  response_parameter_version: M3_RESPONSE_V2_20260726
+  response_defaults:
+    recovery_concentration: 18.0
+    cost_cv: 0.1
+    failure_probability: 0.02
+  response_parameters:
+    A00:
+      mu:
+      - 0.0
+      - 0.0
+      - 0.0
+      kbar_rmb:
+      - 0.0
+      - 0.0
+      - 0.0
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A11:
+      mu:
+      - 0.2
+      - 0.0
+      - 0.08
+      kbar_rmb:
+      - 0.03
+      - 0.02
+      - 0.12
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A12:
+      mu:
+      - 0.4
+      - 0.0
+      - 0.15
+      kbar_rmb:
+      - 0.07
+      - 0.05
+      - 0.25
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A21:
+      mu:
+      - 0.3
+      - 0.0
+      - 0.1
+      kbar_rmb:
+      - 0.06
+      - 0.04
+      - 0.1
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A22:
+      mu:
+      - 0.55
+      - 0.0
+      - 0.2
+      kbar_rmb:
+      - 0.15
+      - 0.1
+      - 0.25
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A31:
+      mu:
+      - 0.0
+      - 0.35
+      - 0.08
+      kbar_rmb:
+      - 0.01
+      - 0.03
+      - 0.12
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A32:
+      mu:
+      - 0.0
+      - 0.6
+      - 0.15
+      kbar_rmb:
+      - 0.03
+      - 0.08
+      - 0.25
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A41:
+      mu:
+      - 0.15
+      - 0.05
+      - 0.35
+      kbar_rmb:
+      - 0.03
+      - 0.02
+      - 0.1
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A42:
+      mu:
+      - 0.3
+      - 0.1
+      - 0.6
+      kbar_rmb:
+      - 0.08
+      - 0.05
+      - 0.25
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A51:
+      mu:
+      - 0.25
+      - 0.4
+      - 0.12
+      kbar_rmb:
+      - 0.07
+      - 0.05
+      - 0.2
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A52:
+      mu:
+      - 0.4
+      - 0.08
+      - 0.45
+      kbar_rmb:
+      - 0.1
+      - 0.06
+      - 0.18
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A61:
+      mu:
+      - 0.0
+      - 0.0
+      - 0.0
+      kbar_rmb:
+      - 0.10
+      - 0.15
+      - 0.20
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+    A62:
+      mu:
+      - 0.0
+      - 0.0
+      - 0.0
+      kbar_rmb:
+      - 0.10
+      - 0.30
+      - 0.15
+      parameter_source: scenario-declared
+      parameter_version: M3_RESPONSE_V2_20260726
+m4:
+  cvar_alpha: 0.9
+  risk_aversion: 0.25
+  near_equivalent_relative: 0.02
+  near_equivalent_absolute_rmb: 0.0
+  decision_value:
+    recovery_ratio_min: 0.2
+    burden_ratio_max: 1.0
+    positive_net_benefit_probability_min: 0.6
+    zero_cost_epsilon: 1.0e-09

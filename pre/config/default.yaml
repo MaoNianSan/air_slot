@@ -1,0 +1,116 @@
+project_version: "1.2.0"
+schema_version: "arr-cs-0.3"
+reference_year: 2022
+base_seed: 20220717
+
+labels:
+  formal_target: y_movement_raw
+  sensitivity_target: y_movement_model
+  sensitivity_transform:
+    method: TRAIN_SPLIT_QUANTILE_CLIP
+    clip_quantiles: [0.005, 0.995]
+    fit_split: train
+
+paths:
+  data_root: ../data
+  output_root: output
+  intermediate_root: output/intermediate
+
+runtime:
+  progress_level: normal
+
+# 左闭右开。正式 episode 还必须落在 state-vector 完整观测日。
+splits:
+  train: ["2022-01-01", "2022-05-01"]
+  validation: ["2022-05-01", "2022-06-01"]
+  test: ["2022-06-01", "2022-07-01"]
+
+airports:
+  m1: [EHAM, EDDF, EDDM, LFPG, LFPO, LEMD, LEBL, LIRF, LIMC, EBBR, LOWW, EKCH, ESSA, EFHK, EIDW, LPPT, EPWA, LSZH, ENGM]
+  core: [EHAM, LFPG, EDDF, LEMD, LEBL, EDDM]
+  regions:
+    EHAM: NW_EUROPE
+    EDDF: CENTRAL_EUROPE
+    EDDM: CENTRAL_EUROPE
+    LFPG: WEST_EUROPE
+    LFPO: WEST_EUROPE
+    LEMD: IBERIA
+    LEBL: IBERIA
+    LIRF: SOUTH_EUROPE
+    LIMC: SOUTH_EUROPE
+    EBBR: NW_EUROPE
+    LOWW: CENTRAL_EUROPE
+    EKCH: NORDIC
+    ESSA: NORDIC
+    EFHK: NORDIC
+    EIDW: NW_EUROPE
+    LPPT: IBERIA
+    EPWA: CENTRAL_EUROPE
+    LSZH: CENTRAL_EUROPE
+    ENGM: NORDIC
+
+snapshots:
+  ratios: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  primary_stage_map: {"0.2": t1, "0.5": t2, "0.8": t3}
+  dense_stage_map: {"0.1": r10, "0.2": t1, "0.3": r30, "0.4": r40, "0.5": t2, "0.6": r60, "0.7": r70, "0.8": t3, "0.9": r90}
+  ratio_tolerance: 1.0e-9
+
+flightlist:
+  chunk_rows: 250000
+
+references:
+  movement_min_cell: 30
+  turnaround_gap_minutes: [20, 360]
+  continuity_horizon_minutes: 180
+  weather_min_cell: 5
+  distance_bins_km: [0, 500, 1000, 1500, 2500, 4000, 1000000]
+  physical_movement_minutes: [10, 1440]
+  # Public aircraft metadata provides ICAO type/group but no seat count.  These
+  # declared group references turn the observed training fleet mix and Eurostat
+  # airport-month passenger/flight aggregates into a transparent load proxy.
+  aircraft_seat_reference: {narrow_body: 180, wide_body: 300, regional: 90, turboprop: 72, other: 150, unknown: 150}
+  load_factor_bounds: [0.35, 0.98]
+  passenger:
+    reference_period_semantics: source_period_end_before_or_at_train_cutoff
+    monthly_statistics_available: after_source_period_end
+    requested_levels: [DESTINATION_LAGGED_MONTH, UNSUPPORTED]
+    source_unavailable_levels: [OD_MONTH_AIRCRAFT_GROUP, OD_MONTH]
+    maximum_lag_months: 3
+    support_policy: PARTIAL_SUPPORT_ALLOWED
+    evidence_statuses: [OBSERVED, SUPPORTED_PROXY, FALLBACK_PROXY, UNSUPPORTED, UNOBSERVED]
+
+state_vectors:
+  lookback_minutes: 20
+  expected_interval_seconds: 10
+  minimum_records: 5
+  maximum_observation_age_minutes: 5
+  minimum_trajectory_coverage: 0.4
+  chunk_rows: 250000
+  fill:
+    enabled: false
+    method: none
+    max_gap_minutes: 5
+
+flow:
+  lookback_minutes: 30
+  airport_radius_km: 50
+  dedup_key: icao24
+  minimum_source_coverage: 0.5
+
+availability_lag_minutes:
+  state_vector: 0
+  metar: 0
+  completed_flightlist: 0
+
+rules:
+  capacity_margin_scale_minutes: 60
+  operations_margin_minutes: 60
+  authority_profile_id: UNRESTRICTED_PRIMARY
+  resource_profile_id: normal
+  rule_generation_version: pre-rule-v1
+
+validation:
+  complete_day_hours: 24
+  require_complete_state_day: true
+  minimum_state_retention: 0.8
+  strict_core_support: true

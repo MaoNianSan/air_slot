@@ -1,0 +1,28 @@
+# Development-only override.  It intentionally leaves default.yaml unchanged.
+# Use with a local, complete-date override selected from inventory output.
+runtime:
+  progress_level: detail
+paths:
+  output_root: output_dev
+  intermediate_root: output_dev/intermediate
+splits:
+  train: ["2022-01-03", "2022-01-04"]
+  validation: ["2022-05-02", "2022-05-03"]
+  test: ["2022-06-06", "2022-06-07"]
+references:
+  movement_min_cell: 1
+  weather_min_cell: 1
+state_vectors:
+  chunk_rows: 50000
+flow:
+  lookback_minutes: 30
+validation:
+  strict_core_support: false
+sources:
+  flightlist:
+    patterns: ["flightlist_202201*.csv.gz", "flightlist_202205*.csv.gz", "flightlist_202206*.csv.gz"]
+  state_vectors:
+    patterns:
+      - "date=2022-01-03/hour=*/states_*.csv.tar"
+      - "date=2022-05-02/hour=*/states_*.csv.tar"
+      - "date=2022-06-06/hour=*/states_*.csv.tar"

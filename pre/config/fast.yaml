@@ -1,0 +1,24 @@
+paths:
+  output_root: output/fast
+  intermediate_root: output/fast/intermediate
+runtime:
+  progress_level: normal
+splits:
+  train: ["2022-05-02", "2022-05-17"]
+  validation: ["2022-05-23", "2022-05-24"]
+  test: ["2022-05-30", "2022-05-31"]
+references:
+  movement_min_cell: 1
+  weather_min_cell: 1
+validation:
+  strict_core_support: true
+sources:
+  flightlist:
+    patterns: ["flightlist_202205*.csv.gz"]
+  state_vectors:
+    patterns:
+      - "date=2022-05-02/hour=*/states_*.csv.tar"
+      - "date=2022-05-09/hour=*/states_*.csv.tar"
+      - "date=2022-05-16/hour=*/states_*.csv.tar"
+      - "date=2022-05-23/hour=*/states_*.csv.tar"
+      - "date=2022-05-30/hour=*/states_*.csv.tar"

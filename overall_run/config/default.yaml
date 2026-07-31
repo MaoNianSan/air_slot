@@ -1,0 +1,61 @@
+contract_version: overall-run-v4
+parameter_version: overall-parameters-v4
+base_seed: 20260721
+pre_output: ../pre/output/{mode}
+m1:
+  delay_threshold_minutes: 15.0
+  trigger_probability_threshold: 0.5
+  feature_allowlist:
+  - elapsed_ratio
+  - current_altitude
+  - current_velocity
+  - vertical_rate
+  - trajectory_coverage
+  - state_observation_age
+  - wind_speed
+  - wind_gust
+  - visibility
+  - ceiling
+  - temperature_dewpoint_spread
+  - metar_age
+  - airport_flow_pressure
+  - continuity_exposure
+  - turnaround_margin
+  - execution_window_margin
+  - lead_time_margin
+  - runway_count
+  - infrastructure_flexibility
+  - airport_scale
+  - evidence_completeness
+  - estimated_passenger_load
+  - connection_pressure_proxy
+  - rebooking_scarcity_proxy
+  max_train_episodes: 6000
+  max_validation_episodes: 2000
+  max_evaluation_episodes: 2000
+  n_estimators: 80
+  num_leaves: 15
+  calibration_min_support: 200
+  trigger_threshold_grid:
+  - 0.02
+  - 0.05
+  - 0.1
+  - 0.15
+  - 0.2
+  - 0.25
+  - 0.3
+  - 0.4
+  - 0.5
+  - 0.6
+m2: {}
+m3:
+  migration_source: scientific.yaml
+  migration_version: m2-m4-interface-realignment-v2
+m4: {}
+execution:
+  recovery_case_batch_size_fast: 20
+  recovery_case_batch_size_full: 25
+  parquet_compression: zstd
+  max_in_memory_rows: 500000
+scientific_fix:
+  run_id: m1_tail_trigger_propagation_20260721T234325HKT

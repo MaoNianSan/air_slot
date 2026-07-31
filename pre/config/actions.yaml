@@ -1,0 +1,58 @@
+action_ids: [A00, A11, A12, A21, A22, A31, A32, A41, A42, A51, A52, A61, A62]
+action_specs:
+  A00: {capacity_required: false, window_type: none}
+  A11: {capacity_required: true, window_type: flight_timing}
+  A12: {capacity_required: true, window_type: flight_timing}
+  A21: {capacity_required: true, window_type: flight_timing}
+  A22: {capacity_required: true, window_type: flight_timing}
+  A31: {capacity_required: false, window_type: passenger_service}
+  A32: {capacity_required: false, window_type: passenger_service}
+  A41: {capacity_required: false, window_type: resource_support}
+  A42: {capacity_required: false, window_type: resource_support}
+  A51: {capacity_required: true, window_type: combined}
+  A52: {capacity_required: true, window_type: combined}
+  A61: {capacity_required: false, window_type: none}
+  A62: {capacity_required: false, window_type: none}
+authority_profiles:
+  UNRESTRICTED_PRIMARY:
+    A00: true
+    A11: true
+    A12: true
+    A21: true
+    A22: true
+    A31: true
+    A32: true
+    A41: true
+    A42: true
+    A51: true
+    A52: true
+    A61: true
+    A62: true
+  CONSERVATIVE_STRESS:
+    A00: true
+    A11: true
+    A12: false
+    A21: true
+    A22: false
+    A31: true
+    A32: false
+    A41: true
+    A42: false
+    A51: true
+    A52: false
+    A61: false
+    A62: false
+  PUBLIC_RULE_V1:
+    A00: true
+    A11: true
+    A12: true
+    A21: true
+    A22: true
+    A31: true
+    A32: true
+    A41: true
+    A42: true
+    A51: true
+    A52: true
+    A61: true
+    A62: true

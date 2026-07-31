@@ -1,0 +1,28 @@
+contract_version: part-adv-v3
+parameter_version: part-adv-parameters-v3
+base_seed: 20260714
+predictive_samples_fast: 64
+predictive_samples_diagnostic: 128
+predictive_samples_full: 512
+predictive_samples_precision: 2048
+bootstrap_fast: 200
+bootstrap_diagnostic: 500
+bootstrap_full: 2000
+bootstrap_precision: 5000
+m1:
+  qrf_estimators_fast: 80
+  qrf_estimators_diagnostic: 160
+  qrf_estimators_full: 300
+  ngb_estimators_fast: 100
+  ngb_estimators_diagnostic: 200
+  ngb_estimators_full: 500
+  point_estimators_fast: 80
+  point_estimators_diagnostic: 140
+  point_estimators_full: 300
+m2:
+  configurations: [DAG_BASE, ADD_BASE, SCOPE_LOW, SCOPE_HIGH, SEQUENCE_LOW, SEQUENCE_HIGH, PASSENGER_LOW, PASSENGER_HIGH, AIRPORT_HEAVY, SEQUENCE_HEAVY, PASSENGER_HEAVY]
+m4:
+  variants: {EV: 0.0, Mean-CVaR: 0.25, CVaR: 1.0}
+  alpha: 0.90
+benchmark:
+  source_config: default.yaml

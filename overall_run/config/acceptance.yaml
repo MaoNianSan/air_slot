@@ -1,0 +1,78 @@
+hard:
+  availability_violations: 0
+  leakage_violations: 0
+  duplicate_keys: 0
+  post_pava_crossings: 0
+  infeasible_recommendations: 0
+  nonfinite_outputs: 0
+  action_order_failures: 0
+m1_acceptance_contract_version: M1_V2_20260724
+m1_acceptance_contract:
+  overall_90_coverage:
+    role: FORMAL_GATE
+    accepted_range: {lower: 0.85, upper: 0.95}
+  twcrps: {role: FORMAL_DISTRIBUTION_METRIC}
+  upper_quantile_calibration: {role: FORMAL_DISTRIBUTION_METRIC}
+  q95_pinball: {role: FORMAL_DISTRIBUTION_METRIC}
+  q99_pinball: {role: FORMAL_DISTRIBUTION_METRIC}
+  upper_shortfall: {role: FORMAL_DISTRIBUTION_METRIC}
+  outcome_selected_tail_coverage:
+    role: STRESS_DIAGNOSTIC
+    legacy_reference_threshold: 0.70
+    blocks_full_by_itself: false
+  projected_crossing_rate: {role: FORMAL_GATE, required_value: 0}
+  raw_crossing: {role: AUDIT, blocks_full_by_itself: false}
+  tail_support:
+    role: AUDIT
+    thresholds: {anchor_days: 3, recovery_events: 12, effective_event_count: 10}
+  calibration_hierarchy: [airport_stage, stage, global]
+  max_formal_quantile: 0.99
+performance:
+  full_completion_rate: 0.995
+  coverage_90_lower: 0.85
+  coverage_90_upper: 0.95
+  precision:
+    median_relative_score_error: 0.02
+    p95_relative_score_error: 0.05
+    top1_agreement: 0.95
+    top3_overlap: 0.95
+    median_kendall_tau: 0.95
+warnings:
+  null_only_rate: 0.80
+  fast_choice_snapshot_count: 50
+  fast_choice_unique_flights: 30
+  fast_choice_flights_per_airport: 5
+  fast_triggered_choice_rate: 0.35
+  full_choice_snapshot_count: 300
+  full_choice_unique_flights: 150
+  full_choice_flights_per_airport: 30
+  full_triggered_choice_rate: 0.40
+  global_calibration_fallback_rate: 0.50
+  channel_positive_rate_lower: 0.05
+  channel_positive_rate_upper: 0.95
+  pairwise_channel_corr: 0.98
+  channel_dominance_share: 0.90
+  gate_never_active: true
+  action_never_feasible: true
+gates:
+  tail_coverage_90_lower:
+    value: 0.70
+    required: false
+  quantile_crossing_rate_max:
+    value: 0.0
+    required: true
+  passenger_proxy_support_required:
+    value: 1.0
+    required: true
+  artifact_contract_required:
+    value: true
+    required: true
+  config_contract_required:
+    value: true
+    required: true
+  pairwise_channel_corr:
+    value: 0.98
+    required: false
+  channel_dominance_share:
+    value: 0.90
+    required: false
