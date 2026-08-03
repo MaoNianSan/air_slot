@@ -10,6 +10,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from .ranking_contract import build_ranking_prefixes
+
 from .cohort import build_cohorts
 from .config import RunConfig
 from .failures import FormalRunBlocked
@@ -27,6 +29,7 @@ from .pipeline_checkpoint import (
     assert_fast_acceptance,
     mark_running_staging_incomplete,
     prepare_empty_publish_target,
+    requires_fast_acceptance,
     validate_resume_checkpoints as _validate_resume_checkpoints,
     write_stage_checkpoint as _write_stage_checkpoint,
 )
@@ -74,9 +77,11 @@ def run_experiment(
         ]
     }
 
-    if mode not in {"fast", "diagnostic", "adapt_full", "full"}:
-        raise ValueError("mode must be fast, diagnostic, adapt_full, or full")
-    if mode in {"adapt_full", "full"} and not override_fast_gate:
+    if mode not in {"fast", "diagnostic", "acceptance_23d", "middle", "full"}:
+        raise ValueError("mode must be fast, diagnostic, acceptance_23d, middle, or full")
+    if requires_fast_acceptance(
+        mode, cfg.profile_contract, override_fast_gate=override_fast_gate
+    ):
         assert_fast_acceptance(cfg.root)
     published_mode = output_name or mode
     target = cfg.root / "output" / published_mode
@@ -326,10 +331,35 @@ def run_experiment(
         m3,
         m4,
     )
-    recommendations = rankings[rankings["recommended"]].copy()
+    ranking_all_k, ranking_views = build_ranking_prefixes(
+        formal[
+            [
+                "episode_id",
+                "snapshot_id",
+                "flight_id",
+                "airport",
+                "snapshot_stage",
+            ]
+        ].drop_duplicates(),
+        rankings,
+        action_library_version=str(
+            cfg.scientific["m3"]["action_library_version"]
+        ),
+    )
+    recommendations = ranking_views[1].copy()
+    recommendations["recommended"] = ~recommendations["is_padding"].fillna(False).astype(bool)
+    recommendations["recommendation_status"] = np.where(
+        recommendations["recommended"],
+        "AVAILABLE",
+        "NO_REAL_CANDIDATE",
+    )
+    recommendations["deprecated_alias_of"] = "Ranking@1"
     _write_df(action_scores, staging / "m4_action_scores.parquet")
     _write_df(candidates, staging / "m4_candidate_screen.parquet")
     _write_df(rankings, staging / "m4_rankings.parquet")
+    _write_df(ranking_all_k, staging / "m4_ranking_all_k.parquet")
+    for depth, view in ranking_views.items():
+        _write_df(view, staging / f"m4_ranking_k{depth}.parquet")
     _write_df(recommendations, staging / "m4_recommendations.parquet")
     _write_df(action_scores, staging / "metrics" / "m4_action_scores.parquet")
     _write_df(rankings, staging / "metrics" / "m4_rankings.parquet")
@@ -343,6 +373,11 @@ def run_experiment(
             staging / "m4_action_scores.parquet",
             staging / "m4_candidate_screen.parquet",
             staging / "m4_rankings.parquet",
+            staging / "m4_ranking_all_k.parquet",
+            staging / "m4_ranking_k1.parquet",
+            staging / "m4_ranking_k2.parquet",
+            staging / "m4_ranking_k3.parquet",
+            staging / "m4_ranking_k5.parquet",
             staging / "m4_recommendations.parquet",
         ],
     )

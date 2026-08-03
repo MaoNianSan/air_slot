@@ -1,18 +1,26 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from numbers import Real
 from typing import Any
 
 import numpy as np
 import pandas as pd
 from scipy.stats import beta as beta_distribution
 
+from .action_contract import load_action_contract
+
 from .utils import stable_hash, stable_seed
 
 CHANNELS = ("F", "P", "R")
-FORMAL_ACTION_IDS = {
-    "A00", "A11", "A12", "A21", "A22", "A31",
-    "A32", "A41", "A42", "A51", "A52", "A61", "A62",
+_V2_CONTRACT = load_action_contract("V2")
+_V3_CONTRACT = load_action_contract("V3")
+V2_ACTION_IDS = frozenset(_V2_CONTRACT["action_ids"])
+FORMAL_ACTION_IDS = frozenset(_V3_CONTRACT["action_ids"])
+STRESS_TEST_ACTION_IDS = frozenset(_V3_CONTRACT["stress_test_action_ids"])
+ALLOWED_ACTION_FAMILIES = {
+    "null", "hold", "retime", "protect", "support", "combined",
+    "cancel", "aircraft", "crew",
 }
 
 
@@ -34,6 +42,10 @@ class Action:
     priority: int
     capacity_required: bool = False
     window_type: str = "none"
+    description: str = ""
+    typed_gates: tuple[str, ...] = ()
+    provisional: bool = False
+    parameter_source: str = "scenario-declared"
 
 
 @dataclass
@@ -47,7 +59,7 @@ class M3Artifact:
     action_library_hash: str
     parameter_hash: str
     sample_hash: str
-    contract_version: str = "overall-run-m3-response-v2"
+    contract_version: str = "overall-run-m3-response-v3-provisional"
 
     @property
     def n_samples(self) -> int:
@@ -72,18 +84,56 @@ class M3Artifact:
 
 
 def load_actions(scientific: dict[str, Any]) -> dict[str, Action]:
+    version = str(scientific["m3"].get("response_parameter_version", ""))
+    contract = _V2_CONTRACT if "V2" in version else _V3_CONTRACT
     normalized: list[dict[str, Any]] = []
     for raw in scientific["m3"]["actions"]:
         item = dict(raw)
-        item.setdefault("capacity_required", float(item.get("cap", 0.0)) > 0.0)
-        item.setdefault(
-            "window_type",
-            "flight_timing" if float(item.get("window", 0.0)) > 0.0 else "none",
+        action_id = str(item.get("id", ""))
+        if not action_id:
+            raise RuntimeError("M3_ACTION_ID_MISSING")
+        if "capacity_required" not in item or not isinstance(item["capacity_required"], bool):
+            raise RuntimeError(f"M3_BOOLEAN_FIELD_INVALID:{action_id}:capacity_required")
+        if "window_type" not in item or not isinstance(item["window_type"], str):
+            raise RuntimeError(f"M3_WINDOW_TYPE_INVALID:{action_id}")
+        numeric_fields = (
+            "time", "window", "lead", "nu_f", "nu_p", "nu_r", "cap",
+            "req_f", "req_p", "req_r", "burden",
         )
+        invalid_numeric = [
+            key for key in numeric_fields
+            if not isinstance(item.get(key), Real) or isinstance(item.get(key), bool)
+        ]
+        if invalid_numeric:
+            raise RuntimeError(
+                f"M3_ACTION_NUMERIC_FIELD_INVALID:{action_id}:"
+                + ",".join(invalid_numeric)
+            )
+        if not isinstance(item.get("priority"), int) or isinstance(item.get("priority"), bool):
+            raise RuntimeError(f"M3_PRIORITY_INVALID:{action_id}")
+        if str(item.get("family")) not in ALLOWED_ACTION_FAMILIES:
+            raise RuntimeError(f"M3_FAMILY_INVALID:{action_id}")
+        if contract is _V3_CONTRACT:
+            if not isinstance(item.get("provisional"), bool):
+                raise RuntimeError(f"M3_BOOLEAN_FIELD_INVALID:{action_id}:provisional")
+            if not isinstance(item.get("parameter_source"), str):
+                raise RuntimeError(f"M3_PARAMETER_SOURCE_INVALID:{action_id}")
+            if "typed_gates" not in item or not isinstance(item["typed_gates"], list):
+                raise RuntimeError(f"M3_TYPED_GATES_INVALID:{action_id}")
+            if any(not isinstance(gate, str) or not gate for gate in item["typed_gates"]):
+                raise RuntimeError(f"M3_TYPED_GATES_INVALID:{action_id}")
+        else:
+            item.setdefault("typed_gates", ())
+        item["typed_gates"] = tuple(item.get("typed_gates", ()))
         normalized.append(item)
-    actions = {item["id"]: Action(**item) for item in normalized}
-    if set(actions) != FORMAL_ACTION_IDS:
+    ids = [str(item["id"]) for item in normalized]
+    if len(ids) != len(set(ids)):
+        raise RuntimeError("M3_DUPLICATE_ACTION_ID")
+    if ids != list(contract["action_ids"]):
         raise RuntimeError("ACTION_LIBRARY_MISMATCH")
+    actions = {item["id"]: Action(**item) for item in normalized}
+    if set(actions) & STRESS_TEST_ACTION_IDS:
+        raise RuntimeError("STRESS_TEST_ACTION_IN_FORMAL_LIBRARY")
     return actions
 
 
@@ -93,13 +143,72 @@ def _parameter_rows(
 ) -> pd.DataFrame:
     response = scientific["m3"].get("response_parameters", {})
     defaults = scientific["m3"].get("response_defaults", {})
+    version = str(scientific["m3"].get("response_parameter_version", ""))
+    strict_v3 = "V2" not in version
     rows: list[dict[str, Any]] = []
     for action_id in sorted(actions):
         configured = dict(response.get(action_id, {}))
-        mu = configured.get("mu", [0.0, 0.0, 0.0])
-        kbar = configured.get("kbar_rmb", [0.0, 0.0, 0.0])
+        if strict_v3:
+            required = {
+                *(f"mu_{channel}" for channel in CHANNELS),
+                *(f"K_{channel}" for channel in CHANNELS),
+                "kappa_eta", "CV_K", "p_fail", "priority", "family",
+                "provisional", "parameter_source",
+            }
+            missing = sorted(key for key in required if key not in configured or configured[key] is None)
+            if missing:
+                raise RuntimeError(f"M3_PARAMETER_MISSING:{action_id}:" + ",".join(missing))
+        if all(f"mu_{channel}" in configured for channel in CHANNELS):
+            mu = [configured[f"mu_{channel}"] for channel in CHANNELS]
+        else:
+            mu = configured.get("mu", [0.0, 0.0, 0.0])
+        if all(f"K_{channel}" in configured for channel in CHANNELS):
+            kbar = [configured[f"K_{channel}"] for channel in CHANNELS]
+        else:
+            kbar = configured.get("kbar_rmb", [0.0, 0.0, 0.0])
         if len(mu) != 3 or len(kbar) != 3:
             raise RuntimeError(f"M3_PARAMETER_VECTOR_LENGTH:{action_id}")
+        if strict_v3 and not isinstance(configured.get("provisional"), bool):
+            raise RuntimeError(f"M3_BOOLEAN_FIELD_INVALID:{action_id}:provisional")
+        if strict_v3 and (
+            not isinstance(configured.get("priority"), int)
+            or isinstance(configured.get("priority"), bool)
+        ):
+            raise RuntimeError(f"M3_PRIORITY_INVALID:{action_id}")
+        if strict_v3 and str(configured.get("family")) not in ALLOWED_ACTION_FAMILIES:
+            raise RuntimeError(f"M3_FAMILY_INVALID:{action_id}")
+        if strict_v3:
+            numeric_fields = [
+                *(f"mu_{channel}" for channel in CHANNELS),
+                *(f"K_{channel}" for channel in CHANNELS),
+                "kappa_eta", "CV_K", "p_fail", "lead_time_requirement",
+            ]
+            invalid_numeric = [
+                key for key in numeric_fields
+                if not isinstance(configured.get(key), Real)
+                or isinstance(configured.get(key), bool)
+            ]
+            if invalid_numeric:
+                raise RuntimeError(
+                    f"M3_PARAMETER_TYPE_INVALID:{action_id}:"
+                    + ",".join(invalid_numeric)
+                )
+            requirement_fields = (
+                "capacity_requirement", "window_requirement",
+                "resource_requirement", "authority_requirement",
+                "aircraft_requirement", "crew_requirement",
+                "passenger_requirement", "airport_requirement",
+                "parameter_source", "description",
+            )
+            invalid_requirements = [
+                key for key in requirement_fields
+                if not isinstance(configured.get(key), str) or not configured.get(key)
+            ]
+            if invalid_requirements:
+                raise RuntimeError(
+                    f"M3_PARAMETER_TYPE_INVALID:{action_id}:"
+                    + ",".join(invalid_requirements)
+                )
         row = {
             "action_id": action_id,
             **{f"mu_{channel}": float(mu[index]) for index, channel in enumerate(CHANNELS)},
@@ -110,14 +219,23 @@ def _parameter_rows(
             "recovery_concentration": float(
                 configured.get(
                     "recovery_concentration",
-                    defaults.get("recovery_concentration", 18.0),
+                    configured.get(
+                        "kappa_eta",
+                        defaults.get("recovery_concentration", 18.0),
+                    ),
                 )
             ),
-            "cost_cv": float(configured.get("cost_cv", defaults.get("cost_cv", 0.10))),
+            "cost_cv": float(
+                configured.get(
+                    "cost_cv", configured.get("CV_K", defaults.get("cost_cv", 0.10))
+                )
+            ),
             "failure_probability": float(
                 configured.get(
                     "failure_probability",
-                    defaults.get("failure_probability", 0.02),
+                    configured.get(
+                        "p_fail", defaults.get("failure_probability", 0.02)
+                    ),
                 )
             ),
             "parameter_source": str(
@@ -129,7 +247,33 @@ def _parameter_rows(
                     scientific["m3"].get("response_parameter_version", "M3_RESPONSE_V2"),
                 )
             ),
+            "kappa_eta": float(
+                configured.get(
+                    "kappa_eta", defaults.get("recovery_concentration", 18.0)
+                )
+            ),
+            "CV_K": float(
+                configured.get("CV_K", defaults.get("cost_cv", 0.10))
+            ),
+            "p_fail": float(
+                configured.get(
+                    "p_fail", defaults.get("failure_probability", 0.02)
+                )
+            ),
+            **{
+                name: configured.get(name)
+                for name in (
+                    "capacity_requirement", "window_requirement",
+                    "resource_requirement", "authority_requirement",
+                    "lead_time_requirement", "aircraft_requirement",
+                    "crew_requirement", "passenger_requirement",
+                    "airport_requirement", "priority", "family",
+                    "description", "provisional",
+                )
+            },
         }
+        for index, channel in enumerate(CHANNELS):
+            row[f"K_{channel}"] = float(kbar[index])
         if action_id == "A00":
             for channel in CHANNELS:
                 row[f"mu_{channel}"] = 0.0
@@ -143,7 +287,7 @@ def _parameter_rows(
             raise RuntimeError(f"M3_CONCENTRATION_INVALID:{action_id}")
         if row["cost_cv"] < 0.0:
             raise RuntimeError(f"M3_COST_CV_INVALID:{action_id}")
-        if not 0.0 <= row["failure_probability"] < 1.0:
+        if not 0.0 <= row["failure_probability"] <= 1.0:
             raise RuntimeError(f"M3_FAILURE_PROBABILITY_INVALID:{action_id}")
         rows.append(row)
     return pd.DataFrame(rows)
@@ -250,6 +394,11 @@ def generate_m3_library(
         action_library_hash=action_library_hash,
         parameter_hash=parameter_hash,
         sample_hash=sample_hash,
+        contract_version=(
+            "overall-run-m3-response-v2"
+            if set(actions) == V2_ACTION_IDS
+            else "overall-run-m3-response-v3-provisional"
+        ),
     )
     _validate_m3_artifact(artifact, actions)
     return artifact

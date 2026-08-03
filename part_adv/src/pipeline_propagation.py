@@ -6,6 +6,30 @@ import numpy as np
 import pandas as pd
 
 from .pipeline_common import M2_CONFIGS, MODELS, run_ordered_thread_tasks, stable_hash
+from .shared_contracts import (
+    build_ranking_prefixes,
+    compare_ranking_prefixes,
+    full_ranking_from_scores,
+)
+
+
+def _model_ranking_agreement(ranking_prefixes: pd.DataFrame) -> pd.DataFrame:
+    prop_prefixes = ranking_prefixes[ranking_prefixes["model_id"].eq("PROP")].drop(
+        columns="model_id"
+    )
+    if prop_prefixes.empty:
+        raise ValueError("PART_ADV_PROP_RANKING_MISSING")
+    agreement_parts = []
+    for model in MODELS:
+        candidate_prefixes = ranking_prefixes[
+            ranking_prefixes["model_id"].eq(model)
+        ].drop(columns="model_id")
+        comparison = compare_ranking_prefixes(prop_prefixes, candidate_prefixes)
+        comparison["reference_model_id"] = "PROP"
+        comparison["model_id"] = model
+        comparison["agreement"] = comparison["exact_order_match"]
+        agreement_parts.append(comparison)
+    return pd.concat(agreement_parts, ignore_index=True)
 
 
 def _benchmark(cfg: dict[str, Any], cohort: pd.DataFrame) -> pd.DataFrame:
@@ -23,7 +47,15 @@ def _propagate(
     samples: pd.DataFrame,
     cohort: pd.DataFrame,
     benchmark: pd.DataFrame,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+) -> tuple[
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+]:
     m2 = pd.read_parquet(cfg["upstream"] / "metrics" / "m2_summary.parquet")
     m2 = m2[m2["snapshot_id"].isin(cohort["snapshot_id"])].set_index("snapshot_id")
     action_scores = pd.read_parquet(cfg["upstream"] / "m4_action_scores.parquet")
@@ -38,6 +70,7 @@ def _propagate(
         ["recovery_case_id", "benchmark_loss"],
     ].rename(columns={"benchmark_loss": "oracle_loss"})
     downstream_parts, propagation_rows, path_parts, cost_parts = [], [], [], []
+    ranking_parts: list[pd.DataFrame] = []
     model_state: dict[str, dict[str, pd.Series]] = {}
     for model in MODELS:
         prediction = (
@@ -84,11 +117,22 @@ def _propagate(
         candidate["adjusted_score"] = (
             candidate["channel_contribution_F"] + candidate["channel_contribution_P"]
         ) * candidate["scale"] + candidate["channel_contribution_R"]
-        selected = candidate.loc[
-            candidate.groupby("snapshot_id", observed=True)["adjusted_score"].idxmin(),
-            ["snapshot_id", "action_id", "adjusted_score"],
-        ].rename(
-            columns={"snapshot_id": "recovery_case_id", "action_id": "selected_action"}
+        full_ranking = full_ranking_from_scores(candidate, "adjusted_score")
+        model_prefixes, _ = build_ranking_prefixes(
+            cohort[["episode_id", "snapshot_id"]].drop_duplicates(),
+            full_ranking,
+        )
+        model_prefixes["model_id"] = model
+        ranking_parts.append(model_prefixes)
+        selected = model_prefixes[
+            model_prefixes["ranking_k"].eq(1)
+            & ~model_prefixes["is_padding"].fillna(False).astype(bool)
+        ][["snapshot_id", "action_id", "score"]].rename(
+            columns={
+                "snapshot_id": "recovery_case_id",
+                "action_id": "selected_action",
+                "score": "adjusted_score",
+            }
         )
         selected = selected.merge(
             benchmark,
@@ -195,12 +239,16 @@ def _propagate(
                     ),
                 }
             )
+    ranking_prefixes = pd.concat(ranking_parts, ignore_index=True)
+    agreement = _model_ranking_agreement(ranking_prefixes)
     return (
         pd.concat(downstream_parts, ignore_index=True),
         pd.DataFrame(propagation_rows),
         pd.concat(path_parts, ignore_index=True),
         pd.DataFrame(pair_rows),
         pd.concat(cost_parts, ignore_index=True),
+        ranking_prefixes,
+        agreement,
     )
 
 

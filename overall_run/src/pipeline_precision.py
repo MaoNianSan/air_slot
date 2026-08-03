@@ -36,7 +36,7 @@ def run_precision(
     parent_mode: str | None = None
     parent: Path | None = None
     parent_summary: dict[str, Any] | None = None
-    for candidate in ("adapt_full", "full"):
+    for candidate in ("acceptance_23d", "full"):
         path = cfg.root / "output" / candidate
         summary_path = path / "run_summary.json"
         if not summary_path.is_file():

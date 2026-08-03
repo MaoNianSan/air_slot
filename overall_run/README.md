@@ -82,20 +82,33 @@ parameters and do not belong in `scientific.yaml`.
 ## 8. CLI
 
 ```powershell
-python -u overall_run/main.py fast --progress normal --n-jobs 1
-python -u overall_run/main.py validate fast --progress normal --n-jobs 1
-python overall_run/main.py report fast --n-jobs 1
+# Fast (engineering gate)
+python -u overall_run/main.py fast --progress normal --n-jobs 2
+python overall_run/main.py validate --mode fast
+python overall_run/main.py report --mode fast --n-jobs 2
 
+# Diagnostic
 python -u overall_run/main.py diagnostic --progress normal --n-jobs 1
+
+# Legacy adapt-full / acceptance (backward compatibility only)
 python -u overall_run/main.py adapt_full --progress normal --n-jobs 2
-python -u overall_run/main.py full --progress normal --n-jobs 1
-python -u overall_run/main.py precision --progress normal --n-jobs 1
+python overall_run/main.py validate --mode adapt_full
+
+# Full (gated)
+python -u overall_run/main.py full --progress normal --n-jobs 2
+
+# Precision (requires accepted formal Full or legacy adapt_full)
+python -u overall_run/main.py precision --progress normal --n-jobs 2
 ```
 
-Fast is allowed. `diagnostic` and `adapt_full` are true configuration modes;
-they are not aliases for Full. `adapt_full` and formal Full require accepted
-Fast gates unless explicitly overridden. Precision requires an accepted
-`adapt_full` or formal Full parent.
+Fast is allowed. `diagnostic` and legacy `adapt_full` are true configuration
+modes; they are not aliases for Full. `adapt_full` and formal Full require
+accepted Fast gates unless explicitly overridden. Precision requires an
+accepted `adapt_full` or formal Full parent.
+
+`validate` and `report` require `--mode` flag (preferred). The legacy positional
+form (`validate fast`) is still accepted for backward compatibility but
+deprecated.
 
 ## 9. Parallelism
 
@@ -140,4 +153,4 @@ is a scientific review result, not an engineering pipeline failure.
 The formal model never trains on `y_movement_model`, never tunes offsets from
 Fast test outcomes, never adds a tail model in response to the current Fast
 result, and never treats historical D6 values as formal evidence. q95 and q99
-certification is assigned by the multi-day `adapt_full` evaluation.
+certification is assigned by the formal multi-day evaluation (`middle` / `full`).

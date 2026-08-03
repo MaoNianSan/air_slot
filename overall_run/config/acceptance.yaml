@@ -11,11 +11,21 @@ m1_acceptance_contract:
   overall_90_coverage:
     role: FORMAL_GATE
     accepted_range: {lower: 0.85, upper: 0.95}
-  twcrps: {role: FORMAL_DISTRIBUTION_METRIC}
-  upper_quantile_calibration: {role: FORMAL_DISTRIBUTION_METRIC}
-  q95_pinball: {role: FORMAL_DISTRIBUTION_METRIC}
-  q99_pinball: {role: FORMAL_DISTRIBUTION_METRIC}
-  upper_shortfall: {role: FORMAL_DISTRIBUTION_METRIC}
+  twcrps:
+    role: FORMAL_DISTRIBUTION_METRIC
+    accepted_range: {upper: 47.33}
+  upper_quantile_calibration:
+    role: FORMAL_DISTRIBUTION_METRIC
+    accepted_range: {lower: 0.0, upper: 0.03}
+  q95_pinball:
+    role: FORMAL_DISTRIBUTION_METRIC
+    accepted_range: {upper: 10.36}
+  q99_pinball:
+    role: FORMAL_DISTRIBUTION_METRIC
+    accepted_range: {upper: 7.13}
+  upper_shortfall:
+    role: FORMAL_DISTRIBUTION_METRIC
+    accepted_range: {upper: 5.37}
   outcome_selected_tail_coverage:
     role: STRESS_DIAGNOSTIC
     legacy_reference_threshold: 0.70

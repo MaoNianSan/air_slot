@@ -101,8 +101,18 @@ def prepare_legs(
     normalized_complete = {pd.Timestamp(x).normalize().tz_localize(None) if pd.Timestamp(x).tzinfo else pd.Timestamp(x).normalize() for x in complete_dates}
     frame["state_day_complete"] = frame["observation_date"].isin(normalized_complete)
 
-    aircraft_map = aircraft[["icao24", "typecode"]].drop_duplicates("icao24") if not aircraft.empty else pd.DataFrame(columns=["icao24", "typecode"])
+    aircraft_columns = [
+        column for column in ("icao24", "typecode", "registration")
+        if column in aircraft.columns
+    ]
+    aircraft_map = (
+        aircraft[aircraft_columns].drop_duplicates("icao24")
+        if not aircraft.empty
+        else pd.DataFrame(columns=["icao24", "typecode", "registration"])
+    )
     frame = frame.merge(aircraft_map, on="icao24", how="left")
+    if "registration" not in frame:
+        frame["registration"] = pd.NA
     frame["aircraft_group"] = frame["typecode"].map(_aircraft_group)
     frame["aircraft_type_unknown"] = frame["aircraft_group"].eq("unknown")
 

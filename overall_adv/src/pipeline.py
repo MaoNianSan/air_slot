@@ -9,12 +9,15 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from .shared_contracts import RANKING_CONTRACT_VERSION, RANKING_DEPTHS
+
 from .pipeline_analysis import (
     _benchmark,
     _bootstrap,
     _decisions,
     _load,
     _metrics,
+    _ranking_decisions,
     _upstream,
 )
 from .pipeline_checkpoint import (
@@ -74,14 +77,14 @@ def run(mode: str, progress: str = "normal", override: Path | None = None, *, re
         unexpected = [path for path in output.iterdir() if path.name != "logs"]
         if unexpected:
             raise ValueError("MIXED_OUTPUT_WITHOUT_RUN_STATE:" + ",".join(path.name for path in unexpected))
-        run_id = f"overall-adv-{mode}-{started.strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
+        run_id = f"overall-adv-{cfg['mode']}-{started.strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
     _write_json(
         
         {"run_id": run_id, "status": "RUNNING", "started_at": started, **identity, **parallel_metadata(plan, task_seed_digest=cfg["task_seed_hash"])},
         state_path,
     )
     os.environ["AIR_SLOT_MODULE"] = "overall_adv"
-    os.environ["AIR_SLOT_MODE"] = mode
+    os.environ["AIR_SLOT_MODE"] = str(cfg["mode"])
     os.environ["AIR_SLOT_RUN_ID"] = str(run_id)
     heartbeat = _Heartbeat(mode, progress, log, plan)
     heartbeat.tick("initializing", "NONE", 0, force=True)
@@ -126,6 +129,10 @@ def _run_active(
     _write_json(upstream, output / "common_support_cohort.json")
     scores = pd.read_parquet(cfg["upstream"] / "m4_action_scores.parquet")
     recommendations = pd.read_parquet(cfg["upstream"] / "m4_recommendations.parquet")
+    global_full_ranking = pd.read_parquet(cfg["upstream"] / "m4_rankings.parquet")
+    global_prefixes = pd.read_parquet(
+        cfg["upstream"] / "m4_ranking_all_k.parquet"
+    )
 
     _log("[2/6] rank LOCAL_F and load frozen GLOBAL_FPR decisions", progress, log)
     score_path = output / "local_f_scores.parquet"
@@ -147,6 +154,26 @@ def _run_active(
         _log("[2/6] reuse hash-validated LOCAL_F and GLOBAL_FPR checkpoints", progress, log)
     decisions = pd.concat([local, global_policy], ignore_index=True)
     _write_df(decisions, output / "policy_decisions.parquet")
+    ranking_policies, ranking_comparison = _ranking_decisions(
+        scores, global_full_ranking, global_prefixes, cohort
+    )
+    _write_df(ranking_policies, output / "ranking_policy_prefixes.parquet")
+    _write_df(
+        ranking_comparison,
+        output / "ranking_comparison_1235.parquet",
+    )
+    ranking_summary = ranking_comparison.groupby(
+        "ranking_k", as_index=False, observed=True
+    ).agg(
+        exact_order_match_rate=("exact_order_match", "mean"),
+        ordered_disagreement_rate=("ordered_disagreement", "mean"),
+        set_disagreement_rate=("set_disagreement", "mean"),
+        order_only_disagreement_rate=("order_only_disagreement", "mean"),
+        overlap_rate=("overlap_rate", "mean"),
+        position_match_rate=("position_match_rate", "mean"),
+        full_k_support_rate=("full_k_support", "mean"),
+    )
+    _write_df(ranking_summary, output / "ranking_summary_1235.parquet")
 
     _log("[3/6] run deterministic independent benchmark draws", progress, log)
     benchmark_path = output / "benchmark_action_outcomes" / "part.parquet"
@@ -189,6 +216,8 @@ def _run_active(
         ("duplicate_policy_case", int(decisions.duplicated(["policy_id", "recovery_case_id"]).sum())),
         ("a00_comparator_missing", int(cohort["snapshot_id"].nunique() - scores.loc[scores["action_id"].eq("A00"), "snapshot_id"].nunique())),
         ("minimum_nondegenerate_cases", max(0, 8 - nondegenerate)),
+        ("ranking_depth_count", abs(ranking_comparison["ranking_k"].nunique() - 4)),
+        ("ranking_padding_action_nonnull", int(ranking_policies.loc[ranking_policies["is_padding"], "action_id"].notna().sum())),
     ]
     audit = pd.DataFrame(
         [{"check": name, "value": value, "expected": 0, "status": "PASS" if value == 0 else "FAIL"} for name, value in checks]
@@ -211,6 +240,10 @@ def _run_active(
     summary_json = {
         "run_id": run_id,
         "mode": cfg["mode"],
+        "profile_id": cfg["profile_id"],
+        "run_profile": cfg["run_profile"],
+        "acceptance_profile": cfg["acceptance_profile"],
+        "smoke_subset": cfg["smoke_subset"],
         "status": "PASS",
         "started_at": started,
         "finished_at": completed,
@@ -233,11 +266,20 @@ def _run_active(
         "heartbeat_interval_seconds": HEARTBEAT_SECONDS,
         "stale_artifacts": 0,
         "future_data_used": 0,
+        "run_purpose": cfg.get("run_purpose"),
         "upstream_run_id": upstream["overall_run_id"],
         "upstream_registry_hash": upstream["overall_run_registry_hash"],
         "upstream_formal_target_column": FORMAL_TARGET_COLUMN,
         "formal_target_contract_version": FORMAL_TARGET_CONTRACT_VERSION,
         "formal_target_definition_hash": upstream["formal_target_definition_hash"],
+        "m1_feature_contract_version": upstream["m1_feature_contract_version"],
+        "m3_action_library_version": upstream["m3_action_library_version"],
+        "m3_formal_action_count": upstream["m3_formal_action_count"],
+        "ranking_depths": list(RANKING_DEPTHS),
+        "ranking_contract_version": RANKING_CONTRACT_VERSION,
+        "ranking_comparison_rows": int(len(ranking_comparison)),
+        "publication_allowed": False,
+        "formal_baseline_replaced": False,
     }
     _write_json(summary_json, output / "run_summary.json")
     _write_json(_registry(output, cfg, upstream["overall_run_registry_hash"]), output / "artifact_registry.json")
@@ -245,6 +287,10 @@ def _run_active(
         {
             "run_id": run_id,
             "mode": cfg["mode"],
+            "profile_id": cfg["profile_id"],
+            "run_profile": cfg["run_profile"],
+            "acceptance_profile": cfg["acceptance_profile"],
+            "smoke_subset": cfg["smoke_subset"],
             "status": "PASS",
             "input_hashes": {"overall_run_registry": upstream["overall_run_registry_hash"]},
             "common_support_cohort_hash": upstream["common_support_cohort_hash"],

@@ -9,7 +9,7 @@ and the contribution of selected submodules.
 
 The repository is a scientific execution tree, not a package or a service.
 Fast is the reproducible engineering baseline. Multi-day scientific evaluation
-uses the frozen current-data workflow after the Fast gates pass.
+uses the `middle` / `full` profiles after the Fast gates pass.
 
 ## 2. Repository architecture
 
@@ -45,7 +45,60 @@ or evidence.
 - `overall_adv`: paired `LOCAL_F` versus `GLOBAL_FPR` evaluation.
 - `part_adv`: M1, M2, and M4 baselines and ablations. It does not compare M3.
 
-## 4. Data contract
+## 4. Current Development Status
+
+The current implementation includes:
+
+1. M1 predecessor-aware operational state enhancement
+2. M3 expanded recovery action library
+3. M4 Ranking@1/@2/@3/@5 output contract
+
+The implementation has passed targeted code verification: fault injection is
+15/15 PASS and the full test suite is 272/272 PASS (see
+`reports/REVERIFICATION_AFTER_FIXES.md`).
+
+On 2026-08-03 the D6 distributional-metric thresholds were frozen in
+`overall_run/config/acceptance.yaml` (twcrps, upper_quantile_calibration,
+q95_pinball, q99_pinball, upper_shortfall) and `pipeline_finalize.py` now
+computes those five metrics. Fast re-ran with `scientific_status=PASS`.
+Middle engineering/chain PASS remains, but its scientific gate is still
+`STOP_AND_REVIEW` solely because of `PASSENGER_PROXY_SUPPORT_FAIL` (passenger
+evidence covers 0.83 of the 72-day window; the gate requires 1.0) — a
+data-coverage decision, not a code defect.
+
+## 5. Recent Model Changes
+
+### M1: Previous-leg operational information
+
+M1 now incorporates preceding aircraft-operation information when available.
+
+Only information available before the decision snapshot is used.
+The successor operation is never used as an input feature.
+
+### M3: Expanded recovery action library
+
+The recovery library has been expanded from the previous version to include
+additional operational actions:
+
+- aircraft reassignment
+- crew recovery
+- cancellation/network reset
+- integrated recovery strategies
+
+All actions remain subject to typed feasibility gates.
+
+### M4: Ranking extension
+
+M4 produces a unified ranking and derives:
+
+Ranking@1
+Ranking@2
+Ranking@3
+Ranking@5
+
+from the same complete ordering.
+
+## 6. Data contract
 
 PRE publishes exactly five formal tables:
 
@@ -64,29 +117,74 @@ Passenger evidence uses `DESTINATION_LAGGED_MONTH`. Insufficient historical
 support is `UNSUPPORTED`: it is not replaced with zero and it is not filled by
 cross-day interpolation.
 
-## 5. Installation
+## 7. Installation
 
-Use Python 3.11 and the root dependency contract:
+Use Python 3.11 (system install, no virtual environment):
 
 ```powershell
-python -m pip install -r requirements.txt
+# System Python 3.11 path:
+D:/Python311/python.exe --version   # Python 3.11.6
+
+# Install dependencies once:
+D:/Python311/python.exe -m pip install -r requirements.txt
 ```
 
-There are no module-level requirements files.
+There are no module-level requirements files. Virtual environments (`.venv`,
+`venv/`) are not used — the system interpreter at `D:/Python311/python.exe`
+is the authoritative Python for all commands in this repository.
 
-## 6. Run modes
+All commands below use the explicit path `D:/Python311/python.exe`. Replace with
+`python` only if your shell resolves to the same 3.11.6 installation.
 
-- `fast`: engineering regression and scientific precheck.
-- `diagnostic`: independent diagnostic evaluation, not a substitute for Full.
-- `adapt_full`: `CURRENT_DATA_ADAPT_FULL`, using the frozen available-data
-  manifest for multi-day scientific evaluation.
-- `full`: formal 72-day design. It is not allowed in the current stage.
-- `precision`: convergence evaluation after an accepted `adapt_full` or formal
-  Full run. It remains blocked until the parent scientific status is PASS.
+## 8. Run profiles
 
-Mode availability is enforced by each module CLI and its scientific gates.
+The current run modes are fixed as:
 
-## 7. Fast workflow
+```
+fast
+middle
+full
+```
+
+### fast
+
+- Engineering validation
+- Code correctness
+- Regression testing
+
+Fast is **not** the final paper result. It validates the full M1–M4 chain on a
+fixed 5 anchor-day subset (`fast` compute).
+
+### middle
+
+- Intermediate-scale validation
+- 72-day data window
+
+Middle uses the frozen `FORMAL_72_V1_20260724` calendar. It selects six dates
+per month: the first four Mondays plus the Saturdays following the first and
+third Mondays. The profile contains 72 anchor dates: 40 model, 20 audit, and 12
+final-test dates. November–December are final-test only (not train-eligible).
+
+Middle design readiness is **separate** from local raw-data readiness. A
+missing local required-hour inventory makes middle `NOT_READY` for execution,
+but does not invalidate the formal middle design. Middle never falls back to
+`fast` or `full`.
+
+### full
+
+- Large-scale evaluation
+- Continuous multi-month data
+
+Full runs continuous complete calendar months; gated by `full_data_readiness()`.
+
+Special-purpose: `diagnostic` (debug), `precision` (convergence).
+Legacy profiles are retained only for backward compatibility:
+`acceptance_23d` / `adapt_full` (alias). `adapt_full` is NOT a formal profile
+size and is not a current run mode.
+
+See `docs/RUN_PROFILES.md` for the complete profile contract.
+
+## 9. Fast workflow
 
 Run from this directory, in order:
 
@@ -102,36 +200,11 @@ python -u overall_adv/main.py validate --mode fast --progress normal --n-jobs 1
 
 python -u part_adv/main.py fast --progress normal --n-jobs 1
 python -u part_adv/main.py validate --mode fast --progress normal --n-jobs 1
-
-python corrected_fast_post_rebuild_audit.py
 ```
 
 `--n-jobs 1` is the authoritative exact-reproduction path.
 
-## 8. CURRENT_DATA_ADAPT_FULL workflow
-
-After the cloud Fast smoke passes, run the long chain sequentially:
-
-```powershell
-python -u pre/main.py adapt_full --progress normal --n-jobs 2
-python -u pre/main.py validate adapt_full --progress normal --n-jobs 2
-
-python -u overall_run/main.py adapt_full --progress normal --n-jobs 2
-python -u overall_run/main.py validate adapt_full --progress normal --n-jobs 2
-
-python -u overall_adv/main.py adapt_full --progress normal --n-jobs 2
-python -u overall_adv/main.py validate --mode adapt_full --progress normal --n-jobs 2
-
-python -u part_adv/main.py adapt_full --progress normal --n-jobs 2
-python -u part_adv/main.py validate --mode adapt_full --progress normal --n-jobs 2
-
-python finalize_current_data_adapt_full.py
-```
-
-Do not launch the three downstream long chains concurrently. The formal 72-day
-Full remains prohibited.
-
-## 9. Clean and resume
+## 10. Clean and resume
 
 Clean is always an explicit, independent command:
 
@@ -143,10 +216,17 @@ python overall_adv/clean.py --mode fast
 python part_adv/clean.py --mode fast
 ```
 
+Registered development outputs can be cleaned in isolation with `--output-id`:
+
+```powershell
+python pre/clean.py --output-id fast_three_change_dev --dry-run
+python pre/clean.py --output-id fast_three_change_dev
+```
+
 `main.py` never calls `clean.py`. A cleaner removes only its own
-`output/<mode>/`; it preserves `data/` and `pre/cache/`. It refuses an active
-owned run by default. `--stop-owned-processes` is available only when module,
-mode, run ID, PID, and ownership metadata all match.
+`output/<mode>/` or `output/<output-id>/`; it preserves `data/` and `pre/cache/`.
+It refuses an active owned run by default. `--stop-owned-processes` is available
+only when module, mode, run ID, PID, and ownership metadata all match.
 
 `overall_run` resumes only from an explicit isolated staging path:
 
@@ -159,7 +239,7 @@ output. Input, scientific configuration, task partition, target contract, and
 task output hashes must match; changing only `n_jobs` does not change task
 identity.
 
-## 10. Parallel execution
+## 11. Parallel execution
 
 `--n-jobs 1` is the default. Use `--n-jobs 2` or `--n-jobs 4` for a bounded
 cloud run after the single-thread smoke passes. `--n-jobs -1` resolves to all
@@ -170,7 +250,7 @@ derives seeds from stable task IDs rather than worker IDs, merges in fixed task
 order, and keeps registry publication in the parent process. The implementation
 is compatible with Windows spawn and Linux execution.
 
-## 11. Output structure
+## 12. Output structure
 
 Each module owns `output/<mode>/`. A mode directory is created by its cleaner
 or runner. The published Fast directories contain the module-specific
@@ -188,22 +268,78 @@ overall_run/output/fast/audit/
 pre/cache/
 ```
 
-Staging or partial artifacts are never accepted as published output.
+Development and audit outputs (`fast_three_change_dev`, `fast_code_audit_n1`,
+archives) are temporary and are removed during cleanup; only the formal `fast`
+baseline and `middle` output are retained. Staging or partial artifacts are
+never accepted as published output.
 
-## 12. Current frozen status
+## 13. Command semantics (mandatory)
 
+- **`report` is NOT a computation pipeline.** It reads frozen, published
+  artifacts and generates tables, figures, and audits. It never re-trains
+  models or re-runs M1–M4.
+- **`validate` is NOT re-training.** It checks existing output against
+  contracts (registry hashes, lineage, schema). It does not modify data,
+  models, or scientific parameters.
+
+Publication flow note: `report` publishes a `STOP_AND_REVIEW` run and sets
+`publication_status=PASS`; `validate` then accepts it. A run that already has
+`scientific_status=PASS` (e.g. Fast after the 2026-08-03 D6 freeze) currently
+has no `report` path, so `validate` returns `OVERALL_RUN_PUBLICATION_NOT_PASS`
+until a PASS-run publication path is added.
+- **`clean` does NOT delete frozen baselines by default.** It only removes
+  runtime output for the specified mode, after confirming no active owned
+  process is running. `--dry-run` reports without deleting.
+
+## 14. Engineering vs. Scientific status
+
+Engineering and scientific status are **independent**:
+
+- `engineering_status=PASS` — all formal validators pass; the computation
+  ran correctly and deterministically.
+- `scientific_status=PASS` — all required scientific acceptance gates pass
+  (coverage, crossing, passenger support, and the five D6 distributional
+  metrics, whose thresholds were frozen on 2026-08-03).
+- `scientific_status=STOP_AND_REVIEW` — at least one required acceptance gate
+  failed and needs human review; a remaining example is
+  `PASSENGER_PROXY_SUPPORT_FAIL` on the 72-day middle window.
+
+Fast engineering PASS does not imply scientific validity. Scientific
+acceptance follows a separate review gate.
+
+## 15. P1 integration status
+
+P1 (event reconstruction) is **not yet formally integrated**. Its code
+resides in `analysis/p1_event_reconstruction/` and `tests/p1_event_reconstruction/`.
+P1 integration will begin only after R1 scientific review is complete and
+the formal `FORMAL_P1_INTEGRATION_ALLOWED=YES` gate is authorised.
+
+## 16. Current frozen status
+
+- Round: R1.5 (profile specification freeze)
 - Formal target: `y_movement_raw`
-- Code frozen: `true`
+- Profiles frozen: `fast` (engineering gate), `middle` (72-day), `full` (continuous months)
+- Thread plan frozen: `PRE_N_JOBS=1`, `DOWNSTREAM_N_JOBS=2`
+- Code frozen: `true` (defect fixes verified: fault injection 15/15, tests 272/272)
+- D6 distributional thresholds frozen: `2026-08-03`
+  (twcrps / q95_pinball / q99_pinball / upper_shortfall upper bounds from the
+  fast HIST baseline; upper_quantile_calibration ≤ 0.03)
+- Fast scientific gate: `PASS` (2026-08-03 re-run)
+- Middle scientific gate: `STOP_AND_REVIEW` (`PASSENGER_PROXY_SUPPORT_FAIL`)
 - Fast q95 empirical exceedance: `0.0609375`
 - q95 classification: `SYSTEMATIC_CALIBRATION_CONCERN`
 - Certification: `METRIC_SUPPORT_LIMITED`
-- Cloud mode: `CURRENT_DATA_ADAPT_FULL`
+- P1 integrated: `false`
 - Formal 72-day Full allowed: `false`
+- CLI normalization: `overall_run` uses positional mode; `overall_adv`/`part_adv` use `--mode` flag (documented inconsistency, non-breaking)
+- Legacy profiles: `adapt_full` / `acceptance_23d` (retained only for backward compatibility; NOT current run modes)
+
+See `docs/` for complete profile, thread, validation, registry, clean, and migration specifications.
 
 The q95 result is a cloud multi-day scientific evaluation target. It is not an
 authorization for further local tuning.
 
-## 13. Scientific boundaries
+## 17. Scientific boundaries
 
 The formal chain prohibits test-derived tuning, silent fallback, unknown-value
 zero filling, writes under `data/`, cross-day interpolation, downstream PRE

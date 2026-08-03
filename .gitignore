@@ -84,6 +84,14 @@ output_logs/
 # Includes: eurostat, opensky, metar, iem_metar, ourairports
 data/raw/
 
+# Generated binary artifacts (large, regenerable) — never commit
+*.parquet
+*.joblib
+
+# Exploratory / audit artifacts — kept locally, not uploaded
+analysis/
+reports/
+
 # Staging / temporary folders
 .staging/
 *.tmp

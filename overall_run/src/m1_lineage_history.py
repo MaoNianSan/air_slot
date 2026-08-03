@@ -13,6 +13,7 @@ from .m1_lineage_contract import (
     EXPECTED_RUN_ID,
     EXPECTED_SCIENTIFIC_IMPLEMENTATION_HASH,
     FAST_ROOT,
+    HISTORICAL_FIXTURE_ROOT,
     LOG_ROOT,
     MODULE_ROOT,
     PROJECT_ROOT,
@@ -63,7 +64,7 @@ def build_historical_deprecation_registry() -> pd.DataFrame:
 
 
 def build_historical_tables(deprecation: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    lineage_path = FAST_ROOT / "audit" / "historical_d6_label_lineage.json"
+    lineage_path = HISTORICAL_FIXTURE_ROOT / "audit" / "historical_d6_label_lineage.json"
     inventory = pd.DataFrame(
         [
             {

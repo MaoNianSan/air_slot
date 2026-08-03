@@ -7,6 +7,8 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+from src.artifacts import CORE_REQUIRED_ARTIFACT_IDS, write_artifact_registry
+from src.pipeline_checkpoint import requires_fast_acceptance
 from src.report import (
     CORE_FIGURE_STEMS,
     M4_AUDIT_FILES,
@@ -30,7 +32,6 @@ def _candidate(snapshot: str, *, physical: bool, decision: bool, candidate: bool
         "gate_authority": True,
         "gate_lead": True,
         "physical_feasible": physical,
-        "gate_recovery_ratio": decision,
         "gate_burden_ratio": decision,
         "gate_positive_net_benefit": decision,
         "decision_value_pass": decision,
@@ -39,6 +40,15 @@ def _candidate(snapshot: str, *, physical: bool, decision: bool, candidate: bool
         "burden_ratio": 0.80 if decision else 1.20,
         "positive_net_benefit_probability": 0.70 if decision else 0.50,
     }
+
+
+def test_middle_interface_smoke_does_not_require_long_run_recommendation() -> None:
+    formal = {"smoke_subset": False}
+    smoke = {"smoke_subset": True}
+    assert requires_fast_acceptance("middle", formal, override_fast_gate=False)
+    assert requires_fast_acceptance("full", formal, override_fast_gate=False)
+    assert not requires_fast_acceptance("middle", smoke, override_fast_gate=False)
+    assert not requires_fast_acceptance("middle", formal, override_fast_gate=True)
 
 
 def test_m4_concentration_decomposition_is_exhaustive() -> None:
@@ -60,7 +70,6 @@ def test_m4_concentration_decomposition_is_exhaustive() -> None:
     result = build_m4_diagnostics(
         candidates,
         rankings,
-        recovery_ratio_min=0.20,
         burden_ratio_max=1.00,
         positive_net_benefit_probability_min=0.60,
     )
@@ -115,14 +124,25 @@ def test_publication_validation_requires_registered_figure_triplets(tmp_path: Pa
     }
     publication_path = tmp_path / "publication_manifest.json"
     publication_path.write_text(json.dumps(publication), encoding="utf-8")
-    registered = ["publication_manifest.json", *required]
-    registry = {
-        "artifacts": [
-            {"artifact_name": relative, "sha256": _sha256(tmp_path / relative)}
-            for relative in registered
-        ]
-    }
-    (tmp_path / "artifact_registry.json").write_text(json.dumps(registry), encoding="utf-8")
+    registered = sorted(set(["publication_manifest.json", *required, *CORE_REQUIRED_ARTIFACT_IDS]))
+    for relative in CORE_REQUIRED_ARTIFACT_IDS:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not path.exists():
+            path.write_bytes(b"core")
+    write_artifact_registry(
+        tmp_path,
+        mode="fast",
+        run_id="run-1",
+        config_hash="config-1",
+        implementation_hash="scientific-1",
+        contract_version="contract-1",
+        upstream_artifact_hashes={},
+        scientific_status="STOP_AND_REVIEW",
+        artifact_names=registered,
+        registry_kind="publication",
+        required_artifact_ids=registered,
+    )
 
     result = validate_publication(
         tmp_path,

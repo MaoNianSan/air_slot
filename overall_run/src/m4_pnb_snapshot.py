@@ -74,7 +74,7 @@ def _rank_snapshot(
         )
     options.sort(
         key=lambda item: (
-            item["score"], item["implementation"], item["priority"], item["action_id"]
+            item["score"], item["expected_post"], item["priority"], item["action_id"]
         )
     )
     best = options[0]
@@ -91,7 +91,6 @@ def build_snapshot_action_audit(
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[tuple[str, str], dict[str, np.ndarray]]]:
     config_m4 = frozen.config["m4"]
     decision = config_m4["decision_value"]
-    r0 = float(decision["recovery_ratio_min"])
     b0 = float(decision["burden_ratio_max"])
     q0 = float(decision["positive_net_benefit_probability_min"])
     risk_aversion = float(config_m4["risk_aversion"])
@@ -133,10 +132,9 @@ def build_snapshot_action_audit(
         success = frozen.m3_success[action_id]
         net = reconstructed["net_benefit"]
         conditional_probability = float((net[success] > 0.0).mean()) if success.any() else np.nan
-        gate_recovery = reconstructed["recovery_ratio"] >= r0
         gate_burden = reconstructed["burden_ratio"] <= b0
         gate_positive = reconstructed["positive_net_benefit_probability"] >= q0
-        decision_pass = bool(gate_recovery and gate_burden and gate_positive)
+        decision_pass = bool(gate_burden and gate_positive)
         final_candidate = bool(candidate.physical_feasible and decision_pass)
         post = reconstructed["post_action_total"]
         score = risk_score(post, risk_aversion, cvar_alpha)
@@ -170,7 +168,6 @@ def build_snapshot_action_audit(
             "burden_ratio": reconstructed["burden_ratio"],
             "physical_feasible": bool(candidate.physical_feasible),
             "positive_net_benefit_pass": bool(gate_positive),
-            "gate_recovery_ratio": bool(gate_recovery),
             "gate_burden_ratio": bool(gate_burden),
             "decision_value_pass": decision_pass,
             "final_candidate": final_candidate,
@@ -256,7 +253,7 @@ def build_snapshot_action_audit(
         [
             "episode_id", "snapshot_id", "action_id", "expected_pre_action_cost_rmb",
             "expected_recovery_rmb", "expected_implementation_cost_rmb", "recovery_ratio",
-            "burden_ratio", "positive_net_benefit_probability", "gate_recovery_ratio",
+            "burden_ratio", "positive_net_benefit_probability",
             "gate_burden_ratio", "gate_positive_net_benefit", "decision_value_pass",
             "is_evaluated",
         ]
@@ -285,8 +282,7 @@ def build_snapshot_action_audit(
         - identity["positive_net_benefit_probability_formal"]
     ).abs()
     identity["gate_disagreement"] = (
-        identity["gate_recovery_ratio_manual"].ne(identity["gate_recovery_ratio_formal"])
-        | identity["gate_burden_ratio_manual"].ne(identity["gate_burden_ratio_formal"])
+        identity["gate_burden_ratio_manual"].ne(identity["gate_burden_ratio_formal"])
         | identity["positive_net_benefit_pass"].ne(identity["gate_positive_net_benefit"])
         | identity["decision_value_pass_manual"].ne(identity["decision_value_pass_formal"])
     )

@@ -46,6 +46,38 @@ tables:
       - debug_only
       - trigger_event_group_id
       - recovery_event_level
+      - has_predecessor_candidate
+      - has_supported_predecessor
+      - predecessor_flight_id
+      - predecessor_firstseen_proxy
+      - predecessor_lastseen_proxy
+      - predecessor_observed_duration
+      - predecessor_origin_inferred
+      - predecessor_destination_inferred
+      - predecessor_endpoint_quality
+      - predecessor_trajectory_coverage
+      - predecessor_registration_match
+      - predecessor_typecode_match
+      - predecessor_aircraft_group
+      - observed_ground_gap_minutes
+      - ground_gap_deviation_from_reference
+      - airport_continuity
+      - predecessor_movement_deviation_proxy
+      - predecessor_completion_state
+      - turnaround_pressure_proxy
+      - continuation_risk_proxy
+      - previous_leg_observation_quality
+      - predecessor_match_confidence
+      - predecessor_evidence_tier
+      - predecessor_support_rule
+      - predecessor_support_status
+      - predecessor_rejection_reason
+      - nearest_raw_candidate_id
+      - selected_supported_predecessor_id
+      - raw_candidate_rejection_reason
+      - search_depth
+    optional:
+      - _predecessor_availability_time
 
   snapshots:
     key: [episode_id, snapshot_id]
@@ -146,8 +178,39 @@ tables:
       - debug_only
       - exclusion_reason
       - trigger_event_group_id
+      - has_predecessor_candidate
+      - has_supported_predecessor
+      - predecessor_flight_id
+      - predecessor_firstseen_proxy
+      - predecessor_lastseen_proxy
+      - predecessor_observed_duration
+      - predecessor_origin_inferred
+      - predecessor_destination_inferred
+      - predecessor_endpoint_quality
+      - predecessor_trajectory_coverage
+      - predecessor_registration_match
+      - predecessor_typecode_match
+      - predecessor_aircraft_group
+      - observed_ground_gap_minutes
+      - ground_gap_deviation_from_reference
+      - airport_continuity
+      - predecessor_movement_deviation_proxy
+      - predecessor_completion_state
+      - turnaround_pressure_proxy
+      - continuation_risk_proxy
+      - previous_leg_observation_quality
+      - predecessor_match_confidence
+      - predecessor_evidence_tier
+      - predecessor_support_rule
+      - predecessor_support_status
+      - predecessor_rejection_reason
+      - nearest_raw_candidate_id
+      - selected_supported_predecessor_id
+      - raw_candidate_rejection_reason
+      - search_depth
     optional:
       - period
+      - _predecessor_availability_time
       - passenger_proxy_reference_period
       - passenger_proxy_source_key
       - passenger_proxy_future_data_used
@@ -305,6 +368,39 @@ tables:
       - rule_evidence_status
       - rule_generation_version
       - rule_missing_reason
+      - aircraft_swap_available
+      - rotation_reassignment_available
+      - standby_aircraft_available
+      - aircraft_group_compatible
+      - crew_swap_available
+      - standby_crew_available
+      - crew_reposition_available
+      - crew_qualification_compatible
+      - gate_reassignment_available
+      - ground_support_available
+      - tow_support_available
+      - cancellation_authority_available
+      - network_reset_authority_available
+      - passenger_reaccommodation_available
+      - capacity_coordination_available
+      - aircraft_swap_available_evidence_status
+      - rotation_reassignment_available_evidence_status
+      - standby_aircraft_available_evidence_status
+      - aircraft_group_compatible_evidence_status
+      - crew_swap_available_evidence_status
+      - standby_crew_available_evidence_status
+      - crew_reposition_available_evidence_status
+      - crew_qualification_compatible_evidence_status
+      - gate_reassignment_available_evidence_status
+      - ground_support_available_evidence_status
+      - tow_support_available_evidence_status
+      - cancellation_authority_available_evidence_status
+      - network_reset_authority_available_evidence_status
+      - passenger_reaccommodation_available_evidence_status
+      - capacity_coordination_available_evidence_status
+      - typed_gate_required
+      - typed_gate_pass
+      - typed_gate_status
 
   evidence_audit:
     key: [episode_id, snapshot_id, feature_name]
@@ -365,6 +461,27 @@ m1_required_inputs:
     - lead_time_margin
     - runway_count
     - airport_scale
+    - has_predecessor_candidate
+    - has_supported_predecessor
+    - predecessor_observed_duration
+    - predecessor_endpoint_quality
+    - predecessor_trajectory_coverage
+    - predecessor_registration_match
+    - predecessor_typecode_match
+    - predecessor_aircraft_group
+    - observed_ground_gap_minutes
+    - ground_gap_deviation_from_reference
+    - airport_continuity
+    - predecessor_movement_deviation_proxy
+    - predecessor_completion_state
+    - turnaround_pressure_proxy
+    - continuation_risk_proxy
+    - previous_leg_observation_quality
+    - predecessor_match_confidence
+    - predecessor_evidence_tier
+    - predecessor_support_rule
+    - predecessor_support_status
+    - predecessor_rejection_reason
   categorical:
     - airport
     - origin

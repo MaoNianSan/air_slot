@@ -154,7 +154,12 @@ def fit_artifacts(
     )
     m1.test_label_hash = str(test_label_hash)
     m1.model_parameter_hash = stable_hash(m1.selected_config)
-    m1.feature_schema_hash = stable_hash(m1.feature_columns)
+    m1.feature_schema_hash = m1.feature_contract.contract_hash
+    m1.feature_contract_version = str(
+        cfg.scientific["m1"].get(
+            "feature_contract_version", "M1_PREVIOUS_LEG_V1"
+        )
+    )
     excluded = set(m1.excluded_all_missing_features)
     feature_audit.loc[
         feature_audit["feature"].astype(str).isin(excluded), "status"
@@ -196,7 +201,25 @@ def fit_artifacts(
             "test_label_hash": m1.test_label_hash,
             "model_parameter_hash": m1.model_parameter_hash,
             "feature_schema_hash": m1.feature_schema_hash,
+            "m1_feature_contract_version": m1.feature_contract_version,
             "feature_columns": m1.feature_columns,
+            "feature_contract": m1.feature_contract.to_dict(),
+            "predecessor_feature_columns": [
+                column
+                for column in m1.feature_columns
+                if column.startswith("predecessor_")
+                or column
+                in {
+                    "has_predecessor_candidate",
+                    "has_supported_predecessor",
+                    "observed_ground_gap_minutes",
+                    "ground_gap_deviation_from_reference",
+                    "airport_continuity",
+                    "turnaround_pressure_proxy",
+                    "continuation_risk_proxy",
+                    "previous_leg_observation_quality",
+                }
+            ],
             "excluded_all_missing_features": m1.excluded_all_missing_features,
             "m2_passenger_proxy_supported": m2.passenger_proxy_supported,
             "m2_unit_scales": m2.unit_scales,

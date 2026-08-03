@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from quantile_forest import RandomForestQuantileRegressor
 from sklearn.metrics import mean_pinball_loss
+from .action_contract import load_action_contract
 
 
 def _seed(*parts: Any) -> int:
@@ -132,8 +133,8 @@ def run_selfchecks() -> pd.DataFrame:
     scenario_weights=np.full(128,1/128)
     check("m2_scenario_weight_fixture", np.isclose(scenario_weights.sum(),1.) and np.all(scenario_weights>0), f"sum={scenario_weights.sum()}")
 
-    action_ids=["A00","A11","A12","A21","A22","A31","A32","A41","A42","A51","A52","A61","A62"]
-    check("m3_action_library_fixture", len(action_ids)==13 and len(set(action_ids))==13 and action_ids[0]=="A00", "ordered unique 13-action library")
+    action_contract=load_action_contract("V3");action_ids=action_contract["action_ids"]
+    check("m3_action_library_fixture", len(action_ids)==action_contract["formal_action_count"] and len(set(action_ids))==len(action_ids) and action_ids[0]=="A00", "ordered unique authoritative action library")
     reasons=[]
     for active,recovery,burden,benefit in [(False,.9,.1,.9),(True,.1,.1,.9),(True,.3,2.,.9),(True,.3,.5,.2)]:
         reasons.append("NO_ACTIVE" if not active else ("RECOVERY" if recovery<.2 else ("BURDEN" if burden>1 else ("BENEFIT" if benefit<.6 else "CANDIDATE"))))

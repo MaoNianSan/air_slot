@@ -9,6 +9,8 @@ import yaml
 from scipy.stats import norm
 from sklearn.isotonic import IsotonicRegression
 
+from .shared_contracts import strict_deep_merge
+
 from .pipeline_common import (
     FORMAL_TARGET_COLUMN,
     PROJECT,
@@ -23,12 +25,21 @@ def _load(mode: str, override: Path | None = None) -> dict[str, Any]:
     cfg = yaml.safe_load((ROOT / "config" / "v3.yaml").read_text(encoding="utf-8"))
     if override:
         path = override if override.is_absolute() else ROOT / override
-        cfg.update(yaml.safe_load(path.read_text(encoding="utf-8")))
-    cfg["mode"] = mode
-    cfg["compute_mode"] = "full" if mode == "adapt_full" else mode
-    cfg["upstream"] = PROJECT / "overall_run" / "output" / mode
-    cfg["pre"] = PROJECT / "pre" / "output" / mode
-    cfg["output"] = ROOT / "output" / mode
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        cfg = strict_deep_merge(cfg, payload)
+    output_name = str(cfg.get("output_name") or mode)
+    pre_output_name = str(cfg.get("pre_output_name") or output_name)
+    cfg["mode"] = output_name
+    cfg["pre_mode"] = pre_output_name
+    profile_id = "middle" if mode == "middle_smoke" else mode
+    cfg["compute_mode"] = "full" if profile_id in {"acceptance_23d", "middle", "full"} else profile_id
+    cfg["profile_id"] = profile_id
+    cfg["run_profile"] = None if profile_id == "acceptance_23d" else profile_id
+    cfg["acceptance_profile"] = "acceptance_23d" if profile_id == "acceptance_23d" else None
+    cfg["smoke_subset"] = mode == "middle_smoke"
+    cfg["upstream"] = PROJECT / "overall_run" / "output" / output_name
+    cfg["pre"] = PROJECT / "pre" / "output" / pre_output_name
+    cfg["output"] = ROOT / "output" / output_name
     cfg["samples"] = int(cfg[f"predictive_samples_{cfg['compute_mode']}"])
     cfg["bootstrap"] = int(cfg[f"bootstrap_{cfg['compute_mode']}"])
     cfg["config_hash"] = stable_hash(
@@ -38,7 +49,11 @@ def _load(mode: str, override: Path | None = None) -> dict[str, Any]:
 
 
 def _upstream(cfg: dict[str, Any]) -> tuple[pd.DataFrame, dict[str, Any]]:
-    cohort, audit = load_common_passenger_cohort(PROJECT, cfg["mode"])
+    cohort, audit = load_common_passenger_cohort(
+        PROJECT,
+        cfg["mode"],
+        pre_mode=cfg["pre_mode"],
+    )
     required = [
         "metrics/m1_predictions_evaluation.parquet",
         "metrics/m2_summary.parquet",

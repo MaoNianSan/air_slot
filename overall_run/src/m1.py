@@ -22,6 +22,7 @@ from .m1_metrics import (
     exceedance_probability_from_quantiles,
     pinball_loss,
 )
+from .m1_feature_contract import M1FeatureContract
 from .m1_sampling import inverse_quantile_sample
 from .m1_training import (
     blocked_folds,
@@ -39,6 +40,7 @@ class M1Artifact:
     feature_columns: list[str]
     numeric_columns: list[str]
     categorical_columns: list[str]
+    feature_contract: M1FeatureContract
     transformer: ColumnTransformer
     models: dict[float, LGBMRegressor]
     calibration_offsets: dict[str, dict[Any, np.ndarray]]
@@ -56,9 +58,16 @@ class M1Artifact:
     test_label_hash: str = ""
     model_parameter_hash: str = ""
     feature_schema_hash: str = ""
+    feature_contract_version: str = "M1_PREVIOUS_LEG_V1"
 
     def _transform(self, df: pd.DataFrame):
-        return self.transformer.transform(df[self.feature_columns])
+        self.feature_contract.validate_artifact_columns(
+            self.feature_columns,
+            self.categorical_columns,
+        )
+        return self.transformer.transform(
+            self.feature_contract.select_authoritative(df)
+        )
 
     def raw_quantiles(self, df: pd.DataFrame) -> np.ndarray:
         X = self._transform(df)
@@ -276,10 +285,19 @@ def fit_m1(
     additionally_excluded = [c for c in feature_columns if c not in final_features]
     if not final_features:
         raise RuntimeError("M1_FINAL_FEATURES_ALL_MISSING")
+    contract_version = str(
+        scientific["m1"].get("feature_contract_version", "M1_PREVIOUS_LEG_V1")
+    )
+    feature_contract = M1FeatureContract.build(
+        train,
+        final_features,
+        final_categorical,
+        contract_version=contract_version,
+    )
     y_all = train["target"].to_numpy(float)
     weights_all = train["flight_weight"].to_numpy(float)
     transformer = make_transformer(final_numeric, final_categorical)
-    X_all = transformer.fit_transform(train[final_features])
+    X_all = transformer.fit_transform(feature_contract.select_authoritative(train))
     def fit_final_quantile(tau: float) -> tuple[float, LGBMRegressor]:
         if (selected_id, tau) in best_iterations:
             related = best_iterations[(selected_id, tau)]
@@ -307,7 +325,9 @@ def fit_m1(
         ]
     models: dict[float, LGBMRegressor] = {tau: model for tau, model in final_results}
 
-    X_val_final = transformer.transform(validation[final_features])
+    X_val_final = transformer.transform(
+        feature_contract.select_authoritative(validation)
+    )
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", message="X does not have valid feature names")
         raw_val = np.column_stack([models[t].predict(X_val_final) for t in quantiles])
@@ -329,6 +349,7 @@ def fit_m1(
         feature_columns=final_features,
         numeric_columns=final_numeric,
         categorical_columns=final_categorical,
+        feature_contract=feature_contract,
         transformer=transformer,
         models=models,
         calibration_offsets=offsets,
@@ -340,6 +361,8 @@ def fit_m1(
             set(excluded_all_missing_features or []) | set(additionally_excluded)
         ),
         training_nonmissing_counts=dict(training_nonmissing_counts or {}),
+        feature_schema_hash=feature_contract.contract_hash,
+        feature_contract_version=feature_contract.contract_version,
     )
     tuning = tuning.merge(score, on="config_id", suffixes=("", "_aggregate"), how="left")
     tuning["selected"] = tuning["config_id"].eq(selected_id)

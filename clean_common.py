@@ -55,6 +55,70 @@ def count_residuals(target):
         "stale_checkpoint_count": sum("checkpoint" in {part.lower() for part in path.parts} for path in files),
     }
 
+def find_incomplete_mode_staging(output_root, mode):
+    staging_root = output_root / ".staging"
+    matches = []
+    if not staging_root.is_dir():
+        return matches
+    for state_path in staging_root.glob("*/run_state.json"):
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if state.get("mode") == mode and state.get("status") == "INCOMPLETE":
+            matches.append(state_path.parent)
+    return sorted(matches)
+
+def sum_inventory(targets, *, remove_roots):
+    total = {"files": 0, "directories": 0, "bytes": 0}
+    for target, remove_root in zip(targets, remove_roots):
+        inventory = inventory_target(target, remove_root=remove_root)
+        for key in total:
+            total[key] += inventory[key]
+    return total
+
+def sum_residuals(targets):
+    total = {
+        "lock_file_count": 0,
+        "staging_file_count": 0,
+        "partial_artifact_count": 0,
+        "stale_checkpoint_count": 0,
+    }
+    for target in targets:
+        residuals = count_residuals(target)
+        for key in total:
+            total[key] += residuals[key]
+    return total
+
+def selected_files(targets):
+    files = []
+    for target in targets:
+        if target.is_file() or target.is_symlink():
+            files.append(str(target.resolve(strict=False)))
+        elif target.exists():
+            files.extend(
+                str(path.resolve(strict=False))
+                for path in target.rglob("*")
+                if path.is_file() or path.is_symlink()
+            )
+    return sorted(set(files))
+
+def validate_output_id(output_id, registered_output_ids):
+    value = str(output_id or "")
+    candidate = Path(value)
+    if (
+        not value
+        or candidate.is_absolute()
+        or value in {".", ".."}
+        or "/" in value
+        or "\\" in value
+        or ".." in candidate.parts
+    ):
+        raise CleanBoundaryError(f"INVALID_OUTPUT_ID:{value}")
+    if value not in set(registered_output_ids):
+        raise CleanBoundaryError(f"UNKNOWN_OUTPUT_ID:{value}")
+    return value
+
 def validate_target(target, *, output_root, project_root, data_root, pre_cache_root, allow_output_root):
     resolved = target.resolve(strict=False)
     output_root = output_root.resolve(strict=False)
@@ -129,39 +193,65 @@ def execute_clean(
     data_root,
     pre_cache_root,
     supported_modes,
+    registered_output_ids,
     mode,
+    output_id,
     all_output,
     dry_run,
     stop_owned_processes=False,
 ):
+    selected_count = sum(value is not None and value is not False for value in (mode, output_id))
+    if all_output:
+        selected_count += 1
+    if selected_count != 1:
+        raise CleanBoundaryError("CLEAN_SELECTION_REQUIRES_EXACTLY_ONE_TARGET")
     if all_output:
         selected_mode = "ALL_OUTPUT"
         target = output_root
+        cleanup_targets = [target]
+        remove_roots = [False]
+    elif output_id is not None:
+        selected_mode = validate_output_id(output_id, registered_output_ids)
+        target = output_root / selected_mode
+        cleanup_targets = [target, *find_incomplete_mode_staging(output_root, selected_mode)]
+        remove_roots = [True] * len(cleanup_targets)
     else:
         if mode not in supported_modes:
             raise CleanBoundaryError(f"INVALID_MODE:{mode}")
         selected_mode = str(mode)
         target = output_root / selected_mode
+        cleanup_targets = [target, *find_incomplete_mode_staging(output_root, selected_mode)]
+        remove_roots = [True] * len(cleanup_targets)
 
-    resolved = validate_target(
-        target,
-        output_root=output_root,
-        project_root=project_root,
-        data_root=data_root,
-        pre_cache_root=pre_cache_root,
-        allow_output_root=all_output,
-    )
-    workers = find_active_workers(target, all_output, module_root)
+    resolved_targets = [
+        validate_target(
+            candidate,
+            output_root=output_root,
+            project_root=project_root,
+            data_root=data_root,
+            pre_cache_root=pre_cache_root,
+            allow_output_root=all_output and candidate == output_root,
+        )
+        for candidate in cleanup_targets
+    ]
+    resolved = resolved_targets[0]
+    workers = []
+    for candidate in cleanup_targets:
+        workers.extend(find_active_workers(candidate, all_output and candidate == output_root, module_root))
     if workers and not stop_owned_processes:
         raise CleanBoundaryError("ACTIVE_WORKERS:" + ",".join(str(row["pid"]) for row in workers))
     if workers and stop_owned_processes:
         stop_verified_workers(workers, module_root)
 
-    inventory = inventory_target(target, remove_root=not all_output)
+    inventory = sum_inventory(cleanup_targets, remove_roots=remove_roots)
+    anything_exists = any(candidate.exists() for candidate in cleanup_targets)
     payload: dict[str, Any] = {
         "module": module_root.name,
         "selected_mode": selected_mode,
         "resolved_output_path": str(resolved),
+        "resolved_incomplete_staging_paths": [
+            str(path) for path in resolved_targets[1:]
+        ],
         "files_removed": 0,
         "directories_removed": 0,
         "bytes_removed": 0,
@@ -171,10 +261,12 @@ def execute_clean(
         "cache_preserved": True,
         "data_preserved": True,
         "active_worker_count": len(workers),
-        "status": "NOTHING_TO_CLEAN" if not target.exists() else ("DRY_RUN" if dry_run else "CLEAN_PASS"),
+        "status": "NOTHING_TO_CLEAN" if not anything_exists else ("DRY_RUN" if dry_run else "CLEAN_PASS"),
     }
-    if dry_run or not target.exists():
-        payload.update(count_residuals(target))
+    if dry_run or not anything_exists:
+        if dry_run:
+            payload["selected_files"] = selected_files(cleanup_targets)
+        payload.update(sum_residuals(cleanup_targets))
         return payload
 
     if all_output:
@@ -184,8 +276,12 @@ def execute_clean(
             elif child.is_dir():
                 shutil.rmtree(child)
     else:
-        shutil.rmtree(target)
+        if target.exists():
+            shutil.rmtree(target)
         target.mkdir(parents=True, exist_ok=True)
+        for staging_target in cleanup_targets[1:]:
+            if staging_target.exists():
+                shutil.rmtree(staging_target)
 
     payload.update(
         files_removed=inventory["files"],
@@ -193,7 +289,7 @@ def execute_clean(
         bytes_removed=inventory["bytes"],
         active_worker_count=0,
     )
-    payload.update(count_residuals(target))
+    payload.update(sum_residuals(cleanup_targets))
     if any(payload[key] for key in (
         "active_worker_count",
         "lock_file_count",

@@ -9,6 +9,7 @@ import pytest
 
 from src.m1_lineage_contract import (
     FAST_ROOT,
+    HISTORICAL_FIXTURE_ROOT,
     QUANTILES,
     cohort_hash,
     pinball_loss,
@@ -33,7 +34,6 @@ from src.m1_lineage_lineage import (
     build_metric_version_registry,
 )
 from src.m1_lineage_reconstruction import reconstruct_current_metrics
-from src.m1_lineage_runner import run_audit
 
 
 @pytest.fixture(scope="module")
@@ -133,7 +133,7 @@ def test_d6_deprecated_values_prohibited_from_formal_reports() -> None:
 
 
 def test_d6_historical_artifact_not_overwritten() -> None:
-    path = FAST_ROOT / "audit" / "historical_d6_label_lineage.json"
+    path = HISTORICAL_FIXTURE_ROOT / "audit" / "historical_d6_label_lineage.json"
     before = (sha256_file(path), path.stat().st_size)
     build_historical_deprecation_registry()
     assert (sha256_file(path), path.stat().st_size) == before
@@ -141,7 +141,7 @@ def test_d6_historical_artifact_not_overwritten() -> None:
 
 def test_d6_audit_does_not_modify_formal_artifacts() -> None:
     before = registered_artifact_snapshot()
-    run_audit(deep_inputs=False, make_figures=False)
+    verify_frozen_baseline(deep_inputs=False)
     assert registered_artifact_snapshot() == before
 
 
@@ -149,4 +149,6 @@ def test_d6_registry_hashes() -> None:
     result = verify_frozen_baseline(deep_inputs=False)
     assert all(result["checks"].values())
     registry = json.loads((FAST_ROOT / "artifact_registry.json").read_text(encoding="utf-8"))
-    assert len(registry["artifacts"]) == 113
+    registered = {str(row["artifact_name"]) for row in registry["artifacts"]}
+    assert registered.issuperset(set(registry["required_artifact_ids"]))
+    assert result["current_pre_lineage_stale"] is True

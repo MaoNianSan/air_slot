@@ -85,6 +85,15 @@ def load_flightlist(cfg: dict[str, Any], formal_dates: set[pd.Timestamp] | None 
     if not files:
         raise FileNotFoundError("SOURCE_NOT_PROVIDED: flightlist")
     normalized_dates = {pd.Timestamp(value).normalize().tz_localize(None) if pd.Timestamp(value).tzinfo else pd.Timestamp(value).normalize() for value in (formal_dates or set())}
+    lookback_days = int(
+        cfg.get("predecessor_matching", {}).get("flightlist_lookback_days", 0)
+    )
+    source_dates = set(normalized_dates)
+    for value in normalized_dates:
+        source_dates.update(
+            value - pd.Timedelta(days=offset)
+            for offset in range(1, lookback_days + 1)
+        )
     eligible_airports = set(cfg["airports"]["core"] if cfg["validation"].get("strict_core_support", True) else cfg["airports"]["m1"])
     chunk_rows = int(cfg.get("flightlist", {}).get("chunk_rows", 250_000))
     frames = []
@@ -112,9 +121,9 @@ def load_flightlist(cfg: dict[str, Any], formal_dates: set[pd.Timestamp] | None 
             frame["firstseen"] = _parse_time(frame["firstseen"])
             frame["lastseen"] = _parse_time(frame["lastseen"])
             keep = frame["destination"].isin(eligible_airports)
-            if normalized_dates:
+            if source_dates:
                 dates = frame["firstseen"].dt.tz_convert("UTC").dt.normalize().dt.tz_localize(None)
-                keep &= dates.isin(normalized_dates)
+                keep &= dates.isin(source_dates)
             frame = frame.loc[keep].copy()
             if not frame.empty:
                 original_positions = frame.index.to_numpy()

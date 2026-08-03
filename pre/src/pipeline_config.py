@@ -12,6 +12,7 @@ import yaml
 
 from .input import object_hash
 from .progress import normalize_progress_level
+from .shared_contracts import strict_deep_merge, v3_pre_action_contract
 from .target_contract import FORMAL_TARGET_COLUMN, SENSITIVITY_TARGET_COLUMN
 
 
@@ -23,18 +24,11 @@ class BuildResult:
     manifest: dict[str, Any]
 
 
-def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
-    result = dict(base)
-    for key, value in override.items():
-        if isinstance(value, dict) and isinstance(result.get(key), dict):
-            result[key] = _deep_merge(result[key], value)
-        else:
-            result[key] = value
-    return result
-
-
 def _read_yaml(path: Path) -> dict[str, Any]:
-    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(payload, dict):
+        raise ValueError(f"CONFIG_TOP_LEVEL_NOT_MAPPING={path}")
+    return payload
 
 
 def load_config(
@@ -48,16 +42,22 @@ def load_config(
     config = _read_yaml(config_dir / "default.yaml")
     config["sources"] = _read_yaml(config_dir / "sources.yaml")["sources"]
     config["schema"] = _read_yaml(config_dir / "schema.yaml")
-    config["actions"] = _read_yaml(config_dir / "actions.yaml")
+    config["actions"] = {
+        **_read_yaml(config_dir / "actions.yaml"),
+        **v3_pre_action_contract(),
+    }
+    config["predecessor_matching"] = _read_yaml(
+        config_dir / "predecessor_matching.yaml"
+    )
     mode_path = config_dir / f"{mode}.yaml"
     if mode_path.exists():
-        config = _deep_merge(config, _read_yaml(mode_path))
+        config = strict_deep_merge(config, _read_yaml(mode_path))
     if override_path:
         override = Path(override_path)
         if not override.is_absolute():
             cwd_candidate = (Path.cwd() / override).resolve()
             override = cwd_candidate if cwd_candidate.exists() else (project_root / override).resolve()
-        config = _deep_merge(config, _read_yaml(override))
+        config = strict_deep_merge(config, _read_yaml(override))
     if output_dir is not None:
         config["paths"]["output_root"] = str(output_dir)
         config["paths"]["intermediate_root"] = str(Path(output_dir) / "intermediate")
@@ -118,8 +118,28 @@ def _validate_config(cfg: dict[str, Any]) -> None:
     for (_, previous_end, previous_name), (next_start, _, next_name) in zip(split_intervals, split_intervals[1:]):
         if previous_end > next_start:
             raise ValueError(f"split overlap: {previous_name}/{next_name}")
-    if len(cfg["actions"]["action_ids"]) != 13:
-        raise ValueError("actions.yaml must declare exactly 13 action IDs")
+    action_ids = [str(value) for value in cfg["actions"]["action_ids"]]
+    declared_count = int(cfg["actions"]["formal_action_count"])
+    if len(action_ids) != declared_count or len(action_ids) != len(set(action_ids)):
+        raise ValueError("authoritative M3 action contract count/uniqueness failure")
+    predecessor = cfg.get("predecessor_matching", {})
+    required_predecessor = {
+        "contract_id", "feature_contract_version", "scientific_approved",
+        "publication_allowed", "primary_rule", "sensitivity_rule",
+        "gap_threshold_policy", "gap_threshold_minutes",
+        "administrative_hard_ceiling_minutes", "missing_predecessor_policy",
+    }
+    missing_predecessor = sorted(required_predecessor - set(predecessor))
+    if missing_predecessor:
+        raise ValueError(
+            "predecessor_matching.yaml missing: " + ",".join(missing_predecessor)
+        )
+    if float(predecessor["gap_threshold_minutes"]) <= 0:
+        raise ValueError("predecessor gap threshold must be positive")
+    if float(predecessor["administrative_hard_ceiling_minutes"]) < float(
+        predecessor["gap_threshold_minutes"]
+    ):
+        raise ValueError("predecessor administrative ceiling below gap threshold")
 
 
 def _package_versions() -> dict[str, str]:

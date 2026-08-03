@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from itertools import permutations
 from pathlib import Path
 import sys
 
@@ -88,20 +89,52 @@ def _artifacts(sample_count: int = 128):
 def test_graph_edges_exclude_r_to_f_and_order_is_invariant() -> None:
     cfg, train, samples, m2, *_ = _artifacts()
     assert "R_to_F" not in m2.graph_edges
-    baseline = m2.exposures(train)["final"]
+    baseline = m2.exposures(train)
+    edge_value_pairs = list(m2.graph_edges.items())
 
-    scientific = deepcopy(cfg.scientific)
-    scientific["m2"]["graph_edges"] = {
-        "P_to_R": 0.05,
-        "F_to_R": 0.08,
-        "F_to_P": 0.10,
-    }
-    reordered = fit_m2(train, scientific)
-    reordered.unit_scales = dict(m2.unit_scales)
-    reordered.unit_scale_support = dict(m2.unit_scale_support)
-    alternative = reordered.exposures(train)["final"]
+    for ordering in permutations(edge_value_pairs):
+        scientific = deepcopy(cfg.scientific)
+        scientific["m2"]["graph_edges"] = dict(ordering)
+        alternative = fit_m2(train, scientific).exposures(train)
+        for channel in ("F", "P", "R"):
+            assert np.allclose(
+                baseline["base"][channel], alternative["base"][channel], equal_nan=True
+            )
+            assert np.allclose(
+                baseline["final"][channel], alternative["final"][channel], equal_nan=True
+            )
+        for edge in m2.graph_edges:
+            assert np.allclose(
+                baseline["edge_contributions"][edge],
+                alternative["edge_contributions"][edge],
+                equal_nan=True,
+            )
+
+
+def test_graph_edge_coefficient_change_is_not_order_change() -> None:
+    cfg, train, _, m2, *_ = _artifacts()
+    baseline = m2.exposures(train)
+    changed_cfg = deepcopy(cfg.scientific)
+    changed_cfg["m2"]["graph_edges"]["F_to_P"] += 0.01
+    changed = fit_m2(train, changed_cfg).exposures(train)
     for channel in ("F", "P", "R"):
-        assert np.allclose(baseline[channel], alternative[channel], equal_nan=True)
+        assert np.allclose(baseline["base"][channel], changed["base"][channel])
+    assert not np.allclose(
+        baseline["edge_contributions"]["F_to_P"],
+        changed["edge_contributions"]["F_to_P"],
+    )
+    assert not np.allclose(baseline["final"]["P"], changed["final"]["P"])
+
+
+def test_synchronous_base_semantics_differs_from_sequential_accumulation() -> None:
+    _, train, _, m2, *_ = _artifacts()
+    exposure = m2.exposures(train)
+    sequential = {channel: values.copy() for channel, values in exposure["base"].items()}
+    for edge in ("F_to_P", "P_to_R", "F_to_R"):
+        source, target = edge.split("_to_")
+        sequential[target] += m2.graph_edges[edge] * sequential[source]
+    sequential = {channel: np.clip(values, 0.0, 1.0) for channel, values in sequential.items()}
+    assert not np.allclose(exposure["final"]["R"], sequential["R"])
 
 
 def test_m2_quantity_unit_and_rmb_identity() -> None:

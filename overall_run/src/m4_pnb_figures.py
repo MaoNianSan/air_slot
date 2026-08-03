@@ -80,23 +80,21 @@ def create_pnb_figures(
     independent_counts = [
         len(frame),
         int(frame["physical_feasible"].sum()),
-        int(frame["gate_recovery_ratio"].sum()),
         int(frame["gate_burden_ratio"].sum()),
         int(frame["positive_net_benefit_pass"].sum()),
         int(frame["decision_value_pass"].sum()),
         int(frame["final_candidate"].sum()),
     ]
-    independent_labels = ["Triggered", "Physical", "Recovery", "Burden", "PNB", "All value", "Final"]
+    independent_labels = ["Triggered", "Physical", "Burden", "PNB", "All value", "Final"]
     cumulative_masks = [
         pd.Series(True, index=frame.index),
         frame["physical_feasible"],
-        frame["physical_feasible"] & frame["gate_recovery_ratio"],
-        frame["physical_feasible"] & frame["gate_recovery_ratio"] & frame["gate_burden_ratio"],
-        frame["physical_feasible"] & frame["gate_recovery_ratio"] & frame["gate_burden_ratio"] & frame["positive_net_benefit_pass"],
+        frame["physical_feasible"] & frame["gate_burden_ratio"],
+        frame["physical_feasible"] & frame["gate_burden_ratio"] & frame["positive_net_benefit_pass"],
         frame["final_candidate"],
     ]
     cumulative_counts = [int(mask.sum()) for mask in cumulative_masks]
-    cumulative_labels = ["Triggered", "Physical", "+ Recovery", "+ Burden", "+ PNB", "Final"]
+    cumulative_labels = ["Triggered", "Physical", "+ Burden", "+ PNB", "Final"]
     fig, axes = plt.subplots(1, 2, figsize=(13.2, 5.0), constrained_layout=True)
     for ax, labels, counts, title in (
         (axes[0], independent_labels, independent_counts, "Independent gate pass counts"),
@@ -131,26 +129,6 @@ def create_parameter_figures(
     ax.legend(frameon=False)
     outputs += _save_triplet(fig, output_dir / "m4_q0_retention_curve")
 
-    joint = sensitivity["r0_x_q0"]
-    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.5), constrained_layout=True)
-    for ax, metric, title in (
-        (axes[0], "final_candidate_rate", "Candidate retention"),
-        (axes[1], "A00_recommendation_rate", "A00 recommendation"),
-    ):
-        matrix = joint.pivot(index="r0", columns="q0", values=metric).sort_index(ascending=False)
-        image = ax.imshow(matrix.to_numpy(), cmap="viridis", aspect="auto", vmin=0, vmax=1)
-        ax.set_xticks(range(len(matrix.columns)), [f"{v:.2f}" for v in matrix.columns])
-        ax.set_yticks(range(len(matrix.index)), [f"{v:.2f}" for v in matrix.index])
-        ax.set_xlabel("q0")
-        ax.set_ylabel("r0")
-        ax.set_title(title)
-        for y in range(matrix.shape[0]):
-            for x in range(matrix.shape[1]):
-                ax.text(x, y, f"{matrix.iloc[y, x]:.2f}", ha="center", va="center", color="white" if matrix.iloc[y, x] < 0.55 else "black", fontsize=8)
-    fig.colorbar(image, ax=axes, shrink=0.8, label="Rate")
-    fig.suptitle("Offline r0 x q0 diagnostic (not validation-frozen)")
-    outputs += _save_triplet(fig, output_dir / "m4_r0_q0_joint_heatmap")
-
     oat = sensitivity["all_oat"]
     fig, ax = plt.subplots(figsize=(9.0, 5.0), constrained_layout=True)
     parameters = list(PARAMETER_GRIDS)
@@ -166,7 +144,11 @@ def create_parameter_figures(
     width = 0.36
     ax.bar(x - width / 2, candidate, width, label="Candidate-set disagreement")
     ax.bar(x + width / 2, recommendation, width, label="Recommendation disagreement")
-    ax.set_xticks(x, ["r0", "b0", "q0", "lambda", "alpha", "near tol."])
+    labels = {
+        "b0": "b0", "q0": "q0", "lambda": "lambda",
+        "alpha": "alpha", "near_equivalent_relative": "near tol.",
+    }
+    ax.set_xticks(x, [labels[parameter] for parameter in parameters])
     ax.set_ylabel("Maximum disagreement versus formal")
     ax.set_title("M4 parameter stability across declared OAT grids")
     ax.legend(frameon=False)

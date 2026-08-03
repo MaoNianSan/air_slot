@@ -18,9 +18,11 @@ from downstream_common import (
     task_seed_hash,
     thread_limit_environment,
 )
+from run_profiles import resolve_profile
 from src.pipeline import (
     build_all,
     load_config,
+    migrate_legacy_profile,
     readiness_existing,
     repair_contract,
     run_inventory,
@@ -31,9 +33,10 @@ from src.progress import VALID_PROGRESS_LEVELS
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Air Slot PRE preprocessing pipeline")
-    parser.add_argument("command", choices=["inventory", "build", "validate", "readiness", "all", "fast", "diagnostic", "full", "adapt_full", "report", "repair"])
-    parser.add_argument("mode_arg", nargs="?", choices=["fast", "diagnostic", "full", "adapt_full"], default=None)
-    parser.add_argument("--mode", choices=["fast", "diagnostic", "full", "adapt_full"], default=None)
+    modes = ["fast", "diagnostic", "acceptance_23d", "adapt_full", "middle", "full"]
+    parser.add_argument("command", choices=["inventory", "build", "validate", "readiness", "migrate-profile", "all", *modes, "report", "repair"])
+    parser.add_argument("mode_arg", nargs="?", choices=modes, default=None)
+    parser.add_argument("--mode", choices=modes, default=None)
     parser.add_argument("--config", default=None, help="Optional YAML override merged onto config/default.yaml")
     parser.add_argument(
         "--output-dir",
@@ -41,6 +44,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Isolated output directory; default mode output semantics are unchanged",
     )
     parser.add_argument("--rebuild-cache", action="store_true", help="Discard and rebuild reusable state/flow cache")
+    parser.add_argument("--smoke-subset", action="store_true", default=False)
+    parser.add_argument("--from-mode", choices=["adapt_full"], default="adapt_full")
     parser.add_argument("--n-jobs", type=int, default=None, help="Runtime CPU budget; default 1, -1 uses all but one logical CPU")
     parser.add_argument(
         "--progress",
@@ -61,10 +66,28 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     selected_mode = args.mode_arg or args.mode
-    if args.command not in {"fast", "diagnostic", "full", "adapt_full"} and selected_mode is None:
+    executable_modes = {"fast", "diagnostic", "acceptance_23d", "adapt_full", "middle", "full"}
+    if args.command not in executable_modes and selected_mode is None:
         parser.error("an explicit mode is required for this command")
-    mode = args.command if args.command in {"fast", "diagnostic", "full", "adapt_full"} else selected_mode
-    cfg = load_config(args.config, mode=mode, output_dir=args.output_dir)
+    requested_mode = args.command if args.command in executable_modes else selected_mode
+    profile = resolve_profile(str(requested_mode), smoke_subset=args.smoke_subset)
+    output_dir = args.output_dir
+    if args.smoke_subset and output_dir is None:
+        output_dir = ROOT / "output" / profile.output_id
+    cfg = load_config(args.config, mode=profile.profile_id, output_dir=output_dir)
+    cfg["profile_contract"] = {
+        "requested_token": profile.requested_token,
+        "profile_id": profile.profile_id,
+        "run_profile": profile.run_profile,
+        "acceptance_profile": profile.acceptance_profile,
+        "compute_profile": profile.compute_profile,
+        "legacy_token": profile.legacy_token,
+        "smoke_subset": profile.smoke_subset,
+        "output_id": profile.output_id,
+    }
+    if args.smoke_subset:
+        cfg.setdefault("runtime", {})["adapt_manifest_path"] = "../data/manifests/middle_smoke_manifest.csv"
+        cfg["runtime"]["smoke_subset"] = True
     requested_n_jobs = resolve_requested_n_jobs(
         args.n_jobs,
         cfg.get("runtime", {}).get("state_workers", 1),
@@ -72,7 +95,7 @@ def main() -> int:
     plan = resolve_parallel_plan(requested_n_jobs, task_count=10_000, prefer_outer_parallelism=True)
     runtime_parallel = parallel_metadata(
         plan,
-        task_seed_digest=task_seed_hash(20260726, "pre", mode, "state_partitions", ["CACHE_PARTITIONS"]),
+        task_seed_digest=task_seed_hash(20260726, "pre", profile.output_id, "state_partitions", ["CACHE_PARTITIONS"]),
     )
     cfg.setdefault("runtime", {}).update(runtime_parallel)
     cfg["runtime"]["state_workers"] = plan.outer_workers
@@ -89,7 +112,11 @@ def main() -> int:
             "output_root": str(cfg["output_root"]),
         }, indent=2, default=str))
         return 0
-    if args.command in {"build", "all", "fast", "diagnostic", "full", "adapt_full"}:
+    if args.command == "migrate-profile":
+        result = migrate_legacy_profile(cfg, source_mode=args.from_mode)
+        print(json.dumps(result, indent=2, default=str))
+        return 0
+    if args.command in {"build", "all", *executable_modes}:
         try:
             with thread_limit_environment(plan):
                 result = build_all(cfg)
@@ -97,7 +124,7 @@ def main() -> int:
             output = Path(cfg["output_root"])
             output.mkdir(parents=True, exist_ok=True)
             failure = {
-                "mode": mode,
+                "mode": profile.output_id,
                 "status": "INCOMPLETE",
                 "error_type": type(exc).__name__,
                 "error": str(exc),

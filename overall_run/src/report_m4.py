@@ -50,7 +50,6 @@ def build_m4_diagnostics(
     candidates: pd.DataFrame,
     rankings: pd.DataFrame,
     *,
-    recovery_ratio_min: float,
     burden_ratio_max: float,
     positive_net_benefit_probability_min: float,
     near_tolerance: float = 0.02,
@@ -94,7 +93,6 @@ def build_m4_diagnostics(
     ])
 
     decision_columns = {
-        "recovery_ratio": "gate_recovery_ratio",
         "burden_ratio": "gate_burden_ratio",
         "positive_net_benefit_probability": "gate_positive_net_benefit",
         "all_decision_value_conditions": "decision_value_pass",
@@ -111,7 +109,6 @@ def build_m4_diagnostics(
 
     working = nonnull.copy()
     working["_physical"] = working["physical_feasible"].fillna(False).astype(bool)
-    working["_recovery"] = working["gate_recovery_ratio"].fillna(False).astype(bool)
     working["_burden"] = working["gate_burden_ratio"].fillna(False).astype(bool)
     working["_benefit"] = working["gate_positive_net_benefit"].fillna(False).astype(bool)
     working["_decision"] = working["_physical"] & working["decision_value_pass"].fillna(False).astype(bool)
@@ -119,7 +116,6 @@ def build_m4_diagnostics(
     aggregation: dict[str, tuple[str, str]] = {
         "non_null_actions_total": ("action_id", "size"),
         "non_null_physical_feasible": ("_physical", "sum"),
-        "non_null_recovery_ratio_pass": ("_recovery", "sum"),
         "non_null_burden_ratio_pass": ("_burden", "sum"),
         "non_null_positive_net_benefit_pass": ("_benefit", "sum"),
         "non_null_decision_value_pass": ("_decision", "sum"),
@@ -183,9 +179,6 @@ def build_m4_diagnostics(
     ])
 
     margin_rows = nonnull[keys + identity + ["action_id"]].copy()
-    margin_rows["recovery_ratio_margin"] = (
-        pd.to_numeric(nonnull["recovery_ratio"], errors="coerce") - recovery_ratio_min
-    )
     margin_rows["burden_ratio_margin"] = (
         burden_ratio_max - pd.to_numeric(nonnull["burden_ratio"], errors="coerce")
     )
@@ -196,7 +189,6 @@ def build_m4_diagnostics(
     margin_summary_rows: list[dict[str, Any]] = []
     for action_id, group in margin_rows.groupby("action_id", sort=True):
         for column in (
-            "recovery_ratio_margin",
             "burden_ratio_margin",
             "positive_net_benefit_probability_margin",
         ):
@@ -267,7 +259,6 @@ def _publish_m4_diagnostics(
     diagnostics = build_m4_diagnostics(
         candidates,
         rankings,
-        recovery_ratio_min=float(decision["recovery_ratio_min"]),
         burden_ratio_max=float(decision["burden_ratio_max"]),
         positive_net_benefit_probability_min=float(
             decision["positive_net_benefit_probability_min"]

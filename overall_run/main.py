@@ -29,12 +29,20 @@ from src.pipeline import (
 
 def parser() -> argparse.ArgumentParser:
     command = argparse.ArgumentParser(description="Authoritative modular Air Slot M1-M4 pipeline")
-    command.add_argument("command", choices=["fast", "diagnostic", "full", "adapt_full", "precision", "validate", "report"])
-    command.add_argument("mode", nargs="?", choices=["fast", "diagnostic", "full", "adapt_full", "precision"])
+    modes = ["fast", "diagnostic", "acceptance_23d", "adapt_full", "middle", "full", "precision"]
+    command.add_argument("command", choices=[*modes, "validate", "report"])
+    command.add_argument("mode", nargs="?", choices=modes, help=argparse.SUPPRESS)
+    command.add_argument("--mode", choices=modes, default=None, dest="explicit_mode", help="Explicit mode for validate/report (preferred)")
     command.add_argument("--progress", choices=["quiet", "normal", "detail"], default="normal")
     command.add_argument("--config", type=Path, default=None, help="Optional final YAML override")
     command.add_argument("--pre-output", type=Path, default=None)
+    command.add_argument(
+        "--output-name",
+        default=None,
+        help="Isolated output directory name under overall_run/output",
+    )
     command.add_argument("--override-fast-gate", action="store_true", default=False)
+    command.add_argument("--smoke-subset", action="store_true", default=False)
     command.add_argument(
         "--resume-staging", "--resume", dest="resume_staging", type=Path, default=None,
         help="Resume from an explicit isolated failed staging directory",
@@ -45,14 +53,23 @@ def parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = parser().parse_args()
-    executable_modes = {"fast", "diagnostic", "full", "adapt_full", "precision"}
-    requested_mode = args.command if args.command in executable_modes else args.mode
+    executable_modes = {"fast", "diagnostic", "acceptance_23d", "adapt_full", "middle", "full", "precision"}
+    # --mode flag takes precedence over positional mode for validate/report
+    requested_mode = args.command if args.command in executable_modes else (args.explicit_mode or args.mode)
     mode = requested_mode
     if mode is None:
-        parser().error(f"{args.command} requires an explicit mode")
+        parser().error(f"{args.command} requires --mode <mode>")
     cfg = None
     try:
         cfg = load_config(ROOT, mode=mode, override=args.config)
+        if args.output_name:
+            if cfg.mode_name != "fast":
+                parser().error("--output-name is restricted to isolated fast development runs")
+            cfg.profile_contract["output_id"] = str(args.output_name)
+        if args.smoke_subset:
+            if cfg.mode_name != "middle":
+                parser().error("--smoke-subset is only valid for middle")
+            cfg.profile_contract.update({"smoke_subset": True, "output_id": "middle_smoke"})
         requested_n_jobs = resolve_requested_n_jobs(args.n_jobs, cfg.compute.get("workers", 1))
         quantile_ids = [f"M1:Q{float(value):.3f}" for value in cfg.scientific["m1"]["quantiles"]]
         plan = resolve_parallel_plan(requested_n_jobs, len(quantile_ids), prefer_outer_parallelism=True)
@@ -69,9 +86,9 @@ def main() -> int:
         cfg.merged.update(runtime_parallel)
         cfg.merged["workers"] = plan.inner_model_threads
         if args.command == "validate":
-            result = validate_mode(cfg, mode, pre_output=args.pre_output, override_fast_gate=args.override_fast_gate)
+            result = validate_mode(cfg, cfg.profile_contract["output_id"], pre_output=args.pre_output, override_fast_gate=args.override_fast_gate)
         elif args.command == "report":
-            result = report_mode(cfg, mode)
+            result = report_mode(cfg, cfg.profile_contract["output_id"])
         elif args.command == "precision":
             with thread_limit_environment(plan):
                 result_path = run_precision(cfg, args.progress, args.pre_output)
@@ -80,12 +97,15 @@ def main() -> int:
             with thread_limit_environment(plan):
                 result_path = run_experiment(
                     cfg,
-                    mode,
+                    cfg.mode_name,
                     args.progress,
-                    args.pre_output,
+                    args.pre_output or (
+                        PROJECT / "pre" / "output" / cfg.profile_contract["output_id"]
+                        if args.smoke_subset else None
+                    ),
                     refit=True,
                     override_fast_gate=args.override_fast_gate,
-                    output_name=requested_mode,
+                    output_name=cfg.profile_contract["output_id"],
                     resume_staging=args.resume_staging,
                 )
             result = json.loads((result_path / "run_summary.json").read_text(encoding="utf-8"))

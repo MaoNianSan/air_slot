@@ -88,12 +88,13 @@ def evaluate_m4(
                 "physical_failed_gate_count": int(physical_row["failed_gate_count"]),
                 **{
                     f"gate_{gate}": bool(physical_row[f"gate_{gate}"])
-                    for gate in ("capacity", "window", "resource", "authority", "lead")
+                    for gate in ("capacity", "window", "resource", "authority", "lead", "typed")
                 },
                 **{
                     f"gate_{gate}_status": str(physical_row[f"gate_{gate}_status"])
-                    for gate in ("capacity", "window", "resource", "authority", "lead")
+                    for gate in ("capacity", "window", "resource", "authority", "lead", "typed")
                 },
+                "typed_gate_required": str(physical_row.get("typed_gate_required", "")),
             }
 
             if not supported:
@@ -101,7 +102,6 @@ def evaluate_m4(
                     "recovery_ratio": np.nan,
                     "burden_ratio": np.nan,
                     "positive_net_benefit_probability": np.nan,
-                    "gate_recovery_ratio": False,
                     "gate_burden_ratio": False,
                     "gate_positive_net_benefit": False,
                     "decision_value_pass": False,
@@ -137,7 +137,6 @@ def evaluate_m4(
                 recovery_ratio = np.nan
                 burden_ratio = np.nan
                 positive_probability = np.nan
-                gate_recovery = True
                 gate_burden = True
                 gate_positive = True
                 decision_pass = True
@@ -146,13 +145,11 @@ def evaluate_m4(
                 recovery_ratio = 0.0
                 burden_ratio = np.inf
                 positive_probability = 0.0
-                gate_recovery = False
                 gate_burden = False
                 gate_positive = False
                 decision_pass = False
                 decision_codes = (
-                    "RECOVERY_RATIO_BELOW_MIN|BURDEN_RATIO_ABOVE_MAX|"
-                    "POSITIVE_NET_BENEFIT_PROBABILITY_BELOW_MIN"
+                    "BURDEN_RATIO_ABOVE_MAX|POSITIVE_NET_BENEFIT_PROBABILITY_BELOW_MIN"
                 )
             else:
                 recovery_ratio = expected_recovery / max(
@@ -162,18 +159,15 @@ def evaluate_m4(
                 positive_probability = float(
                     (recovered_total > implementation_total).mean()
                 )
-                gate_recovery = recovery_ratio >= artifact.recovery_ratio_min
                 gate_burden = burden_ratio <= artifact.burden_ratio_max
                 gate_positive = (
                     positive_probability
                     >= artifact.positive_net_benefit_probability_min
                 )
                 decision_pass = bool(
-                    gate_recovery and gate_burden and gate_positive
+                    gate_burden and gate_positive
                 )
                 failures = []
-                if not gate_recovery:
-                    failures.append("RECOVERY_RATIO_BELOW_MIN")
                 if not gate_burden:
                     failures.append("BURDEN_RATIO_ABOVE_MAX")
                 if not gate_positive:
@@ -227,7 +221,6 @@ def evaluate_m4(
                 "recovery_ratio": recovery_ratio,
                 "burden_ratio": burden_ratio,
                 "positive_net_benefit_probability": positive_probability,
-                "gate_recovery_ratio": bool(gate_recovery),
                 "gate_burden_ratio": bool(gate_burden),
                 "gate_positive_net_benefit": bool(gate_positive),
                 "decision_value_pass": bool(decision_pass),
@@ -352,7 +345,7 @@ def evaluate_m4(
                 continue
             raise RuntimeError(f"M4_EMPTY_EVALUATION_SET:{key}")
         rank_frame = pd.DataFrame(evaluated_rows).sort_values(
-            ["score", "expected_implementation_cost_rmb", "priority", "action_id"],
+            ["score", "expected_residual", "priority", "action_id"],
             kind="mergesort",
         ).reset_index(drop=True)
         rank_frame["rank"] = np.arange(1, len(rank_frame) + 1)
@@ -385,6 +378,8 @@ def evaluate_m4(
                 "rank": int(ranked.rank),
                 "score": float(ranked.score),
                 "total_score": float(ranked.score),
+                "expected_residual": float(ranked.expected_residual),
+                "cvar_residual": float(ranked.cvar_component),
                 "recommended": bool(ranked.rank == 1),
                 "near_equivalent": str(ranked.action_id) in near,
                 "near_equivalent_size": len(near),

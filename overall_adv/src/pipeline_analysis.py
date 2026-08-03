@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -16,17 +17,102 @@ from .pipeline_common import (
     run_ordered_thread_tasks,
     stable_hash,
 )
+from .shared_contracts import (
+    build_ranking_prefixes,
+    compare_ranking_prefixes,
+    full_ranking_from_scores,
+    strict_deep_merge,
+)
+
+
+class CandidateSetContractError(RuntimeError):
+    def __init__(self, details: dict[str, Any]) -> None:
+        self.details = details
+        super().__init__(
+            "CANDIDATE_SET_CONTRACT_ERROR:"
+            + json.dumps(details, sort_keys=True, separators=(",", ":"))
+        )
+
+
+def _real_candidate_keys(frame: pd.DataFrame) -> pd.DataFrame:
+    required = {"episode_id", "snapshot_id", "action_id"}
+    missing = sorted(required - set(frame.columns))
+    if missing:
+        raise CandidateSetContractError({"missing_columns": missing})
+    real = frame.copy()
+    if "is_padding" in real:
+        real = real[~real["is_padding"].fillna(False).astype(bool)]
+    real = real.dropna(subset=["episode_id", "snapshot_id", "action_id"])
+    return real[["episode_id", "snapshot_id", "action_id"]].drop_duplicates()
+
+
+def validate_candidate_sets(
+    global_candidates: pd.DataFrame,
+    local_candidates: pd.DataFrame,
+) -> None:
+    global_keys = _real_candidate_keys(global_candidates)
+    local_keys = _real_candidate_keys(local_candidates)
+    global_records = sorted(
+        global_keys.astype(str).to_dict("records"),
+        key=lambda row: (row["episode_id"], row["snapshot_id"], row["action_id"]),
+    )
+    local_records = sorted(
+        local_keys.astype(str).to_dict("records"),
+        key=lambda row: (row["episode_id"], row["snapshot_id"], row["action_id"]),
+    )
+    global_set = {
+        (row["episode_id"], row["snapshot_id"], row["action_id"])
+        for row in global_records
+    }
+    local_set = {
+        (row["episode_id"], row["snapshot_id"], row["action_id"])
+        for row in local_records
+    }
+    if global_set == local_set:
+        return
+    global_only = sorted(global_set - local_set)
+    local_only = sorted(local_set - global_set)
+    mismatch_keys = sorted(
+        {(episode_id, snapshot_id) for episode_id, snapshot_id, _ in global_only + local_only}
+    )
+    details = {
+        "mismatch_episode_count": len(mismatch_keys),
+        "sample_episode_ids": [
+            {"episode_id": episode_id, "snapshot_id": snapshot_id}
+            for episode_id, snapshot_id in mismatch_keys[:10]
+        ],
+        "global_only_actions": [
+            {"episode_id": episode_id, "snapshot_id": snapshot_id, "action_id": action_id}
+            for episode_id, snapshot_id, action_id in global_only[:25]
+        ],
+        "local_only_actions": [
+            {"episode_id": episode_id, "snapshot_id": snapshot_id, "action_id": action_id}
+            for episode_id, snapshot_id, action_id in local_only[:25]
+        ],
+        "candidate_source_hash_global": stable_hash(global_records),
+        "candidate_source_hash_local": stable_hash(local_records),
+    }
+    raise CandidateSetContractError(details)
 
 
 def _load(mode: str, override: Path | None = None) -> dict[str, Any]:
     cfg = yaml.safe_load((ROOT / "config" / "v3.yaml").read_text(encoding="utf-8"))
     if override:
         path = override if override.is_absolute() else ROOT / override
-        cfg.update(yaml.safe_load(path.read_text(encoding="utf-8")))
-    cfg["mode"] = mode
-    compute_mode = "full" if mode == "adapt_full" else mode
-    cfg["upstream"] = PROJECT / "overall_run" / "output" / mode
-    cfg["output"] = ROOT / "output" / mode
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        cfg = strict_deep_merge(cfg, payload)
+    output_name = str(cfg.get("output_name") or mode)
+    pre_output_name = str(cfg.get("pre_output_name") or output_name)
+    cfg["mode"] = output_name
+    cfg["pre_mode"] = pre_output_name
+    profile_id = "middle" if mode == "middle_smoke" else mode
+    compute_mode = "full" if profile_id in {"acceptance_23d", "middle", "full"} else profile_id
+    cfg["profile_id"] = profile_id
+    cfg["run_profile"] = None if profile_id == "acceptance_23d" else profile_id
+    cfg["acceptance_profile"] = "acceptance_23d" if profile_id == "acceptance_23d" else None
+    cfg["smoke_subset"] = mode == "middle_smoke"
+    cfg["upstream"] = PROJECT / "overall_run" / "output" / output_name
+    cfg["output"] = ROOT / "output" / output_name
     cfg["draws"] = int(cfg[f"benchmark_draws_{compute_mode}"])
     cfg["bootstrap"] = int(cfg[f"bootstrap_{compute_mode}"])
     cfg["config_hash"] = stable_hash({k: v for k, v in cfg.items() if k not in {"upstream", "output", "config_hash"}})
@@ -34,7 +120,11 @@ def _load(mode: str, override: Path | None = None) -> dict[str, Any]:
 
 
 def _upstream(cfg: dict[str, Any]) -> tuple[pd.DataFrame, dict[str, Any]]:
-    cohort, audit = load_common_passenger_cohort(PROJECT, cfg["mode"])
+    cohort, audit = load_common_passenger_cohort(
+        PROJECT,
+        cfg["mode"],
+        pre_mode=cfg["pre_mode"],
+    )
     required = [
         "run_summary.json",
         "artifact_registry.json",
@@ -42,7 +132,9 @@ def _upstream(cfg: dict[str, Any]) -> tuple[pd.DataFrame, dict[str, Any]]:
         "metrics/m2_summary.parquet",
         "metrics/m3_audit.parquet",
         "m4_action_scores.parquet",
+        "m4_rankings.parquet",
         "m4_recommendations.parquet",
+        "m4_ranking_all_k.parquet",
     ]
     missing = [name for name in required if not (cfg["upstream"] / name).exists()]
     if missing:
@@ -86,6 +178,41 @@ def _decisions(scores: pd.DataFrame, recommendations: pd.DataFrame, cohort: pd.D
     if decisions.groupby("policy_id", observed=True)["recovery_case_id"].nunique().nunique() != 1:
         raise ValueError("COMMON_SUPPORT_COHORT_MISMATCH")
     return scores, decisions
+
+
+def _ranking_decisions(
+    scores: pd.DataFrame,
+    global_full_ranking: pd.DataFrame,
+    global_prefixes: pd.DataFrame,
+    cohort: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    keys = set(cohort["snapshot_id"].astype(str))
+    local_scores = scores[scores["snapshot_id"].astype(str).isin(keys)].copy()
+    if "local_f_score" not in local_scores:
+        local_scores["local_f_score"] = pd.to_numeric(
+            local_scores["channel_contribution_F"], errors="coerce"
+        )
+    global_candidates = global_full_ranking[
+        global_full_ranking["snapshot_id"].astype(str).isin(keys)
+    ].copy()
+    validate_candidate_sets(global_candidates, local_scores)
+    local_full = full_ranking_from_scores(local_scores, "local_f_score")
+    local_all_k, _ = build_ranking_prefixes(
+        cohort[["episode_id", "snapshot_id"]].drop_duplicates(),
+        local_full,
+    )
+    global_all_k = global_prefixes[
+        global_prefixes["snapshot_id"].astype(str).isin(keys)
+    ].copy()
+    comparison = compare_ranking_prefixes(global_all_k, local_all_k)
+    policies = pd.concat(
+        [
+            global_all_k.assign(policy_id="GLOBAL_FPR"),
+            local_all_k.assign(policy_id="LOCAL_F"),
+        ],
+        ignore_index=True,
+    )
+    return policies, comparison
 
 
 def _benchmark(

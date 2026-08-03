@@ -15,6 +15,7 @@ from .pipeline_common import (
     FORMAL_TARGET_COLUMN,
     FORMAL_TARGET_CONTRACT_VERSION,
     ROOT,
+    _write_json,
     sha256_file,
     validate_m1_target_mapping,
 )
@@ -45,10 +46,22 @@ def _registry(output: Path, cfg: dict[str, Any], input_hash: str) -> dict[str, A
     upstream = json.loads((cfg["upstream"] / "run_summary.json").read_text(encoding="utf-8"))
     return {
         "artifacts": entries,
+        "profile_id": cfg["profile_id"],
+        "run_profile": cfg["run_profile"],
+        "acceptance_profile": cfg["acceptance_profile"],
+        "smoke_subset": cfg["smoke_subset"],
         "stale_artifacts": 0,
         "formal_target_column": FORMAL_TARGET_COLUMN,
         "formal_target_contract_version": FORMAL_TARGET_CONTRACT_VERSION,
         "formal_target_definition_hash": upstream["formal_target_definition_hash"],
+        "m1_feature_contract_version": upstream["m1_feature_contract_version"],
+        "m3_action_library_version": upstream["m3_action_library_version"],
+        "m3_formal_action_count": upstream["m3_formal_action_count"],
+        "ranking_contract_version": upstream["ranking_contract_version"],
+        "ranking_depths": upstream["ranking_depths"],
+        "run_purpose": cfg.get("run_purpose"),
+        "publication_allowed": bool(cfg.get("publication_allowed", False)),
+        "formal_baseline_replaced": bool(cfg.get("formal_baseline_replaced", False)),
         "all_m1_models_same_target": True,
     }
 
@@ -66,6 +79,12 @@ def validate(mode: str = "fast", override: Path | None = None) -> dict[str, Any]
             raise ValueError("PART_ADV_REGISTRY_FORMAL_TARGET_INVALID")
         if registry.get("all_m1_models_same_target") is not True:
             raise ValueError("PART_ADV_M1_TARGETS_DIVERGED")
+        for key in (
+            "m1_feature_contract_version", "m3_action_library_version",
+            "m3_formal_action_count", "ranking_contract_version", "ranking_depths",
+        ):
+            if registry.get(key) != upstream[key]:
+                raise ValueError(f"PART_ADV_{key.upper()}_LINEAGE_MISMATCH")
         predictions = pd.read_parquet(output / "m1" / "m1_predictions.parquet", columns=["model_id", "snapshot_id", "observed_outcome"])
         frame = pd.read_parquet(output / "input_adapter" / "m1_model_frame.parquet", columns=["snapshot_id", FORMAL_TARGET_COLUMN])
         identity = predictions.merge(frame, on="snapshot_id", how="left", validate="many_to_one")
@@ -97,6 +116,11 @@ def validate(mode: str = "fast", override: Path | None = None) -> dict[str, Any]
         "stale_artifacts": 0,
         "formal_target_column": FORMAL_TARGET_COLUMN,
         "all_m1_models_same_target": True,
+        "m1_feature_contract_version": upstream["m1_feature_contract_version"],
+        "m3_action_library_version": upstream["m3_action_library_version"],
+        "m3_formal_action_count": upstream["m3_formal_action_count"],
+        "ranking_contract_version": upstream["ranking_contract_version"],
+        "ranking_depths": upstream["ranking_depths"],
     }
 
 
@@ -133,6 +157,13 @@ def report(mode: str = "fast") -> dict[str, Any]:
     result["figures_regenerated"] = figures_regenerated
     if missing:
         result["figure_missing_inputs"] = missing
+    cfg = _load(mode)
+    upstream_registry_hash = sha256_file(cfg["upstream"] / "artifact_registry.json")
+    _write_json(result, summary_path)
+    _write_json(
+        _registry(output, cfg, upstream_registry_hash),
+        output / "artifact_registry.json",
+    )
     return result
 
 

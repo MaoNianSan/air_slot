@@ -64,7 +64,6 @@ def parameter_manifest(
         "risk_aversion": m4.risk_aversion,
         "near_equivalent_absolute_rmb": m4.near_abs_rmb,
         "near_equivalent_relative": m4.near_rel,
-        "recovery_ratio_min": m4.recovery_ratio_min,
         "burden_ratio_max": m4.burden_ratio_max,
         "positive_net_benefit_probability_min": m4.positive_net_benefit_probability_min,
     }.items():

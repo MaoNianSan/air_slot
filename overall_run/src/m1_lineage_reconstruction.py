@@ -29,6 +29,82 @@ def _q_column(tau: float, *, raw: bool = False, part: bool = False) -> str:
     return f"{prefix}_{str(float(tau)).replace('.', '_')}"
 
 
+def _limited_result(estimate: float, event_clusters: int, *, comparative: bool = False) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "estimate": float(estimate),
+        "event_clusters": int(event_clusters),
+        "bootstrap_primary_cluster": "trigger_event_group_id",
+        "ci_lower": None,
+        "ci_upper": None,
+        "support": "METRIC_SUPPORT_LIMITED",
+    }
+    if comparative:
+        result.update(status="METRIC_SUPPORT_LIMITED", delta="PROP_MINUS_HIST")
+    else:
+        result.update(alpha=0.05, certification="METRIC_SUPPORT_LIMITED")
+    return result
+
+
+def _build_q95_audit(
+    values: dict[str, float | int],
+    evaluation: pd.DataFrame,
+    validation_q95: float,
+) -> dict[str, Any]:
+    event_clusters = int(evaluation["trigger_event_group_id"].nunique())
+    return {
+        "audit_scope": "CORRECTED_Q95_FAST_SUPPORT_AUDIT",
+        "lineage_gate": "PASS",
+        "formal_target_column": FORMAL_TARGET,
+        "metric_definition": {
+            "crps": "twice trapezoidal integral of quantile pinball loss",
+            "twcrps": "same row CRPS with weight 5 for rows at/above validation raw-label q95 and 1 otherwise",
+            "upper_shortfall": "max(y - projected q0.99, 0); STRESS_DIAGNOSTIC",
+            "bootstrap": "paired recovery-event cluster bootstrap; snapshots are never independent clusters",
+        },
+        "support": {
+            "rows": int(len(evaluation)),
+            "flights": int(evaluation["flight_id"].nunique()),
+            "events": event_clusters,
+            "days": int(evaluation["anchor_date"].nunique()),
+            "airports": int(evaluation["airport_id"].nunique()),
+            "stages": int(
+                evaluation[
+                    "snapshot_stage_x" if "snapshot_stage_x" in evaluation else "snapshot_stage"
+                ].nunique()
+            ),
+        },
+        "metrics": {
+            "rows": int(len(evaluation)),
+            "q95_empirical_exceedance": float(values["q95_exceedance"]),
+            "q99_empirical_exceedance": float(values["q99_exceedance"]),
+            "coverage90": float(values["coverage90"]),
+            "q95_pinball": float(values["q95_pinball"]),
+            "q99_pinball": float(values["q99_pinball"]),
+            "crps": float(values["crps"]),
+            "twcrps": float(values["twcrps"]),
+            "upper_shortfall": float(values["upper_shortfall"]),
+        },
+        "q95_calibration": _limited_result(values["q95_exceedance"], event_clusters),
+        "q99_calibration": _limited_result(values["q99_exceedance"], event_clusters),
+        "comparative": {
+            "twcrps": _limited_result(values["twcrps_prop_minus_hist"], event_clusters, comparative=True),
+            "q95_pinball": _limited_result(values["q95_pinball_prop_minus_hist"], event_clusters, comparative=True),
+            "q99_pinball": _limited_result(values["q99_pinball_prop_minus_hist"], event_clusters, comparative=True),
+        },
+        "crossing": {
+            "raw_crossing_rows": int(values["raw_crossing_rows"]),
+            "projected_crossing_rows": int(values["projected_crossing_rows"]),
+            "projected_crossing_gate": "PASS" if int(values["projected_crossing_rows"]) == 0 else "FAIL",
+        },
+        "tail_stress_diagnostic": {
+            "role": "STRESS_DIAGNOSTIC",
+            "validation_q95_threshold": float(validation_q95),
+            "upper_shortfall": float(values["upper_shortfall"]),
+        },
+        "absolute_test_derived_thresholds_used": False,
+    }
+
+
 def _reconstruct_formal_cohort(snapshots: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame:
     if str(MODULE_ROOT) not in sys.path:
         sys.path.insert(0, str(MODULE_ROOT))
@@ -219,7 +295,7 @@ def reconstruct_current_metrics() -> dict[str, Any]:
     summary_table = pd.read_parquet(FAST_ROOT / "metrics" / "m1_summary_evaluation.parquet")
     summary_values = summary_table.set_index("metric")["value"].to_dict()
     summary_support = summary_table.set_index("metric")["support"].to_dict()
-    q95_audit = _json(FAST_ROOT / "audit" / "q95_audit.json")
+    q95_audit = _build_q95_audit(values, evaluation, validation_q95)
     reported_values: dict[str, float] = {
         "crps": float(q95_audit["metrics"]["crps"]),
         "twcrps": float(q95_audit["metrics"]["twcrps"]),

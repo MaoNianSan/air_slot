@@ -7,6 +7,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from .artifacts import CORE_REQUIRED_ARTIFACT_IDS, validate_registry
+
 from .report_contract import (
     CORE_FIGURE_STEMS,
     M4_AUDIT_FILES,
@@ -26,6 +28,25 @@ from .report_m4 import (
     write_audit_report,
 )
 from .visualize import generate as generate_metric_figures
+
+
+def publication_required_files() -> list[str]:
+    return [
+        "publication_manifest.json",
+        "tables/core/table01_m1_distributional_validity.parquet",
+        "tables/core/table03_m2_channel_cost_summary.parquet",
+        "tables/core/table04_m3_response_library.parquet",
+        "tables/core/table05_m4_screening_and_recommendation.parquet",
+        "tables/core/figure_metadata.parquet",
+        "figures/figure_metadata.json",
+        "logs/publication.log",
+        *[f"audits/{name}" for name in M4_AUDIT_FILES],
+        *[
+            f"figures/core/{stem}.{suffix}"
+            for stem in CORE_FIGURE_STEMS
+            for suffix in ("png", "pdf", "svg")
+        ],
+    ]
 
 
 def generate_report(run_dir: Path, manifest: dict[str, Any]) -> None:
@@ -273,22 +294,7 @@ def validate_publication(
     missing_directories = [name for name in required_directories if not (run_dir / name).is_dir()]
     if missing_directories:
         raise ValueError("PUBLICATION_DIRECTORY_MISSING:" + ",".join(missing_directories))
-    required_files = [
-        "publication_manifest.json",
-        "tables/core/table01_m1_distributional_validity.parquet",
-        "tables/core/table03_m2_channel_cost_summary.parquet",
-        "tables/core/table04_m3_response_library.parquet",
-        "tables/core/table05_m4_screening_and_recommendation.parquet",
-        "tables/core/figure_metadata.parquet",
-        "figures/figure_metadata.json",
-        "logs/publication.log",
-        *[f"audits/{name}" for name in M4_AUDIT_FILES],
-        *[
-            f"figures/core/{stem}.{suffix}"
-            for stem in CORE_FIGURE_STEMS
-            for suffix in ("png", "pdf", "svg")
-        ],
-    ]
+    required_files = publication_required_files()
     missing_files = [name for name in required_files if not (run_dir / name).is_file()]
     if missing_files:
         raise ValueError("PUBLICATION_FILE_MISSING:" + ",".join(missing_files))
@@ -319,12 +325,25 @@ def validate_publication(
     if not registry_path.is_file():
         raise ValueError("PUBLICATION_REGISTRY_MISSING")
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    if registry.get("registry_kind") != "publication":
+        raise ValueError("PUBLICATION_REGISTRY_KIND_MISMATCH")
+    if registry.get("registry_contract_id") != "OVERALL_RUN_PUBLICATION_REGISTRY_V1_20260731":
+        raise ValueError("PUBLICATION_REGISTRY_CONTRACT_MISMATCH")
     entries = {str(row.get("artifact_name")): row for row in registry.get("artifacts", [])}
     for relative in required_files:
         if relative not in entries:
             raise ValueError(f"PUBLICATION_ARTIFACT_NOT_REGISTERED:{relative}")
         if entries[relative].get("sha256") != _sha256(run_dir / relative):
             raise ValueError(f"PUBLICATION_ARTIFACT_HASH_MISMATCH:{relative}")
+    validate_registry(
+        run_dir,
+        expected_config_hash=expected_config_hash,
+        expected_implementation_hash=str(registry.get("implementation_hash")),
+        expected_contract_version=str(registry.get("contract_version")),
+        allowed_scientific_statuses={expected_scientific_status},
+        expected_registry_kind="publication",
+        required_artifact_ids=[*CORE_REQUIRED_ARTIFACT_IDS, *required_files],
+    )
     return {
         "status": "PASS",
         "run_id": expected_run_id,
@@ -345,6 +364,7 @@ __all__ = [
     "build_m4_diagnostics",
     "generate_report",
     "publish_report",
+    "publication_required_files",
     "validate_publication",
     "write_audit_report",
 ]

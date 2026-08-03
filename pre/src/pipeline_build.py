@@ -26,6 +26,11 @@ from .pipeline_passenger import _write_passenger_month_outputs
 from .pipeline_publish import (_artifact_registry, _enrich_contract, _output_hashes,
     _publish, _write_bundle, _write_fast_manifest)
 from .progress import RunHeartbeat, stage_message
+from .predecessor_matcher import (
+    PREDECESSOR_FEATURE_COLUMNS,
+    attach_predecessor_features_to_snapshots,
+    build_predecessor_features,
+)
 from .reference import (build_calibration, fit_airport_reference, fit_flow_reference,
     fit_movement_reference, fit_passenger_reference, fit_turnaround_reference,
     fit_weather_climatology)
@@ -107,7 +112,9 @@ def build_all(cfg: dict[str, Any]) -> BuildResult:
             manifest_path = (cfg["project_root"] / manifest_path).resolve()
         requested = pd.read_csv(manifest_path)
         requested_dates = {pd.Timestamp(value).normalize() for value in requested["anchor_date"]}
-        if requested_dates != complete_dates:
+        smoke_subset = bool(cfg.get("runtime", {}).get("smoke_subset", False))
+        mismatch = not requested_dates.issubset(complete_dates) if smoke_subset else requested_dates != complete_dates
+        if mismatch:
             missing = sorted(str(value.date()) for value in requested_dates - complete_dates)
             unregistered = sorted(str(value.date()) for value in complete_dates - requested_dates)
             raise ValueError(f"ADAPT_MANIFEST_MISMATCH:missing={missing};unregistered={unregistered}")
@@ -137,12 +144,24 @@ def build_all(cfg: dict[str, Any]) -> BuildResult:
     movement_reference = fit_movement_reference(legs, cfg)
     episodes, clipping_bounds = build_episodes(legs, movement_reference, cfg)
     turnaround_reference = fit_turnaround_reference(legs, cfg)
+    predecessor_features = build_predecessor_features(
+        legs, movement_reference, turnaround_reference, cfg
+    )
+    episodes = episodes.merge(
+        predecessor_features,
+        on="episode_id",
+        how="left",
+        validate="one_to_one",
+    )
     passenger_reference = fit_passenger_reference(passengers, commercial_flights, legs, cfg)
     weather_climatology = fit_weather_climatology(metar, cfg)
     finish("2.2_build_episodes_and_references", started, input_rows=len(flightlist), output_rows=len(episodes))
 
     started = stage("[2.3] Build snapshot requests")
     snapshots = build_snapshot_grid(episodes, legs, cfg)
+    snapshots = attach_predecessor_features_to_snapshots(
+        snapshots, predecessor_features
+    )
     requests = derive_state_requests(snapshots, cfg)
     write_parquet(requests, paths["intermediate"] / "snapshot_state_requests.parquet")
     finish("2.3_build_snapshot_requests", started, input_rows=len(snapshots), output_rows=len(requests))
@@ -313,14 +332,39 @@ def build_all(cfg: dict[str, Any]) -> BuildResult:
         "created_at": pd.Timestamp.now(tz="UTC"),
         "config_hash": cfg["config_hash"],
         "run_mode": cfg["mode"],
+        "run_purpose": cfg.get("runtime", {}).get("run_purpose"),
         "splits": cfg["splits"],
         "complete_state_dates": sorted(str(pd.Timestamp(date).date()) for date in complete_dates),
         "adapt_manifest_path": str(cfg.get("adapt_manifest_path", "")),
         "adapt_manifest_sha256": cfg.get("adapt_manifest_sha256"),
+        **cfg.get("profile_contract", {}),
         "raw_file_count": len(raw_inventory),
         "raw_inventory_hash": object_hash(raw_inventory.drop(columns=["absolute_path"], errors="ignore").to_dict("records")),
         "package_versions": _package_versions(),
         "formal_eligible": formal_eligible,
+        "m1_feature_contract_version": cfg["predecessor_matching"]["feature_contract_version"],
+        "predecessor_matching_contract_id": cfg["predecessor_matching"]["contract_id"],
+        "predecessor_feature_list": PREDECESSOR_FEATURE_COLUMNS,
+        "predecessor_feature_hash": object_hash(PREDECESSOR_FEATURE_COLUMNS),
+        "matching_parameter_hash": object_hash(cfg["predecessor_matching"]),
+        "supported_predecessor_rate": float(
+            bundle.episodes["has_supported_predecessor"].fillna(False).mean()
+        ),
+        "evidence_tier_counts": bundle.episodes["predecessor_evidence_tier"]
+        .fillna("UNSUPPORTED")
+        .astype(str)
+        .value_counts()
+        .sort_index()
+        .to_dict(),
+        "scientific_approved": bool(
+            cfg["predecessor_matching"]["scientific_approved"]
+        ),
+        "publication_allowed": bool(
+            cfg["predecessor_matching"]["publication_allowed"]
+        ),
+        "formal_baseline_replaced": bool(
+            cfg.get("runtime", {}).get("formal_baseline_replaced", False)
+        ),
         "validation": validation,
         "readiness": readiness_summary,
     }
@@ -345,6 +389,8 @@ def build_all(cfg: dict[str, Any]) -> BuildResult:
             ]
         },
         "run_id": current_run_id, "mode": cfg["mode"], "status": "PASS",
+        "run_purpose": cfg.get("runtime", {}).get("run_purpose"),
+        **cfg.get("profile_contract", {}),
         "started_at": str(run_started), "finished_at": str(finished),
         "elapsed_seconds": float((finished - run_started).total_seconds()),
         "input_anchor_days": int(subset_manifest["anchor_date"].nunique()),
@@ -368,6 +414,21 @@ def build_all(cfg: dict[str, Any]) -> BuildResult:
         "m4_supported_cohort_nonempty": passenger_month_summary[
             "m4_supported_cohort_nonempty"
         ],
+        "m1_feature_contract_version": cfg["predecessor_matching"]["feature_contract_version"],
+        "predecessor_matching_contract_id": cfg["predecessor_matching"]["contract_id"],
+        "matching_parameter_hash": object_hash(cfg["predecessor_matching"]),
+        "supported_predecessor_rate": float(
+            bundle.episodes["has_supported_predecessor"].fillna(False).mean()
+        ),
+        "scientific_approved": bool(
+            cfg["predecessor_matching"]["scientific_approved"]
+        ),
+        "publication_allowed": bool(
+            cfg["predecessor_matching"]["publication_allowed"]
+        ),
+        "formal_baseline_replaced": bool(
+            cfg.get("runtime", {}).get("formal_baseline_replaced", False)
+        ),
     }
     write_json(summary, paths["root"] / "run_summary.json")
     write_json({

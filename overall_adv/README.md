@@ -44,6 +44,7 @@ python -u overall_adv/main.py fast --progress normal --n-jobs 1
 python -u overall_adv/main.py validate --mode fast --progress normal --n-jobs 1
 python overall_adv/main.py report --mode fast --n-jobs 1
 
+# Legacy adapt-full (backward compatibility only; not a current run mode)
 python -u overall_adv/main.py adapt_full --progress normal --n-jobs 2
 python -u overall_adv/main.py adapt_full --progress normal --n-jobs 2 --resume
 ```

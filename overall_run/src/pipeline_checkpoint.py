@@ -193,6 +193,19 @@ class FullBlockedByFastAcceptance(FormalRunBlocked):
         super().__init__("FULL_BLOCKED_BY_FAST_ACCEPTANCE:" + "|".join(reasons))
 
 
+def requires_fast_acceptance(
+    mode: str,
+    profile_contract: dict[str, Any],
+    *,
+    override_fast_gate: bool,
+) -> bool:
+    return bool(
+        mode in {"acceptance_23d", "middle", "full"}
+        and not override_fast_gate
+        and not profile_contract.get("smoke_subset", False)
+    )
+
+
 def hash_file_compat(path: Path) -> str:
     return sha256_file(path)
 

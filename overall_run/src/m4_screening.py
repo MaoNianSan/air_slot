@@ -23,7 +23,6 @@ class M4Artifact:
     risk_aversion: float
     near_abs_rmb: float
     near_rel: float
-    recovery_ratio_min: float
     burden_ratio_max: float
     positive_net_benefit_probability_min: float
     zero_cost_epsilon: float
@@ -47,7 +46,6 @@ def fit_m4(scientific: dict[str, Any]) -> M4Artifact:
         risk_aversion=float(cfg["risk_aversion"]),
         near_abs_rmb=float(cfg.get("near_equivalent_absolute_rmb", 0.0)),
         near_rel=float(cfg.get("near_equivalent_relative", 0.02)),
-        recovery_ratio_min=float(decision.get("recovery_ratio_min", 0.20)),
         burden_ratio_max=float(decision.get("burden_ratio_max", 1.00)),
         positive_net_benefit_probability_min=float(
             decision.get("positive_net_benefit_probability_min", 0.60)
@@ -76,6 +74,12 @@ def _status(pass_: bool | None, applicable: bool, missing: bool = False) -> str:
     return "PASS" if bool(pass_) else "FAIL"
 
 
+def _strict_bool(value: Any, field: str) -> bool:
+    if not isinstance(value, (bool, np.bool_)):
+        raise RuntimeError(f"M3_BOOLEAN_FIELD_INVALID:{field}")
+    return bool(value)
+
+
 def screen_physical_actions(
     rules: pd.DataFrame,
     snapshots: pd.DataFrame,
@@ -84,10 +88,15 @@ def screen_physical_actions(
     resource_profiles: dict[str, dict[str, float]] | None = None,
 ) -> PhysicalScreenResult:
     profiles = resource_profiles or {}
+    trigger_values = np.asarray(trigger)
+    if trigger_values.ndim != 1 or len(trigger_values) != len(snapshots):
+        raise RuntimeError("M4_TRIGGER_SHAPE_INVALID")
+    if any(not isinstance(value, (bool, np.bool_)) for value in trigger_values):
+        raise RuntimeError("M3_BOOLEAN_FIELD_INVALID:trigger")
     trigger_map = {
-        (str(row.episode_id), str(row.snapshot_id)): bool(row.trigger)
+        (str(row.episode_id), str(row.snapshot_id)): _strict_bool(row.trigger, "trigger")
         for row in snapshots[["episode_id", "snapshot_id"]]
-        .assign(trigger=np.asarray(trigger, dtype=bool))
+        .assign(trigger=trigger_values)
         .itertuples(index=False)
     }
     rows: list[dict[str, Any]] = []
@@ -111,6 +120,7 @@ def screen_physical_actions(
                     "resource": True,
                     "authority": True,
                     "lead": True,
+                    "typed": True,
                 }
                 statuses = {gate: "NOT_APPLICABLE" for gate in gates}
                 failures = ["PASS"]
@@ -146,6 +156,8 @@ def screen_physical_actions(
 
                 margin = _value(rule, ["action_window_margin"])
                 opened = _value(rule, ["action_window_open"])
+                if opened is not None:
+                    opened = _strict_bool(opened, f"{key}:{action_id}:action_window_open")
                 window_applicable = (
                     action.window_type in {"flight_timing", "combined"}
                     and action.window > 0
@@ -157,7 +169,7 @@ def screen_physical_actions(
                     window_ok = False
                     window_status = "MISSING"
                     failures.append("WINDOW_INPUT_MISSING")
-                elif not bool(opened):
+                elif not opened:
                     window_ok = False
                     window_status = "FAIL"
                     failures.append("WINDOW_CLOSED")
@@ -206,6 +218,8 @@ def screen_physical_actions(
                     )
 
                 authority = _value(rule, ["authority_allowed"])
+                if authority is not None:
+                    authority = _strict_bool(authority, f"{key}:{action_id}:authority_allowed")
                 authority_profile = str(
                     _value(rule, ["authority_profile_id"]) or ""
                 ).lower()
@@ -222,7 +236,7 @@ def screen_physical_actions(
                     authority_status = "MISSING"
                     failures.append("AUTHORITY_RULE_MISSING")
                 else:
-                    authority_ok = bool(authority)
+                    authority_ok = authority
                     authority_status = _status(authority_ok, True)
                     if not authority_ok:
                         failures.append("AUTHORITY_DENIED")
@@ -238,12 +252,39 @@ def screen_physical_actions(
                     if not lead_ok:
                         failures.append("INSUFFICIENT_LEAD_TIME")
 
+                typed_failures: list[str] = []
+                typed_missing = False
+                for gate_name in action.typed_gates:
+                    gate_value = _value(rule, [gate_name])
+                    evidence = _value(rule, [f"{gate_name}_evidence_status"])
+                    if gate_value is not None:
+                        gate_value = _strict_bool(
+                            gate_value,
+                            f"{key}:{action_id}:{gate_name}",
+                        )
+                    if gate_value is None or evidence is None:
+                        typed_missing = True
+                        typed_failures.append(f"TYPED_GATE_MISSING:{gate_name}")
+                    elif str(evidence) == "UNSUPPORTED":
+                        typed_failures.append(f"TYPED_GATE_UNSUPPORTED:{gate_name}")
+                    elif not gate_value:
+                        typed_failures.append(f"TYPED_GATE_UNAVAILABLE:{gate_name}")
+                typed_ok = not typed_failures
+                if not action.typed_gates:
+                    typed_status = "NOT_APPLICABLE"
+                elif typed_missing:
+                    typed_status = "MISSING"
+                else:
+                    typed_status = "PASS" if typed_ok else "FAIL_CLOSED"
+                failures.extend(typed_failures)
+
                 gates = {
                     "capacity": capacity_ok,
                     "window": window_ok,
                     "resource": resource_ok,
                     "authority": authority_ok,
                     "lead": lead_ok,
+                    "typed": typed_ok,
                 }
                 statuses = {
                     "capacity": capacity_status,
@@ -251,6 +292,7 @@ def screen_physical_actions(
                     "resource": resource_status,
                     "authority": authority_status,
                     "lead": lead_status,
+                    "typed": typed_status,
                 }
                 feasible_now = all(gates.values())
                 if not failures:
@@ -268,8 +310,9 @@ def screen_physical_actions(
                 **{f"gate_{gate}": bool(value) for gate, value in gates.items()},
                 **{
                     f"gate_{gate}_status": statuses[gate]
-                    for gate in ("capacity", "window", "resource", "authority", "lead")
+                    for gate in ("capacity", "window", "resource", "authority", "lead", "typed")
                 },
+                "typed_gate_required": "|".join(action.typed_gates),
                 "failed_gate_count": int(sum(not value for value in gates.values())),
                 "failure_codes": "|".join(failures),
                 "primary_failure_code": primary,

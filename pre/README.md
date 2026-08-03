@@ -55,7 +55,7 @@ python -u pre/main.py fast --progress normal --n-jobs 1
 python -u pre/main.py validate fast --progress normal --n-jobs 1
 python pre/main.py report fast
 
-# Adapt-full (from project root)
+# Legacy adapt-full (backward compatibility only; not a current run mode)
 python -u pre/main.py adapt_full --progress normal --n-jobs 2
 python -u pre/main.py validate adapt_full --progress normal --n-jobs 2
 

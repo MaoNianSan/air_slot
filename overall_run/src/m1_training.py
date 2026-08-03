@@ -63,6 +63,10 @@ def prepare_model_frame(
         column for column in features
         if column not in numeric and not pd.api.types.is_datetime64_any_dtype(frame[column])
     ]
+    for column in categorical:
+        frame[column] = frame[column].astype(object).where(
+            frame[column].notna(), np.nan
+        )
     features = numeric + categorical
     if not features:
         raise RuntimeError("M1_FEATURE_SCHEMA_EMPTY")

@@ -72,6 +72,33 @@ def test_missing_mode_directory_is_safe(cleaner) -> None:
     assert result["status"] == "NOTHING_TO_CLEAN"
 
 
+def test_mode_clean_removes_only_matching_incomplete_staging(cleaner) -> None:
+    stale = cleaner.OUTPUT_ROOT / ".staging" / "stale-middle"
+    other = cleaner.OUTPUT_ROOT / ".staging" / "other-fast"
+    stale.mkdir(parents=True)
+    other.mkdir(parents=True)
+    (stale / "run_state.json").write_text(
+        '{"mode":"middle_smoke","status":"INCOMPLETE"}', encoding="utf-8"
+    )
+    (other / "run_state.json").write_text(
+        '{"mode":"fast","status":"INCOMPLETE"}', encoding="utf-8"
+    )
+
+    dry_run = cleaner.clean_selection(
+        mode="middle_smoke", all_output=False, dry_run=True
+    )
+    assert dry_run["status"] == "DRY_RUN"
+    assert dry_run["resolved_incomplete_staging_paths"] == [str(stale.resolve())]
+    assert stale.exists() and other.exists()
+
+    result = cleaner.clean_selection(
+        mode="middle_smoke", all_output=False, dry_run=False
+    )
+    assert result["status"] == "CLEAN_PASS"
+    assert not stale.exists()
+    assert other.exists()
+
+
 def test_clean_is_output_local_and_removes_stale_state(cleaner) -> None:
     registry = cleaner.OUTPUT_ROOT / "fast" / "artifact_registry.json"
     checkpoint = cleaner.OUTPUT_ROOT / "fast" / "checkpoints" / "model.json"

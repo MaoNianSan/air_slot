@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Callable, TypeVar
 
 import pandas as pd
+from ranking_contract import RANKING_CONTRACT_VERSION, RANKING_DEPTHS
 
 FORMAL_TARGET_COLUMN = "y_movement_raw"
 SENSITIVITY_TARGET_COLUMN = "y_movement_model"
@@ -181,15 +182,44 @@ def stable_hash(value: Any) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def load_common_passenger_cohort(project_root: Path, mode: str = "fast") -> tuple[pd.DataFrame, dict[str, Any]]:
+def model_change_lineage(summary: dict[str, Any]) -> dict[str, Any]:
+    lineage = {
+        "m1_feature_contract_version": summary.get("m1_feature_contract_version"),
+        "m3_action_library_version": summary.get("m3_action_library_version"),
+        "m3_formal_action_count": summary.get("m3_formal_action_count"),
+        "ranking_contract_version": summary.get("ranking_contract_version"),
+        "ranking_depths": summary.get("ranking_depths"),
+    }
+    if lineage["ranking_contract_version"] == RANKING_CONTRACT_VERSION:
+        missing = [key for key, value in lineage.items() if value is None]
+        if missing:
+            raise ValueError("MODEL_CHANGE_LINEAGE_INCOMPLETE:" + ",".join(missing))
+        if lineage["m1_feature_contract_version"] != "M1_PREVIOUS_LEG_V1":
+            raise ValueError("M1_FEATURE_CONTRACT_VERSION_INVALID")
+        if lineage["m3_action_library_version"] != "M3_RESPONSE_V3_EXPANDED_PROVISIONAL":
+            raise ValueError("M3_ACTION_LIBRARY_VERSION_INVALID")
+        if int(lineage["m3_formal_action_count"]) != 26:
+            raise ValueError("M3_FORMAL_ACTION_COUNT_INVALID")
+        if tuple(int(value) for value in lineage["ranking_depths"]) != RANKING_DEPTHS:
+            raise ValueError("RANKING_DEPTH_LINEAGE_INVALID")
+    return lineage
+
+
+def load_common_passenger_cohort(
+    project_root: Path,
+    mode: str = "fast",
+    *,
+    pre_mode: str | None = None,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Load the unified overall_run evaluation rows supported by passenger input.
 
     Both advantage projects call this function, so their M4 comparison cohort is
     frozen by exactly the same keys and support predicate.
     """
 
+    resolved_pre_mode = pre_mode or mode
     overall_root = project_root / "overall_run" / "output" / mode
-    pre_root = project_root / "pre" / "output" / mode
+    pre_root = project_root / "pre" / "output" / resolved_pre_mode
     summary_path = overall_root / "run_summary.json"
     registry_path = overall_root / "artifact_registry.json"
     required = [
@@ -205,6 +235,7 @@ def load_common_passenger_cohort(project_root: Path, mode: str = "fast") -> tupl
         raise FileNotFoundError("UNIFIED_UPSTREAM_ARTIFACT_MISSING:" + ",".join(missing))
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    change_lineage = model_change_lineage(summary)
     summary_definition_hash = require_formal_target_metadata(summary, "OVERALL_RUN_SUMMARY")
     registry_definition_hash = require_formal_target_metadata(registry, "OVERALL_RUN_REGISTRY")
     if summary_definition_hash != registry_definition_hash:
@@ -276,6 +307,7 @@ def load_common_passenger_cohort(project_root: Path, mode: str = "fast") -> tupl
     cohort_hash = stable_hash(cohort["snapshot_id"].astype(str).tolist())
     audit = {
         "mode": mode,
+        "pre_mode": resolved_pre_mode,
         "overall_run_id": summary["run_id"],
         "overall_run_registry_hash": sha256_file(registry_path),
         "overall_run_engineering_status": summary["engineering_status"],
@@ -296,6 +328,7 @@ def load_common_passenger_cohort(project_root: Path, mode: str = "fast") -> tupl
         "formal_target_column": FORMAL_TARGET_COLUMN,
         "formal_target_contract_version": FORMAL_TARGET_CONTRACT_VERSION,
         "formal_target_definition_hash": summary_definition_hash,
+        **change_lineage,
     }
     if cohort.empty:
         raise ValueError("M4_COMMON_PASSENGER_SUPPORT_COHORT_EMPTY")

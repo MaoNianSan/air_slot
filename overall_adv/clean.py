@@ -19,7 +19,8 @@ from clean_common import (
 )
 
 
-SUPPORTED_MODES = ('fast', 'diagnostic', 'adapt_full', 'full', 'precision')
+SUPPORTED_MODES = ('fast', 'diagnostic', 'acceptance_23d', 'middle', 'middle_smoke', 'full', 'precision')
+REGISTERED_OUTPUT_IDS = ('fast_three_change_dev', 'fast_code_audit_n1')
 MODULE_ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = MODULE_ROOT.parent.resolve()
 OUTPUT_ROOT = (MODULE_ROOT / "output").resolve()
@@ -31,6 +32,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=f"Safely clean {MODULE_ROOT.name} runtime output")
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument("--mode", choices=SUPPORTED_MODES)
+    selection.add_argument("--output-id", choices=REGISTERED_OUTPUT_IDS)
     selection.add_argument("--all-output", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
@@ -44,6 +46,7 @@ def build_parser() -> argparse.ArgumentParser:
 def clean_selection(
     *,
     mode: str | None,
+    output_id: str | None = None,
     all_output: bool,
     dry_run: bool,
     stop_owned_processes: bool = False,
@@ -55,7 +58,9 @@ def clean_selection(
         data_root=DATA_ROOT,
         pre_cache_root=PRE_CACHE_ROOT,
         supported_modes=SUPPORTED_MODES,
+        registered_output_ids=REGISTERED_OUTPUT_IDS,
         mode=mode,
+        output_id=output_id,
         all_output=all_output,
         dry_run=dry_run,
         stop_owned_processes=stop_owned_processes,
@@ -98,6 +103,7 @@ def main() -> int:
     try:
         result = clean_selection(
             mode=args.mode,
+            output_id=args.output_id,
             all_output=args.all_output,
             dry_run=args.dry_run,
             stop_owned_processes=args.stop_owned_processes,
@@ -105,7 +111,7 @@ def main() -> int:
     except Exception as exc:
         print(json.dumps({
             "module": MODULE_ROOT.name,
-            "selected_mode": getattr(args, "mode", None) or "ALL_OUTPUT",
+            "selected_mode": getattr(args, "mode", None) or getattr(args, "output_id", None) or "ALL_OUTPUT",
             "resolved_output_path": None,
             "files_removed": 0,
             "directories_removed": 0,

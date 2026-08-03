@@ -33,7 +33,6 @@ def build_mc_stability(
         str(value): index
         for index, value in enumerate(frozen.summary["snapshot_id"].astype(str))
     }
-    r0 = float(frozen.config["m4"]["decision_value"]["recovery_ratio_min"])
     b0 = float(frozen.config["m4"]["decision_value"]["burden_ratio_max"])
     q0 = float(
         frozen.config["m4"]["decision_value"]["positive_net_benefit_probability_min"]
@@ -67,8 +66,7 @@ def build_mc_stability(
         gate256 = q256 >= q0
         gate4096 = q4096 >= q0
         decision4096 = bool(
-            first["recovery_ratio"] >= r0
-            and first["burden_ratio"] <= b0
+            first["burden_ratio"] <= b0
             and gate4096
         )
         candidate4096 = bool(record.physical_feasible and decision4096)

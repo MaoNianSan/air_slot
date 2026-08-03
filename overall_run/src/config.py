@@ -9,6 +9,8 @@ from typing import Any
 
 import yaml
 
+from .action_contract import load_action_contract
+
 
 class ConfigError(RuntimeError):
     pass
@@ -36,6 +38,8 @@ AUTHORITATIVE_CODE = (
     ("src/m4.py", "m4_public_api"),
     ("src/m4_screening.py", "m4_physical_screening"),
     ("src/m4_evaluation.py", "m4_risk_evaluation"),
+    ("src/ranking_contract.py", "ranking_contract_adapter"),
+    ("../ranking_contract.py", "ranking_contract"),
     ("src/report.py", "publication_orchestration"),
     ("src/report_contract.py", "publication_contract"),
     ("src/report_figures.py", "publication_figures"),
@@ -45,8 +49,13 @@ AUTHORITATIVE_CODE = (
     ("src/visualize_representative.py", "publication_representative_episode"),
     ("src/audit.py", "acceptance"),
     ("src/artifacts.py", "artifacts"),
+    ("src/scientific_transition.py", "scientific_transition_contract"),
+    ("config/scientific_transition_4ff_to_df2.json", "scientific_transition_definition"),
 )
-KNOWN_MODES = {"fast", "diagnostic", "adapt_full", "full", "precision"}
+KNOWN_MODES = {
+    "fast", "diagnostic", "adapt_full", "acceptance_23d", "middle", "full", "precision"
+}
+MODE_ALIASES = {"adapt_full": "acceptance_23d"}
 
 
 def _canonical_hash(obj: Any) -> str:
@@ -103,6 +112,8 @@ class RunConfig:
     implementation_hash: str
     config_sources: list[dict[str, Any]]
     implementation_manifest: list[dict[str, str]]
+    requested_mode: str
+    profile_contract: dict[str, Any]
 
     @property
     def scientific(self) -> dict[str, Any]:
@@ -141,10 +152,13 @@ def load_config(
     root = root.resolve()
     if mode not in KNOWN_MODES:
         raise ConfigError(f"Unknown mode: {mode}")
+    requested_mode = mode
+    mode = MODE_ALIASES.get(mode, mode)
     directory = (config_dir or (root / "config")).resolve()
     paths = [
         directory / "default.yaml",
         directory / "scientific.yaml",
+        directory / "m3_response_v3_expanded_provisional.yaml",
         directory / "compute.yaml",
         directory / "acceptance.yaml",
         directory / f"{mode}.yaml",
@@ -181,6 +195,17 @@ def load_config(
         implementation_hash=implementation_hash,
         config_sources=sources,
         implementation_manifest=implementation_manifest,
+        requested_mode=requested_mode,
+        profile_contract={
+            "requested_token": requested_mode,
+            "profile_id": mode,
+            "run_profile": None if mode == "acceptance_23d" else mode,
+            "acceptance_profile": "acceptance_23d" if mode == "acceptance_23d" else None,
+            "compute_profile": "full" if mode in {"acceptance_23d", "middle", "full"} else mode,
+            "legacy_token": "adapt_full" if requested_mode == "adapt_full" else None,
+            "smoke_subset": False,
+            "output_id": mode,
+        },
     )
 
 
@@ -197,10 +222,11 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
     if not {0.05, 0.95}.issubset(quantiles):
         raise ConfigError("m1.quantiles must include 0.05 and 0.95")
     actions = config["m3"].get("actions", [])
-    expected_actions = [
-        "A00", "A11", "A12", "A21", "A22", "A31", "A32",
-        "A41", "A42", "A51", "A52", "A61", "A62",
-    ]
+    for key in ("scientific_approved", "publication_allowed"):
+        if key in config["m3"] and not isinstance(config["m3"][key], bool):
+            raise ConfigError(f"m3.{key} must be boolean")
+    contract = load_action_contract(config["m3"].get("response_parameter_version", "V3"))
+    expected_actions = list(contract["action_ids"])
     if [str(item.get("id")) for item in actions] != expected_actions:
         raise ConfigError("m3.actions does not match the frozen action order")
     graph_edges = {str(key): float(value) for key, value in config["m2"].get("graph_edges", {}).items()}
@@ -215,8 +241,34 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
     response = config["m3"].get("response_parameters", {})
     if set(response) != set(expected_actions):
         raise ConfigError("m3.response_parameters must cover all frozen actions")
+    required_parameter_fields = {
+        "mu_F", "mu_P", "mu_R", "K_F", "K_P", "K_R", "kappa_eta",
+        "CV_K", "p_fail", "capacity_requirement", "window_requirement",
+        "resource_requirement", "authority_requirement",
+        "lead_time_requirement", "aircraft_requirement", "crew_requirement",
+        "passenger_requirement", "airport_requirement", "priority", "family",
+        "description", "provisional", "parameter_source",
+    }
+    for action_id, parameters in response.items():
+        missing_fields = sorted(required_parameter_fields - set(parameters))
+        if missing_fields:
+            raise ConfigError(
+                f"m3.response_parameters.{action_id} missing:"
+                + ",".join(missing_fields)
+            )
+        if not isinstance(parameters.get("provisional"), bool):
+            raise ConfigError(f"m3.response_parameters.{action_id}.provisional must be boolean")
+        if not isinstance(parameters.get("priority"), int) or isinstance(parameters.get("priority"), bool):
+            raise ConfigError(f"m3.response_parameters.{action_id}.priority must be integer")
+    for item in actions:
+        action_id = str(item.get("id"))
+        for key in ("capacity_required", "provisional"):
+            if not isinstance(item.get(key), bool):
+                raise ConfigError(f"m3.actions.{action_id}.{key} must be boolean")
+    if config["m3"].get("action_library_version") != "M3_RESPONSE_V3_EXPANDED_PROVISIONAL":
+        raise ConfigError("m3.action_library_version must be provisional V3")
     decision_value = config["m4"].get("decision_value", {})
-    for key in ("recovery_ratio_min", "burden_ratio_max", "positive_net_benefit_probability_min"):
+    for key in ("burden_ratio_max", "positive_net_benefit_probability_min"):
         if key not in decision_value:
             raise ConfigError(f"m4.decision_value.{key} is required")
     for key in ("coverage_90_lower", "coverage_90_upper"):

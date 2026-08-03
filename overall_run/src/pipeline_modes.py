@@ -9,13 +9,22 @@ try:
 except ModuleNotFoundError:
     pq = None
 
-from .artifacts import write_artifact_registry
+from .artifacts import (
+    CORE_REQUIRED_ARTIFACT_IDS,
+    validate_registry,
+    write_artifact_registry,
+)
 from .config import RunConfig
 from .failures import FormalRunBlocked
 from .input import FORMAL_TARGET_COLUMN, FORMAL_TARGET_CONTRACT_VERSION
-from .pipeline_checkpoint import assert_fast_acceptance, latest_run
+from .pipeline_checkpoint import assert_fast_acceptance, latest_run, requires_fast_acceptance
 from .pipeline_data import resolve_pre_output
-from .report import generate_report, publish_report, validate_publication
+from .report import (
+    generate_report,
+    publication_required_files,
+    publish_report,
+    validate_publication,
+)
 from .utils import write_json
 
 
@@ -30,6 +39,14 @@ def rerun_report(cfg: RunConfig, run_id_value: str | None = None) -> Path:
     return run_directory
 
 
+def _is_engineering_dev_summary(summary: dict[str, Any]) -> bool:
+    return (
+        summary.get("run_purpose") == "three_change_engineering_validation"
+        and summary.get("publication_allowed") is False
+        and summary.get("formal_baseline_replaced") is False
+    )
+
+
 def validate_mode(
     cfg: RunConfig,
     mode: str,
@@ -40,7 +57,9 @@ def validate_mode(
     m1_config = cfg.scientific.get("m1", {})
     if "target_candidates" in m1_config or m1_config.get("formal_target") != FORMAL_TARGET_COLUMN:
         raise FormalRunBlocked("FORMAL_TARGET_CONFIG_INVALID")
-    if mode in {"adapt_full", "full"} and not override_fast_gate:
+    if requires_fast_acceptance(
+        cfg.mode_name, cfg.profile_contract, override_fast_gate=override_fast_gate
+    ):
         assert_fast_acceptance(cfg.root)
     pre_root = resolve_pre_output(cfg, pre_output)
     required = [
@@ -86,18 +105,43 @@ def validate_mode(
             raise FormalRunBlocked("MODEL_TARGET_METADATA_INCOMPLETE")
         if published_summary.get("config_hash") != cfg.config_hash:
             raise FormalRunBlocked("OVERALL_RUN_PUBLISHED_CONFIG_HASH_MISMATCH")
-        if published_summary.get("publication_status") != "PASS":
-            raise FormalRunBlocked("OVERALL_RUN_PUBLICATION_NOT_PASS")
-        try:
-            publication_status = validate_publication(
-                published,
-                expected_run_id=str(published_summary["run_id"]),
-                expected_config_hash=cfg.config_hash,
-                expected_scientific_status=str(published_summary["scientific_status"]),
-                expected_publication_implementation_hash=cfg.implementation_hash,
-            )
-        except (FileNotFoundError, KeyError, ValueError) as exc:
-            raise FormalRunBlocked(str(exc)) from exc
+        if _is_engineering_dev_summary(published_summary):
+            try:
+                validate_registry(
+                    published,
+                    expected_config_hash=cfg.config_hash,
+                    expected_implementation_hash=str(
+                        published_summary["implementation_hash"]
+                    ),
+                    expected_contract_version=cfg.contract_version,
+                    allowed_scientific_statuses={"PASS", "STOP_AND_REVIEW"},
+                    expected_registry_kind="core",
+                    required_artifact_ids=CORE_REQUIRED_ARTIFACT_IDS,
+                )
+            except (FileNotFoundError, KeyError, ValueError) as exc:
+                raise FormalRunBlocked(str(exc)) from exc
+            publication_status = {
+                "status": "NOT_ALLOWED",
+                "engineering_core_registry_status": "PASS",
+                "publication_allowed": False,
+                "current_implementation_matches_run": (
+                    published_summary.get("implementation_hash")
+                    == cfg.implementation_hash
+                ),
+            }
+        else:
+            if published_summary.get("publication_status") != "PASS":
+                raise FormalRunBlocked("OVERALL_RUN_PUBLICATION_NOT_PASS")
+            try:
+                publication_status = validate_publication(
+                    published,
+                    expected_run_id=str(published_summary["run_id"]),
+                    expected_config_hash=cfg.config_hash,
+                    expected_scientific_status=str(published_summary["scientific_status"]),
+                    expected_publication_implementation_hash=cfg.implementation_hash,
+                )
+            except (FileNotFoundError, KeyError, ValueError) as exc:
+                raise FormalRunBlocked(str(exc)) from exc
     return {
         "engineering_status": "PASS",
         "mode": mode,
@@ -110,6 +154,10 @@ def validate_mode(
         "formal_target_column": FORMAL_TARGET_COLUMN,
         "formal_target_contract_version": FORMAL_TARGET_CONTRACT_VERSION,
         "overall_run_publication_status": publication_status["status"] if publication_status else "NOT_PUBLISHED",
+        "engineering_core_registry_status": (
+            publication_status.get("engineering_core_registry_status", "NOT_APPLICABLE")
+            if publication_status else "NOT_PUBLISHED"
+        ),
         "publication": publication_status,
     }
 
@@ -184,6 +232,10 @@ def report_mode(cfg: RunConfig, mode: str) -> dict[str, Any]:
         upstream_artifact_hashes=dict(existing_registry.get("upstream_artifact_hashes", {})),
         scientific_status="STOP_AND_REVIEW",
         artifact_names=artifact_names,
+        registry_kind="publication",
+        required_artifact_ids=sorted(
+            set(CORE_REQUIRED_ARTIFACT_IDS) | set(publication_required_files())
+        ),
         metadata=metadata,
     )
     validation = validate_publication(

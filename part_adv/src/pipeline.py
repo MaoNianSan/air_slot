@@ -8,6 +8,8 @@ from typing import Any
 
 import pandas as pd
 
+from .shared_contracts import RANKING_CONTRACT_VERSION, RANKING_DEPTHS
+
 from .pipeline_common import (
     FORMAL_TARGET_COLUMN,
     FORMAL_TARGET_CONTRACT_VERSION,
@@ -58,7 +60,15 @@ def _run_pipeline(
     _write_df(m1_metrics, output / "m1" / "m1_model_metrics.parquet")
     benchmark = _benchmark(cfg, cohort)
     _write_df(benchmark, output / "benchmark_action_scores.parquet")
-    downstream, propagation, selection_path, pairwise, propagated_costs = _propagate(
+    (
+        downstream,
+        propagation,
+        selection_path,
+        pairwise,
+        propagated_costs,
+        ranking_prefixes,
+        ranking_agreement,
+    ) = _propagate(
         cfg, predictions, samples, cohort, benchmark
     )
     _write_df(downstream, output / "m1" / "m1_downstream_results.parquet")
@@ -66,6 +76,26 @@ def _run_pipeline(
     _write_df(selection_path, output / "m1" / "m4_selection_path.parquet")
     _write_df(pairwise, output / "m1" / "m1_pairwise_decomposition.parquet")
     _write_df(propagated_costs, output / "m1" / "m1_propagated_cost_samples.parquet")
+    _write_df(
+        ranking_prefixes, output / "m1" / "ranking_prefixes_1235.parquet"
+    )
+    _write_df(
+        ranking_agreement,
+        output / "m1" / "recommendation_agreement_1235.parquet",
+    )
+    agreement_summary = ranking_agreement.groupby(
+        ["model_id", "ranking_k"], as_index=False, observed=True
+    ).agg(
+        agreement_rate=("agreement", "mean"),
+        set_disagreement_rate=("set_disagreement", "mean"),
+        order_only_disagreement_rate=("order_only_disagreement", "mean"),
+        overlap_rate=("overlap_rate", "mean"),
+        full_k_support_rate=("full_k_support", "mean"),
+    )
+    _write_df(
+        agreement_summary,
+        output / "m1" / "recommendation_agreement_summary_1235.parquet",
+    )
 
     telemetry.context("m2", "CONFIGURATIONS", len(cohort))
     _log("[2/4] M2 DAG/additive and one-at-a-time sensitivities", progress, log)
@@ -103,6 +133,9 @@ def _run_pipeline(
         ("m4_variant_count", len(set(m4_scores["variant"]) ^ set(cfg["m4"]["variants"]))),
         ("common_support_nonempty", int(cohort.empty)),
         ("future_data_used", int(upstream["future_data_used_count"])),
+        ("ranking_depth_count", abs(ranking_prefixes["ranking_k"].nunique() - 4)),
+        ("ranking_model_count", abs(ranking_prefixes["model_id"].nunique() - len(MODELS))),
+        ("ranking_padding_action_nonnull", int(ranking_prefixes.loc[ranking_prefixes["is_padding"], "action_id"].notna().sum())),
     ]
     audit = pd.DataFrame(
         [{"check": name, "value": int(value), "expected": 0, "status": "PASS" if value == 0 else "FAIL"} for name, value in checks]
@@ -117,6 +150,10 @@ def _run_pipeline(
     summary = {
         "run_id": run_id,
         "mode": mode,
+        "profile_id": cfg["profile_id"],
+        "run_profile": cfg["run_profile"],
+        "acceptance_profile": cfg["acceptance_profile"],
+        "smoke_subset": cfg["smoke_subset"],
         "status": "PASS",
         "started_at": started,
         "finished_at": completed,
@@ -138,11 +175,15 @@ def _run_pipeline(
         "excluded_by_passenger_count": upstream["excluded_by_passenger_count"],
         "future_leakage": 0,
         "stale_artifacts": 0,
+        "run_purpose": cfg.get("run_purpose"),
         "upstream_run_id": upstream["overall_run_id"],
         "upstream_registry_hash": upstream["overall_run_registry_hash"],
         "formal_target_column": FORMAL_TARGET_COLUMN,
         "formal_target_contract_version": FORMAL_TARGET_CONTRACT_VERSION,
         "formal_target_definition_hash": upstream["formal_target_definition_hash"],
+        "m1_feature_contract_version": upstream["m1_feature_contract_version"],
+        "m3_action_library_version": upstream["m3_action_library_version"],
+        "m3_formal_action_count": upstream["m3_formal_action_count"],
         "all_m1_models_same_target": True,
         "m1_model_target_columns": {model: FORMAL_TARGET_COLUMN for model in MODELS},
         "observed_outcome_source": FORMAL_TARGET_COLUMN,
@@ -150,6 +191,11 @@ def _run_pipeline(
         "parallel_model_count": int(cfg.get("outer_workers", 1)),
         **parallel_metadata(plan, task_seed_digest=cfg["task_seed_hash"]),
         "heartbeat_interval_seconds": 300,
+        "ranking_depths": list(RANKING_DEPTHS),
+        "ranking_contract_version": RANKING_CONTRACT_VERSION,
+        "agreement_1235_rows": int(len(ranking_agreement)),
+        "publication_allowed": False,
+        "formal_baseline_replaced": False,
     }
     _write_json(summary, output / "run_summary.json")
     _write_json(_registry(output, cfg, upstream["overall_run_registry_hash"]), output / "artifact_registry.json")
@@ -157,6 +203,10 @@ def _run_pipeline(
         {
             "run_id": run_id,
             "mode": mode,
+            "profile_id": cfg["profile_id"],
+            "run_profile": cfg["run_profile"],
+            "acceptance_profile": cfg["acceptance_profile"],
+            "smoke_subset": cfg["smoke_subset"],
             "status": "PASS",
             "input_hashes": {"overall_run_registry": upstream["overall_run_registry_hash"]},
             "common_support_cohort_hash": upstream["common_support_cohort_hash"],
@@ -193,7 +243,7 @@ def run(mode: str, progress: str = "normal", override: Path | None = None, *, re
     implementation_hash = sha256_file(Path(__file__))
     state_path = output / "run_state.json"
     started = pd.Timestamp.now(tz="UTC")
-    run_id = f"part-adv-{mode}-{started.strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
+    run_id = f"part-adv-{cfg['mode']}-{started.strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
     resumed = False
 
     if output.exists() and any(output.iterdir()):
@@ -241,7 +291,7 @@ def run(mode: str, progress: str = "normal", override: Path | None = None, *, re
         **parallel_metadata(plan, task_seed_digest=cfg["task_seed_hash"]),
     }
     os.environ["AIR_SLOT_MODULE"] = "part_adv"
-    os.environ["AIR_SLOT_MODE"] = mode
+    os.environ["AIR_SLOT_MODE"] = str(cfg["mode"])
     os.environ["AIR_SLOT_RUN_ID"] = str(run_id)
     _write_json(state, state_path)
     telemetry = _RunTelemetry(

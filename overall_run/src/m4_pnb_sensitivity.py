@@ -10,7 +10,6 @@ from .m4_pnb_contract import NON_NULL_ACTIONS, FrozenInputs
 from .m4_pnb_formula import risk_score
 
 PARAMETER_GRIDS: dict[str, list[float]] = {
-    "r0": [0.10, 0.15, 0.20, 0.25, 0.30],
     "b0": [0.75, 1.00, 1.25, 1.50],
     "q0": [0.20, 0.40, 0.50, 0.60, 0.70],
     "lambda": [0.00, 0.10, 0.25, 0.50],
@@ -31,8 +30,7 @@ def _scenario_evaluation(
     values = {**formal, **overrides}
     work = frame.copy()
     work["scenario_decision_pass"] = (
-        work["recovery_ratio"].ge(values["r0"])
-        & work["burden_ratio"].le(values["b0"])
+        work["burden_ratio"].le(values["b0"])
         & work["positive_net_benefit_probability"].ge(values["q0"])
     )
     if parameter in {"lambda", "alpha", "near_equivalent_relative"}:
@@ -200,7 +198,6 @@ def build_parameter_sensitivity(
     m4 = frozen.config["m4"]
     decision = m4["decision_value"]
     formal = {
-        "r0": float(decision["recovery_ratio_min"]),
         "b0": float(decision["burden_ratio_max"]),
         "q0": float(decision["positive_net_benefit_probability_min"]),
         "lambda": float(m4["risk_aversion"]),
@@ -229,24 +226,6 @@ def build_parameter_sensitivity(
             family_rows.extend(families)
         tables[parameter] = pd.DataFrame(metrics_rows)
 
-    joint_rows: list[dict[str, Any]] = []
-    for r0 in (0.15, 0.20, 0.25):
-        for q0 in (0.40, 0.50, 0.60):
-            metrics, _, strata, families = _scenario_evaluation(
-                frame,
-                snapshot,
-                draw_cache,
-                formal,
-                {"r0": r0, "q0": q0},
-                "r0_x_q0",
-                f"r0={r0:.2f};q0={q0:.2f}",
-            )
-            metrics["r0"] = r0
-            metrics["q0"] = q0
-            joint_rows.append(metrics)
-            strata_rows.extend(strata)
-            family_rows.extend(families)
-    tables["r0_x_q0"] = pd.DataFrame(joint_rows)
     tables["cost_strata"] = pd.DataFrame(strata_rows)
     tables["action_family"] = pd.DataFrame(family_rows)
     tables["all_oat"] = pd.DataFrame(all_metrics)

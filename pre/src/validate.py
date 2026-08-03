@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 from .target_contract import (
@@ -137,6 +138,23 @@ def _validate_availability(bundle: PreBundle) -> None:
     imputed_observed = bundle.snapshots["weather_imputed"].fillna(False) & bundle.snapshots["weather_evidence_status"].eq("OBSERVED")
     if imputed_observed.any():
         raise ValueError("imputed weather marked OBSERVED")
+    snapshots = bundle.snapshots
+    supported = snapshots["has_supported_predecessor"].fillna(False).astype(bool)
+    predecessor_available = pd.to_datetime(
+        snapshots["predecessor_lastseen_proxy"], utc=True, errors="coerce"
+    ).le(pd.to_datetime(snapshots["decision_time_utc"], utc=True, errors="coerce"))
+    if (supported & ~predecessor_available.fillna(False)).any():
+        raise ValueError("supported predecessor unavailable at decision time")
+    unsupported = ~supported
+    numeric = [
+        "predecessor_observed_duration", "predecessor_trajectory_coverage",
+        "observed_ground_gap_minutes", "ground_gap_deviation_from_reference",
+        "predecessor_movement_deviation_proxy", "turnaround_pressure_proxy",
+        "continuation_risk_proxy", "previous_leg_observation_quality",
+        "predecessor_match_confidence",
+    ]
+    if snapshots.loc[unsupported, numeric].notna().any().any():
+        raise ValueError("unsupported predecessor numeric features must be null")
 
 
 def _validate_rules(bundle: PreBundle, cfg: dict[str, Any]) -> None:
@@ -163,6 +181,24 @@ def _validate_rules(bundle: PreBundle, cfg: dict[str, Any]) -> None:
                 raise ValueError(f"deprecated alias mapping mismatch: {deprecated}->{canonical}")
         if not rules["deprecated_alias_mapping_version"].eq("legacy-fpr-to-afp-v1").all():
             raise ValueError("deprecated alias mapping version missing")
+        evidence_columns = [
+            column for column in rules if column.endswith("_evidence_status")
+        ]
+        allowed_evidence = {
+            "OBSERVED", "RULE_GENERATED", "SCENARIO_GENERATED", "UNSUPPORTED"
+        }
+        for column in evidence_columns:
+            invalid = ~rules[column].astype("string").isin(allowed_evidence)
+            if invalid.any():
+                raise ValueError(f"invalid typed-gate evidence status: {column}")
+        required = rules["typed_gate_required"].astype("string").ne("")
+        expected_status = np.where(
+            ~required,
+            "NOT_APPLICABLE",
+            np.where(rules["typed_gate_pass"].fillna(False), "PASS", "FAIL_CLOSED"),
+        )
+        if not rules["typed_gate_status"].astype("string").eq(expected_status).all():
+            raise ValueError("typed-gate status mismatch")
 
 
 def _validate_target_contract(bundle: PreBundle, cfg: dict[str, Any]) -> dict[str, Any]:

@@ -24,6 +24,14 @@ SENSITIVITY_TARGET_COLUMN = "y_movement_model"
 FORMAL_TARGET_CONTRACT_VERSION = "Y_MOVEMENT_RAW_V1_20260725"
 
 
+def _target_outcome_feature_mask(feature_names: pd.Series) -> pd.Series:
+    names = feature_names.astype(str).str.lower()
+    target_like = names.str.contains(
+        r"lastseen|y_movement|movement_outcome", regex=True
+    )
+    return target_like & ~names.str.startswith("predecessor_")
+
+
 @dataclass(frozen=True)
 class ColumnMap:
     episode_id: str
@@ -299,8 +307,10 @@ def validate_bundle(bundle: PreBundle, scientific: dict[str, Any]) -> dict[str, 
         available = audit["available_by_t"].fillna(False).astype(bool)
         add("factual_availability_violation", int((factual & ~available).sum()))
     if "feature_name" in audit.columns:
-        names = audit["feature_name"].astype(str).str.lower()
-        add("target_outcome_in_decision_audit", int(names.str.contains(r"lastseen|y_movement|movement_outcome", regex=True).sum()))
+        add(
+            "target_outcome_in_decision_audit",
+            int(_target_outcome_feature_mask(audit["feature_name"]).sum()),
+        )
     if "evidence_status" in audit.columns and "imputation_status" in audit.columns:
         observed = audit["evidence_status"].astype(str).str.upper().eq("OBSERVED")
         calibration_imp = audit["imputation_status"].astype(str).str.upper().isin(["CALIBRATION_IMPUTED", "FROZEN_REFERENCE_IMPUTED"])

@@ -32,9 +32,9 @@ def _checkpoint_sections(context: dict[str, Any]) -> list[dict[str, str]]:
         {"title": "10. q05-q95 coverage", "files": "overall_run/src/pipeline_finalize.py", "function": "finalize_experiment scientific acceptance gates", "inputs": "Y,q05,q95", "outputs": "coverage90", "shape": "640", "formula": "mean(q05<=Y<=q95), inclusive", "layer": "FINAL_PUBLISHED_QUANTILES", "cohort": "all formal rows", "source": "accepted range [0.85,0.95]", "why": "unconditional central interval validity", "cannot": "not directly comparable to outcome-selected tail coverage", "question": "What is the denominator?", "answer": "All 640 formal evaluation rows.", "open": "none"},
         {"title": "11. q95/q99 empirical exceedance", "files": "corrected_fast_post_rebuild_audit.py", "function": "_corrected_q95", "inputs": "Y,q95,q99", "outputs": "exceedance probabilities", "shape": "640", "formula": "mean(Y>Q_tau); equivalent CDF coverage is 1-exceedance", "layer": "FINAL_PUBLISHED_QUANTILES", "cohort": "all formal rows", "source": "current Fast audit", "why": "calibration evidence", "cannot": "0.95 CDF coverage must not be confused with 0.05 exceedance", "question": "Current results?", "answer": "q95 0.0609375; q99 0.025, both with limited event support.", "open": "q99 historical PASS is deprecated"},
         {"title": "12. Tail diagnostic", "files": "overall_run/src/pipeline_finalize.py", "function": "finalize_experiment scientific acceptance gates", "inputs": "Y and training model-frame raw-label q95=34.116666...", "outputs": "tail coverage", "shape": "32 selected rows", "formula": "coverage90 conditional on Y>training q95", "layer": "FINAL_PUBLISHED_QUANTILES", "cohort": "OUTCOME_SELECTED_DIAGNOSTIC_ONLY", "source": "training model frame; legacy non-required 0.70 reference", "why": "stress inspection", "cannot": "must not be used as the primary formal coverage gate", "question": "Why 0.4375?", "answer": "14 of 32 outcome-selected rows are inside q05-q95.", "open": "support is limited"},
-        {"title": "13. Bootstrap", "files": "corrected_fast_post_rebuild_audit.py", "function": "_event_bootstrap", "inputs": "row metrics grouped by trigger_event_group_id", "outputs": "point and CI when support permits", "shape": "6 event clusters", "formula": "paired event-cluster resampling; 2000 configured draws", "layer": "metric-level", "cohort": "formal_core", "source": "seed 20260725; minimum 20 events", "why": "snapshots within recovery events are dependent", "cannot": "rows are never independent bootstrap units", "question": "Why no CI?", "answer": "Six events are below the frozen minimum of 20, so no draws execute.", "open": "adapt_full needed for evidence expansion"},
+        {"title": "13. Bootstrap", "files": "corrected_fast_post_rebuild_audit.py", "function": "_event_bootstrap", "inputs": "row metrics grouped by trigger_event_group_id", "outputs": "point and CI when support permits", "shape": "6 event clusters", "formula": "paired event-cluster resampling; 2000 configured draws", "layer": "metric-level", "cohort": "formal_core", "source": "seed 20260725; minimum 20 events", "why": "snapshots within recovery events are dependent", "cannot": "rows are never independent bootstrap units", "question": "Why no CI?", "answer": "Six events are below the frozen minimum of 20, so no draws execute.", "open": "acceptance_23d needed for evidence expansion"},
         {"title": "14. Acceptance classification", "files": "overall_run/src/audit.py; corrected_fast_post_rebuild_audit.py", "function": "build_scientific_gate; q95 classification", "inputs": "metrics, support and frozen bounds", "outputs": "gate/status", "shape": "one status per metric", "formula": "frozen rule logic", "layer": "published metrics", "cohort": "metric-specific", "source": "acceptance.yaml", "why": "separates engineering identity from scientific certification", "cannot": "lineage PASS is not M1 scientific PASS", "question": "q95 status?", "answer": "SYSTEMATIC_CALIBRATION_CONCERN_CURRENT_FAST plus METRIC_SUPPORT_LIMITED certification.", "open": "proper-score numeric gates remain pending scientific definition"},
-        {"title": "15. Metric publication", "files": "overall_run/src/pipeline_data.py; pipeline_finalize.py; report.py; report_figures.py; report_m4.py", "function": "prediction_table; publication repair", "inputs": "frozen source artifacts", "outputs": "metrics/tables/audit", "shape": "113 registered formal artifacts", "formula": "no scientific recomputation in publication repair", "layer": "published", "cohort": "preserved", "source": "publication_manifest.json", "why": "reproducible reporting", "cannot": "audit outputs do not enter the formal registry", "question": "Did this audit change formal artifacts?", "answer": "No; every registered SHA is compared before and after.", "open": "none"},
+        {"title": "15. Metric publication", "files": "overall_run/src/pipeline_data.py; pipeline_finalize.py; report.py; report_figures.py; report_m4.py", "function": "prediction_table; publication repair", "inputs": "frozen source artifacts", "outputs": "metrics/tables/audit", "shape": "manifest-defined publication census", "formula": "no scientific recomputation in publication repair", "layer": "published", "cohort": "preserved", "source": "publication_manifest.json", "why": "reproducible reporting", "cannot": "audit outputs do not enter the core registry", "question": "Did this audit change formal artifacts?", "answer": "No; every registered SHA is compared before and after.", "open": "none"},
         {"title": "16. Canonical versioning", "files": "overall_run/audit_m1_d6_metric_lineage.py", "function": "build_metric_version_registry", "inputs": "formula, layer, cohort, aggregation, threshold, bootstrap, role", "outputs": "unique canonical IDs and definition hashes", "shape": "one row per current metric definition", "formula": "SHA256 canonical definition components", "layer": "lineage metadata", "cohort": "metric-specific", "source": "current frozen code and artifacts", "why": "prevents ambiguous names such as coverage or calibration", "cannot": "deprecated historical values receive no current version identity", "question": "What happens if history is recovered?", "answer": "Create a new retrospective audit; never overwrite this disposition.", "open": "none"},
     ]
 
@@ -124,12 +124,12 @@ def build_code_study(
 
 
 def cloud_readiness(baseline: dict[str, Any], audit_id: str) -> dict[str, Any]:
-    modes = ("adapt_full", "full")
+    modes = ("acceptance_23d", "middle", "full")
     pre_outputs = {mode: (PROJECT_ROOT / "pre" / "output" / mode).is_dir() for mode in modes}
     config_paths = [
-        PROJECT_ROOT / "pre" / "config" / "adapt_full.yaml",
+        PROJECT_ROOT / "pre" / "config" / "acceptance_23d.yaml",
         PROJECT_ROOT / "pre" / "config" / "full.yaml",
-        MODULE_ROOT / "config" / "adapt_full.yaml",
+        MODULE_ROOT / "config" / "acceptance_23d.yaml",
         MODULE_ROOT / "config" / "full.yaml",
         PROJECT_ROOT / "overall_adv" / "config" / "v3.yaml",
         PROJECT_ROOT / "part_adv" / "config" / "v3.yaml",
@@ -149,18 +149,18 @@ def cloud_readiness(baseline: dict[str, Any], audit_id: str) -> dict[str, Any]:
     cache_files = [path for path in (PROJECT_ROOT / "pre" / "cache").rglob("*") if path.is_file()]
     cache_bytes = sum(path.stat().st_size for path in cache_files)
     output_paths = [
-        "pre/output/adapt_full", "overall_run/output/adapt_full",
-        "overall_adv/output/adapt_full", "part_adv/output/adapt_full",
+        "pre/output/acceptance_23d", "overall_run/output/acceptance_23d",
+        "overall_adv/output/acceptance_23d", "part_adv/output/acceptance_23d",
     ]
     source_ready = bool(configs_present and baseline["checks"]["formal_input_hashes"])
-    start = "PRE adapt_full" if not pre_outputs["adapt_full"] else "overall_run adapt_full"
+    start = "PRE acceptance_23d" if not pre_outputs["acceptance_23d"] else "overall_run acceptance_23d"
     cloud_ready = source_ready
     return {
         "audit_id": audit_id,
         "purpose": "EVIDENCE_EXPANSION_AND_FINAL_EVALUATION",
         "cloud_ready": cloud_ready,
         "cloud_start_stage": start,
-        "pre_adapt_full_exists": pre_outputs["adapt_full"],
+        "pre_acceptance_23d_exists": pre_outputs["acceptance_23d"],
         "pre_full_exists": pre_outputs["full"],
         "pre_fast_must_not_feed_long_run": True,
         "formal_72_full_allowed": False,
@@ -189,15 +189,14 @@ def cloud_readiness(baseline: dict[str, Any], audit_id: str) -> dict[str, Any]:
         },
         "clean_order": ["part_adv", "overall_adv", "overall_run", "pre"],
         "commands": [
-            "python -u pre/main.py adapt_full --progress normal --n-jobs 2",
-            "python -u pre/main.py validate adapt_full --progress normal --n-jobs 2",
-            "python -u overall_run/main.py adapt_full --progress normal --n-jobs 2",
-            "python -u overall_run/main.py validate adapt_full --progress normal --n-jobs 2",
-            "python -u overall_adv/main.py adapt_full --progress normal --n-jobs 2",
-            "python -u overall_adv/main.py validate --mode adapt_full --progress normal --n-jobs 2",
-            "python -u part_adv/main.py adapt_full --progress normal --n-jobs 2",
-            "python -u part_adv/main.py validate --mode adapt_full --progress normal --n-jobs 2",
-            "python finalize_current_data_adapt_full.py",
+            "python -u pre/main.py acceptance_23d --progress normal --n-jobs 2",
+            "python -u pre/main.py validate acceptance_23d --progress normal --n-jobs 2",
+            "python -u overall_run/main.py acceptance_23d --progress normal --n-jobs 2",
+            "python -u overall_run/main.py validate acceptance_23d --progress normal --n-jobs 2",
+            "python -u overall_adv/main.py acceptance_23d --progress normal --n-jobs 2",
+            "python -u overall_adv/main.py validate --mode acceptance_23d --progress normal --n-jobs 2",
+            "python -u part_adv/main.py acceptance_23d --progress normal --n-jobs 2",
+            "python -u part_adv/main.py validate --mode acceptance_23d --progress normal --n-jobs 2",
         ],
         "expected_output_paths": output_paths,
         "resume_failure_policy": "Resume only when input/config/target/task/checkpoint hashes validate; otherwise clean only the failed mode and restart it.",
@@ -225,7 +224,7 @@ def build_cloud_markdown(readiness: dict[str, Any]) -> str:
         RUN_STARTED=false
         ```
 
-        PRE adapt_full and PRE full artifacts are absent. PRE Fast is valid only for Fast and must not be supplied to an adapt_full/full run. The current authorized long mode is `CURRENT_DATA_ADAPT_FULL`, so the first stage is `pre/main.py adapt_full`.
+        PRE acceptance_23d and PRE full artifacts are distinct. PRE Fast is valid only for Fast and must not be supplied to an acceptance_23d/full run. The 23-anchor-day engineering gate starts at `pre/main.py acceptance_23d`.
 
         ## Resources and workers
 
@@ -238,7 +237,7 @@ def build_cloud_markdown(readiness: dict[str, Any]) -> str:
 
         ## Clean order
 
-        Inspect with `--dry-run`, then clean only `adapt_full` in this order: `part_adv`, `overall_adv`, `overall_run`, `pre`. Stop for unknown workers, locks, staging, partial artifacts or stale checkpoints.
+        Inspect with `--dry-run`, then clean only `acceptance_23d` in this order: `part_adv`, `overall_adv`, `overall_run`, `pre`. Stop for unknown workers, locks, staging, partial artifacts or stale checkpoints.
 
         ## Commands (not executed)
 
@@ -287,7 +286,7 @@ def build_audit_markdown(summary: dict[str, Any], context: dict[str, Any]) -> st
 
         ## Baseline and identity
 
-        All 113 registered artifacts, five PRE tables and 167 formal input files match their frozen SHA-256 values. `data/` remains 687 files and 85,406,288,136 bytes. Registered artifacts were identical before and after this audit.
+        The manifest-defined publication census, five PRE tables and 167 formal input files match their frozen SHA-256 values. Registered artifacts were identical before and after this audit.
 
         | Metric | Reconstructed | Support | Prediction layer |
         |---|---:|---:|---|
@@ -333,7 +332,7 @@ def build_audit_markdown(summary: dict[str, Any], context: dict[str, Any]) -> st
 
         `M1_D6_CURRENT_LINEAGE_AUDIT_PASS` means only that the current formulas, layers, cohorts and values are traceable and that unrecoverable history is outside the authority chain. `M1_SCIENTIFIC_STATUS` remains `STOP_AND_REVIEW`.
 
-        PRE adapt_full/full artifacts do not exist. PRE Fast cannot feed a long run. The cloud sequence therefore starts at `PRE adapt_full`, solely for `EVIDENCE_EXPANSION_AND_FINAL_EVALUATION`. No cloud or Full command was executed, and explicit researcher authorization is still required.
+        PRE acceptance_23d/full artifacts are profile-specific. PRE Fast cannot feed a long run. Evidence expansion starts at `PRE acceptance_23d`; middle and full require their own readiness contracts and authorization.
         """
     )
 

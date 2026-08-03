@@ -48,6 +48,8 @@ def run_audit(*, deep_inputs: bool = True, make_figures: bool = True) -> dict[st
     before_artifacts = registered_artifact_snapshot()
     baseline = verify_frozen_baseline(deep_inputs=deep_inputs)
     context = reconstruct_current_metrics()
+    q95_audit_path = FAST_ROOT / "audit" / "q95_audit.json"
+    _write_json(q95_audit_path, context["q95_audit"])
 
     dictionary = build_metric_dictionary()
     identity = build_current_identity(context, dictionary)
@@ -157,6 +159,7 @@ def run_audit(*, deep_inputs: bool = True, make_figures: bool = True) -> dict[st
         *[AUDIT_ROOT / name for name in outputs],
         AUDIT_ROOT / "m1_d6_historical_deprecation_summary.json",
         AUDIT_ROOT / "m1_d6_lineage_summary.json",
+        q95_audit_path,
         report_md_path, report_json_path, study_path, cloud_md_path, cloud_json_path,
     ]
     for paths in figure_outputs.values():

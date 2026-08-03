@@ -59,7 +59,6 @@ def build_parameter_role_audit(
     oat = sensitivity["all_oat"]
     physical_rates = physical.set_index("gate")["pass_rate"].to_dict()
     specifications = [
-        ("r0", 0.20, "M4", "minimum expected recovery / expected pre-cost ratio", True, False, "scenario-declared", "scientific.yaml:m4.decision_value", "before formal evaluation", 0.5361111111),
         ("b0", 1.00, "M4", "maximum expected implementation / expected recovery ratio", True, False, "scenario-declared", "scientific.yaml:m4.decision_value", "before formal evaluation", 0.895),
         ("q0", 0.60, "M4", "minimum P(recovered RMB > implementation RMB)", True, False, "scenario-declared", "scientific.yaml:m4.decision_value", "before formal evaluation", 0.1794444444),
         ("lambda", 0.25, "M4", "Mean-CVaR risk-aversion weight", False, True, "scenario-declared", "scientific.yaml:m4.risk_aversion", "before formal evaluation", np.nan),

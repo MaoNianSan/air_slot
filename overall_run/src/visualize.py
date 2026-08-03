@@ -265,7 +265,7 @@ def _figure_m4(candidates: pd.DataFrame, rankings: pd.DataFrame, out: Path) -> N
     # B. Rejection rates by action and gate.
     gate_columns = [
         "gate_capacity", "gate_window", "gate_resource", "gate_authority", "gate_lead",
-        "gate_recovery_ratio", "gate_burden_ratio", "gate_positive_net_benefit",
+        "gate_burden_ratio", "gate_positive_net_benefit",
     ]
     gate_columns = [column for column in gate_columns if column in nonnull]
     action_ids = sorted(nonnull["action_id"].astype(str).unique())
@@ -277,7 +277,7 @@ def _figure_m4(candidates: pd.DataFrame, rankings: pd.DataFrame, out: Path) -> N
     image = axes[1].imshow(matrix, vmin=0, vmax=1, aspect="auto")
     axes[1].set_yticks(range(len(action_ids)), action_ids)
     short_names = [
-        name.replace("gate_", "").replace("positive_net_benefit", "positive net benefit").replace("recovery_ratio", "recovery").replace("burden_ratio", "burden")
+        name.replace("gate_", "").replace("positive_net_benefit", "positive net benefit").replace("burden_ratio", "burden")
         for name in gate_columns
     ]
     axes[1].set_xticks(range(len(gate_columns)), short_names, rotation=40, ha="right")

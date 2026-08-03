@@ -80,6 +80,7 @@ m1:
   - residual_
   - score_
   - rank_
+  feature_contract_version: M1_PREVIOUS_LEG_V1
   feature_allowlist:
   - elapsed_ratio
   - current_latitude
@@ -129,6 +130,27 @@ m1:
   - calibration_imputed_count
   - structural_missing_count
   - temporal_missing_count
+  - has_predecessor_candidate
+  - has_supported_predecessor
+  - predecessor_observed_duration
+  - predecessor_endpoint_quality
+  - predecessor_trajectory_coverage
+  - predecessor_registration_match
+  - predecessor_typecode_match
+  - predecessor_aircraft_group
+  - observed_ground_gap_minutes
+  - ground_gap_deviation_from_reference
+  - airport_continuity
+  - predecessor_movement_deviation_proxy
+  - predecessor_completion_state
+  - turnaround_pressure_proxy
+  - continuation_risk_proxy
+  - previous_leg_observation_quality
+  - predecessor_match_confidence
+  - predecessor_evidence_tier
+  - predecessor_support_rule
+  - predecessor_support_status
+  - predecessor_rejection_reason
   required_feature_groups:
     progress:
     - elapsed_ratio
@@ -156,6 +178,10 @@ m1:
     infrastructure:
     - infrastructure_flexibility
     - runway_count
+    previous_leg:
+    - has_supported_predecessor
+    - observed_ground_gap_minutes
+    - predecessor_support_status
   trigger:
     delay_threshold_minutes: 15.0
     exceedance_probability: 0.5
@@ -647,7 +673,6 @@ m4:
   near_equivalent_relative: 0.02
   near_equivalent_absolute_rmb: 0.0
   decision_value:
-    recovery_ratio_min: 0.2
     burden_ratio_max: 1.0
     positive_net_benefit_probability_min: 0.6
     zero_cost_epsilon: 1.0e-09

@@ -10,6 +10,24 @@ from typing import Any
 import joblib
 
 
+ARTIFACT_ENTRY_SCHEMA_VERSION = "ARTIFACT_ENTRY_V2_20260731"
+CORE_REGISTRY_CONTRACT_ID = "OVERALL_RUN_CORE_REGISTRY_V1_20260731"
+PUBLICATION_REGISTRY_CONTRACT_ID = "OVERALL_RUN_PUBLICATION_REGISTRY_V1_20260731"
+CORE_REQUIRED_ARTIFACT_IDS = (
+    "m1.joblib", "m2.joblib", "m3.joblib", "m4.joblib",
+    "run_manifest.json", "run_summary.json", "merged_config.json", "config_sources.json",
+    "implementation_manifest.json", "audit.parquet", "failure_records.parquet",
+    "scientific_gate.json", "model_contract.json", "action_metadata.parquet",
+    "m3_action_library.parquet", "m3_response_parameters.parquet",
+    "m3_response_samples.parquet", "m3_response_audit.parquet",
+    "m4_action_scores.parquet", "m4_candidate_screen.parquet",
+    "m4_rankings.parquet", "m4_recommendations.parquet",
+    "m4_ranking_all_k.parquet", "m4_ranking_k1.parquet",
+    "m4_ranking_k2.parquet", "m4_ranking_k3.parquet",
+    "m4_ranking_k5.parquet",
+    "parameter_manifest.parquet", "parameter_manifest.json",
+)
+
 class ArtifactContractError(RuntimeError):
     pass
 
@@ -64,6 +82,8 @@ def artifacts_match(
             expected_implementation_hash=implementation_hash,
             expected_contract_version=None,
             allowed_scientific_statuses={"PASS", "STOP_AND_REVIEW", "FAIL", "UNRESOLVED"},
+            expected_registry_kind="core",
+            required_artifact_ids=CORE_REQUIRED_ARTIFACT_IDS,
         )
     except Exception:
         return False
@@ -81,11 +101,29 @@ def write_artifact_registry(
     upstream_artifact_hashes: dict[str, str],
     scientific_status: str,
     artifact_names: list[str],
+    registry_kind: str = "core",
+    required_artifact_ids: list[str] | tuple[str, ...] | None = None,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    if registry_kind not in {"core", "publication"}:
+        raise ArtifactContractError(f"ARTIFACT_REGISTRY_KIND_INVALID:{registry_kind}")
+    contract_id = (
+        CORE_REGISTRY_CONTRACT_ID
+        if registry_kind == "core"
+        else PUBLICATION_REGISTRY_CONTRACT_ID
+    )
+    required = tuple(required_artifact_ids or (
+        CORE_REQUIRED_ARTIFACT_IDS if registry_kind == "core" else artifact_names
+    ))
+    names = tuple(sorted(dict.fromkeys(artifact_names)))
+    missing_required = sorted(set(required) - set(names))
+    if missing_required:
+        raise ArtifactContractError(
+            "ARTIFACT_REQUIRED_SET_INCOMPLETE:" + ",".join(missing_required)
+        )
     created_at = datetime.now(timezone.utc).isoformat()
     artifacts: list[dict[str, Any]] = []
-    for name in artifact_names:
+    for name in names:
         path = root / name
         if not path.exists():
             raise ArtifactContractError(f"REQUIRED_ARTIFACT_MISSING:{path}")
@@ -102,8 +140,13 @@ def write_artifact_registry(
             "contract_version": contract_version,
             "upstream_artifact_hashes": dict(upstream_artifact_hashes),
             "scientific_status": scientific_status,
+            "artifact_entry_schema_version": ARTIFACT_ENTRY_SCHEMA_VERSION,
+            "registry_contract_id": contract_id,
             **(metadata or {}),
         })
+    census_hash = hashlib.sha256(
+        json.dumps(names, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
     registry = {
         "mode": mode,
         "run_id": run_id,
@@ -112,6 +155,12 @@ def write_artifact_registry(
         "contract_version": contract_version,
         "upstream_artifact_hashes": dict(upstream_artifact_hashes),
         "scientific_status": scientific_status,
+        "registry_kind": registry_kind,
+        "registry_contract_id": contract_id,
+        "artifact_entry_schema_version": ARTIFACT_ENTRY_SCHEMA_VERSION,
+        "required_artifact_ids": sorted(required),
+        "artifact_census_count": len(names),
+        "artifact_census_hash": census_hash,
         "created_at": created_at,
         "artifacts": artifacts,
         **(metadata or {}),
@@ -130,6 +179,8 @@ def validate_registry(
     expected_implementation_hash: str,
     expected_contract_version: str | None,
     allowed_scientific_statuses: set[str],
+    expected_registry_kind: str | None = None,
+    required_artifact_ids: list[str] | tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     registry_path = root / "artifact_registry.json"
     if not registry_path.exists():
@@ -144,11 +195,32 @@ def validate_registry(
     if registry.get("scientific_status") not in allowed_scientific_statuses:
         raise ArtifactContractError("ARTIFACT_SCIENTIFIC_STATUS_INVALID")
     entries = registry.get("artifacts", [])
-    required_models = {"m1.joblib", "m2.joblib", "m3.joblib", "m4.joblib"}
     names = {str(entry.get("artifact_name")) for entry in entries}
-    missing = required_models - names
+    registry_kind = str(registry.get("registry_kind", "legacy"))
+    if expected_registry_kind is not None and registry_kind not in {expected_registry_kind, "legacy"}:
+        raise ArtifactContractError("ARTIFACT_REGISTRY_KIND_MISMATCH")
+    required = set(required_artifact_ids or (
+        CORE_REQUIRED_ARTIFACT_IDS if expected_registry_kind == "core" else
+        registry.get("required_artifact_ids", ("m1.joblib", "m2.joblib", "m3.joblib", "m4.joblib"))
+    ))
+    missing = required - names
     if missing:
-        raise ArtifactContractError("ARTIFACT_MODEL_SET_INCOMPLETE:" + ",".join(sorted(missing)))
+        raise ArtifactContractError("ARTIFACT_REQUIRED_SET_INCOMPLETE:" + ",".join(sorted(missing)))
+    if registry_kind != "legacy":
+        expected_contract_id = (
+            CORE_REGISTRY_CONTRACT_ID
+            if registry_kind == "core"
+            else PUBLICATION_REGISTRY_CONTRACT_ID
+        )
+        if registry.get("registry_contract_id") != expected_contract_id:
+            raise ArtifactContractError("ARTIFACT_REGISTRY_CONTRACT_MISMATCH")
+        if registry.get("artifact_census_count") != len(names):
+            raise ArtifactContractError("ARTIFACT_CENSUS_COUNT_MISMATCH")
+        census_hash = hashlib.sha256(
+            json.dumps(tuple(sorted(names)), ensure_ascii=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        if registry.get("artifact_census_hash") != census_hash:
+            raise ArtifactContractError("ARTIFACT_CENSUS_HASH_MISMATCH")
     for entry in entries:
         path = Path(str(entry["absolute_path"]))
         try:
@@ -167,6 +239,11 @@ def validate_registry(
         ):
             if entry.get(key) != expected:
                 raise ArtifactContractError(f"ARTIFACT_ENTRY_{key.upper()}_MISMATCH:{entry.get('artifact_name')}")
+        if registry_kind != "legacy":
+            if entry.get("artifact_entry_schema_version") != ARTIFACT_ENTRY_SCHEMA_VERSION:
+                raise ArtifactContractError(f"ARTIFACT_ENTRY_SCHEMA_MISMATCH:{entry.get('artifact_name')}")
+            if entry.get("registry_contract_id") != registry.get("registry_contract_id"):
+                raise ArtifactContractError(f"ARTIFACT_ENTRY_REGISTRY_CONTRACT_MISMATCH:{entry.get('artifact_name')}")
     return registry
 
 
@@ -184,6 +261,8 @@ def load_artifacts(
         expected_implementation_hash=expected_implementation_hash,
         expected_contract_version=expected_contract_version,
         allowed_scientific_statuses=allowed_scientific_statuses,
+        expected_registry_kind="core",
+        required_artifact_ids=CORE_REQUIRED_ARTIFACT_IDS,
     )
     paths = artifact_paths(root)
     return FrozenArtifacts(

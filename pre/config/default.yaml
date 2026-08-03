@@ -18,6 +18,11 @@ paths:
 
 runtime:
   progress_level: normal
+  adapt_manifest_path: null
+  run_purpose: null
+  scientific_approved: false
+  publication_allowed: false
+  formal_baseline_replaced: false
 
 # 左闭右开。正式 episode 还必须落在 state-vector 完整观测日。
 splits:

@@ -32,6 +32,21 @@ DERIVED_KEYS = {
     "elapsed_ratio", "snapshot_ratio", "snapshot_stage", "airport", "origin", "destination",
     "month", "time_bin", "aircraft_group",
 }
+PREDECESSOR = {
+    "has_predecessor_candidate", "has_supported_predecessor",
+    "predecessor_flight_id", "predecessor_firstseen_proxy",
+    "predecessor_lastseen_proxy", "predecessor_observed_duration",
+    "predecessor_origin_inferred", "predecessor_destination_inferred",
+    "predecessor_endpoint_quality", "predecessor_trajectory_coverage",
+    "predecessor_registration_match", "predecessor_typecode_match",
+    "predecessor_aircraft_group", "observed_ground_gap_minutes",
+    "ground_gap_deviation_from_reference", "airport_continuity",
+    "predecessor_movement_deviation_proxy", "predecessor_completion_state",
+    "turnaround_pressure_proxy", "continuation_risk_proxy",
+    "previous_leg_observation_quality", "predecessor_match_confidence",
+    "predecessor_evidence_tier", "predecessor_support_rule",
+    "predecessor_support_status", "predecessor_rejection_reason",
+}
 
 
 def _value_type(value: Any) -> str:
@@ -165,6 +180,21 @@ def _audit_record(row: pd.Series, feature: str, cfg: dict[str, Any]) -> dict[str
         source = "PROJECT_RULE"
         standard = "A_CDM_WASG_SEMANTIC"
         missing_reason = "RECORD_EXPECTED_BUT_MISSING" if missing else ""
+    elif feature in PREDECESSOR:
+        if feature in {
+            "has_predecessor_candidate", "has_supported_predecessor",
+            "predecessor_support_status", "predecessor_rejection_reason",
+        }:
+            evidence = "RULE_GENERATED"
+        else:
+            evidence = "DERIVED" if bool(row.get("has_supported_predecessor", False)) and not missing else "UNOBSERVED"
+        source = "OPEN_SKY_FLIGHTLIST_OBSERVED_CHAIN"
+        standard = "OPEN_SKY_SCIENTIFIC_PROXY"
+        source_version = str(cfg["predecessor_matching"]["contract_id"])
+        event_time = row.get("predecessor_lastseen_proxy", pd.NaT)
+        availability_time = row.get("_predecessor_availability_time", pd.NaT)
+        missing_reason = str(row.get("predecessor_rejection_reason", "")) if missing else ""
+        fallback = str(row.get("predecessor_evidence_tier", "UNSUPPORTED"))
     elif feature in DERIVED_KEYS:
         source = "FLIGHTLIST_AND_PROJECT_RULE"
     elif missing:
@@ -213,6 +243,7 @@ def build_evidence_audit(snapshots: pd.DataFrame, cfg: dict[str, Any]) -> pd.Dat
         "estimated_passenger_load", "connection_pressure_proxy", "rebooking_scarcity_proxy",
         "seat_capacity", "load_factor",
     ]
+    features += sorted(PREDECESSOR)
     features = list(dict.fromkeys(features))
     if snapshots.empty:
         return pd.DataFrame()
@@ -311,6 +342,36 @@ def build_evidence_audit(snapshots: pd.DataFrame, cfg: dict[str, Any]) -> pd.Dat
             evidence[:] = "RULE_GENERATED" if feature == "episode_ops_margin" else "DERIVED"
             source[:] = "PROJECT_RULE"; standard[:] = "A_CDM_WASG_SEMANTIC"
             missing_reason = pd.Series(np.where(missing, "RECORD_EXPECTED_BUT_MISSING", ""), dtype="string")
+        elif feature in PREDECESSOR:
+            flags = {
+                "has_predecessor_candidate", "has_supported_predecessor",
+                "predecessor_support_status", "predecessor_rejection_reason",
+            }
+            supported = values(
+                "has_supported_predecessor", False
+            ).fillna(False).astype(bool)
+            if feature in flags:
+                evidence[:] = "RULE_GENERATED"
+            else:
+                evidence = pd.Series(
+                    np.where(supported & ~missing, "DERIVED", "UNOBSERVED"),
+                    dtype="string",
+                )
+            source[:] = "OPEN_SKY_FLIGHTLIST_OBSERVED_CHAIN"
+            standard[:] = "OPEN_SKY_SCIENTIFIC_PROXY"
+            source_version[:] = str(
+                cfg["predecessor_matching"]["contract_id"]
+            )
+            event_time = pd.to_datetime(
+                values("predecessor_lastseen_proxy"), utc=True, errors="coerce"
+            )
+            availability_time = pd.to_datetime(
+                values("_predecessor_availability_time"), utc=True, errors="coerce"
+            )
+            missing_reason = string("predecessor_rejection_reason").where(
+                missing, ""
+            )
+            fallback = string("predecessor_evidence_tier", "UNSUPPORTED")
         elif feature in DERIVED_KEYS:
             source[:] = "FLIGHTLIST_AND_PROJECT_RULE"
         else:
