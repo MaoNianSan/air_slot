@@ -58,7 +58,9 @@ def _pinball_loss(y: np.ndarray, q: np.ndarray, tau: float) -> np.ndarray:
     return np.maximum(tau * residual, (tau - 1.0) * residual)
 
 
-def _quantile_crps(y: np.ndarray, qmat: np.ndarray, quantiles: np.ndarray) -> np.ndarray:
+def _quantile_crps(
+    y: np.ndarray, qmat: np.ndarray, quantiles: np.ndarray
+) -> np.ndarray:
     losses = np.column_stack(
         [_pinball_loss(y, qmat[:, i], float(tau)) for i, tau in enumerate(quantiles)]
     )
@@ -90,8 +92,14 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
     tail_coverage = (
         float(
             (
-                (target_values[tail_mask] >= inputs.prediction["quantiles"][tail_mask, q05])
-                & (target_values[tail_mask] <= inputs.prediction["quantiles"][tail_mask, q95])
+                (
+                    target_values[tail_mask]
+                    >= inputs.prediction["quantiles"][tail_mask, q05]
+                )
+                & (
+                    target_values[tail_mask]
+                    <= inputs.prediction["quantiles"][tail_mask, q95]
+                )
             ).mean()
         )
         if tail_mask.any()
@@ -112,7 +120,9 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
         & inputs.model_frame["target"].notna()
     ]
     validation_q95 = (
-        float(validation["target"].quantile(0.95)) if len(validation) else float(train_q95)
+        float(validation["target"].quantile(0.95))
+        if len(validation)
+        else float(train_q95)
     )
     crps_rows = _quantile_crps(target_values, qmat, quantiles)
     tail_weights = np.where(target_values >= validation_q95, 5.0, 1.0)
@@ -156,16 +166,46 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
     maximum_correlation = max(off_diagonal) if off_diagonal else np.nan
     passenger_support_rate = float(passenger_support(inputs.formal).mean())
     write_frame(
-        pd.DataFrame([
-            {"metric": "coverage_90", "value": coverage90, "support": len(inputs.formal)},
-            {"metric": "tail_coverage_90", "value": tail_coverage, "support": int(tail_mask.sum())},
-            {"metric": "quantile_crossing_rate", "value": crossing_rate, "support": len(inputs.formal)},
-            {"metric": "twcrps", "value": twcrps, "support": len(inputs.formal)},
-            {"metric": "upper_quantile_calibration", "value": upper_quantile_calibration, "support": len(inputs.formal)},
-            {"metric": "q95_pinball", "value": q95_pinball, "support": len(inputs.formal)},
-            {"metric": "q99_pinball", "value": q99_pinball, "support": len(inputs.formal)},
-            {"metric": "upper_shortfall", "value": upper_shortfall, "support": len(inputs.formal)},
-        ]),
+        pd.DataFrame(
+            [
+                {
+                    "metric": "coverage_90",
+                    "value": coverage90,
+                    "support": len(inputs.formal),
+                },
+                {
+                    "metric": "tail_coverage_90",
+                    "value": tail_coverage,
+                    "support": int(tail_mask.sum()),
+                },
+                {
+                    "metric": "quantile_crossing_rate",
+                    "value": crossing_rate,
+                    "support": len(inputs.formal),
+                },
+                {"metric": "twcrps", "value": twcrps, "support": len(inputs.formal)},
+                {
+                    "metric": "upper_quantile_calibration",
+                    "value": upper_quantile_calibration,
+                    "support": len(inputs.formal),
+                },
+                {
+                    "metric": "q95_pinball",
+                    "value": q95_pinball,
+                    "support": len(inputs.formal),
+                },
+                {
+                    "metric": "q99_pinball",
+                    "value": q99_pinball,
+                    "support": len(inputs.formal),
+                },
+                {
+                    "metric": "upper_shortfall",
+                    "value": upper_shortfall,
+                    "support": len(inputs.formal),
+                },
+            ]
+        ),
         staging / "metrics" / "m1_summary_evaluation.parquet",
     )
     write_frame(
@@ -173,19 +213,21 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
         staging / "metrics" / "m2_channel_correlation.parquet",
     )
     write_frame(
-        pd.DataFrame([
-            {
-                "channel": channel,
-                "mean_loss": channel_means[channel],
-                "supported": bool(np.isfinite(channel_means[channel])),
-                "raw_share": (
-                    channel_means[channel] / total_mean
-                    if channel in finite_means and total_mean > 0
-                    else np.nan
-                ),
-            }
-            for channel in ("F", "P", "R")
-        ]),
+        pd.DataFrame(
+            [
+                {
+                    "channel": channel,
+                    "mean_loss": channel_means[channel],
+                    "supported": bool(np.isfinite(channel_means[channel])),
+                    "raw_share": (
+                        channel_means[channel] / total_mean
+                        if channel in finite_means and total_mean > 0
+                        else np.nan
+                    ),
+                }
+                for channel in ("F", "P", "R")
+            ]
+        ),
         staging / "metrics" / "m2_channel_summary.parquet",
     )
     gate_metrics = {
@@ -225,14 +267,18 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
         staging / "audit.parquet",
     )
     failures = pd.DataFrame(
-        []
-        if inputs.m4_available
-        else [{
-            "stage": "M2_M4_CONTRACT",
-            "failure_code": "UNSUPPORTED_PASSENGER_PROXY_INPUT",
-            "severity": "SCIENTIFIC_BLOCKER",
-            "message": "Passenger proxy is missing; no passenger-cost fallback or M4 evaluation was used.",
-        }],
+        (
+            []
+            if inputs.m4_available
+            else [
+                {
+                    "stage": "M2_M4_CONTRACT",
+                    "failure_code": "UNSUPPORTED_PASSENGER_PROXY_INPUT",
+                    "severity": "SCIENTIFIC_BLOCKER",
+                    "message": "Passenger proxy is missing; no passenger-cost fallback or M4 evaluation was used.",
+                }
+            ]
+        ),
         columns=["stage", "failure_code", "severity", "message"],
     )
     write_frame(failures, staging / "failure_records.parquet")
@@ -260,10 +306,18 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
         "pre_file_hashes": inputs.bundle.file_hashes,
         "pre_run_id": pre_summary.get("run_id"),
         "fast_gate_overridden": bool(inputs.override_fast_gate),
-        "interface_smoke_gate_exempt": bool(cfg.profile_contract.get("smoke_subset", False)),
+        "interface_smoke_gate_exempt": bool(
+            cfg.profile_contract.get("smoke_subset", False)
+        ),
         "authoritative_chain": [
-            "src.config", "src.pipeline", "src.m1", "src.m2",
-            "src.m3", "src.m4", "src.audit", "src.artifacts",
+            "src.config",
+            "src.pipeline",
+            "src.m1",
+            "src.m2",
+            "src.m3",
+            "src.m4",
+            "src.audit",
+            "src.artifacts",
         ],
         "formal_target_column": FORMAL_TARGET_COLUMN,
         "formal_target_contract_version": FORMAL_TARGET_CONTRACT_VERSION,
@@ -288,7 +342,9 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
         "scientific_transition_id": scientific_transition_id,
         "run_purpose": cfg.scientific.get("run_purpose"),
         **cfg.profile_contract,
-        "interface_smoke_gate_exempt": bool(cfg.profile_contract.get("smoke_subset", False)),
+        "interface_smoke_gate_exempt": bool(
+            cfg.profile_contract.get("smoke_subset", False)
+        ),
         "contract_version": cfg.contract_version,
         "passenger_proxy_support_rate": passenger_support_rate,
         "m2_unit_scales": dict(inputs.m2.unit_scales),
@@ -322,7 +378,9 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
         "m1_feature_contract_version": inputs.m1.feature_contract_version,
         "scientific_parameter_approval_status": "PENDING",
         "publication_allowed": bool(cfg.scientific.get("publication_allowed", False)),
-        "formal_baseline_replaced": bool(cfg.scientific.get("formal_baseline_replaced", False)),
+        "formal_baseline_replaced": bool(
+            cfg.scientific.get("formal_baseline_replaced", False)
+        ),
         "quantile_grid_hash": stable_hash(inputs.m1.quantiles),
         "worker_count": max(1, int(cfg.compute.get("outer_workers", 1))),
         "lightgbm_n_jobs": max(1, int(cfg.compute.get("inner_model_threads", 1))),
@@ -330,24 +388,27 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
         "heartbeat_interval_seconds": 300,
     }
     write_json(staging / "run_summary.json", summary)
-    write_json(staging / "run_state.json", {
-        "run_id": inputs.run_identifier,
-        "mode": inputs.published_mode,
-        "compute_mode": inputs.mode,
-        "status": "RUNNING",
-        "current_stage": "publish",
-        "process_id": os.getpid(),
-        "started_at": inputs.started_wall,
-        "completed_at": completed,
-        "config_hash": cfg.config_hash,
-        "implementation_hash": cfg.implementation_hash,
-        "input_hashes": inputs.bundle.file_hashes,
-        "checkpoint_paths": sorted(
-            path.relative_to(staging).as_posix()
-            for path in (staging / "checkpoints").glob("*.json")
-        ),
-        **inputs.parallel_fields,
-    })
+    write_json(
+        staging / "run_state.json",
+        {
+            "run_id": inputs.run_identifier,
+            "mode": inputs.published_mode,
+            "compute_mode": inputs.mode,
+            "status": "RUNNING",
+            "current_stage": "publish",
+            "process_id": os.getpid(),
+            "started_at": inputs.started_wall,
+            "completed_at": completed,
+            "config_hash": cfg.config_hash,
+            "implementation_hash": cfg.implementation_hash,
+            "input_hashes": inputs.bundle.file_hashes,
+            "checkpoint_paths": sorted(
+                path.relative_to(staging).as_posix()
+                for path in (staging / "checkpoints").glob("*.json")
+            ),
+            **inputs.parallel_fields,
+        },
+    )
 
     inputs.progress.stage(10, 10, "Publish unified mode directory")
     inputs.target.parent.mkdir(parents=True, exist_ok=True)
@@ -391,23 +452,28 @@ def finalize_experiment(inputs: FinalizationInputs) -> Path:
             "scientific_transition_id": scientific_transition_id,
         },
     )
-    write_json(inputs.target / "run_state.json", {
-        "run_id": inputs.run_identifier,
-        "mode": inputs.published_mode,
-        "compute_mode": inputs.mode,
-        "status": "COMPLETE",
-        "process_id": os.getpid(),
-        "started_at": inputs.started_wall,
-        "completed_at": completed,
-        "config_hash": cfg.config_hash,
-        "implementation_hash": cfg.implementation_hash,
-        "input_hashes": inputs.bundle.file_hashes,
-        "checkpoint_paths": sorted(
-            path.relative_to(inputs.target).as_posix()
-            for path in (inputs.target / "checkpoints").glob("*.json")
-        ),
-        **inputs.parallel_fields,
-    })
-    inputs.progress.summary(f"{engineering_status}/{scientific_status}: {inputs.target}")
+    write_json(
+        inputs.target / "run_state.json",
+        {
+            "run_id": inputs.run_identifier,
+            "mode": inputs.published_mode,
+            "compute_mode": inputs.mode,
+            "status": "COMPLETE",
+            "process_id": os.getpid(),
+            "started_at": inputs.started_wall,
+            "completed_at": completed,
+            "config_hash": cfg.config_hash,
+            "implementation_hash": cfg.implementation_hash,
+            "input_hashes": inputs.bundle.file_hashes,
+            "checkpoint_paths": sorted(
+                path.relative_to(inputs.target).as_posix()
+                for path in (inputs.target / "checkpoints").glob("*.json")
+            ),
+            **inputs.parallel_fields,
+        },
+    )
+    inputs.progress.summary(
+        f"{engineering_status}/{scientific_status}: {inputs.target}"
+    )
     inputs.progress.stop_heartbeat()
     return inputs.target
