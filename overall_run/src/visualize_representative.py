@@ -122,36 +122,25 @@ def _figure_representative(
     r = rankings[rankings["flight_id"].astype(str).eq(flight_id)].copy()
     if not r.empty:
         for stage in STAGES:
-            subset = r[r["snapshot_stage"].astype(str).eq(stage)].nsmallest(3, "score")
+            subset = r[r["snapshot_stage"].astype(str).eq(stage)].nsmallest(5, "score")
             if subset.empty:
                 continue
             x = np.full(len(subset), STAGES.index(stage), dtype=float)
             axes[3].scatter(x, subset["score"], color="0.45")
-            # 只标注: 推荐动作, A00, 与最优值最接近的一个非推荐动作
+            for ranked in subset.sort_values("rank").itertuples(index=False):
+                axes[3].annotate(
+                    f"@{int(ranked.rank)} {ranked.action_id}",
+                    (STAGES.index(stage), float(ranked.score)),
+                    xytext=(4, 2), textcoords="offset points", fontsize=7,
+                )
             recommended = subset[subset["recommended"].fillna(False).astype(bool)]
-            a00_row = subset[subset["action_id"].astype(str).eq("A00")]
             if len(recommended):
                 rec = recommended.iloc[0]
                 axes[3].scatter([STAGES.index(stage)], [float(rec["score"])],
                                 marker="*", s=100, color="black", zorder=3)
-                axes[3].annotate(str(rec["action_id"]),
-                                 (STAGES.index(stage), float(rec["score"])),
-                                 xytext=(4, 2), textcoords="offset points", fontsize=8)
-            if len(a00_row):
-                a00 = a00_row.iloc[0]
-                axes[3].annotate("A00",
-                                 (STAGES.index(stage), float(a00["score"])),
-                                 xytext=(4, -10), textcoords="offset points", fontsize=8)
-            if len(recommended) and len(subset) >= 2:
-                top_nonrec = subset[~subset.index.isin(recommended.index)].nsmallest(1, "score")
-                if len(top_nonrec):
-                    nr = top_nonrec.iloc[0]
-                    axes[3].annotate(str(nr["action_id"]),
-                                     (STAGES.index(stage), float(nr["score"])),
-                                     xytext=(4, 2), textcoords="offset points", fontsize=7)
     axes[3].set_xticks(range(len(STAGES)), STAGES)
     axes[3].set_ylabel("Mean–CVaR score (RMB)")
-    axes[3].set_title("D. Retained scores and recommendation (star)")
+    axes[3].set_title("D. Ranking@1/@2/@3/@5 within the top five (star = @1)")
     short_id = str(flight_id)[:8] + "..." if len(str(flight_id)) > 8 else str(flight_id)
     fig.suptitle(f"Representative rolling episode: {short_id}")
     fig.tight_layout()

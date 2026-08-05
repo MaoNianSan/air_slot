@@ -1,109 +1,48 @@
 # Air Slot
 
-## Project purpose
+Air Slot is a scientific execution repository for an event- and chain-aware
+flight disruption workflow.
 
-Air Slot studies airline disruption recovery under delayed information. The
-repository contains a raw-data preparation layer, an M1-M4 modeling pipeline,
-and overall and component-level advantage analyses.
+## Current contracts
 
-## Current repository state
+The only PRE contract is `AIR_CHAIN_CORE_V2` with schema
+`air-chain-core-2.0` and research revision `AIR_CHAIN_CORE_V2_R2`. PRE publishes
+episodes, events, source-global observations, observation membership,
+train-only calibration references, evidence audit, column registry, and its
+manifest under `pre/output_core/<mode>/AIR_CHAIN_CORE_V2/`.
 
-The only current PRE contract is:
+PRE does not build five-minute model grids, recurrent state, M1 tensors,
+predictions, actions, or rankings. Those responsibilities begin at the M1 PRE
+Adapter.
 
-```text
-PRE=AIR_CHAIN_CORE_V2_R2
-CONTRACT=AIR_CHAIN_CORE_V2
-SCHEMA=air-chain-core-2.0
-M1_M4_MIGRATION=PENDING
-RETIRED_PRE_REMOVED=YES
-```
-
-The existing downstream pipeline is temporarily not runnable against PRE Core
-V2 until the M1 Adapter migration is completed. The three downstream entry
-points stop with `PRE_CONTRACT_MISMATCH`; they do not read historical PRE
-output, synthesize compatibility tables, or rebuild a retired contract.
-
-## Architecture
+## Pipeline
 
 ```text
-data -> pre -> M1 Adapter (pending) -> overall_run
-                                      |-> overall_adv
-                                      `-> part_adv
+data -> PRE Core V2 -> M1 PRE Adapter -> M1 -> M2 -> M3 -> M4
+                                                |-> overall_adv
+                                                `-> part_adv
 ```
 
-`data/` is read-only. PRE is the only raw-data reader. Published PRE artifacts
-are the sole future input to the Adapter; downstream modules must not read raw
-data, cache, or staging.
+M1 is a single lightweight GRU distribution model with IB, OB, and TX heads.
+It uses temperature scaling and fixed episode-level random numbers for joint
+sampling. M2-M4 mathematical code remains separate; formal downstream runs are
+blocked until their input contracts are migrated to the new M1 sample schema.
 
-## PRE artifacts
+## Boundaries
 
-PRE publishes event and chain facts, source-global Observations, partitioned
-many-to-many Membership, train-only references, evidence lineage, a column
-registry, and a manifest. Observation and Membership datasets are partitioned
-by `source` and `observation_date`.
+- `data/` is read-only and PRE is the only raw-data reader.
+- M1 reads only a published PRE Core V2 bundle, never raw, cache, or staging.
+- Engineering readiness and scientific target support are reported separately.
+- Generated output, cache, staging, raw data, and Parquet artifacts are not
+  committed.
 
-PRE does not produce five-minute grids, recurrent-model masks, M1 predictions,
-recovery actions, or rankings.
-
-## Scientific modules
-
-- M1: calibrated distributional residual-risk modeling.
-- M2: operational quantities and RMB cost conversion.
-- M3: a frozen stochastic action-response library.
-- M4: physical and decision-value screening, residual-risk scoring, and action
-  ranking.
-- `overall_adv`: paired overall-policy comparison.
-- `part_adv`: selected module baselines and ablations.
-
-Their mathematical implementations are retained, but execution remains blocked
-until the new Adapter contract is explicit and tested.
-
-## Environment
-
-Use the system Python 3.11 installation:
-
-```powershell
-D:/Python311/python.exe --version
-D:/Python311/python.exe -m pip install -r requirements.txt
-```
-
-No repository virtual environment is authoritative.
-
-## PRE commands
-
-Run from the repository root:
-
-```powershell
-D:/Python311/python.exe pre/main.py inspect-config --mode fast
-D:/Python311/python.exe pre/main.py build --mode fast
-D:/Python311/python.exe pre/main.py validate --mode fast
-D:/Python311/python.exe pre/main.py readiness --mode fast
-D:/Python311/python.exe pre/main.py report --mode fast
-```
-
-The current refactor permits verification only; it does not itself start Fast.
-See `pre/README.md` for the complete contract and scientific boundaries.
-
-## Validation
+## Verification
 
 ```powershell
 D:/Python311/python.exe -m compileall -q pre/src pre/tests pre/tools
 D:/Python311/python.exe -m pytest -q pre/tests
+D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests
+D:/Python311/python.exe -m pytest -q overall_run/tests/m1
 ```
 
-The independent validator recomputes bundle facts instead of trusting a stored
-status file. A structurally passing bundle can still be scientifically not
-ready.
-
-## Runtime data policy
-
-Do not commit generated output, cache, staging, raw data, or Parquet files.
-Cleaning is always explicit. `pre/cache/` and raw data are preserved by the PRE
-single-version refactor.
-
-## Next engineering step
-
-After the single-version gates pass, the next allowed PRE action is a Fast V2
-build and finalization. Downstream execution remains disallowed until the M1
-Adapter consumes V2 observations, Membership, events, chains, references, and
-availability semantics directly.
+See `pre/README.md` and `overall_run/README.md` for module boundaries.

@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from .action_contract import load_action_contract
+from .m1.config import M1ConfigError, validate_m1_config
 
 
 class ConfigError(RuntimeError):
@@ -27,12 +28,27 @@ AUTHORITATIVE_CODE = (
     ("src/pipeline_modes.py", "validation_and_publication_modes"),
     ("src/pipeline_parameters.py", "parameter_provenance"),
     ("src/pipeline_precision.py", "precision_mode"),
-    ("src/m1.py", "m1"),
-    ("src/m1_baseline.py", "m1_baseline"),
-    ("src/m1_calibration.py", "m1_calibration"),
-    ("src/m1_metrics.py", "m1_metrics"),
-    ("src/m1_sampling.py", "m1_sampling"),
-    ("src/m1_training.py", "m1_training"),
+    ("src/m1/contracts.py", "m1_contracts"),
+    ("src/m1/config.py", "m1_configuration"),
+    ("src/m1/pipeline.py", "m1_orchestration"),
+    ("src/m1/adapter/manifest_validator.py", "m1_pre_manifest_adapter"),
+    ("src/m1/adapter/bundle_loader.py", "m1_pre_bundle_adapter"),
+    ("src/m1/adapter/availability.py", "m1_availability_adapter"),
+    ("src/m1/adapter/timeline.py", "m1_timeline_adapter"),
+    ("src/m1/adapter/feature_builder.py", "m1_feature_adapter"),
+    ("src/m1/adapter/target_builder.py", "m1_target_adapter"),
+    ("src/m1/adapter/stage_builder.py", "m1_stage_adapter"),
+    ("src/m1/model/network.py", "m1_gru"),
+    ("src/m1/model/heads.py", "m1_distribution_heads"),
+    ("src/m1/model/loss.py", "m1_loss"),
+    ("src/m1/runtime/state_store.py", "m1_state_store"),
+    ("src/m1/runtime/replay.py", "m1_replay"),
+    ("src/m1/runtime/update_service.py", "m1_update_service"),
+    ("src/m1/distribution/bins.py", "m1_distribution_bins"),
+    ("src/m1/distribution/calibration.py", "m1_temperature_calibration"),
+    ("src/m1/distribution/sampling.py", "m1_sampling"),
+    ("src/m1/distribution/derived.py", "m1_derived_outputs"),
+    ("src/m1/evaluation/report.py", "m1_evaluation"),
     ("src/m2.py", "m2"),
     ("src/m3.py", "m3"),
     ("src/m4.py", "m4_public_api"),
@@ -158,7 +174,7 @@ def load_config(
     paths = [
         directory / "default.yaml",
         directory / "scientific.yaml",
-        directory / "m3_response_v3_expanded_provisional.yaml",
+        directory / "m3_v3.yaml",
         directory / "compute.yaml",
         directory / "acceptance.yaml",
         directory / f"{mode}.yaml",
@@ -216,17 +232,18 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
         raise ConfigError("Missing merged configuration keys: " + ",".join(missing))
     if mode not in config["modes"]:
         raise ConfigError(f"compute.modes does not define {mode}")
-    quantiles = [float(value) for value in config["m1"].get("quantiles", [])]
-    if not quantiles or quantiles != sorted(set(quantiles)) or not all(0 < value < 1 for value in quantiles):
-        raise ConfigError("m1.quantiles must be unique, increasing, and inside (0,1)")
-    if not {0.05, 0.95}.issubset(quantiles):
-        raise ConfigError("m1.quantiles must include 0.05 and 0.95")
+    if "m1_tuning" in config:
+        raise ConfigError("RETIRED_M1_CONFIG_KEY:m1_tuning")
+    try:
+        validate_m1_config(config["m1"])
+    except M1ConfigError as exc:
+        raise ConfigError(str(exc)) from exc
     actions = config["m3"].get("actions", [])
-    for key in ("scientific_approved", "publication_allowed"):
-        if key in config["m3"] and not isinstance(config["m3"][key], bool):
-            raise ConfigError(f"m3.{key} must be boolean")
-    contract = load_action_contract(config["m3"].get("response_parameter_version", "V3"))
-    expected_actions = list(contract["action_ids"])
+    expected_actions = [
+        "A00", "A11", "A12", "A13", "A21", "A22", "A23", "A31", "A32",
+        "A33", "A41", "A42", "A43", "A51", "A52", "A53", "A54", "A55",
+        "A61", "A62", "A71", "A72", "A73", "A81", "A82", "A83",
+    ]
     if [str(item.get("id")) for item in actions] != expected_actions:
         raise ConfigError("m3.actions does not match the frozen action order")
     graph_edges = {str(key): float(value) for key, value in config["m2"].get("graph_edges", {}).items()}
@@ -241,32 +258,11 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
     response = config["m3"].get("response_parameters", {})
     if set(response) != set(expected_actions):
         raise ConfigError("m3.response_parameters must cover all frozen actions")
-    required_parameter_fields = {
-        "mu_F", "mu_P", "mu_R", "K_F", "K_P", "K_R", "kappa_eta",
-        "CV_K", "p_fail", "capacity_requirement", "window_requirement",
-        "resource_requirement", "authority_requirement",
-        "lead_time_requirement", "aircraft_requirement", "crew_requirement",
-        "passenger_requirement", "airport_requirement", "priority", "family",
-        "description", "provisional", "parameter_source",
-    }
-    for action_id, parameters in response.items():
-        missing_fields = sorted(required_parameter_fields - set(parameters))
-        if missing_fields:
-            raise ConfigError(
-                f"m3.response_parameters.{action_id} missing:"
-                + ",".join(missing_fields)
-            )
-        if not isinstance(parameters.get("provisional"), bool):
-            raise ConfigError(f"m3.response_parameters.{action_id}.provisional must be boolean")
-        if not isinstance(parameters.get("priority"), int) or isinstance(parameters.get("priority"), bool):
-            raise ConfigError(f"m3.response_parameters.{action_id}.priority must be integer")
-    for item in actions:
-        action_id = str(item.get("id"))
-        for key in ("capacity_required", "provisional"):
-            if not isinstance(item.get(key), bool):
-                raise ConfigError(f"m3.actions.{action_id}.{key} must be boolean")
-    if config["m3"].get("action_library_version") != "M3_RESPONSE_V3_EXPANDED_PROVISIONAL":
-        raise ConfigError("m3.action_library_version must be provisional V3")
+    if config["m3"].get("response_parameter_version") != "M3_RESPONSE_V3_EXPANDED":
+        raise ConfigError("m3.response_parameter_version must select M3_RESPONSE_V3_EXPANDED")
+    ranking_depths = [int(value) for value in config["m4"].get("ranking_depths", [])]
+    if ranking_depths != [1, 2, 3, 5] or int(config["m4"].get("maximum_ranking_depth", 0)) != 5:
+        raise ConfigError("m4 ranking depths must be [1,2,3,5] with maximum 5")
     decision_value = config["m4"].get("decision_value", {})
     for key in ("burden_ratio_max", "positive_net_benefit_probability_min"):
         if key not in decision_value:

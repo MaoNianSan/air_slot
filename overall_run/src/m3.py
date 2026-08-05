@@ -20,13 +20,35 @@ FORMAL_ACTION_IDS = frozenset(_V3_CONTRACT["action_ids"])
 STRESS_TEST_ACTION_IDS = frozenset(_V3_CONTRACT["stress_test_action_ids"])
 ALLOWED_ACTION_FAMILIES = {
     "null", "hold", "retime", "protect", "support", "combined",
-    "cancel", "aircraft", "crew",
+    "cancel", "aircraft", "crew", "execution_coordination",
+    "slot_coordination", "passenger", "gate", "ground", "integrated",
+    "cancellation",
 }
+BURDEN_ONLY_TEST_FIXTURE_IDS = {"S01", "S02"}
+
+
+def burden_only_test_parameters() -> pd.DataFrame:
+    """Return non-formal M3 fixtures used only by unit tests and audits."""
+    return pd.DataFrame([
+        {
+            "action_id": "S01", "mu_F": 0.0, "mu_P": 0.0, "mu_R": 0.0,
+            "kbar_rmb_F": 0.10, "kbar_rmb_P": 0.15, "kbar_rmb_R": 0.20,
+            "recovery_concentration": 18.0, "cost_cv": 0.12,
+            "failure_probability": 0.02, "fixture_only": True,
+        },
+        {
+            "action_id": "S02", "mu_F": 0.0, "mu_P": 0.0, "mu_R": 0.0,
+            "kbar_rmb_F": 0.10, "kbar_rmb_P": 0.30, "kbar_rmb_R": 0.15,
+            "recovery_concentration": 16.0, "cost_cv": 0.18,
+            "failure_probability": 0.05, "fixture_only": True,
+        },
+    ])
 
 
 @dataclass(frozen=True)
 class Action:
     id: str
+    name: str
     family: str
     time: float
     window: float
@@ -46,6 +68,10 @@ class Action:
     typed_gates: tuple[str, ...] = ()
     provisional: bool = False
     parameter_source: str = "scenario-declared"
+    resource_requirement: str = "generic"
+    authority_requirement: str = "operational"
+    lead_time_requirement: float = 0.0
+    compatibility_requirement: str = "none"
 
 
 @dataclass
@@ -59,7 +85,7 @@ class M3Artifact:
     action_library_hash: str
     parameter_hash: str
     sample_hash: str
-    contract_version: str = "overall-run-m3-response-v3-provisional"
+    contract_version: str = "overall-run-m3-response-v3"
 
     @property
     def n_samples(self) -> int:
@@ -92,9 +118,28 @@ def load_actions(scientific: dict[str, Any]) -> dict[str, Action]:
         action_id = str(item.get("id", ""))
         if not action_id:
             raise RuntimeError("M3_ACTION_ID_MISSING")
-        if "capacity_required" not in item or not isinstance(item["capacity_required"], bool):
+        if item.get("family") is None and action_id == "A00":
+            item["family"] = "null"
+        item.setdefault("capacity_required", float(item.get("cap", 0.0)) > 0.0)
+        item.setdefault(
+            "window_type",
+            "flight_timing" if float(item.get("window", 0.0)) > 0.0 else "none",
+        )
+        item.setdefault("name", action_id)
+        item.setdefault("description", str(item.get("name", action_id)))
+        item.setdefault("typed_gates", ())
+        item.setdefault("provisional", False)
+        item.setdefault(
+            "parameter_source",
+            str(scientific["m3"].get("parameter_source", "scenario-declared")),
+        )
+        item.setdefault("resource_requirement", "none" if action_id == "A00" else "generic")
+        item.setdefault("authority_requirement", "none" if action_id == "A00" else "operational")
+        item.setdefault("lead_time_requirement", float(item.get("lead", 0.0)))
+        item.setdefault("compatibility_requirement", "none")
+        if not isinstance(item["capacity_required"], bool):
             raise RuntimeError(f"M3_BOOLEAN_FIELD_INVALID:{action_id}:capacity_required")
-        if "window_type" not in item or not isinstance(item["window_type"], str):
+        if not isinstance(item["window_type"], str):
             raise RuntimeError(f"M3_WINDOW_TYPE_INVALID:{action_id}")
         numeric_fields = (
             "time", "window", "lead", "nu_f", "nu_p", "nu_r", "cap",
@@ -113,17 +158,14 @@ def load_actions(scientific: dict[str, Any]) -> dict[str, Action]:
             raise RuntimeError(f"M3_PRIORITY_INVALID:{action_id}")
         if str(item.get("family")) not in ALLOWED_ACTION_FAMILIES:
             raise RuntimeError(f"M3_FAMILY_INVALID:{action_id}")
-        if contract is _V3_CONTRACT:
-            if not isinstance(item.get("provisional"), bool):
-                raise RuntimeError(f"M3_BOOLEAN_FIELD_INVALID:{action_id}:provisional")
-            if not isinstance(item.get("parameter_source"), str):
-                raise RuntimeError(f"M3_PARAMETER_SOURCE_INVALID:{action_id}")
-            if "typed_gates" not in item or not isinstance(item["typed_gates"], list):
-                raise RuntimeError(f"M3_TYPED_GATES_INVALID:{action_id}")
-            if any(not isinstance(gate, str) or not gate for gate in item["typed_gates"]):
-                raise RuntimeError(f"M3_TYPED_GATES_INVALID:{action_id}")
-        else:
-            item.setdefault("typed_gates", ())
+        if not isinstance(item.get("provisional"), bool):
+            raise RuntimeError(f"M3_BOOLEAN_FIELD_INVALID:{action_id}:provisional")
+        if not isinstance(item.get("parameter_source"), str):
+            raise RuntimeError(f"M3_PARAMETER_SOURCE_INVALID:{action_id}")
+        if not isinstance(item["typed_gates"], (list, tuple)):
+            raise RuntimeError(f"M3_TYPED_GATES_INVALID:{action_id}")
+        if any(not isinstance(gate, str) or not gate for gate in item["typed_gates"]):
+            raise RuntimeError(f"M3_TYPED_GATES_INVALID:{action_id}")
         item["typed_gates"] = tuple(item.get("typed_gates", ()))
         normalized.append(item)
     ids = [str(item["id"]) for item in normalized]
@@ -221,25 +263,27 @@ def _parameter_rows(
                     "recovery_concentration",
                     configured.get(
                         "kappa_eta",
-                        defaults.get("recovery_concentration", 18.0),
+                        defaults.get("recovery_concentration", defaults.get("kappa_eta", 18.0)),
                     ),
                 )
             ),
             "cost_cv": float(
-                configured.get(
-                    "cost_cv", configured.get("CV_K", defaults.get("cost_cv", 0.10))
-                )
+                configured.get("cost_cv", configured.get("CV_K", defaults.get("cost_cv", defaults.get("CV_K", 0.10))))
             ),
             "failure_probability": float(
                 configured.get(
                     "failure_probability",
                     configured.get(
-                        "p_fail", defaults.get("failure_probability", 0.02)
+                        "p_fail",
+                        defaults.get("failure_probability", defaults.get("p_fail", 0.02)),
                     ),
                 )
             ),
             "parameter_source": str(
-                configured.get("parameter_source", "scenario-declared")
+                configured.get(
+                    "parameter_source",
+                    scientific["m3"].get("parameter_source", "scenario-declared"),
+                )
             ),
             "parameter_version": str(
                 configured.get(
@@ -279,6 +323,9 @@ def _parameter_rows(
                 row[f"mu_{channel}"] = 0.0
                 row[f"kbar_rmb_{channel}"] = 0.0
             row["failure_probability"] = 0.0
+        row["kappa_eta"] = row["recovery_concentration"]
+        row["CV_K"] = row["cost_cv"]
+        row["p_fail"] = row["failure_probability"]
         if any(not 0.0 <= row[f"mu_{channel}"] <= 1.0 for channel in CHANNELS):
             raise RuntimeError(f"M3_RECOVERY_MEAN_OUT_OF_RANGE:{action_id}")
         if any(row[f"kbar_rmb_{channel}"] < 0.0 for channel in CHANNELS):

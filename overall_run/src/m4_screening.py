@@ -201,7 +201,10 @@ def screen_physical_actions(
                     "P": action.req_p,
                     "R": action.req_r,
                 }
-                if set(availability) != set(CHANNELS):
+                if action.resource_requirement == "none":
+                    resource_ok = True
+                    resource_status = "NOT_APPLICABLE"
+                elif set(availability) != set(CHANNELS):
                     resource_ok = False
                     resource_status = "MISSING"
                     failures.append("RESOURCE_STATE_MISSING")
@@ -217,26 +220,69 @@ def screen_physical_actions(
                         [f"RESOURCE_{channel}_SHORTAGE" for channel in shortages]
                     )
 
-                authority = _value(rule, ["authority_allowed"])
-                if authority is not None:
-                    authority = _strict_bool(authority, f"{key}:{action_id}:authority_allowed")
-                authority_profile = str(
-                    _value(rule, ["authority_profile_id"]) or ""
-                ).lower()
-                authority_active = authority_profile not in {
-                    "unrestricted",
-                    "unrestricted_primary",
-                    "public_rule_v1",
+                typed_resource_fields = {
+                    "gate_reassignment": ("gate_reassignment_available",),
+                    "ground_support": ("ground_support_available",),
+                    "gate_ground_package": ("gate_reassignment_available", "ground_support_available"),
+                    "aircraft_swap": ("aircraft_swap_available",),
+                    "rotation_reassignment": ("rotation_reassignment_available",),
+                    "standby_aircraft": ("standby_aircraft_available",),
+                    "crew_swap": ("crew_swap_available",),
+                    "standby_crew": ("standby_crew_available",),
+                    "crew_reposition": ("crew_reposition_available",),
                 }
-                if not authority_active:
+                required_typed_fields = typed_resource_fields.get(action.resource_requirement, ())
+                typed_values = [_value(rule, [field]) for field in required_typed_fields]
+                if required_typed_fields and any(value is None for value in typed_values):
+                    typed_resource_ok = False
+                    typed_resource_status = "MISSING"
+                    failures.append("TYPED_RESOURCE_GATE_MISSING")
+                elif required_typed_fields:
+                    typed_resource_ok = all(bool(value) for value in typed_values)
+                    typed_resource_status = _status(typed_resource_ok, True)
+                    if not typed_resource_ok:
+                        failures.append("TYPED_RESOURCE_UNAVAILABLE")
+                else:
+                    typed_resource_ok = True
+                    typed_resource_status = "NOT_APPLICABLE"
+                resource_ok = bool(resource_ok and typed_resource_ok)
+                if resource_status == "PASS" and typed_resource_status != "NOT_APPLICABLE":
+                    resource_status = typed_resource_status
+
+                compatibility_field = {
+                    "aircraft_group": "aircraft_group_compatible",
+                    "crew_qualification": "crew_qualification_compatible",
+                }.get(action.compatibility_requirement)
+                compatibility = _value(rule, [compatibility_field]) if compatibility_field else True
+                if compatibility_field and compatibility is None:
+                    compatibility_ok = False
+                    compatibility_status = "MISSING"
+                    failures.append("COMPATIBILITY_GATE_MISSING")
+                elif compatibility_field:
+                    compatibility_ok = bool(compatibility)
+                    compatibility_status = _status(compatibility_ok, True)
+                    if not compatibility_ok:
+                        failures.append("COMPATIBILITY_MISMATCH")
+                else:
+                    compatibility_ok = True
+                    compatibility_status = "NOT_APPLICABLE"
+                resource_ok = bool(resource_ok and compatibility_ok)
+
+                authority = _value(rule, ["authority_allowed"])
+                typed_authority_field = {
+                    "cancellation": "cancellation_authority_available",
+                    "network_reset": "network_reset_authority_available",
+                }.get(action.authority_requirement)
+                typed_authority = _value(rule, [typed_authority_field]) if typed_authority_field else True
+                if action.authority_requirement == "none":
                     authority_ok = True
-                    authority_status = "NOT_ACTIVE_UNDER_PRIMARY_PROFILE"
-                elif authority is None:
+                    authority_status = "NOT_APPLICABLE"
+                elif authority is None or typed_authority is None:
                     authority_ok = False
                     authority_status = "MISSING"
                     failures.append("AUTHORITY_RULE_MISSING")
                 else:
-                    authority_ok = authority
+                    authority_ok = bool(authority) and bool(typed_authority)
                     authority_status = _status(authority_ok, True)
                     if not authority_ok:
                         failures.append("AUTHORITY_DENIED")
@@ -247,7 +293,7 @@ def screen_physical_actions(
                     lead_status = "MISSING"
                     failures.append("LEAD_TIME_MARGIN_MISSING")
                 else:
-                    lead_ok = action.lead <= float(lead)
+                    lead_ok = action.lead_time_requirement <= float(lead)
                     lead_status = _status(lead_ok, True)
                     if not lead_ok:
                         failures.append("INSUFFICIENT_LEAD_TIME")
@@ -306,6 +352,9 @@ def screen_physical_actions(
                 "snapshot_id": key[1],
                 "action_id": action_id,
                 "action_family": action.family,
+                "resource_requirement": action.resource_requirement,
+                "authority_requirement": action.authority_requirement,
+                "compatibility_requirement": action.compatibility_requirement,
                 "intensity": action.priority,
                 **{f"gate_{gate}": bool(value) for gate, value in gates.items()},
                 **{
@@ -318,6 +367,8 @@ def screen_physical_actions(
                 "primary_failure_code": primary,
                 "all_failure_codes": "|".join(failures),
                 "physical_feasible": bool(feasible_now),
+                "typed_resource_status": typed_resource_status if action_id != "A00" else "NOT_APPLICABLE",
+                "compatibility_status": compatibility_status if action_id != "A00" else "NOT_APPLICABLE",
                 "is_feasible": bool(feasible_now),  # Transitional alias.
                 "trigger": bool(is_triggered),
                 "is_evaluated": bool(

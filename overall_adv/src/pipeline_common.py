@@ -146,6 +146,55 @@ def _overall_adv_figure(
     _save_publication_figure(figure, path)
 
 
+def _overall_adv_ranking_figure(
+    rankings: pd.DataFrame,
+    frequency: pd.DataFrame,
+    path: Path,
+) -> None:
+    figure, axes = plt.subplots(2, 2, figsize=(11.5, 8.2))
+    by_k = rankings.groupby("ranking_k", as_index=False, observed=True).agg(
+        ordered_disagreement=("ordered_disagreement", "mean"),
+        set_disagreement=("set_disagreement", "mean"),
+        order_only_disagreement=("order_only_disagreement", "mean"),
+        full_k_support=("full_k_support", "mean"),
+    )
+    for column, label in (
+        ("ordered_disagreement", "Ordered"),
+        ("set_disagreement", "Set"),
+        ("order_only_disagreement", "Order only"),
+    ):
+        axes[0, 0].plot(by_k["ranking_k"], by_k[column], "o-", label=label)
+    axes[0, 0].set_xticks([1, 2, 3, 5])
+    axes[0, 0].set_ylim(0, 1)
+    axes[0, 0].set_title("A. Disagreement by ranking depth")
+    axes[0, 0].set_ylabel("Case rate")
+    axes[0, 0].legend(frameon=False)
+
+    axes[0, 1].plot(by_k["ranking_k"], by_k["full_k_support"], "o-", color="C2")
+    axes[0, 1].set_xticks([1, 2, 3, 5])
+    axes[0, 1].set_ylim(0, 1)
+    axes[0, 1].set_title("B. Full-k support")
+    axes[0, 1].set_ylabel("Supported case rate")
+
+    first = rankings[rankings["ranking_k"].eq(5)]["first_different_rank"].fillna(0).astype(int)
+    counts = first.value_counts().reindex([0, 1, 2, 3, 4, 5], fill_value=0)
+    axes[1, 0].bar(["Match", "1", "2", "3", "4", "5"], counts.to_numpy())
+    axes[1, 0].set_title("C. First different rank at Ranking@5")
+    axes[1, 0].set_ylabel("Cases")
+
+    global_frequency = frequency[frequency["policy_id"].eq("GLOBAL_FPR")]
+    matrix = global_frequency.pivot(index="action_id", columns="rank_position", values="size").fillna(0)
+    if not matrix.empty:
+        image = axes[1, 1].imshow(matrix.to_numpy(), aspect="auto", cmap="viridis")
+        axes[1, 1].set_yticks(range(len(matrix.index)), matrix.index)
+        axes[1, 1].set_xticks(range(len(matrix.columns)), matrix.columns)
+        figure.colorbar(image, ax=axes[1, 1], fraction=0.046, pad=0.04)
+    axes[1, 1].set_title("D. Global Action x Rank frequency")
+    axes[1, 1].set_xlabel("Rank position")
+    figure.tight_layout()
+    _save_publication_figure(figure, path)
+
+
 def _log(message: str, level: str, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as stream:

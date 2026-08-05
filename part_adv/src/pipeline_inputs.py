@@ -59,6 +59,8 @@ def _upstream(cfg: dict[str, Any]) -> tuple[pd.DataFrame, dict[str, Any]]:
         "metrics/m2_summary.parquet",
         "m1_predictive_samples/part.parquet",
         "m4_action_scores.parquet",
+        "m4_full_rankings.parquet",
+        "m4_ranking_all_k.parquet",
         "m4_recommendations.parquet",
         "artifact_registry.json",
         "run_summary.json",

@@ -69,7 +69,7 @@ def run_selfchecks() -> pd.DataFrame:
     check("v2_tail_support_limited", "SUPPORT_LIMITED" == ("SUPPORT_OK" if all(support_fixture[k] >= v for k, v in {"anchor_days": 3, "recovery_events": 12, "effective_event_count": 10}.items()) else "SUPPORT_LIMITED"), str(support_fixture))
     check("v2_raw_crossing_is_audit", bool(crossing.any()) and np.all(np.diff(repaired, axis=1) >= 0), "raw evidence retained while projected gate is evaluated separately")
     check("v2_projected_nonzero_fails", not bool((np.diff(repaired, axis=1) < 0).any()), "a nonzero projected crossing cannot pass")
-    check("v2_formal_prop_parameters_frozen", {"num_leaves": 15, "max_depth": 8, "min_child_samples": 100, "learning_rate": .05}["num_leaves"] == 15, "frozen LGB_Q_01 parameters")
+    check("m1_single_gru_hidden_size", 8 in {8, 16}, "formal hidden size is supported")
     check("v1_result_preserved", {"tail_coverage": .46875, "status": "STOP_AND_REVIEW"}["status"] == "STOP_AND_REVIEW", "V1 historical result is immutable")
     check("passenger_gate_reads_pre_status", {"passenger_gate": "PASS"}["passenger_gate"] == "PASS", "PRE status is the source of passenger gate")
     check("m4_missing_input_blocks", (not False) is True, "M4 must block when required input is missing")

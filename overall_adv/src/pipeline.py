@@ -15,6 +15,7 @@ from .pipeline_analysis import (
     _benchmark,
     _bootstrap,
     _decisions,
+    _ranking_comparison,
     _load,
     _metrics,
     _ranking_decisions,
@@ -34,6 +35,7 @@ from .pipeline_common import (
     _Heartbeat,
     _log,
     _overall_adv_figure,
+    _overall_adv_ranking_figure,
     _write_df,
     _write_json,
     parallel_metadata,
@@ -200,6 +202,19 @@ def _run_active(
     action_distribution = decisions.groupby(["policy_id", "selected_action"], as_index=False, observed=True).size()
     action_distribution["rate"] = action_distribution["size"] / action_distribution.groupby("policy_id", observed=True)["size"].transform("sum")
     _write_df(action_distribution, output / "m4_selected_action_distribution.parquet")
+    frequency_rows = []
+    for policy, score_column in (("LOCAL_F", "local_f_score"), ("GLOBAL_FPR", "score")):
+        for snapshot_id, group in scores.groupby("snapshot_id", sort=False, observed=True):
+            ordered = group.sort_values(
+                [score_column, "expected_implementation_cost_rmb", "priority", "action_id"],
+                kind="mergesort",
+            ).head(5)
+            for rank_position, action_id in enumerate(ordered["action_id"].astype(str), 1):
+                frequency_rows.append({"policy_id": policy, "rank_position": rank_position, "action_id": action_id})
+    frequency = pd.DataFrame(frequency_rows).groupby(
+        ["policy_id", "action_id", "rank_position"], as_index=False, observed=True
+    ).size()
+    _write_df(frequency, output / "action_rank_frequency_matrix.parquet")
 
     _log("[6/6] audit and publish registry", progress, log)
     nondegenerate = int(
@@ -233,6 +248,11 @@ def _run_active(
         summary,
         bootstrap,
         output / "figures" / "fig01_local_global_comparison",
+    )
+    _overall_adv_ranking_figure(
+        ranking_comparison,
+        frequency,
+        output / "figures" / "fig02_ranking_1235_comparison",
     )
 
     completed = pd.Timestamp.now(tz="UTC")

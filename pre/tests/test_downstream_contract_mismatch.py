@@ -21,5 +21,5 @@ def test_downstream_entry_stops_before_adapter_migration(entry: str) -> None:
         timeout=30,
     )
     assert result.returncode == 2
-    assert "PRE_CONTRACT_MISMATCH" in result.stderr
-    assert "Implement or enable the M1 Adapter" in result.stderr
+    assert "M2_CONTRACT_MISMATCH" in result.stderr
+    assert "M2-M4 have not migrated" in result.stderr

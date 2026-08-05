@@ -2,7 +2,7 @@ project:
   name: air_slot_overall_run
   version: 2.1.0
 paths:
-  pre_output: ../pre/output
+  pre_output: ../pre/output_core/{mode}/AIR_CHAIN_CORE_V2
 cohort:
   core_airports:
   - EHAM
@@ -29,175 +29,67 @@ cohort:
     - test
     - final_test
 m1:
-  quantiles:
-  - 0.01
-  - 0.025
-  - 0.05
-  - 0.1
-  - 0.2
-  - 0.3
-  - 0.4
-  - 0.5
-  - 0.6
-  - 0.7
-  - 0.8
-  - 0.9
-  - 0.95
-  - 0.975
-  - 0.99
-  tuning_quantiles:
-  - 0.1
-  - 0.5
-  - 0.9
-  formal_target: __M1_ADAPTER_REQUIRED__
-  sensitivity_target: __M1_ADAPTER_SENSITIVITY_UNAVAILABLE__
-  formal_target_contract_version: M1_ADAPTER_PENDING
-  split_candidates:
-  - split
-  - subset_role
-  flight_id_candidates:
-  - flight_id
-  - episode_id
-  airport_candidates:
-  - airport
-  - destination
-  - estarrivalairport
-  stage_candidates:
-  - snapshot_stage
-  - stage
-  time_candidates:
-  - decision_time_utc
-  - decision_time
-  - snapshot_time_utc
-  prohibited_patterns:
-  - lastseen
-  - y_movement
-  - outcome
-  - future_
-  - successor_
-  - action_
-  - scenario_
-  - residual_
-  - score_
-  - rank_
-  feature_contract_version: M1_PREVIOUS_LEG_V1
-  feature_allowlist:
-  - elapsed_ratio
-  - current_latitude
-  - current_longitude
-  - current_altitude
-  - current_velocity
-  - vertical_rate
-  - trajectory_coverage
-  - state_observation_age
-  - state_record_count
-  - state_source_coverage
-  - state_source_coverage_status
-  - state_is_imputed
-  - state_imputation_method
-  - state_imputation_gap_minutes
-  - wind_speed
-  - wind_gust
-  - visibility
-  - ceiling
-  - precipitation_flag
-  - weather_code
-  - temperature_dewpoint_spread
-  - metar_age
-  - weather_observed
-  - weather_imputed
-  - weather_evidence_status
-  - airport_flow_pressure
-  - flow_source_coverage
-  - continuity_exposure
-  - turnaround_margin
-  - execution_window_margin
-  - lead_time_margin
-  - window_margin_complete
-  - airport
-  - origin
-  - destination
-  - aircraft_group
-  - month
-  - time_bin
-  - snapshot_stage
-  - runway_count
-  - infrastructure_flexibility
-  - airport_scale
-  - evidence_completeness
-  - observed_feature_count
-  - causally_interpolated_count
-  - calibration_imputed_count
-  - structural_missing_count
-  - temporal_missing_count
-  - has_predecessor_candidate
-  - has_supported_predecessor
-  - predecessor_observed_duration
-  - predecessor_endpoint_quality
-  - predecessor_trajectory_coverage
-  - predecessor_registration_match
-  - predecessor_typecode_match
-  - predecessor_aircraft_group
-  - observed_ground_gap_minutes
-  - ground_gap_deviation_from_reference
-  - airport_continuity
-  - predecessor_movement_deviation_proxy
-  - predecessor_completion_state
-  - turnaround_pressure_proxy
-  - continuation_risk_proxy
-  - previous_leg_observation_quality
-  - predecessor_match_confidence
-  - predecessor_evidence_tier
-  - predecessor_support_rule
-  - predecessor_support_status
-  - predecessor_rejection_reason
-  required_feature_groups:
-    progress:
-    - elapsed_ratio
-    motion:
-    - current_velocity
-    - velocity
-    trajectory_quality:
-    - trajectory_coverage
-    weather:
-    - wind_speed
-    flow:
-    - airport_flow_pressure
-    - airport_flow
-    continuity:
-    - continuity_exposure
-    turnaround:
-    - turnaround_margin
-    lead_margin:
-    - lead_time_margin
-    window_margin:
-    - execution_window_margin
-    aircraft_context:
-    - aircraft_group
-    infrastructure:
-    - infrastructure_flexibility
-    - runway_count
-    previous_leg:
-    - has_supported_predecessor
-    - observed_ground_gap_minutes
-    - predecessor_support_status
-  trigger:
-    delay_threshold_minutes: 15.0
-    exceedance_probability: 0.5
-    window_probability: 0.5
+  contract_id: M1_CHAIN_DYNAMIC_DISTRIBUTION_V1
+  pre:
+    required_contract_id: AIR_CHAIN_CORE_V2
+    required_schema_version: air-chain-core-2.0
+    required_research_revision: AIR_CHAIN_CORE_V2_R2
+    published_bundle_only: true
+  architecture:
+    type: single_lightweight_gru
+    layers: 1
+    hidden_size: 8
+    hidden_size_sensitivity:
+    - 16
+    bidirectional: false
+    attention: false
+    dropout: 0.0
+    gradient_clip: 1.0
+    weight_decay: 0.0001
+  time:
+    roll_minutes: 5
+    roll_sensitivity_minutes:
+    - 10
+    horizons_minutes:
+    - 0
+    - 30
+    - 60
+    - 120
+    - 180
+    - 240
+    - 300
+    - 360
+    - 420
+    - 480
+    delay_thresholds_minutes:
+    - 15
+    - 30
+    - 60
+  distribution:
+    bin_minutes: 5
+    predecessor_max_minutes: 480
+    learned_upper_quantile: 0.995
+    overflow_bin: true
+  split:
+    calibration_source: validation
+    calibration_tail_fraction: 0.5
+    minimum_episodes_per_partition: 2
   calibration:
-    hierarchy:
-    - airport_stage
-    - stage
-    - global
-    minimum_support: 200
-  historical_baseline:
-    minimum_support: 200
-    hierarchy:
-    - airport_stage_time_bin
-    - airport_stage
-    - stage
-    - global
+    enabled: true
+    method: temperature_scaling
+    scope: per_target
+    fit_partition: calibration
+  sampling:
+    sample_count: 1000
+    base_seed: 20260718
+    fixed_episode_random_numbers: true
+  exclusions:
+    separate_fast_model: false
+    lightgbm_formal_model: false
+    independent_takeoff_head: false
+    online_weight_update: false
+    adaptive_test_calibration: false
+    cross_module_training: false
 m2:
   graph_edges:
     F_to_P: 0.15   # IATA(2025): EU ATM airline:passenger cost=60:40

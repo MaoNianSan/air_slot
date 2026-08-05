@@ -25,6 +25,7 @@ PUBLICATION_SOURCE_PATHS = (
     "m4_candidate_screen.parquet",
     "m4_action_scores.parquet",
     "m4_rankings.parquet",
+    "m4_full_rankings.parquet",
     "m4_ranking_all_k.parquet",
     "m4_ranking_k1.parquet",
     "m4_ranking_k2.parquet",

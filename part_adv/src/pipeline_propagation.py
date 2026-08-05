@@ -145,6 +145,13 @@ def _propagate(
         ).clip(lower=0)
         selected["model_id"] = model
         selected["formal_ranking"] = model != "POINT_OOF"
+        ordered_actions = {
+            str(snapshot_id): group.sort_values(
+                ["adjusted_score", "expected_implementation_cost_rmb", "priority", "action_id"],
+                kind="mergesort",
+            )["action_id"].astype(str).tolist()
+            for snapshot_id, group in candidate.groupby("snapshot_id", sort=False, observed=True)
+        }
         downstream_parts.append(selected)
         detail = (
             prediction[["snapshot_id", "trigger_probability", "trigger_decision"]]
@@ -213,15 +220,30 @@ def _propagate(
             ].mean(),
             "action": selected.set_index("recovery_case_id")["selected_action"],
             "regret": selected.set_index("recovery_case_id")["regret"],
+            "ranking": ordered_actions,
         }
     pair_rows = []
     for left_index, left in enumerate(MODELS):
         for right in MODELS[left_index + 1 :]:
             lstate, rstate = model_state[left], model_state[right]
-            pair_rows.append(
-                {
+            for ranking_k in (1, 2, 3, 5):
+                ordered_flags = []
+                set_flags = []
+                order_only_flags = []
+                for case_id in sorted(set(lstate["ranking"]) & set(rstate["ranking"])):
+                    left_rank = lstate["ranking"][case_id][:ranking_k]
+                    right_rank = rstate["ranking"][case_id][:ranking_k]
+                    left_rank += [None] * max(0, ranking_k - len(left_rank))
+                    right_rank += [None] * max(0, ranking_k - len(right_rank))
+                    same_order = left_rank == right_rank
+                    same_set = {x for x in left_rank if x is not None} == {x for x in right_rank if x is not None}
+                    ordered_flags.append(not same_order)
+                    set_flags.append(not same_set)
+                    order_only_flags.append(same_set and not same_order)
+                pair_rows.append({
                     "left_model": left,
                     "right_model": right,
+                    "ranking_k": ranking_k,
                     "trigger_disagreement_rate": float(
                         (lstate["trigger"] != rstate["trigger"]).mean()
                     ),
@@ -234,6 +256,12 @@ def _propagate(
                     "recommendation_disagreement_rate": float(
                         (lstate["action"] != rstate["action"]).mean()
                     ),
+                    "lead_action_disagreement_rate": float(
+                        (lstate["action"] != rstate["action"]).mean()
+                    ),
+                    "ordered_disagreement_rate": float(np.mean(ordered_flags)) if ordered_flags else np.nan,
+                    "set_disagreement_rate": float(np.mean(set_flags)) if set_flags else np.nan,
+                    "order_only_disagreement_rate": float(np.mean(order_only_flags)) if order_only_flags else np.nan,
                     "mean_regret_difference_left_minus_right": float(
                         (lstate["regret"] - rstate["regret"]).mean()
                     ),
@@ -333,6 +361,11 @@ def _m4_variants(
 
     rows = run_ordered_thread_tasks(variants, compute_variant, outer_workers)
     scores = pd.concat(rows, ignore_index=True)
+    scores = scores.sort_values(
+        ["variant", "snapshot_id", "score_variant", "expected_implementation_cost_rmb", "priority", "action_id"],
+        kind="mergesort",
+    )
+    scores["rank_position"] = scores.groupby(["variant", "snapshot_id"], observed=True).cumcount() + 1
     best = scores.loc[
         scores.groupby(["variant", "snapshot_id"], observed=True)[
             "score_variant"

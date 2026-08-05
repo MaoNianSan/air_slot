@@ -20,7 +20,6 @@ from src.artifacts import (
     validate_registry,
     write_artifact_registry,
 )
-from src.m1_metrics import approximate_crps, pinball_loss
 from src.m4 import evaluate_m4, fit_m4, screen_physical_actions
 from src.m4_pnb_audit import manual_pnb_reconstruction
 from src.pipeline import run_experiment
@@ -190,19 +189,6 @@ def test_refactor_channel_order_equivalence() -> None:
     reverse = lambda value: dict(reversed(list(value.items())))
     second = manual_pnb_reconstruction(reverse(pre), reverse(recovery), reverse(implementation))
     np.testing.assert_array_equal(first["net_benefit"], second["net_benefit"])
-
-
-def test_refactor_metric_formula_equivalence() -> None:
-    y = np.array([0.0, 2.0, 6.0])
-    quantiles = np.array([0.1, 0.5, 0.9])
-    qmat = np.array([[-1.0, 0.0, 2.0], [0.0, 2.0, 4.0], [2.0, 5.0, 7.0]])
-    losses = np.column_stack([
-        pinball_loss(y, qmat[:, index], tau)
-        for index, tau in enumerate(quantiles)
-    ])
-    integrate = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
-    expected = 2.0 * integrate(losses, quantiles, axis=1)
-    np.testing.assert_array_equal(approximate_crps(y, qmat, quantiles), expected)
 
 
 def test_refactor_artifact_schema_equivalence() -> None:

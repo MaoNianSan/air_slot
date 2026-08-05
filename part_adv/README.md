@@ -1,8 +1,8 @@
 # part_adv
 
-`part_adv` retains component-level baseline and ablation code. Its entry point
-is blocked with `PRE_CONTRACT_MISMATCH` until the M1 Adapter for
-`AIR_CHAIN_CORE_V2_R2` is implemented and validated.
+`part_adv` retains component-level analysis code. It consumes published
+`overall_run` artifacts only and does not train M1 or reconstruct PRE inputs.
 
-The module must not read historical PRE artifacts or infer a replacement label.
-Current status is `DOWNSTREAM_V2_MIGRATION_PENDING`.
+Execution remains blocked until the new M1 sample contract and downstream
+migration status are explicitly accepted. Retired movement-sample inputs are
+not converted or reused.

@@ -17,7 +17,7 @@ from downstream_common import (
     task_seed_hash,
     thread_limit_environment,
 )
-from pre_contract_gate import DownstreamContractMismatch, require_m1_adapter
+from pre_contract_gate import DownstreamContractMismatch, require_downstream_v2_migration
 from src.config import load_config
 from src.pipeline import (
     FullBlockedByFastAcceptance,
@@ -55,7 +55,7 @@ def parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = parser().parse_args()
     try:
-        require_m1_adapter()
+        require_downstream_v2_migration()
     except DownstreamContractMismatch as exc:
         print(str(exc), file=sys.stderr)
         return 2

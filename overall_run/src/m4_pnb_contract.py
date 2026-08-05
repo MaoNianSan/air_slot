@@ -11,8 +11,9 @@ import pandas as pd
 
 CHANNELS = ("F", "P", "R")
 NON_NULL_ACTIONS = (
-    "A11", "A12", "A21", "A22", "A31",
-    "A32", "A41", "A42", "A51", "A52", "A61", "A62",
+    "A11", "A12", "A13", "A21", "A22", "A23", "A31", "A32", "A33",
+    "A41", "A42", "A43", "A51", "A52", "A53", "A54", "A55", "A61",
+    "A62", "A71", "A72", "A73", "A81", "A82", "A83",
 )
 AUDIT_SEED_NAMESPACE = "M4_PNB_AUDIT_V1"
 FORMAL_Q_TOLERANCE = 1e-12

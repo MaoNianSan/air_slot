@@ -8,6 +8,58 @@ import pandas as pd
 from .m3 import Action, M3Artifact
 from .m4_screening import CHANNELS, M4Artifact
 
+RANKING_DEPTHS = (1, 2, 3, 5)
+MAXIMUM_RANKING_DEPTH = 5
+
+
+def derive_ranking_views(
+    full_rankings: pd.DataFrame,
+    depths: tuple[int, ...] = RANKING_DEPTHS,
+) -> dict[int, pd.DataFrame]:
+    """Derive fixed-depth views without re-sorting the authoritative ranking."""
+    required = {"episode_id", "snapshot_id", "rank", "action_id", "score"}
+    if not required.issubset(full_rankings.columns):
+        raise ValueError(f"FULL_RANKING_SCHEMA_MISSING:{sorted(required - set(full_rankings.columns))}")
+    if tuple(depths) != RANKING_DEPTHS:
+        raise ValueError("RANKING_DEPTH_CONTRACT_MISMATCH")
+    views: dict[int, pd.DataFrame] = {}
+    groups = list(full_rankings.groupby(["episode_id", "snapshot_id"], sort=False, observed=True))
+    for depth in depths:
+        rows: list[dict[str, Any]] = []
+        for (episode_id, snapshot_id), group in groups:
+            ordered = group.sort_values("rank", kind="mergesort")
+            if ordered["action_id"].astype(str).duplicated().any():
+                raise RuntimeError(f"DUPLICATE_ACTION_IN_FULL_RANKING:{episode_id}:{snapshot_id}")
+            real_count = min(len(ordered), depth)
+            base = ordered.iloc[0] if len(ordered) else None
+            for position in range(1, depth + 1):
+                if position <= len(ordered):
+                    item = ordered.iloc[position - 1]
+                    action_id: str | None = str(item["action_id"])
+                    score = float(item["score"])
+                    expected_residual = float(item.get("expected_residual", np.nan))
+                    cvar_residual = float(item.get("cvar_residual", item.get("cvar_component", np.nan)))
+                    is_padding = False
+                    rank_status = "available"
+                else:
+                    action_id = None
+                    score = expected_residual = cvar_residual = np.nan
+                    is_padding = True
+                    rank_status = "unavailable"
+                rows.append({
+                    "episode_id": str(episode_id), "snapshot_id": str(snapshot_id),
+                    "flight_id": str(base.get("flight_id", "")) if base is not None else "",
+                    "airport": str(base.get("airport", "")) if base is not None else "",
+                    "snapshot_stage": str(base.get("snapshot_stage", "")) if base is not None else "",
+                    "ranking_k": depth, "rank_position": position, "action_id": action_id,
+                    "is_padding": is_padding, "rank_status": rank_status, "score": score,
+                    "expected_residual": expected_residual, "cvar_residual": cvar_residual,
+                    "effective_action_count": real_count, "padding_count": depth - real_count,
+                    "full_k_support": len(ordered) >= depth,
+                })
+        views[depth] = pd.DataFrame(rows)
+    return views
+
 
 def _cvar_and_tail_mask(values: np.ndarray, alpha: float) -> tuple[float, np.ndarray]:
     threshold = float(np.quantile(values, alpha))
@@ -376,10 +428,17 @@ def evaluate_m4(
                 "action_id": str(ranked.action_id),
                 "action_family": actions[str(ranked.action_id)].family,
                 "rank": int(ranked.rank),
+                "ranking_k": 0,
+                "rank_position": int(ranked.rank),
+                "is_padding": False,
+                "rank_status": "available",
                 "score": float(ranked.score),
                 "total_score": float(ranked.score),
                 "expected_residual": float(ranked.expected_residual),
                 "cvar_residual": float(ranked.cvar_component),
+                "effective_action_count": len(rank_frame),
+                "padding_count": 0,
+                "full_k_support": True,
                 "recommended": bool(ranked.rank == 1),
                 "near_equivalent": str(ranked.action_id) in near,
                 "near_equivalent_size": len(near),

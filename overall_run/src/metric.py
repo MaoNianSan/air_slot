@@ -6,66 +6,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import kendalltau
 
-from .m1 import approximate_crps, exceedance_probability_from_quantiles, pinball_loss
 from .utils import stable_seed
-
-
-def m1_metric_table(
-    df: pd.DataFrame,
-    qmat: np.ndarray,
-    baseline_qmat: np.ndarray,
-    quantiles: list[float],
-    p15: np.ndarray,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
-    y = df["target"].to_numpy(float)
-    taus = np.asarray(quantiles, dtype=float)
-    crps = approximate_crps(y, qmat, taus)
-    crps_b = approximate_crps(y, baseline_qmat, taus)
-    exceed = (y > 15.0).astype(float)
-    brier = (p15 - exceed) ** 2
-    baseline_p15 = exceedance_probability_from_quantiles(baseline_qmat, taus, 15.0)
-    brier_b = (baseline_p15 - exceed) ** 2
-    i05 = int(np.argmin(np.abs(taus - 0.05)))
-    i95 = int(np.argmin(np.abs(taus - 0.95)))
-    coverage90 = ((y >= qmat[:, i05]) & (y <= qmat[:, i95])).astype(float)
-    width90 = qmat[:, i95] - qmat[:, i05]
-    coverage, width = {}, {}
-    for level in (0.50, 0.80):
-        lo_q=(1-level)/2; hi_q=1-lo_q
-        lo=int(np.argmin(np.abs(taus-lo_q))); hi=int(np.argmin(np.abs(taus-hi_q)))
-        coverage[str(int(level*100))]=((y>=qmat[:,lo])&(y<=qmat[:,hi])).astype(float)
-        width[str(int(level*100))]=qmat[:,hi]-qmat[:,lo]
-
-    per = df[["episode_id", "flight_id", "snapshot_id", "airport", "snapshot_stage"]].copy()
-    per["crps"] = crps
-    per["crps_baseline"] = crps_b
-    per["crps_difference"] = crps - crps_b
-    per["crpss"] = 1.0 - crps / np.maximum(crps_b, 1e-9)
-    per["brier15"] = brier
-    per["brier15_baseline"] = brier_b
-    per["brier15_difference"] = brier - brier_b
-    per["coverage90"] = coverage90
-    per["width90"] = width90
-    for key in coverage:
-        per[f"coverage{key}"]=coverage[key]; per[f"width{key}"]=width[key]
-    per["quantile_crossing"] = (np.diff(qmat,axis=1)<-1e-9).any(axis=1).astype(float)
-
-    rows = []
-    metric_columns = ["crps", "crpss", "crps_difference", "brier15", "brier15_difference", "coverage50", "coverage80", "coverage90", "width50", "width80", "width90", "quantile_crossing"]
-    for stage, g in [("overall", per), *list(per.groupby("snapshot_stage", sort=True))]:
-        # Primary aggregation gives each flight equal total weight even when a
-        # flight has fewer valid snapshots than another flight.
-        flight_level = g.groupby("flight_id", as_index=False)[metric_columns].mean()
-        for metric in metric_columns:
-            rows.append({
-                "scope": str(stage),
-                "metric": metric,
-                "estimate": float(flight_level[metric].mean()),
-                "n": int(len(g)),
-                "n_flights": int(flight_level["flight_id"].nunique()),
-                "aggregation": "flight_balanced",
-            })
-    return per, pd.DataFrame(rows)
 
 
 def cluster_bootstrap_mean(

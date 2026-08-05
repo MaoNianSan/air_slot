@@ -1,8 +1,9 @@
 # overall_adv
 
-`overall_adv` retains the overall policy-comparison implementation, but its
-entry point is blocked with `PRE_CONTRACT_MISMATCH` until the M1 Adapter consumes
-`AIR_CHAIN_CORE_V2_R2` and publishes a compatible downstream lineage.
+`overall_adv` retains the overall policy-comparison implementation. It consumes
+published `overall_run` artifacts only and never reads raw data or reconstructs
+PRE or M1 inputs.
 
-No historical PRE fallback or synthetic compatibility input is permitted.
-Algorithmic migration and scientific validation remain pending.
+Execution remains blocked until M1 publishes the new joint-sample contract and
+the downstream migration gate is explicitly satisfied. No historical M1
+fallback or compatibility conversion is permitted.

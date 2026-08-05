@@ -20,3 +20,7 @@ class Failure:
 
 class FormalRunBlocked(RuntimeError):
     pass
+
+
+class M2ContractMismatch(FormalRunBlocked):
+    pass

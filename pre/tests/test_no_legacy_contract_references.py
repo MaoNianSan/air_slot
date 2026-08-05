@@ -24,7 +24,21 @@ def _candidate_paths(root: Path) -> set[Path]:
         capture_output=True,
         text=True,
     ).stdout.splitlines()
-    paths = {root / value for value in listed}
+    excluded_roots = {
+        ".workbuddy",
+        "outputs",
+        "output_logs",
+        "paper_code_comparison",
+        "paper_final_audit",
+        "paper_review",
+        "code_map",
+        "reports",
+    }
+    paths = {
+        root / value
+        for value in listed
+        if Path(value).parts and Path(value).parts[0] not in excluded_roots
+    }
     paths.update((root / "reports").glob("PRE_*.md"))
     paths.update((root / "pre" / "reports" / "published" / "core_v2").glob("*"))
     return {path for path in paths if path.is_file() and path.suffix.lower() in TEXT_SUFFIXES}

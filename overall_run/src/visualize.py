@@ -122,17 +122,6 @@ def _figure_m3(samples: pd.DataFrame, parameters: pd.DataFrame, out: Path) -> No
     fig, axes = plt.subplots(1, 2, figsize=(13.6, 6.0), sharey=True)
     y = np.arange(len(action_ids), dtype=float)
     offsets = {"F": -0.22, "P": 0.0, "R": 0.22}
-    # 找到分割位置: A52 与 A61 之间
-    split_y = None
-    for i, aid in enumerate(action_ids):
-        if aid == "A52":
-            split_y = i + 0.5
-            break
-    if split_y is not None:
-        axes[0].axhline(split_y, color="gray", linestyle="-", linewidth=0.8, alpha=0.5)
-        axes[1].axhline(split_y, color="gray", linestyle="-", linewidth=0.8, alpha=0.5)
-        axes[1].text(1.05, split_y, "burden-only", transform=axes[1].get_yaxis_transform(),
-                     ha="left", va="center", fontsize=9, color="gray", alpha=0.7)
 
     for channel in CHANNELS:
         means = []
