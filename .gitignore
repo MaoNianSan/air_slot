@@ -97,3 +97,27 @@ reports/
 *.tmp
 *.bak
 *.backup
+
+# ===== PRE V2 Local Runtime Artifacts =====
+# Generated Core output, staging bundles, manifests and runtime logs
+/pre/output_core/
+
+# Legacy generated PRE output
+/pre/output/
+
+# Reusable local extraction/model cache
+/pre/cache/
+
+# Local development, debug and upload-audit reports
+/pre/reports/
+
+# Root-level local status/audit files
+/PRE_DEBUG_STATUS.md
+/PRE_GITHUB_UPLOAD_AUDIT.md
+/PRE_GITHUB_UPLOAD_FILELIST.txt
+/PRE_GITHUB_UPLOAD_BLOCKERS.txt
+
+# Additional Python tooling caches
+.mypy_cache/
+.ruff_cache/
+.pyright/
