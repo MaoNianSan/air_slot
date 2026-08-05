@@ -21,6 +21,10 @@ from downstream_common import (
 from run_profiles import resolve_profile
 from src.pipeline import (
     build_all,
+    build_core,
+    core_readiness_existing,
+    core_report_existing,
+    core_validate_existing,
     load_config,
     migrate_legacy_profile,
     readiness_existing,
@@ -34,7 +38,24 @@ from src.progress import VALID_PROGRESS_LEVELS
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Air Slot PRE preprocessing pipeline")
     modes = ["fast", "diagnostic", "acceptance_23d", "adapt_full", "middle", "full"]
-    parser.add_argument("command", choices=["inventory", "build", "validate", "readiness", "migrate-profile", "all", *modes, "report", "repair"])
+    parser.add_argument(
+        "command",
+        choices=[
+            "inventory",
+            "build",
+            "validate",
+            "readiness",
+            "migrate-profile",
+            "all",
+            *modes,
+            "report",
+            "repair",
+            "core-build",
+            "core-validate",
+            "core-readiness",
+            "core-report",
+        ],
+    )
     parser.add_argument("mode_arg", nargs="?", choices=modes, default=None)
     parser.add_argument("--mode", choices=modes, default=None)
     parser.add_argument("--config", default=None, help="Optional YAML override merged onto config/default.yaml")
@@ -74,7 +95,12 @@ def main() -> int:
     output_dir = args.output_dir
     if args.smoke_subset and output_dir is None:
         output_dir = ROOT / "output" / profile.output_id
-    cfg = load_config(args.config, mode=profile.profile_id, output_dir=output_dir)
+    core_commands = {"core-build", "core-validate", "core-readiness", "core-report"}
+    cfg = load_config(
+        args.config,
+        mode=profile.profile_id,
+        output_dir=None if args.command in core_commands else output_dir,
+    )
     cfg["profile_contract"] = {
         "requested_token": profile.requested_token,
         "profile_id": profile.profile_id,
@@ -115,6 +141,32 @@ def main() -> int:
     if args.command == "migrate-profile":
         result = migrate_legacy_profile(cfg, source_mode=args.from_mode)
         print(json.dumps(result, indent=2, default=str))
+        return 0
+    if args.command == "core-build":
+        with thread_limit_environment(plan):
+            result = build_core(cfg, output_override=output_dir)
+        print(
+            json.dumps(
+                {
+                    "status": result.validation["status"],
+                    "publication_status": result.publication_status,
+                    "output_root": str(result.output_root),
+                    "core_data_hash": result.manifest["core_data_hash"],
+                    "readiness": result.readiness,
+                },
+                indent=2,
+                default=str,
+            )
+        )
+        return 0
+    if args.command == "core-validate":
+        print(json.dumps(core_validate_existing(cfg, output_dir), indent=2, default=str))
+        return 0
+    if args.command == "core-readiness":
+        print(json.dumps(core_readiness_existing(cfg, output_dir), indent=2, default=str))
+        return 0
+    if args.command == "core-report":
+        print(core_report_existing(cfg, output_dir))
         return 0
     if args.command in {"build", "all", *executable_modes}:
         try:

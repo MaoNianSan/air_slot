@@ -2,7 +2,7 @@
 
 **Version**: 2026-07-17  
 **Status**: DATA_FOLDER_READY  
-**Project Root**: `D:\research\air_slot\code\explore`
+**Project Root**: the repository root (parent of `data/`, `pre/`, etc.)
 
 ---
 

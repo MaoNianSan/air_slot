@@ -1,0 +1,140 @@
+contract_id: AIR_CHAIN_CORE_V1
+schema_version: air-chain-core-1.0
+output_root: output_core
+tables:
+  episodes:
+    key: [chain_episode_id]
+    required:
+    - chain_episode_id
+    - predecessor_flight_id
+    - successor_flight_id
+    - airline_id
+    - aircraft_id
+    - rotation_id
+    - turnaround_airport
+    - chain_support_level
+    - chain_match_status
+    - episode_start_time
+    - episode_end_time
+    - terminal_status
+    - censoring_status
+    - split
+    - formal_eligible
+    - exclusion_reason
+  events:
+    key: [event_id]
+    required:
+    - event_id
+    - flight_id
+    - event_name
+    - event_time
+    - availability_time
+    - source_type
+    - source_field
+    - support_level
+    - reconstruction_method
+    - confidence
+    - source_record_id
+    - source_file
+    - source_hash
+    - quality_flags
+  observations:
+    key: [observation_id]
+    required:
+    - observation_id
+    - chain_episode_id
+    - flight_id
+    - source
+    - observation_date
+    - observation_time
+    - event_time
+    - availability_time
+    - source_record_id
+    - source_file
+    - source_hash
+    optional:
+    - airport_id
+    - aircraft_id
+    - latitude
+    - longitude
+    - altitude
+    - velocity
+    - vertical_rate
+    - heading
+    - onground
+    - wind_speed
+    - wind_gust
+    - visibility
+    - ceiling
+    - weather_code
+    - temperature
+    - dewpoint
+    - flow_count
+  calibration:
+    key: [reference_id]
+    required:
+    - reference_id
+    - reference_type
+    - group_key
+    - statistic
+    - reference_value
+    - cell_size
+    - fallback_level
+    - fit_start_time
+    - fit_end_time
+    - fit_split
+    - source_hash
+  evidence_audit:
+    key: [evidence_id]
+    required:
+    - evidence_id
+    - table
+    - entity_id
+    - variable_name
+    - raw_source
+    - raw_field
+    - source_record_id
+    - source_file
+    - source_hash
+    - event_time
+    - availability_time
+    - transformation
+    - support_level
+    - fallback_level
+    - missing_reason
+    - future_information_used
+manifest_required:
+- contract_id
+- schema_version
+- source_manifest_hash
+- source_schema_hash
+- column_registry_hash
+- event_contract_hash
+- chain_contract_hash
+- split_contract_hash
+- reference_contract_hash
+- pre_code_hash
+- created_at
+- mode
+- row_counts
+- partition_counts
+column_registry_required:
+- table
+- column
+- dtype
+- nullable
+- unit
+- roles
+- source_column
+- alias_target
+- preprocessing
+- evidence_support
+partitioning:
+  observations: [source, observation_date]
+enums:
+  event_names: [ATOT_MINUS, ALDT_MINUS, AIBT_MINUS, AOBT_PLUS, ATOT_PLUS]
+  support_levels: [OFFICIAL_OBSERVED, RECONSTRUCTED_HIGH, SUPPORTED_PROXY, FALLBACK_PROXY, UNSUPPORTED]
+  chain_support_levels: [OFFICIAL_ROTATION, SCHEDULE_AIRCRAFT_MATCH, RECONSTRUCTED_CHAIN, OBSERVED_CHAIN_PROXY, UNSUPPORTED]
+  chain_match_statuses: [MATCHED, AMBIGUOUS, UNMATCHED, UNSUPPORTED]
+  terminal_statuses: [NORMAL, CANCELLED, DIVERTED, AIRCRAFT_SWAP, DATA_END, UNSUPPORTED]
+  censoring_statuses: [OBSERVED, RIGHT_CENSORED, UNSUPPORTED]

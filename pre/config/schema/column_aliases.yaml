@@ -1,0 +1,29 @@
+aliases:
+  elapsed_ratio: snapshot_ratio
+  latitude: current_latitude
+  longitude: current_longitude
+  altitude: current_altitude
+  velocity: current_velocity
+
+core_aliases:
+  raw.flightlist.icao24: aircraft_id
+  raw.flightlist.firstseen: opensky_firstseen
+  raw.flightlist.lastseen: opensky_lastseen
+  raw.flightlist.origin: origin_airport
+  raw.flightlist.destination: destination_airport
+  raw.state_vectors.time: observation_time
+  raw.state_vectors.lat: latitude
+  raw.state_vectors.lon: longitude
+  raw.state_vectors.baroaltitude: altitude
+  raw.state_vectors.vertrate: vertical_rate
+  raw.metar.valid: observation_time
+  raw.metar.station: airport_id
+  raw.eurostat.rep_airp: airport_id
+  raw.eurostat.time: source_period
+
+forbidden_aliases:
+  - firstseen_to_AOBT
+  - firstseen_to_ATOT
+  - lastseen_to_ALDT
+  - lastseen_to_AIBT
+  - lastseen_to_ATOT

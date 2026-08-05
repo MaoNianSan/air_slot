@@ -31,6 +31,36 @@ def _read_yaml(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _load_schema(config_dir: Path) -> dict[str, Any]:
+    schema: dict[str, Any] = {}
+    schema_dir = config_dir / "schema"
+    sections = {
+        "legacy_tables.yaml": ["tables", "consumers"],
+        "column_roles.yaml": ["m1_required_inputs", "evidence_completeness_features"],
+        "column_aliases.yaml": ["aliases"],
+    }
+    for name, allowed in sections.items():
+        payload = _read_yaml(schema_dir / name)
+        payload = {key: payload[key] for key in allowed if key in payload}
+        overlap = sorted(set(schema) & set(payload))
+        if overlap:
+            raise ValueError("SCHEMA_SECTION_DUPLICATE=" + ",".join(overlap))
+        schema.update(payload)
+    return schema
+
+
+def _load_core_schema(config_dir: Path) -> dict[str, Any]:
+    schema_dir = config_dir / "schema"
+    core = _read_yaml(schema_dir / "core_tables.yaml")
+    roles = _read_yaml(schema_dir / "column_roles.yaml")
+    aliases = _read_yaml(schema_dir / "column_aliases.yaml")
+    core["role_definitions"] = roles.get("role_definitions", [])
+    core["column_roles"] = roles.get("core_column_roles", {})
+    core["column_aliases"] = aliases.get("core_aliases", {})
+    core["forbidden_aliases"] = aliases.get("forbidden_aliases", [])
+    return core
+
+
 def load_config(
     override_path: str | Path | None = None,
     *,
@@ -41,7 +71,8 @@ def load_config(
     config_dir = project_root / "config"
     config = _read_yaml(config_dir / "default.yaml")
     config["sources"] = _read_yaml(config_dir / "sources.yaml")["sources"]
-    config["schema"] = _read_yaml(config_dir / "schema.yaml")
+    config["schema"] = _load_schema(config_dir)
+    config["core_schema"] = _load_core_schema(config_dir)
     config["actions"] = {
         **_read_yaml(config_dir / "actions.yaml"),
         **v3_pre_action_contract(),
@@ -72,7 +103,7 @@ def load_config(
     config["cache_root"] = (project_root / "cache" / "state_extract_v2").resolve()
     hash_payload = {
         key: value for key, value in config.items()
-        if key not in {"project_root", "data_root", "output_root", "intermediate_root", "config_hash", "raw_hashes"}
+        if key not in {"project_root", "data_root", "output_root", "intermediate_root", "config_hash", "raw_hashes", "core_schema"}
     }
     config["config_hash"] = object_hash(hash_payload)
     _validate_config(config)

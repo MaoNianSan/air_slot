@@ -45,7 +45,7 @@ separate explicit operation and is not part of Fast reproduction.
 ## 6. CLI
 
 All commands assume the working directory is the **project root**
-(`../` relative to this README, i.e. `D:\research\air_slot\code\explore`).
+(`../` relative to this README, i.e. the parent of `pre/`).
 If your shell is inside the `pre/` directory, replace `pre/main.py` with
 `main.py` and `pre/clean.py` with `clean.py`.
 
