@@ -10,8 +10,6 @@ from .observation_weather import build_weather_observations
 
 COMMON_COLUMNS = [
     "observation_id",
-    "chain_episode_id",
-    "flight_id",
     "source",
     "observation_date",
     "observation_time",
@@ -22,21 +20,11 @@ COMMON_COLUMNS = [
     "source_hash",
     "airport_id",
     "aircraft_id",
-    "latitude",
-    "longitude",
-    "altitude",
-    "velocity",
-    "vertical_rate",
-    "heading",
-    "onground",
-    "wind_speed",
-    "wind_gust",
-    "visibility",
-    "ceiling",
-    "weather_code",
-    "temperature",
-    "dewpoint",
-    "flow_count",
+    "flight_id",
+]
+
+MEMBERSHIP_ONLY_COLUMNS = [
+    "chain_episode_id",
     "request_start",
     "request_end",
     "interval_type",
@@ -46,10 +34,28 @@ COMMON_COLUMNS = [
 
 def _align(frame: pd.DataFrame) -> pd.DataFrame:
     output = frame.copy()
+    legacy_membership_shape = "chain_episode_id" in output.columns
+    output = output.drop(
+        columns=[column for column in MEMBERSHIP_ONLY_COLUMNS if column in output],
+        errors="ignore",
+    )
     for column in COMMON_COLUMNS:
         if column not in output:
             output[column] = pd.NA
-    return output[COMMON_COLUMNS]
+    source_columns = [
+        column
+        for column in output.columns
+        if column not in COMMON_COLUMNS
+        and column not in {"raw_source_file", "raw_source_hash"}
+    ]
+    aligned = output[COMMON_COLUMNS + source_columns].copy()
+    if legacy_membership_shape:
+        # Keep the old helper contract available to legacy unit callers.  The
+        # V2 dataset writer removes these columns before persistence.
+        for column in MEMBERSHIP_ONLY_COLUMNS:
+            if column not in aligned:
+                aligned[column] = pd.NA
+    return aligned
 
 
 def build_observations(
@@ -67,16 +73,10 @@ def build_observations(
     if not nonempty:
         return pd.DataFrame(columns=COMMON_COLUMNS)
     observations = pd.concat(nonempty, ignore_index=True)
-    for column in [
-        "observation_time",
-        "event_time",
-        "availability_time",
-        "request_start",
-        "request_end",
-    ]:
+    for column in ["observation_time", "event_time", "availability_time"]:
         observations[column] = pd.to_datetime(observations[column], utc=True, errors="coerce")
     observations = observations.sort_values(
-        ["source", "observation_date", "chain_episode_id", "observation_time", "observation_id"],
+        ["source", "observation_date", "observation_time", "observation_id"],
         kind="mergesort",
     )
     return observations.reset_index(drop=True)

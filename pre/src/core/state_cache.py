@@ -11,6 +11,26 @@ from ..state import StateStore, _cache_key, extract_state_data
 from .observation_requests import observation_request_hashes
 
 
+V2_REQUIRED_STATE_CACHE_COLUMNS = {
+    "callsign", "alert", "spi", "squawk", "baroaltitude",
+    "geoaltitude", "lastposupdate", "lastcontact",
+}
+
+
+def _candidate_cache_has_v2_columns(root: Path) -> bool:
+    sample = next((root / "candidate_states").rglob("*.parquet"), None)
+    if sample is None:
+        return False
+    try:
+        import pyarrow.parquet as pq
+
+        return V2_REQUIRED_STATE_CACHE_COLUMNS.issubset(
+            pq.ParquetFile(sample).schema_arrow.names
+        )
+    except (OSError, ValueError):
+        return False
+
+
 def _merged_intervals(frame: pd.DataFrame) -> dict[str, list[tuple[pd.Timestamp, pd.Timestamp]]]:
     result: dict[str, list[tuple[pd.Timestamp, pd.Timestamp]]] = {}
     for code, group in frame.groupby("icao24", sort=False):
@@ -52,6 +72,7 @@ def _legacy_cache(cfg: dict[str, Any], requests: pd.DataFrame) -> tuple[StateSto
         "legacy_candidate_reused": False,
         "legacy_flow_reused": False,
         "legacy_reuse_reason": "LEGACY_CACHE_NOT_AVAILABLE",
+        "raw_column_cache_compatible": False,
     }
     if not manifest_path.exists():
         return None, report
@@ -81,15 +102,16 @@ def _legacy_cache(cfg: dict[str, Any], requests: pd.DataFrame) -> tuple[StateSto
         )
         candidate_ok = _contained(
             _merged_intervals(requests), _merged_intervals(legacy)
-        ) and (root / "candidate_states").exists()
+        ) and (root / "candidate_states").exists() and _candidate_cache_has_v2_columns(root)
     report.update(
         legacy_candidate_reused=candidate_ok,
         legacy_flow_reused=flow_ok,
         legacy_reuse_reason=(
             "FULL_INTERVAL_CONTAINMENT"
             if candidate_ok
-            else "CORE_INTERVAL_NOT_CONTAINED_IN_RATIO_CACHE"
+            else "LEGACY_CACHE_MISSING_V2_RAW_COLUMNS_OR_INTERVAL_COVERAGE"
         ),
+        raw_column_cache_compatible=_candidate_cache_has_v2_columns(root),
     )
     if not candidate_ok:
         return None, report
@@ -116,7 +138,7 @@ def prepare_state_cache(
             "cache_root": str(legacy_store.candidate_root.parent),
         }
         return store, pd.DataFrame(), manifest
-    base_root = cfg["project_root"] / "cache" / "state_extract_core_v1"
+    base_root = cfg["project_root"] / "cache" / "state_extract_core_v2"
     key = _cache_key(cfg, state_requests, airports)
     variant = base_root.parent / f"{base_root.name}-{key[:12]}"
     cache_root = variant if (variant / "cache_manifest.json").exists() else base_root

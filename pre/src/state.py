@@ -23,13 +23,15 @@ from .progress import progress_bar, stage_message
 STATE_NAME = re.compile(r"states_(\d{4}-\d{2}-\d{2})-(\d{2})\.csv\.tar$")
 STATE_COLUMNS = [
     "event_time", "availability_time", "icao24", "latitude", "longitude", "altitude",
-    "velocity", "vertical_rate", "heading", "onground", "state_is_imputed",
+    "velocity", "vertical_rate", "heading", "onground", "baroaltitude",
+    "geoaltitude", "callsign", "alert", "spi", "squawk", "lastposupdate",
+    "lastcontact", "state_is_imputed",
     "state_imputation_method", "state_imputation_gap_minutes", "raw_source_file",
     "raw_source_hash", "source_record_id", "source_date", "source_hour",
     "source_coverage_status",
 ]
 FLOW_COLUMNS = ["airport", "event_time", "availability_time", "icao24"]
-CACHE_FORMAT_VERSION = "state-flow-v3"
+CACHE_FORMAT_VERSION = "state-flow-v4-raw-columns"
 # The previous hash differs only because cache invalidation policy was moved
 # from destructive replacement to isolated variants; row extraction is byte-for-
 #-byte unchanged.  Record the one-time compatibility migration explicitly.
@@ -95,12 +97,20 @@ def _file_date_hour(path: Path) -> tuple[pd.Timestamp, int]:
 
 def _standardize_chunk(raw: pd.DataFrame, spec: dict[str, Any], path: Path, file_hash: str, date: pd.Timestamp, hour: int, coverage_status: str, cfg: dict[str, Any], row_offset: int) -> pd.DataFrame:
     frame = mapped(raw, spec["columns"], ["time", "icao24", "latitude", "longitude"])
+    # Preserve source-native columns alongside the canonical mapping.  Core V2
+    # classifies columns downstream; it does not discard them during extraction.
+    for raw_column in raw.columns:
+        if raw_column not in frame.columns:
+            frame[str(raw_column)] = raw[raw_column]
     frame["icao24"] = frame["icao24"].map(normalize_icao24)
     numeric_time = pd.to_numeric(frame["time"], errors="coerce")
     frame["event_time"] = pd.to_datetime(numeric_time, unit="s", utc=True, errors="coerce").where(numeric_time.notna(), pd.to_datetime(frame["time"], utc=True, errors="coerce"))
     frame["availability_time"] = frame["event_time"] + pd.to_timedelta(cfg["availability_lag_minutes"].get("state_vector", 0), unit="m")
     for column in ["latitude", "longitude", "altitude", "velocity", "vertical_rate", "heading"]:
         frame[column] = pd.to_numeric(frame[column], errors="coerce")
+    for column in ["baroaltitude", "geoaltitude", "lastposupdate", "lastcontact"]:
+        if column in frame:
+            frame[column] = pd.to_numeric(frame[column], errors="coerce")
     frame["onground"] = frame["onground"].astype("boolean")
     units = spec.get("input_units", {})
     if units.get("altitude") == "feet": frame["altitude"] *= 0.3048
@@ -109,7 +119,9 @@ def _standardize_chunk(raw: pd.DataFrame, spec: dict[str, Any], path: Path, file
     frame["raw_source_hash"] = file_hash
     frame["source_record_id"] = [f"{path.name}:{row_offset + i}" for i in range(len(frame))]
     frame["source_date"], frame["source_hour"], frame["source_coverage_status"] = date, hour, coverage_status
-    return apply_fill(frame, cfg)[STATE_COLUMNS]
+    frame = apply_fill(frame, cfg)
+    ordered = list(dict.fromkeys(STATE_COLUMNS + [str(column) for column in raw.columns]))
+    return frame[[column for column in ordered if column in frame.columns]]
 
 
 def _haversine(lat: pd.Series, lon: pd.Series, lat0: float, lon0: float) -> np.ndarray:

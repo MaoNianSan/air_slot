@@ -202,6 +202,9 @@ def load_metar(cfg: dict[str, Any]) -> pd.DataFrame:
     for path in progress_iter(files, total=len(files), description="METAR", unit="files", level=progress_level):
         raw = read_table(path)
         frame = mapped(raw, spec["columns"], ["airport", "observation_time"])
+        for raw_column in raw.columns:
+            if raw_column not in frame.columns:
+                frame[str(raw_column)] = raw[raw_column]
         if "precipitation_flag" in raw.columns:
             frame["precipitation_flag"] = raw["precipitation_flag"]
         frames.append(attach_provenance(frame, path))

@@ -20,14 +20,14 @@ def build_weather_observations(
         if relevant.empty:
             continue
         selected_mask = pd.Series(False, index=group.index)
-        split_values = pd.Series(pd.NA, index=group.index, dtype="string")
         for request in relevant.itertuples(index=False):
             mask = group["observation_time"].between(
                 request.request_start, request.request_end, inclusive="both"
             )
             selected_mask |= mask
-            split_values.loc[mask] = request.split
-        selected = group.loc[selected_mask].copy()
+        selected = group.loc[selected_mask].drop_duplicates(
+            "source_record_id", keep="last"
+        ).copy()
         if selected.empty:
             continue
         selected["chain_episode_id"] = pd.NA
@@ -38,10 +38,6 @@ def build_weather_observations(
         selected["airport_id"] = selected["airport"]
         selected["source_file"] = selected["raw_source_file"]
         selected["source_hash"] = selected["raw_source_hash"]
-        selected["request_start"] = pd.NaT
-        selected["request_end"] = pd.NaT
-        selected["interval_type"] = "SOURCE_UNION_FOR_ON_DEMAND_JOIN"
-        selected["split"] = split_values.loc[selected.index]
         selected["observation_id"] = [
             stable_id("weather", record_id) for record_id in selected["source_record_id"]
         ]

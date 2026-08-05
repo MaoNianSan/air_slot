@@ -61,6 +61,30 @@ def _load_core_schema(config_dir: Path) -> dict[str, Any]:
     return core
 
 
+def _stable_config_value(value: Any, key: str = "") -> Any:
+    volatile = {
+        "progress_level", "terminal_formatting", "terminal_format", "pid",
+        "process_id", "created_at", "temporary_staging_path", "staging_path",
+        "runtime_progress", "progress", "runtime_random", "random_seed_runtime",
+        "state_workers", "n_jobs", "requested_n_jobs", "outer_workers",
+        "inner_threads", "parallel_backend", "task_seed_hash",
+    }
+    if key in volatile or key.lower() in volatile:
+        return None
+    if isinstance(value, dict):
+        output: dict[str, Any] = {}
+        for name, item in sorted(value.items(), key=lambda pair: str(pair[0])):
+            cleaned = _stable_config_value(item, str(name))
+            if cleaned is not None:
+                output[str(name)] = cleaned
+        return output
+    if isinstance(value, (list, tuple)):
+        return [_stable_config_value(item, key) for item in value]
+    if isinstance(value, Path):
+        return str(value)
+    return value
+
+
 def load_config(
     override_path: str | Path | None = None,
     *,
@@ -102,8 +126,9 @@ def load_config(
     config["intermediate_root"] = intermediate_root if intermediate_root.is_absolute() else (project_root / intermediate_root).resolve()
     config["cache_root"] = (project_root / "cache" / "state_extract_v2").resolve()
     hash_payload = {
-        key: value for key, value in config.items()
-        if key not in {"project_root", "data_root", "output_root", "intermediate_root", "config_hash", "raw_hashes", "core_schema"}
+        str(key): _stable_config_value(value, str(key))
+        for key, value in config.items()
+        if key not in {"project_root", "data_root", "output_root", "intermediate_root", "config_hash", "raw_hashes"}
     }
     config["config_hash"] = object_hash(hash_payload)
     _validate_config(config)

@@ -1,11 +1,13 @@
 # Generated legacy PRE output
 output/
 
-# Generated PRE Core output and staging
+# Generated Core output and staging
 output_core/
 
-# Reusable local caches
+# Reusable local cache
 cache/
 
-# Local audit/debug reports
-reports/
+# Ignore local reports except curated published evidence
+reports/*
+!reports/published/
+!reports/published/**

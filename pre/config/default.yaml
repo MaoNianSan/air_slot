@@ -24,6 +24,14 @@ runtime:
   publication_allowed: false
   formal_baseline_replaced: false
 
+core_membership:
+  workers: 4
+  max_workers: 6
+  partition_unit: source_date
+  nested_parallelism: false
+  reduced_worker_partition_bytes: 1000000000
+  single_worker_partition_bytes: 2000000000
+
 # 左闭右开。正式 episode 还必须落在 state-vector 完整观测日。
 splits:
   train: ["2022-01-01", "2022-05-01"]

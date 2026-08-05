@@ -50,13 +50,11 @@ def build_flow_observations(
                 .reset_index()
             )
             selected_mask = pd.Series(False, index=counts.index)
-            split_values = pd.Series(pd.NA, index=counts.index, dtype="string")
             for request in relevant.itertuples(index=False):
                 mask = counts["event_time"].between(
                     request.request_start, request.request_end, inclusive="both"
                 )
                 selected_mask |= mask
-                split_values.loc[mask] = request.split
             selected = counts.loc[selected_mask].copy()
             if selected.empty:
                 continue
@@ -75,10 +73,10 @@ def build_flow_observations(
                 f"FLOW_COUNT:{airport}:{timestamp.isoformat()}"
                 for timestamp in selected["event_time"]
             ]
-            selected["request_start"] = pd.NaT
-            selected["request_end"] = pd.NaT
-            selected["interval_type"] = "SOURCE_UNION_FOR_ON_DEMAND_JOIN"
-            selected["split"] = split_values.loc[selected.index]
+            selected["flow_window_definition"] = (
+                "NATIVE_TIMESTAMP_UNIQUE_AIRCRAFT_WITHIN_CONFIGURED_AIRPORT_RADIUS"
+            )
+            selected["flow_source_lineage"] = selected["source_hash"]
             selected["observation_id"] = [
                 stable_id("flow", record_id) for record_id in selected["source_record_id"]
             ]

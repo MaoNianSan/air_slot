@@ -6,14 +6,13 @@ import pandas as pd
 def validate_observations(observations: pd.DataFrame) -> dict[str, object]:
     duplicate_ids = int(observations["observation_id"].duplicated().sum())
     missing_hash = int(observations["source_hash"].fillna("").astype(str).str.len().eq(0).sum())
-    outside_interval = int(
-        (
-            observations["request_start"].notna()
-            & (
-                observations["event_time"].lt(observations["request_start"])
-                | observations["event_time"].gt(observations["request_end"])
-            )
-        ).sum()
+    membership_columns = {
+        "chain_episode_id", "request_start", "request_end", "interval_type", "split"
+    }
+    embedded_membership_columns = sorted(
+        column
+        for column in membership_columns & set(observations.columns)
+        if observations[column].notna().any()
     )
     availability_before_event = int(
         observations["availability_time"].lt(observations["event_time"]).sum()
@@ -28,7 +27,7 @@ def validate_observations(observations: pd.DataFrame) -> dict[str, object]:
     status = (
         "PASS"
         if not any(
-            [duplicate_ids, missing_hash, outside_interval, availability_before_event, ratio_columns, missing_time]
+            [duplicate_ids, missing_hash, embedded_membership_columns, availability_before_event, ratio_columns, missing_time]
         )
         else "FAIL"
     )
@@ -39,7 +38,9 @@ def validate_observations(observations: pd.DataFrame) -> dict[str, object]:
         "rows_by_source": {str(key): int(value) for key, value in counts.items()},
         "duplicate_observation_ids": duplicate_ids,
         "missing_source_hash": missing_hash,
-        "outside_request_interval": outside_interval,
+        "outside_request_interval": 0,
+        "embedded_membership_columns": embedded_membership_columns,
+        "split_neutral": not embedded_membership_columns,
         "availability_before_event": availability_before_event,
         "missing_required_time": missing_time,
         "ratio_dependency_columns": ratio_columns,

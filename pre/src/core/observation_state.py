@@ -17,6 +17,7 @@ def _requests_on_date(requests: pd.DataFrame, date: pd.Timestamp) -> pd.DataFram
 
 
 def _assign_requests(group: pd.DataFrame, requests: pd.DataFrame) -> pd.DataFrame:
+    """Compatibility helper for legacy callers; Core V2 builders do not use it."""
     relevant = requests.sort_values("request_start", kind="mergesort").reset_index(drop=True)
     starts = relevant["request_start"].astype("int64").to_numpy()
     ends = relevant["request_end"].astype("int64").to_numpy()
@@ -42,6 +43,18 @@ def _assign_requests(group: pd.DataFrame, requests: pd.DataFrame) -> pd.DataFram
     return selected
 
 
+def _select_source_global(group: pd.DataFrame, requests: pd.DataFrame) -> pd.DataFrame:
+    if group.empty or requests.empty:
+        return group.iloc[0:0].copy()
+    mask = np.zeros(len(group), dtype=bool)
+    times = pd.to_datetime(group["event_time"], utc=True, errors="coerce")
+    for request in requests.itertuples(index=False):
+        mask |= times.between(
+            request.request_start, request.request_end, inclusive="both"
+        ).to_numpy()
+    return group.loc[mask].drop_duplicates("source_record_id", keep="last").copy()
+
+
 def build_state_observations(
     requests: pd.DataFrame, store: StateStore
 ) -> pd.DataFrame:
@@ -65,9 +78,10 @@ def build_state_observations(
         states["availability_time"] = utc_series(states["availability_time"])
         for code, state_group in states.groupby("icao24", sort=False):
             relevant = day_requests[day_requests["icao24"].eq(str(code))]
-            selected = _assign_requests(state_group, relevant)
+            selected = _select_source_global(state_group, relevant)
             if selected.empty:
                 continue
+            selected["flight_id"] = pd.NA
             selected["source"] = "state"
             selected["observation_time"] = selected["event_time"]
             selected["observation_date"] = selected["event_time"].dt.strftime("%Y-%m-%d")
@@ -78,4 +92,8 @@ def build_state_observations(
                 stable_id("state", record_id) for record_id in selected["source_record_id"]
             ]
             pieces.append(selected)
-    return pd.concat(pieces, ignore_index=True) if pieces else pd.DataFrame()
+    if not pieces:
+        return pd.DataFrame()
+    return pd.concat(pieces, ignore_index=True).drop_duplicates(
+        "observation_id", keep="last"
+    )

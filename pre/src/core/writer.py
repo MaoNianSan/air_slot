@@ -12,6 +12,8 @@ import pandas as pd
 import yaml
 
 from ..input import object_hash, write_json, write_parquet
+from .contracts import ResumeContract
+from .resume_contract import select_compatible_staging, write_resume_manifest
 
 
 def dataframe_hash(frame: pd.DataFrame, key: list[str] | None = None) -> str:
@@ -20,25 +22,43 @@ def dataframe_hash(frame: pd.DataFrame, key: list[str] | None = None) -> str:
         ordered = ordered.sort_values(key, kind="mergesort")
     ordered = ordered.reset_index(drop=True)
     digest = hashlib.sha256()
-    digest.update(object_hash({"columns": list(ordered.columns), "dtypes": [str(value) for value in ordered.dtypes]}).encode("ascii"))
+    digest.update(object_hash({"columns": list(ordered.columns)}).encode("ascii"))
     if len(ordered):
-        hashes = pd.util.hash_pandas_object(ordered.astype(str), index=False).values
+        normalized = ordered.astype("string").fillna("<CORE_NULL>")
+        hashes = pd.util.hash_pandas_object(normalized, index=False).values
         digest.update(hashes.tobytes())
     return digest.hexdigest()
 
 
-def begin_staging(output_root: Path, *, resume: bool = False) -> Path:
+def begin_staging(
+    output_root: Path,
+    *,
+    resume: bool = False,
+    resume_contract: ResumeContract | None = None,
+    audit_root: Path | None = None,
+) -> Path:
     output_root.parent.mkdir(parents=True, exist_ok=True)
-    if resume:
-        candidates = sorted(
-            output_root.parent.glob(f".{output_root.name}.staging-*"),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
+    if resume and resume_contract is not None:
+        selected, audit = select_compatible_staging(
+            output_root, resume_contract, audit_root=audit_root
         )
-        if candidates:
-            return candidates[0]
+        if selected is not None:
+            reports = selected / "reports"
+            reports.mkdir(parents=True, exist_ok=True)
+            write_json(audit, reports / "staging_resume_audit.json")
+            return selected
     staging = output_root.parent / f".{output_root.name}.staging-{uuid.uuid4().hex[:12]}"
     staging.mkdir(parents=True, exist_ok=False)
+    if resume_contract is not None:
+        write_resume_manifest(staging, resume_contract)
+        if resume:
+            _, audit = select_compatible_staging(
+                output_root, resume_contract, audit_root=audit_root
+            )
+            audit["created_staging"] = str(staging)
+            reports = staging / "reports"
+            reports.mkdir(parents=True, exist_ok=True)
+            write_json(audit, reports / "staging_resume_audit.json")
     return staging
 
 
@@ -50,9 +70,12 @@ def write_core_tables(
 ) -> dict[str, str]:
     hashes: dict[str, str] = {}
     for name, frame in tables.items():
-        write_parquet(frame, staging / f"{name}.parquet")
-        key = list(schema["tables"][name]["key"])
-        hashes[name] = dataframe_hash(frame, key)
+        persisted = frame.copy()
+        persisted.attrs = {}
+        write_parquet(persisted, staging / f"{name}.parquet")
+        spec = schema["tables"].get(name, {})
+        key = list(spec.get("key", []))
+        hashes[name] = dataframe_hash(persisted, key)
     registry_path = staging / "column_registry.yaml"
     registry_path.write_text(
         yaml.safe_dump({"columns": registry}, sort_keys=False, allow_unicode=False),

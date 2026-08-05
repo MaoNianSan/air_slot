@@ -220,3 +220,24 @@ As of 2026-08-05 the Core line is in **Phase 8 debug/validation**:
   unverified staging resume, and unsupported operational events. These are
   development blockers, not contract violations.
 
+## PRE Core V2
+
+Current implementation contract:
+
+- `AIR_CHAIN_CORE_V2`
+- `air-chain-core-2.0`
+- `AIR_CHAIN_CORE_V2_R2`
+
+The implementation includes:
+
+- source-global native-resolution observations;
+- partitioned many-to-many observation Membership;
+- `PASS_EMPTY` partition semantics;
+- research-oriented Resume identity;
+- independent bundle validation.
+
+Implementation validation reports are available under
+`pre/reports/published/core_v2/`.
+
+No formal Fast V2 bundle has been generated yet. Legacy PRE remains available
+for the existing downstream pipeline.

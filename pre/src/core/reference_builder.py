@@ -46,7 +46,7 @@ def _reference_row(
 
 def _turnaround_rows(episodes: pd.DataFrame, cfg: dict[str, Any]) -> list[dict[str, Any]]:
     train = episodes[
-        episodes["formal_eligible"]
+        episodes["engineering_eligible"].fillna(False).astype(bool)
         & episodes["split"].eq("train")
         & episodes["observed_ground_gap_minutes"].notna()
     ].copy()
@@ -65,22 +65,66 @@ def _turnaround_rows(episodes: pd.DataFrame, cfg: dict[str, Any]) -> list[dict[s
     return rows
 
 
-def _observation_rows(root: Path, source: str, cfg: dict[str, Any]) -> list[dict[str, Any]]:
+def _observation_rows(
+    root: Path,
+    source: str,
+    cfg: dict[str, Any],
+    membership_path: Path | None = None,
+) -> list[dict[str, Any]]:
     files = sorted((root / f"source={source}").rglob("*.parquet"))
     if not files:
         return []
     pieces = []
     columns = (
-        ["airport_id", "event_time", "flow_count", "source_hash", "split"]
+        ["observation_id", "airport_id", "event_time", "flow_count", "source_hash"]
         if source == "flow"
-        else ["airport_id", "event_time", "wind_speed", "visibility", "temperature", "source_hash", "split"]
+        else ["observation_id", "airport_id", "event_time", "wind_speed", "visibility", "temperature", "source_hash"]
     )
+    candidate_membership = membership_path or (root.parent / "observation_membership")
+    if candidate_membership.exists() and not candidate_membership.is_dir():
+        raise ValueError("REFERENCE_MEMBERSHIP_DATASET_DIRECTORY_REQUIRED")
     for path in files:
-        frame = pd.read_parquet(path, columns=columns)
-        pieces.append(frame[frame["split"].eq("train")])
-    data = pd.concat(pieces, ignore_index=True).drop_duplicates(
-        ["airport_id", "event_time"], keep="last"
-    )
+        import pyarrow.parquet as pq
+
+        available = set(pq.ParquetFile(path).schema_arrow.names)
+        selected_columns = [column for column in columns if column in available]
+        frame = pd.read_parquet(path, columns=selected_columns)
+        membership = None
+        if candidate_membership.is_dir():
+            date_directory = path.parent.name
+            membership_files = sorted(
+                (
+                    candidate_membership
+                    / f"source={source}"
+                    / date_directory
+                ).glob("*.parquet")
+            )
+            if membership_files:
+                membership = pd.concat(
+                    [
+                        pd.read_parquet(
+                            membership_file,
+                            columns=["observation_id", "source", "split"],
+                        )
+                        for membership_file in membership_files
+                    ],
+                    ignore_index=True,
+                )
+        if membership is not None:
+            train_ids = membership[
+                membership["source"].eq(source) & membership["split"].eq("train")
+            ][["observation_id"]].drop_duplicates()
+            frame = frame.merge(train_ids, on="observation_id", how="inner")
+        elif "split" in frame:
+            frame = frame[frame["split"].eq("train")]
+        else:
+            frame = frame.iloc[0:0]
+        pieces.append(frame)
+    nonempty = [piece for piece in pieces if not piece.empty]
+    if not nonempty:
+        return []
+    data = pd.concat(nonempty, ignore_index=True).drop_duplicates("observation_id", keep="last")
+    data = data.drop_duplicates(["airport_id", "event_time"], keep="last")
     rows: list[dict[str, Any]] = []
     fields = ["flow_count"] if source == "flow" else ["wind_speed", "visibility", "temperature"]
     for airport, group in data.groupby("airport_id", dropna=False):
@@ -127,10 +171,11 @@ def build_references(
     passengers: pd.DataFrame,
     commercial: pd.DataFrame,
     cfg: dict[str, Any],
+    membership_path: Path | None = None,
 ) -> pd.DataFrame:
     rows = _turnaround_rows(episodes, cfg)
-    rows.extend(_observation_rows(observation_root, "flow", cfg))
-    rows.extend(_observation_rows(observation_root, "weather", cfg))
+    rows.extend(_observation_rows(observation_root, "flow", cfg, membership_path))
+    rows.extend(_observation_rows(observation_root, "weather", cfg, membership_path))
     rows.extend(_passenger_rows(flights, passengers, commercial, cfg))
     rows.append(_reference_row("taxi_out", "GLOBAL", "UNSUPPORTED", np.nan, 0, "UNSUPPORTED", object_hash("NO_AOBT_SOURCE"), cfg))
     frame = pd.DataFrame(rows).sort_values(["reference_type", "group_key", "statistic"], kind="mergesort")

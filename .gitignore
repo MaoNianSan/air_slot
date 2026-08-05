@@ -121,3 +121,23 @@ reports/
 .mypy_cache/
 .ruff_cache/
 .pyright/
+
+# ============================================================
+# PRE local runtime artifacts
+# ============================================================
+
+/pre/output/
+/pre/output_core/
+/pre/cache/
+
+# Keep repository-wide report exclusions while allowing curated PRE evidence.
+!/pre/reports/
+/pre/reports/*
+!/pre/reports/published/
+!/pre/reports/published/**
+
+# Local benchmark/runtime outputs
+/pre/tools/output/
+*.benchmark.tmp
+*.profile
+*.prof

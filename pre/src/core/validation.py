@@ -7,6 +7,80 @@ import pandas as pd
 from .chain_validation import validate_chains
 from .column_registry import validate_column_registry
 from .event_validation import validate_events
+from .observation_membership import validate_observation_membership
+
+
+def core_statistics(
+    tables: dict[str, pd.DataFrame],
+    observation_validation: dict[str, Any],
+    membership_validation: dict[str, Any],
+    registry: list[dict[str, Any]],
+) -> dict[str, Any]:
+    episodes = tables.get("episodes", pd.DataFrame())
+    events = tables.get("events", pd.DataFrame())
+    calibration = tables.get("calibration", pd.DataFrame())
+    evidence = tables.get("evidence_audit", pd.DataFrame())
+    match_counts = (
+        episodes.get("chain_match_status", pd.Series(dtype="string"))
+        .value_counts(dropna=False)
+        .to_dict()
+    )
+    eligibility_counts = {
+        column: int(episodes.get(column, pd.Series(False, index=episodes.index)).fillna(False).astype(bool).sum())
+        for column in (
+            "core_eligible", "engineering_eligible",
+            "scientific_chain_eligible", "formal_eligible",
+        )
+    }
+    unsupported_labels = int(
+        episodes.get("label_missing_reason", pd.Series("", index=episodes.index))
+        .fillna("")
+        .ne("")
+        .sum()
+    )
+    future_information = int(
+        evidence.get(
+            "future_information_used", pd.Series(False, index=evidence.index)
+        )
+        .fillna(False)
+        .astype(bool)
+        .sum()
+    )
+    observation_partitions = observation_validation.get("partition_counts", {})
+    if isinstance(observation_partitions, dict) and observation_partitions:
+        observation_partition_count = sum(int(value) for value in observation_partitions.values())
+    else:
+        observation_partition_count = int(
+            observation_validation.get("partition_count", 0)
+        )
+    observation_pass_empty = int(observation_validation.get("pass_empty_count", 0))
+    membership_pass_empty = int(membership_validation.get("pass_empty", 0))
+    return {
+        "episodes_rows": len(episodes),
+        "events_rows": len(events),
+        "observation_rows": int(observation_validation.get("observation_rows", 0)),
+        "membership_rows": int(membership_validation.get("membership_rows", 0)),
+        "observation_partition_count": observation_partition_count,
+        "membership_partition_count": int(membership_validation.get("partition_count", 0)),
+        "observation_pass_empty_count": observation_pass_empty,
+        "membership_pass_empty_count": membership_pass_empty,
+        "pass_empty_count": observation_pass_empty + membership_pass_empty,
+        "duplicate_key_counts": {
+            "episodes": int(episodes.get("chain_episode_id", pd.Series(dtype="string")).duplicated().sum()),
+            "events": int(events.get("event_id", pd.Series(dtype="string")).duplicated().sum()),
+            "observations": int(observation_validation.get("duplicate_observation_ids", 0)),
+            "membership_ids": int(membership_validation.get("duplicate_membership_ids", 0)),
+            "membership_relations": int(membership_validation.get("duplicate_relations", 0)),
+        },
+        "chain_matched_count": int(match_counts.get("MATCHED", 0)),
+        "chain_ambiguous_count": int(match_counts.get("AMBIGUOUS", 0)),
+        "chain_unmatched_count": int(match_counts.get("UNMATCHED", 0)),
+        "eligibility_counts": eligibility_counts,
+        "unsupported_label_count": unsupported_labels,
+        "future_information_count": future_information,
+        "reference_row_count": len(calibration),
+        "registry_column_count": len(registry),
+    }
 
 
 def _table_contracts(
@@ -14,7 +88,7 @@ def _table_contracts(
 ) -> dict[str, Any]:
     failures: dict[str, Any] = {}
     for name, spec in cfg["core_schema"]["tables"].items():
-        if name == "observations":
+        if name in {"observations", "observation_membership"}:
             continue
         frame = tables.get(name)
         if frame is None:
@@ -79,6 +153,8 @@ def validate_core(
     observation_validation: dict[str, Any],
     registry: list[dict[str, Any]],
     cfg: dict[str, Any],
+    *,
+    membership_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     event = validate_events(tables["events"])
     chain = validate_chains(tables["episodes"])
@@ -88,6 +164,9 @@ def validate_core(
         tables["events"], tables["episodes"], tables["evidence_audit"]
     )
     column_registry = validate_column_registry(registry, cfg)
+    membership = membership_validation or validate_observation_membership(
+        tables.get("observation_membership", pd.DataFrame())
+    )
     components = {
         "tables": table,
         "events": event,
@@ -96,20 +175,41 @@ def validate_core(
         "references": reference,
         "leakage": leakage,
         "column_registry": column_registry,
+        "membership": membership,
     }
     status = "PASS" if all(value.get("status") == "PASS" for value in components.values()) else "FAIL"
-    return {"status": status, **components}
+    return {
+        "status": status,
+        **components,
+        "statistics": core_statistics(
+            tables, observation_validation, membership, registry
+        ),
+    }
 
 
 def build_readiness(validation: dict[str, Any], episodes: pd.DataFrame) -> dict[str, Any]:
-    formal_rows = int(episodes["formal_eligible"].sum())
-    engineering_ready = validation["status"] == "PASS" and formal_rows > 0
+    engineering_rows = int(
+        episodes["engineering_eligible"].fillna(False).astype(bool).sum()
+    )
+    scientific_rows = int(
+        episodes.get(
+            "scientific_chain_eligible", pd.Series(False, index=episodes.index)
+        )
+        .fillna(False)
+        .astype(bool)
+        .sum()
+    )
+    engineering_ready = validation["status"] == "PASS" and engineering_rows > 0
     labels_supported = episodes[["y_ob", "y_tx", "y_to"]].notna().all(axis=1).any()
     return {
         "status": "ENGINEERING_READY_FOR_ADAPTER" if engineering_ready else "NOT_READY",
         "engineering_ready": engineering_ready,
+        "engineering_adapter_ready": bool(engineering_ready),
+        "scientific_chain_ready": bool(validation["status"] == "PASS" and scientific_rows > 0),
         "scientific_status": "PASS" if labels_supported else "STOP_AND_REVIEW",
-        "formal_chain_rows": formal_rows,
+        "formal_chain_rows": engineering_rows,
+        "engineering_chain_rows": engineering_rows,
+        "scientific_chain_rows": scientific_rows,
         "supported_chain_labels": bool(labels_supported),
         "m1_migration_ready": bool(engineering_ready and labels_supported),
         "blockers": [] if labels_supported else ["AOBT_PLUS_AND_SOBT_UNSUPPORTED_FOR_CHAIN_LABELS"],

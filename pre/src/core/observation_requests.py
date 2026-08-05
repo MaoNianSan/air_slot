@@ -16,7 +16,8 @@ def build_observation_requests(
 ) -> pd.DataFrame:
     history = pd.to_timedelta(cfg["state_vectors"]["lookback_minutes"], unit="m")
     rows: list[dict[str, Any]] = []
-    eligible = episodes[episodes["formal_eligible"]].copy()
+    eligibility = episodes["engineering_eligible"]
+    eligible = episodes[eligibility.fillna(False).astype(bool)].copy()
     for episode in eligible.itertuples(index=False):
         start = pd.Timestamp(episode.episode_start_time) - history
         end = pd.Timestamp(episode.episode_end_time)
@@ -45,6 +46,7 @@ def build_observation_requests(
                     "date": start.normalize().tz_localize(None),
                     "interval_type": "INPUT_HISTORY_AND_ACTIVE_INTERVAL",
                     "episode_interval_hash": interval_hash,
+                    "episode_start_time": episode.episode_start_time,
                     "predecessor_lastseen_proxy": episode.predecessor_lastseen_proxy,
                     "successor_firstseen_proxy": episode.successor_firstseen_proxy,
                     "split": episode.split,
@@ -56,6 +58,7 @@ def build_observation_requests(
     for column in [
         "request_start",
         "request_end",
+        "episode_start_time",
         "predecessor_lastseen_proxy",
         "successor_firstseen_proxy",
     ]:

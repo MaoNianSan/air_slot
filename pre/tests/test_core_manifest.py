@@ -22,5 +22,5 @@ def test_core_manifest_contains_frozen_contract_hashes() -> None:
     )
     required = set(cfg["core_schema"]["manifest_required"])
     assert not required - set(manifest)
-    assert manifest["contract_id"] == "AIR_CHAIN_CORE_V1"
+    assert manifest["contract_id"] == "AIR_CHAIN_CORE_V2"
     assert len(manifest["core_data_hash"]) == 64
