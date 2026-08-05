@@ -6,6 +6,11 @@ import importlib.util
 
 import pandas as pd
 import pytest
+from downstream_common import (
+    FORMAL_TARGET_COLUMN,
+    FORMAL_TARGET_CONTRACT_VERSION,
+    SENSITIVITY_TARGET_COLUMN,
+)
 
 PARQUET_AVAILABLE = importlib.util.find_spec("pyarrow") is not None or importlib.util.find_spec("fastparquet") is not None
 requires_parquet = pytest.mark.skipif(not PARQUET_AVAILABLE, reason="Parquet engine not installed in lightweight test environment")
@@ -19,8 +24,8 @@ def _identity() -> dict[str, str]:
         "config_hash": "config",
         "implementation_hash": "implementation",
         "mode": "fast",
-        "formal_target_column": "y_movement_raw",
-        "formal_target_contract_version": "Y_MOVEMENT_RAW_V1_20260725",
+        "formal_target_column": FORMAL_TARGET_COLUMN,
+        "formal_target_contract_version": FORMAL_TARGET_CONTRACT_VERSION,
         "formal_target_definition_hash": "definition",
     }
 
@@ -39,7 +44,7 @@ def test_policy_checkpoint_round_trip_and_hash_rejection(tmp_path):
     with pytest.raises(ValueError, match="CHECKPOINT_HASH_MISMATCH:LOCAL_F:input_hash"):
         pipeline._load_policy_checkpoint(tmp_path, "LOCAL_F", changed, [score_path])
 
-    wrong_target = {**_identity(), "formal_target_column": "y_movement_model"}
+    wrong_target = {**_identity(), "formal_target_column": SENSITIVITY_TARGET_COLUMN}
     with pytest.raises(ValueError, match="CHECKPOINT_HASH_MISMATCH:LOCAL_F:formal_target_column"):
         pipeline._load_policy_checkpoint(tmp_path, "LOCAL_F", wrong_target, [score_path])
 

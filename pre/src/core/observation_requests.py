@@ -8,9 +8,6 @@ from ..input import object_hash
 from .contracts import OBSERVATION_CONTRACT_ID, stable_id, utc_series
 
 
-SOURCES = ("state", "weather", "flow")
-
-
 def build_observation_requests(
     episodes: pd.DataFrame, cfg: dict[str, Any]
 ) -> pd.DataFrame:
@@ -28,7 +25,7 @@ def build_observation_requests(
                 "end": str(end),
             }
         )
-        for source in SOURCES:
+        for source in cfg["request_contract"]["sources"]:
             rows.append(
                 {
                     "request_id": stable_id(
@@ -44,7 +41,7 @@ def build_observation_requests(
                     "request_start": start,
                     "request_end": end,
                     "date": start.normalize().tz_localize(None),
-                    "interval_type": "INPUT_HISTORY_AND_ACTIVE_INTERVAL",
+                    "interval_type": cfg["request_contract"]["interval_type"],
                     "episode_interval_hash": interval_hash,
                     "episode_start_time": episode.episode_start_time,
                     "predecessor_lastseen_proxy": episode.predecessor_lastseen_proxy,
@@ -78,7 +75,12 @@ def observation_request_hashes(requests: pd.DataFrame) -> dict[str, str]:
     )
     return {
         "request_contract_hash": object_hash(
-            {"id": OBSERVATION_CONTRACT_ID, "sources": SOURCES}
+            {
+                "id": OBSERVATION_CONTRACT_ID,
+                "sources": sorted(requests["source"].astype(str).unique())
+                if not requests.empty
+                else [],
+            }
         ),
         "episode_interval_hash": object_hash(intervals),
         "request_rows_hash": object_hash(payload),

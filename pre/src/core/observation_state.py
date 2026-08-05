@@ -16,33 +16,6 @@ def _requests_on_date(requests: pd.DataFrame, date: pd.Timestamp) -> pd.DataFram
     ]
 
 
-def _assign_requests(group: pd.DataFrame, requests: pd.DataFrame) -> pd.DataFrame:
-    """Compatibility helper for legacy callers; Core V2 builders do not use it."""
-    relevant = requests.sort_values("request_start", kind="mergesort").reset_index(drop=True)
-    starts = relevant["request_start"].astype("int64").to_numpy()
-    ends = relevant["request_end"].astype("int64").to_numpy()
-    times = group["event_time"].astype("int64").to_numpy()
-    positions = np.searchsorted(starts, times, side="right") - 1
-    matched = positions >= 0
-    matched[matched] &= times[matched] <= ends[positions[matched]]
-    selected = group.loc[matched].copy()
-    if selected.empty:
-        return selected
-    assigned = relevant.iloc[positions[matched]].reset_index(drop=True)
-    selected = selected.reset_index(drop=True)
-    selected["chain_episode_id"] = assigned["chain_episode_id"]
-    selected["flight_id"] = assigned["predecessor_flight_id"].astype("string")
-    after_predecessor = selected["event_time"].gt(assigned["predecessor_lastseen_proxy"])
-    selected.loc[after_predecessor, "flight_id"] = pd.NA
-    at_successor = selected["event_time"].ge(assigned["successor_firstseen_proxy"])
-    selected.loc[at_successor, "flight_id"] = assigned.loc[at_successor, "successor_flight_id"]
-    selected["request_start"] = assigned["request_start"]
-    selected["request_end"] = assigned["request_end"]
-    selected["interval_type"] = assigned["interval_type"]
-    selected["split"] = assigned["split"]
-    return selected
-
-
 def _select_source_global(group: pd.DataFrame, requests: pd.DataFrame) -> pd.DataFrame:
     if group.empty or requests.empty:
         return group.iloc[0:0].copy()

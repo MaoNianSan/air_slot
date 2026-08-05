@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from membership_test_data import brute_force_membership, state_observations, state_request
-from src.core.membership_interval_join import interval_join_partition
+from src.core.membership import interval_join_partition
 
 
 def test_interval_join_matches_brute_force_reference() -> None:

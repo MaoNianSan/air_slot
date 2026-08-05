@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from src.core.contracts import ResumeContract
-from src.core.observation_dataset import write_observation_dataset
+from src.core.observations import write_observation_dataset
 from src.state import StateStore
 
 

@@ -143,7 +143,7 @@ def reconstruct_current_metrics() -> dict[str, Any]:
     snapshots = pd.read_parquet(PRE_ROOT / "snapshots.parquet", columns=snapshot_columns)
     episodes = pd.read_parquet(
         PRE_ROOT / "episodes.parquet",
-        columns=["episode_id", "flight_id", "y_movement_raw", "split", "anchor_date"],
+        columns=["episode_id", "flight_id", FORMAL_TARGET, "split", "anchor_date"],
     )
     formal_reconstructed = _reconstruct_formal_cohort(snapshots, config)
     artifact_key_hash = cohort_hash(predictions["snapshot_id"])
@@ -197,12 +197,12 @@ def reconstruct_current_metrics() -> dict[str, Any]:
     validation_q95 = float(validation_y.quantile(0.95))
 
     model_frame_targets = snapshots[["episode_id", "split"]].merge(
-        episodes[["episode_id", "y_movement_raw"]], on="episode_id", validate="many_to_one"
+        episodes[["episode_id", FORMAL_TARGET]], on="episode_id", validate="many_to_one"
     )
     train_y = pd.to_numeric(
         model_frame_targets.loc[
             model_frame_targets["split"].astype(str).str.lower().isin({"train", "model"}),
-            "y_movement_raw",
+            FORMAL_TARGET,
         ],
         errors="coerce",
     ).dropna()

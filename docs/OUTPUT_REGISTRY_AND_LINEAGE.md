@@ -1,118 +1,65 @@
 # Output Registry and Lineage
 
-**Version**: R1.5
-**Modules**: `overall_run`, `overall_adv`, `part_adv`
+## PRE authority
 
-## Registry Architecture
+The current PRE bundle identity is defined in `pre/src/core/contracts.py` and
+must match `pre/config/schema/core_tables.yaml`:
 
-Each module publishes two registry tiers:
-
-| Module | Core Registry | Publication Registry |
-|--------|--------------|---------------------|
-| `overall_run` | 24 semantic artifacts | 113 census artifacts |
-| `overall_adv` | Artifact registry | N/A |
-| `part_adv` | Artifact registry | N/A |
-
-## overall_run Registry Contracts
-
-### Core Registry (`OVERALL_RUN_CORE_REGISTRY_V1_20260731`)
-
-24 required semantic artifact IDs:
-
-```
-action_metadata.parquet
-audit.parquet
-config_sources.json
-failure_records.parquet
-implementation_manifest.json
-m1.joblib
-m2.joblib
-m3.joblib
-m3_action_library.parquet
-m3_response_audit.parquet
-m3_response_parameters.parquet
-m3_response_samples.parquet
-m4.joblib
-m4_action_scores.parquet
-m4_candidate_screen.parquet
-m4_rankings.parquet
-m4_recommendations.parquet
-merged_config.json
-model_contract.json
-parameter_manifest.json
-parameter_manifest.parquet
-run_manifest.json
-run_summary.json
-scientific_gate.json
+```text
+AIR_CHAIN_CORE_V2
+air-chain-core-2.0
+AIR_CHAIN_CORE_V2_R2
 ```
 
-Each entry records: `sha256`, `file_size`, `created_at`, `artifact_entry_schema_version`.
+## Bundle layout
 
-### Publication Registry (`OVERALL_RUN_PUBLICATION_REGISTRY_V1_20260731`)
-
-Includes all core artifacts PLUS publication-generated files:
-
-```
-publication_manifest.json
-tables/core/table01_m1_distributional_validity.parquet
-tables/core/table03_m2_channel_cost_summary.parquet
-tables/core/table04_m3_response_library.parquet
-tables/core/table05_m4_screening_and_recommendation.parquet
-tables/core/figure_metadata.parquet
-figures/figure_metadata.json
-logs/publication.log
-figures/core/fig01_*.{png,pdf,svg}
-figures/core/fig02_*.{png,pdf,svg}
-figures/core/fig03_*.{png,pdf,svg}
-figures/core/fig04_*.{png,pdf,svg}
-figures/core/fig05_*.{png,pdf,svg}
-audits/m4_*.{csv,parquet}
+```text
+output_core/<mode>/AIR_CHAIN_CORE_V2/
+  pre_manifest.json
+  episodes.parquet
+  events.parquet
+  calibration.parquet
+  evidence_audit.parquet
+  column_registry.yaml
+  observations/source=<source>/observation_date=<date>/...
+  observation_membership/source=<source>/observation_date=<date>/...
+  reports/
 ```
 
-The publication census count (113 in current R1) is a per-run version result,
-NOT a fixed constant.
+The two partition manifests record `PASS`, `PASS_EMPTY`, failure, and in-flight
+states. A legal empty partition has no Parquet file.
 
-## Lineage Chain
+## Manifest lineage
 
-```
-data/ (read-only)
-  └── pre/output/fast/
-        ├── episodes.parquet
-        ├── snapshots.parquet
-        ├── calibration.parquet
-        ├── rules.parquet
-        └── evidence_audit.parquet
-              └── overall_run/output/fast/
-                    ├── m1.joblib, m2.joblib, m3.joblib, m4.joblib
-                    ├── artifact_registry.json (core → publication)
-                    └── publication_manifest.json
-                          ├── overall_adv/output/fast/
-                          │     └── common_support_cohort.json
-                          └── part_adv/output/fast/
-                                └── common_support_cohort.json
-```
+`pre_manifest.json` records contract identity, source and schema hashes, frozen
+configuration, event/chain/split/reference/observation/registry contract
+hashes, implementation provenance, row and partition counts, file hashes, and
+the logical data hash.
 
-## Lineage Validation
+The independent validator enumerates the physical bundle and recomputes these
+facts. Stored validation JSON is evidence, not authority.
 
-Each downstream module records its upstream binding:
+## Observation lineage
 
-| Field | Meaning |
-|-------|---------|
-| `upstream_run_id` | The authoritative overall_run run_id |
-| `upstream_registry_hash` | Hash of the upstream artifact_registry.json |
-| `common_support_cohort_hash` | Hash of the shared evaluation cohort |
-| `upstream_formal_target_column` | Must be `y_movement_raw` |
+Observations are source-global and split-neutral. Each row retains native event
+and availability time plus source record, file, and hash. Chain and split
+ownership lives only in Membership.
 
-Formal validators check:
-- `upstream_run_id` matches expected
-- `common_support_cohort_hash` is consistent across modules
-- `stale_artifacts=0`
-- Registry hashes are intact
+## Membership lineage
 
-## Invariants
+Membership is a many-to-many interval relation. It records the chain episode,
+request interval, split, role, availability support, and membership reason for
+each admitted observation relation.
 
-- Core registry count is 24 (frozen semantic contract)
-- Publication census varies by run (not fixed to any number)
-- `common_support_cohort_hash` must be identical in overall_adv and part_adv
-- Downstream modules read published artifacts only, never raw data
-- Registry JSON is never manually edited
+## Reference lineage
+
+References are fit only from training Membership joined to observations, with
+observation IDs deduplicated before fitting. Each reference includes fit period,
+cell size, fallback level, split, and source hash.
+
+## Downstream boundary
+
+No current downstream registry is valid against PRE V2. The future M1 Adapter
+must publish its own explicit input and output lineage before M1-M4 execution is
+re-enabled. The existing entry points stop with `PRE_CONTRACT_MISMATCH` and do
+not silently fall back to historical artifacts.

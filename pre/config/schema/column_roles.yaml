@@ -1,78 +1,3 @@
-m1_required_inputs:
-  continuous:
-  - elapsed_ratio
-  - latitude
-  - longitude
-  - altitude
-  - velocity
-  - vertical_rate
-  - trajectory_coverage
-  - state_observation_age
-  - wind_speed
-  - wind_gust
-  - visibility
-  - ceiling
-  - temperature_dewpoint_spread
-  - metar_age
-  - airport_flow_pressure
-  - continuity_exposure
-  - turnaround_margin
-  - execution_window_margin
-  - lead_time_margin
-  - runway_count
-  - airport_scale
-  - has_predecessor_candidate
-  - has_supported_predecessor
-  - predecessor_observed_duration
-  - predecessor_endpoint_quality
-  - predecessor_trajectory_coverage
-  - predecessor_registration_match
-  - predecessor_typecode_match
-  - predecessor_aircraft_group
-  - observed_ground_gap_minutes
-  - ground_gap_deviation_from_reference
-  - airport_continuity
-  - predecessor_movement_deviation_proxy
-  - predecessor_completion_state
-  - turnaround_pressure_proxy
-  - continuation_risk_proxy
-  - previous_leg_observation_quality
-  - predecessor_match_confidence
-  - predecessor_evidence_tier
-  - predecessor_support_rule
-  - predecessor_support_status
-  - predecessor_rejection_reason
-  categorical:
-  - airport
-  - origin
-  - destination
-  - aircraft_group
-  - month
-  - time_bin
-  - snapshot_stage
-  - weather_code
-evidence_completeness_features:
-- current_latitude
-- current_longitude
-- current_altitude
-- current_velocity
-- vertical_rate
-- trajectory_coverage
-- state_observation_age
-- wind_speed
-- wind_gust
-- visibility
-- ceiling
-- temperature_dewpoint_spread
-- metar_age
-- airport_flow_pressure
-- continuity_exposure
-- turnaround_margin
-- execution_window_margin
-- lead_time_margin
-- runway_count
-- airport_scale
-
 role_definitions:
 - IDENTITY
 - TIME
@@ -99,7 +24,6 @@ core_column_roles:
   episode_start_time: [TIME]
   episode_end_time: [TIME, TARGET_SOURCE, FORBIDDEN_MODEL_INPUT]
   split: [LINEAGE, CATEGORICAL]
-  formal_eligible: [QUALITY, AUDIT_ONLY]
   core_eligible: [QUALITY, AUDIT_ONLY]
   engineering_eligible: [QUALITY, AUDIT_ONLY]
   scientific_chain_eligible: [QUALITY, AUDIT_ONLY]

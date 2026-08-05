@@ -10,11 +10,12 @@ from pathlib import Path
 from typing import Any, Callable, TypeVar
 
 import pandas as pd
+from pre_contract_gate import require_m1_adapter
 from ranking_contract import RANKING_CONTRACT_VERSION, RANKING_DEPTHS
 
-FORMAL_TARGET_COLUMN = "y_movement_raw"
-SENSITIVITY_TARGET_COLUMN = "y_movement_model"
-FORMAL_TARGET_CONTRACT_VERSION = "Y_MOVEMENT_RAW_V1_20260725"
+FORMAL_TARGET_COLUMN = "__M1_ADAPTER_REQUIRED__"
+SENSITIVITY_TARGET_COLUMN = "__M1_ADAPTER_SENSITIVITY_UNAVAILABLE__"
+FORMAL_TARGET_CONTRACT_VERSION = "M1_ADAPTER_PENDING"
 THREAD_ENVIRONMENT_VARIABLES = (
     "OMP_NUM_THREADS",
     "MKL_NUM_THREADS",
@@ -159,6 +160,7 @@ def spawn_probe(value: str) -> str:
 
 
 def require_formal_target_metadata(metadata: dict[str, Any], source: str) -> str:
+    require_m1_adapter()
     if metadata.get("formal_target_column") != FORMAL_TARGET_COLUMN:
         raise ValueError(f"{source}_FORMAL_TARGET_INVALID")
     if metadata.get("formal_target_contract_version") != FORMAL_TARGET_CONTRACT_VERSION:
@@ -217,6 +219,7 @@ def load_common_passenger_cohort(
     frozen by exactly the same keys and support predicate.
     """
 
+    require_m1_adapter()
     resolved_pre_mode = pre_mode or mode
     overall_root = project_root / "overall_run" / "output" / mode
     pre_root = project_root / "pre" / "output" / resolved_pre_mode

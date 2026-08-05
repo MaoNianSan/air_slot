@@ -32,10 +32,8 @@ STATE_COLUMNS = [
 ]
 FLOW_COLUMNS = ["airport", "event_time", "availability_time", "icao24"]
 CACHE_FORMAT_VERSION = "state-flow-v4-raw-columns"
-# The previous hash differs only because cache invalidation policy was moved
-# from destructive replacement to isolated variants; row extraction is byte-for-
-#-byte unchanged.  Record the one-time compatibility migration explicitly.
-COMPATIBLE_EXTRACTION_CODE_HASHES = {
+# These implementation hashes produced byte-identical cache partitions.
+EQUIVALENT_EXTRACTION_CODE_HASHES = {
     "017518cc95259b0e21a696c61e588d1f3294531d62bd92f6e83ad943dafac097",
     # Sequential implementation preceding bounded archive-level concurrency.
     # Partition contents and cache format are unchanged.
@@ -198,7 +196,7 @@ def _cache_key(cfg: dict[str, Any], requests: pd.DataFrame, airports: pd.DataFra
         }),
         "core_airports": sorted(cfg["airports"]["core"]),
         "airport_coordinates": airports[["airport", "airport_latitude", "airport_longitude"]].fillna("").to_dict("records"),
-        "snapshot_request_hash": object_hash(requests[["icao24", "request_start", "request_end"]].astype(str).to_dict("records")),
+        "request_interval_hash": object_hash(requests[["icao24", "request_start", "request_end"]].astype(str).to_dict("records")),
         "state_lookback": cfg["state_vectors"]["lookback_minutes"], "flow_lookback": cfg["flow"]["lookback_minutes"],
         "flow_radius": cfg["flow"]["airport_radius_km"], "dedup_key": cfg["flow"]["dedup_key"],
         "extraction_code_hash": sha256_file(Path(__file__)),
@@ -209,16 +207,16 @@ def _cache_key(cfg: dict[str, Any], requests: pd.DataFrame, airports: pd.DataFra
 def extract_state_data(cfg: dict[str, Any], requests: pd.DataFrame, airports: pd.DataFrame, coverage: pd.DataFrame, cache_root: Path) -> tuple[StateStore, pd.DataFrame, dict[str, Any]]:
     """Build/reuse atomic date-hour state and airport-flow cache partitions.
 
-    Candidate retention is constrained to snapshot lookback requests; flow records are
+    Candidate retention is constrained to observation request intervals; flow records are
     spatially mapped once during streaming and never distance-filtered downstream.
     """
     spec, files = cfg["sources"]["state_vectors"], discover_files(cfg["project_root"], cfg["data_root"], cfg["sources"]["state_vectors"])
     requests = requests.copy()
     requests["date"] = pd.to_datetime(requests["date"]).dt.normalize()
-    # Airport-flow pressure is only needed at snapshot dates.  Do not stream
+    # Airport-flow pressure is only needed at requested dates.  Do not stream
     # otherwise complete archives merely because they happen to be discoverable.
     # Archive filenames identify UTC calendar dates without a timezone, while
-    # snapshot requests are UTC-aware.  Normalize both sides to timezone-naive
+    # observation requests are UTC-aware. Normalize both sides to timezone-naive
     # UTC midnights before comparing them; otherwise no archive date can match
     # a requested date and every file is silently filtered out.
     requested_dates = set(pd.concat([
@@ -236,7 +234,7 @@ def extract_state_data(cfg: dict[str, Any], requests: pd.DataFrame, airports: pd
         previous_inputs = old.get("cache_inputs", {})
         compatible_subset = (
             old.get("format") == CACHE_FORMAT_VERSION
-            and previous_inputs.get("extraction_code_hash") in (COMPATIBLE_EXTRACTION_CODE_HASHES | {sha256_file(Path(__file__))})
+            and previous_inputs.get("extraction_code_hash") in (EQUIVALENT_EXTRACTION_CODE_HASHES | {sha256_file(Path(__file__))})
             and float(previous_inputs.get("state_lookback_minutes", -1)) == float(cfg["state_vectors"]["lookback_minutes"])
             and float(previous_inputs.get("flow_lookback_minutes", -1)) == float(cfg["flow"]["lookback_minutes"])
             and float(previous_inputs.get("flow_radius_km", -1)) == float(cfg["flow"]["airport_radius_km"])
@@ -266,7 +264,7 @@ def extract_state_data(cfg: dict[str, Any], requests: pd.DataFrame, airports: pd
         old["compatible_subset_reuse"] = bool(compatible_subset)
     candidate_root, flow_root = cache_root / "candidate_states", cache_root / "flow_states"
     intervals = _merge_intervals(requests)
-    complete_dates = set(pd.to_datetime(coverage.loc[coverage["formal_eligible"], "date"]).dt.normalize())
+    complete_dates = set(pd.to_datetime(coverage.loc[coverage["complete_day_eligible"], "date"]).dt.normalize())
     coverage_lookup = coverage.set_index(["date", "hour"])["coverage_status"].to_dict() if not coverage.empty else {}
     core = airports[airports["airport"].isin(cfg["airports"]["core"])].copy()
     # Worker threads only need the immutable cache state that existed at the

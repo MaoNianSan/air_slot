@@ -6,7 +6,7 @@ from membership_dataset_test_utils import (
     weather_request,
     write_observation_partition,
 )
-from src.core.membership_dataset import write_membership_dataset
+from src.core.membership import write_membership_dataset
 
 
 def test_membership_dataset_records_no_matching_identity_as_pass_empty(tmp_path) -> None:

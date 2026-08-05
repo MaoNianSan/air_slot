@@ -49,9 +49,9 @@ m1:
   - 0.1
   - 0.5
   - 0.9
-  formal_target: y_movement_raw
-  sensitivity_target: y_movement_model
-  formal_target_contract_version: Y_MOVEMENT_RAW_V1_20260725
+  formal_target: __M1_ADAPTER_REQUIRED__
+  sensitivity_target: __M1_ADAPTER_SENSITIVITY_UNAVAILABLE__
+  formal_target_contract_version: M1_ADAPTER_PENDING
   split_candidates:
   - split
   - subset_role
@@ -154,7 +154,6 @@ m1:
   required_feature_groups:
     progress:
     - elapsed_ratio
-    - snapshot_ratio
     motion:
     - current_velocity
     - velocity

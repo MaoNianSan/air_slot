@@ -31,7 +31,7 @@ def _inventory_record(source: str, path: Path, spec: dict[str, Any]) -> dict[str
         "source_version": spec.get("version", ""),
         "date": pd.NaT,
         "hour": pd.NA,
-        "formal_eligible": pd.NA,
+        "complete_day_eligible": pd.NA,
         "coverage_status": "NOT_APPLICABLE",
     }
     match = STATE_NAME.match(path.name)
@@ -83,10 +83,10 @@ def inventory(cfg: dict[str, Any], *, allow_missing_required: bool = False) -> p
         required_hours = int(cfg["validation"]["complete_day_hours"])
         complete_dates = set(day_counts[day_counts >= required_hours].index)
         mask = frame["source"] == "state_vectors"
-        frame.loc[mask, "formal_eligible"] = frame.loc[mask, "date"].isin(complete_dates)
+        frame.loc[mask, "complete_day_eligible"] = frame.loc[mask, "date"].isin(complete_dates)
         frame.loc[mask, "coverage_status"] = frame.loc[mask].apply(
-            lambda row: "FORMAL_COMPLETE_DAY" if bool(row["formal_eligible"]) else (
-                "UNREADABLE" if not bool(row["readable"]) else "RETAINED_LEGACY_PARTIAL"
+            lambda row: "COMPLETE_DAY" if bool(row["complete_day_eligible"]) else (
+                "UNREADABLE" if not bool(row["readable"]) else "READABLE_PARTIAL_DAY"
             ), axis=1
         )
     return frame.sort_values(["source", "relative_path"]).reset_index(drop=True)
@@ -96,7 +96,7 @@ def state_coverage_calendar(inventory_frame: pd.DataFrame, cfg: dict[str, Any]) 
     state = inventory_frame[inventory_frame["source"] == "state_vectors"].copy()
     if state.empty:
         return pd.DataFrame(columns=[
-            "date", "hour", "file_exists", "archive_readable", "file_count", "row_count", "time_min", "time_max", "formal_eligible", "coverage_status"
+            "date", "hour", "file_exists", "archive_readable", "file_count", "row_count", "time_min", "time_max", "complete_day_eligible", "coverage_status"
         ])
     observed_dates = pd.to_datetime(state["date"], errors="coerce").dropna().dt.normalize().unique()
     if len(observed_dates) == 0:
@@ -112,9 +112,9 @@ def state_coverage_calendar(inventory_frame: pd.DataFrame, cfg: dict[str, Any]) 
             exists = not cell.empty
             readable = bool(cell["readable"].all()) if exists else False
             if complete and exists and readable:
-                status = "FORMAL_COMPLETE_DAY"
+                status = "COMPLETE_DAY"
             elif exists and readable:
-                status = "RETAINED_LEGACY_PARTIAL"
+                status = "READABLE_PARTIAL_DAY"
             elif exists:
                 status = "UNREADABLE"
             else:
@@ -128,7 +128,7 @@ def state_coverage_calendar(inventory_frame: pd.DataFrame, cfg: dict[str, Any]) 
                 "row_count": pd.NA,
                 "time_min": pd.NaT,
                 "time_max": pd.NaT,
-                "formal_eligible": complete and exists and readable,
+                "complete_day_eligible": complete and exists and readable,
                 "coverage_status": status,
             })
     output = pd.DataFrame(rows)
@@ -138,7 +138,7 @@ def state_coverage_calendar(inventory_frame: pd.DataFrame, cfg: dict[str, Any]) 
         output["row_count"] = pd.to_numeric(output["row_count"], errors="coerce").astype("Int64")
         output["time_min"] = pd.to_datetime(output["time_min"], utc=True, errors="coerce")
         output["time_max"] = pd.to_datetime(output["time_max"], utc=True, errors="coerce")
-        output["formal_eligible"] = output["formal_eligible"].fillna(False).astype(bool)
+        output["complete_day_eligible"] = output["complete_day_eligible"].fillna(False).astype(bool)
     return output
 
 

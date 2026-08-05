@@ -1,0 +1,59 @@
+from __future__ import annotations
+
+import pandas as pd
+
+
+def validate_observations(observations: pd.DataFrame) -> dict[str, object]:
+    duplicate_ids = int(observations["observation_id"].duplicated().sum())
+    missing_hash = int(
+        observations["source_hash"].fillna("").astype(str).str.len().eq(0).sum()
+    )
+    membership_columns = {
+        "chain_episode_id",
+        "request_start",
+        "request_end",
+        "interval_type",
+        "split",
+    }
+    embedded = sorted(
+        column
+        for column in membership_columns & set(observations.columns)
+        if observations[column].notna().any()
+    )
+    availability_before_event = int(
+        observations["availability_time"].lt(observations["event_time"]).sum()
+    )
+    ratio_columns = [
+        column for column in observations.columns if "ratio" in column.lower()
+    ]
+    missing_time = int(
+        observations[["observation_time", "event_time", "availability_time"]]
+        .isna()
+        .any(axis=1)
+        .sum()
+    )
+    errors = [
+        duplicate_ids,
+        missing_hash,
+        embedded,
+        availability_before_event,
+        ratio_columns,
+        missing_time,
+    ]
+    counts = observations.groupby("source").size().to_dict()
+    status = "PASS" if not any(errors) else "FAIL"
+    return {
+        "status": status,
+        "observation_rows": len(observations),
+        "rows_by_source": {str(key): int(value) for key, value in counts.items()},
+        "duplicate_observation_ids": duplicate_ids,
+        "missing_source_hash": missing_hash,
+        "outside_request_interval": 0,
+        "embedded_membership_columns": embedded,
+        "split_neutral": not embedded,
+        "availability_before_event": availability_before_event,
+        "missing_required_time": missing_time,
+        "ratio_dependency_columns": ratio_columns,
+        "native_resolution_preserved": not ratio_columns,
+        "on_demand_evidence_supported": status == "PASS",
+    }

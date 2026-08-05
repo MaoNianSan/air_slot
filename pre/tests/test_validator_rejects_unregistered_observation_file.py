@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from core_v2_bundle_fixture import build_synthetic_bundle
-from src.core.existing_bundle_validator import validate_existing_bundle
+from src.core.validation import validate_existing_bundle
 
 
 def test_validator_rejects_unregistered_observation_file(tmp_path) -> None:

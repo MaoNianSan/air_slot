@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.core.observation_dataset import write_observation_dataset
+from src.core.observations import write_observation_dataset
 from src.state import StateStore
 from test_core_v2_synthetic_resume_smoke import _resume_contract
 

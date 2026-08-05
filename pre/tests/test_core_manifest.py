@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.core.pipeline import _manifest
+from src.core.finalization import build_manifest
 from core_fixtures import core_cfg
 
 
@@ -11,7 +11,7 @@ def test_core_manifest_contains_frozen_contract_hashes() -> None:
     inventory = pd.DataFrame(
         [{"source": "flightlist", "relative_path": "raw.csv", "sha256": "a" * 64, "size_bytes": 1}]
     )
-    manifest = _manifest(
+    manifest = build_manifest(
         cfg,
         inventory,
         "b" * 64,

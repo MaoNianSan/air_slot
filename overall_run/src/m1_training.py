@@ -10,6 +10,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
+from .input import FORMAL_TARGET_COLUMN
+
 
 def prepare_model_frame(
     snapshots: pd.DataFrame,
@@ -18,17 +20,17 @@ def prepare_model_frame(
 ) -> tuple[pd.DataFrame, list[str], list[str], list[str]]:
     """Build the formal raw-label M1 frame and frozen feature schema."""
     configured = scientific.get("m1", {}).get("formal_target")
-    if configured != "y_movement_raw" or "target_candidates" in scientific.get("m1", {}):
+    if configured != FORMAL_TARGET_COLUMN or "target_candidates" in scientific.get("m1", {}):
         raise RuntimeError("FORMAL_TARGET_CONFIG_INVALID")
-    if "y_movement_raw" not in episodes.columns:
-        raise RuntimeError("FORMAL_TARGET_MISSING:y_movement_raw")
-    target_columns = ["episode_id", "y_movement_raw"]
+    if FORMAL_TARGET_COLUMN not in episodes.columns:
+        raise RuntimeError("FORMAL_TARGET_MISSING:M1_ADAPTER_REQUIRED")
+    target_columns = ["episode_id", FORMAL_TARGET_COLUMN]
     if "target" in episodes.columns:
         target_columns.append("target")
     frame = snapshots.merge(
         episodes[target_columns], on="episode_id", how="left", validate="many_to_one"
     )
-    raw = pd.to_numeric(frame["y_movement_raw"], errors="coerce")
+    raw = pd.to_numeric(frame[FORMAL_TARGET_COLUMN], errors="coerce")
     if "target" in frame:
         alias = pd.to_numeric(frame["target"], errors="coerce")
         mismatch = ~(alias.eq(raw) | (alias.isna() & raw.isna()))

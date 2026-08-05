@@ -11,6 +11,7 @@ import time
 from lightgbm import LGBMRegressor, early_stopping, log_evaluation
 from sklearn.compose import ColumnTransformer
 
+from .input import FORMAL_TARGET_COLUMN, FORMAL_TARGET_CONTRACT_VERSION
 from .m1_baseline import HistoricalBaseline
 from .m1_calibration import (
     apply_residual_calibration,
@@ -50,8 +51,8 @@ class M1Artifact:
     selected_config: dict[str, Any]
     excluded_all_missing_features: list[str] = field(default_factory=list)
     training_nonmissing_counts: dict[str, int] = field(default_factory=dict)
-    target_column: str = "y_movement_raw"
-    formal_target_contract_version: str = "Y_MOVEMENT_RAW_V1_20260725"
+    target_column: str = FORMAL_TARGET_COLUMN
+    formal_target_contract_version: str = FORMAL_TARGET_CONTRACT_VERSION
     formal_target_definition_hash: str = ""
     training_label_hash: str = ""
     validation_label_hash: str = ""

@@ -8,6 +8,7 @@ from typing import Any
 import pandas as pd
 import numpy as np
 
+from pre_contract_gate import require_m1_adapter
 from .failures import FormalRunBlocked
 from .utils import first_existing, sha256_file
 
@@ -19,9 +20,9 @@ TABLE_FILES = {
     "evidence_audit": "evidence_audit.parquet",
 }
 
-FORMAL_TARGET_COLUMN = "y_movement_raw"
-SENSITIVITY_TARGET_COLUMN = "y_movement_model"
-FORMAL_TARGET_CONTRACT_VERSION = "Y_MOVEMENT_RAW_V1_20260725"
+FORMAL_TARGET_COLUMN = "__M1_ADAPTER_REQUIRED__"
+SENSITIVITY_TARGET_COLUMN = "__M1_ADAPTER_SENSITIVITY_UNAVAILABLE__"
+FORMAL_TARGET_CONTRACT_VERSION = "M1_ADAPTER_PENDING"
 
 
 def _target_outcome_feature_mask(feature_names: pd.Series) -> pd.Series:
@@ -75,6 +76,7 @@ def _coalesce_column(df: pd.DataFrame, candidates: list[str], label: str) -> str
 def resolve_m1_target_column(
     episodes: pd.DataFrame, m1: dict[str, Any], *, sensitivity: bool = False
 ) -> str:
+    require_m1_adapter()
     if "target_candidates" in m1:
         raise FormalRunBlocked("FORMAL_TARGET_AMBIGUOUS: m1.target_candidates is prohibited")
     key = "sensitivity_target" if sensitivity else "formal_target"
@@ -119,6 +121,7 @@ def _validate_pre_target_contract(pre_output: Path) -> dict[str, Any]:
 
 
 def load_pre_bundle(pre_output: Path, scientific: dict[str, Any], require_acceptance: bool = True) -> PreBundle:
+    require_m1_adapter()
     pre_output = pre_output.resolve()
     if not pre_output.exists():
         raise FormalRunBlocked(f"PRE_OUTPUT_MISSING: {pre_output}")
@@ -238,18 +241,6 @@ def validate_bundle(bundle: PreBundle, scientific: dict[str, Any]) -> dict[str, 
             "snapshot_split_mismatch",
             int((split_join["split_snapshot"] != split_join["split_episode"]).fillna(True).sum()),
         )
-    if "snapshot_ratio" in s.columns:
-        ratio = pd.to_numeric(s["snapshot_ratio"], errors="coerce")
-        add("invalid_snapshot_ratio", int((~ratio.between(0, 1)).sum() + ratio.isna().sum()))
-        if "elapsed_ratio" in s.columns:
-            elapsed = pd.to_numeric(s["elapsed_ratio"], errors="coerce")
-            add("snapshot_ratio_mismatch", int((np.abs(ratio - elapsed) > 1e-8).fillna(False).sum()))
-    if "snapshot_stage" in s.columns and "snapshot_ratio" in s.columns:
-        expected_ratio = {"t1": 0.2, "t2": 0.5, "t3": 0.8}
-        primary = s[s["snapshot_stage"].isin(expected_ratio)]
-        mismatch = sum(abs(float(row.snapshot_ratio) - expected_ratio[str(row.snapshot_stage)]) > 1e-8 for row in primary.itertuples())
-        add("primary_stage_ratio_mismatch", int(mismatch))
-
     for group_name, candidates in scientific.get("m1", {}).get("required_feature_groups", {}).items():
         add(
             f"m1_feature_group_missing:{group_name}",

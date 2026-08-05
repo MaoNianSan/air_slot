@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.config import load_config
-from src.input import _target_outcome_feature_mask
+from src.input import FORMAL_TARGET_COLUMN, _target_outcome_feature_mask
 from src.m1_training import make_transformer, prepare_model_frame
 
 
@@ -57,8 +57,8 @@ def _frames() -> tuple[pd.DataFrame, pd.DataFrame]:
         },
     ])
     episodes = pd.DataFrame([
-        {"episode_id": "e1", "y_movement_raw": 12.0},
-        {"episode_id": "e2", "y_movement_raw": 18.0},
+        {"episode_id": "e1", FORMAL_TARGET_COLUMN: 12.0},
+        {"episode_id": "e2", FORMAL_TARGET_COLUMN: 18.0},
     ])
     return snapshots, episodes
 
@@ -94,7 +94,7 @@ def test_current_features_remain_primary_dynamic_inputs() -> None:
         "execution_window_margin", "lead_time_margin", "snapshot_stage",
     }
     assert current.issubset(features)
-    assert cfg.scientific["m1"]["formal_target"] == "y_movement_raw"
+    assert cfg.scientific["m1"]["formal_target"] == FORMAL_TARGET_COLUMN
     assert cfg.scientific["m1"]["feature_contract_version"] == "M1_PREVIOUS_LEG_V1"
 
 
@@ -102,7 +102,6 @@ def test_predecessor_lastseen_proxy_is_not_current_target_leakage() -> None:
     names = pd.Series([
         "predecessor_lastseen_proxy",
         "current_lastseen",
-        "y_movement_raw",
         "movement_outcome",
     ])
-    assert _target_outcome_feature_mask(names).tolist() == [False, True, True, True]
+    assert _target_outcome_feature_mask(names).tolist() == [False, True, True]

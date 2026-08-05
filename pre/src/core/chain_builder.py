@@ -5,7 +5,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from ..episode import _aircraft_group, _split_for, _time_bin
+from ..shared.flight_identity import aircraft_group, split_for, time_bin
 from .contracts import ChainMatchStatus, ChainSupportLevel, stable_id, utc_series
 
 
@@ -101,7 +101,7 @@ def _base_row(predecessor: pd.Series, successor: pd.Series | None, cfg: dict[str
         "turnaround_airport": predecessor["destination"],
         "episode_start_time": start,
         "episode_end_time": end,
-        "split": _split_for(start, cfg["splits"]),
+        "split": split_for(start, cfg["splits"]),
         "predecessor_firstseen_proxy": predecessor["firstseen_utc"],
         "predecessor_lastseen_proxy": predecessor["lastseen_utc"],
         "successor_firstseen_proxy": end,
@@ -114,8 +114,8 @@ def _base_row(predecessor: pd.Series, successor: pd.Series | None, cfg: dict[str
         "y_tx": np.nan,
         "y_to": np.nan,
         "label_missing_reason": "AOBT_PLUS_AND_SOBT_UNSUPPORTED",
-        "aircraft_group": _aircraft_group(predecessor.get("typecode")),
-        "episode_start_time_bin": _time_bin(start),
+        "aircraft_group": aircraft_group(predecessor.get("typecode")),
+        "episode_start_time_bin": time_bin(start),
         "predecessor_source_record_id": predecessor.get("source_record_id", pd.NA),
         "predecessor_source_file": predecessor.get("raw_source_file", pd.NA),
         "predecessor_source_hash": predecessor.get("raw_source_hash", pd.NA),
@@ -136,8 +136,6 @@ def _classify(predecessor: pd.Series, candidates: pd.DataFrame, cfg: dict[str, A
             core_eligible=False,
             engineering_eligible=False,
             scientific_chain_eligible=False,
-            formal_eligible=False,
-            formal_eligible_status="DEPRECATED_COMPATIBILITY_ALIAS",
             exclusion_reason="NO_NEXT_OBSERVED_LEG_WITHIN_CEILING",
             observed_ground_gap_minutes=np.nan,
         )
@@ -159,8 +157,6 @@ def _classify(predecessor: pd.Series, candidates: pd.DataFrame, cfg: dict[str, A
             core_eligible=not ambiguous and row["split"] is not None,
             engineering_eligible=not ambiguous and row["split"] is not None,
             scientific_chain_eligible=False,
-            formal_eligible=not ambiguous and row["split"] is not None,
-            formal_eligible_status="DEPRECATED_COMPATIBILITY_ALIAS",
             exclusion_reason=reason,
             observed_ground_gap_minutes=gap,
         )

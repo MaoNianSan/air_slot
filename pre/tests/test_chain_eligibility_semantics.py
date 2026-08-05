@@ -9,6 +9,9 @@ def test_observed_proxy_is_engineering_not_scientific_eligible() -> None:
     assert bool(row.core_eligible)
     assert bool(row.engineering_eligible)
     assert not bool(row.scientific_chain_eligible)
-    assert bool(row.formal_eligible) == bool(row.engineering_eligible)
-    assert row.formal_eligible_status == "DEPRECATED_COMPATIBILITY_ALIAS"
-
+    assert bool(row.core_eligible) == bool(row.engineering_eligible)
+    assert {
+        "core_eligible",
+        "engineering_eligible",
+        "scientific_chain_eligible",
+    }.issubset(row.index)

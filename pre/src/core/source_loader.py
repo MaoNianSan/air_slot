@@ -8,10 +8,10 @@ from typing import Any
 
 import pandas as pd
 
-from ..episode import stable_flight_id
 from ..input import _parse_time, normalize_icao24
 from ..input_sources import discover_files, normalize_airport, sha256_file
 from ..progress import progress_iter, stage_message
+from ..shared.flight_identity import stable_flight_id
 
 
 OPTIONAL_FLIGHT_COLUMNS = [

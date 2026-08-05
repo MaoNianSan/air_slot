@@ -8,6 +8,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from .input import FORMAL_TARGET_COLUMN
+
 MODULE_ROOT = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = MODULE_ROOT.parent
 FAST_ROOT = MODULE_ROOT / "output" / "fast"
@@ -32,7 +34,7 @@ EXPECTED_SCIENTIFIC_IMPLEMENTATION_HASH = (
 EXPECTED_REGISTRY_HASH = "4bb821d83c117fe8c6ba942d1b925e8515ac161f4a9a9eeda744ca15405da7a5"
 EXPECTED_M4_REGISTRY_HASH = "7f42bf5a28c866636fe08a12b3a39c74f54650cf206b5047949db270624b9212"
 EXPECTED_PRE_RUN_ID = "pre-fast-20260727T151907Z-6b6957da"
-FORMAL_TARGET = "y_movement_raw"
+FORMAL_TARGET = FORMAL_TARGET_COLUMN
 QUANTILES = np.asarray(
     [0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.975, 0.99],
     dtype=float,

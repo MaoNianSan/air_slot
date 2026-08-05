@@ -7,9 +7,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from ..episode import _aircraft_group, _split_for, _time_bin
 from ..input import object_hash
 from ..passenger_fit import fit_passenger_reference
+from ..shared.flight_identity import aircraft_group, split_for, time_bin
 from .contracts import stable_id
 
 
@@ -149,10 +149,10 @@ def _passenger_rows(
     if passengers.empty or commercial.empty:
         return []
     legs = flights.copy()
-    legs["split"] = legs["firstseen_utc"].map(lambda value: _split_for(value, cfg["splits"]))
+    legs["split"] = legs["firstseen_utc"].map(lambda value: split_for(value, cfg["splits"]))
     legs["candidate_episode"] = legs["is_predecessor_seed"] & legs["split"].notna()
-    legs["aircraft_group"] = legs.get("typecode", pd.Series(pd.NA, index=legs.index)).map(_aircraft_group)
-    legs["firstseen_time_bin"] = legs["firstseen_utc"].map(_time_bin)
+    legs["aircraft_group"] = legs.get("typecode", pd.Series(pd.NA, index=legs.index)).map(aircraft_group)
+    legs["firstseen_time_bin"] = legs["firstseen_utc"].map(time_bin)
     legs["episode_id"] = legs["flight_id"]
     reference = fit_passenger_reference(passengers, commercial, legs, cfg)
     rows: list[dict[str, Any]] = []

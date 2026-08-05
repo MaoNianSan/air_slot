@@ -34,7 +34,6 @@ MEMBERSHIP_ONLY_COLUMNS = [
 
 def _align(frame: pd.DataFrame) -> pd.DataFrame:
     output = frame.copy()
-    legacy_membership_shape = "chain_episode_id" in output.columns
     output = output.drop(
         columns=[column for column in MEMBERSHIP_ONLY_COLUMNS if column in output],
         errors="ignore",
@@ -48,14 +47,7 @@ def _align(frame: pd.DataFrame) -> pd.DataFrame:
         if column not in COMMON_COLUMNS
         and column not in {"raw_source_file", "raw_source_hash"}
     ]
-    aligned = output[COMMON_COLUMNS + source_columns].copy()
-    if legacy_membership_shape:
-        # Keep the old helper contract available to legacy unit callers.  The
-        # V2 dataset writer removes these columns before persistence.
-        for column in MEMBERSHIP_ONLY_COLUMNS:
-            if column not in aligned:
-                aligned[column] = pd.NA
-    return aligned
+    return output[COMMON_COLUMNS + source_columns].copy()
 
 
 def build_observations(

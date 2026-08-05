@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.core.observation_membership import build_observation_membership
+from src.core.membership import build_membership
 
 
 def test_observation_can_belong_to_overlapping_chains() -> None:
@@ -19,7 +19,6 @@ def test_observation_can_belong_to_overlapping_chains() -> None:
          "interval_type": "INPUT_HISTORY_AND_ACTIVE_INTERVAL", "split": split}
         for chain, code, split in [("c1", "abc123", "train"), ("c2", "def456", "validation")]
     ])
-    membership = build_observation_membership(observation, requests)
+    membership = build_membership(observation, requests)
     assert len(membership) == 2
     assert set(membership["chain_episode_id"]) == {"c1", "c2"}
-

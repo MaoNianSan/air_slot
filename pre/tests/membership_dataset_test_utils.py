@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.core.observation_dataset import schema_fingerprint
+from src.core.observations import schema_fingerprint
 from src.input import sha256_file, write_json
 
 

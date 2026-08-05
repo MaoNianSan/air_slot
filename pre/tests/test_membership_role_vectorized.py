@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from membership_test_data import state_observations, state_request
-from src.core.membership_interval_join import interval_join_partition
+from src.core.membership import interval_join_partition
 
 
 def test_state_membership_roles_are_vectorized_with_frozen_precedence() -> None:

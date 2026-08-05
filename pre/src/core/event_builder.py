@@ -8,21 +8,14 @@ import pandas as pd
 from .contracts import EventName, SupportLevel, stable_id, utc_series
 
 
-EVENT_SPECS = {
-    EventName.ATOT_MINUS.value: ("firstseen_utc", "firstseen"),
-    EventName.ALDT_MINUS.value: ("lastseen_utc", "lastseen"),
-    EventName.AIBT_MINUS.value: (None, None),
-    EventName.AOBT_PLUS.value: (None, None),
-    EventName.ATOT_PLUS.value: ("firstseen_utc", "firstseen"),
-}
-
-
 def _event_row(
     flight: pd.Series,
     event_name: str,
     cfg: dict[str, Any],
 ) -> dict[str, Any]:
-    time_column, source_field = EVENT_SPECS[event_name]
+    spec = cfg["event_specs"][event_name]
+    time_column = spec["time_column"]
+    source_field = spec["source_field"]
     supported = time_column is not None and pd.notna(flight.get(time_column))
     lag = float(cfg["availability_lag_minutes"].get("completed_flightlist", 0))
     availability = (
@@ -38,16 +31,8 @@ def _event_row(
         "availability_time": availability,
         "source_type": "OPEN_SKY_FLIGHTLIST" if supported else "UNSUPPORTED",
         "source_field": source_field if supported else pd.NA,
-        "support_level": (
-            SupportLevel.SUPPORTED_PROXY.value
-            if supported
-            else SupportLevel.UNSUPPORTED.value
-        ),
-        "reconstruction_method": (
-            f"OPEN_SKY_{source_field.upper()}_PROXY"
-            if supported
-            else "NO_LOCAL_SOURCE_FIELD"
-        ),
+        "support_level": spec["support_level"],
+        "reconstruction_method": spec["reconstruction_method"],
         "confidence": 0.7 if supported else np.nan,
         "source_record_id": flight.get("source_record_id", pd.NA),
         "source_file": flight.get("raw_source_file", pd.NA),

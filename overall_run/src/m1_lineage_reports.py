@@ -104,8 +104,8 @@ def build_code_study(
             - Coverage accepted range and metric roles: `overall_run/config/acceptance.yaml`.
             - Fast samples: 256; pipeline base seed: 20260718.
             - Bootstrap audit: 2000 draws configured, seed 20260725, event unit, minimum 20 events.
-            - twCRPS threshold: validation `y_movement_raw` q95 = {context['validation_q95']}.
-            - Tail diagnostic threshold: training model-frame `y_movement_raw` q95 = {context['train_q95']}.
+            - twCRPS threshold: validation outcome q95 = {context['validation_q95']}.
+            - Tail diagnostic threshold: training model-frame outcome q95 = {context['train_q95']}.
 
             # 一页老师可能提问及标准回答
 

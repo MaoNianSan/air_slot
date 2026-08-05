@@ -16,7 +16,7 @@ PRE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PRE_ROOT))
 
 from src.core.contracts import stable_id  # noqa: E402
-from src.core.membership_interval_join import (  # noqa: E402
+from src.core.membership import (  # noqa: E402
     MEMBERSHIP_COLUMNS,
     interval_join_partition,
 )

@@ -1,6 +1,16 @@
 contract_id: AIR_CHAIN_CORE_V2
 schema_version: air-chain-core-2.0
+research_code_revision: AIR_CHAIN_CORE_V2_R2
 output_root: output_core
+formal_artifacts:
+- episodes
+- events
+- observations
+- observation_membership
+- calibration
+- evidence_audit
+- column_registry
+- pre_manifest
 tables:
   episodes:
     key: [chain_episode_id]
@@ -22,8 +32,6 @@ tables:
     - core_eligible
     - engineering_eligible
     - scientific_chain_eligible
-    - formal_eligible
-    - formal_eligible_status
     - exclusion_reason
   events:
     key: [event_id]

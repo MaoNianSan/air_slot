@@ -5,7 +5,7 @@ from typing import Any
 import pandas as pd
 
 from ..input import object_hash
-from .contracts import SupportLevel, stable_id
+from .contracts import CHAIN_CONTRACT_ID, SupportLevel, stable_id
 
 
 EVIDENCE_COLUMNS = [
@@ -87,7 +87,7 @@ def build_evidence_audit(
                 "source_hash": source_hash,
                 "event_time": episode.episode_start_time,
                 "availability_time": episode.successor_lastseen_proxy,
-                "transformation": "IMMEDIATE_NEXT_OBSERVED_LEG_V1",
+                "transformation": CHAIN_CONTRACT_ID,
                 "support_level": episode.chain_support_level,
                 "fallback_level": "NONE",
                 "missing_reason": episode.exclusion_reason,

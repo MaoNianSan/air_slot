@@ -6,7 +6,7 @@ from membership_dataset_test_utils import (
     weather_request,
     write_observation_partition,
 )
-from src.core.membership_dataset import write_membership_dataset
+from src.core.membership import write_membership_dataset
 
 
 def test_membership_partition_resume_reuses_valid_file(tmp_path) -> None:

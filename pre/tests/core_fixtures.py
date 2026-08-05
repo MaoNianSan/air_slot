@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from src.episode import stable_flight_id
 from src.pipeline_config import load_config
+from src.shared.flight_identity import stable_flight_id
 
 
 def core_cfg() -> dict:

@@ -1,243 +1,168 @@
-# pre
+# Air Slot PRE
 
 ## 1. Role
 
-`pre/` is the only raw-data processing layer of the Air Slot project. It reads
-the immutable `../data/` tree and publishes formal tables consumed by every
-downstream module. It contains two processing lines:
+`pre/` is the only layer that reads the immutable `data/` tree. It converts raw
+source records into event, chain, source-global observation, Membership,
+reference, registry, and manifest artifacts. Downstream modules never read raw
+data or PRE staging directly.
 
-- the **legacy PRE pipeline** (five-table contract, `output/<mode>/`);
-- the **PRE Core** line (`AIR_CHAIN_CORE_V1`, `output_core/<mode>/`), which
-  rebuilds the same raw inputs as interval-based native observations, events,
-  chains and train-only references.
+## 2. Current contract
 
-## 2. Read-only inputs
-
-Raw inputs are under `../data/raw/`; frozen selection manifests are under
-`../data/manifests/`. PRE never writes to either location. A missing or
-mismatched frozen manifest is a blocking error.
-
-## 3. Legacy five-table contract
-
-The published legacy contract is:
+There is one authoritative PRE identity:
 
 ```text
-episodes.parquet
-snapshots.parquet
-calibration.parquet
-rules.parquet
-evidence_audit.parquet
+contract_id=AIR_CHAIN_CORE_V2
+schema_version=air-chain-core-2.0
+research_code_revision=AIR_CHAIN_CORE_V2_R2
 ```
 
-The formal label is `y_movement_raw` under
-`Y_MOVEMENT_RAW_V1_20260725`. `y_movement_model` is derived only for sensitivity
-analysis. Publication also records the formal target definition hash and label
-lineage. Legacy output is published under `output/<mode>/`.
+The constants in `src/core/contracts.py` are the single code authority. The
+machine-readable schema is `config/schema/core_tables.yaml`.
 
-## 4. Passenger and missingness
+## 3. CLI
 
-Passenger proxies use `DESTINATION_LAGGED_MONTH`. Unsupported historical cells
-remain `UNSUPPORTED`; they are never zero-filled. PRE does not interpolate
-across dates. Evidence status, missing reason, source period, and support count
-remain explicit in the published tables.
+Run from the repository root with Python 3.11:
 
-## 5. PRE Core (AIR_CHAIN_CORE_V1)
+```powershell
+D:/Python311/python.exe pre/main.py build --mode fast
+D:/Python311/python.exe pre/main.py validate --mode fast
+D:/Python311/python.exe pre/main.py readiness --mode fast
+D:/Python311/python.exe pre/main.py report --mode fast
+D:/Python311/python.exe pre/main.py inspect-config --mode fast
+```
 
-### 5.1 Identity
+Supported modes are `fast`, `middle`, `full`, and `diagnostic`. The command set
+has no compatibility aliases. This refactor does not authorize or start a Fast
+build.
 
-- Contract ID: `AIR_CHAIN_CORE_V1`
-- Schema version: `air-chain-core-1.0`
-- Machine-readable authority: `config/schema/core_tables.yaml`, joined with the
-  Core sections of `column_roles.yaml` and `column_aliases.yaml`.
-- Output root: `output_core/<mode>/AIR_CHAIN_CORE_V1`
-- Legacy output root remains `output/<mode>`; downstream auto-switch is
-  prohibited.
+## 4. Inputs
 
-### 5.2 Data flow
+- `../data/raw/`: immutable raw sources.
+- `../data/manifests/`: frozen source-selection evidence when required.
+- `config/sources.yaml`: source discovery and schema declarations.
+- `config/default.yaml`: shared defaults and mode overrides.
+- `config/predecessor_matching.yaml`: current chain construction rules.
 
-Core is a seven-stage build:
+PRE must not modify raw data. `cache/state_extract_v2/` is reusable local
+compute state and is preserved unless cache rebuilding is explicitly requested.
+
+## 5. Outputs
+
+The formal artifacts are:
 
 ```text
-raw inventory and source normalization
-  -> event facts with support levels            (Core 1/7, 2/7)
-  -> predecessor-successor chain candidates
-  -> ambiguity-preserving chain episodes and frozen split
-  -> interval-based native observations         (Core 3/7, 4/7)
-  -> train-only references and evidence         (Core 5/7)
-  -> validation and hash freeze                 (Core 6/7)
-  -> publish                                    (Core 7/7)
+episodes
+events
+observations
+observation_membership
+calibration
+evidence_audit
+column_registry
+pre_manifest
 ```
 
-Core does not materialize five-minute nodes, roll samples, GRU tensors, GRU
-masks, model predictions, action effects, or rankings.
+Published bundles live under
+`output_core/<mode>/AIR_CHAIN_CORE_V2/`. A build first writes a compatible
+staging directory and publishes only after validation succeeds.
 
-### 5.3 Core tables
+## 6. Event and chain boundary
 
-| Artifact | Content |
-|---|---|
-| `episodes.parquet` | One row per `(predecessor_flight, successor_flight)` candidate; ambiguous candidates remain visible with `chain_match_status=AMBIGUOUS` and `formal_eligible=false`. Split is assigned from `episode_start_time`, never from a future outcome. |
-| `events.parquet` | One row per flight-event fact with explicit event time, availability time, raw field, source record/file/hash, reconstruction method, confidence, and support level. |
-| `observations/` | Partitioned Parquet dataset keyed by `source` and `observation_date`, matching the dominant access pattern (select one source, scan dates overlapping a chain interval). Common lineage/time columns are mandatory; source value columns are nullable. Native record times are preserved (no five-minute resampling). |
-| `calibration.parquet` | Long-form frozen references; every row records reference type, group key, statistic, value, cell size, fallback level, fit period, `fit_split=train`, and source hash. |
-| `evidence_audit.parquet` | Long-form evidence facts keyed by `evidence_id`, with raw source/field, record/file/hash, event and availability times, transformation, support level, and formal eligibility. |
-| `column_registry.yaml` | Registry of every published column with role/retention metadata. |
+Events retain source field, record, file, hash, event time, availability time,
+construction method, confidence, and support level. OpenSky `firstseen` and
+`lastseen` values are supported proxies, not official operational milestones.
 
-Local support is frozen at contract time:
-
-| Event | Local construction | Support |
-|---|---|---|
-| `ATOT_MINUS` | predecessor OpenSky `firstseen` | `SUPPORTED_PROXY` |
-| `ALDT_MINUS` | predecessor OpenSky `lastseen` | `SUPPORTED_PROXY` |
-| `AIBT_MINUS` | no source field | `UNSUPPORTED` |
-| `AOBT_PLUS` | no source field | `UNSUPPORTED` |
-| `ATOT_PLUS` | successor OpenSky `firstseen` | `SUPPORTED_PROXY` |
-
-No `firstseen`/`lastseen` field may be renamed or marked as an official observed
-operational event. Sub-contracts: `AIR_CHAIN_EVENT_V1`,
-`IMMEDIATE_NEXT_OBSERVED_LEG_V1`, `EPISODE_START_FROZEN_SPLIT_V1`,
-`TRAIN_ONLY_REFERENCE_V1`, `NATIVE_INTERVAL_OBSERVATION_V1`.
-
-### 5.4 Staging and publication
-
-Core builds into a staging bundle named
-`.AIR_CHAIN_CORE_V1.staging-<hash>` beside the output root. On a successful
-`core-build`, the staging is atomically renamed to the output root; a
-`pre_manifest.json`, `run_state.json`, and `reports/` (`core_validation.json`,
-`core_readiness.json`, `core_cache_manifest.json`, `PRE_CORE_RUN_REPORT.md`) are
-written before publication. If the output root already exists with an identical
-`core_data_hash`, the identical result is reused; a different hash is a
-blocking error.
-
-## 6. Schema layout
-
-`config/schema.yaml` was split into four files with a **value-identical** legacy
-schema object:
+Chains preserve ambiguity and expose separate eligibility fields:
 
 ```text
-config/schema/
-  legacy_tables.yaml    # legacy tables + consumers
-  core_tables.yaml      # Core contract tables, manifest/registry/partitioning rules
-  column_roles.yaml     # m1_required_inputs, evidence_completeness_features,
-                        # role_definitions, core_column_roles
-  column_aliases.yaml   # legacy aliases, core_aliases, forbidden_aliases
+core_eligible
+engineering_eligible
+scientific_chain_eligible
 ```
 
-`pipeline_config.load_config` builds the legacy `config["schema"]` from the
-legacy sections and the Core `config["core_schema"]` from the Core sections, so
-the accepted legacy fast config hash is unchanged.
+The observed-chain proxy is not an official aircraft rotation. Scientific
+eligibility therefore remains stricter than engineering eligibility.
 
-## 7. Cache
+## 7. Observations
 
-- Legacy reusable state/airport-flow partitions: `cache/state_extract_v2/`.
-- Core state cache: `cache/state_extract_core_v1-<cache_key>/` with
-  `candidate_states/`, `flow_states/`, and `cache_manifest.json`. The cache key
-  is derived from the observation requests and configuration; a full hit skips
-  re-extraction.
-- Only PRE reads or writes these caches. A normal all-hit run does not rewrite
-  the cache manifest. `clean.py` never removes `cache/`; `--rebuild-cache` is a
-  separate explicit operation and is not part of Fast reproduction.
+Observations are source-global and split-neutral. Each native source record is
+represented once for the union of relevant request intervals. Chain, request,
+interval, and split fields are prohibited from the Observation rows.
 
-## 8. CLI
+Observation data is partitioned by:
 
-All commands assume the working directory is the **project root**
-(`../` relative to this README, i.e. the parent of `pre/`).
-If your shell is inside the `pre/` directory, replace `pre/main.py` with
-`main.py` and `pre/clean.py` with `clean.py`.
-
-Legacy pipeline:
-
-```powershell
-# Fast reproduction (from project root)
-python -u pre/main.py fast --progress normal --n-jobs 1
-python -u pre/main.py validate fast --progress normal --n-jobs 1
-python pre/main.py report fast
-
-# Legacy adapt-full (backward compatibility only; not a current run mode)
-python -u pre/main.py adapt_full --progress normal --n-jobs 2
-python -u pre/main.py validate adapt_full --progress normal --n-jobs 2
+```text
+source=<source>/observation_date=<YYYY-MM-DD>
 ```
 
-PRE Core:
+Native timestamps and admissible raw columns are retained. PRE does not create
+a five-minute grid, recurrent-model masks, or model predictions.
 
-```powershell
-python -u pre/main.py core-build fast --progress normal --n-jobs 1
-python pre/main.py core-validate fast
-python pre/main.py core-readiness fast
-python pre/main.py core-report fast
-```
+## 8. Membership
 
-The CLI also recognizes `inventory`, `readiness`, `repair`, `migrate-profile`,
-`diagnostic`, `acceptance_23d`, `middle`, and `full`. `precision` is accepted by
-`clean.py` for cleanup but is a downstream post-Full activity, not a PRE mode.
+`observation_membership` is a separate many-to-many interval relation between
+source-global observations and chain requests. It uses the same source/date
+partitioning as Observations and carries the chain, request interval, split,
+role, availability support, and membership reason.
 
-Clean output (from project root):
+One observation may belong to multiple overlapping requests. Empty legal
+partitions use `PASS_EMPTY` and have no Parquet file.
 
-```powershell
-python pre/clean.py --mode fast --dry-run
-python pre/clean.py --mode fast
-python pre/clean.py --all-output --dry-run
-python pre/clean.py --all-output
-```
+## 9. References
 
-## 9. Parallelism
+References are fit from training Membership joined to source-global
+Observations. Observation IDs are deduplicated before sufficient statistics are
+computed. Every reference records its fit period, `fit_split=train`, support,
+fallback level, and source hash.
 
-State-partition work may use bounded loky workers. The parent process retains
-the requested file order, writes the cache manifest, assembles all tables,
-publishes the registry, and records the heartbeat. With outer parallelism,
-bottom-level thread libraries are limited to one thread.
+## 10. Resume
 
-## 10. Outputs and validation
+Resume requires an exact scientific/data identity: contract, schema, research
+revision, frozen configuration, source and request identities, episode
+intervals, cache key, and expected partitions. Worker count, progress display,
+temporary paths, and process identity are operational metadata and do not
+change the frozen configuration hash.
 
-- Legacy: published mode output is under `output/<mode>/`. Fast validation
-  requires five tables, unique keys, no split overlap, no future leakage, no
-  availability violations, a valid formal target hash, a passing registry, and
-  zero stale artifacts. Downstream readiness is published only after these
-  checks pass.
-- Core: published output is under `output_core/<mode>/AIR_CHAIN_CORE_V1`.
-  `core-validate` reports the frozen validation recorded at publish time;
-  `core-readiness` reports downstream readiness.
+Valid `PASS` and `PASS_EMPTY` partitions are reused. Missing, in-progress,
+failed, hash-mismatched, schema-mismatched, or row-count-mismatched partitions
+are rebuilt.
 
-## 11. Tests
+## 11. Validation
 
-Run the full suite from the project root:
+The independent validator loads the manifest, enumerates the bundle, verifies
+identity and file hashes, checks table schemas and keys, validates Observation
+and Membership manifests, recomputes critical statistics, checks train-only
+references and future-information rules, and writes a recomputed report. It
+does not trust a stored validation status by itself.
 
-```powershell
-python -m pytest pre/tests -q
-```
+## 12. Readiness
 
-As of 2026-08-05 the suite is 41 passing (legacy equivalence, schema loading,
-strict config, Core contracts, chain/event/observation/reference, manifest and
-idempotence tests). `python -m compileall -q pre/src pre/tests` must stay clean.
+Engineering readiness and scientific readiness are separate. A structurally
+valid bundle can still be scientifically unavailable when required event or
+label support is absent. Readiness commands inspect an existing published
+bundle and do not rebuild data.
 
-## 12. Current development state
+## 13. Scientific limitations
 
-As of 2026-08-05 the Core line is in **Phase 8 debug/validation**:
-- The legacy fast run remains accepted (`pre/output/fast`).
-- The latest Core fast staging is
-  `output_core/fast/.AIR_CHAIN_CORE_V1.staging-c819be31347b` (observations only;
-  no manifest/validation/readiness published yet).
-- Known development blockers are raw-column retention, column-level evidence,
-  unverified staging resume, and unsupported operational events. These are
-  development blockers, not contract violations.
+- The observed-chain proxy is not an official rotation record.
+- Local AIBT, AOBT, and SOBT evidence is insufficient for official-event use.
+- Current `y_ob`, `y_tx`, and `y_to` outcomes may be empty.
+- Engineering readiness does not imply scientific readiness.
+- Unsupported evidence remains explicit and is never silently zero-filled.
 
-## PRE Core V2
+## 14. M1 Adapter boundary
 
-Current implementation contract:
+PRE does not create recurrent-model tensors, M1 predictions, action effects, or
+rankings. Instantaneous model updates belong in the future M1 Adapter, which
+must select the latest evidence available at each `query_time`.
 
-- `AIR_CHAIN_CORE_V2`
-- `air-chain-core-2.0`
-- `AIR_CHAIN_CORE_V2_R2`
+The existing `overall_run`, `overall_adv`, and `part_adv` entry points are
+blocked with `PRE_CONTRACT_MISMATCH` until that Adapter is implemented. No
+fallback or compatibility bundle is generated.
 
-The implementation includes:
+## 15. Published evidence
 
-- source-global native-resolution observations;
-- partitioned many-to-many observation Membership;
-- `PASS_EMPTY` partition semantics;
-- research-oriented Resume identity;
-- independent bundle validation.
-
-Implementation validation reports are available under
-`pre/reports/published/core_v2/`.
-
-No formal Fast V2 bundle has been generated yet. Legacy PRE remains available
-for the existing downstream pipeline.
+Implementation and pre-run validation reports are under
+`reports/published/core_v2/`. They are not a formal Fast data bundle. Runtime
+output, cache, staging, raw data, and Parquet files remain local and excluded
+from version control.

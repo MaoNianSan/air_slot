@@ -30,7 +30,6 @@ def build_weather_observations(
         ).copy()
         if selected.empty:
             continue
-        selected["chain_episode_id"] = pd.NA
         selected["flight_id"] = pd.NA
         selected["source"] = "weather"
         selected["event_time"] = selected["observation_time"]

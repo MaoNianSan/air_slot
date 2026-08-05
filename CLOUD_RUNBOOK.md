@@ -1,129 +1,70 @@
 # Air Slot Cloud Runbook
 
-## 1. Frozen scope
+## Current boundary
 
-- Contract: `Y_MOVEMENT_RAW_V1_20260725`
-- Formal target: `y_movement_raw`
-- Sensitivity-only target: `y_movement_model`
-- Frozen Fast model SHA256:
-  `422b50378a1f4431813d84efbb0473284debe13fe03bd77864db3da94e026cf2`
-- Cloud scientific mode: `CURRENT_DATA_ADAPT_FULL`
-- Formal 72-day Full allowed: `false`
+PRE is `AIR_CHAIN_CORE_V2_R2`. The M1 Adapter is not implemented, so
+`overall_run`, `overall_adv`, and `part_adv` intentionally stop with
+`PRE_CONTRACT_MISMATCH`. Do not bypass that gate or point downstream commands at
+historical output.
 
-The Fast q95 classification is `SYSTEMATIC_CALIBRATION_CONCERN` with
-`METRIC_SUPPORT_LIMITED` certification. This does not authorize model, feature,
-quantile, calibration, cohort, policy, or seed changes.
+## Environment
 
-## 2. Synchronize in place
+Use Python 3.11 and install the root requirements file. Keep `data/` read-only
+and place generated PRE data only under the configured local output, cache, and
+staging roots.
 
-1. Synchronize this `explore` tree to one cloud working directory.
-2. Synchronize `data/` separately and enforce read-only permissions.
-3. Synchronize `pre/cache/` separately and preserve every payload hash.
-4. Install Python 3.11 dependencies from `requirements.txt`.
-5. Verify frozen data manifests and `FINAL_CODE_FREEZE_SUMMARY.json`.
-6. Confirm no Air Slot Python process is already running.
-
-## 3. Clean Fast outputs
-
-Inspect first, then clean downstream to upstream:
+## Verification before compute
 
 ```powershell
-python part_adv/clean.py --mode fast --dry-run
-python overall_adv/clean.py --mode fast --dry-run
-python overall_run/clean.py --mode fast --dry-run
-python pre/clean.py --mode fast --dry-run
-
-python part_adv/clean.py --mode fast
-python overall_adv/clean.py --mode fast
-python overall_run/clean.py --mode fast
-python pre/clean.py --mode fast
+D:/Python311/python.exe -m compileall -q pre/src pre/tests pre/tools
+D:/Python311/python.exe -m pytest -q pre/tests
+D:/Python311/python.exe pre/main.py inspect-config --mode fast
 ```
 
-Stop if a cleaner reports an active worker, lock, staging file, partial
-artifact, or stale checkpoint. Do not use `--stop-owned-processes` unless the
-recorded module, mode, run ID, PID, and ownership all match the intended run.
+Confirm the printed contract, schema, research revision, and frozen config hash
+before allocating a long-running worker.
 
-## 4. Authoritative Fast smoke
+## PRE execution
 
-Run the complete chain with one job:
+The supported PRE interface is:
 
 ```powershell
-python -u pre/main.py fast --progress normal --n-jobs 1
-python -u pre/main.py validate fast --progress normal --n-jobs 1
-python -u overall_run/main.py fast --progress normal --n-jobs 1
-python -u overall_run/main.py validate fast --progress normal --n-jobs 1
-python -u overall_adv/main.py fast --progress normal --n-jobs 1
-python -u overall_adv/main.py validate --mode fast --progress normal --n-jobs 1
-python -u part_adv/main.py fast --progress normal --n-jobs 1
-python -u part_adv/main.py validate --mode fast --progress normal --n-jobs 1
-python corrected_fast_post_rebuild_audit.py
+D:/Python311/python.exe pre/main.py build --mode fast --progress normal --n-jobs 1
+D:/Python311/python.exe pre/main.py validate --mode fast
+D:/Python311/python.exe pre/main.py readiness --mode fast
+D:/Python311/python.exe pre/main.py report --mode fast
 ```
 
-Stop on the first nonzero exit. The model SHA, prediction SHA, scientific
-hashes, formal target hash, cohort hash, q95/q99, coverage, CRPS, twCRPS, and
-crossing results must reproduce the frozen baseline.
+Start with one worker. Increase parallelism only after a bounded smoke passes
+and memory is measured for the largest source/date partition.
 
-## 5. Parallel Fast compatibility
+## Resume and failure handling
 
-After the single-thread smoke passes, clean Fast again and run the same complete
-chain with `--n-jobs 2`. Validate zero leakage, zero stale artifacts, stable
-task seed hashes, identical cohort and decision keys, and numerical deltas.
+Resume accepts only a staging bundle with the exact scientific/data identity.
+Git and implementation differences are provenance warnings; contract, schema,
+research revision, frozen configuration, source/request hashes, episode
+intervals, cache key, and expected partitions are hard gates.
 
-Use parallel cloud execution only when this compatibility run passes. Start a
-long run at `--n-jobs 2` or `--n-jobs 4`; do not begin a long run with
-`--n-jobs -1`.
+A command timeout does not prove its child process stopped. Check the PID,
+heartbeat, log, run state, and partition manifests before relaunching. Never
+start a second build blindly.
 
-## 6. CURRENT_DATA_ADAPT_FULL
+## Publication boundary
 
-Use the frozen `data/manifests/current_data_adapt_full_manifest.csv` and
-`data/manifests/current_data_adapt_full_manifest.json`. A missing or mismatched
-manifest blocks execution.
+Validation and readiness inspect a published bundle; they do not retrain or
+rebuild it. Implementation reports under `pre/reports/published/core_v2/` are
+pre-run evidence, not a formal Fast bundle.
 
-Run sequentially:
+## Data and upload policy
 
-```powershell
-python -u pre/main.py adapt_full --progress normal --n-jobs 2
-python -u pre/main.py validate adapt_full --progress normal --n-jobs 2
-python -u overall_run/main.py adapt_full --progress normal --n-jobs 2
-python -u overall_run/main.py validate adapt_full --progress normal --n-jobs 2
-python -u overall_adv/main.py adapt_full --progress normal --n-jobs 2
-python -u overall_adv/main.py validate --mode adapt_full --progress normal --n-jobs 2
-python -u part_adv/main.py adapt_full --progress normal --n-jobs 2
-python -u part_adv/main.py validate --mode adapt_full --progress normal --n-jobs 2
-python finalize_current_data_adapt_full.py
-```
+- Preserve `data/` and `pre/cache/`.
+- Preserve compatible V2 staging unless explicitly invalidated.
+- Do not upload output, cache, staging, raw data, Parquet, logs, or local debug
+  reports.
+- Do not commit or push automatically.
 
-Do not launch the three downstream long modules simultaneously.
+## Downstream work
 
-## 7. Monitor and resume
-
-Monitor CPU, memory, heartbeat timestamp, current stage, running task IDs,
-completed task count, pending task count, checkpoint path, and task throughput.
-Reduce `n_jobs` if memory pressure appears.
-
-For an isolated `overall_run` failure, resume only from its explicit staging
-directory:
-
-```powershell
-python overall_run/main.py fast --resume PATH --progress normal --n-jobs 2
-```
-
-For hash-valid incomplete downstream output:
-
-```powershell
-python overall_adv/main.py adapt_full --resume --progress normal --n-jobs 2
-python part_adv/main.py adapt_full --resume --progress normal --n-jobs 2
-```
-
-Resume is rejected when input, scientific configuration, target contract, task
-partition, or completed task hashes differ.
-
-## 8. Hard stop conditions
-
-Stop immediately for a formal label other than `y_movement_raw`, label-lineage
-ambiguity, future leakage, test-fit use, unsupported Passenger evidence replaced
-with zero, input/cache/registry hash mismatch, projected crossing above zero,
-stale or incomplete artifacts, unknown workers, or any attempted write under
-`data/`.
-
-Do not run formal 72-day Full or Precision in the current stage.
+The next downstream task is to design and implement an M1 Adapter that reads V2
+artifacts at `query_time` with availability-safe joins. Until that work is
+complete, no cloud command may run M1-M4.

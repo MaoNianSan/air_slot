@@ -17,4 +17,4 @@ def test_chain_builder_preserves_tied_ambiguity() -> None:
     episodes = build_chains(flights, core_cfg())
     assert len(episodes) == 2
     assert episodes["chain_match_status"].eq("AMBIGUOUS").all()
-    assert not episodes["formal_eligible"].any()
+    assert not episodes["engineering_eligible"].any()

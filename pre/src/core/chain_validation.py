@@ -29,10 +29,9 @@ def validate_chains(episodes: pd.DataFrame) -> dict[str, object]:
         (~episodes["chain_match_status"].isin([value.value for value in ChainMatchStatus])).sum()
     )
     eligibility_semantics_errors = 0
-    if {"core_eligible", "engineering_eligible", "scientific_chain_eligible", "formal_eligible"}.issubset(episodes.columns):
+    if {"core_eligible", "engineering_eligible", "scientific_chain_eligible"}.issubset(episodes.columns):
         eligibility_semantics_errors = int(
             (~episodes["core_eligible"].astype(bool).ge(episodes["engineering_eligible"].astype(bool))).sum()
-            + (~episodes["engineering_eligible"].astype(bool).eq(episodes["formal_eligible"].astype(bool))).sum()
             + (episodes["chain_support_level"].eq(ChainSupportLevel.OBSERVED_CHAIN_PROXY.value) & episodes["scientific_chain_eligible"].astype(bool)).sum()
         )
     status = (
@@ -52,12 +51,11 @@ def validate_chains(episodes: pd.DataFrame) -> dict[str, object]:
     return {
         "status": status,
         "chain_rows": len(episodes),
-        "formal_eligible_rows": int(engineering.sum()),
         "core_eligible_rows": int(episodes.get("core_eligible", engineering).fillna(False).astype(bool).sum()),
         "engineering_eligible_rows": int(engineering.sum()),
         "scientific_chain_eligible_rows": int(episodes.get("scientific_chain_eligible", pd.Series(False, index=episodes.index)).fillna(False).astype(bool).sum()),
         "duplicate_chain_ids": duplicate_ids,
-        "ambiguous_formal_eligible": ambiguous_eligible,
+        "ambiguous_engineering_eligible": ambiguous_eligible,
         "invalid_time_order": invalid_order,
         "chain_split_leakage": split_leakage,
         "invalid_support_levels": invalid_support,

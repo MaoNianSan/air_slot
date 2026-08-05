@@ -131,9 +131,9 @@ IMPLEMENTATION_DEPENDENCIES = (
     "pre/src/input_sources.py",
     "pre/src/inventory.py",
     "pre/src/state.py",
-    "pre/src/episode.py",
     "pre/src/passenger_fit.py",
     "pre/src/pipeline_config.py",
+    "pre/src/shared/**/*.py",
     "pre/config/schema/*.yaml",
 )
 
@@ -168,7 +168,6 @@ def frozen_research_config(cfg: dict[str, Any]) -> dict[str, Any]:
         "contract_id": CONTRACT_ID,
         "schema_version": SCHEMA_VERSION,
         "research_code_revision": RESEARCH_CODE_REVISION,
-        "labels": cfg.get("labels", {}),
         "splits": cfg.get("splits", {}),
         "airport_cohort": {
             "core": cfg.get("airports", {}).get("core", []),
@@ -177,8 +176,6 @@ def frozen_research_config(cfg: dict[str, Any]) -> dict[str, Any]:
         "event_contract": {
             "event_specs": cfg.get("event_specs", {}),
             "availability_lag_minutes": cfg.get("availability_lag_minutes", {}),
-            "support_level_mapping": cfg.get("event_support_level_mapping", {}),
-            "reconstruction_methods": cfg.get("event_reconstruction_methods", {}),
         },
         "chain_contract": cfg.get("predecessor_matching", {}),
         "request_contract": {
@@ -199,36 +196,17 @@ def frozen_research_config(cfg: dict[str, Any]) -> dict[str, Any]:
             "fit_split": "train",
             "deduplicate": "observation_id",
         },
-        "eligibility_contract": {
-            "formal_eligible": "DEPRECATED_COMPATIBILITY_ALIAS",
-            "engineering_source": "engineering_eligible",
-            "observed_proxy_scientific_eligible": False,
-        },
+        "eligibility_contract": cfg.get("eligibility", {}),
         "membership_contract": {
-            "identity": {
-                "state": "aircraft_id",
-                "weather": "airport_id",
-                "flow": "airport_id",
-            },
-            "interval": "request_start_closed_request_end_closed",
-            "partition_unit": "source_date",
-            "many_to_many": True,
-            "roles": [
-                "PREDECESSOR_HISTORY", "PREDECESSOR_ACTIVE",
-                "TURNAROUND_CONTEXT", "SUCCESSOR_CONTEXT",
-                "AIRPORT_CONTEXT", "WEATHER_CONTEXT",
-            ],
+            key: value
+            for key, value in cfg.get("core_membership", {}).items()
+            if key not in {"workers", "max_workers", "nested_parallelism", "reduced_worker_partition_bytes", "single_worker_partition_bytes"}
         },
     }
 
 
 def frozen_config_hash(cfg: dict[str, Any]) -> str:
     return object_hash(frozen_research_config(cfg))
-
-
-def config_hash(cfg: dict[str, Any]) -> str:
-    """Compatibility alias; V2 R2 manifests use ``frozen_config_hash``."""
-    return frozen_config_hash(cfg)
 
 
 def git_metadata(project_root: str | Path | None = None) -> dict[str, Any]:
@@ -259,8 +237,6 @@ def contract_hashes(cfg: dict[str, Any]) -> dict[str, str]:
                 "id": EVENT_CONTRACT_ID,
                 "event_specs": cfg.get("event_specs", {}),
                 "availability_lag": cfg.get("availability_lag_minutes", {}),
-                "support_level_mapping": cfg.get("event_support_level_mapping", {}),
-                "reconstruction_methods": cfg.get("event_reconstruction_methods", {}),
                 "availability": "completed_flightlist_lastseen",
             }
         ),

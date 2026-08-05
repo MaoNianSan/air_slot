@@ -10,20 +10,20 @@ from src.core.chain_builder import build_chains
 from src.core.column_registry import build_column_registry
 from src.core.contracts import CONTRACT_ID, RESEARCH_CODE_REVISION, stable_id
 from src.core.event_builder import build_events
-from src.core.membership_dataset import (
+from src.core.membership import (
     MEMBERSHIP_PARTITION_MANIFEST_NAME,
     expected_empty_schema_fingerprint as membership_empty_schema_fingerprint,
 )
-from src.core.observation_dataset import (
+from src.core.observations import (
     expected_empty_schema_fingerprint as observation_empty_schema_fingerprint,
     schema_fingerprint,
 )
-from src.core.observation_membership import (
-    build_observation_membership,
+from src.core.membership import (
+    build_membership,
     validate_observation_membership,
 )
-from src.core.observation_validation import validate_observations
-from src.core.pipeline import _manifest
+from src.core.observations import validate_observations
+from src.core.finalization import build_manifest
 from src.core.validation import validate_core
 from src.core.writer import write_core_tables
 from src.input import object_hash, sha256_file, write_json
@@ -82,7 +82,7 @@ def build_synthetic_bundle(
             }
         ]
     )
-    membership = build_observation_membership(observation, request)
+    membership = build_membership(observation, request)
     calibration = pd.DataFrame(
         [
             {
@@ -261,7 +261,7 @@ def build_synthetic_bundle(
             }
         ]
     )
-    manifest = _manifest(
+    manifest = build_manifest(
         cfg,
         inventory,
         table_hashes["column_registry"],

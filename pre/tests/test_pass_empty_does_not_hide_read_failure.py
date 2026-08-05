@@ -5,7 +5,7 @@ import json
 import pandas as pd
 import pytest
 
-from src.core.observation_dataset import write_observation_dataset
+from src.core.observations import write_observation_dataset
 from src.state import StateStore
 from test_staging_resume_contract import _contract
 
@@ -30,7 +30,7 @@ def test_observation_read_failure_is_fail_not_pass_empty(tmp_path, monkeypatch) 
     def fail(*args, **kwargs):
         raise OSError("synthetic read failure")
 
-    monkeypatch.setattr("src.core.observation_dataset.build_weather_observations", fail)
+    monkeypatch.setattr("src.core.observations.dataset.build_weather_observations", fail)
     root = tmp_path / "observations"
     store = StateStore(tmp_path / "candidate", tmp_path / "flow", pd.DataFrame())
     with pytest.raises(OSError):

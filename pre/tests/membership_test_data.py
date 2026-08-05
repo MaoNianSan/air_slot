@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from src.core.contracts import stable_id
-from src.core.membership_interval_join import MEMBERSHIP_COLUMNS
+from src.core.membership import MEMBERSHIP_COLUMNS
 
 
 def brute_force_membership(

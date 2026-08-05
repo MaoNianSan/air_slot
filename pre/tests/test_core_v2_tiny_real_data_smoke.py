@@ -6,8 +6,8 @@ import pandas as pd
 
 from src.core.contracts import stable_id
 from src.core.observation_builder import MEMBERSHIP_ONLY_COLUMNS, _align
-from src.core.observation_dataset import schema_fingerprint, validate_resumable_partition
-from src.core.observation_membership import build_observation_membership
+from src.core.observations import schema_fingerprint, validate_resumable_partition
+from src.core.membership import build_membership
 from src.input_sources import iter_csv_tar, sha256_file
 from src.pipeline_config import load_config
 from src.state import _standardize_chunk
@@ -75,5 +75,5 @@ def test_tiny_real_state_partition_smoke(tmp_path) -> None:
         "request_end": first.event_time + pd.Timedelta(minutes=1),
         "interval_type": "INPUT_HISTORY_AND_ACTIVE_INTERVAL", "split": "train",
     }])
-    membership = build_observation_membership(projection, requests)
+    membership = build_membership(projection, requests)
     assert not membership.empty

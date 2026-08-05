@@ -58,7 +58,6 @@ def build_flow_observations(
             selected = counts.loc[selected_mask].copy()
             if selected.empty:
                 continue
-            selected["chain_episode_id"] = pd.NA
             selected["flight_id"] = pd.NA
             selected["source"] = "flow"
             selected["observation_time"] = selected["event_time"]

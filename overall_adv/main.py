@@ -11,6 +11,7 @@ if str(PROJECT) not in sys.path:
     sys.path.insert(0, str(PROJECT))
 
 from downstream_common import resolve_requested_n_jobs
+from pre_contract_gate import DownstreamContractMismatch, require_m1_adapter
 from run_profiles import resolve_profile
 from src.pipeline import report, run, validate
 
@@ -26,6 +27,11 @@ def main() -> int:
     p.add_argument("--resume", action="store_true", help="Resume a hash-valid incomplete mode output")
     p.add_argument("--smoke-subset", action="store_true", default=False)
     a = p.parse_args()
+    try:
+        require_m1_adapter()
+    except DownstreamContractMismatch as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
     if a.command in {"validate", "report"} and a.mode is None:
         p.error("--mode is required for validate and report")
     requested_mode = a.command if a.command in set(modes) else a.mode

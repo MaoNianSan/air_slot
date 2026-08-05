@@ -17,6 +17,7 @@ from downstream_common import (
     task_seed_hash,
     thread_limit_environment,
 )
+from pre_contract_gate import DownstreamContractMismatch, require_m1_adapter
 from src.config import load_config
 from src.pipeline import (
     FullBlockedByFastAcceptance,
@@ -53,6 +54,11 @@ def parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = parser().parse_args()
+    try:
+        require_m1_adapter()
+    except DownstreamContractMismatch as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
     executable_modes = {"fast", "diagnostic", "acceptance_23d", "adapt_full", "middle", "full", "precision"}
     # --mode flag takes precedence over positional mode for validate/report
     requested_mode = args.command if args.command in executable_modes else (args.explicit_mode or args.mode)

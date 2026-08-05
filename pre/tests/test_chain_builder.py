@@ -11,5 +11,7 @@ def test_chain_builder_matches_immediate_continuous_leg() -> None:
     row = episodes.iloc[0]
     assert row.chain_match_status == "MATCHED"
     assert row.chain_support_level == "OBSERVED_CHAIN_PROXY"
-    assert bool(row.formal_eligible)
+    assert bool(row.core_eligible)
+    assert bool(row.engineering_eligible)
+    assert not bool(row.scientific_chain_eligible)
     assert validate_chains(episodes)["status"] == "PASS"
