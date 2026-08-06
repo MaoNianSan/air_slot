@@ -1,0 +1,24 @@
+check,status,evidence
+STATIC_CODE_AUDIT,PASS,"single action authority via action_contract, unknown config fields rejected, clean --output-id supported"
+M1_CODE_AUDIT,PASS,backtracking matcher selects valid predecessor past overlap (fault probe + tests)
+M1_TRAIN_INFERENCE_PARITY,PASS,M1_INFERENCE_FEATURE_ORDER_MISMATCH now enforced (fault probe)
+M1_LEAKAGE_AUDIT,PASS,allowlist/prohibited patterns and availability gates
+M3_CODE_AUDIT,PASS,strict boolean schema and single action authority (fault probe)
+M3_ACTION_REACHABILITY,PARTIAL,"synthetic reachability tests PASS; 13 zero-scored actions in real fast output still await explicit resolution"
+M3_TYPED_GATE_AUDIT,PASS,missing/unsupported gates fail closed
+M3_RANDOMNESS_AUDIT,PASS,stable per-action seeds
+M4_CODE_AUDIT,PASS,expected_residual tie-break and fixed-width boundary (fault probe)
+M4_PADDING_AUDIT,PASS,11 null padding rows for zero candidates (fault probe)
+OVERALL_ADV_CODE_AUDIT,PASS,candidate-set mismatch rejected via CandidateSetContractError (fault probe)
+PART_ADV_CODE_AUDIT,PASS,shared lineage and existing output contract
+FAULT_INJECTION_STATUS,PASS,15/15 injections satisfied (probe re-run 2026-08-02)
+PARALLEL_DETERMINISM_STATUS,PASS,63 parquets and 6 logical registries equal (measured before dev output removal)
+DEV_FAST_CHAIN_STATUS,PARTIAL,clean --output-id isolation now works; full dev chain not re-run after fixes
+R3_PARAMETER_REVIEW,PENDING,not started
+M3_PARAMETER_REVIEW,PENDING,not started
+CODE_CORRECTNESS_CONFIRMED,YES,fault injection 15/15 and 272 tests pass after defect fixes
+FORMAL_FAST_ALLOWED,NO,formal fast re-run pending after parameter review
+MIDDLE_ALLOWED,NO,explicitly prohibited
+FULL_ALLOWED,NO,explicitly prohibited
+NEXT_ALLOWED_COMMAND,参数评审（R3/M3）后重跑正式 fast,code fixes verified; scientific parameter approval is next
+WAITING_FOR_USER,YES,awaiting parameter review decision

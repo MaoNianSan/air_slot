@@ -88,9 +88,15 @@ data/raw/
 *.parquet
 *.joblib
 
-# Exploratory / audit artifacts — kept locally, not uploaded
+# Exploratory / analysis artifacts — kept locally, not uploaded
 analysis/
+
+# Audit reports & evidence — published to GitHub (M1/M2 audit trail)
+# Exception: pytest_validator_tmp is throwaway validator output, still excluded
 reports/
+!reports/
+!reports/**
+reports/pytest_validator_tmp/
 
 # Staging / temporary folders
 .staging/

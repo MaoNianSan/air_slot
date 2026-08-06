@@ -1,0 +1,107 @@
+[
+  {
+    "injection": "R3 threshold minutes changed to seconds",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "PRE config validator",
+    "detail": "ValueError:predecessor administrative ceiling below gap threshold"
+  },
+  {
+    "injection": "unknown PRE override field added",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "PRE strict schema loader",
+    "detail": "StrictConfigError:UNKNOWN_CONFIG_FIELD=predecessor_matching.foo"
+  },
+  {
+    "injection": "overlapping immediate leg masks older valid predecessor",
+    "expected_detection": "select valid_old",
+    "status": "PASS",
+    "mechanism": "M1 predecessor backtracking",
+    "detail": "selected=valid_old;depth=2"
+  },
+  {
+    "injection": "predecessor available after t1 but before t2",
+    "expected_detection": "t1 false; t2/t3 true",
+    "status": "PASS",
+    "mechanism": "snapshot availability gate",
+    "detail": "{'t1': False, 't2': True, 't3': True}"
+  },
+  {
+    "injection": "formal action count changed from 26 to 25",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "M3 library loader",
+    "detail": "RuntimeError:ACTION_LIBRARY_MISMATCH"
+  },
+  {
+    "injection": "A00 duplicated in formal action inventory",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "M3 action authority",
+    "detail": "RuntimeError:M3_DUPLICATE_ACTION_ID"
+  },
+  {
+    "injection": "M3 boolean false supplied as string",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "M3 strict boolean schema",
+    "detail": "RuntimeError:M3_BOOLEAN_FIELD_INVALID:A11:capacity_required"
+  },
+  {
+    "injection": "padding action_id changed from null to A00",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "ranking validator",
+    "detail": "ValueError:RANKING_PADDING_ACTION_NON_NULL:('e1', 's1'):3"
+  },
+  {
+    "injection": "required M3 typed-gate column removed",
+    "expected_detection": "fail closed",
+    "status": "PASS",
+    "mechanism": "M4 physical screen",
+    "detail": "TYPED_GATE_MISSING:aircraft_swap_available"
+  },
+  {
+    "injection": "training/inference feature order swapped",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "M1 feature contract",
+    "detail": "M1FeatureContractError:M1_INFERENCE_FEATURE_ORDER_MISMATCH:expected=['numeric', 'category']:actual=['category', 'numeric']"
+  },
+  {
+    "injection": "future successor field added to M1 allowlist",
+    "expected_detection": "exclude",
+    "status": "PASS",
+    "mechanism": "M1 prohibited-pattern contract",
+    "detail": "current_altitude,time_bin"
+  },
+  {
+    "injection": "overall_adv Global/Local candidate set mismatch",
+    "expected_detection": "reject",
+    "status": "PASS",
+    "mechanism": "candidate-set contract",
+    "detail": "CANDIDATE_SET_CONTRACT_ERROR:{\"candidate_source_hash_global\":\"f605d9643aac9fae599a126a1c365ee25940918fb1d14bd118976e1c1d31283d\",\"candidate_source_hash_local\":\"47a33302f87ca49db04167c3e7ab0b0fe32bbbe3490165dbfcad8022e636d14d\",\"global_only_actions\":[{\"action_id\":\"A12\",\"episode_id\":\"e1\",\"snapshot_id\":\"s1\"}],\"local_only_actions\":[{\"action_id\":\"A13\",\"episode_id\":\"e1\",\"snapshot_id\":\"s1\"}],\"mismatch_episode_count\":1,\"sample_episode_ids\":[{\"episode_id\":\"e1\",\"snapshot_id\":\"s1\"}]}"
+  },
+  {
+    "injection": "M4 score tie requires expected_residual tie-break",
+    "expected_detection": "A12 ranked first",
+    "status": "PASS",
+    "mechanism": "shared full ranking",
+    "detail": "A12,A11"
+  },
+  {
+    "injection": "14-thread/action scheduling seed order changed",
+    "expected_detection": "scientific draws unchanged",
+    "status": "PASS",
+    "mechanism": "stable per-action M3 seed namespaces",
+    "detail": "74a4d4164da7c0dab45537eef8692adadabca1531a9d229112d5013638b09882"
+  },
+  {
+    "injection": "ranking boundary with 0 real candidates",
+    "expected_detection": "emit 11 padding rows for known key",
+    "status": "PASS",
+    "mechanism": "ranking prefix builder",
+    "detail": "rows=11"
+  }
+]

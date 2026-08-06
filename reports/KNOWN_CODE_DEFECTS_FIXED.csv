@@ -1,0 +1,9 @@
+defect,status,verification,evidence
+M1_OVERLAP_BACKTRACK,PASS,matcher probe and targeted tests,selected valid_old at search depth 2; 11 tests passed
+M3_STRING_BOOLEAN,PASS,boolean fault probe and schema tests,M3_BOOLEAN_FIELD_INVALID raised; 11 M3 tests passed
+M3_ACTION_REACHABILITY,PASS,synthetic positive and negative reachability tests,expanded actions exercised and unsupported cases fail closed
+M4_EXPECTED_RESIDUAL_TIEBREAK,PASS,equal-score counterexample,A12 ranked before A11
+M4_ZERO_CANDIDATE_PADDING,PASS,zero-candidate probe and boundary tests,11 null rows emitted for K1 K2 K3 K5
+OVERALL_ADV_CANDIDATE_MISMATCH,PASS,mismatch probe and contract tests,CandidateSetContractError raised; 4 tests passed
+DEV_CLEAN_ISOLATION,PASS,dry-run isolation tests,16 tests passed and no clean executed in this stage
+RECOVERY_020_GATE_DELETION,PASS,static source scan and M4 targeted tests,no threshold rejection code or gate output column remains
