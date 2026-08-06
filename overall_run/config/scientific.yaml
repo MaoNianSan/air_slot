@@ -127,6 +127,19 @@ m1:
 m2:
   identity: EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2
   input_mode: M1_SCENARIO_PLUS_PRE_CONTEXT
+  context_builder: PRE_CORE_V2_TO_M2_CONTEXT_V1
+  context_directions:
+    continuity_exposure: LARGER_IS_HIGHER_RISK
+    execution_window_margin: LARGER_IS_LOWER_RISK
+    execution_window_pressure: LARGER_IS_HIGHER_RISK
+    resource_availability: LARGER_IS_LOWER_RISK
+    resource_scarcity: LARGER_IS_HIGHER_RISK
+    airport_flow_pressure: LARGER_IS_HIGHER_RISK
+    connection_slack: LARGER_IS_LOWER_RISK
+    connection_pressure: LARGER_IS_HIGHER_RISK
+    rebooking_scarcity: LARGER_IS_HIGHER_RISK
+    infrastructure_flexibility: LARGER_IS_LOWER_RISK
+    infrastructure_constraint: LARGER_IS_HIGHER_RISK
   primary_mode: DIRECT_STRUCTURAL_COMPACT
   complexity:
     max_nonzero_breakpoints_per_subitem: 2
@@ -137,12 +150,16 @@ m2:
     primary_mode: DIRECT_ONLY
   learned_correction:
     enabled: false
+    rho_g: NOT_CONFIGURED
+    epsilon: NOT_CONFIGURED
+    correction_bound_status: REQUIRES_DEVELOPMENT_FREEZE
   constructed_units:
     conversion_level: SUBITEM
     version: CU_V2
   currency:
     code: RMB
     mapping_mode: IDENTITY
+    mapping_version: IDENTITY_V1_EXPLICIT
     flight_rmb_per_cu: 1.0
     passenger_rmb_per_cu: 1.0
     resource_rmb_per_cu: 1.0
@@ -158,14 +175,42 @@ m2:
     R_TAXI: NOT_CONFIGURED
     R_SCARCITY: NOT_CONFIGURED
   rule_parameters:
+    F_TURN:
+      rule_type: NOT_CONFIGURED
+      context_gamma: NOT_CONFIGURED
+      context_multiplier_min: NOT_CONFIGURED
+      context_multiplier_max: NOT_CONFIGURED
+    F_WAIT:
+      rule_type: NOT_CONFIGURED
+      context_gamma: NOT_CONFIGURED
+      context_multiplier_min: NOT_CONFIGURED
+      context_multiplier_max: NOT_CONFIGURED
+    F_PROPAGATION:
+      rule_type: NOT_CONFIGURED
+    P_DELAY:
+      rule_type: NOT_CONFIGURED
+    P_CONNECTION:
+      rule_type: NOT_CONFIGURED
+      context_gamma: NOT_CONFIGURED
+      context_multiplier_min: NOT_CONFIGURED
+      context_multiplier_max: NOT_CONFIGURED
     P_CARE:
+      rule_type: NOT_CONFIGURED
       threshold_minutes: NOT_CONFIGURED
     R_GROUND:
+      rule_type: NOT_CONFIGURED
       context_gamma: NOT_CONFIGURED
+      context_multiplier_min: NOT_CONFIGURED
+      context_multiplier_max: NOT_CONFIGURED
     R_TAXI:
+      rule_type: NOT_CONFIGURED
       context_gamma: NOT_CONFIGURED
+      context_multiplier_min: NOT_CONFIGURED
+      context_multiplier_max: NOT_CONFIGURED
     R_SCARCITY:
+      rule_type: NOT_CONFIGURED
       wait_threshold_minutes: NOT_CONFIGURED
+      taxi_threshold_minutes: NOT_CONFIGURED
   parameter_status: REQUIRES_DEVELOPMENT_FREEZE
 m3:
   resource_profiles:

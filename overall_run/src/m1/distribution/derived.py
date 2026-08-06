@@ -6,6 +6,7 @@ from typing import Mapping
 import numpy as np
 
 from ..contracts import (
+    EventProbabilityBounds,
     EventHorizonProbabilities,
     M1JointSample,
     M1MarginalDistribution,
@@ -173,16 +174,33 @@ def derive_horizon_probabilities(
     if not samples:
         raise ValueError("M1_HORIZON_SAMPLES_EMPTY")
 
-    def probabilities(field: str) -> dict[int, float]:
-        result: dict[int, float] = {}
+    def probabilities(field: str) -> dict[int, EventProbabilityBounds]:
+        result: dict[int, EventProbabilityBounds] = {}
+        total = len(samples)
         for horizon in horizons_minutes:
             deadline = query_time + timedelta(minutes=int(horizon))
-            count = sum(
-                getattr(sample, field) is not None
-                and getattr(sample, field) <= deadline
+            resolved_values = [
+                getattr(sample, field)
                 for sample in samples
+                if getattr(sample, field) is not None
+            ]
+            resolved_event_count = sum(value <= deadline for value in resolved_values)
+            unresolved_count = total - len(resolved_values)
+            lower = resolved_event_count / total
+            upper = (resolved_event_count + unresolved_count) / total
+            formal_available = unresolved_count == 0
+            result[int(horizon)] = EventProbabilityBounds(
+                resolved_probability=(
+                    resolved_event_count / len(resolved_values)
+                    if resolved_values
+                    else None
+                ),
+                unresolved_probability_mass=unresolved_count / total,
+                probability_lower_bound=lower,
+                probability_upper_bound=upper,
+                formal_probability_available=formal_available,
+                formal_probability=lower if formal_available else None,
             )
-            result[int(horizon)] = count / len(samples)
         return result
 
     return EventHorizonProbabilities(

@@ -8,8 +8,8 @@ def apply_bounded_exposure_modifier(
     context_value: float,
     *,
     gamma: float,
-    lower: float = 1.0,
-    upper: float = 2.0,
+    lower: float,
+    upper: float,
 ) -> float:
     return max(float(quantity), 0.0) * bounded_multiplier(
         context_value, gamma, lower, upper

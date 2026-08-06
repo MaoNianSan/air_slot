@@ -259,11 +259,21 @@ class M1ScenarioBundle:
 
 
 @dataclass(frozen=True)
+class EventProbabilityBounds:
+    resolved_probability: float | None
+    unresolved_probability_mass: float
+    probability_lower_bound: float
+    probability_upper_bound: float
+    formal_probability_available: bool
+    formal_probability: float | None
+
+
+@dataclass(frozen=True)
 class EventHorizonProbabilities:
     horizons_minutes: tuple[int, ...]
-    predecessor_inblock: Mapping[int, float]
-    successor_offblock: Mapping[int, float]
-    successor_takeoff: Mapping[int, float]
+    predecessor_inblock: Mapping[int, EventProbabilityBounds]
+    successor_offblock: Mapping[int, EventProbabilityBounds]
+    successor_takeoff: Mapping[int, EventProbabilityBounds]
 
 
 @dataclass(frozen=True)

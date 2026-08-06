@@ -7,6 +7,7 @@ from .adapter import (
 )
 from .config import M1ConfigError, M1Settings, validate_m1_config
 from .contracts import (
+    EventProbabilityBounds,
     EventHorizonProbabilities,
     FlightChainStage,
     M1EpisodeSequence,
@@ -28,6 +29,7 @@ from .serialization import scenario_from_dict, scenario_to_dict
 
 __all__ = [
     "EventHorizonProbabilities",
+    "EventProbabilityBounds",
     "FlightChainStage",
     "M1ConfigError",
     "M1EpisodeSequence",
