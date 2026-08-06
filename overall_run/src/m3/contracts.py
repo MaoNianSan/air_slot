@@ -23,10 +23,9 @@ SUBITEMS_M2_V2 = (
 COST_CHANNELS = ("F", "P", "R")
 EXPECTED_ACTION_IDS = (
     "A00", "A11", "A12", "A13", "A21", "A22", "A23", "A31", "A33",
-    "A41", "A42", "A43", "A51", "A52", "A53", "A61", "A62", "A63",
-    "A64", "A71", "A72",
+    "A41", "A42", "A43", "A61", "A62", "A63", "A64", "A71", "A72",
 )
-FORBIDDEN_ACTION_IDS = frozenset({"A54", "A55"})
+FORBIDDEN_ACTION_IDS = frozenset({"A51", "A52", "A53", "A54", "A55"})
 FORBIDDEN_COMBINATION_TOKENS = (
     "PLUS",
     "WITH",

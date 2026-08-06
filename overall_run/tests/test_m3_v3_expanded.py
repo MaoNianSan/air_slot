@@ -19,7 +19,7 @@ pytest.skip(
 )
 
 from src.config import load_config
-from src.legacy.m3_v3_audit import (
+from src.m3 import (
     FORMAL_ACTION_IDS,
     STRESS_TEST_ACTION_IDS,
     _parameter_rows,

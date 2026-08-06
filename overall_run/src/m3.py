@@ -1,13 +1,4 @@
-"""Legacy M3 V2/V3 audit implementation.
-
-This module is not part of the active M3 V4 runtime path.
-It must not be imported by the formal pipeline.
-"""
-
 from __future__ import annotations
-
-
-LEGACY_AUDIT_ONLY = True
 
 from dataclasses import dataclass
 from numbers import Real
@@ -17,9 +8,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import beta as beta_distribution
 
-from ..action_contract import load_action_contract
+from .action_contract import load_action_contract
 
-from ..utils import stable_hash, stable_seed
+from .utils import stable_hash, stable_seed
 
 CHANNELS = ("F", "P", "R")
 _V2_CONTRACT = load_action_contract("V2")

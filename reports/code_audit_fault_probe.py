@@ -27,7 +27,7 @@ from overall_run.src.m1_feature_contract import (
     M1FeatureContractError,
 )
 from overall_run.src.m1_training import prepare_model_frame
-from overall_run.src.legacy.m3_v3_audit import generate_m3_library, load_actions
+from overall_run.src.m3 import generate_m3_library, load_actions
 from overall_run.src.m4 import screen_physical_actions
 from pre.src.pipeline_config import load_config as load_pre_config
 from pre.src.predecessor_matcher import (

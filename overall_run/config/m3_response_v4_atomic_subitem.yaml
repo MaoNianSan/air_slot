@@ -14,7 +14,7 @@ m3:
   response_draw_count: 1000
   base_seed: 20260718
   fixed_random_streams: true
-  action_count: 21
+  action_count: 18
   required_m2_contract: EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2
   required_subitem_contract: M2_NINE_SUBITEM_V1
   required_cu_version: CU_V2
@@ -185,39 +185,6 @@ m3:
       outcome_coverage: FORMAL_SUPPORTED
       parameter_status: NOT_CONFIGURED
       footprint: {F_TURN: NONE, F_WAIT: SECONDARY, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: PRIMARY, R_TAXI: NONE, R_SCARCITY: NONE}
-      response: *response_not_configured
-      cost: *cost_not_configured
-    - action_id: A51
-      action_name: SAME_FLEET_AIRCRAFT_SWAP
-      action_family: aircraft_recovery
-      mechanism: swap_with_compatible_same_fleet_aircraft
-      lead_time: null
-      applicable_stage: [t1, t2]
-      outcome_coverage: PARTIAL_SUPPORTED
-      parameter_status: NOT_CONFIGURED
-      footprint: {F_TURN: PRIMARY, F_WAIT: NONE, F_PROPAGATION: SECONDARY, P_DELAY: NONE, P_CONNECTION: SECONDARY, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
-      response: *response_not_configured
-      cost: *cost_not_configured
-    - action_id: A52
-      action_name: ROTATION_AIRCRAFT_REASSIGNMENT
-      action_family: aircraft_recovery
-      mechanism: reassign_aircraft_across_local_rotation
-      lead_time: null
-      applicable_stage: [t1, t2]
-      outcome_coverage: PARTIAL_SUPPORTED
-      parameter_status: NOT_CONFIGURED
-      footprint: {F_TURN: SECONDARY, F_WAIT: NONE, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
-      response: *response_not_configured
-      cost: *cost_not_configured
-    - action_id: A53
-      action_name: STANDBY_AIRCRAFT_ACTIVATION
-      action_family: aircraft_recovery
-      mechanism: activate_standby_aircraft
-      lead_time: null
-      applicable_stage: [t1, t2]
-      outcome_coverage: PARTIAL_SUPPORTED
-      parameter_status: NOT_CONFIGURED
-      footprint: {F_TURN: PRIMARY, F_WAIT: NONE, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: SECONDARY, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
       response: *response_not_configured
       cost: *cost_not_configured
     - action_id: A61

@@ -17,15 +17,14 @@ The active action identity is `(action_library_version, action_id)`. V4 must be 
 
 ## Atomic Catalog
 
-The V4 catalog contains exactly 21 actions:
+The V4 catalog contains exactly 18 actions:
 
 ```text
 A00 A11 A12 A13 A21 A22 A23 A31 A33
-A41 A42 A43 A51 A52 A53
-A61 A62 A63 A64 A71 A72
+A41 A42 A43 A61 A62 A63 A64 A71 A72
 ```
 
-`A51`, `A52`, and `A53` are new atomic aircraft recovery identities under the V4 library. They are `PARTIAL_SUPPORTED` and `NOT_CONFIGURED`. `A54` and `A55` remain forbidden. Names containing `PLUS`, `WITH`, `PACKAGE`, `INTEGRATED`, `BALANCED`, or `AGGRESSIVE` are rejected.
+`A51`, `A52`, `A53`, `A54`, and `A55` are forbidden. Names containing `PLUS`, `WITH`, `PACKAGE`, `INTEGRATED`, `BALANCED`, or `AGGRESSIVE` are rejected.
 
 ## Subitem Response
 
@@ -64,17 +63,3 @@ REQUIRES_DEVELOPMENT_FREEZE
 ```
 
 M2 contract, subitem contract, CU, and valuation mismatches fail with `M3_M2_CONTRACT_MISMATCH`; there is no silent fallback.
-
-## Runtime Gate
-
-The pipeline loads and validates the V4 contract before checking readiness. The current ordered boundary is:
-
-```text
-M3 contract load
-M3-to-M2 compatibility
-M3 parameter freeze
-M3 formal library generation
-M4 contract
-```
-
-The current formal stop is `M3_PARAMETER_NOT_FROZEN`.

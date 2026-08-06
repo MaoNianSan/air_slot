@@ -6,10 +6,8 @@ from src.m3 import evaluate_m3_structure, sample_count_stability
 def test_artifact_frames_and_hashes_are_stable(fixture_artifact) -> None:
     response = fixture_artifact.response_samples_frame()
     costs = fixture_artifact.implementation_costs_frame()
-    action_count = len(fixture_artifact.action_catalog)
-    assert action_count == 21
-    assert len(response) == action_count * 256 * 9
-    assert len(costs) == action_count * 256
+    assert len(response) == 18 * 256 * 9
+    assert len(costs) == 18 * 256
     assert response["action_library_version"].nunique() == 1
     assert costs["action_library_version"].nunique() == 1
     for value in (

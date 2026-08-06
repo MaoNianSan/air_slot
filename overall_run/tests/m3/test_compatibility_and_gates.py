@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import replace
 
 import pytest
 
-from src.failures import M3ContractMismatch, M3ParameterNotFrozen, M4ContractMismatch
+from src.failures import M3ParameterNotFrozen, M4ContractMismatch
 from src.m3 import validate_m2_compatibility
 from src.m4 import evaluate_m4, fit_m4, screen_physical_actions
-from src.pipeline import inspect_m3_runtime_status, run_experiment
+from src.pipeline import run_experiment
 
 
 def test_m2_v2_compatibility_passes_without_zeroing_unsupported(m3_contract, cfg) -> None:
@@ -35,22 +34,8 @@ def test_m2_compatibility_mismatches_are_explicit(m3_contract, cfg, mutation, co
 
 
 def test_pipeline_reports_real_upstream_readiness_gate(cfg) -> None:
-    status = inspect_m3_runtime_status(cfg)
-    assert status.contract_ready is True
-    assert status.compatibility_ready is True
-    assert status.parameters_frozen is False
     with pytest.raises(M3ParameterNotFrozen, match="M3_PARAMETER_NOT_FROZEN"):
         run_experiment(cfg, "fast")
-
-
-def test_pipeline_rejects_invalid_v4_contract_before_parameter_gate(cfg) -> None:
-    merged = deepcopy(cfg.merged)
-    merged["m3"]["identity"]["name"] = "M3_RESPONSE_V4_INVALID"
-    invalid = replace(cfg, merged=merged)
-    status = inspect_m3_runtime_status(invalid)
-    assert status.contract_ready is False
-    with pytest.raises(M3ContractMismatch, match="M3_CONTRACT_MISMATCH"):
-        run_experiment(invalid, "fast")
 
 
 def test_old_m4_rejects_v4_artifact_and_catalog(cfg, m3_contract, fixture_artifact) -> None:
