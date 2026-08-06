@@ -82,10 +82,17 @@ def load_action_contract(version: str) -> dict[str, Any]:
         forbidden = ("PLUS", "WITH", "PACKAGE", "INTEGRATED", "BALANCED", "AGGRESSIVE")
         for item in actions:
             action_id = str(item.get("action_id"))
-            text = str(item.get("action_name", "")).upper()
-            if action_id in {"A51", "A52", "A53", "A54", "A55"}:
+            identity_text = " ".join(
+                str(item.get(key, ""))
+                for key in ("action_name", "action_family")
+            ).upper()
+            mechanism_text = str(item.get("mechanism", "")).upper()
+            mechanism_forbidden = tuple(token for token in forbidden if token != "WITH")
+            if action_id in {"A54", "A55"}:
                 raise ValueError(f"M3_ATOMIC_ACTION_REQUIRED={action_id}")
-            if any(token in text for token in forbidden):
+            if any(token in identity_text for token in forbidden) or any(
+                token in mechanism_text for token in mechanism_forbidden
+            ):
                 raise ValueError(f"M3_ATOMIC_ACTION_REQUIRED={item.get('action_id')}")
     return m3
 

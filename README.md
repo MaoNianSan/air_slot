@@ -28,11 +28,13 @@ It uses temperature scaling and fixed episode-level random numbers to produce
 structurally coupled scenario bundles. The M1-to-M2 V2 contract and compact
 pre-action loss reconstruction are implemented and covered by targeted tests.
 Formal training, calibration, resampling, and production M2 reconstruction have
-not run. M3 V4 now defines the 18-action atomic-subitem response contract,
+not run. M3 V4 now defines the 21-action atomic-subitem response contract,
 sparse nine-subitem footprints, deterministic test-only response generation,
-and explicit M2 compatibility checks. Its scientific parameters remain
-unfrozen and M4 has not migrated, so the global pipeline currently stops at
-`M3_PARAMETER_NOT_FROZEN`.
+and explicit M2 compatibility checks. The catalog includes three partial-support
+aircraft recovery actions, while the legacy V2/V3 implementation is isolated
+under `overall_run/src/legacy/`. Formal response and cost parameters remain
+unfrozen, M4 has not migrated to the V4 artifact, and the formal pipeline is
+blocked at `M3_PARAMETER_NOT_FROZEN`.
 
 ## Boundaries
 

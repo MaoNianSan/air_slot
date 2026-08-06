@@ -51,7 +51,7 @@ zero loss. Unresolved overflow blocks formal q95 and CVaR90 publication.
 
 M1-to-M2 V2 code and synthetic integration tests are complete. Formal M1
 training, calibration, resampling, and production M2 reconstruction have not
-run. M3 V4 uses 18 version-bound atomic actions, sparse PRIMARY/SECONDARY/NONE
+run. M3 V4 uses 21 version-bound atomic actions, sparse PRIMARY/SECONDARY/NONE
 footprints over the nine M2 subitems, one shared Beta intensity per action draw,
 and separate F/P/R implementation costs. Formal response and cost parameters
 remain `NOT_CONFIGURED`; only synthetic fixtures may
@@ -59,6 +59,19 @@ exercise the structural generator. The retired scalar M2-to-M4 contract is not
 used as a compatibility path, and old M4 explicitly rejects V4 artifacts.
 Global execution currently stops at `M3_PARAMETER_NOT_FROZEN`. Engineering
 implementation does not imply scientific or production readiness.
+
+```text
+M3_CONTRACT_STATUS = PASS
+M3_ACTION_LIBRARY_COUNT = 21
+M3_PARAMETER_FREEZE_STATUS = NOT_YET_DONE
+M3_FORMAL_LIBRARY_STATUS = NOT_YET_RUN
+M4_CONTRACT_STATUS = MISMATCH
+```
+
+`A51`, `A52`, and `A53` are partial-support aircraft recovery actions with no
+formal response or cost parameters. `A54` and `A55` remain forbidden. The old
+channel-level `src/m3.py` implementation has moved to
+`src/legacy/m3_v3_audit.py` and is not imported by the active runtime.
 
 ## Verification
 
