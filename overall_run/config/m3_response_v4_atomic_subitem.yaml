@@ -1,0 +1,255 @@
+m3:
+  identity:
+    name: M3_RESPONSE_V4_ATOMIC_SUBITEM
+  version:
+    action_library: M3_ATOMIC_ACTION_LIBRARY_V1
+    response_contract: M3_SUBITEM_RESPONSE_V1
+  status:
+    contract: PASS
+    parameter_freeze: NOT_YET_DONE
+    formal_library: NOT_YET_RUN
+    scientific_approved: false
+    publication_allowed: false
+  config_path: config/m3_response_v4_atomic_subitem.yaml
+  response_draw_count: 1000
+  base_seed: 20260718
+  fixed_random_streams: true
+  action_count: 18
+  required_m2_contract: EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2
+  required_subitem_contract: M2_NINE_SUBITEM_V1
+  required_cu_version: CU_V2
+  required_valuation_version: REQUIRES_DEVELOPMENT_FREEZE
+  templates:
+    response_not_configured: &response_not_configured
+      response_mean: null
+      response_concentration: null
+      secondary_multiplier: null
+      failure_probability: null
+      parameter_status: NOT_CONFIGURED
+      parameter_source: NOT_CONFIGURED
+      parameter_version: NOT_CONFIGURED
+      test_only: false
+    cost_not_configured: &cost_not_configured
+      F: {mean_rmb: null, status: NOT_CONFIGURED}
+      P: {mean_rmb: null, status: NOT_CONFIGURED}
+      R: {mean_rmb: null, status: NOT_CONFIGURED}
+      cost_cv: null
+      parameter_status: NOT_CONFIGURED
+      parameter_source: NOT_CONFIGURED
+      parameter_version: NOT_CONFIGURED
+      test_only: false
+  actions:
+    - action_id: A00
+      action_name: NO_ADDITIONAL_ACTION
+      action_family: null_action
+      mechanism: identity_baseline
+      lead_time: 0
+      applicable_stage: [t1, t2, t3]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: FROZEN_FOR_VALIDATION
+      footprint: {F_TURN: NONE, F_WAIT: NONE, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response:
+        response_mean: 0.0
+        response_concentration: null
+        secondary_multiplier: 0.0
+        failure_probability: 0.0
+        parameter_status: FROZEN_FOR_VALIDATION
+        parameter_source: BUSINESS_RULE
+        parameter_version: M3_A00_IDENTITY_V1
+        test_only: false
+      cost:
+        F: {mean_rmb: 0.0, status: FROZEN_FOR_VALIDATION}
+        P: {mean_rmb: 0.0, status: FROZEN_FOR_VALIDATION}
+        R: {mean_rmb: 0.0, status: FROZEN_FOR_VALIDATION}
+        cost_cv: 0.0
+        parameter_status: FROZEN_FOR_VALIDATION
+        parameter_source: BUSINESS_RULE
+        parameter_version: M3_A00_IDENTITY_V1
+        test_only: false
+    - action_id: A11
+      action_name: CONTROLLED_CONNECTION_HOLD
+      action_family: connection_coordination
+      mechanism: preserve_connection_by_controlled_hold
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: NONE, F_PROPAGATION: SECONDARY, P_DELAY: NONE, P_CONNECTION: PRIMARY, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A12
+      action_name: FLIGHT_EXECUTION_COORDINATION
+      action_family: execution_coordination
+      mechanism: coordinate_flight_execution
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: PRIMARY, F_PROPAGATION: SECONDARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: SECONDARY, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A13
+      action_name: TRAJECTORY_EXECUTION_COORDINATION
+      action_family: execution_coordination
+      mechanism: coordinate_trajectory_execution
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: PARTIAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: NONE, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: SECONDARY, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A21
+      action_name: BOUNDED_RETIMING
+      action_family: retiming
+      mechanism: bounded_schedule_retiming
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: PRIMARY, F_WAIT: PRIMARY, F_PROPAGATION: SECONDARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A22
+      action_name: SLOT_COORDINATION
+      action_family: slot_coordination
+      mechanism: coordinate_assigned_slot
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: SECONDARY, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: PRIMARY, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A23
+      action_name: DEPARTURE_PRIORITY_REQUEST
+      action_family: slot_coordination
+      mechanism: request_departure_priority
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: PRIMARY, F_PROPAGATION: SECONDARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: PRIMARY, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A31
+      action_name: PASSENGER_REBOOKING
+      action_family: passenger_recovery
+      mechanism: rebook_misconnecting_passengers
+      lead_time: null
+      applicable_stage: [t1, t2, t3]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: NONE, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: PRIMARY, P_CARE: SECONDARY, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A33
+      action_name: PASSENGER_CARE
+      action_family: passenger_recovery
+      mechanism: provide_passenger_care
+      lead_time: null
+      applicable_stage: [t1, t2, t3]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: NONE, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: PRIMARY, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A41
+      action_name: GATE_REASSIGNMENT
+      action_family: ground_recovery
+      mechanism: reassign_gate_or_stand
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: SECONDARY, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: PRIMARY, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A42
+      action_name: GROUND_SUPPORT_REINFORCEMENT
+      action_family: ground_recovery
+      mechanism: reinforce_ground_support
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: PRIMARY, F_WAIT: SECONDARY, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: PRIMARY, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A43
+      action_name: AIRCRAFT_TOW
+      action_family: ground_recovery
+      mechanism: tow_aircraft_between_stands
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: FORMAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: SECONDARY, F_PROPAGATION: NONE, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: PRIMARY, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A61
+      action_name: SAME_QUALIFICATION_CREW_SWAP
+      action_family: crew_recovery
+      mechanism: swap_same_qualification_crew
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: PARTIAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: PRIMARY, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A62
+      action_name: STANDBY_CREW_ACTIVATION
+      action_family: crew_recovery
+      mechanism: activate_standby_crew
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: PARTIAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: PRIMARY, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A63
+      action_name: CREW_REPOSITIONING
+      action_family: crew_recovery
+      mechanism: reposition_crew
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: PARTIAL_SUPPORTED
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: SECONDARY, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A64
+      action_name: CREW_DUTY_CHAIN_RESET
+      action_family: crew_recovery
+      mechanism: reset_crew_duty_chain
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: SCENARIO_ONLY
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: NONE, F_WAIT: SECONDARY, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A71
+      action_name: FLIGHT_CANCELLATION
+      action_family: cancellation
+      mechanism: cancel_flight
+      lead_time: null
+      applicable_stage: [t1, t2, t3]
+      outcome_coverage: SCENARIO_ONLY
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: PRIMARY, F_WAIT: NONE, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured
+    - action_id: A72
+      action_name: LOCAL_ROTATION_RESET
+      action_family: rotation_reset
+      mechanism: reset_local_rotation
+      lead_time: null
+      applicable_stage: [t1, t2]
+      outcome_coverage: SCENARIO_ONLY
+      parameter_status: NOT_CONFIGURED
+      footprint: {F_TURN: SECONDARY, F_WAIT: NONE, F_PROPAGATION: PRIMARY, P_DELAY: NONE, P_CONNECTION: NONE, P_CARE: NONE, R_GROUND: NONE, R_TAXI: NONE, R_SCARCITY: NONE}
+      response: *response_not_configured
+      cost: *cost_not_configured

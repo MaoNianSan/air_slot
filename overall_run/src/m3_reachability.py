@@ -4,9 +4,6 @@ from typing import Any
 
 import pandas as pd
 
-from .m3 import Action
-
-
 ZERO_REACHABILITY_CLASSES = {
     "CODE_UNREACHABLE",
     "CONFIG_UNREACHABLE",
@@ -17,7 +14,7 @@ ZERO_REACHABILITY_CLASSES = {
 
 def resolve_action_reachability(
     candidate_screen: pd.DataFrame,
-    actions: dict[str, Action],
+    actions: dict[str, Any],
     scientific: dict[str, Any],
 ) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []

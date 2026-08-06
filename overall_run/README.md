@@ -1,8 +1,8 @@
 # overall_run
 
-`overall_run` owns M1-M4 orchestration. M1 and the M1-to-M2 V2 boundary are
-implemented in this refactor. M3 and M4 remain behind an explicit downstream
-contract gate.
+`overall_run` owns M1-M4 orchestration. M1, the M1-to-M2 V2 boundary, and the
+M3 V4 structural contract are implemented. Formal M2 valuation, M3 parameter
+freeze, and M4 migration remain behind explicit readiness gates.
 
 ## M1
 
@@ -51,9 +51,14 @@ zero loss. Unresolved overflow blocks formal q95 and CVaR90 publication.
 
 M1-to-M2 V2 code and synthetic integration tests are complete. Formal M1
 training, calibration, resampling, and production M2 reconstruction have not
-run. The retired scalar M2-to-M4 contract is not used as a compatibility path;
-global execution stops at `M3_CONTRACT_MISMATCH` until M3 and M4 migrate.
-Engineering implementation does not imply scientific or production readiness.
+run. M3 V4 uses 18 version-bound atomic actions, sparse PRIMARY/SECONDARY/NONE
+footprints over the nine M2 subitems, one shared Beta intensity per action draw,
+and separate F/P/R implementation costs. Formal response and cost parameters
+remain `NOT_CONFIGURED`; only synthetic fixtures may
+exercise the structural generator. The retired scalar M2-to-M4 contract is not
+used as a compatibility path, and old M4 explicitly rejects V4 artifacts.
+Global execution currently stops at `M3_PARAMETER_NOT_FROZEN`. Engineering
+implementation does not imply scientific or production readiness.
 
 ## Verification
 
@@ -61,7 +66,8 @@ Engineering implementation does not imply scientific or production readiness.
 D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests
 D:/Python311/python.exe -m pytest -q overall_run/tests/m1
 D:/Python311/python.exe -m pytest -q overall_run/tests/m2
+D:/Python311/python.exe -m pytest -q overall_run/tests/m3
 ```
 
-See `../reports/m1_m2_v2/` for the implementation, contract, test, and rerun
-reports.
+See `../reports/m1_m2_v2/` and `../reports/m3_v2/` for implementation,
+contract, test, and rerun reports.

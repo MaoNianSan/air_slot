@@ -28,8 +28,11 @@ It uses temperature scaling and fixed episode-level random numbers to produce
 structurally coupled scenario bundles. The M1-to-M2 V2 contract and compact
 pre-action loss reconstruction are implemented and covered by targeted tests.
 Formal training, calibration, resampling, and production M2 reconstruction have
-not run. M3 and M4 still require contract migration, so the global pipeline
-stops explicitly at `M3_CONTRACT_MISMATCH`.
+not run. M3 V4 now defines the 18-action atomic-subitem response contract,
+sparse nine-subitem footprints, deterministic test-only response generation,
+and explicit M2 compatibility checks. Its scientific parameters remain
+unfrozen and M4 has not migrated, so the global pipeline currently stops at
+`M3_PARAMETER_NOT_FROZEN`.
 
 ## Boundaries
 
@@ -47,7 +50,9 @@ D:/Python311/python.exe -m pytest -q pre/tests
 D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests
 D:/Python311/python.exe -m pytest -q overall_run/tests/m1
 D:/Python311/python.exe -m pytest -q overall_run/tests/m2
+D:/Python311/python.exe -m pytest -q overall_run/tests/m3
 ```
 
-See `pre/README.md`, `overall_run/README.md`, and `reports/m1_m2_v2/` for
+See `pre/README.md`, `overall_run/README.md`, `reports/m1_m2_v2/`, and
+`reports/m3_v2/` for
 module boundaries, contract details, validation evidence, and rerun decisions.

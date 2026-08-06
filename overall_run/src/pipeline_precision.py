@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import NoReturn
 
 from .config import RunConfig
-from .failures import M3ContractMismatch
+from .failures import M3ParameterNotFrozen
 
 
 def run_precision(
@@ -13,6 +13,6 @@ def run_precision(
     pre_output: Path | None = None,
 ) -> NoReturn:
     del cfg, progress_level, pre_output
-    raise M3ContractMismatch(
-        "M3_CONTRACT_MISMATCH: precision mode awaits the M2 V2 to M3 migration"
+    raise M3ParameterNotFrozen(
+        "M3_PARAMETER_NOT_FROZEN: precision mode is unavailable before M3 parameter freeze"
     )

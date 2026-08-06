@@ -13,6 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+pytest.skip(
+    "LEGACY_AUDIT_ONLY: V3 channel-level response is not an active formal contract",
+    allow_module_level=True,
+)
+
 from src.config import load_config
 from src.m3 import (
     FORMAL_ACTION_IDS,

@@ -101,8 +101,8 @@ def test_refactor_config_merge_equivalence() -> None:
     assert result["status"] == "PASS"
     current = load_config(ROOT / "overall_run", "fast")
     assert current.config_hash != contract["current_config_hash"]
-    assert current.scientific["m3"]["publication_allowed"] is False
-    assert current.scientific["m3"]["action_library_version"] == "M3_RESPONSE_V3_EXPANDED_PROVISIONAL"
+    assert current.scientific["m3"]["status"]["publication_allowed"] is False
+    assert current.scientific["m3"]["version"]["action_library"] == "M3_ATOMIC_ACTION_LIBRARY_V1"
     registry = json.loads((BASELINE_FAST / "artifact_registry.json").read_text(encoding="utf-8"))
     assert registry["config_hash"] == contract["historical_config_hash"]
     assert sha256_file(BASELINE_FAST / "artifact_registry.json") == contract["historical_registry_sha256"]

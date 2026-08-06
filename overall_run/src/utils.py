@@ -28,7 +28,7 @@ def source_tree_hash(root: Path) -> str:
     artifact reuse cannot rely on a commit hash alone.
     """
     candidates = [root / "main.py"]
-    candidates.extend(sorted((root / "src").glob("*.py")))
+    candidates.extend(sorted((root / "src").rglob("*.py")))
     h = hashlib.sha256()
     for path in candidates:
         if not path.exists():

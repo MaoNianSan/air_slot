@@ -5,8 +5,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .m3 import Action, M3Artifact
-from .m4_screening import CHANNELS, M4Artifact
+from .m4_screening import CHANNELS, M4Artifact, _reject_v4_m3
 
 RANKING_DEPTHS = (1, 2, 3, 5)
 MAXIMUM_RANKING_DEPTH = 5
@@ -71,11 +70,12 @@ def evaluate_m4(
     snapshots: pd.DataFrame,
     m2_costs_rmb: dict[str, np.ndarray],
     physical_audit: pd.DataFrame,
-    actions: dict[str, Action],
-    response_library: M3Artifact,
+    actions: dict[str, Any],
+    response_library: Any,
     artifact: M4Artifact,
     frozen_evaluation_actions: dict[tuple[str, str], set[str]] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    _reject_v4_m3(response_library)
     n_rows = len(snapshots)
     arrays = {
         channel: np.asarray(m2_costs_rmb[channel], dtype=float)

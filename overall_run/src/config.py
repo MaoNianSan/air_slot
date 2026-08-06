@@ -56,7 +56,16 @@ AUTHORITATIVE_CODE = (
     ("src/m2/input_adapter.py", "m1_to_m2_adapter"),
     ("src/m2/reconstruction.py", "m2_v2_reconstruction"),
     ("src/m2/summaries.py", "m2_v2_summaries"),
-    ("src/m3.py", "m3"),
+    ("src/m3/__init__.py", "m3_public_api"),
+    ("src/m3/contracts.py", "m3_v4_contracts"),
+    ("src/m3/catalog.py", "m3_v4_catalog"),
+    ("src/m3/footprint.py", "m3_v4_footprint"),
+    ("src/m3/parameters.py", "m3_v4_parameters"),
+    ("src/m3/sampling.py", "m3_v4_sampling"),
+    ("src/m3/costs.py", "m3_v4_costs"),
+    ("src/m3/artifact.py", "m3_v4_artifact"),
+    ("src/m3/compatibility.py", "m3_v4_compatibility"),
+    ("src/m3/evaluation.py", "m3_v4_evaluation"),
     ("src/m4.py", "m4_public_api"),
     ("src/m4_screening.py", "m4_physical_screening"),
     ("src/m4_evaluation.py", "m4_risk_evaluation"),
@@ -180,7 +189,7 @@ def load_config(
     paths = [
         directory / "default.yaml",
         directory / "scientific.yaml",
-        directory / "m3_v3.yaml",
+        directory / "m3_response_v4_atomic_subitem.yaml",
         directory / "compute.yaml",
         directory / "acceptance.yaml",
         directory / f"{mode}.yaml",
@@ -244,20 +253,34 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
         validate_m1_config(config["m1"])
     except M1ConfigError as exc:
         raise ConfigError(str(exc)) from exc
+    m3_contract = load_action_contract("V4")
     actions = config["m3"].get("actions", [])
-    expected_actions = [
-        "A00", "A11", "A12", "A13", "A21", "A22", "A23", "A31", "A32",
-        "A33", "A41", "A42", "A43", "A51", "A52", "A53", "A54", "A55",
-        "A61", "A62", "A71", "A72", "A73", "A81", "A82", "A83",
-    ]
-    if [str(item.get("id")) for item in actions] != expected_actions:
-        raise ConfigError("m3.actions does not match the frozen action order")
+    expected_actions = list(m3_contract["action_ids"])
+    if [str(item.get("action_id")) for item in actions] != expected_actions:
+        raise ConfigError("m3.actions does not match the V4 atomic action order")
+    if config["m3"].get("identity", {}).get("name") != "M3_RESPONSE_V4_ATOMIC_SUBITEM":
+        raise ConfigError("m3 identity must select M3_RESPONSE_V4_ATOMIC_SUBITEM")
+    versions = config["m3"].get("version", {})
+    if versions.get("action_library") != "M3_ATOMIC_ACTION_LIBRARY_V1":
+        raise ConfigError("m3 action library must select M3_ATOMIC_ACTION_LIBRARY_V1")
+    if versions.get("response_contract") != "M3_SUBITEM_RESPONSE_V1":
+        raise ConfigError("m3 response contract must select M3_SUBITEM_RESPONSE_V1")
+    if config["m3"].get("config_path") != "config/m3_response_v4_atomic_subitem.yaml":
+        raise ConfigError("m3.config_path must select the independent V4 contract")
+    status = config["m3"].get("status", {})
+    if status.get("parameter_freeze") != "NOT_YET_DONE":
+        raise ConfigError("m3 parameter freeze must remain NOT_YET_DONE")
+    if status.get("formal_library") != "NOT_YET_RUN":
+        raise ConfigError("m3 formal library must remain NOT_YET_RUN")
     m2 = config["m2"]
     required_m2 = {
         "identity": "EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2",
+        "subitem_schema_version": "M2_SUBITEM_SCHEMA_V2",
+        "subitem_contract_version": "M2_NINE_SUBITEM_V1",
         "input_mode": "M1_SCENARIO_PLUS_PRE_CONTEXT",
         "primary_mode": "DIRECT_STRUCTURAL_COMPACT",
         "formal_loss_field": "total_pre_action_loss_rmb",
+        "valuation_version": "REQUIRES_DEVELOPMENT_FREEZE",
     }
     for key, expected in required_m2.items():
         if m2.get(key) != expected:
@@ -276,21 +299,22 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
     if m2.get("learned_correction", {}).get("enabled") is not False:
         raise ConfigError("m2 learned correction must be disabled")
     currency = m2.get("currency", {})
-    if currency.get("code") != "RMB" or currency.get("mapping_mode") != "IDENTITY":
+    if (
+        currency.get("code") != "RMB"
+        or currency.get("mapping_mode") != "IDENTITY"
+        or currency.get("mapping_version") != "IDENTITY_V1_EXPLICIT"
+    ):
         raise ConfigError("m2 currency must use RMB IDENTITY")
     rates = [currency.get(name) for name in (
         "flight_rmb_per_cu", "passenger_rmb_per_cu", "resource_rmb_per_cu"
     )]
     if rates != [1.0, 1.0, 1.0]:
         raise ConfigError("m2 formal currency mapping must be 1 CU = 1 RMB")
-    response = config["m3"].get("response_parameters", {})
-    if set(response) != set(expected_actions):
-        raise ConfigError("m3.response_parameters must cover all frozen actions")
-    if config["m3"].get("response_parameter_version") != "M3_RESPONSE_V3_EXPANDED":
-        raise ConfigError("m3.response_parameter_version must select M3_RESPONSE_V3_EXPANDED")
-    ranking_depths = [int(value) for value in config["m4"].get("ranking_depths", [])]
-    if ranking_depths != [1, 2, 3, 5] or int(config["m4"].get("maximum_ranking_depth", 0)) != 5:
-        raise ConfigError("m4 ranking depths must be [1,2,3,5] with maximum 5")
+    if any(
+        key in config["m3"]
+        for key in ("response_parameters", "response_parameter_version", "resource_profiles")
+    ):
+        raise ConfigError("m3 active config contains retired V2/V3 response fields")
     decision_value = config["m4"].get("decision_value", {})
     for key in ("burden_ratio_max", "positive_net_benefit_probability_min"):
         if key not in decision_value:

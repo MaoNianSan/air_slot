@@ -1,0 +1,52 @@
+from __future__ import annotations
+
+from copy import deepcopy
+
+import pytest
+
+from src.failures import M3ParameterNotFrozen, M4ContractMismatch
+from src.m3 import validate_m2_compatibility
+from src.m4 import evaluate_m4, fit_m4, screen_physical_actions
+from src.pipeline import run_experiment
+
+
+def test_m2_v2_compatibility_passes_without_zeroing_unsupported(m3_contract, cfg) -> None:
+    m2 = deepcopy(cfg.scientific["m2"])
+    result = validate_m2_compatibility(m3_contract, m2)
+    assert result.status == "PASS"
+    assert m3_contract.footprints["A31"].roles["P_CONNECTION"].value == "PRIMARY"
+
+
+@pytest.mark.parametrize(
+    ("mutation", "code"),
+    [
+        (lambda m2: m2.update(identity="LEGACY_SCALAR"), "M3_M2_CONTRACT_MISMATCH"),
+        (lambda m2: m2.update(subitem_contract_version="OLD"), "M3_M2_CONTRACT_MISMATCH"),
+        (lambda m2: m2["constructed_units"].update(version="CU_V1"), "M3_M2_CONTRACT_MISMATCH"),
+        (lambda m2: m2.pop("valuation_version"), "M3_M2_CONTRACT_MISMATCH"),
+    ],
+)
+def test_m2_compatibility_mismatches_are_explicit(m3_contract, cfg, mutation, code) -> None:
+    m2 = deepcopy(cfg.scientific["m2"])
+    mutation(m2)
+    with pytest.raises(RuntimeError, match=code):
+        validate_m2_compatibility(m3_contract, m2)
+
+
+def test_pipeline_reports_real_upstream_readiness_gate(cfg) -> None:
+    with pytest.raises(M3ParameterNotFrozen, match="M3_PARAMETER_NOT_FROZEN"):
+        run_experiment(cfg, "fast")
+
+
+def test_old_m4_rejects_v4_artifact_and_catalog(cfg, m3_contract, fixture_artifact) -> None:
+    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+        fit_m4(cfg.scientific, response_library=fixture_artifact)
+    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+        evaluate_m4(None, {}, None, {}, fixture_artifact, None)
+    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+        screen_physical_actions(
+            rules=None,
+            snapshots=None,
+            actions=dict(m3_contract.catalog),
+            trigger=[],
+        )

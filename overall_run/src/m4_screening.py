@@ -6,7 +6,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .m3 import Action, M3Artifact
+from .failures import M4ContractMismatch
 
 CHANNELS = ("F", "P", "R")
 
@@ -38,7 +38,26 @@ class M4UnavailableArtifact:
     channel_scale_support: dict[str, int]
 
 
-def fit_m4(scientific: dict[str, Any]) -> M4Artifact:
+def _reject_v4_m3(value: Any) -> None:
+    metadata = getattr(value, "version_metadata", {})
+    version = str(
+        getattr(value, "contract_version", "")
+        or getattr(value, "action_library_version", "")
+        or metadata.get("identity", "")
+    )
+    if version in {"M3_RESPONSE_V4_ATOMIC_SUBITEM", "M3_ATOMIC_ACTION_LIBRARY_V1"}:
+        raise M4ContractMismatch(
+            "M4_CONTRACT_MISMATCH: M3 V4 atomic-subitem artifact is not yet supported"
+        )
+
+
+def fit_m4(
+    scientific: dict[str, Any],
+    *,
+    response_library: Any | None = None,
+) -> M4Artifact:
+    if response_library is not None:
+        _reject_v4_m3(response_library)
     cfg = scientific["m4"]
     decision = cfg.get("decision_value", {})
     artifact = M4Artifact(
@@ -83,10 +102,12 @@ def _strict_bool(value: Any, field: str) -> bool:
 def screen_physical_actions(
     rules: pd.DataFrame,
     snapshots: pd.DataFrame,
-    actions: dict[str, Action],
+    actions: dict[str, Any],
     trigger: np.ndarray,
     resource_profiles: dict[str, dict[str, float]] | None = None,
 ) -> PhysicalScreenResult:
+    for action in actions.values():
+        _reject_v4_m3(action)
     profiles = resource_profiles or {}
     trigger_values = np.asarray(trigger)
     if trigger_values.ndim != 1 or len(trigger_values) != len(snapshots):

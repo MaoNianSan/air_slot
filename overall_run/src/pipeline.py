@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from .config import RunConfig
-from .failures import M3ContractMismatch
+from .failures import M3FormalLibraryNotReady, M3ParameterNotFrozen, M4ContractMismatch
 from .pipeline_checkpoint import (
     FullBlockedByFastAcceptance,
     mark_running_staging_incomplete,
@@ -25,7 +25,6 @@ def run_experiment(
     resume_staging: Path | None = None,
 ) -> Path:
     del (
-        cfg,
         mode,
         progress_level,
         pre_output,
@@ -34,8 +33,18 @@ def run_experiment(
         output_name,
         resume_staging,
     )
-    raise M3ContractMismatch(
-        "M3_CONTRACT_MISMATCH: M1-to-M2 V2 is available but M3 has not migrated to M2 sample losses"
+    m3_status = str(cfg.scientific["m3"].get("status", {}).get("parameter_freeze", ""))
+    if m3_status != "DONE":
+        raise M3ParameterNotFrozen(
+            "M3_PARAMETER_NOT_FROZEN: atomic-subitem response parameters require development freeze"
+        )
+    library_status = str(cfg.scientific["m3"].get("status", {}).get("formal_library", ""))
+    if library_status != "READY":
+        raise M3FormalLibraryNotReady(
+            "M3_FORMAL_LIBRARY_NOT_READY: the formal response library has not been generated"
+        )
+    raise M4ContractMismatch(
+        "M4_CONTRACT_MISMATCH: M3 V4 atomic-subitem artifact is not yet supported"
     )
 
 

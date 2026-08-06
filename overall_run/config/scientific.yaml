@@ -126,6 +126,8 @@ m1:
     cross_module_training: false
 m2:
   identity: EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2
+  subitem_schema_version: M2_SUBITEM_SCHEMA_V2
+  subitem_contract_version: M2_NINE_SUBITEM_V1
   input_mode: M1_SCENARIO_PLUS_PRE_CONTEXT
   context_builder: PRE_CORE_V2_TO_M2_CONTEXT_V1
   context_directions:
@@ -164,6 +166,7 @@ m2:
     passenger_rmb_per_cu: 1.0
     resource_rmb_per_cu: 1.0
   formal_loss_field: total_pre_action_loss_rmb
+  valuation_version: REQUIRES_DEVELOPMENT_FREEZE
   subitem_value_parameters:
     F_TURN: NOT_CONFIGURED
     F_WAIT: NOT_CONFIGURED
@@ -212,7 +215,8 @@ m2:
       wait_threshold_minutes: NOT_CONFIGURED
       taxi_threshold_minutes: NOT_CONFIGURED
   parameter_status: REQUIRES_DEVELOPMENT_FREEZE
-m3:
+m3_legacy_v2:
+  legacy_status: LEGACY_AUDIT_ONLY
   resource_profiles:
     scarce:
       F: 0.35
@@ -617,6 +621,22 @@ m3:
       - 0.15
       parameter_source: scenario-declared
       parameter_version: M3_RESPONSE_V2_20260726
+m3:
+  identity:
+    name: M3_RESPONSE_V4_ATOMIC_SUBITEM
+  version:
+    action_library: M3_ATOMIC_ACTION_LIBRARY_V1
+    response_contract: M3_SUBITEM_RESPONSE_V1
+  status:
+    contract: PASS
+    parameter_freeze: NOT_YET_DONE
+    formal_library: NOT_YET_RUN
+    scientific_approved: false
+    publication_allowed: false
+  config_path: config/m3_response_v4_atomic_subitem.yaml
+  response_draw_count: 1000
+  base_seed: 20260718
+  fixed_random_streams: true
 m4:
   cvar_alpha: 0.9
   risk_aversion: 0.25

@@ -26,5 +26,21 @@ class M2ContractMismatch(FormalRunBlocked):
     pass
 
 
+class M2ParameterNotFrozen(FormalRunBlocked):
+    pass
+
+
 class M3ContractMismatch(FormalRunBlocked):
+    pass
+
+
+class M3ParameterNotFrozen(FormalRunBlocked):
+    pass
+
+
+class M3FormalLibraryNotReady(FormalRunBlocked):
+    pass
+
+
+class M4ContractMismatch(FormalRunBlocked):
     pass
