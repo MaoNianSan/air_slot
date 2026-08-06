@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import NoReturn
 
 from .config import RunConfig
-from .failures import M2ContractMismatch
+from .failures import M3ContractMismatch
 
 
 def run_precision(
@@ -13,6 +13,6 @@ def run_precision(
     pre_output: Path | None = None,
 ) -> NoReturn:
     del cfg, progress_level, pre_output
-    raise M2ContractMismatch(
-        "M2_CONTRACT_MISMATCH: precision mode awaits the M1 joint-sample migration"
+    raise M3ContractMismatch(
+        "M3_CONTRACT_MISMATCH: precision mode awaits the M2 V2 to M3 migration"
     )

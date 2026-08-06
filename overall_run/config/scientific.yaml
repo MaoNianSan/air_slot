@@ -46,6 +46,36 @@ m1:
     dropout: 0.0
     gradient_clip: 1.0
     weight_decay: 0.0001
+  feature_schema:
+    version: M1_FEATURE_SCHEMA_V1
+    include_missing_mask: true
+    include_observation_age: true
+    include_stale_mask: true
+    include_fallback_mask: true
+    include_stage_encoding: true
+    include_delta_t: true
+  snapshot:
+    roll_minutes: 5
+    maximum_minutes: 480
+    stale_after_minutes: 30.0
+    scheduled_grid_required: true
+    event_snapshot_allowed: true
+  runtime:
+    incremental_step_nodes: 1
+    revision_replay: full_from_revision
+    temporary_state_isolated: true
+  artifacts:
+    require_model_checkpoint: true
+    require_temperature_artifact: true
+    allow_identity_temperature_in_formal: false
+  readiness:
+    target_support_implies_training_pass: false
+    target_support_implies_calibration_pass: false
+  training:
+    max_epochs: REQUIRES_DEVELOPMENT_FREEZE
+    learning_rate: REQUIRES_DEVELOPMENT_FREEZE
+    batch_size: REQUIRES_DEVELOPMENT_FREEZE
+    early_stopping_patience: REQUIRES_DEVELOPMENT_FREEZE
   time:
     roll_minutes: 5
     roll_sensitivity_minutes:
@@ -83,6 +113,10 @@ m1:
     sample_count: 1000
     base_seed: 20260718
     fixed_episode_random_numbers: true
+    bin_representative_mode: FIXED_WITHIN_BIN_UNIFORM
+    overflow_mode: TRAINING_EMPIRICAL_TAIL
+    min_empirical_tail_count: 30
+    dependence_mode: CONDITIONAL_INDEPENDENCE_WITH_STRUCTURAL_COUPLING
   exclusions:
     separate_fast_model: false
     lightgbm_formal_model: false
@@ -91,68 +125,48 @@ m1:
     adaptive_test_calibration: false
     cross_module_training: false
 m2:
-  graph_edges:
-    F_to_P: 0.15   # IATA(2025): EU ATM airline:passenger cost=60:40
-    F_to_R: 0.10   # Ball et al.(2010): resource recovery 8-12% of delay cost
-    P_to_R: 0.05   # Kafle & Zou(2016): secondary propagation decay ~0.5
-  channel_scale_min_positive: 200
-  flight:
-    threshold_base: 15.0
-    threshold_exposure_slope: 20.0
-    threshold_min: 5.0
-    threshold_max: 25.0
-    time_scale: 15.0
-    scale: 15.0
-  passenger:
-    threshold: 12.0
-    saturation: 25.0
-    scale: 1.0
-  resource:
-    threshold: 18.0
-    saturation: 35.0
-    scale: 1.0
-  resource_stress:
-    alpha_flow: 0.55
-    alpha_infra: 0.3
-    alpha_scarcity: 0.15
-  required_anchor_groups:
-    turnaround_margin:
-    - turnaround_margin
-    - b_turn
-    - turnaround_buffer
-    - turn_margin
-    continuity:
-    - continuity_exposure
-    - c_cont
-    - aircraft_continuity
-    - continuity_proxy
-    window_margin:
-    - execution_window_margin
-    - m_window
-    - window_margin
-    passenger_load:
-    - estimated_passenger_load
-    connection:
-    - connection_pressure_proxy
-    rebooking:
-    - rebooking_scarcity_proxy
-    flow:
-    - airport_flow_pressure
-    - airport_flow
-    - flow_pressure
-    - p_flow
-    - local_flow_count
-    infrastructure:
-    - infrastructure_flexibility
-    - airport_flexibility
-    - runway_count
-    - airport_scale
-    resource_available:
-    - resource_available_r
-  unit_costs_rmb:
-    F: 1.0
-    P: 1.0
-    R: 1.0
+  identity: EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2
+  input_mode: M1_SCENARIO_PLUS_PRE_CONTEXT
+  primary_mode: DIRECT_STRUCTURAL_COMPACT
+  complexity:
+    max_nonzero_breakpoints_per_subitem: 2
+    max_primary_context_multipliers_per_subitem: 1
+    allow_high_order_interactions: false
+    allow_neural_reconstruction: false
+  cross_channel:
+    primary_mode: DIRECT_ONLY
+  learned_correction:
+    enabled: false
+  constructed_units:
+    conversion_level: SUBITEM
+    version: CU_V2
+  currency:
+    code: RMB
+    mapping_mode: IDENTITY
+    flight_rmb_per_cu: 1.0
+    passenger_rmb_per_cu: 1.0
+    resource_rmb_per_cu: 1.0
+  formal_loss_field: total_pre_action_loss_rmb
+  subitem_value_parameters:
+    F_TURN: NOT_CONFIGURED
+    F_WAIT: NOT_CONFIGURED
+    F_PROPAGATION: NOT_CONFIGURED
+    P_DELAY: NOT_CONFIGURED
+    P_CONNECTION: NOT_CONFIGURED
+    P_CARE: NOT_CONFIGURED
+    R_GROUND: NOT_CONFIGURED
+    R_TAXI: NOT_CONFIGURED
+    R_SCARCITY: NOT_CONFIGURED
+  rule_parameters:
+    P_CARE:
+      threshold_minutes: NOT_CONFIGURED
+    R_GROUND:
+      context_gamma: NOT_CONFIGURED
+    R_TAXI:
+      context_gamma: NOT_CONFIGURED
+    R_SCARCITY:
+      wait_threshold_minutes: NOT_CONFIGURED
+  parameter_status: REQUIRES_DEVELOPMENT_FREEZE
 m3:
   resource_profiles:
     scarce:

@@ -5,11 +5,11 @@ from datetime import timedelta
 
 from overall_run.src.m1.contracts import StateCommitStatus, TriggerType
 
-from .test_state_idempotence import _service
+from .factories import build_test_service
 
 
 def test_reset_discards_old_hidden_state(input_bundle_factory) -> None:
-    service = _service()
+    service = build_test_service()
     first = input_bundle_factory(snapshot_id="s1")
     service.update_and_predict(first, TriggerType.SCHEDULED, True)
     reset = replace(
@@ -25,7 +25,7 @@ def test_reset_discards_old_hidden_state(input_bundle_factory) -> None:
 
 
 def test_temporary_prediction_does_not_pollute_state(input_bundle_factory) -> None:
-    service = _service()
+    service = build_test_service()
     result = service.predict_now(input_bundle_factory(snapshot_id="preview"))
     assert result.state_commit_status is StateCommitStatus.TEMPORARY
     assert service.state_store.entries("ep-1") == ()

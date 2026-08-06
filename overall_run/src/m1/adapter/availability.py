@@ -68,6 +68,7 @@ def latest_values(
         row = valid.iloc[-1]
         selected[column] = {
             "value": row[column],
+            "observation_id": row.get("observation_id"),
             "availability_time": row.get("availability_time"),
             "event_time": row.get("event_time"),
             "age_minutes": row.get("observation_age_minutes"),

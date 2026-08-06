@@ -5,92 +5,150 @@ from typing import Mapping
 
 import numpy as np
 
-from ..contracts import M1InputBundle, M1JointSample, M1MarginalDistribution
+from ..contracts import (
+    EventHorizonProbabilities,
+    M1JointSample,
+    M1MarginalDistribution,
+    M1SnapshotNode,
+    SupportedOperationalValue,
+)
 from .bins import DiscreteBins
 from .sampling import fixed_uniform, sample_discrete
+from .tail import EmpiricalTailArtifact
 
 
 def _draw(
     distribution: M1MarginalDistribution,
     sample_id: int,
     base_seed: int,
-) -> tuple[float, bool]:
-    bins = DiscreteBins(distribution.bin_lower_minutes, distribution.bin_upper_minutes)
+    tail_artifact: EmpiricalTailArtifact | None,
+) -> tuple[float | None, bool]:
+    bins = DiscreteBins(
+        distribution.bin_lower_minutes,
+        distribution.bin_upper_minutes,
+    )
     uniform = fixed_uniform(
         distribution.episode_id,
         sample_id,
         distribution.target_name,
         base_seed,
     )
-    return sample_discrete(np.asarray(distribution.probabilities), bins, uniform)
+    value, overflow = sample_discrete(
+        np.asarray(distribution.probabilities),
+        bins,
+        uniform,
+        episode_id=distribution.episode_id,
+        sample_id=sample_id,
+        target_name=distribution.target_name,
+        base_seed=base_seed,
+        overflow_tail_values=(
+            tail_artifact.resolved_values if tail_artifact is not None else ()
+        ),
+    )
+    return (None if not np.isfinite(value) else float(value)), overflow
+
+
+def _datetime(reference: SupportedOperationalValue) -> datetime | None:
+    value = reference.value
+    return value if reference.active and isinstance(value, datetime) else None
+
+
+def _number(reference: SupportedOperationalValue) -> float | None:
+    if not reference.active or reference.value is None:
+        return None
+    return float(reference.value)
 
 
 def derive_joint_samples(
-    input_bundle: M1InputBundle,
+    snapshot: M1SnapshotNode,
     distributions: Mapping[str, M1MarginalDistribution],
     *,
     sample_count: int,
     base_seed: int,
-    successor_sobt: datetime | None,
-    turnaround_floor_minutes: float | None,
-    taxi_reference_minutes: float | None,
-    observed_event_times: Mapping[str, datetime] | None = None,
+    tail_artifacts: Mapping[str, EmpiricalTailArtifact] | None = None,
 ) -> tuple[M1JointSample, ...]:
-    observed = dict(observed_event_times or {})
+    references = snapshot.operational_references
+    successor_sobt = _datetime(references.successor_sobt)
+    turnaround_floor = _number(references.turnaround_floor_minutes)
+    taxi_reference = _number(references.taxi_reference_minutes)
     samples: list[M1JointSample] = []
     for sample_id in range(sample_count):
-        values: dict[str, float] = {}
+        values: dict[str, float | None] = {}
         overflow: dict[str, bool] = {}
         for target in ("R_IB", "R_OB", "T_TX"):
             if target in distributions:
-                values[target], overflow[target] = _draw(distributions[target], sample_id, base_seed)
+                values[target], overflow[target] = _draw(
+                    distributions[target],
+                    sample_id,
+                    base_seed,
+                    (tail_artifacts or {}).get(target),
+                )
             else:
-                values[target], overflow[target] = 0.0, False
-        inblock = observed.get("AIBT_MINUS")
-        if inblock is None and input_bundle.target_contracts["R_IB"].active:
-            inblock = input_bundle.query_time + timedelta(minutes=values["R_IB"])
+                values[target], overflow[target] = None, False
+        inblock = _datetime(references.predecessor_inblock_observed)
+        if inblock is None and values["R_IB"] is not None:
+            inblock = snapshot.query_time + timedelta(minutes=float(values["R_IB"]))
         earliest = None
-        if inblock is not None and successor_sobt is not None and turnaround_floor_minutes is not None:
+        if inblock is not None and successor_sobt is not None and turnaround_floor is not None:
             earliest = max(
                 successor_sobt,
-                inblock + timedelta(minutes=float(turnaround_floor_minutes)),
+                inblock + timedelta(minutes=turnaround_floor),
             )
-        offblock = observed.get("AOBT_PLUS")
-        if offblock is None and earliest is not None and input_bundle.target_contracts["R_OB"].active:
-            offblock = earliest + timedelta(minutes=values["R_OB"])
-        takeoff = observed.get("ATOT_PLUS")
+        offblock = _datetime(references.successor_offblock_observed)
+        if offblock is None and earliest is not None and values["R_OB"] is not None:
+            offblock = earliest + timedelta(minutes=float(values["R_OB"]))
+        takeoff = _datetime(references.successor_takeoff_observed)
         taxi = None
         if takeoff is not None and offblock is not None:
             taxi = max((takeoff - offblock).total_seconds() / 60.0, 0.0)
-        elif offblock is not None and input_bundle.target_contracts["T_TX"].active:
-            taxi = values["T_TX"]
+        elif offblock is not None and values["T_TX"] is not None:
+            taxi = float(values["T_TX"])
             takeoff = offblock + timedelta(minutes=taxi)
         offblock_delay = None
-        total_delay = None
         extra_taxi = None
+        total_delay = None
         if successor_sobt is not None and offblock is not None:
-            offblock_delay = max((offblock - successor_sobt).total_seconds() / 60.0, 0.0)
-        if taxi is not None and taxi_reference_minutes is not None:
-            extra_taxi = max(taxi - taxi_reference_minutes, 0.0)
-        if takeoff is not None and successor_sobt is not None and taxi_reference_minutes is not None:
-            reference_takeoff = successor_sobt + timedelta(minutes=taxi_reference_minutes)
-            total_delay = max((takeoff - reference_takeoff).total_seconds() / 60.0, 0.0)
+            offblock_delay = max(
+                (offblock - successor_sobt).total_seconds() / 60.0,
+                0.0,
+            )
+        if taxi is not None and taxi_reference is not None:
+            extra_taxi = max(taxi - taxi_reference, 0.0)
+        if takeoff is not None and successor_sobt is not None and taxi_reference is not None:
+            total_delay = max(
+                (
+                    takeoff
+                    - (successor_sobt + timedelta(minutes=taxi_reference))
+                ).total_seconds()
+                / 60.0,
+                0.0,
+            )
+        first_distribution = next(iter(distributions.values()), None)
         samples.append(
             M1JointSample(
-                episode_id=input_bundle.episode_id,
-                snapshot_id=input_bundle.snapshot_id,
-                snapshot_version=input_bundle.snapshot_version,
+                episode_id=snapshot.episode_id,
+                snapshot_id=snapshot.snapshot_id,
+                snapshot_version=snapshot.snapshot_version,
                 sample_id=sample_id,
-                query_time=input_bundle.query_time,
-                information_cutoff=input_bundle.information_cutoff,
-                pre_manifest_hash=input_bundle.pre_bundle_identity.pre_manifest_hash,
-                m1_contract_id=next(iter(distributions.values())).m1_contract_id if distributions else "",
-                m1_model_version=next(iter(distributions.values())).model_version if distributions else "",
-                temperature_version=next(iter(distributions.values())).temperature_version if distributions else "",
+                query_time=snapshot.query_time,
+                information_cutoff=snapshot.information_cutoff,
+                pre_manifest_hash=snapshot.pre_bundle_identity.pre_manifest_hash,
+                m1_contract_id=(
+                    first_distribution.m1_contract_id if first_distribution else ""
+                ),
+                m1_model_version=(
+                    first_distribution.model_version if first_distribution else ""
+                ),
+                temperature_version=(
+                    first_distribution.temperature_version if first_distribution else ""
+                ),
                 target_support_level={
                     name: contract.m1_support_level
-                    for name, contract in input_bundle.target_contracts.items()
+                    for name, contract in snapshot.target_contracts.items()
                 },
+                r_ib_minutes=values["R_IB"],
+                r_ob_minutes=values["R_OB"],
+                earliest_offblock_time=earliest,
                 T_predecessor_inblock=inblock,
                 AOBT_successor=offblock,
                 ATOT_successor=takeoff,
@@ -99,15 +157,46 @@ def derive_joint_samples(
                 extra_taxi_delay=extra_taxi,
                 total_takeoff_delay=total_delay,
                 overflow_flags=overflow,
-                observed_event_mask=input_bundle.observed_event_mask,
-                evidence_status=input_bundle.evidence_status,
-                fallback_status=input_bundle.fallback_status,
+                observed_event_mask=snapshot.observed_event_mask,
+                evidence_status=snapshot.evidence_status,
+                fallback_status=snapshot.fallback_status,
             )
         )
     return tuple(samples)
 
 
-def physical_identity_holds(samples: tuple[M1JointSample, ...], tolerance: float = 1e-9) -> bool:
+def derive_horizon_probabilities(
+    samples: tuple[M1JointSample, ...],
+    query_time: datetime,
+    horizons_minutes: tuple[int, ...],
+) -> EventHorizonProbabilities:
+    if not samples:
+        raise ValueError("M1_HORIZON_SAMPLES_EMPTY")
+
+    def probabilities(field: str) -> dict[int, float]:
+        result: dict[int, float] = {}
+        for horizon in horizons_minutes:
+            deadline = query_time + timedelta(minutes=int(horizon))
+            count = sum(
+                getattr(sample, field) is not None
+                and getattr(sample, field) <= deadline
+                for sample in samples
+            )
+            result[int(horizon)] = count / len(samples)
+        return result
+
+    return EventHorizonProbabilities(
+        horizons_minutes=horizons_minutes,
+        predecessor_inblock=probabilities("T_predecessor_inblock"),
+        successor_offblock=probabilities("AOBT_successor"),
+        successor_takeoff=probabilities("ATOT_successor"),
+    )
+
+
+def physical_identity_holds(
+    samples: tuple[M1JointSample, ...],
+    tolerance: float = 1e-6,
+) -> bool:
     for sample in samples:
         if sample.AOBT_successor is None or sample.ATOT_successor is None:
             continue

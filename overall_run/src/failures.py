@@ -24,3 +24,7 @@ class FormalRunBlocked(RuntimeError):
 
 class M2ContractMismatch(FormalRunBlocked):
     pass
+
+
+class M3ContractMismatch(FormalRunBlocked):
+    pass

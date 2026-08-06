@@ -4,7 +4,7 @@ from typing import Any
 
 import pandas as pd
 
-from ..contracts import M1SupportLevel, TargetContract
+from ..contracts import M1SupportLevel, OperationalReferences, TargetContract
 
 
 TARGETS = ("R_IB", "R_OB", "T_TX")
@@ -20,8 +20,6 @@ def _event_details(row: pd.Series | None) -> dict[str, object]:
             "support_level",
             "reconstruction_method",
             "confidence",
-            "availability_time",
-            "event_time",
             "source_hash",
         )
     }
@@ -75,6 +73,7 @@ def _support(event_rows: list[pd.Series | None], chain_support: str) -> str:
 def build_target_contracts(
     episode: pd.Series,
     events: pd.DataFrame,
+    operational_references: OperationalReferences | None = None,
 ) -> dict[str, TargetContract]:
     predecessor = episode.get("predecessor_flight_id")
     successor = episode.get("successor_flight_id")
@@ -82,14 +81,17 @@ def build_target_contracts(
     ib = _event(events, predecessor, "AIBT_MINUS")
     ob = _event(events, successor, "AOBT_PLUS")
     tx = _event(events, successor, "ATOT_PLUS")
-    sobt = episode.get("successor_sobt")
-    turnaround = episode.get("turnaround_floor_minutes")
+    schedule_supported = bool(
+        operational_references is not None
+        and operational_references.successor_sobt.active
+        and operational_references.turnaround_floor_minutes.active
+    )
     specifications: dict[str, tuple[str, list[pd.Series | None], bool, str]] = {
         "R_IB": ("remaining time to predecessor in-block", [ib], ib is not None, "AIBT_MINUS-query_time"),
         "R_OB": (
             "successor extra off-block waiting after earliest feasible off-block",
             [ib, ob],
-            ib is not None and ob is not None and pd.notna(sobt) and pd.notna(turnaround),
+            ib is not None and ob is not None and schedule_supported,
             "AOBT_PLUS-max(SOBT,AIBT_MINUS+turnaround_floor)",
         ),
         "T_TX": ("successor actual taxi time", [ob, tx], ob is not None and tx is not None, "ATOT_PLUS-AOBT_PLUS"),
@@ -127,8 +129,9 @@ def target_values(
     episode: pd.Series,
     events: pd.DataFrame,
     query_time: object,
+    operational_references: OperationalReferences,
 ) -> dict[str, float | None]:
-    contracts = build_target_contracts(episode, events)
+    contracts = build_target_contracts(episode, events, operational_references)
     query = pd.Timestamp(query_time)
     query = query.tz_localize("UTC") if query.tzinfo is None else query.tz_convert("UTC")
     ib = _event(events, episode.get("predecessor_flight_id"), "AIBT_MINUS")
@@ -138,9 +141,11 @@ def target_values(
     if contracts["R_IB"].active and ib is not None:
         values["R_IB"] = max((_utc(ib["event_time"]) - query).total_seconds() / 60.0, 0.0)
     if contracts["R_OB"].active and ib is not None and ob is not None:
+        sobt = _utc(operational_references.successor_sobt.value)
+        turnaround = float(operational_references.turnaround_floor_minutes.value)
         earliest = max(
-            _utc(episode["successor_sobt"]),
-            _utc(ib["event_time"]) + pd.Timedelta(minutes=float(episode["turnaround_floor_minutes"])),
+            sobt,
+            _utc(ib["event_time"]) + pd.Timedelta(minutes=turnaround),
         )
         values["R_OB"] = max((_utc(ob["event_time"]) - earliest).total_seconds() / 60.0, 0.0)
     if contracts["T_TX"].active and ob is not None and tx is not None:

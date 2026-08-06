@@ -1,46 +1,37 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Mapping
+from pathlib import Path
 
-import torch
-
-from .adapter import PublishedPreBundle, build_input_bundle
-from .config import M1Settings
-from .contracts import M1PredictionBundle, M1RunManifest, TriggerType, M1_CONTRACT_ID
-from .distribution import (
-    DiscreteBins,
-    derive_joint_samples,
-    learned_upper_bins,
-    predecessor_bins,
+from .adapter import (
+    M1FeatureSchema,
+    PublishedPreBundle,
+    PublishedSnapshotSequenceProvider,
+    build_snapshot_node,
 )
-from .model import SingleLightweightGRU
-from .runtime import M1UpdateService
-
-
-class M1ScientificNotReady(RuntimeError):
-    pass
+from .calibration import load_temperature_artifact
+from .config import M1Settings
+from .contracts import (
+    EventHorizonProbabilities,
+    M1JointSample,
+    M1PredictionBundle,
+    M1RunManifest,
+    M1ScenarioBundle,
+    M1SnapshotNode,
+    M1_CONTRACT_ID,
+)
+from .distribution import derive_horizon_probabilities, derive_joint_samples
+from .distribution import EmpiricalTailArtifact
+from .runtime import M1UpdateService, ReplayResult
+from .training import load_checkpoint
 
 
 @dataclass(frozen=True)
 class M1PipelineResult:
     prediction: M1PredictionBundle
-    joint_samples: tuple
-
-
-def require_training_support(bundle: PublishedPreBundle) -> dict[str, str]:
-    from .adapter.target_builder import build_target_contracts
-
-    statuses: dict[str, str] = {}
-    for _, episode in bundle.episodes.iterrows():
-        for target, contract in build_target_contracts(episode, bundle.events).items():
-            previous = statuses.get(target)
-            if previous is None or previous == "UNSUPPORTED":
-                statuses[target] = contract.m1_support_level
-    if any(statuses.get(target) in {None, "UNSUPPORTED"} for target in ("R_IB", "R_OB", "T_TX")):
-        raise M1ScientificNotReady("M1_SCIENTIFIC_NOT_READY")
-    return statuses
+    joint_samples: tuple[M1JointSample, ...]
+    horizon_probabilities: EventHorizonProbabilities
+    scenario_bundle: M1ScenarioBundle
 
 
 class M1Pipeline:
@@ -49,116 +40,189 @@ class M1Pipeline:
         service: M1UpdateService,
         settings: M1Settings,
         bundle: PublishedPreBundle,
+        feature_schema: M1FeatureSchema,
+        tail_artifacts: dict[str, EmpiricalTailArtifact] | None = None,
     ) -> None:
         self.service = service
         self.settings = settings
         self.bundle = bundle
+        self.feature_schema = feature_schema
+        self.tail_artifacts = dict(tail_artifacts or {})
 
     @classmethod
-    def engineering(
+    def from_artifacts(
         cls,
         bundle: PublishedPreBundle,
         settings: M1Settings,
-        feature_order: tuple[str, ...],
-        train_targets: Mapping[str, list[float]],
-        *,
-        model_version: str = "M1_GRU_ENGINEERING_V1",
-        temperature_version: str = "M1_TEMPERATURE_IDENTITY_V1",
+        model_checkpoint: str | Path,
+        temperature_artifact: str | Path,
     ) -> "M1Pipeline":
-        missing_targets = sorted({"R_OB", "T_TX"} - set(train_targets))
-        if missing_targets:
-            raise ValueError("M1_TRAIN_BIN_SUPPORT_MISSING:" + ",".join(missing_targets))
-        if not feature_order:
-            raise ValueError("M1_FEATURE_ORDER_EMPTY")
-        bins: dict[str, DiscreteBins] = {
-            "R_IB": predecessor_bins(settings.bin_minutes),
-            "R_OB": learned_upper_bins(
-                train_targets["R_OB"],
-                quantile=settings.learned_upper_quantile,
-                bin_minutes=settings.bin_minutes,
-            ),
-            "T_TX": learned_upper_bins(
-                train_targets["T_TX"],
-                quantile=settings.learned_upper_quantile,
-                bin_minutes=settings.bin_minutes,
-            ),
-        }
-        torch.manual_seed(settings.base_seed)
-        model = SingleLightweightGRU(
-            len(feature_order),
-            {name: target_bins.count for name, target_bins in bins.items()},
-            hidden_size=settings.hidden_size,
+        checkpoint_path = Path(model_checkpoint)
+        temperature_path = Path(temperature_artifact)
+        if not checkpoint_path.is_file():
+            raise FileNotFoundError("M1_MODEL_ARTIFACT_MISSING")
+        if not temperature_path.is_file():
+            raise FileNotFoundError("M1_TEMPERATURE_ARTIFACT_MISSING")
+        feature_schema = M1FeatureSchema.from_column_registry(
+            bundle.column_registry,
+            schema_version=settings.feature_schema_version,
+        )
+        model_artifact = load_checkpoint(
+            checkpoint_path,
+            expected_pre_manifest_hash=bundle.identity.pre_manifest_hash,
+            expected_feature_schema=feature_schema,
+        )
+        temperatures = load_temperature_artifact(
+            temperature_path,
+            checkpoint_hash=model_artifact.artifact_hash,
+            pre_manifest_hash=bundle.identity.pre_manifest_hash,
+            feature_schema_hash=feature_schema.schema_hash,
+            formal=True,
+        )
+        provider = PublishedSnapshotSequenceProvider(
+            bundle,
+            feature_schema,
+            roll_minutes=settings.roll_minutes,
+            maximum_minutes=settings.maximum_snapshot_minutes,
+            stale_after_minutes=settings.stale_after_minutes,
         )
         service = M1UpdateService(
-            model,
-            feature_order,
-            bins,
-            {name: 1.0 for name in bins},
-            model_version=model_version,
-            temperature_version=temperature_version,
+            model_artifact.model,
+            feature_schema,
+            model_artifact.bins,
+            temperatures.values,
+            model_version=model_artifact.model_version,
+            model_artifact_hash=model_artifact.artifact_hash,
+            temperature_version=temperatures.artifact_version,
+            temperature_artifact_hash=temperatures.artifact_hash,
+            snapshot_provider=provider,
         )
-        return cls(service, settings, bundle)
+        return cls(
+            service,
+            settings,
+            bundle,
+            feature_schema,
+            tail_artifacts=dict(model_artifact.tail_artifacts),
+        )
 
-    def update_and_predict(
+    def build_snapshot(
         self,
         episode_id: str,
         query_time: object,
-        trigger_type: TriggerType | str,
-        commit_state: bool,
         *,
-        snapshot_id: str | None = None,
         snapshot_version: int = 1,
         previous_query_time: object | None = None,
-        successor_sobt: datetime | None = None,
-        turnaround_floor_minutes: float | None = None,
-        taxi_reference_minutes: float | None = None,
-        observed_event_times: Mapping[str, datetime] | None = None,
-    ) -> M1PipelineResult:
-        input_bundle = build_input_bundle(
+        state_reset_signal: bool = False,
+    ) -> M1SnapshotNode:
+        return build_snapshot_node(
             self.bundle,
             episode_id,
             query_time,
-            snapshot_id=snapshot_id,
+            self.feature_schema,
             snapshot_version=snapshot_version,
             previous_query_time=previous_query_time,
+            state_reset_signal=state_reset_signal,
+            stale_after_minutes=self.settings.stale_after_minutes,
         )
-        prediction = self.service.update_and_predict(
-            input_bundle, trigger_type, commit_state
-        )
+
+    def _result(
+        self,
+        snapshot: M1SnapshotNode,
+        prediction: M1PredictionBundle,
+    ) -> M1PipelineResult:
         samples = derive_joint_samples(
-            input_bundle,
+            snapshot,
             prediction.distributions,
             sample_count=self.settings.sample_count,
             base_seed=self.settings.base_seed,
-            successor_sobt=successor_sobt,
-            turnaround_floor_minutes=turnaround_floor_minutes,
-            taxi_reference_minutes=taxi_reference_minutes,
-            observed_event_times=observed_event_times,
+            tail_artifacts=self.tail_artifacts,
         )
-        return M1PipelineResult(prediction, samples)
-
-    def manifest(self, target_support: Mapping[str, str]) -> M1RunManifest:
-        required = {"R_IB", "R_OB", "T_TX"}
-        scientific = (
-            "PASS"
-            if required.issubset(target_support)
-            and all(target_support[name] != "UNSUPPORTED" for name in required)
-            else "NOT_READY"
+        horizons = derive_horizon_probabilities(
+            samples,
+            snapshot.query_time,
+            self.settings.horizons_minutes,
         )
-        return M1RunManifest(
-            pre_bundle_identity=self.bundle.identity,
-            m1_contract_id=M1_CONTRACT_ID,
-            model_version=self.service.model_version,
-            temperature_version=self.service.temperature_version,
-            split_definition={
-                "calibration_source": "validation",
-                "calibration_tail_fraction": self.settings.calibration_tail_fraction,
+        overflow_targets = {
+            target
+            for sample in samples
+            for target, overflow in sample.overflow_flags.items()
+            if overflow
+        }
+        unresolved = [
+            target
+            for target in overflow_targets
+            if target not in self.tail_artifacts
+            or self.tail_artifacts[target].resolution_status != "RESOLVED"
+        ]
+        scenario = M1ScenarioBundle(
+            metadata={
+                "episode_id": snapshot.episode_id,
+                "snapshot_id": snapshot.snapshot_id,
+                "snapshot_version": snapshot.snapshot_version,
+                "query_time": snapshot.query_time,
+                "information_cutoff": snapshot.information_cutoff,
+                "flight_chain_stage": snapshot.flight_chain_stage.value,
+                "pre_bundle_id": snapshot.pre_bundle_identity.pre_manifest_hash,
+                "m1_bundle_id": snapshot.snapshot_id,
+                "m1_contract_id": M1_CONTRACT_ID,
+                "model_version": prediction.model_version,
+                "temperature_version": prediction.temperature_version,
             },
-            engineering_status="PASS",
-            scientific_status=scientific,
-            target_support_status=dict(target_support),
-            training_status="PASS" if scientific == "PASS" else "BLOCKED",
-            calibration_status="PASS" if scientific == "PASS" else "BLOCKED",
-            evaluation_status="ENGINEERING_READY",
-            m2_interface_status="M2_CONTRACT_MISMATCH",
+            operational_references=snapshot.operational_references,
+            marginal_distributions=prediction.distributions,
+            sampling_metadata={
+                "sample_count": len(samples),
+                "sampling_version": "M1_SAMPLING_V2",
+                "base_seed": self.settings.base_seed,
+                "dependence_mode": "CONDITIONAL_INDEPENDENCE_WITH_STRUCTURAL_COUPLING",
+                "bin_representative_mode": "FIXED_WITHIN_BIN_UNIFORM",
+                "overflow_mode": "TRAINING_EMPIRICAL_TAIL",
+                "tail_artifact_version": {
+                    name: artifact.artifact_version
+                    for name, artifact in sorted(self.tail_artifacts.items())
+                },
+                "tail_resolution_status": (
+                    "TAIL_UNRESOLVED"
+                    if unresolved
+                    else ("RESOLVED" if overflow_targets else "RESOLVED_NO_OVERFLOW")
+                ),
+                "unresolved_overflow_targets": tuple(sorted(unresolved)),
+            },
+            joint_samples=samples,
+        )
+        return M1PipelineResult(prediction, samples, horizons, scenario)
+
+    def scheduled_update(self, snapshot: M1SnapshotNode) -> M1PipelineResult:
+        return self._result(snapshot, self.service.scheduled_update(snapshot))
+
+    def event_update(self, snapshot: M1SnapshotNode) -> M1PipelineResult:
+        return self._result(snapshot, self.service.event_update(snapshot))
+
+    def predict_now(self, snapshot: M1SnapshotNode) -> M1PipelineResult:
+        return self._result(snapshot, self.service.predict_now(snapshot))
+
+    def replay_revision(
+        self,
+        snapshot: M1SnapshotNode,
+        *,
+        commit_state: bool = True,
+    ) -> ReplayResult:
+        return self.service.replay_revision(snapshot, commit_state=commit_state)
+
+    @staticmethod
+    def not_run_manifest(bundle: PublishedPreBundle) -> M1RunManifest:
+        return M1RunManifest(
+            pre_bundle_identity=bundle.identity,
+            m1_contract_id=M1_CONTRACT_ID,
+            feature_schema_status="CODE_READY_NOT_RUN",
+            snapshot_builder_status="CODE_READY_NOT_RUN",
+            target_support_status="NOT_AUDITED",
+            training_status="NOT_RUN",
+            checkpoint_status="MISSING_NOT_RUN",
+            calibration_status="NOT_RUN",
+            evaluation_status="NOT_RUN",
+            runtime_state_status="CODE_READY_NOT_RUN",
+            m2_interface_status="M2_V2_CODE_READY_NOT_RUN",
+            engineering_status="CODE_MODIFIED_NOT_VALIDATED",
+            scientific_status="NOT_READY",
         )

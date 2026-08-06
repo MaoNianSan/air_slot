@@ -52,6 +52,16 @@ class M1Settings:
     base_seed: int = 20260718
     calibration_tail_fraction: float = 0.5
     minimum_episodes_per_partition: int = 2
+    feature_schema_version: str = "M1_FEATURE_SCHEMA_V1"
+    maximum_snapshot_minutes: int = 480
+    stale_after_minutes: float = 30.0
+    require_model_checkpoint: bool = True
+    require_temperature_artifact: bool = True
+    allow_identity_temperature_in_formal: bool = False
+    bin_representative_mode: str = "FIXED_WITHIN_BIN_UNIFORM"
+    overflow_mode: str = "TRAINING_EMPIRICAL_TAIL"
+    min_empirical_tail_count: int = 30
+    dependence_mode: str = "CONDITIONAL_INDEPENDENCE_WITH_STRUCTURAL_COUPLING"
 
 
 def _walk(mapping: Mapping[str, Any], prefix: str = "") -> list[str]:
@@ -132,6 +142,55 @@ def validate_m1_config(config: Mapping[str, Any]) -> M1Settings:
     sampling = config.get("sampling", {})
     if sampling.get("fixed_episode_random_numbers") is not True:
         raise M1ConfigError("M1_FIXED_RANDOM_NUMBERS_REQUIRED")
+    if sampling.get("bin_representative_mode") != "FIXED_WITHIN_BIN_UNIFORM":
+        raise M1ConfigError("M1_BIN_REPRESENTATIVE_MODE_INVALID")
+    if sampling.get("overflow_mode") != "TRAINING_EMPIRICAL_TAIL":
+        raise M1ConfigError("M1_OVERFLOW_MODE_INVALID")
+    if int(sampling.get("min_empirical_tail_count", 0)) < 1:
+        raise M1ConfigError("M1_EMPIRICAL_TAIL_COUNT_INVALID")
+    if sampling.get("dependence_mode") != "CONDITIONAL_INDEPENDENCE_WITH_STRUCTURAL_COUPLING":
+        raise M1ConfigError("M1_DEPENDENCE_MODE_INVALID")
+    feature_schema = config.get("feature_schema", {})
+    if feature_schema.get("version") != "M1_FEATURE_SCHEMA_V1":
+        raise M1ConfigError("M1_FEATURE_SCHEMA_VERSION_INVALID")
+    required_schema_flags = {
+        "include_missing_mask",
+        "include_observation_age",
+        "include_stale_mask",
+        "include_fallback_mask",
+        "include_stage_encoding",
+        "include_delta_t",
+    }
+    if any(feature_schema.get(key) is not True for key in required_schema_flags):
+        raise M1ConfigError("M1_FEATURE_SCHEMA_COMPONENT_DISABLED")
+    snapshot = config.get("snapshot", {})
+    if int(snapshot.get("roll_minutes", 0)) != 5:
+        raise M1ConfigError("M1_SNAPSHOT_ROLL_INVALID")
+    if int(snapshot.get("maximum_minutes", -1)) != 480:
+        raise M1ConfigError("M1_SNAPSHOT_MAXIMUM_INVALID")
+    if snapshot.get("scheduled_grid_required") is not True:
+        raise M1ConfigError("M1_SNAPSHOT_GRID_REQUIRED")
+    runtime = config.get("runtime", {})
+    required_runtime = {
+        "incremental_step_nodes": 1,
+        "revision_replay": "full_from_revision",
+        "temporary_state_isolated": True,
+    }
+    for key, expected in required_runtime.items():
+        if runtime.get(key) != expected:
+            raise M1ConfigError(f"M1_RUNTIME_CONFIG_INVALID:{key}")
+    artifacts = config.get("artifacts", {})
+    if artifacts.get("require_model_checkpoint") is not True:
+        raise M1ConfigError("M1_MODEL_CHECKPOINT_NOT_REQUIRED")
+    if artifacts.get("require_temperature_artifact") is not True:
+        raise M1ConfigError("M1_TEMPERATURE_ARTIFACT_NOT_REQUIRED")
+    if artifacts.get("allow_identity_temperature_in_formal") is not False:
+        raise M1ConfigError("M1_IDENTITY_TEMPERATURE_FORMAL_PROHIBITED")
+    readiness = config.get("readiness", {})
+    if readiness.get("target_support_implies_training_pass") is not False:
+        raise M1ConfigError("M1_READINESS_TRAINING_INFERENCE_PROHIBITED")
+    if readiness.get("target_support_implies_calibration_pass") is not False:
+        raise M1ConfigError("M1_READINESS_CALIBRATION_INFERENCE_PROHIBITED")
     return M1Settings(
         hidden_size=int(architecture.get("hidden_size", 8)),
         hidden_size_sensitivity=tuple(int(v) for v in architecture.get("hidden_size_sensitivity", [16])),
@@ -146,4 +205,16 @@ def validate_m1_config(config: Mapping[str, Any]) -> M1Settings:
         base_seed=int(sampling.get("base_seed", 20260718)),
         calibration_tail_fraction=float(config.get("split", {}).get("calibration_tail_fraction", 0.5)),
         minimum_episodes_per_partition=int(config.get("split", {}).get("minimum_episodes_per_partition", 2)),
+        feature_schema_version=str(feature_schema["version"]),
+        maximum_snapshot_minutes=int(snapshot["maximum_minutes"]),
+        stale_after_minutes=float(snapshot.get("stale_after_minutes", 30.0)),
+        require_model_checkpoint=bool(artifacts["require_model_checkpoint"]),
+        require_temperature_artifact=bool(artifacts["require_temperature_artifact"]),
+        allow_identity_temperature_in_formal=bool(
+            artifacts["allow_identity_temperature_in_formal"]
+        ),
+        bin_representative_mode=str(sampling["bin_representative_mode"]),
+        overflow_mode=str(sampling["overflow_mode"]),
+        min_empirical_tail_count=int(sampling["min_empirical_tail_count"]),
+        dependence_mode=str(sampling["dependence_mode"]),
     )

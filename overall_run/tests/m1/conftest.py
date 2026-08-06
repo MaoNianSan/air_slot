@@ -13,8 +13,10 @@ import yaml
 from overall_run.src.m1.adapter import load_published_bundle
 from overall_run.src.m1.contracts import (
     FlightChainStage,
-    M1InputBundle,
+    M1SnapshotNode,
+    OperationalReferences,
     PreBundleIdentity,
+    SupportedOperationalValue,
     TargetContract,
 )
 
@@ -45,7 +47,16 @@ def build_published_bundle(tmp_path: Path) -> Path:
                 "chain_support_level": "OFFICIAL_ROTATION",
                 "successor_sobt": pd.Timestamp("2026-01-01 11:00", tz="UTC"),
                 "turnaround_floor_minutes": 30.0,
+                "turnaround_reference_type": "OFFICIAL_FLOOR",
+                "turnaround_reference_support": "OFFICIAL_OBSERVED",
+                "turnaround_reference_version": "turn-v1",
+                "successor_sobt_support_level": "OFFICIAL_OBSERVED",
+                "successor_sobt_reference_version": "sobt-v1",
+                "taxi_reference_minutes": 15.0,
+                "taxi_reference_support": "SUPPORTED_PROXY",
+                "taxi_reference_version": "taxi-v1",
                 "episode_start_time": pd.Timestamp("2026-01-01 10:00", tz="UTC"),
+                "episode_end_time": pd.Timestamp("2026-01-01 12:00", tz="UTC"),
                 "split": "train",
                 "airport": "EHAM",
             },
@@ -56,7 +67,16 @@ def build_published_bundle(tmp_path: Path) -> Path:
                 "chain_support_level": "OBSERVED_CHAIN_PROXY",
                 "successor_sobt": pd.Timestamp("2026-01-01 12:00", tz="UTC"),
                 "turnaround_floor_minutes": 30.0,
+                "turnaround_reference_type": "OFFICIAL_FLOOR",
+                "turnaround_reference_support": "OFFICIAL_OBSERVED",
+                "turnaround_reference_version": "turn-v1",
+                "successor_sobt_support_level": "OFFICIAL_OBSERVED",
+                "successor_sobt_reference_version": "sobt-v1",
+                "taxi_reference_minutes": 15.0,
+                "taxi_reference_support": "SUPPORTED_PROXY",
+                "taxi_reference_version": "taxi-v1",
                 "episode_start_time": pd.Timestamp("2026-01-01 11:00", tz="UTC"),
+                "episode_end_time": pd.Timestamp("2026-01-01 13:00", tz="UTC"),
                 "split": "validation",
                 "airport": "EHAM",
             },
@@ -298,7 +318,34 @@ def input_bundle_factory():
         for name in ("R_IB", "R_OB", "T_TX")
     }
 
-    def factory(**overrides: Any) -> M1InputBundle:
+    def supported(value: object, field: str) -> SupportedOperationalValue:
+        return SupportedOperationalValue(
+            value=value,
+            active=True,
+            support_level="OFFICIAL_OPERATIONAL",
+            source_field=field,
+            source_event_id=None,
+            availability_time=None,
+            reference_version="fixture-v1",
+            inactive_reason=None,
+        )
+
+    references = OperationalReferences(
+        successor_sobt=supported(datetime(2026, 1, 1, 11, 0, tzinfo=UTC), "successor_sobt"),
+        turnaround_floor_minutes=supported(30.0, "turnaround_floor_minutes"),
+        taxi_reference_minutes=supported(15.0, "taxi_reference_minutes"),
+        predecessor_inblock_observed=SupportedOperationalValue(
+            None, False, "UNSUPPORTED", None, None, None, None, "NOT_OBSERVED"
+        ),
+        successor_offblock_observed=SupportedOperationalValue(
+            None, False, "UNSUPPORTED", None, None, None, None, "NOT_OBSERVED"
+        ),
+        successor_takeoff_observed=SupportedOperationalValue(
+            None, False, "UNSUPPORTED", None, None, None, None, "NOT_OBSERVED"
+        ),
+    )
+
+    def factory(**overrides: Any) -> M1SnapshotNode:
         payload: dict[str, Any] = {
             "episode_id": "ep-1",
             "snapshot_id": "snapshot-1",
@@ -306,19 +353,18 @@ def input_bundle_factory():
             "query_time": datetime(2026, 1, 1, 10, 0, tzinfo=UTC),
             "information_cutoff": datetime(2026, 1, 1, 10, 0, tzinfo=UTC),
             "pre_bundle_identity": identity,
+            "feature_vector": (10.0,),
+            "feature_schema_hash": "fixture-schema-hash",
+            "source_observation_ids": ("obs-1",),
             "flight_chain_stage": FlightChainStage.PREDECESSOR_ENROUTE,
-            "current_features": {"wind_speed": 10.0},
-            "sequence_features": ({"wind_speed": 9.0}, {"wind_speed": 10.0}),
-            "static_features": {"airport": "EHAM"},
-            "masks": {"wind_speed": True},
-            "delta_t_minutes": 5.0,
             "evidence_status": {"wind_speed": "SUPPORTED_PROXY"},
             "fallback_status": {"wind_speed": "NONE"},
             "target_contracts": contracts,
             "observed_event_mask": {},
+            "operational_references": references,
             "state_reset_signal": False,
         }
         payload.update(overrides)
-        return M1InputBundle(**payload)
+        return M1SnapshotNode(**payload)
 
     return factory

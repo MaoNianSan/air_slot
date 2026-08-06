@@ -24,9 +24,12 @@ data -> PRE Core V2 -> M1 PRE Adapter -> M1 -> M2 -> M3 -> M4
 ```
 
 M1 is a single lightweight GRU distribution model with IB, OB, and TX heads.
-It uses temperature scaling and fixed episode-level random numbers for joint
-sampling. M2-M4 mathematical code remains separate; formal downstream runs are
-blocked until their input contracts are migrated to the new M1 sample schema.
+It uses temperature scaling and fixed episode-level random numbers to produce
+structurally coupled scenario bundles. The M1-to-M2 V2 contract and compact
+pre-action loss reconstruction are implemented and covered by targeted tests.
+Formal training, calibration, resampling, and production M2 reconstruction have
+not run. M3 and M4 still require contract migration, so the global pipeline
+stops explicitly at `M3_CONTRACT_MISMATCH`.
 
 ## Boundaries
 
@@ -43,6 +46,8 @@ D:/Python311/python.exe -m compileall -q pre/src pre/tests pre/tools
 D:/Python311/python.exe -m pytest -q pre/tests
 D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests
 D:/Python311/python.exe -m pytest -q overall_run/tests/m1
+D:/Python311/python.exe -m pytest -q overall_run/tests/m2
 ```
 
-See `pre/README.md` and `overall_run/README.md` for module boundaries.
+See `pre/README.md`, `overall_run/README.md`, and `reports/m1_m2_v2/` for
+module boundaries, contract details, validation evidence, and rerun decisions.

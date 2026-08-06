@@ -1,0 +1,40 @@
+path,change,responsibility,status
+README.md,modified,Repository-level M1-to-M2 V2 status and verification boundary,UPDATED
+overall_run/README.md,modified,M1/M2 V2 module and downstream gate documentation,UPDATED
+overall_run/src/m1/contracts.py,modified,M1 snapshot scenario operational and output contracts,TARGETED_TESTS_PASS
+overall_run/src/m1/serialization.py,added,M1ScenarioBundle stable serialization,TARGETED_TESTS_PASS
+overall_run/src/m1/adapter/feature_schema.py,added,Frozen model input order and schema hash,TARGETED_TESTS_PASS
+overall_run/src/m1/adapter/snapshot_builder.py,added,Availability-cut five-minute snapshot construction,TARGETED_TESTS_PASS
+overall_run/src/m1/adapter/episode_sequence.py,added,Ordered sequence and replay provider,TARGETED_TESTS_PASS
+overall_run/src/m1/adapter/operational_references.py,added,PRE-backed operational provenance,TARGETED_TESTS_PASS
+overall_run/src/m1/adapter/feature_builder.py,deleted,Retired cumulative observation-row sequence,DELETED
+overall_run/src/m1/model/network.py,modified,Explicit sequence and single-node interfaces,TARGETED_TESTS_PASS
+overall_run/src/m1/runtime/state_store.py,modified,Artifact-bound ordered state,TARGETED_TESTS_PASS
+overall_run/src/m1/runtime/replay.py,modified,Full revision replay and temporary isolation,TARGETED_TESTS_PASS
+overall_run/src/m1/runtime/update_service.py,modified,Incremental one-node runtime,TARGETED_TESTS_PASS
+overall_run/src/m1/distribution/sampling.py,modified,Stable within-bin and overflow sampling,TARGETED_TESTS_PASS
+overall_run/src/m1/distribution/tail.py,added,Training-only empirical tail artifact,TARGETED_TESTS_PASS
+overall_run/src/m1/distribution/derived.py,modified,Joint samples and horizon outputs,TARGETED_TESTS_PASS
+overall_run/src/m1/training/,added,Training checkpoint and artifact APIs,NOT_FORMALLY_RUN
+overall_run/src/m1/calibration/,added,Temperature artifact APIs,NOT_FORMALLY_RUN
+overall_run/src/m1/pipeline.py,modified,Artifact orchestration and scenario output,TARGETED_TESTS_PASS
+overall_run/src/m2.py,deleted,Retired formal monolithic M2 entry,REPLACED_BY_PACKAGE
+overall_run/src/m2_legacy.py,added,Explicit legacy implementation boundary,NOT_FORMAL_V2
+overall_run/src/m2/contracts.py,added,M2 V2 contracts,TARGETED_TESTS_PASS
+overall_run/src/m2/input_adapter.py,added,M1 PRE alignment and validation,TARGETED_TESTS_PASS
+overall_run/src/m2/activation.py,added,Evidence-driven subitem activation,TARGETED_TESTS_PASS
+overall_run/src/m2/events.py,added,Runtime event construction,TARGETED_TESTS_PASS
+overall_run/src/m2/rules.py,added,Compact monotone rule library,TARGETED_TESTS_PASS
+overall_run/src/m2/quantities.py,added,Native-unit subitem quantities,TARGETED_TESTS_PASS
+overall_run/src/m2/subitem_values.py,added,Versioned subitem CU values,TARGETED_TESTS_PASS
+overall_run/src/m2/constructed_units.py,added,Subitem and channel CU,TARGETED_TESTS_PASS
+overall_run/src/m2/currency.py,added,CU to RMB mapping,TARGETED_TESTS_PASS
+overall_run/src/m2/reconstruction.py,added,DIRECT_STRUCTURAL_COMPACT flow,TARGETED_TESTS_PASS
+overall_run/src/m2/summaries.py,added,Episode summaries and tail gate,TARGETED_TESTS_PASS
+overall_run/src/m2/evaluation.py,added,Nonnegative additivity currency audits,TARGETED_TESTS_PASS
+overall_run/config/scientific.yaml,modified,M1 sampling and M2 V2 config,TARGETED_CONFIG_TEST_PASS
+overall_run/src/config.py,modified,Authoritative V2 config checks,TARGETED_CONFIG_TEST_PASS
+overall_run/src/pipeline.py,modified,Global stop moved to M3 mismatch,NOT_GLOBALLY_RUN
+overall_run/tests/m1/,modified_added,M1 contract and runtime coverage,60_PASS
+overall_run/tests/m2/,added,M2 sampling rules CU tail integration,13_PASS
+reports/m1_m2_v2/,added,Implementation contract test rerun reports,COMPLETE

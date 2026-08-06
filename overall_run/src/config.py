@@ -35,7 +35,10 @@ AUTHORITATIVE_CODE = (
     ("src/m1/adapter/bundle_loader.py", "m1_pre_bundle_adapter"),
     ("src/m1/adapter/availability.py", "m1_availability_adapter"),
     ("src/m1/adapter/timeline.py", "m1_timeline_adapter"),
-    ("src/m1/adapter/feature_builder.py", "m1_feature_adapter"),
+    ("src/m1/adapter/feature_schema.py", "m1_feature_schema"),
+    ("src/m1/adapter/operational_references.py", "m1_operational_reference_adapter"),
+    ("src/m1/adapter/snapshot_builder.py", "m1_snapshot_adapter"),
+    ("src/m1/adapter/episode_sequence.py", "m1_episode_sequence_adapter"),
     ("src/m1/adapter/target_builder.py", "m1_target_adapter"),
     ("src/m1/adapter/stage_builder.py", "m1_stage_adapter"),
     ("src/m1/model/network.py", "m1_gru"),
@@ -49,7 +52,10 @@ AUTHORITATIVE_CODE = (
     ("src/m1/distribution/sampling.py", "m1_sampling"),
     ("src/m1/distribution/derived.py", "m1_derived_outputs"),
     ("src/m1/evaluation/report.py", "m1_evaluation"),
-    ("src/m2.py", "m2"),
+    ("src/m2/contracts.py", "m2_v2_contracts"),
+    ("src/m2/input_adapter.py", "m1_to_m2_adapter"),
+    ("src/m2/reconstruction.py", "m2_v2_reconstruction"),
+    ("src/m2/summaries.py", "m2_v2_summaries"),
     ("src/m3.py", "m3"),
     ("src/m4.py", "m4_public_api"),
     ("src/m4_screening.py", "m4_physical_screening"),
@@ -246,15 +252,37 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
     ]
     if [str(item.get("id")) for item in actions] != expected_actions:
         raise ConfigError("m3.actions does not match the frozen action order")
-    graph_edges = {str(key): float(value) for key, value in config["m2"].get("graph_edges", {}).items()}
-    allowed_edges = {"F_to_P", "F_to_R", "P_to_R"}
-    if set(graph_edges) - allowed_edges:
-        raise ConfigError("m2.graph_edges contains unsupported edges")
-    if "R_to_F" in graph_edges:
-        raise ConfigError("m2.graph_edges must not contain R_to_F")
-    unit_costs = {str(key): float(value) for key, value in config["m2"].get("unit_costs_rmb", {}).items()}
-    if set(unit_costs) != {"F", "P", "R"} or any(value < 0 for value in unit_costs.values()):
-        raise ConfigError("m2.unit_costs_rmb must define non-negative F/P/R values")
+    m2 = config["m2"]
+    required_m2 = {
+        "identity": "EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2",
+        "input_mode": "M1_SCENARIO_PLUS_PRE_CONTEXT",
+        "primary_mode": "DIRECT_STRUCTURAL_COMPACT",
+        "formal_loss_field": "total_pre_action_loss_rmb",
+    }
+    for key, expected in required_m2.items():
+        if m2.get(key) != expected:
+            raise ConfigError(f"m2.{key} must be {expected}")
+    complexity = m2.get("complexity", {})
+    if int(complexity.get("max_nonzero_breakpoints_per_subitem", -1)) != 2:
+        raise ConfigError("m2 complexity breakpoint limit must be 2")
+    if int(complexity.get("max_primary_context_multipliers_per_subitem", -1)) != 1:
+        raise ConfigError("m2 context multiplier limit must be 1")
+    if complexity.get("allow_high_order_interactions") is not False:
+        raise ConfigError("m2 high-order interactions must be disabled")
+    if complexity.get("allow_neural_reconstruction") is not False:
+        raise ConfigError("m2 neural reconstruction must be disabled")
+    if m2.get("cross_channel", {}).get("primary_mode") != "DIRECT_ONLY":
+        raise ConfigError("m2 cross-channel primary mode must be DIRECT_ONLY")
+    if m2.get("learned_correction", {}).get("enabled") is not False:
+        raise ConfigError("m2 learned correction must be disabled")
+    currency = m2.get("currency", {})
+    if currency.get("code") != "RMB" or currency.get("mapping_mode") != "IDENTITY":
+        raise ConfigError("m2 currency must use RMB IDENTITY")
+    rates = [currency.get(name) for name in (
+        "flight_rmb_per_cu", "passenger_rmb_per_cu", "resource_rmb_per_cu"
+    )]
+    if rates != [1.0, 1.0, 1.0]:
+        raise ConfigError("m2 formal currency mapping must be 1 CU = 1 RMB")
     response = config["m3"].get("response_parameters", {})
     if set(response) != set(expected_actions):
         raise ConfigError("m3.response_parameters must cover all frozen actions")

@@ -5,7 +5,7 @@ from typing import Any
 
 from .m1.adapter import PublishedPreBundle, load_published_bundle
 from .m1.contracts import M1_CONTRACT_ID
-from .failures import M2ContractMismatch
+from .failures import M3ContractMismatch
 
 
 FORMAL_TARGET_COLUMN = "M1_JOINT_SAMPLE_CONTRACT"
@@ -25,8 +25,8 @@ def load_pre_bundle(
 
 def normalize_bundle(bundle: PublishedPreBundle) -> dict[str, Any]:
     del bundle
-    raise M2ContractMismatch(
-        "M2_CONTRACT_MISMATCH: legacy snapshot/rule tables are not produced by PRE Core V2"
+    raise M3ContractMismatch(
+        "M3_CONTRACT_MISMATCH: legacy global tables are retired; use the M1ScenarioBundle to M2InputBundle adapter"
     )
 
 
@@ -35,6 +35,6 @@ def validate_bundle(
     scientific: dict[str, Any],
 ) -> dict[str, Any]:
     del bundle, scientific
-    raise M2ContractMismatch(
-        "M2_CONTRACT_MISMATCH: downstream validation needs the M1 joint-sample contract"
+    raise M3ContractMismatch(
+        "M3_CONTRACT_MISMATCH: global downstream validation has not migrated to M2 V2 sample loss"
     )

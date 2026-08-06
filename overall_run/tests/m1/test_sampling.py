@@ -14,4 +14,6 @@ def test_fixed_random_numbers_are_stable_across_query_times() -> None:
 
 def test_discrete_sampling_reports_overflow() -> None:
     bins = DiscreteBins((0.0, 5.0), (5.0, None))
-    assert sample_discrete(np.array([0.1, 0.9]), bins, 0.95) == (5.0, True)
+    value, overflow = sample_discrete(np.array([0.1, 0.9]), bins, 0.95)
+    assert overflow is True
+    assert np.isnan(value)

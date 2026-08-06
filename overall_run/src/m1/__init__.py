@@ -1,36 +1,57 @@
-from .adapter import build_input_bundle, load_published_bundle
+from .adapter import (
+    M1FeatureSchema,
+    PublishedSnapshotSequenceProvider,
+    build_episode_sequence,
+    build_snapshot_node,
+    load_published_bundle,
+)
 from .config import M1ConfigError, M1Settings, validate_m1_config
 from .contracts import (
+    EventHorizonProbabilities,
     FlightChainStage,
-    M1InputBundle,
+    M1EpisodeSequence,
     M1JointSample,
     M1MarginalDistribution,
     M1PredictionBundle,
     M1RunManifest,
+    M1ScenarioBundle,
+    M1SnapshotNode,
     M1_CONTRACT_ID,
+    OperationalReferences,
     PreBundleIdentity,
+    SupportedOperationalValue,
     TargetContract,
     TriggerType,
 )
-from .pipeline import M1Pipeline, M1PipelineResult, M1ScientificNotReady
+from .pipeline import M1Pipeline, M1PipelineResult
+from .serialization import scenario_from_dict, scenario_to_dict
 
 __all__ = [
+    "EventHorizonProbabilities",
     "FlightChainStage",
     "M1ConfigError",
-    "M1InputBundle",
+    "M1EpisodeSequence",
+    "M1FeatureSchema",
     "M1JointSample",
     "M1MarginalDistribution",
     "M1Pipeline",
     "M1PipelineResult",
     "M1PredictionBundle",
     "M1RunManifest",
-    "M1ScientificNotReady",
+    "M1ScenarioBundle",
     "M1Settings",
+    "M1SnapshotNode",
     "M1_CONTRACT_ID",
+    "OperationalReferences",
     "PreBundleIdentity",
+    "PublishedSnapshotSequenceProvider",
+    "SupportedOperationalValue",
     "TargetContract",
     "TriggerType",
-    "build_input_bundle",
+    "build_episode_sequence",
+    "build_snapshot_node",
     "load_published_bundle",
+    "scenario_from_dict",
+    "scenario_to_dict",
     "validate_m1_config",
 ]

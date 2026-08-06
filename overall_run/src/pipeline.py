@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from .config import RunConfig
-from .failures import M2ContractMismatch
+from .failures import M3ContractMismatch
 from .pipeline_checkpoint import (
     FullBlockedByFastAcceptance,
     mark_running_staging_incomplete,
@@ -34,8 +34,8 @@ def run_experiment(
         output_name,
         resume_staging,
     )
-    raise M2ContractMismatch(
-        "M2_CONTRACT_MISMATCH: overall_run awaits the M1 joint-sample input migration"
+    raise M3ContractMismatch(
+        "M3_CONTRACT_MISMATCH: M1-to-M2 V2 is available but M3 has not migrated to M2 sample losses"
     )
 
 
