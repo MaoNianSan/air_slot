@@ -77,8 +77,11 @@ Desktop.ini
 *.local
 
 # ===== Project Specific =====
-# Generated output logs
-output_logs/
+# Generated output logs — big baseline/runtime folders stay local;
+# top-level audit outputs (md/json) are synced
+output_logs/*
+!output_logs/*.md
+!output_logs/*.json
 
 # Raw data from external sources (can be re-downloaded, total ~80 GB)
 # Includes: eurostat, opensky, metar, iem_metar, ourairports
@@ -88,10 +91,7 @@ data/raw/
 *.parquet
 *.joblib
 
-# Exploratory / analysis artifacts — kept locally, not uploaded
-analysis/
-
-# Audit reports & evidence — published to GitHub (audit trail)
+# Audit reports & analysis artifacts — published to GitHub (audit trail)
 # Exception: pytest_validator_tmp is throwaway validator output, still excluded
 reports/
 !reports/
@@ -114,9 +114,6 @@ reports/pytest_validator_tmp/
 # Reusable local extraction/model cache
 /pre/cache/
 
-# Local development, debug and upload-audit reports
-/pre/reports/
-
 # Root-level local status/audit files
 /PRE_DEBUG_STATUS.md
 /PRE_GITHUB_UPLOAD_AUDIT.md
@@ -135,12 +132,6 @@ reports/pytest_validator_tmp/
 /pre/output/
 /pre/output_core/
 /pre/cache/
-
-# Keep repository-wide report exclusions while allowing curated PRE evidence.
-!/pre/reports/
-/pre/reports/*
-!/pre/reports/published/
-!/pre/reports/published/**
 
 # Local benchmark/runtime outputs
 /pre/tools/output/

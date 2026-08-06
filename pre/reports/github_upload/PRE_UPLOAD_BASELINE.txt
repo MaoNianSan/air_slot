@@ -1,0 +1,170 @@
+================================================================================
+PRE V2 GitHub UPLOAD BASELINE — Phase 1 记录
+================================================================================
+生成时间 : 2026-08-05
+仓库根   : D:/research/air_slot/code/explore
+Git HEAD : 7f5f36703fd6d97a050fc3d2a4c1f84681f9bf1f
+
+--------------------------------------------------------------------------------
+0. 关键目录确认 (Phase 1 要求)
+--------------------------------------------------------------------------------
+[OK] pre/cache/state_extract_core_v1-6840ae55cc35
+     存在, mtime=2026/8/4 20:43:59  (当前 cache key 相关)
+[OK] pre/output_core/fast/.AIR_CHAIN_CORE_V1.staging-c819be31347b
+     存在, 内含 observations/ 29 个 parquet 分区, 总大小约 578 MiB (606678646 B)
+     (partition 路径: source=flow/observation_date=YYYY-MM-DD/part-00000.parquet)
+[OK] pre/output/fast   (legacy PRE output, 含 parquet/manifests/reports/acceptance.json 等)
+
+其他实际路径说明:
+- pre/cache/ 下另有: state_extract_core_v1-d86413cad17a (2026/8/4 19:54:30, 疑似旧 cache),
+  state_extract_v2 (2026/7/27, 更早 cache)。与当前 key (6840ae55cc35) 不同。
+- pre/output_core/smoke/ 为空目录。
+- pre/output/middle, pre/output/phase1_equivalence 亦存在 (legacy output)。
+- pre/pre/output/phase1_equivalence/.staging 为嵌套 legacy 输出残留
+  (被 pre/.gitignore 的 output/ 规则覆盖, 已忽略)。
+
+--------------------------------------------------------------------------------
+1. git status --short --untracked-files=all
+--------------------------------------------------------------------------------
+ D pre/config/schema.yaml
+ M pre/main.py
+ M pre/src/pipeline.py
+ M pre/src/pipeline_build.py
+ M pre/src/pipeline_config.py
+ M pre/src/pipeline_publish.py
+ M pre/src/snapshot.py
+ M pre/tests/conftest.py
+?? pre/config/schema/column_aliases.yaml
+?? pre/config/schema/column_roles.yaml
+?? pre/config/schema/core_tables.yaml
+?? pre/config/schema/legacy_tables.yaml
+?? pre/src/artifact_registry.py
+?? pre/src/bundle_writer.py
+?? pre/src/column_audit.py
+?? pre/src/column_audit_report.py
+?? pre/src/column_audit_sources.py
+?? pre/src/contract_enrichment.py
+?? pre/src/core/__init__.py
+?? pre/src/core/chain_builder.py
+?? pre/src/core/chain_validation.py
+?? pre/src/core/column_registry.py
+?? pre/src/core/contracts.py
+?? pre/src/core/event_builder.py
+?? pre/src/core/event_validation.py
+?? pre/src/core/evidence_builder.py
+?? pre/src/core/inventory_reuse.py
+?? pre/src/core/observation_builder.py
+?? pre/src/core/observation_dataset.py
+?? pre/src/core/observation_flow.py
+?? pre/src/core/observation_requests.py
+?? pre/src/core/observation_state.py
+?? pre/src/core/observation_validation.py
+?? pre/src/core/observation_weather.py
+?? pre/src/core/pipeline.py
+?? pre/src/core/reference_builder.py
+?? pre/src/core/report.py
+?? pre/src/core/source_loader.py
+?? pre/src/core/state_cache.py
+?? pre/src/core/validation.py
+?? pre/src/core/writer.py
+?? pre/src/legacy_snapshot_grid.py
+?? pre/src/run_metadata.py
+?? pre/src/snapshot_reference_enrichment.py
+?? pre/src/stages/__init__.py
+?? pre/src/stages/context.py
+?? pre/src/stages/enrichment_stage.py
+?? pre/src/stages/episode_stage.py
+?? pre/src/stages/finalization_stage.py
+?? pre/src/stages/inventory_stage.py
+?? pre/src/stages/state_stage.py
+?? pre/src/stages/validation_stage.py
+?? pre/src/state_feature_resolver.py
+?? pre/src/state_quality.py
+?? pre/tests/core_fixtures.py
+?? pre/tests/test_chain_ambiguity.py
+?? pre/tests/test_chain_builder.py
+?? pre/tests/test_chain_split.py
+?? pre/tests/test_column_registry.py
+?? pre/tests/test_core_idempotence.py
+?? pre/tests/test_core_manifest.py
+?? pre/tests/test_event_availability.py
+?? pre/tests/test_event_contract.py
+?? pre/tests/test_observation_native_dedup.py
+?? pre/tests/test_observation_requests.py
+?? pre/tests/test_reference_train_only.py
+
+--------------------------------------------------------------------------------
+2. git status --short --ignored  (被忽略项)
+--------------------------------------------------------------------------------
+!! .pytest_cache/
+!! .venv/
+!! .vscode/
+!! analysis/
+!! data/raw/
+!! output_logs/
+!! overall_adv/.pytest_cache/
+!! overall_adv/output/
+!! overall_run/.pytest_cache/
+!! overall_run/output/
+!! part_adv/.pytest_cache/
+!! part_adv/output/
+!! pre/.pytest_cache/
+!! pre/cache/
+!! pre/output/
+!! pre/output_core/
+!! pre/pre/
+!! pre/reports/
+!! reports/
+
+(注: pre/output_core/ 显示为 !! 是因为其内 29 个 parquet 被根 .gitignore 的
+ *.parquet 规则覆盖; staging 目录本身尚无显式规则, Phase 3 将补 /pre/output_core/)
+
+--------------------------------------------------------------------------------
+3. git rev-parse HEAD
+--------------------------------------------------------------------------------
+7f5f36703fd6d97a050fc3d2a4c1f84681f9bf1f
+
+--------------------------------------------------------------------------------
+4. git diff --check
+--------------------------------------------------------------------------------
+EXIT=0 (通过; 仅 LF->CRLF 警告, 无空白错误)
+warning: 下列文件存在 LF will be replaced by CRLF (正常换行提示, 非错误):
+  pre/main.py pre/src/pipeline.py pre/src/pipeline_build.py
+  pre/src/pipeline_config.py pre/src/pipeline_publish.py pre/src/snapshot.py
+  pre/tests/conftest.py
+
+--------------------------------------------------------------------------------
+5. git diff --stat
+--------------------------------------------------------------------------------
+ pre/config/schema.yaml      | 526 --------------------------------------------
+ pre/main.py                 |  56 ++++-
+ pre/src/pipeline.py         |  10 +
+ pre/src/pipeline_build.py   | 465 ++-------------------------------------
+ pre/src/pipeline_config.py  |  35 ++-
+ pre/src/pipeline_publish.py | 282 ++----------------------
+ pre/src/snapshot.py         | 398 ++-------------------------------
+ pre/tests/conftest.py       |   3 +
+ 8 files changed, 153 insertions(+), 1622 deletions(-)
+
+--------------------------------------------------------------------------------
+6. git diff --name-status
+--------------------------------------------------------------------------------
+D       pre/config/schema.yaml
+M       pre/main.py
+M       pre/src/pipeline.py
+M       pre/src/pipeline_build.py
+M       pre/src/pipeline_config.py
+M       pre/src/pipeline_publish.py
+M       pre/src/snapshot.py
+M       pre/tests/conftest.py
+
+--------------------------------------------------------------------------------
+7. 备注
+--------------------------------------------------------------------------------
+- 根目录无 PRE_* 散落文件; 本地 debug 报告已统一位于 pre/reports/ 下
+  (PRE_BASELINE_AUDIT.md / PRE_CORE_CONTRACT.md / PRE_DATASET_COLUMN_AUDIT.csv|.md /
+   PRE_DEBUG_STATUS.md / PRE_REFACTOR_EQUIVALENCE.md), 无需移动。
+- schema.yaml 删除与 pre/config/schema/ 拆分新增是成对变化 (见 Phase 9 详细核验)。
+================================================================================
+END OF BASELINE
+================================================================================

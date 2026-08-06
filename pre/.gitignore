@@ -7,7 +7,4 @@ output_core/
 # Reusable local cache
 cache/
 
-# Ignore local reports except curated published evidence
-reports/*
-!reports/published/
-!reports/published/**
+# Audit reports are synced to GitHub (see root .gitignore)
