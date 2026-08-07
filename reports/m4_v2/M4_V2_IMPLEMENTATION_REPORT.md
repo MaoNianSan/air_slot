@@ -4,51 +4,47 @@ Date: 2026-08-07
 
 ## Scope
 
-This local-only change implements `M4_CONTEXTUAL_RESIDUAL_RISK_V2` in
-`overall_run/src/m4/`. No branch, commit, push, Fast, Middle, Full,
-`overall_adv`, `part_adv`, PRE rebuild, M1 training, M2 formal reconstruction,
-M3 parameter freeze, or formal M3 library generation was performed.
+This local-only closure integrates the existing `M4_CONTEXTUAL_RESIDUAL_RISK_V2`
+package into the repository contract. It did not run Fast, Middle, Full,
+`overall_adv`, `part_adv`, PRE reconstruction, M1 training/calibration/sampling,
+M2 formal reconstruction, M3 parameter freeze, or M3 formal library generation.
 
-## Implemented
+## Integrated implementation
 
-- Direct input from `M2InputBundle`, `tuple[M2SampleLoss, ...]`, and `M3Artifact`.
-- Exact nine-subitem, F/P/R, total-loss, weight, shape, range, hash, and A00 checks.
-- PRE R2 compatibility-only and PRE R3 registry-lineage discrimination.
-- Explicit evidence requirements with pressure/resource, occupancy/handler,
-  future-chain, proxy/observation, and missing-to-zero prohibitions.
-- Explicit stage adapter and unconfigured opportunity contract.
-- SHA-256 `STABLE_SHARED_DRAW_INDEX` pairing by episode, sample, and M3 sample hash.
-- Nine-subitem post loss plus one F/P/R implementation cost per channel.
-- Weighted mean, weighted VaR, exact fractional-tail weighted CVaR, and
-  A00-paired improvement metrics.
-- FORMAL, CONDITIONAL, SCENARIO, and EXCLUDED lanes.
-- One authoritative formal sort and fixed-width Ranking@1/@2/@3/@5 views.
-- Formal output schemas, test-only publication guard, and read-only evaluation.
+- Strict M4 V2 configuration and retired decision-value rejection.
+- Direct M2 V2 / M3 V4 input adaptation with PRE R2/R3 evidence separation.
+- Stable shared draw indexing and nine-subitem post-loss calculation.
+- Weighted Mean-CVaR and one five-key authoritative ranking order.
+- Fixed-width Ranking@1/@2/@3/@5 without a second score sort.
+- Explicit VALID, CONDITIONAL_ONLY, SCENARIO_ONLY, A00_ONLY, upstream-blocked,
+  abstain, stale, and contract-error status handling.
+- A pure multi-condition publication gate with explicit reason codes.
+- Bundle-level formal staging, validation, hashing, and directory publication.
+- Optional read-only evaluation after formal bundle freeze, with separate formal
+  and evaluation statuses.
+- Main pipeline M3 gates preserved, followed by M4 V2 and finalization calls.
 
-## Current Status
+## Current status
 
 ```text
-PRE_CHANGED_IN_M4_REPO = NO
-M1_CHANGED = NO
+PRE_CORE_CHANGED = NO
+M1_CORE_CHANGED = NO
 M2_CORE_CHANGED = NO
 M3_CORE_CHANGED = NO
 
-PRE_R3_REFERENCE_IMPLEMENTATION = PASS_LOCAL_UNCOMMITTED
+M4_V2_CORE_IMPLEMENTATION = PASS
+M4_V2_REPOSITORY_INTEGRATION = PASS
+M4_V2_SYNTHETIC_INTEGRATION = PASS
+
+TARGET_REPOSITORY_PRE_R3_IMPLEMENTATION = NOT_PRESENT
 PRE_R3_FAST_REBUILD = NOT_RUN
-M4_REPO_PRE_VERSION = AIR_CHAIN_CORE_V2_R2
-M4_REPO_PRE_R3_LINEAGE_AVAILABLE = NO
+M2_VALUATION_FREEZE = NOT_YET_DONE
+M3_PARAMETER_FREEZE = NOT_YET_DONE
+M3_FORMAL_LIBRARY = NOT_YET_RUN
 
-M2_VALUATION_FREEZE_STATUS = NOT_YET_DONE
-M3_PARAMETER_FREEZE_STATUS = NOT_YET_DONE
-M3_FORMAL_LIBRARY_STATUS = NOT_YET_RUN
-
-M4_V2_PACKAGE_MIGRATION = PASS
-M4_V2_SYNTHETIC_INTEGRATION = PASS_TEST_ONLY
-M4_V2_FORMAL_STATUS = BLOCKED_BY_UPSTREAM
+M4_FORMAL_STATUS = BLOCKED_BY_UPSTREAM
+GLOBAL_RERUN_ALLOWED = NO
 ```
 
-The PRE R3 implementation exists only in the separate local PRE worktree at
-`D:\research\air_slot\code\explore`; it was not copied into this repository and
-no R3 bundle was built. The current M2 bundle carrier also lacks bundle-level
-PRE revision and registry metadata unless explicit manifest lineage is placed
-in context provenance. M4 therefore keeps the formal R3 evidence gate closed.
+Repository integration PASS is an engineering result. It is not evidence that
+formal recovery recommendations have been scientifically validated.

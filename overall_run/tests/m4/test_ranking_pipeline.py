@@ -7,7 +7,7 @@ import pytest
 
 from src.m4 import run_m4_synthetic_integration, write_formal_artifact
 from src.m4.contracts import DecisionLane, M4ContractError
-from src.m4.ranking import build_authoritative_ranking
+from src.m4.ranking import assign_lane_ranks, build_authoritative_ranking
 from src.ranking_contract import RANKING_DEPTHS, real_ranking_rows
 
 
@@ -96,7 +96,8 @@ def test_stable_tie_break(cfg, m4_input_factory, m3_artifact, opportunity_overri
             expected_implementation_cost_rmb=4.0,
         )
         items.append(tied)
-    full, _, _ = build_authoritative_ranking(tuple(reversed(items)))
+    ranked = assign_lane_ranks(tuple(reversed(items)))
+    full, _, _ = build_authoritative_ranking(ranked)
     assert full["action_id"].tolist() == ["A12", "A22"]
 
 

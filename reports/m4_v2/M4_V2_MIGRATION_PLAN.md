@@ -2,9 +2,19 @@
 
 Date: 2026-08-07
 
-Status: completed locally; formal execution remains blocked by upstream gates.
+Status: historical implementation plan, completed and superseded by
+`M4_V2_INTEGRATION_CLOSURE_REPORT.md`.
 
-## Verified Baseline
+## Final closure state
+
+```text
+M4_V2_REPOSITORY_INTEGRATION = PASS
+M4_V2_SYNTHETIC_INTEGRATION = PASS
+M4_FORMAL_STATUS = BLOCKED_BY_UPSTREAM
+GLOBAL_RERUN_ALLOWED = NO
+```
+
+## Historical pre-migration baseline
 
 ```text
 git branch = main, ahead of origin/main by 1

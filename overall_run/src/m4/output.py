@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
+import uuid
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -31,6 +33,7 @@ def episode_decisions_frame(decisions: tuple[M4EpisodeDecision, ...]) -> pd.Data
             "status_reason_codes": "|".join(item.status_reason_codes),
             "test_only": item.test_only,
             "publication_allowed": item.publication_allowed,
+            "publication_reason_codes": "|".join(item.publication_reason_codes),
             "top1_action_id": item.top1_action_id,
             "top1_risk_score": item.top1_risk_score,
             "top1_expected_post_loss_rmb": item.top1_expected_post_loss_rmb,
@@ -65,35 +68,61 @@ def build_manifest(
     return manifest
 
 
-def _atomic_parquet(frame: pd.DataFrame, target: Path) -> None:
-    temporary = target.with_suffix(target.suffix + ".tmp")
-    frame.to_parquet(temporary, index=False)
-    os.replace(temporary, target)
+def _validate_formal_frames(artifact: M4FormalArtifact) -> None:
+    episode_required = {"episode_id", "snapshot_id", "result_status", "publication_allowed"}
+    action_required = {"episode_id", "snapshot_id", "action_id", "decision_lane", "risk_score"}
+    if artifact.episode_frame.empty or not episode_required.issubset(artifact.episode_frame):
+        raise M4ContractError("M4_EPISODE_OUTPUT_SCHEMA_INVALID")
+    if artifact.action_frame.empty or not action_required.issubset(artifact.action_frame):
+        raise M4ContractError("M4_ACTION_OUTPUT_SCHEMA_INVALID")
 
 
 def write_formal_artifact(artifact: M4FormalArtifact, output_dir: Path) -> dict[str, str]:
-    if artifact.test_only or not artifact.publication_allowed:
+    if artifact.test_only:
         raise M4ContractError("M4_TEST_ONLY_FORMAL_OUTPUT_FORBIDDEN")
     output_dir = output_dir.resolve()
-    output_dir.mkdir(parents=True, exist_ok=True)
-    episode_path = output_dir / "m4_episode_decision.parquet"
-    action_path = output_dir / "m4_action_evaluation.parquet"
-    manifest_path = output_dir / "m4_manifest.json"
-    _atomic_parquet(artifact.episode_frame, episode_path)
-    _atomic_parquet(artifact.action_frame, action_path)
-    hashes = {
-        episode_path.name: _sha256(episode_path),
-        action_path.name: _sha256(action_path),
-    }
-    if not artifact.subitem_audit_frame.empty:
-        audit_dir = output_dir / "audit"
-        audit_dir.mkdir(parents=True, exist_ok=True)
-        audit_path = audit_dir / "m4_subitem_effects.parquet"
-        _atomic_parquet(artifact.subitem_audit_frame, audit_path)
-        hashes[str(audit_path.relative_to(output_dir))] = _sha256(audit_path)
-    manifest = build_manifest(artifact, base=artifact.manifest, formal_hashes=hashes)
-    temporary = manifest_path.with_suffix(".json.tmp")
-    temporary.write_text(json.dumps(manifest, ensure_ascii=True, indent=2, default=str), encoding="utf-8")
-    os.replace(temporary, manifest_path)
-    hashes[manifest_path.name] = _sha256(manifest_path)
-    return hashes
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    token = uuid.uuid4().hex
+    staging = output_dir.parent / f".{output_dir.name}.staging.{token}"
+    backup = output_dir.parent / f".{output_dir.name}.backup.{token}"
+    _validate_formal_frames(artifact)
+    try:
+        staging.mkdir(parents=False, exist_ok=False)
+        episode_path = staging / "m4_episode_decision.parquet"
+        action_path = staging / "m4_action_evaluation.parquet"
+        manifest_path = staging / "m4_manifest.json"
+        artifact.episode_frame.to_parquet(episode_path, index=False)
+        artifact.action_frame.to_parquet(action_path, index=False)
+        hashes = {
+            episode_path.name: _sha256(episode_path),
+            action_path.name: _sha256(action_path),
+        }
+        if not artifact.subitem_audit_frame.empty:
+            audit_dir = staging / "audit"
+            audit_dir.mkdir(parents=True, exist_ok=False)
+            audit_path = audit_dir / "m4_subitem_effects.parquet"
+            artifact.subitem_audit_frame.to_parquet(audit_path, index=False)
+            hashes[str(audit_path.relative_to(staging))] = _sha256(audit_path)
+        manifest = build_manifest(artifact, base=artifact.manifest, formal_hashes=hashes)
+        manifest_path.write_text(
+            json.dumps(manifest, ensure_ascii=True, indent=2, default=str),
+            encoding="utf-8",
+        )
+        if output_dir.exists():
+            os.replace(output_dir, backup)
+        try:
+            os.replace(staging, output_dir)
+        except Exception:
+            if backup.exists() and not output_dir.exists():
+                os.replace(backup, output_dir)
+            raise
+        if backup.exists():
+            shutil.rmtree(backup)
+        published_hashes = dict(hashes)
+        published_hashes["m4_manifest.json"] = _sha256(output_dir / "m4_manifest.json")
+        return published_hashes
+    finally:
+        if staging.exists():
+            shutil.rmtree(staging)
+        if backup.exists() and output_dir.exists():
+            shutil.rmtree(backup)

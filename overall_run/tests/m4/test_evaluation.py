@@ -32,7 +32,7 @@ def test_evaluation_disabled_not_run(
     artifact = _artifact(cfg, m4_input_factory, m3_artifact, opportunity_overrides)
     result = run_optional_evaluation(
         artifact,
-        {"m4": {"enabled": False, "fail_on_error": False, "output_dir": "eval"}},
+        {"evaluation": {"m4": {"enabled": False, "fail_on_error": False, "output_dir": "eval"}}},
         project_root=tmp_path,
     )
     assert result is None
@@ -45,7 +45,7 @@ def test_evaluation_runs_after_formal_freeze(
     artifact = _artifact(cfg, m4_input_factory, m3_artifact, opportunity_overrides)
     result = evaluate_frozen_artifact(artifact, evaluation_dir=tmp_path / "evaluation")
     assert result.passed
-    assert (tmp_path / "evaluation" / "m4_evaluation.json").is_file()
+    assert (tmp_path / "evaluation" / "m4_v2_evaluation.json").is_file()
 
 
 def test_formal_hash_same_with_evaluation_on_off(

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 LEGACY_AUDIT_ONLY = True
+LEGACY_M4_NOT_FORMAL = True
 
 from typing import Any
 

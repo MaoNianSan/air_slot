@@ -20,6 +20,7 @@ from .pipeline_checkpoint import (
     mark_running_staging_incomplete,
     prepare_empty_publish_target,
 )
+from .pipeline_finalize import finalize_experiment
 from .pipeline_modes import report_mode, validate_mode
 from .pipeline_precision import run_precision
 
@@ -100,7 +101,7 @@ def run_experiment(
             "STAGE_CONTRACT_NOT_FROZEN: formal M4 requires an explicit versioned stage mapping"
         )
     m2_input_bundle, sample_losses, m3_artifact = m4_inputs
-    return run_m4_formal_stage(
+    artifact = run_m4_formal_stage(
         m2_input_bundle,
         sample_losses,
         m3_artifact,
@@ -108,7 +109,9 @@ def run_experiment(
         stage_mapping=m4_stage_mapping,
         stage_mapping_version=m4_stage_mapping_version,
         output_dir=m4_output_dir,
+        project_root=cfg.root,
     )
+    return finalize_experiment(artifact)
 
 
 __all__ = [

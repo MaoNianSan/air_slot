@@ -5,8 +5,21 @@ from typing import Iterable
 
 import pandas as pd
 
-from ..ranking_contract import RANKING_DEPTHS, build_ranking_prefixes, full_ranking_from_scores
+from ..ranking_contract import (
+    RANKING_DEPTHS,
+    build_ranking_prefixes_from_authoritative_order,
+)
 from .contracts import DecisionLane, M4ActionEvaluation
+
+
+M4_RANKING_TIE_BREAK = (
+    "risk_score",
+    "expected_total_post_loss_rmb",
+    "cvar90_post_loss_rmb",
+    "expected_implementation_cost_rmb",
+    "action_id",
+)
+_LANE_ORDER = {lane.value: index for index, lane in enumerate(DecisionLane)}
 
 
 def action_evaluations_frame(
@@ -47,22 +60,21 @@ def action_evaluations_frame(
 def assign_lane_ranks(
     evaluations: tuple[M4ActionEvaluation, ...],
 ) -> tuple[M4ActionEvaluation, ...]:
-    ranks: dict[str, int] = {}
     frame = action_evaluations_frame(evaluations)
-    for _, group in frame.groupby("decision_lane", sort=False):
-        ordered = group.sort_values(
-            [
-                "risk_score",
-                "expected_total_post_loss_rmb",
-                "cvar90_post_loss_rmb",
-                "expected_implementation_cost_rmb",
-                "action_id",
-            ],
-            kind="mergesort",
-        )
-        for rank, action_id in enumerate(ordered["action_id"].astype(str), 1):
-            ranks[action_id] = rank
-    return tuple(replace(item, lane_rank=ranks[item.action_id]) for item in evaluations)
+    if frame["action_id"].astype(str).duplicated().any():
+        raise ValueError("M4_RANKING_DUPLICATE_ACTION")
+    frame["_lane_order"] = frame["decision_lane"].map(_LANE_ORDER)
+    ordered = frame.sort_values(
+        ["_lane_order", *M4_RANKING_TIE_BREAK],
+        kind="mergesort",
+        na_position="last",
+    ).reset_index(drop=True)
+    ordered["lane_rank"] = ordered.groupby("decision_lane", sort=False).cumcount() + 1
+    by_action = {item.action_id: item for item in evaluations}
+    return tuple(
+        replace(by_action[str(row.action_id)], lane_rank=int(row.lane_rank))
+        for row in ordered.itertuples(index=False)
+    )
 
 
 def build_authoritative_ranking(
@@ -74,12 +86,21 @@ def build_authoritative_ranking(
     if formal.empty:
         full = pd.DataFrame()
     else:
-        formal["expected_residual"] = formal["expected_total_post_loss_rmb"]
-        formal["cvar_residual"] = formal["cvar90_post_loss_rmb"]
-        full = full_ranking_from_scores(formal, "risk_score")
+        expected_ranks = pd.Series(range(1, len(formal) + 1), index=formal.index)
+        actual_ranks = pd.to_numeric(formal["lane_rank"], errors="coerce")
+        if actual_ranks.isna().any() or not actual_ranks.astype("int64").equals(
+            expected_ranks.astype("int64")
+        ):
+            raise ValueError("M4_RANKING_NOT_AUTHORITATIVELY_ORDERED")
+        full = formal.copy()
+        full["score"] = full["risk_score"]
+        full["expected_residual"] = full["expected_total_post_loss_rmb"]
+        full["cvar_residual"] = full["cvar90_post_loss_rmb"]
+        full["rank"] = range(1, len(full) + 1)
+        full["rank_position"] = full["rank"]
         if full["action_id"].astype(str).eq("A00").sum() > 1:
             raise ValueError("M4_RANKING_A00_DUPLICATE")
-    prefixes, views = build_ranking_prefixes(
+    prefixes, views = build_ranking_prefixes_from_authoritative_order(
         universe,
         full,
         depths=RANKING_DEPTHS,

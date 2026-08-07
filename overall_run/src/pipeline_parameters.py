@@ -59,15 +59,33 @@ def parameter_manifest(
                 continue
             unit = "probability/rate" if key.startswith("mu_") or key == "failure_probability" else ("RMB" if key.startswith("kbar_rmb_") else "distribution parameter")
             add("M3", f"{action_id}.{key}", value, unit, "generic action-response distribution", str(row["parameter_source"]), str(row["parameter_version"]), "before formal evaluation", "M3-M4", f"m3.response_parameters.{action_id}.{key}")
-    for key, value in {
-        "cvar_alpha": m4.cvar_alpha,
-        "risk_aversion": m4.risk_aversion,
-        "near_equivalent_absolute_rmb": m4.near_abs_rmb,
-        "near_equivalent_relative": m4.near_rel,
-        "burden_ratio_max": m4.burden_ratio_max,
-        "positive_net_benefit_probability_min": m4.positive_net_benefit_probability_min,
-    }.items():
-        unit = "RMB" if "absolute_rmb" in key else "ratio/probability"
-        add("M4", key, value, unit, "screening or risk-ranking parameter", "predeclared", "frozen primary specification", "before formal evaluation", "M4", f"m4.{key}")
+    del m4
+    m4_config = cfg.scientific["m4"]
+    for key, value in m4_config["risk"].items():
+        add(
+            "M4",
+            f"risk.{key}",
+            value,
+            "weight/probability",
+            "weighted Mean-CVaR risk contract",
+            "predeclared",
+            "M4_CONTEXTUAL_RESIDUAL_RISK_V2",
+            "before formal evaluation",
+            "M4",
+            f"m4.risk.{key}",
+        )
+    for key, value in m4_config["draw_pairing"].items():
+        add(
+            "M4",
+            f"draw_pairing.{key}",
+            value,
+            "contract",
+            "shared draw-index identity",
+            "predeclared",
+            "STABLE_SHARED_DRAW_INDEX",
+            "before formal evaluation",
+            "M4",
+            f"m4.draw_pairing.{key}",
+        )
     add("COMPUTE", "formal_samples", cfg.mode()["formal_samples"], "draws", "Monte Carlo budget", "engineering", "mode configuration", "run start", "M1-M4", f"modes.{cfg.mode_name}.formal_samples")
     return pd.DataFrame(rows)

@@ -2,21 +2,30 @@
 
 Date: 2026-08-07
 
-## Isolated
+## Active module state
+
+The ambiguous active modules are absent:
 
 ```text
-overall_run/src/m4.py -> overall_run/src/legacy/m4_v1_api.py
-overall_run/src/m4_screening.py -> overall_run/src/legacy/m4_v1_screening.py
-overall_run/src/m4_evaluation.py -> overall_run/src/legacy/m4_v1_evaluation.py
+overall_run/src/m4.py
+overall_run/src/m4_screening.py
+overall_run/src/m4_evaluation.py
 ```
 
-The active import is now `overall_run/src/m4/__init__.py`. Retired calls to
-`fit_m4`, `evaluate_m4`, or `screen_physical_actions` raise
-`M4_LEGACY_CONTRACT_RETIRED` and do not fall back to the old channel contract.
+Historical source is isolated as:
 
-The `m4_pnb_*` modules and `audit_m4_positive_net_benefit.py` remain in place
-only for historical audit reproducibility and are marked
-`LEGACY_M4_NOT_FORMAL = True`. They are absent from the authoritative
-implementation manifest and formal pipeline.
+```text
+overall_run/src/legacy/m4_v1_api.py
+overall_run/src/legacy/m4_v1_screening.py
+overall_run/src/legacy/m4_v1_evaluation.py
+```
 
-No historical report or generated output was deleted.
+Each file declares `LEGACY_M4_NOT_FORMAL = True` and is excluded from
+`AUTHORITATIVE_CODE`. The active import resolves to
+`overall_run/src/m4/__init__.py`; the formal pipeline imports that package.
+
+The `m4_pnb_*` modules and `audit_m4_positive_net_benefit.py` remain historical
+audit code. They already declare `LEGACY_M4_NOT_FORMAL = True`, are not imported
+by the formal M4 V2 pipeline, and are not part of the M4 V2 authoritative
+package. Historical report consumers and generated legacy outputs were not
+deleted.

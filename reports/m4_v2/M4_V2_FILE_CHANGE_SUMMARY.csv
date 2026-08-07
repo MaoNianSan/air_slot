@@ -1,33 +1,31 @@
-path,change,role
-overall_run/src/m4/__init__.py,added,M4 V2 public API and legacy retirement
-overall_run/src/m4/contracts.py,added,M4 identities dataclasses lanes statuses
-overall_run/src/m4/compatibility.py,added,M2 and M3 strict compatibility gates
-overall_run/src/m4/input_adapter.py,added,direct M2 V2 and M3 V4 adapter
-overall_run/src/m4/evidence.py,added,PRE R2 R3 evidence lineage and forbidden inference guards
-overall_run/src/m4/stage_adapter.py,added,explicit stage mapping
-overall_run/src/m4/opportunity.py,added,unconfigured opportunity contract
-overall_run/src/m4/draw_pairing.py,added,SHA-256 stable shared draw index
-overall_run/src/m4/post_loss.py,added,nine-subitem post loss and channel costs
-overall_run/src/m4/risk.py,added,weighted mean Var CVaR and score
-overall_run/src/m4/lane_assignment.py,added,decision lane rules
-overall_run/src/m4/ranking.py,added,authoritative formal ranking and fixed-width prefixes
-overall_run/src/m4/rolling.py,added,rolling ranking fact comparison
-overall_run/src/m4/explanation.py,added,reason-code explanation data
-overall_run/src/m4/output.py,added,formal schemas hashes atomic writer and test guard
-overall_run/src/m4/pipeline.py,added,M4 calculation and synthetic/formal entrypoints
-overall_run/src/m4/evaluation.py,added,read-only optional evaluation
-overall_run/src/legacy/m4_v1_api.py,moved,legacy M4 facade
-overall_run/src/legacy/m4_v1_screening.py,moved,legacy screening audit
-overall_run/src/legacy/m4_v1_evaluation.py,moved,legacy evaluation audit
-overall_run/config/scientific.yaml,modified,M4 V2 configuration and evaluation switch
-overall_run/src/config.py,modified,strict M4 validation and authoritative manifest
-overall_run/src/pipeline.py,modified,retain M3 gates then call formal M4 stage
-ranking_contract.py,modified,M4 V2 ranking identity and tie-break
-overall_run/tests/m4/,added,70 M4 contract formula lane ranking and isolation tests
-overall_run/tests/m2/test_m2_v2_integration.py,modified,real M3 freeze gate assertion
-overall_run/tests/m3/test_compatibility_and_gates.py,modified,legacy M4 retirement assertion
-overall_run/tests/test_m2_m4_contract.py,modified,legacy M4 retirement assertion
-README.md,modified,current M4 engineering and formal status
-overall_run/README.md,modified,current M4 boundary and verification
-.gitignore,modified,local M4 output and evaluation directories
-reports/m4_v2/,added,M4 implementation contract evidence tests rerun and cleanup reports
+path,closure_change,role
+README.md,modified,repository status and runnable verification commands
+overall_run/README.md,modified,M4 integration and formal blocker status
+ranking_contract.py,modified,authoritative-order prefix builder
+overall_run/src/ranking_contract.py,modified,shared prefix API export
+overall_run/src/config.py,modified,M4 validation authoritative code and legacy audit registry
+overall_run/src/pipeline.py,modified,M4 formal stage evaluation root and finalization
+overall_run/src/pipeline_finalize.py,modified,remove unconditional historical mismatch
+overall_run/src/pipeline_parameters.py,modified,M4 V2 risk and draw-pairing provenance
+overall_run/src/m4/__init__.py,modified,M4 publication status API exports
+overall_run/src/m4/contracts.py,modified,publication evaluation and formal status contracts
+overall_run/src/m4/ranking.py,modified,one five-key authoritative sort
+overall_run/src/m4/status.py,added,explicit result status priority
+overall_run/src/m4/publication.py,added,multi-condition publication gate
+overall_run/src/m4/output.py,modified,bundle-level staging hash and publication
+overall_run/src/m4/evaluation.py,modified,unique evaluation config path and failure status
+overall_run/src/m4/pipeline.py,modified,status publication output freeze and evaluation wiring
+overall_run/src/legacy/m4_v1_api.py,modified,explicit not-formal marker
+overall_run/src/legacy/m4_v1_screening.py,modified,explicit not-formal marker
+overall_run/src/legacy/m4_v1_evaluation.py,modified,explicit not-formal marker
+overall_run/tests/m4/test_evaluation.py,modified,evaluation config path coverage
+overall_run/tests/m4/test_ranking_pipeline.py,modified,authoritative pre-sort fixture
+overall_run/tests/m4/test_integration_closure.py,added,closure contract tests
+reports/m4_v2/M4_V2_INTEGRATION_CLOSURE_BASELINE.md,added,pre-edit repository baseline
+reports/m4_v2/M4_V2_INTEGRATION_CLOSURE_REPORT.md,added,final integration result
+reports/m4_v2/M4_V2_INTEGRATION_TEST_REPORT.md,added,final verification evidence
+reports/m4_v2/M4_V2_FINAL_FILE_STATUS.csv,added,final path classification
+reports/m4_v2/M4_V2_FINAL_RERUN_DECISION.md,added,final rerun boundary
+overall_run/config/scientific.yaml,verified_no_change,already contained strict M4 V2 configuration
+reports/m4_v2/M4_V2_DEPENDENCY_MAP.csv,modified,final active-versus-legacy dependency classification
+reports/m4_v2/M4_V2_MIGRATION_PLAN.md,modified,historical plan marked superseded by closure

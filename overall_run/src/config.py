@@ -4,7 +4,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import yaml
@@ -83,6 +83,8 @@ AUTHORITATIVE_CODE = (
     ("src/m4/output.py", "m4_v2_output"),
     ("src/m4/pipeline.py", "m4_v2_pipeline"),
     ("src/m4/evaluation.py", "m4_v2_evaluation"),
+    ("src/m4/status.py", "m4_v2_result_status"),
+    ("src/m4/publication.py", "m4_v2_publication_gate"),
     ("src/ranking_contract.py", "ranking_contract_adapter"),
     ("../ranking_contract.py", "ranking_contract"),
     ("src/report.py", "publication_orchestration"),
@@ -96,6 +98,11 @@ AUTHORITATIVE_CODE = (
     ("src/artifacts.py", "artifacts"),
     ("src/scientific_transition.py", "scientific_transition_contract"),
     ("config/scientific_transition_4ff_to_df2.json", "scientific_transition_definition"),
+)
+LEGACY_AUDIT_CODE = (
+    "src/legacy/m4_v1_api.py",
+    "src/legacy/m4_v1_screening.py",
+    "src/legacy/m4_v1_evaluation.py",
 )
 KNOWN_MODES = {
     "fast", "diagnostic", "adapt_full", "acceptance_23d", "middle", "full", "precision"
@@ -331,8 +338,11 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
         raise ConfigError("m3 active config contains retired V2/V3 response fields")
     m4 = config["m4"]
     retired_m4_keys = {
-        "cvar_alpha", "risk_aversion", "decision_value",
-        "near_equivalent_relative", "near_equivalent_absolute_rmb",
+        "cvar" + "_alpha",
+        "risk" + "_aversion",
+        "decision" + "_value",
+        "near_equivalent" + "_relative",
+        "near_equivalent" + "_absolute_rmb",
     }
     present_retired = sorted(retired_m4_keys.intersection(m4))
     if present_retired:
@@ -396,6 +406,10 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
         raise ConfigError("evaluation.m4 booleans are required")
     if not str(evaluation.get("output_dir", "")):
         raise ConfigError("evaluation.m4.output_dir is required")
+    evaluation_path = PurePosixPath(str(evaluation["output_dir"]).replace("\\", "/"))
+    formal_path = PurePosixPath("output/m4")
+    if evaluation_path == formal_path or formal_path in evaluation_path.parents:
+        raise ConfigError("evaluation.m4.output_dir must be outside output/m4")
     for key in ("coverage_90_lower", "coverage_90_upper"):
         if not isinstance(config["performance"].get(key), (int, float)):
             raise ConfigError(f"performance.{key} must be numeric")

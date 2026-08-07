@@ -13,9 +13,13 @@ M3_FORMAL_LIBRARY_REQUIRED_NOW = NO_NOT_AUTHORIZED
 M4_SYNTHETIC_RERUN_REQUIRED = NO_TESTS_PASS
 GLOBAL_RERUN_REQUIRED = NO
 GLOBAL_RERUN_ALLOWED = NO
+
+FAST_RUN_REQUIRED_NOW = NO
+MIDDLE_RUN_REQUIRED = NO
+FULL_RUN_REQUIRED = NO
 ```
 
-Formal M4 execution becomes meaningful only after PRE R3 lineage is available
-in the consumed bundle, M2 valuation is frozen, M3 parameters are frozen, the
-formal M3 response library is generated, and a formal stage mapping exists.
-None of those later actions was authorized in this task.
+Formal M4 execution remains blocked until the consumed bundle supplies the
+required PRE R3 evidence lineage, M2 valuation is frozen, M3 parameters are
+frozen, the formal M3 library is READY, and required formal stage/opportunity
+contracts exist. This closure does not authorize those upstream actions.

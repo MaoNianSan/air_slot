@@ -189,6 +189,7 @@ class M4EpisodeDecision:
     status_reason_codes: tuple[str, ...]
     test_only: bool
     publication_allowed: bool
+    publication_reason_codes: tuple[str, ...]
     candidate_counts: Mapping[str, int]
     top1_action_id: str | None
     top1_risk_score: float | None
@@ -218,6 +219,11 @@ class M4FormalArtifact:
     manifest: Mapping[str, Any]
     test_only: bool
     publication_allowed: bool
+    formal_status: str
+    publication_reason_codes: tuple[str, ...]
+    evaluation_enabled: bool
+    evaluation_status: str
+    evaluation_result: M4EvaluationResult | None
     output_contract_version: str = M4_OUTPUT_CONTRACT_VERSION
 
 
@@ -236,7 +242,15 @@ class M4EvaluationResult:
     checks: Mapping[str, bool]
     metrics: Mapping[str, float | int | str | bool | None]
     passed: bool
+    status: str
     output_path: str | None = None
+    error: str | None = None
+
+
+@dataclass(frozen=True)
+class PublicationGateResult:
+    allowed: bool
+    reason_codes: tuple[str, ...]
 
 
 __all__ = [
@@ -262,5 +276,6 @@ __all__ = [
     "M4UpstreamBlocked",
     "OutcomeCoverage",
     "ParameterStatus",
+    "PublicationGateResult",
     "REASON_CODES",
 ]

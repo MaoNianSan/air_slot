@@ -12,7 +12,8 @@ from .opportunity import OpportunityResult, evaluate_opportunity
 from .output import episode_decisions_frame, write_formal_artifact
 from .pipeline import run_m4, run_m4_formal_stage, run_m4_synthetic_integration
 from .post_loss import PostLossSamples, calculate_post_loss
-from .ranking import action_evaluations_frame, build_authoritative_ranking
+from .publication import evaluate_publication_gate
+from .ranking import M4_RANKING_TIE_BREAK, action_evaluations_frame, build_authoritative_ranking
 from .risk import (
     normalize_weights,
     risk_score,
@@ -24,6 +25,7 @@ from .risk import (
 )
 from .rolling import compare_rolling_rankings
 from .stage_adapter import StageCompatibility, evaluate_stage
+from .status import determine_result_status
 
 
 def _legacy_retired(*args: object, **kwargs: object):
@@ -41,6 +43,7 @@ screen_physical_actions = _legacy_retired
 __all__ = [
     "OpportunityResult",
     "PostLossSamples",
+    "M4_RANKING_TIE_BREAK",
     "REQUIRED_EVIDENCE_BY_ACTION",
     "StageCompatibility",
     "action_evaluations_frame",
@@ -54,6 +57,7 @@ __all__ = [
     "evaluate_frozen_artifact",
     "evaluate_m4",
     "evaluate_opportunity",
+    "evaluate_publication_gate",
     "evaluate_stage",
     "fit_m4",
     "formal_m2_blockers",
@@ -65,6 +69,7 @@ __all__ = [
     "run_m4_synthetic_integration",
     "run_optional_evaluation",
     "screen_physical_actions",
+    "determine_result_status",
     "validate_m2_inputs",
     "validate_m3_artifact",
     "validate_risk_config",

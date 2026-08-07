@@ -14,6 +14,7 @@ from .contracts import (
     COST_CHANNELS,
     DecisionLane,
     M4ActionEvaluation,
+    M4ContractError,
     M4EpisodeDecision,
     M4FormalArtifact,
     M4InputBundle,
@@ -29,9 +30,18 @@ from .lane_assignment import assign_decision_lane
 from .opportunity import evaluate_opportunity
 from .output import episode_decisions_frame, write_formal_artifact
 from .post_loss import PostLossSamples, calculate_post_loss
-from .ranking import action_evaluations_frame, assign_lane_ranks, build_authoritative_ranking
+from .ranking import (
+    M4_RANKING_TIE_BREAK,
+    action_evaluations_frame,
+    assign_lane_ranks,
+    build_authoritative_ranking,
+)
+from .publication import M4_PUBLICATION_GATE_VERSION, evaluate_publication_gate
 from .risk import risk_score, weighted_mean, weighted_positive_probability
 from .stage_adapter import evaluate_stage
+from .status import determine_result_status
+from .evaluation import run_optional_evaluation
+from ..ranking_contract import RANKING_CONTRACT_VERSION
 
 
 def _risk_config(config: Mapping[str, object]) -> M4RiskConfig:
@@ -160,17 +170,8 @@ def run_m4(
         lane.value: sum(item.decision_lane is lane for item in ranked_evaluations)
         for lane in DecisionLane
     }
-    formal = action_frame[action_frame["decision_lane"].eq(DecisionLane.FORMAL.value)]
-    if bundle.test_only:
-        status = M4ResultStatus.TEST_ONLY_VALID
-    elif len(formal) == 1 and formal.iloc[0]["action_id"] == "A00":
-        status = M4ResultStatus.A00_ONLY
-    elif formal.empty and candidate_counts["CONDITIONAL"]:
-        status = M4ResultStatus.CONDITIONAL_ONLY
-    elif formal.empty and candidate_counts["SCENARIO"]:
-        status = M4ResultStatus.SCENARIO_ONLY
-    else:
-        status = M4ResultStatus.VALID
+    status = determine_result_status(ranked_evaluations, test_only=bundle.test_only)
+    publication = evaluate_publication_gate(bundle, ranked_evaluations, status)
 
     top1 = full_ranking.iloc[0] if not full_ranking.empty else None
     top2_gap = (
@@ -195,7 +196,8 @@ def run_m4(
         result_status=status,
         status_reason_codes=tuple(summarize_reason_codes(ranked_evaluations)),
         test_only=bundle.test_only,
-        publication_allowed=bool(bundle.formal_mode and not bundle.test_only),
+        publication_allowed=publication.allowed,
+        publication_reason_codes=publication.reason_codes,
         candidate_counts=candidate_counts,
         top1_action_id=str(top1["action_id"]) if top1 is not None else None,
         top1_risk_score=float(top1["score"]) if top1 is not None else None,
@@ -231,22 +233,29 @@ def run_m4(
         "m4_contract_version": M4_CONTRACT_VERSION,
         "draw_pairing_version": M4_DRAW_PAIRING_VERSION,
         "risk_version": M4_RISK_VERSION,
+        "ranking_contract_version": RANKING_CONTRACT_VERSION,
+        "publication_gate_version": M4_PUBLICATION_GATE_VERSION,
         "risk": {
             "expected_weight": risk.expected_weight,
             "cvar_weight": risk.cvar_weight,
             "cvar_alpha": risk.cvar_alpha,
         },
         "ranking_depths": [1, 2, 3, 5],
-        "tie_break": [
-            "risk_score",
-            "expected_total_post_loss_rmb",
-            "cvar90_post_loss_rmb",
-            "expected_implementation_cost_rmb",
-            "action_id",
-        ],
-        "evaluation_enabled": bool(dict(config.get("evaluation", {})).get("m4", {}).get("enabled", False)),
+        "tie_break": list(M4_RANKING_TIE_BREAK),
         "test_only": bundle.test_only,
-        "publication_allowed": bool(bundle.formal_mode and not bundle.test_only),
+        "m4_formal_status": (
+            "TEST_ONLY"
+            if bundle.test_only
+            else status.value
+            if status in {
+                M4ResultStatus.CONTRACT_ERROR,
+                M4ResultStatus.BLOCKED_BY_UPSTREAM,
+                M4ResultStatus.ABSTAIN,
+            }
+            else "PASS"
+        ),
+        "publication_allowed": publication.allowed,
+        "publication_reason_codes": list(publication.reason_codes),
         "pre_evidence_lineage_hash": bundle.evidence_context.lineage_hash,
     }
     return M4FormalArtifact(
@@ -261,7 +270,12 @@ def run_m4(
         subitem_audit_frame=subitem_audit,
         manifest=manifest,
         test_only=bundle.test_only,
-        publication_allowed=bool(bundle.formal_mode and not bundle.test_only),
+        publication_allowed=publication.allowed,
+        formal_status=str(manifest["m4_formal_status"]),
+        publication_reason_codes=publication.reason_codes,
+        evaluation_enabled=False,
+        evaluation_status="NOT_RUN",
+        evaluation_result=None,
     )
 
 
@@ -300,6 +314,7 @@ def run_m4_formal_stage(
     stage_mapping: Mapping[str, str],
     stage_mapping_version: str,
     output_dir: Path | None = None,
+    project_root: Path | None = None,
 ) -> M4FormalArtifact:
     bundle = adapt_m4_inputs(
         m2_input_bundle,
@@ -311,6 +326,22 @@ def run_m4_formal_stage(
         stage_mapping_test_only=False,
     )
     artifact = run_m4(bundle, config)
-    if output_dir is not None:
-        write_formal_artifact(artifact, output_dir)
-    return artifact
+    if output_dir is None:
+        raise M4ContractError("M4_FORMAL_OUTPUT_DIRECTORY_REQUIRED")
+    evaluation_cfg = dict(dict(config.get("evaluation", {})).get("m4", {}))
+    evaluation_enabled = bool(evaluation_cfg.get("enabled", False))
+    if evaluation_enabled and project_root is None:
+        raise M4ContractError("M4_EVALUATION_PROJECT_ROOT_REQUIRED")
+    write_formal_artifact(artifact, output_dir)
+    evaluation_result = run_optional_evaluation(
+        artifact,
+        config,
+        project_root=(project_root or output_dir.parent),
+        formal_output_dir=output_dir,
+    )
+    return replace(
+        artifact,
+        evaluation_enabled=evaluation_enabled,
+        evaluation_status=(evaluation_result.status if evaluation_result is not None else "NOT_RUN"),
+        evaluation_result=evaluation_result,
+    )

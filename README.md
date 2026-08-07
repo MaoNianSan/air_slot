@@ -36,9 +36,20 @@ under `overall_run/src/legacy/`. M4 V2 now consumes M2 V2 sample losses and the
 M3 V4 atomic-subitem artifact, preserves PRE R2/R3 evidence distinctions,
 uses stable shared draw indices and weighted Mean-CVaR, assigns explicit
 decision lanes, and derives Ranking@1/@2/@3/@5 from one authoritative sort.
-Only test-only synthetic integration has run. Formal M3 response and cost
-parameters remain unfrozen, so the formal pipeline still stops at
-`M3_PARAMETER_NOT_FROZEN`.
+The repository integration now includes strict M4 V2 configuration,
+authoritative implementation hashing, bundle-level artifact publication,
+an isolated optional evaluation interface, explicit result status priority,
+and a multi-condition publication gate. Only synthetic fixture integration has
+run. Formal M3 response and cost parameters remain unfrozen, so the formal
+pipeline still stops at `M3_PARAMETER_NOT_FROZEN`.
+
+```text
+M4_CONTRACT_IMPLEMENTATION = READY
+M4_V2_REPOSITORY_INTEGRATION = PASS
+M4_V2_SYNTHETIC_INTEGRATION = PASS
+M4_FORMAL_EXECUTION = BLOCKED_BY_UPSTREAM
+GLOBAL_RERUN_ALLOWED = NO
+```
 
 ## Boundaries
 
@@ -51,6 +62,7 @@ parameters remain unfrozen, so the formal pipeline still stops at
 ## Verification
 
 ```powershell
+$env:PYTHONPATH='overall_run'
 D:/Python311/python.exe -m compileall -q pre/src pre/tests pre/tools
 D:/Python311/python.exe -m pytest -q pre/tests
 D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests

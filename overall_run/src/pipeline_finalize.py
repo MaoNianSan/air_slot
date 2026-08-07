@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import NoReturn
-
 from .failures import M4ContractMismatch
+from .m4.contracts import M4FormalArtifact
 
 
-def finalize_experiment(*args: object, **kwargs: object) -> NoReturn:
-    del args, kwargs
-    raise M4ContractMismatch(
-        "M4_CONTRACT_MISMATCH: global finalization awaits the M4 atomic-subitem migration"
-    )
+def finalize_experiment(artifact: M4FormalArtifact) -> M4FormalArtifact:
+    if not isinstance(artifact, M4FormalArtifact):
+        raise M4ContractMismatch("M4_FINALIZATION_ARTIFACT_REQUIRED")
+    if artifact.test_only:
+        raise M4ContractMismatch("M4_TEST_ONLY_FINALIZATION_FORBIDDEN")
+    return artifact

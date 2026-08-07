@@ -62,18 +62,24 @@ or fall back to channel arrays. PRE R2 is compatibility-only, PRE R3 requires
 registry lineage, stage and opportunity contracts are explicit, and resource
 availability is never inferred from pressure proxies. Test-only integration
 exercises stable shared draw indexing, nine-subitem post loss, weighted
-Mean-CVaR, four decision lanes, and Ranking@1/@2/@3/@5. Global execution still
-stops at `M3_PARAMETER_NOT_FROZEN`. Engineering implementation does not imply
-scientific or production readiness.
+Mean-CVaR, four decision lanes, and Ranking@1/@2/@3/@5. The formal integration
+uses one authoritative order, bundle-level staging with manifest-last
+publication, a read-only evaluation switch under `evaluation.m4`, explicit
+formal/evaluation statuses, and a multi-condition publication gate. Global
+execution still stops at `M3_PARAMETER_NOT_FROZEN`. Engineering implementation
+does not imply scientific or production readiness.
 
 ```text
 M3_CONTRACT_STATUS = PASS
 M3_ACTION_LIBRARY_COUNT = 21
 M3_PARAMETER_FREEZE_STATUS = NOT_YET_DONE
 M3_FORMAL_LIBRARY_STATUS = NOT_YET_RUN
-M4_V2_ENGINEERING_STATUS = PASS
+M4_CONTRACT_IMPLEMENTATION = READY
+M4_V2_REPOSITORY_INTEGRATION = PASS
 M4_V2_SYNTHETIC_INTEGRATION = PASS
-M4_V2_FORMAL_STATUS = BLOCKED_BY_UPSTREAM
+M4_FORMAL_EXECUTION = BLOCKED_BY_UPSTREAM
+M4_EVALUATION_DEFAULT = DISABLED
+GLOBAL_RERUN_ALLOWED = NO
 ```
 
 `A51`, `A52`, and `A53` are partial-support aircraft recovery actions with no
@@ -85,6 +91,7 @@ under `src/legacy/`. Retired M4 APIs raise `M4_LEGACY_CONTRACT_RETIRED`.
 ## Verification
 
 ```powershell
+$env:PYTHONPATH='overall_run'
 D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests
 D:/Python311/python.exe -m pytest -q overall_run/tests/m1
 D:/Python311/python.exe -m pytest -q overall_run/tests/m2

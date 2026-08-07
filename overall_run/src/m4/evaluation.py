@@ -46,11 +46,12 @@ def evaluate_frozen_artifact(
             "ranking_row_count": len(artifact.ranking_prefix_frame),
         },
         passed=all(checks.values()),
+        status="PASS" if all(checks.values()) else "FAIL",
         output_path=str(evaluation_dir) if evaluation_dir is not None else None,
     )
     if evaluation_dir is not None:
         evaluation_dir.mkdir(parents=True, exist_ok=True)
-        (evaluation_dir / "m4_evaluation.json").write_text(
+        (evaluation_dir / "m4_v2_evaluation.json").write_text(
             json.dumps(
                 {"checks": checks, "metrics": result.metrics, "passed": result.passed},
                 ensure_ascii=True,
@@ -68,7 +69,8 @@ def run_optional_evaluation(
     project_root: Path,
     formal_output_dir: Path | None = None,
 ) -> M4EvaluationResult | None:
-    m4 = dict(config.get("m4", {}))
+    evaluation = dict(config.get("evaluation", {}))
+    m4 = dict(evaluation.get("m4", {}))
     if not bool(m4.get("enabled", False)):
         return None
     output_dir = project_root / str(m4.get("output_dir", "output/evaluation/m4"))
@@ -78,12 +80,14 @@ def run_optional_evaluation(
             evaluation_dir=output_dir,
             formal_output_dir=formal_output_dir,
         )
-    except Exception:
+    except Exception as exc:
         if bool(m4.get("fail_on_error", False)):
             raise
         return M4EvaluationResult(
             checks={"evaluation_completed": False},
-            metrics={},
+            metrics={"error_type": type(exc).__name__},
             passed=False,
+            status="FAIL",
             output_path=str(output_dir),
+            error=str(exc),
         )

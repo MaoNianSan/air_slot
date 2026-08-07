@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 LEGACY_AUDIT_ONLY = True
+LEGACY_M4_NOT_FORMAL = True
 
 from .m4_v1_evaluation import MAXIMUM_RANKING_DEPTH, RANKING_DEPTHS, derive_ranking_views, evaluate_m4
 from .m4_v1_screening import (

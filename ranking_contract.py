@@ -25,7 +25,45 @@ def build_ranking_prefixes(
     action_library_version: str = "M3_ATOMIC_ACTION_LIBRARY_V1",
     ranking_contract_version: str = RANKING_CONTRACT_VERSION,
 ) -> tuple[pd.DataFrame, dict[int, pd.DataFrame]]:
-    """Materialize fixed-width prefixes from one authoritative full sort."""
+    """Materialize prefixes from rankings carrying an explicit rank column."""
+    return _build_ranking_prefixes(
+        episode_universe,
+        full_ranking,
+        depths,
+        action_library_version=action_library_version,
+        ranking_contract_version=ranking_contract_version,
+        preserve_authoritative_order=False,
+    )
+
+
+def build_ranking_prefixes_from_authoritative_order(
+    episode_universe: pd.DataFrame,
+    authoritative_ranking: pd.DataFrame,
+    depths: Iterable[int] = RANKING_DEPTHS,
+    *,
+    action_library_version: str = "M3_ATOMIC_ACTION_LIBRARY_V1",
+    ranking_contract_version: str = RANKING_CONTRACT_VERSION,
+) -> tuple[pd.DataFrame, dict[int, pd.DataFrame]]:
+    """Build prefixes without changing the supplied authoritative row order."""
+    return _build_ranking_prefixes(
+        episode_universe,
+        authoritative_ranking,
+        depths,
+        action_library_version=action_library_version,
+        ranking_contract_version=ranking_contract_version,
+        preserve_authoritative_order=True,
+    )
+
+
+def _build_ranking_prefixes(
+    episode_universe: pd.DataFrame,
+    full_ranking: pd.DataFrame,
+    depths: Iterable[int],
+    *,
+    action_library_version: str,
+    ranking_contract_version: str,
+    preserve_authoritative_order: bool,
+) -> tuple[pd.DataFrame, dict[int, pd.DataFrame]]:
     depths = tuple(int(value) for value in depths)
     if depths != RANKING_DEPTHS:
         raise ValueError("RANKING_DEPTHS_MUST_BE_1_2_3_5")
@@ -77,11 +115,21 @@ def build_ranking_prefixes(
         ].iloc[0]
         key = (universe_row.episode_id, universe_row.snapshot_id)
         group = ranking_groups.get(key)
-        ordered = (
-            group.sort_values(rank_column, kind="mergesort").reset_index(drop=True)
-            if group is not None
-            else pd.DataFrame()
-        )
+        ordered = group.reset_index(drop=True) if group is not None else pd.DataFrame()
+        if not ordered.empty:
+            if preserve_authoritative_order:
+                supplied_ranks = pd.to_numeric(ordered[rank_column], errors="coerce")
+                expected_ranks = pd.Series(
+                    range(1, len(ordered) + 1), dtype="int64"
+                )
+                if supplied_ranks.isna().any() or not supplied_ranks.reset_index(
+                    drop=True
+                ).astype("int64").equals(expected_ranks):
+                    raise ValueError(f"RANKING_AUTHORITATIVE_ORDER_INVALID:{key}")
+            else:
+                ordered = ordered.sort_values(rank_column, kind="mergesort").reset_index(
+                    drop=True
+                )
         if not ordered.empty and ordered["action_id"].astype("string").duplicated().any():
             raise ValueError(f"RANKING_DUPLICATE_ACTION:{key}")
         if not ordered.empty and int(ordered["action_id"].astype("string").eq("A00").sum()) > 1:
