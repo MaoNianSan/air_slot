@@ -14,12 +14,30 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.config import ConfigError, load_config
-pytest.skip(
-    "M3_CONTRACT_MISMATCH: retired M2-to-M4 scalar contract is not a V2 acceptance path",
-    allow_module_level=True,
-)
-from src.m3 import generate_m3_library, load_actions
+from src.failures import M4ContractMismatch
+from src.m3 import generate_test_fixture_library, load_m3_contract
+from src.legacy.m3_v3_audit import generate_m3_library, load_actions
 from src.m4 import evaluate_m4, fit_m4, screen_physical_actions
+
+
+legacy_scalar_contract = pytest.mark.skip(reason=
+    "M3_CONTRACT_MISMATCH: retired M2-to-M4 scalar contract is not a V2 acceptance path",
+)
+
+
+def test_old_m4_rejects_v4_artifact_and_catalog() -> None:
+    cfg = load_config(ROOT, mode="fast")
+    contract = load_m3_contract(cfg.scientific)
+    artifact = generate_test_fixture_library(
+        contract,
+        n_draws=16,
+        base_seed=20260806,
+        m2_contract=cfg.scientific["m2"],
+    )
+    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+        fit_m4(cfg.scientific, response_library=artifact)
+    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+        screen_physical_actions(None, None, dict(contract.catalog), np.array([], dtype=bool))
 
 
 def _frame(n: int = 240) -> pd.DataFrame:
@@ -90,6 +108,7 @@ def _artifacts(sample_count: int = 128):
     return cfg, train, train_samples, m2, actions, m3, m4
 
 
+@legacy_scalar_contract
 def test_graph_edges_exclude_r_to_f_and_order_is_invariant() -> None:
     cfg, train, samples, m2, *_ = _artifacts()
     assert "R_to_F" not in m2.graph_edges
@@ -115,6 +134,7 @@ def test_graph_edges_exclude_r_to_f_and_order_is_invariant() -> None:
             )
 
 
+@legacy_scalar_contract
 def test_graph_edge_coefficient_change_is_not_order_change() -> None:
     cfg, train, _, m2, *_ = _artifacts()
     baseline = m2.exposures(train)
@@ -130,6 +150,7 @@ def test_graph_edge_coefficient_change_is_not_order_change() -> None:
     assert not np.allclose(baseline["final"]["P"], changed["final"]["P"])
 
 
+@legacy_scalar_contract
 def test_synchronous_base_semantics_differs_from_sequential_accumulation() -> None:
     _, train, _, m2, *_ = _artifacts()
     exposure = m2.exposures(train)
@@ -141,6 +162,7 @@ def test_synchronous_base_semantics_differs_from_sequential_accumulation() -> No
     assert not np.allclose(exposure["final"]["R"], sequential["R"])
 
 
+@legacy_scalar_contract
 def test_m2_quantity_unit_and_rmb_identity() -> None:
     _, train, samples, m2, *_ = _artifacts()
     result = m2.reconstruct(train, samples)
@@ -156,6 +178,7 @@ def test_m2_quantity_unit_and_rmb_identity() -> None:
     assert np.allclose(result["total_cost_rmb"], expected, equal_nan=True)
 
 
+@legacy_scalar_contract
 def test_m3_is_reproducible_and_episode_independent() -> None:
     cfg = load_config(ROOT, mode="fast")
     actions = load_actions(cfg.scientific)
@@ -173,6 +196,7 @@ def test_m3_is_reproducible_and_episode_independent() -> None:
     assert np.all(first.implementation_costs_rmb["A00"] == 0)
 
 
+@legacy_scalar_contract
 def test_m4_a00_score_decomposition_and_unsupported_rows_are_retained() -> None:
     cfg, train, _, m2, actions, m3, m4 = _artifacts()
     evaluation = train.iloc[:2].copy().reset_index(drop=True)
@@ -214,6 +238,7 @@ def test_m4_a00_score_decomposition_and_unsupported_rows_are_retained() -> None:
     assert physical.audit[physical.audit["action_id"].eq("A00")]["physical_feasible"].all()
 
 
+@legacy_scalar_contract
 def test_missing_capacity_span_rejects_non_null_capacity_action() -> None:
     cfg = load_config(ROOT, mode="fast")
     actions = load_actions(cfg.scientific)

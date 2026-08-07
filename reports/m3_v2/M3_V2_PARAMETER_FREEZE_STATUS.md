@@ -3,7 +3,7 @@
 Date: 2026-08-06
 
 ```text
-M3_PARAMETER_FREEZE_STATUS = NOT_READY
+M3_PARAMETER_FREEZE_STATUS = NOT_YET_DONE
 M3_FORMAL_LIBRARY_STATUS = NOT_YET_RUN
 M3_PARAMETER_NOT_FROZEN = ACTIVE_GATE
 SCIENTIFIC_APPROVED = false
@@ -36,5 +36,7 @@ cost_cv
 ```
 
 Their status is `NOT_CONFIGURED`. No value was copied from the V2/V3 response library, and synthetic fixture values cannot enter the formal generator.
+
+A51-A53 follow the same rule: their catalog and footprints are present, but response means, concentrations, secondary multipliers, failure probabilities, F/P/R costs, and cost variation remain unconfigured.
 
 Parameter calibration, cost calibration, formal library generation, M4 integration, and any full-chain run remain later stages requiring a separate instruction.

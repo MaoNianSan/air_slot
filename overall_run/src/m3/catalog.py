@@ -74,8 +74,14 @@ def load_m3_contract(source: Mapping[str, Any] | None = None) -> M3ContractBundl
     for raw in actions:
         action_id = str(raw["action_id"])
         action_name = str(raw["action_name"])
-        upper_name = action_name.upper()
-        if any(token in upper_name for token in FORBIDDEN_COMBINATION_TOKENS):
+        identity_text = " ".join((action_name, str(raw["action_family"]))).upper()
+        mechanism_text = str(raw["mechanism"]).upper()
+        mechanism_tokens = tuple(
+            token for token in FORBIDDEN_COMBINATION_TOKENS if token != "WITH"
+        )
+        if any(token in identity_text for token in FORBIDDEN_COMBINATION_TOKENS) or any(
+            token in mechanism_text for token in mechanism_tokens
+        ):
             raise ValueError(f"M3_CONTRACT_MISMATCH:combined action:{action_id}")
         parameter_status = ParameterStatus(str(raw["parameter_status"]))
         catalog[action_id] = ActionCatalogEntry(
