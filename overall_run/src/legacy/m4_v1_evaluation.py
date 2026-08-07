@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+LEGACY_AUDIT_ONLY = True
+
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
-from .m4_screening import CHANNELS, M4Artifact, _reject_v4_m3
+from .m4_v1_screening import CHANNELS, M4Artifact, _reject_v4_m3
 
 RANKING_DEPTHS = (1, 2, 3, 5)
 MAXIMUM_RANKING_DEPTH = 5

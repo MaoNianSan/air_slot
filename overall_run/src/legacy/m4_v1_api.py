@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from .m4_evaluation import MAXIMUM_RANKING_DEPTH, RANKING_DEPTHS, derive_ranking_views, evaluate_m4
-from .m4_screening import (
+LEGACY_AUDIT_ONLY = True
+
+from .m4_v1_evaluation import MAXIMUM_RANKING_DEPTH, RANKING_DEPTHS, derive_ranking_views, evaluate_m4
+from .m4_v1_screening import (
     CHANNELS,
     M4Artifact,
     M4UnavailableArtifact,

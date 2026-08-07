@@ -66,9 +66,23 @@ AUTHORITATIVE_CODE = (
     ("src/m3/artifact.py", "m3_v4_artifact"),
     ("src/m3/compatibility.py", "m3_v4_compatibility"),
     ("src/m3/evaluation.py", "m3_v4_evaluation"),
-    ("src/m4.py", "m4_public_api"),
-    ("src/m4_screening.py", "m4_physical_screening"),
-    ("src/m4_evaluation.py", "m4_risk_evaluation"),
+    ("src/m4/__init__.py", "m4_v2_public_api"),
+    ("src/m4/contracts.py", "m4_v2_contracts"),
+    ("src/m4/compatibility.py", "m4_v2_compatibility"),
+    ("src/m4/input_adapter.py", "m4_v2_input_adapter"),
+    ("src/m4/evidence.py", "m4_v2_pre_evidence"),
+    ("src/m4/stage_adapter.py", "m4_v2_stage_adapter"),
+    ("src/m4/opportunity.py", "m4_v2_opportunity"),
+    ("src/m4/draw_pairing.py", "m4_v2_draw_pairing"),
+    ("src/m4/post_loss.py", "m4_v2_post_loss"),
+    ("src/m4/risk.py", "m4_v2_weighted_risk"),
+    ("src/m4/lane_assignment.py", "m4_v2_decision_lanes"),
+    ("src/m4/ranking.py", "m4_v2_ranking"),
+    ("src/m4/rolling.py", "m4_v2_rolling"),
+    ("src/m4/explanation.py", "m4_v2_explanation"),
+    ("src/m4/output.py", "m4_v2_output"),
+    ("src/m4/pipeline.py", "m4_v2_pipeline"),
+    ("src/m4/evaluation.py", "m4_v2_evaluation"),
     ("src/ranking_contract.py", "ranking_contract_adapter"),
     ("../ranking_contract.py", "ranking_contract"),
     ("src/report.py", "publication_orchestration"),
@@ -241,7 +255,7 @@ def load_config(
 
 
 def _validate_config(config: dict[str, Any], mode: str) -> None:
-    required_top = ("contract_version", "project", "paths", "cohort", "m1", "m2", "m3", "m4", "modes", "performance", "warnings", "gates")
+    required_top = ("contract_version", "project", "paths", "cohort", "m1", "m2", "m3", "m4", "evaluation", "modes", "performance", "warnings", "gates")
     missing = [key for key in required_top if key not in config]
     if missing:
         raise ConfigError("Missing merged configuration keys: " + ",".join(missing))
@@ -315,10 +329,73 @@ def _validate_config(config: dict[str, Any], mode: str) -> None:
         for key in ("response_parameters", "response_parameter_version", "resource_profiles")
     ):
         raise ConfigError("m3 active config contains retired V2/V3 response fields")
-    decision_value = config["m4"].get("decision_value", {})
-    for key in ("burden_ratio_max", "positive_net_benefit_probability_min"):
-        if key not in decision_value:
-            raise ConfigError(f"m4.decision_value.{key} is required")
+    m4 = config["m4"]
+    retired_m4_keys = {
+        "cvar_alpha", "risk_aversion", "decision_value",
+        "near_equivalent_relative", "near_equivalent_absolute_rmb",
+    }
+    present_retired = sorted(retired_m4_keys.intersection(m4))
+    if present_retired:
+        raise ConfigError("m4 retired keys present: " + ",".join(present_retired))
+    if m4.get("identity") != "M4_CONTEXTUAL_RESIDUAL_RISK_V2":
+        raise ConfigError("m4.identity must select M4_CONTEXTUAL_RESIDUAL_RISK_V2")
+    if m4.get("action_scope") != "ATOMIC" or m4.get("combination_enabled") is not False:
+        raise ConfigError("m4 must use atomic actions with combinations disabled")
+    m4_input = m4.get("input", {})
+    required_m4_input = {
+        "required_pre_contract_id": "AIR_CHAIN_CORE_V2",
+        "formal_pre_schema_version": "air-chain-core-2.1",
+        "formal_pre_research_revision": "AIR_CHAIN_CORE_V2_R3",
+        "required_m2_contract": "EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2",
+        "required_m2_subitem_contract": "M2_NINE_SUBITEM_V1",
+        "required_m3_contract": "M3_RESPONSE_V4_ATOMIC_SUBITEM",
+        "required_m3_action_library": "M3_ATOMIC_ACTION_LIBRARY_V1",
+        "required_m3_response_contract": "M3_SUBITEM_RESPONSE_V1",
+    }
+    for key, expected in required_m4_input.items():
+        if m4_input.get(key) != expected:
+            raise ConfigError(f"m4.input.{key} must be {expected}")
+    if m4_input.get("supported_pre_schema_versions") != [
+        "air-chain-core-2.0", "air-chain-core-2.1"
+    ]:
+        raise ConfigError("m4.input.supported_pre_schema_versions must preserve R2/R3 order")
+    for section in ("evidence", "forbidden_inferences"):
+        values = m4.get(section, {})
+        if not values or any(value is not True for value in values.values()):
+            raise ConfigError(f"m4.{section} guards must all be true")
+    draw = m4.get("draw_pairing", {})
+    if draw != {
+        "mode": "STABLE_SHARED_DRAW_INDEX",
+        "include_episode_id": True,
+        "include_sample_id": True,
+        "include_snapshot_id": False,
+        "include_action_id": False,
+    }:
+        raise ConfigError("m4.draw_pairing contract mismatch")
+    opportunity = m4.get("opportunity", {})
+    if opportunity.get("mode") != "NOT_CONFIGURED" or opportunity.get("require_explicit_contract") is not True:
+        raise ConfigError("m4 opportunity must remain explicitly not configured")
+    risk = m4.get("risk", {})
+    expected_weight = float(risk.get("expected_weight", -1.0))
+    cvar_weight = float(risk.get("cvar_weight", -1.0))
+    cvar_alpha = float(risk.get("cvar_alpha", -1.0))
+    if expected_weight < 0.0 or cvar_weight < 0.0 or abs(expected_weight + cvar_weight - 1.0) > 1e-12:
+        raise ConfigError("m4 risk weights must be nonnegative and sum to one")
+    if not 0.0 < cvar_alpha < 1.0:
+        raise ConfigError("m4.risk.cvar_alpha must be in (0,1)")
+    ranking = m4.get("ranking", {})
+    if ranking.get("depths") != [1, 2, 3, 5]:
+        raise ConfigError("m4 ranking depths must be 1,2,3,5")
+    if ranking.get("include_A00") is not True or ranking.get("one_authoritative_sort") is not True or ranking.get("padding_mode") != "EXPLICIT_NULL":
+        raise ConfigError("m4 ranking contract mismatch")
+    output = m4.get("output", {})
+    if output.get("emit_episode_decision") is not True or output.get("emit_action_evaluation") is not True:
+        raise ConfigError("m4 formal outputs must remain enabled")
+    evaluation = config["evaluation"].get("m4", {})
+    if not isinstance(evaluation.get("enabled"), bool) or not isinstance(evaluation.get("fail_on_error"), bool):
+        raise ConfigError("evaluation.m4 booleans are required")
+    if not str(evaluation.get("output_dir", "")):
+        raise ConfigError("evaluation.m4.output_dir is required")
     for key in ("coverage_90_lower", "coverage_90_upper"):
         if not isinstance(config["performance"].get(key), (int, float)):
             raise ConfigError(f"performance.{key} must be numeric")

@@ -7,7 +7,7 @@ import pandas as pd
 
 
 RANKING_DEPTHS = (1, 2, 3, 5)
-RANKING_CONTRACT_VERSION = "M4_RANKING_1235_V1_PROVISIONAL"
+RANKING_CONTRACT_VERSION = "M4_RANKING_1235_V2"
 RANKING_REQUIRED_COLUMNS = (
     "episode_id", "snapshot_id", "ranking_k", "rank_position",
     "action_id", "action_family", "is_padding", "rank_status", "score",
@@ -22,7 +22,7 @@ def build_ranking_prefixes(
     full_ranking: pd.DataFrame,
     depths: Iterable[int] = RANKING_DEPTHS,
     *,
-    action_library_version: str = "M3_RESPONSE_V3_EXPANDED_PROVISIONAL",
+    action_library_version: str = "M3_ATOMIC_ACTION_LIBRARY_V1",
     ranking_contract_version: str = RANKING_CONTRACT_VERSION,
 ) -> tuple[pd.DataFrame, dict[int, pd.DataFrame]]:
     """Materialize fixed-width prefixes from one authoritative full sort."""
@@ -196,11 +196,21 @@ def full_ranking_from_scores(
         raise ValueError("RANKING_SCORE_INPUT_MISSING:" + ",".join(missing))
     frame = scores.copy()
     frame["score"] = pd.to_numeric(frame[score_column], errors="coerce")
-    if "priority" not in frame:
-        frame["priority"] = 0
+    if "cvar_residual" not in frame:
+        frame["cvar_residual"] = frame.get("cvar_component", np.nan)
+    if "expected_implementation_cost_rmb" not in frame:
+        frame["expected_implementation_cost_rmb"] = np.nan
     frame = frame.sort_values(
-        [*group_columns, "score", "expected_residual", "priority", "action_id"],
+        [
+            *group_columns,
+            "score",
+            "expected_residual",
+            "cvar_residual",
+            "expected_implementation_cost_rmb",
+            "action_id",
+        ],
         kind="mergesort",
+        na_position="last",
     )
     frame["rank"] = frame.groupby(list(group_columns), sort=False).cumcount() + 1
     return frame.reset_index(drop=True)

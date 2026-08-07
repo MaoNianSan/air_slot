@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+LEGACY_M4_NOT_FORMAL = True
+
 import json
 from typing import Any
 

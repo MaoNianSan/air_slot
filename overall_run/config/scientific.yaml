@@ -638,11 +638,56 @@ m3:
   base_seed: 20260718
   fixed_random_streams: true
 m4:
-  cvar_alpha: 0.9
-  risk_aversion: 0.25
-  near_equivalent_relative: 0.02
-  near_equivalent_absolute_rmb: 0.0
-  decision_value:
-    burden_ratio_max: 1.0
-    positive_net_benefit_probability_min: 0.6
-    zero_cost_epsilon: 1.0e-09
+  identity: M4_CONTEXTUAL_RESIDUAL_RISK_V2
+  action_scope: ATOMIC
+  combination_enabled: false
+  input:
+    required_pre_contract_id: AIR_CHAIN_CORE_V2
+    supported_pre_schema_versions:
+      - air-chain-core-2.0
+      - air-chain-core-2.1
+    formal_pre_schema_version: air-chain-core-2.1
+    formal_pre_research_revision: AIR_CHAIN_CORE_V2_R3
+    required_m2_contract: EPISODE_PRE_ACTION_LOSS_RECONSTRUCTION_V2
+    required_m2_subitem_contract: M2_NINE_SUBITEM_V1
+    required_m3_contract: M3_RESPONSE_V4_ATOMIC_SUBITEM
+    required_m3_action_library: M3_ATOMIC_ACTION_LIBRARY_V1
+    required_m3_response_contract: M3_SUBITEM_RESPONSE_V1
+  evidence:
+    proxy_must_be_explicit: true
+    missing_to_zero_forbidden: true
+    scenario_parameter_formal_forbidden: true
+    unsupported_formal_forbidden: true
+    external_standard_requires_assumption_match: true
+  forbidden_inferences:
+    flow_pressure_to_resource_availability: true
+    ground_occupancy_to_handler_availability: true
+    future_observed_chain_to_current_state: true
+    proxy_to_observed: true
+  draw_pairing:
+    mode: STABLE_SHARED_DRAW_INDEX
+    include_episode_id: true
+    include_sample_id: true
+    include_snapshot_id: false
+    include_action_id: false
+  opportunity:
+    mode: NOT_CONFIGURED
+    require_explicit_contract: true
+  risk:
+    expected_weight: 0.75
+    cvar_weight: 0.25
+    cvar_alpha: 0.90
+  ranking:
+    depths: [1, 2, 3, 5]
+    include_A00: true
+    one_authoritative_sort: true
+    padding_mode: EXPLICIT_NULL
+  output:
+    emit_episode_decision: true
+    emit_action_evaluation: true
+    emit_subitem_audit: false
+evaluation:
+  m4:
+    enabled: false
+    fail_on_error: false
+    output_dir: output/evaluation/m4

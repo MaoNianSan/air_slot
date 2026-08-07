@@ -39,4 +39,4 @@ Their status is `NOT_CONFIGURED`. No value was copied from the V2/V3 response li
 
 A51-A53 follow the same rule: their catalog and footprints are present, but response means, concentrations, secondary multipliers, failure probabilities, F/P/R costs, and cost variation remain unconfigured.
 
-Parameter calibration, cost calibration, formal library generation, M4 integration, and any full-chain run remain later stages requiring a separate instruction.
+Parameter calibration, cost calibration, formal library generation, and any formal full-chain run remain later stages requiring a separate instruction. M4 V2 engineering integration is complete but cannot create formal results before these M3 gates pass.

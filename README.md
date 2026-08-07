@@ -32,9 +32,13 @@ not run. M3 V4 now defines the 21-action atomic-subitem response contract,
 sparse nine-subitem footprints, deterministic test-only response generation,
 and explicit M2 compatibility checks. The catalog includes three partial-support
 aircraft recovery actions, while the legacy V2/V3 implementation is isolated
-under `overall_run/src/legacy/`. Formal response and cost parameters remain
-unfrozen, M4 has not migrated to the V4 artifact, and the formal pipeline is
-blocked at `M3_PARAMETER_NOT_FROZEN`.
+under `overall_run/src/legacy/`. M4 V2 now consumes M2 V2 sample losses and the
+M3 V4 atomic-subitem artifact, preserves PRE R2/R3 evidence distinctions,
+uses stable shared draw indices and weighted Mean-CVaR, assigns explicit
+decision lanes, and derives Ranking@1/@2/@3/@5 from one authoritative sort.
+Only test-only synthetic integration has run. Formal M3 response and cost
+parameters remain unfrozen, so the formal pipeline still stops at
+`M3_PARAMETER_NOT_FROZEN`.
 
 ## Boundaries
 
@@ -53,8 +57,10 @@ D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests
 D:/Python311/python.exe -m pytest -q overall_run/tests/m1
 D:/Python311/python.exe -m pytest -q overall_run/tests/m2
 D:/Python311/python.exe -m pytest -q overall_run/tests/m3
+D:/Python311/python.exe -m pytest -q overall_run/tests/m4
+D:/Python311/python.exe -m pytest -q overall_run/tests/test_ranking_1235.py
 ```
 
-See `pre/README.md`, `overall_run/README.md`, `reports/m1_m2_v2/`, and
-`reports/m3_v2/` for
+See `pre/README.md`, `overall_run/README.md`, `reports/m1_m2_v2/`,
+`reports/m3_v2/`, and `reports/m4_v2/` for
 module boundaries, contract details, validation evidence, and rerun decisions.

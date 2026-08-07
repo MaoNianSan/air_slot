@@ -1,0 +1,33 @@
+path,change,role
+overall_run/src/m4/__init__.py,added,M4 V2 public API and legacy retirement
+overall_run/src/m4/contracts.py,added,M4 identities dataclasses lanes statuses
+overall_run/src/m4/compatibility.py,added,M2 and M3 strict compatibility gates
+overall_run/src/m4/input_adapter.py,added,direct M2 V2 and M3 V4 adapter
+overall_run/src/m4/evidence.py,added,PRE R2 R3 evidence lineage and forbidden inference guards
+overall_run/src/m4/stage_adapter.py,added,explicit stage mapping
+overall_run/src/m4/opportunity.py,added,unconfigured opportunity contract
+overall_run/src/m4/draw_pairing.py,added,SHA-256 stable shared draw index
+overall_run/src/m4/post_loss.py,added,nine-subitem post loss and channel costs
+overall_run/src/m4/risk.py,added,weighted mean Var CVaR and score
+overall_run/src/m4/lane_assignment.py,added,decision lane rules
+overall_run/src/m4/ranking.py,added,authoritative formal ranking and fixed-width prefixes
+overall_run/src/m4/rolling.py,added,rolling ranking fact comparison
+overall_run/src/m4/explanation.py,added,reason-code explanation data
+overall_run/src/m4/output.py,added,formal schemas hashes atomic writer and test guard
+overall_run/src/m4/pipeline.py,added,M4 calculation and synthetic/formal entrypoints
+overall_run/src/m4/evaluation.py,added,read-only optional evaluation
+overall_run/src/legacy/m4_v1_api.py,moved,legacy M4 facade
+overall_run/src/legacy/m4_v1_screening.py,moved,legacy screening audit
+overall_run/src/legacy/m4_v1_evaluation.py,moved,legacy evaluation audit
+overall_run/config/scientific.yaml,modified,M4 V2 configuration and evaluation switch
+overall_run/src/config.py,modified,strict M4 validation and authoritative manifest
+overall_run/src/pipeline.py,modified,retain M3 gates then call formal M4 stage
+ranking_contract.py,modified,M4 V2 ranking identity and tie-break
+overall_run/tests/m4/,added,70 M4 contract formula lane ranking and isolation tests
+overall_run/tests/m2/test_m2_v2_integration.py,modified,real M3 freeze gate assertion
+overall_run/tests/m3/test_compatibility_and_gates.py,modified,legacy M4 retirement assertion
+overall_run/tests/test_m2_m4_contract.py,modified,legacy M4 retirement assertion
+README.md,modified,current M4 engineering and formal status
+overall_run/README.md,modified,current M4 boundary and verification
+.gitignore,modified,local M4 output and evaluation directories
+reports/m4_v2/,added,M4 implementation contract evidence tests rerun and cleanup reports

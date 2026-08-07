@@ -25,7 +25,7 @@ legacy_scalar_contract = pytest.mark.skip(reason=
 )
 
 
-def test_old_m4_rejects_v4_artifact_and_catalog() -> None:
+def test_legacy_m4_api_is_explicitly_retired() -> None:
     cfg = load_config(ROOT, mode="fast")
     contract = load_m3_contract(cfg.scientific)
     artifact = generate_test_fixture_library(
@@ -34,9 +34,9 @@ def test_old_m4_rejects_v4_artifact_and_catalog() -> None:
         base_seed=20260806,
         m2_contract=cfg.scientific["m2"],
     )
-    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+    with pytest.raises(M4ContractMismatch, match="M4_LEGACY_CONTRACT_RETIRED"):
         fit_m4(cfg.scientific, response_library=artifact)
-    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+    with pytest.raises(M4ContractMismatch, match="M4_LEGACY_CONTRACT_RETIRED"):
         screen_physical_actions(None, None, dict(contract.catalog), np.array([], dtype=bool))
 
 

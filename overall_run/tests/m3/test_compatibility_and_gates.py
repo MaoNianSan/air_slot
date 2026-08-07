@@ -53,12 +53,12 @@ def test_pipeline_rejects_invalid_v4_contract_before_parameter_gate(cfg) -> None
         run_experiment(invalid, "fast")
 
 
-def test_old_m4_rejects_v4_artifact_and_catalog(cfg, m3_contract, fixture_artifact) -> None:
-    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+def test_legacy_m4_api_is_retired_after_v2_migration(cfg, m3_contract, fixture_artifact) -> None:
+    with pytest.raises(M4ContractMismatch, match="M4_LEGACY_CONTRACT_RETIRED"):
         fit_m4(cfg.scientific, response_library=fixture_artifact)
-    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+    with pytest.raises(M4ContractMismatch, match="M4_LEGACY_CONTRACT_RETIRED"):
         evaluate_m4(None, {}, None, {}, fixture_artifact, None)
-    with pytest.raises(M4ContractMismatch, match="M4_CONTRACT_MISMATCH"):
+    with pytest.raises(M4ContractMismatch, match="M4_LEGACY_CONTRACT_RETIRED"):
         screen_physical_actions(
             rules=None,
             snapshots=None,

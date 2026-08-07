@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+LEGACY_M4_NOT_FORMAL = True
+
 from .m4_pnb_contract import (
     AUDIT_SEED_NAMESPACE,
     FrozenInputs,

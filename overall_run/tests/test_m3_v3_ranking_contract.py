@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 
 pytest.skip(
-    "LEGACY_AUDIT_ONLY: V3 ranking integration awaits the formal M4 migration",
+    "LEGACY_AUDIT_ONLY: V3 ranking is retained only for historical audit",
     allow_module_level=True,
 )
 
@@ -19,8 +19,8 @@ from src.legacy.m3_v3_audit import (
     generate_m3_library,
     load_actions,
 )
-from src.m4_evaluation import derive_ranking_views
-from src.m4_screening import screen_physical_actions
+from src.legacy.m4_v1_evaluation import derive_ranking_views
+from src.legacy.m4_v1_screening import screen_physical_actions
 
 
 ROOT = Path(__file__).resolve().parents[1]

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+LEGACY_M4_NOT_FORMAL = True
+
 from typing import Any
 
 import numpy as np

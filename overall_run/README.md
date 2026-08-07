@@ -1,8 +1,9 @@
 # overall_run
 
-`overall_run` owns M1-M4 orchestration. M1, the M1-to-M2 V2 boundary, and the
-M3 V4 structural contract are implemented. Formal M2 valuation, M3 parameter
-freeze, and M4 migration remain behind explicit readiness gates.
+`overall_run` owns M1-M4 orchestration. M1, the M1-to-M2 V2 boundary, the M3 V4
+structural contract, and the M4 V2 engineering contract are implemented.
+Formal M2 valuation, M3 parameter freeze, and formal M3 library generation
+remain behind explicit readiness gates.
 
 ## M1
 
@@ -54,24 +55,32 @@ training, calibration, resampling, and production M2 reconstruction have not
 run. M3 V4 uses 21 version-bound atomic actions, sparse PRIMARY/SECONDARY/NONE
 footprints over the nine M2 subitems, one shared Beta intensity per action draw,
 and separate F/P/R implementation costs. Formal response and cost parameters
-remain `NOT_CONFIGURED`; only synthetic fixtures may
-exercise the structural generator. The retired scalar M2-to-M4 contract is not
-used as a compatibility path, and old M4 explicitly rejects V4 artifacts.
-Global execution currently stops at `M3_PARAMETER_NOT_FROZEN`. Engineering
-implementation does not imply scientific or production readiness.
+remain `NOT_CONFIGURED`; only synthetic fixtures may exercise the structural
+generator. M4 V2 directly accepts `M2InputBundle`, nine-subitem
+`M2SampleLoss` objects, and `M3Artifact`; it does not reconstruct M3 randomness
+or fall back to channel arrays. PRE R2 is compatibility-only, PRE R3 requires
+registry lineage, stage and opportunity contracts are explicit, and resource
+availability is never inferred from pressure proxies. Test-only integration
+exercises stable shared draw indexing, nine-subitem post loss, weighted
+Mean-CVaR, four decision lanes, and Ranking@1/@2/@3/@5. Global execution still
+stops at `M3_PARAMETER_NOT_FROZEN`. Engineering implementation does not imply
+scientific or production readiness.
 
 ```text
 M3_CONTRACT_STATUS = PASS
 M3_ACTION_LIBRARY_COUNT = 21
 M3_PARAMETER_FREEZE_STATUS = NOT_YET_DONE
 M3_FORMAL_LIBRARY_STATUS = NOT_YET_RUN
-M4_CONTRACT_STATUS = MISMATCH
+M4_V2_ENGINEERING_STATUS = PASS
+M4_V2_SYNTHETIC_INTEGRATION = PASS
+M4_V2_FORMAL_STATUS = BLOCKED_BY_UPSTREAM
 ```
 
 `A51`, `A52`, and `A53` are partial-support aircraft recovery actions with no
 formal response or cost parameters. `A54` and `A55` remain forbidden. The old
 channel-level `src/m3.py` implementation has moved to
-`src/legacy/m3_v3_audit.py` and is not imported by the active runtime.
+`src/legacy/m3_v3_audit.py`; old M4 screening and evaluation are also isolated
+under `src/legacy/`. Retired M4 APIs raise `M4_LEGACY_CONTRACT_RETIRED`.
 
 ## Verification
 
@@ -80,7 +89,9 @@ D:/Python311/python.exe -m compileall -q overall_run/src overall_run/tests
 D:/Python311/python.exe -m pytest -q overall_run/tests/m1
 D:/Python311/python.exe -m pytest -q overall_run/tests/m2
 D:/Python311/python.exe -m pytest -q overall_run/tests/m3
+D:/Python311/python.exe -m pytest -q overall_run/tests/m4
+D:/Python311/python.exe -m pytest -q overall_run/tests/test_ranking_1235.py
 ```
 
-See `../reports/m1_m2_v2/` and `../reports/m3_v2/` for implementation,
-contract, test, and rerun reports.
+See `../reports/m1_m2_v2/`, `../reports/m3_v2/`, and `../reports/m4_v2/` for
+implementation, contract, test, and rerun reports.

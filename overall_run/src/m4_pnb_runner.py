@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+LEGACY_M4_NOT_FORMAL = True
+
 from pathlib import Path
 from typing import Any
 

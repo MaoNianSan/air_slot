@@ -217,5 +217,5 @@ def test_refactor_no_duplicate_authoritative_path() -> None:
     tree = ast.parse((ROOT / "overall_run" / "src" / "pipeline.py").read_text(encoding="utf-8"))
     runs = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "run_experiment"]
     assert len(runs) == 1
-    assert evaluate_m4.__module__ == "src.m4_evaluation"
-    assert screen_physical_actions.__module__ == "src.m4_screening"
+    assert evaluate_m4.__module__ == "src.m4"
+    assert screen_physical_actions.__module__ == "src.m4"

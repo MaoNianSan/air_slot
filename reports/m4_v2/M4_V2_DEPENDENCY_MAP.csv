@@ -1,0 +1,34 @@
+path,current_role,classification,target
+overall_run/src/m4.py,legacy public facade,REWRITE,overall_run/src/m4/__init__.py
+overall_run/src/m4_screening.py,legacy physical and decision-value gates,LEGACY_AUDIT_ONLY,overall_run/src/legacy/m4_v1_screening.py
+overall_run/src/m4_evaluation.py,legacy three-channel residual ranking,LEGACY_AUDIT_ONLY,overall_run/src/legacy/m4_v1_evaluation.py
+overall_run/src/m4_pnb_audit.py,legacy PNB audit chain,LEGACY_AUDIT_ONLY,no formal M4 import
+overall_run/src/m4_pnb_contract.py,legacy PNB schema,LEGACY_AUDIT_ONLY,no formal M4 import
+overall_run/src/m4_pnb_figures.py,legacy PNB figures,LEGACY_AUDIT_ONLY,part_adv or historical audit only
+overall_run/src/m4_pnb_formula.py,legacy three-channel formulas,LEGACY_AUDIT_ONLY,no formal M4 import
+overall_run/src/m4_pnb_inputs.py,legacy frozen input reader,LEGACY_AUDIT_ONLY,no formal M4 import
+overall_run/src/m4_pnb_parameters.py,legacy PNB parameter report,LEGACY_AUDIT_ONLY,part_adv only
+overall_run/src/m4_pnb_runner.py,legacy PNB runner,LEGACY_AUDIT_ONLY,no formal M4 import
+overall_run/src/m4_pnb_sensitivity.py,legacy sensitivity analysis,LEGACY_AUDIT_ONLY,part_adv only
+overall_run/src/m4_pnb_snapshot.py,legacy snapshot audit,LEGACY_AUDIT_ONLY,no formal M4 import
+overall_run/src/m4_pnb_stability.py,legacy stability analysis,LEGACY_AUDIT_ONLY,part_adv only
+overall_run/src/m4_pnb_summaries.py,legacy PNB summaries,LEGACY_AUDIT_ONLY,no formal M4 import
+overall_run/src/m2/contracts.py,M2 V2 formal dataclasses,KEEP_AS_SHARED_UTILITY,direct M4 input
+overall_run/src/m2/reconstruction.py,M2 V2 sample losses,KEEP_AS_SHARED_UTILITY,direct M4 input
+overall_run/src/m3/contracts.py,M3 V4 constants and action metadata,KEEP_AS_SHARED_UTILITY,reused without duplication
+overall_run/src/m3/artifact.py,M3 V4 response and cost draws,KEEP_AS_SHARED_UTILITY,direct M4 input
+overall_run/src/m3/sampling.py,M3 artifact generation and validation,KEEP_AS_SHARED_UTILITY,no M4 resampling
+overall_run/src/ranking_contract.py,Ranking 1 2 3 5 adapter,MIGRATE,reuse fixed-width prefixes
+ranking_contract.py,shared fixed-width ranking implementation,KEEP_AS_SHARED_UTILITY,no duplicate Ranking K logic
+overall_run/src/pipeline.py,formal gate orchestration,MIGRATE,retain M3 gates then invoke M4 contract
+overall_run/src/config.py,strict config and implementation manifest,MIGRATE,validate M4 V2 config
+overall_run/config/scientific.yaml,old M4 thresholds,MIGRATE,M4 V2 identity evidence risk and ranking config
+overall_run/tests/test_m2_m4_contract.py,retired scalar contract tests,REWRITE,M4 V2 compatibility and legacy rejection
+overall_run/tests/test_ranking_1235.py,shared prefix tests,KEEP_AS_SHARED_UTILITY,continue unchanged
+overall_run/tests/m3/test_compatibility_and_gates.py,old M4 mismatch assertions,MIGRATE,assert upstream freeze gates remain
+overall_run/tests/m2/test_m2_v2_integration.py,stale pipeline mismatch assertion,MIGRATE,assert real M3 freeze gate
+overall_run/src/report.py,legacy publication consumer,UNRELATED,formal run remains blocked this round
+overall_run/src/report_m4.py,legacy report consumer,LEGACY_AUDIT_ONLY,not called by M4 V2
+overall_adv/,downstream analysis,UNRELATED,not executed or migrated this round
+part_adv/,method sensitivity,UNRELATED,not executed; future M4 method comparisons belong here
+pre/,PRE R2 source and evidence bundle,UNRELATED,no PRE algorithm change

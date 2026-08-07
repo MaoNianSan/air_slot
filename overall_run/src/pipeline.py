@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Mapping
 
 from .config import RunConfig
 from .failures import (
@@ -11,6 +12,9 @@ from .failures import (
     M4ContractMismatch,
 )
 from .m3 import load_m3_contract, validate_m2_compatibility
+from .m2.contracts import M2InputBundle, M2SampleLoss
+from .m3.artifact import M3Artifact
+from .m4 import M4FormalArtifact, run_m4_formal_stage
 from .pipeline_checkpoint import (
     FullBlockedByFastAcceptance,
     mark_running_staging_incomplete,
@@ -56,7 +60,11 @@ def run_experiment(
     override_fast_gate: bool = False,
     output_name: str | None = None,
     resume_staging: Path | None = None,
-) -> Path:
+    m4_inputs: tuple[M2InputBundle, tuple[M2SampleLoss, ...], M3Artifact] | None = None,
+    m4_stage_mapping: Mapping[str, str] | None = None,
+    m4_stage_mapping_version: str | None = None,
+    m4_output_dir: Path | None = None,
+) -> Path | M4FormalArtifact:
     del (
         mode,
         progress_level,
@@ -83,8 +91,23 @@ def run_experiment(
         raise M3FormalLibraryNotReady(
             "M3_FORMAL_LIBRARY_NOT_READY: the formal response library has not been generated"
         )
-    raise M4ContractMismatch(
-        "M4_CONTRACT_MISMATCH: M3 V4 atomic-subitem artifact is not yet supported"
+    if m4_inputs is None:
+        raise M4ContractMismatch(
+            "M4_INPUT_ARTIFACTS_REQUIRED: formal M2 V2 losses and the frozen M3 V4 artifact are required"
+        )
+    if m4_stage_mapping is None or not m4_stage_mapping_version:
+        raise M4ContractMismatch(
+            "STAGE_CONTRACT_NOT_FROZEN: formal M4 requires an explicit versioned stage mapping"
+        )
+    m2_input_bundle, sample_losses, m3_artifact = m4_inputs
+    return run_m4_formal_stage(
+        m2_input_bundle,
+        sample_losses,
+        m3_artifact,
+        cfg.scientific,
+        stage_mapping=m4_stage_mapping,
+        stage_mapping_version=m4_stage_mapping_version,
+        output_dir=m4_output_dir,
     )
 
 

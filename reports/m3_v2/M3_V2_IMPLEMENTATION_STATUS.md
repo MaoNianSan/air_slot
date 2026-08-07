@@ -16,9 +16,10 @@ M3_LEGACY_MODULE_ISOLATION = PASS
 M3_PIPELINE_PARAMETER_GATE = PASS
 M3_PARAMETER_FREEZE_STATUS = NOT_YET_DONE
 M3_FORMAL_LIBRARY_STATUS = NOT_YET_RUN
-M4_MIGRATION_STATUS = NOT_YET_DONE
-M4_CONTRACT_STATUS = MISMATCH
-FORMAL_RANKING_STATUS = NOT_YET_RUN
+M4_MIGRATION_STATUS = PASS_ENGINEERING_ONLY
+M4_CONTRACT_STATUS = PASS
+M4_SYNTHETIC_RANKING_STATUS = PASS_TEST_ONLY
+FORMAL_RANKING_STATUS = NOT_YET_RUN_BLOCKED_BY_UPSTREAM
 GLOBAL_RERUN_ALLOWED = NO
 ```
 
@@ -39,8 +40,8 @@ GLOBAL_RERUN_ALLOWED = NO
 
 - No non-A00 response or cost parameter was configured or frozen.
 - No formal M3 response library was generated.
-- No M4 integration or ranking was implemented.
+- M4 V2 engineering integration and test-only ranking are implemented; no formal ranking ran.
 - No fast, middle, full, overall, `overall_adv`, or `part_adv` run was executed.
 - No commit or push was performed.
 
-This delivery is `STRUCTURE_READY / PARAMETERS_NOT_FROZEN / FORMAL_LIBRARY_NOT_RUN / M4_NOT_MIGRATED`.
+Current status is `STRUCTURE_READY / PARAMETERS_NOT_FROZEN / FORMAL_LIBRARY_NOT_RUN / M4_ENGINEERING_MIGRATED / FORMAL_RUN_BLOCKED`.

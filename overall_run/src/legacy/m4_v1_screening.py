@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+LEGACY_AUDIT_ONLY = True
+
 from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
-from .failures import M4ContractMismatch
+from ..failures import M4ContractMismatch
 
 CHANNELS = ("F", "P", "R")
 

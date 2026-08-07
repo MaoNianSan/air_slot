@@ -114,6 +114,10 @@ reports/pytest_validator_tmp/
 # Reusable local extraction/model cache
 /pre/cache/
 
+# Local M4 formal/evaluation artifacts are generated only after upstream gates.
+/overall_run/output/m4/
+/overall_run/output/evaluation/
+
 # Root-level local status/audit files
 /PRE_DEBUG_STATUS.md
 /PRE_GITHUB_UPLOAD_AUDIT.md

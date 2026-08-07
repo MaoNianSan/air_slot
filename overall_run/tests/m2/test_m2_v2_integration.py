@@ -16,8 +16,10 @@ from overall_run.src.m2.contracts import (
     M2InputStatus,
     PassengerContext,
 )
-from overall_run.src.failures import M3ContractMismatch
+from overall_run.src.failures import M3ParameterNotFrozen
 from overall_run.src.pipeline import run_experiment
+from overall_run.src.config import load_config
+from pathlib import Path
 
 from .test_m2_rules_and_units import valuation
 
@@ -133,6 +135,7 @@ def test_joint_scenario_evaluation_does_not_change_sampling_model(
     }
 
 
-def test_m3_contract_mismatch_remains_real() -> None:
-    with pytest.raises(M3ContractMismatch, match="M3_CONTRACT_MISMATCH"):
-        run_experiment(None, "fast")
+def test_m3_parameter_freeze_gate_remains_real() -> None:
+    cfg = load_config(Path(__file__).resolve().parents[2], "fast")
+    with pytest.raises(M3ParameterNotFrozen, match="M3_PARAMETER_NOT_FROZEN"):
+        run_experiment(cfg, "fast")
