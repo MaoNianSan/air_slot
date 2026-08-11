@@ -2,10 +2,11 @@
 
 ## Current boundary
 
-PRE is `AIR_CHAIN_CORE_V2_R2`. The M1 Adapter is not implemented, so
-`overall_run`, `overall_adv`, and `part_adv` intentionally stop with
-`PRE_CONTRACT_MISMATCH`. Do not bypass that gate or point downstream commands at
-historical output.
+PRE is `AIR_CHAIN_CORE_V2_R2`. M1, the M1-to-M2 V2 boundary, M3 V4, and M4 V2
+are implemented and covered by synthetic tests, but formal M1 training has not
+run. `overall_run`, `overall_adv`, and `part_adv` entry points still stop at the
+downstream migration gate with `M2_CONTRACT_MISMATCH`. Do not bypass that gate
+or point downstream commands at historical output.
 
 ## Environment
 
@@ -52,8 +53,9 @@ start a second build blindly.
 ## Publication boundary
 
 Validation and readiness inspect a published bundle; they do not retrain or
-rebuild it. Implementation reports under `pre/reports/published/core_v2/` are
-pre-run evidence, not a formal Fast bundle.
+rebuild it. The Fast V2 bundle under `pre/output_core/fast/` is published and
+passes validation; implementation reports under `pre/reports/published/core_v2/`
+are pre-run evidence.
 
 ## Data and upload policy
 
@@ -65,6 +67,8 @@ pre-run evidence, not a formal Fast bundle.
 
 ## Downstream work
 
-The next downstream task is to design and implement an M1 Adapter that reads V2
-artifacts at `query_time` with availability-safe joins. Until that work is
-complete, no cloud command may run M1-M4.
+The M1 Adapter that reads V2 artifacts at `query_time` with availability-safe
+joins is implemented. Remaining work is formal M1 training, calibration, and
+resampling, then M2 valuation freeze, M3 parameter freeze, and formal M3
+library generation. No cloud command may run formal M1-M4 before the downstream
+migration gate is explicitly satisfied.

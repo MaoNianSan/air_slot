@@ -59,7 +59,9 @@ cell size, fallback level, split, and source hash.
 
 ## Downstream boundary
 
-No current downstream registry is valid against PRE V2. The future M1 Adapter
-must publish its own explicit input and output lineage before M1-M4 execution is
-re-enabled. The existing entry points stop with `PRE_CONTRACT_MISMATCH` and do
-not silently fall back to historical artifacts.
+M1, the M1-to-M2 V2 boundary, M3 V4, and M4 V2 are implemented and covered by
+synthetic tests, but formal M1 has not run, so no downstream registry is valid
+against PRE V2 yet. A formal M1 run must publish its own explicit input and
+output lineage before M1-M4 execution is re-enabled. The existing entry points
+stop at the downstream migration gate with `M2_CONTRACT_MISMATCH` and do not
+silently fall back to historical artifacts.

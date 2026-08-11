@@ -6,8 +6,9 @@
 - PRE tests: 71 passed.
 - Synthetic Observation/Membership, fileless empty partitions, Resume reuse,
   and independent validation: PASS.
-- Downstream Adapter migration: PENDING; runtime guard PASS.
-- Formal Fast V2 bundle: not generated.
+- Fast V2 bundle: generated (2026-08-05) and validated; readiness
+  `ENGINEERING_READY_FOR_ADAPTER`.
+- Downstream M1 Adapter: implemented; formal M1 publication PENDING.
 
 ## Reports
 
