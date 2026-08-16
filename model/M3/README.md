@@ -1,7 +1,10 @@
 # M3 boundary
 
-M3 loads the exact frozen 23-template registry and instantiates episode candidates from PRE facts
-and declared episode parameters only. Known FALSE preconditions remove a candidate; UNKNOWN is
-retained. Registry loading rejects unknown consequence coordinates, response models, provenance,
-coverage, IDs, or action families. Missing required parameters are retained as UNKNOWN and never
-guessed.
+M3 is an atomic recovery-action library plus response contract. It loads the 23-template action
+registry and instantiates `CandidateAction` objects from PRE facts and declared parameters.
+
+Each candidate preserves mitigation, induced consequence, response parameters, response provenance,
+material coverage, preconditions, and authority. Known FALSE preconditions remove a candidate;
+UNKNOWN is retained and never guessed. `PURE_SCENARIO` and `STRUCTURAL_BOUNDED_SCENARIO` describe
+response provenance, not automatically a real-world treatment effect. A00 is the current decision-
+time framework baseline; this does not claim that no historical intervention ever occurred.

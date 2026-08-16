@@ -2,7 +2,7 @@
 
 **Version**: 2026-07-17  
 **Status**: DATA_FOLDER_READY  
-**Project Root**: `D:\research\air_slot\code\explore`
+**Project Root**: repository root (resolve local raw roots through engineering config)
 
 ---
 
@@ -244,6 +244,10 @@ data/                         pre/
 ```
 
 **`data/` 只保存输入。`pre/` 负责所有处理。**
+
+Repository note: current PRE adapters expose Data1 source families through typed canonical
+objects; local raw files remain ignored and are never part of a GitHub checkpoint. Code-side
+fixtures may use `data1_2019` as a dataset instance identifier; this is not paper-result evidence.
 
 ---
 

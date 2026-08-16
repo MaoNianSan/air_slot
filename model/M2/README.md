@@ -1,5 +1,14 @@
 # M2 boundary
 
-M2 is a deterministic, scenario-preserving mapping from M1 scenarios to the fixed seven-component
-consequence ontology. It does not estimate action effects. Unsupported quantities remain null with
-explicit support and therefore prevent a complete formal total unless a frozen rule says otherwise.
+M2 maps `AlignedScenario` to the fixed seven-component `CONSEQUENCE_COMPONENTS` ontology:
+
+```text
+AlignedScenario -> native consequence quantities -> valuation
+                 -> ComponentVector -> FormalEstimandValue
+```
+
+Native quantities and valuation are separate responsibilities. Unsupported quantities remain null
+with explicit support; they are never silently converted to zero. `ConsequenceScope` and
+`FormalEstimandValue` are the authoritative M4 interface. Available-component diagnostics are not
+formal ranking values. The current `ValuationRegistry.smoke()` path is development evidence, not a
+paper-frozen valuation registry.

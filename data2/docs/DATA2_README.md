@@ -28,8 +28,8 @@
 ## Adapter
 
 - Spec: [`BTS_ADAPTER_SPEC.md`](BTS_ADAPTER_SPEC.md)
-- Implementation: `src/airslot/adapters/bts_adapter.py`
-- Pipeline: `BTS raw → DATA2 Adapter → AIR_CHAIN_CORE_V2 (canonical PRE) → PRE/M1`
+- Implementation: `model/PRE/adapters/data2.py`
+- Pipeline: `BTS raw -> Data2 adapter -> canonical PRE -> PRE/M1`
 
 The adapter is the **only** place BTS raw-field semantics are interpreted; after the
 adapter, PRE/M1/M2/M3/M4 consume the identical canonical contract as Data1.
@@ -54,6 +54,10 @@ Additional caveats:
 - Complete US airport timezone reference ships in `refs/us_airport_timezones.csv`
   (generated from OurAirports coordinates); used by the adapter when the built-in
   state-based reference cannot resolve an airport.
+
+Repository note: Data2 is an adapter-bounded benchmark/portability family. Dataset-specific raw
+semantics stop in the adapter and registry; downstream M1-M4 consume the same typed contracts as
+Data1. Local raw files and generated outputs are ignored and are not GitHub checkpoint content.
 
 ## Reports (in `reports/`)
 
