@@ -16,8 +16,17 @@ def scan_dependency_boundaries(root: Path) -> list[dict[str, str]]:
         rel = path.relative_to(root).as_posix()
         bad = []
         if rel.startswith("model/") and any(m == "exp" or m.startswith("exp.") for m in modules): bad.append("MODEL_IMPORTS_EXP")
+        if rel.startswith("model/") and any(m == "validation" or m.startswith("validation.") for m in modules): bad.append("MODEL_IMPORTS_VALIDATION")
+        if rel.startswith("model/") and any(m == "exp.reporting" or m.startswith("exp.reporting.") for m in modules): bad.append("MODEL_IMPORTS_REPORTING")
         if rel.startswith("model/PRE/") and any(m.startswith("model.M") for m in modules): bad.append("PRE_IMPORTS_DOWNSTREAM")
-        if rel.startswith("model/M3/") and any(m.startswith("model.M2") for m in modules): bad.append("M3_IMPORTS_M2")
+        if rel.startswith("model/M1/") and any(m.startswith("model.PRE.adapters") or m.startswith("model.PRE.realized") for m in modules): bad.append("M1_IMPORTS_RAW_OR_REALIZED")
+        if rel.startswith("model/M2/") and any(m.startswith("model.PRE.adapters") or m.startswith("model.PRE.realized") for m in modules): bad.append("M2_IMPORTS_RAW_OR_REALIZED")
+        if rel.startswith("model/M3/") and any(m.startswith("model.M2") or m.startswith("model.PRE.adapters") for m in modules): bad.append("M3_IMPORTS_FORBIDDEN_SOURCE")
+        if rel.startswith("model/M4/") and any(m.startswith("model.PRE.adapters") or m.startswith("model.PRE.realized") or m == "exp" or m.startswith("exp.") for m in modules): bad.append("M4_IMPORTS_FORBIDDEN_SOURCE")
+        if rel.startswith("model/M1/"):
+            source = path.read_text(encoding="utf-8")
+            if "dataset ==" in source or "dataset_instance_id ==" in source:
+                bad.append("M1_DATASET_SPECIFIC_BRANCH")
         findings.append({"check_id": "DEPENDENCY_BOUNDARY", "status": "FAIL" if bad else "PASS",
                          "path": rel, "message": ",".join(bad)})
     return findings

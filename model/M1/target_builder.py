@@ -27,7 +27,7 @@ def _active(support: dict[str, TargetSupportState], target: str, stage: Operatio
     return stage in unresolved[target]
 
 
-def build_data2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
+def build_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
                               predecessor_outcome: OperationalEventRecord,
                               successor_schedule: FlightRecord,
                               successor_outcome: OperationalEventRecord,
@@ -35,10 +35,14 @@ def build_data2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecor
     typed = (episode, node, predecessor_outcome, successor_schedule, successor_outcome)
     if any(item is None for item in typed):
         raise ContractError("M1_TYPED_TARGET_INPUT_REQUIRED")
-    if successor_schedule.dataset_instance_id != "data2_2019" \
-            or any(item.dataset_instance_id != "data2_2019"
-                   for item in (predecessor_outcome, successor_outcome)):
-        raise ContractError("M1_DATA2_TARGET_BUILDER_DATASET_MISMATCH")
+    dataset_ids = {
+        episode.dataset_instance_id,
+        successor_schedule.dataset_instance_id,
+        predecessor_outcome.dataset_instance_id,
+        successor_outcome.dataset_instance_id,
+    }
+    if len(dataset_ids) != 1:
+        raise ContractError("M1_TARGET_DATASET_IDENTITY_MISMATCH")
     if predecessor_outcome.decision_time_role not in {DecisionTimeRole.TRAIN_LABEL,
             DecisionTimeRole.EVAL_OUTCOME} or successor_outcome.decision_time_role not in {
             DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME}:
@@ -81,3 +85,8 @@ def build_data2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecor
             split=split_for_date(successor_schedule.service_date),
             episode_date=successor_schedule.service_date))
     return tuple(result)
+
+
+# Adapter/validation callers from the previous release may retain this name;
+# it is an alias only and contains no dataset-specific scientific branch.
+build_data2_target_labels = build_target_labels

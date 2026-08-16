@@ -1,0 +1,8 @@
+schema_version: "1.0.0"
+experiment: exp1
+variants: [empirical, current, fixed_history, adaptive_history, independent_heads, leakage_diagnostic]
+same_pre_cutoff: true
+same_target: true
+same_split: true
+same_calibration_policy: true
+leakage_diagnostic: evaluation_only

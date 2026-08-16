@@ -136,7 +136,7 @@ def test_train_only_normalization_and_typed_labels_preserve_identity_and_split()
 def test_formal_pipeline_uses_frozen_target_supports():
     scientific=load_config_layers(__import__("pathlib").Path("configs")).scientific
     pipeline=M1Pipeline.from_scientific_config(scientific,input_size=len(FEATURE_NAMES),
-                                               normalization=_normalization())
+                                               normalization=_normalization(), hidden_size=16)
     assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
         "R_IB":360,"R_OB":180,"T_TX":60}
     for target, finite, overflow in (("R_IB",360,365),("R_OB",180,185),("T_TX",60,65)):
@@ -168,8 +168,8 @@ def test_output_support_change_cannot_change_full_input_history():
     alternate=alternate.model_copy(update={"parameters":{
         name:(item.model_copy(update={"value":replacements[name]}) if name in replacements else item)
         for name,item in alternate.parameters.items()}})
-    pipeline_a=M1Pipeline.from_scientific_config(base,input_size=len(FEATURE_NAMES),normalization=normalization)
-    pipeline_b=M1Pipeline.from_scientific_config(alternate,input_size=len(FEATURE_NAMES),normalization=normalization)
+    pipeline_a=M1Pipeline.from_scientific_config(base,input_size=len(FEATURE_NAMES),normalization=normalization, hidden_size=16)
+    pipeline_b=M1Pipeline.from_scientific_config(alternate,input_size=len(FEATURE_NAMES),normalization=normalization, hidden_size=16)
     assert torch.equal(encoded_a,encoded_b)
     assert [state.decision_node.decision_time for state in states] == [
         schedule.scheduled_departure_utc+timedelta(minutes=5*i) for i in range(3)]

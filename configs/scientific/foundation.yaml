@@ -10,10 +10,10 @@ parameters:
   cloud_encoding: {freeze_state: FROZEN, value: both}
   roll_minutes: {freeze_state: FROZEN, value: 5}
   roll_sensitivity_minutes: {freeze_state: FROZEN, value: [10]}
-  forecast_horizons_minutes: {freeze_state: FROZEN, value: [0, 30, 60, 120, 180, 240, 300, 360, 420, 480]}
+  forecast_horizons_minutes: {freeze_state: FROZEN, value: [0, 15, 60]}
   delay_thresholds_minutes: {freeze_state: FROZEN, value: [15, 30, 60]}
-  m1_hidden_size: {freeze_state: FROZEN, value: 8}
-  m1_hidden_size_sensitivity: {freeze_state: FROZEN, value: [16]}
+  m1_hidden_size: {freeze_state: DEVELOPMENT_FROZEN}
+  m1_hidden_size_candidates: {freeze_state: FROZEN, value: [16, 32]}
   m1_bin_width_minutes: {freeze_state: FROZEN, value: 5}
   m1_r_ib_max_finite_minutes:
     freeze_state: FROZEN

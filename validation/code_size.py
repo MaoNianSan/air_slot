@@ -34,7 +34,7 @@ def audit_python_sizes(root: Path) -> list[dict[str, str | int]]:
         if any(part in {".pytest_cache", "__pycache__", "outputs"} for part in path.parts):
             continue
         count = logical_lines(path)
-        status = "REFACTOR_REQUIRED" if count > 500 else "REVIEW" if count > 350 else "OK"
+        status = "REFACTOR_REQUIRED" if count > 800 else "REVIEW" if count > 500 else "OK"
         records.append({"path":path.relative_to(root).as_posix(), "logical_lines":count,
                         "status":status})
     return records

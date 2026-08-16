@@ -3,6 +3,7 @@ from typing import Literal
 from pydantic import Field, model_validator, computed_field
 from model.common.value_objects import FrozenModel
 from model.common.value_objects import ProvenanceRef
+from .semantics import external_target_name, takeoff_delay_minutes
 
 
 TargetName = Literal["R_IB", "R_OB", "T_TX"]
@@ -98,3 +99,12 @@ class AlignedScenario(FrozenModel):
     overflow_ob: bool
     overflow_tx: bool
     scenario_seed_key: str
+
+    @property
+    def d_to_minutes(self) -> float | None:
+        """Derived total takeoff delay; never an independent stochastic head."""
+        return takeoff_delay_minutes(self.r_ob_minutes, self.t_tx_minutes)
+
+    @property
+    def target_semantics(self) -> dict[str, str]:
+        return {name: external_target_name(name) for name in ("R_IB", "R_OB", "T_TX", "D_TO")}

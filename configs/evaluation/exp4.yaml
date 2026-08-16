@@ -1,0 +1,17 @@
+schema_version: "1.0.0"
+experiment: exp4
+specification_sensitivity:
+  m1_hidden_size: [16, 32]
+  roll_minutes: [5, 10]
+  m2_valuation: [low, base, high]
+  m3_response: [low, base, high]
+  lambda: [0.0, 0.10, 0.25, 0.50]
+  alpha: [0.80, 0.90, 0.95]
+  monte_carlo_s: [250, 500, 1000, 2000]
+operational_strata:
+  - disruption_severity
+  - turnaround_pressure
+  - airport_congestion
+  - information_completeness
+  - operational_stage
+retrain_by_stratum: false

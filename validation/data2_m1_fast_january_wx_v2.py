@@ -53,6 +53,30 @@ from model.PRE.reference.taxi_data2 import build_data2_taxi_reference
 from model.PRE.reference.turnaround_data2 import build_data2_turnaround_reference
 
 
+from functools import partial
+from validation.support.data2_m1 import (
+    chain_stats as shared_chain_stats,
+    config_hash as shared_config_hash,
+    exposure_cells as shared_exposure_cells,
+    latest_weather as shared_latest_weather,
+    load_timezones as shared_load_timezones,
+    load_typed_records as shared_load_typed_records,
+    normalization_rows as shared_normalization_rows,
+    passenger_cells as shared_passenger_cells,
+    publish_states as shared_publish_states,
+    reference_summary as shared_reference_summary,
+    registry_hash as shared_registry_hash,
+    sample_three_way_cohort as shared_sample_three_way_cohort,
+    source_stats as shared_source_stats,
+    stream_completed_flights as shared_stream_completed_flights,
+    stream_coupon_routes as shared_stream_coupon_routes,
+    stream_january_flights as shared_stream_january_flights,
+    taxi_cells as shared_taxi_cells,
+    turnaround_cells as shared_turnaround_cells,
+    weather_index_and_stats as shared_weather_index_and_stats,
+    weather_state_stats as shared_weather_state_stats,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA2 = ROOT / "data2"
 WEATHER_REPLAY_LAG_PARAM = "data2_weather_replay_lag_minutes"
@@ -77,278 +101,28 @@ ZONES_PATH = DATA2 / "refs" / "us_airport_timezones.csv"
 STATION_MAP_PATH = DATA2 / "refs" / "weather_station_map.csv"
 
 
-def _timezones() -> dict[str, str]:
-    with ZONES_PATH.open(encoding="utf-8-sig", newline="") as stream:
-        return {row["iata"]: row["timezone"] for row in csv.DictReader(stream)}
 
-
-def _config_hash() -> str:
-    paths = (ROOT / "configs" / "scientific" / "foundation.yaml",
-             ROOT / "configs" / "reproducibility" / "smoke.yaml",
-             ROOT / "configs" / "engineering" / "local.example.yaml")
-    ids = [{"path": str(path.relative_to(ROOT)),
-            "sha256": sha256(path.read_bytes()).hexdigest()} for path in paths]
-    return content_id(ids)
-
-
-def _registry_hash() -> str:
-    bundle = load_registry_bundle(ROOT / "registries")
-    published = json.loads((ROOT / "registries" / "registry_manifest.json")
-                           .read_text(encoding="utf-8"))
-    if bundle.manifest.combined_sha256 != published["combined_sha256"]:
-        raise RuntimeError("REGISTRY_MANIFEST_MISMATCH")
-    return bundle.manifest.combined_sha256
-
-
-def _stream_january_flights(zones: dict[str, str]):
-    flight_rows: list[dict] = []
-    taxi_rows: list[dict] = []
-    skipped = 0
-    with ONTIME_CSV.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
-        for raw in csv.DictReader(stream):
-            try:
-                schedule, outcome = canonicalize_ontime_row(
-                    {key: raw.get(key, "") for key in PROJECTED}, zones)
-            except Exception:
-                skipped += 1
-                continue
-            if schedule.aircraft_id is None or outcome.cancelled or outcome.diverted:
-                skipped += 1
-                continue
-            flight_rows.append({
-                "flight_id": schedule.flight_id,
-                "aircraft_id": schedule.aircraft_id,
-                "aircraft_id_namespace": schedule.aircraft_id_namespace,
-                "origin_airport_id": schedule.origin_airport_id,
-                "destination_airport_id": schedule.destination_airport_id,
-                "event_start_time": schedule.event_start_time,
-                "event_end_time": schedule.event_end_time,
-                "actual_arrival_utc": outcome.actual_arrival_utc,
-                "actual_departure_utc": outcome.actual_departure_utc,
-                "dataset_instance_id": schedule.dataset_instance_id,
-            })
-            if outcome.taxi_out_minutes is not None:
-                taxi_rows.append({
-                    "dataset_instance_id": schedule.dataset_instance_id,
-                    "aircraft_id": schedule.aircraft_id,
-                    "flight_id": schedule.flight_id,
-                    "origin_airport_id": schedule.origin_airport_id,
-                    "taxi_out_minutes": outcome.taxi_out_minutes,
-                })
-    return flight_rows, taxi_rows, skipped
-
-
-def _stream_coupon_routes():
-    sums: dict[tuple[str, str], float] = defaultdict(float)
-    counts: dict[tuple[str, str], int] = defaultdict(int)
-    raw_rows = 0
-    missing_passengers = 0
-    with COUPON_CSV.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
-        reader = csv.reader(stream)
-        header = next(reader)
-        idx_pax = header.index("Passengers")
-        idx_origin = header.index("Origin")
-        idx_dest = header.index("Dest")
-        for raw in reader:
-            if not raw or len(raw) <= max(idx_pax, idx_origin, idx_dest):
-                continue
-            raw_rows += 1
-            origin = raw[idx_origin].strip()
-            dest = raw[idx_dest].strip()
-            if not origin or not dest:
-                continue
-            try:
-                pax = float(raw[idx_pax])
-            except ValueError:
-                missing_passengers += 1
-                continue
-            sums[(origin, dest)] += pax
-            counts[(origin, dest)] += 1
-    rows = [{
-        "dataset_instance_id": "data2_2019",
-        "canonical_record_id": content_id({"source": "bts_db1b",
-                                           "origin": origin, "destination": dest}),
-        "join_key": {"origin": origin, "destination": dest},
-        "reference_period": "2019",
-        "value": total,
-        "record_count": counts[(origin, dest)],
-        "split": "train",
-    } for (origin, dest), total in sorted(sums.items())]
-    return rows, raw_rows, missing_passengers
-
-
-def _weather_index_and_stats(replay_lag_minutes: int):
-    request = RawReadRequest(dataset_instance_id="data2_2019", source_family="noaa_isd",
-                             raw_root=DATA2, output_root=OUT, year=2019)
-    adapter = Data2Adapter()
-    index: dict[str, list] = defaultdict(list)
-    per_airport: Counter[str] = Counter()
-    obs_total = 0
-    for obs in adapter.iter_canonical(request, replay_lag_minutes=replay_lag_minutes):
-        if obs.event_time is None or obs.event_time.strftime("%Y-%m") != "2019-01":
-            continue
-        if not obs.airport_id or obs.availability_time is None:
-            continue
-        obs_total += 1
-        per_airport[obs.airport_id] += 1
-        index[obs.airport_id].append(obs)
-    for airport in index:
-        index[airport].sort(key=lambda obs: obs.availability_time)
-    stats = {
-        "january_observations": obs_total,
-        "airports_covered": len(per_airport),
-        "top_airports": per_airport.most_common(10),
-        "injected": True,
-    }
-    return dict(index), stats
-
-
-def _latest_weather(weather_index, airport_id, cutoff, weather_max_age_minutes):
-    if not airport_id:
-        return None
-    observations = weather_index.get(airport_id)
-    if not observations:
-        return None
-    limit = cutoff - timedelta(minutes=weather_max_age_minutes)
-    for obs in reversed(observations):
-        if obs.availability_time > cutoff:
-            continue
-        if obs.availability_time < limit:
-            break
-        return obs
-    return None
-
-
-def _reference_summary(reference, *, cells: list[dict], globals_: dict | None = None) -> dict:
-    return {
-        "rule_id": reference.rule_id,
-        "rule_version": reference.rule_version,
-        "reference_id": reference.reference_id,
-        "fit_period": reference.fit_period,
-        "manifest_freeze_id": reference.manifest_freeze_id,
-        "support_state": reference.support_state.value,
-        "cells_count": len(reference.cells),
-        **(globals_ or {}),
-        "cells": cells,
-    }
-
-
-def _turnaround_cells(reference) -> list[dict]:
-    return [{"airport_id": cell.airport_id, "value_minutes": cell.value_minutes,
-             "sample_count": cell.sample_count, "fallback_level": cell.fallback_level,
-             "provenance": list(cell.provenance)} for cell in reference.cells]
-
-
-def _taxi_cells(reference) -> list[dict]:
-    return [{"airport_id": cell.airport_id, "value_minutes": cell.value_minutes,
-             "sample_count": cell.sample_count, "fallback_level": cell.fallback_level,
-             "provenance": list(cell.provenance)} for cell in reference.cells]
-
-
-def _exposure_cells(reference) -> list[dict]:
-    return [{"airport_id": cell.airport_id, "value_legs": cell.value_legs,
-             "sample_count": cell.sample_count, "fallback_level": cell.fallback_level,
-             "provenance": list(cell.provenance)} for cell in reference.cells]
-
-
-def _passenger_cells(reference) -> list[dict]:
-    return [{"origin": cell.origin_airport_id, "destination": cell.destination_airport_id,
-             "value_passengers": cell.value_passengers, "sample_count": cell.sample_count,
-             "provenance": list(cell.provenance)} for cell in reference.cells]
-
-
-def _chain_stats(episodes, by_id: dict[str, dict]) -> dict:
-    gaps = [(by_id[episode.successor_flight_id]["actual_departure_utc"]
-             - by_id[episode.predecessor_flight_id]["actual_arrival_utc"]).total_seconds() / 60
-            for episode in episodes]
-    ordered = sorted(gaps)
-    n = len(ordered)
-    percentiles = {q: ordered[min(n - 1, int(q * n / 100.0))] for q in (5, 25, 50, 75, 95, 99)}
-    return {"count": n, "percentiles": percentiles, "max": ordered[-1]}
-
-
-def _cohort(episodes):
-    rng = random.Random(SEED)
-    pool = sorted(episodes, key=lambda episode: (episode.episode_id,
-                                                 episode.predecessor_flight_id))
-    train_episodes = rng.sample(pool, TRAIN_COUNT)
-    train_ids = {episode.episode_id for episode in train_episodes}
-    rest = [episode for episode in pool if episode.episode_id not in train_ids]
-    calibration_episodes = rng.sample(rest, CALIBRATION_COUNT)
-    calibration_ids = {episode.episode_id for episode in calibration_episodes}
-    rest = [episode for episode in rest if episode.episode_id not in calibration_ids]
-    development_episodes = rng.sample(rest, DEVELOPMENT_COUNT)
-    return train_episodes, calibration_episodes, development_episodes
-
-
-def _typed_records(episodes) -> tuple[dict[str, object], dict[str, object]]:
-    needed = {flight_id for episode in episodes
-              for flight_id in (episode.predecessor_flight_id, episode.successor_flight_id)}
-    zones = _timezones()
-    schedules: dict[str, object] = {}
-    outcomes: dict[str, object] = {}
-    with ONTIME_CSV.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
-        for raw in csv.DictReader(stream):
-            try:
-                schedule, outcome = canonicalize_ontime_row(
-                    {key: raw.get(key, "") for key in PROJECTED}, zones)
-            except Exception:
-                continue
-            if schedule.flight_id in needed and schedule.flight_id not in schedules:
-                schedules[schedule.flight_id] = schedule
-                outcomes[schedule.flight_id] = outcome
-    missing = needed - set(schedules)
-    if missing:
-        raise RuntimeError(f"COHORT_FLIGHT_RECORD_MISSING:{sorted(missing)[:5]}")
-    return schedules, outcomes
-
-
-def _states(item, config_hash: str, registry_hash: str, weather_index,
-              weather_max_age_minutes: int):
-    episode, successor_schedule, predecessor_outcome, successor_outcome = item
-    nodes = build_rolling_decision_nodes(episode=episode,
-        predecessor_outcome=predecessor_outcome, successor_outcome=successor_outcome,
-        config_hash=config_hash, registry_hash=registry_hash)
-    states = []
-    for node in nodes:
-        weather = _latest_weather(weather_index, episode.connection_airport_id,
-                                  node.information_cutoff, weather_max_age_minutes)
-        records = (successor_schedule,) if weather is None else (successor_schedule, weather)
-        states.append(publish_production_pre(ProductionPRERequest(
-            episode_id=episode.episode_id, predecessor_id=episode.predecessor_flight_id,
-            successor_id=episode.successor_flight_id, dataset_instance_id="data2_2019",
-            decision_time=node.decision_time, information_cutoff=node.information_cutoff,
-            records=records, config_hash=config_hash,
-            registry_hash=registry_hash, connection_airport_id=episode.connection_airport_id,
-            operational_stage=node.operational_stage, node_index=node.node_index,
-            roll_minutes=node.roll_minutes)).pre_state)
-    return nodes, states
-
-
-def _normalization_rows(prefixes):
-    rows = []
-    for states in prefixes:
-        previous = None
-        for state in states:
-            row = {}
-            schedule = state.successor_state.get("schedule_reference")
-            if schedule and isinstance(schedule.value, dict):
-                departure = schedule.value.get("scheduled_departure_utc")
-                if departure is not None:
-                    row["schedule.signed_minutes_to_crs_departure"] = (
-                        departure - state.decision_node.decision_time).total_seconds() / 60
-            for variable, name in (("predecessor_motion", "motion.observation_age_minutes"),
-                                   ("current_weather", "weather.observation_age_minutes")):
-                lineage = next((entry for entry in state.variable_lineage
-                                if entry.scientific_variable == variable), None)
-                if lineage and lineage.age_seconds is not None:
-                    row[name] = lineage.age_seconds / 60
-            row["node.spacing_minutes"] = 0.0 if previous is None else (
-                state.decision_node.decision_time - previous).total_seconds() / 60
-            previous = state.decision_node.decision_time
-            rows.append(row)
-    return rows
-
+_timezones = partial(shared_load_timezones, ZONES_PATH)
+_config_hash = partial(shared_config_hash, ROOT)
+_registry_hash = partial(shared_registry_hash, ROOT)
+_stream_january_flights = partial(shared_stream_january_flights, ONTIME_CSV, PROJECTED)
+_stream_coupon_routes = partial(shared_stream_coupon_routes, (COUPON_CSV,))
+_weather_index_and_stats = partial(shared_weather_index_and_stats, DATA2, OUT, period="2019-01")
+_latest_weather = shared_latest_weather
+_reference_summary = shared_reference_summary
+_turnaround_cells = shared_turnaround_cells
+_taxi_cells = shared_taxi_cells
+_exposure_cells = shared_exposure_cells
+_passenger_cells = shared_passenger_cells
+_chain_stats = shared_chain_stats
+_cohort = partial(shared_sample_three_way_cohort, seed=SEED, train_count=TRAIN_COUNT,
+                  calibration_count=CALIBRATION_COUNT, development_count=DEVELOPMENT_COUNT)
+_typed_records = partial(shared_load_typed_records, csv_paths=(ONTIME_CSV,),
+                         projected=PROJECTED, zones_path=ZONES_PATH)
+_states = shared_publish_states
+_normalization_rows = shared_normalization_rows
+_source_stats = partial(shared_source_stats, root=ROOT)
+_weather_state_stats = shared_weather_state_stats
 
 def _pick_prefix(item, stage: OperationalStage, config_hash: str, registry_hash: str,
                    weather_index, weather_max_age_minutes: int):
@@ -361,37 +135,10 @@ def _pick_prefix(item, stage: OperationalStage, config_hash: str, registry_hash:
     return item, nodes[index], states[:index + 1]
 
 
-def _source_stats(paths):
-    return {str(path.relative_to(ROOT)): (path.stat().st_size, path.stat().st_mtime_ns)
-            for path in paths}
-
-
 def _raw_paths() -> list[Path]:
     paths = [ONTIME_CSV, COUPON_CSV, ZONES_PATH, STATION_MAP_PATH]
     paths.extend(sorted((DATA2 / "raw" / "weather" / "noaa" / "2019").glob("*.csv")))
     return paths
-
-
-def _weather_state_stats(prefixes) -> dict:
-    total = 0
-    supported = 0
-    supported_with_values = 0
-    abstain_reasons: Counter[str] = Counter()
-    for states in prefixes:
-        for state in states:
-            weather = state.current_state.get("current_weather")
-            if weather is None:
-                continue
-            total += 1
-            if weather.support_state is SupportState.SUPPORTED:
-                supported += 1
-                if isinstance(weather.value, dict) and weather.value.get("temperature_c") is not None:
-                    supported_with_values += 1
-            else:
-                abstain_reasons[weather.reason_code] += 1
-    return {"states_with_weather_slot": total, "supported": supported,
-            "abstain": total - supported, "abstain_reasons": dict(abstain_reasons),
-            "supported_with_temperature_values": supported_with_values}
 
 
 def main() -> None:
@@ -462,7 +209,7 @@ def main() -> None:
 
     normalization = fit_train_normalization(_normalization_rows(train_prefixes), split="train")
     pipeline = M1Pipeline.from_scientific_config(scientific, input_size=len(FEATURE_NAMES),
-                                                  normalization=normalization)
+                                                  normalization=normalization, hidden_size=16)
     train_examples = [M1TrainingExample.from_target_labels(
                           values=encode_pre_sequence(prefix, normalization),
                           labels=labels, bins=pipeline.bins)

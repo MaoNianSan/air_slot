@@ -176,7 +176,7 @@ def main() -> None:
     normalization = fit_train_normalization(_normalization_rows(train_prefixes), split="train")
     scientific = load_config_layers(ROOT / "configs").scientific
     pipeline = M1Pipeline.from_scientific_config(scientific, input_size=len(FEATURE_NAMES),
-                                                  normalization=normalization)
+                                                  normalization=normalization, hidden_size=16)
     train_pairs = [_example(selected, normalization, pipeline.bins) for selected in train_selected]
     calibration_pairs = [_example(selected, normalization, pipeline.bins)
                          for selected in calibration_selected]

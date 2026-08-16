@@ -1,0 +1,13 @@
+schema_version: "1.0.0"
+dataset_roles:
+  data2_2019: MAIN_TEXT_PRINCIPAL
+  data1_2019: APPENDIX_REPLICATION
+formal_horizons_minutes: [0, 15, 60]
+delay_thresholds_minutes: [15, 30, 60]
+evaluation_only_horizons_minutes: [0, 30, 60, 120, 180, 240, 300, 360, 420, 480]
+primary_unit: episode
+repeated_unit: decision_node
+monte_carlo_unit: scenario
+node_weighting: episode_normalized
+bootstrap_unit: episode
+final_test_mutable_fields: []

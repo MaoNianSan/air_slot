@@ -17,7 +17,7 @@ def test_variants_bootstrap_and_llm_absence_are_explicit(tmp_path:Path):
 
 
 def test_non_smoke_evaluation_is_not_automatically_a_paper_result():
-    result=Exp1Runner().run([{"episode_id":"e1","metric":1.0}],smoke=False)
+    result=Exp1Runner().run([{"episode_id":"e1","variant_metrics":{variant:1.0 for variant in Exp1Runner().variants}}],smoke=False)
     assert result.manifest.paper_result is False
 
 

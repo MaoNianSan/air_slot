@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-"""D2-10 formal temporal split (train/calibration/development/test) for data2.
+"""Formal temporal split (train/calibration/development/test).
 
-Frozen rule DATA2_TEMPORAL_SPLIT@1.0.0 / D2-TEMPORAL-SPLIT@1.0.0
-(user-approved 2026-08-14, D2-10 item 2, data2 scope): episodes are
+Frozen rule TEMPORAL_EPISODE_SPLIT@1.0.0: episodes are
 partitioned by the successor (later leg) service_date:
 
     train        <= 2019-06-30
@@ -10,11 +9,8 @@ partitioned by the successor (later leg) service_date:
     development  2019-08-01 .. 2019-09-30
     test         >= 2019-10-01
 
-Cohorts are sampled per split (fast tier 32/16/16/16); the train-frozen
-references fit on the train partition only (fit_period 2019-H1), so no
-cross-split leakage.  The split key is the successor leg's official
-FlightDate (service date), not a UTC timestamp, so local-day boundaries
-follow the official reporting date semantics.
+Cohorts and train-frozen references are evaluation concerns; the split key is
+the typed episode service date, not a raw dataset column.
 """
 from __future__ import annotations
 

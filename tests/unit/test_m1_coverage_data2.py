@@ -158,7 +158,7 @@ def test_label_builder_rejects_mixed_dataset_outcome():
     data1_out = _outcome("s", arr=t + timedelta(minutes=250),
                          dep=t + timedelta(minutes=195), dataset="data1_2019")
     from model.M1.target_builder import build_data2_target_labels
-    with pytest.raises(ContractError, match="M1_DATA2_TARGET_BUILDER_DATASET_MISMATCH"):
+    with pytest.raises(ContractError, match="M1_TARGET_DATASET_IDENTITY_MISMATCH"):
         build_data2_target_labels(episode=episode, node=nodes[0],
                                   predecessor_outcome=pred_out,
                                   successor_schedule=schedule,

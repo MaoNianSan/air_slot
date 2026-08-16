@@ -28,11 +28,17 @@ class M4DecisionRequest(FrozenModel):
     def aligned_chain(self):
         episode = self.pre_state.decision_node.episode_id
         node = self.pre_state.decision_node.decision_node_id
+        if not self.m1_scenarios or not self.m2_consequences:
+            raise ValueError("M4_SCENARIO_SET_EMPTY")
         if any(
             row.episode_id != episode or row.decision_node_id != node
             for row in self.m1_scenarios
         ):
             raise ValueError("M4_M1_PRE_IDENTITY_MISMATCH")
+        m1_ids = tuple(row.scenario_id for row in self.m1_scenarios)
+        m2_ids = tuple(row.scenario_id for row in self.m2_consequences)
+        if len(m1_ids) != len(set(m1_ids)) or len(m2_ids) != len(set(m2_ids)):
+            raise ValueError("M4_DUPLICATE_SCENARIO_ID")
         m1 = {
             (row.scenario_id, row.scenario_weight) for row in self.m1_scenarios
         }
@@ -43,6 +49,8 @@ class M4DecisionRequest(FrozenModel):
             row.decision_node_id != node for row in self.m2_consequences
         ):
             raise ValueError("M4_M1_M2_SCENARIO_LINEAGE_MISMATCH")
+        if any(row.scenario_id not in m1_ids for row in self.m2_consequences):
+            raise ValueError("M4_M2_SCENARIO_ID_UNKNOWN")
         scopes = []
         for row in self.m2_consequences:
             if tuple(
@@ -64,4 +72,7 @@ class M4DecisionRequest(FrozenModel):
         )
         if len(identities) != len(set(identities)):
             raise ValueError("M4_STABLE_CANDIDATE_INDEX_DUPLICATE")
+        candidate_ids = tuple(item.candidate_action_id for item in self.candidates)
+        if len(candidate_ids) != len(set(candidate_ids)):
+            raise ValueError("M4_DUPLICATE_CANDIDATE_ID")
         return self

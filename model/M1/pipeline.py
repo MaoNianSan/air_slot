@@ -14,10 +14,10 @@ class M1Pipeline:
     def smoke(cls,input_size=4):
         """Synthetic fixture helper; never resolves formal scientific bins."""
         bins={n:TargetBinContract(target_name=n,bin_width_minutes=5,max_finite_minutes=20) for n in ("R_IB","R_OB","T_TX")}
-        torch.manual_seed(0); return cls(OrderedEventGRU(input_size,8,bins),bins)
+        torch.manual_seed(0); return cls(OrderedEventGRU(input_size,16,bins),bins)
 
     @classmethod
-    def from_scientific_config(cls, scientific, *, input_size, normalization):
+    def from_scientific_config(cls, scientific, *, input_size, normalization, hidden_size=None):
         from .data import M1NormalizationArtifact
         if not isinstance(normalization, M1NormalizationArtifact) \
                 or normalization.fitted_split != "train":
@@ -33,7 +33,13 @@ class M1Pipeline:
                 raise ValueError(f"M1_FORMAL_FINITE_SUPPORT_UNFROZEN:{target}")
             bins[target]=TargetBinContract(target_name=target,
                 bin_width_minutes=width,max_finite_minutes=item.value)
-        hidden=scientific.parameters["m1_hidden_size"].value
+        selected = scientific.parameters["m1_hidden_size"].value
+        candidates = scientific.parameters["m1_hidden_size_candidates"].value
+        hidden = selected if hidden_size is None else hidden_size
+        if hidden is None:
+            raise ValueError("M1_HIDDEN_SIZE_SELECTION_REQUIRED")
+        if hidden not in candidates:
+            raise ValueError("M1_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES")
         return cls(OrderedEventGRU(input_size,hidden,bins),bins,normalization=normalization)
 
     def predict_distributions(self,values,lengths):

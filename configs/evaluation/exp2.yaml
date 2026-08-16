@@ -1,0 +1,7 @@
+schema_version: "1.0.0"
+experiment: exp2
+variants: [point_flight, point_full, distributional_flight, distributional_full, shuffled_lineage]
+point_source: frozen_m1_scenarios
+shuffle: within_scenario_association_only
+shuffle_seed: deterministic
+preserve_marginals: true

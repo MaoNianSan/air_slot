@@ -25,7 +25,10 @@ def test_layers_load_separately():
     layers = load_config_layers(Path("configs"))
     assert layers.scientific.schema_version == "1.0.0"
     assert layers.scientific.parameters["replay_lag_minutes"].value == 0
-    assert layers.scientific.parameters["forecast_horizons_minutes"].value == [0,30,60,120,180,240,300,360,420,480]
+    assert layers.scientific.parameters["forecast_horizons_minutes"].value == [0,15,60]
+    assert layers.scientific.parameters["delay_thresholds_minutes"].value == [15,30,60]
+    assert layers.scientific.parameters["m1_hidden_size"].value is None
+    assert layers.scientific.parameters["m1_hidden_size_candidates"].value == [16,32]
     assert layers.scientific.parameters["scenario_count"].value == 1000
     assert layers.scientific.parameters["weather_max_age_minutes"].value == 60
     assert layers.scientific.parameters["cloud_encoding"].value == "both"
