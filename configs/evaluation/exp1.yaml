@@ -1,8 +1,19 @@
-schema_version: "1.0.0"
+schema_version: "V5.0"
 experiment: exp1
-variants: [empirical, current, fixed_history, adaptive_history, independent_heads, leakage_diagnostic]
+variants: [CURRENT, FIXED_HISTORY, ADAPTIVE_HISTORY, RETROSPECTIVE_LEAKAGE_DIAGNOSTIC]
 same_pre_cutoff: true
 same_target: true
 same_split: true
 same_calibration_policy: true
-leakage_diagnostic: evaluation_only
+fixed_history_windows_minutes: [30, 60, 120, 180]
+hidden_size_candidates: [16, 32]
+target_fpr: 0.10
+secondary_target_fpr: [0.05, 0.20]
+sustained_warning_nodes: 2
+principal_event: D_TO_POST_GT_30
+headline_comparison: [ADAPTIVE_HISTORY, FIXED_HISTORY]
+headline_metric: DecisionWindowGain
+leakage_diagnostic:
+  EVALUATION_ONLY: true
+  INVALID_INFORMATION_STATE: true
+  MODEL_CANDIDATE: false

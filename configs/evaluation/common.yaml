@@ -1,13 +1,31 @@
-schema_version: "1.0.0"
+schema_version: "V5.0"
 dataset_roles:
   data2_2019: MAIN_TEXT_PRINCIPAL
   data1_2019: APPENDIX_REPLICATION
-formal_horizons_minutes: [0, 15, 60]
+split:
+  train: [2019-01-01, 2019-06-30]
+  calibration: [2019-07-01, 2019-07-31]
+  development: [2019-08-01, 2019-09-30]
+  final_test: [2019-10-01, 2019-12-31]
+statistical_unit:
+  independent: episode
+  repeated: decision_node
+  numerical: scenario
+bootstrap:
+  unit: episode
+  replicates: 2000
+rolling:
+  principal_minutes: 5
+  sensitivity_minutes: 10
+lead_times_minutes: [480, 420, 360, 300, 240, 180, 120, 60, 30, 15]
 delay_thresholds_minutes: [15, 30, 60]
-evaluation_only_horizons_minutes: [0, 30, 60, 120, 180, 240, 300, 360, 420, 480]
-primary_unit: episode
-repeated_unit: decision_node
-monte_carlo_unit: scenario
-node_weighting: episode_normalized
-bootstrap_unit: episode
+principal_risk:
+  lambda: 0.25
+  alpha: 0.90
+scenario_count:
+  smoke: 64
+  development: [250, 500]
+  paper_full: 1000
+  numerical_stress: 10000
+runtime_modes: [smoke, development, paper_full, numerical_stress]
 final_test_mutable_fields: []

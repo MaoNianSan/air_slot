@@ -1,0 +1,102 @@
+{
+  "manifest": {
+    "experiment": "exp2",
+    "dataset_instance_id": "data2_2019",
+    "dataset_role": "MAIN_TEXT_PRINCIPAL",
+    "variant_ids": [
+      "point_flight",
+      "point_full",
+      "distributional_flight",
+      "distributional_full",
+      "shuffled_lineage"
+    ],
+    "input_manifest_hash": "sha256:fa41837493b6ac8a8cc5ac0ba67e2351637440cd20d48466a4ee4ab0eb1e6fed",
+    "config_hash": "sha256:efc32d2dc4128ef1a38f9d81c778469b69248c628522a601539a87a60820bdf6",
+    "status": "PASS",
+    "paper_result": false,
+    "smoke": true,
+    "git_commit_sha": "UNSET",
+    "scientific_config_hash": "UNSET",
+    "evaluation_config_hash": "UNSET",
+    "registry_manifest_hash": "UNSET",
+    "split_contract_hash": "UNSET",
+    "cohort_hash": "sha256:e0ef3a4ecee10a7563d1eb7ac0aa75ef60ee778a89889964c920014720054fb4",
+    "variant_hashes": {
+      "point_flight": "sha256:73833b4f62c295e2d4dbeb49f74653e00e3f5400b1a266fd71f8548afa7b7889",
+      "point_full": "sha256:ff8837d88c11738ec3279f3f1bebb943dfa5198f467ca96ced82c7dfa060b290",
+      "distributional_flight": "sha256:597a3f10cb42eb996efb8bbe0768455861640fd1294511755db03231f980115c",
+      "distributional_full": "sha256:cf591b07416ec23760d23ed32c4ddf0dfb7cb40deb8bbd5dc297ed28f7e322d9",
+      "shuffled_lineage": "sha256:f7f8f907f5ccebcfbbf8a72dd1b5156fdaf2265a6c65d8570544f65722d2e6e7"
+    },
+    "model_artifact_hashes": {},
+    "scenario_count": 0,
+    "random_seed": 0,
+    "timestamp": "2026-08-16T11:50:06.807120+00:00",
+    "split": "DEVELOPMENT",
+    "primary_metric": "metric",
+    "tuning_events": [],
+    "paper_eligible": false,
+    "runtime_mode": "smoke",
+    "formal_output_hash": "sha256:fa41837493b6ac8a8cc5ac0ba67e2351637440cd20d48466a4ee4ab0eb1e6fed",
+    "rng_streams": [
+      "m1_scenario",
+      "m3_m4_response",
+      "exp2_lineage_corruption",
+      "bootstrap",
+      "llm_case_selection",
+      "llm_repetition"
+    ]
+  },
+  "rows": [
+    {
+      "experiment": "exp2",
+      "variant": "point_flight",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp2",
+      "variant": "point_full",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp2",
+      "variant": "distributional_flight",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp2",
+      "variant": "distributional_full",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp2",
+      "variant": "shuffled_lineage",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    }
+  ]
+}

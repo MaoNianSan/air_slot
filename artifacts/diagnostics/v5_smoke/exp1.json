@@ -1,0 +1,114 @@
+{
+  "manifest": {
+    "experiment": "exp1",
+    "dataset_instance_id": "data2_2019",
+    "dataset_role": "MAIN_TEXT_PRINCIPAL",
+    "variant_ids": [
+      "empirical",
+      "current",
+      "fixed_history",
+      "adaptive_history",
+      "independent_heads",
+      "leakage_diagnostic"
+    ],
+    "input_manifest_hash": "sha256:fa41837493b6ac8a8cc5ac0ba67e2351637440cd20d48466a4ee4ab0eb1e6fed",
+    "config_hash": "sha256:593497699a3c3060b94cd43194d8c2a7b8de8a7aee92d57caa4d5a201576d06f",
+    "status": "PASS",
+    "paper_result": false,
+    "smoke": true,
+    "git_commit_sha": "UNSET",
+    "scientific_config_hash": "UNSET",
+    "evaluation_config_hash": "UNSET",
+    "registry_manifest_hash": "UNSET",
+    "split_contract_hash": "UNSET",
+    "cohort_hash": "sha256:e0ef3a4ecee10a7563d1eb7ac0aa75ef60ee778a89889964c920014720054fb4",
+    "variant_hashes": {
+      "empirical": "sha256:c0505575610b4cf522d9559bd64524f4a9a796a499e2eac974305bfaf7f96940",
+      "current": "sha256:a6d7b5c0c379c6b8bee28d89b0bf8815cf74af4543abeb0ccf43bb9f6b53ab9c",
+      "fixed_history": "sha256:eda2ddc5e6a886a11a94ec9805a6dfee8be4714a14150d818c9f32a9c7d88ee1",
+      "adaptive_history": "sha256:d9f194c7209cd070b245ed592aa3fafbe9c414152252583418bdde47c66bdb1b",
+      "independent_heads": "sha256:76e989e7036403927039bffd6cba4757155218dd8b5083d6c69985a4d9933d3a",
+      "leakage_diagnostic": "sha256:0201a3c75cb1d2825b8d791cb874c77dbb8d317f2c1a3319b5135fd5ae38a73e"
+    },
+    "model_artifact_hashes": {},
+    "scenario_count": 0,
+    "random_seed": 0,
+    "timestamp": "2026-08-16T11:50:06.804119+00:00",
+    "split": "DEVELOPMENT",
+    "primary_metric": "metric",
+    "tuning_events": [],
+    "paper_eligible": false,
+    "runtime_mode": "smoke",
+    "formal_output_hash": "sha256:fa41837493b6ac8a8cc5ac0ba67e2351637440cd20d48466a4ee4ab0eb1e6fed",
+    "rng_streams": [
+      "m1_scenario",
+      "m3_m4_response",
+      "exp2_lineage_corruption",
+      "bootstrap",
+      "llm_case_selection",
+      "llm_repetition"
+    ]
+  },
+  "rows": [
+    {
+      "experiment": "exp1",
+      "variant": "empirical",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp1",
+      "variant": "current",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp1",
+      "variant": "fixed_history",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp1",
+      "variant": "adaptive_history",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp1",
+      "variant": "independent_heads",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    },
+    {
+      "experiment": "exp1",
+      "variant": "leakage_diagnostic",
+      "episode_id": "smoke-e1",
+      "decision_node_id": null,
+      "metric": 1.0,
+      "status": "SMOKE",
+      "model_path": "FORMAL",
+      "information_cutoff": null
+    }
+  ]
+}

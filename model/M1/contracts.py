@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Literal
 from pydantic import Field, model_validator, computed_field
 from model.common.value_objects import FrozenModel
 from model.common.value_objects import ProvenanceRef
-from .semantics import external_target_name, takeoff_delay_minutes
+from .semantics import external_target_name
 
 
 TargetName = Literal["R_IB", "R_OB", "T_TX"]
@@ -90,6 +90,8 @@ class AlignedScenario(FrozenModel):
     t_ib_utc: str | None = None
     t_ob_utc: str | None = None
     t_to_utc: str | None = None
+    scheduled_ob_utc: str | None = None
+    tx_reference_minutes: float | None = None
     ib_observed: bool
     ob_observed: bool
     ib_support: str
@@ -103,7 +105,16 @@ class AlignedScenario(FrozenModel):
     @property
     def d_to_minutes(self) -> float | None:
         """Derived total takeoff delay; never an independent stochastic head."""
-        return takeoff_delay_minutes(self.r_ob_minutes, self.t_tx_minutes)
+        if self.t_to_utc and self.scheduled_ob_utc and self.tx_reference_minutes is not None:
+            try:
+                total = (
+                    datetime.fromisoformat(self.t_to_utc).timestamp()
+                    - datetime.fromisoformat(self.scheduled_ob_utc).timestamp()
+                ) / 60.0
+                return max(0.0, total - float(self.tx_reference_minutes))
+            except ValueError:
+                pass
+        return None
 
     @property
     def target_semantics(self) -> dict[str, str]:

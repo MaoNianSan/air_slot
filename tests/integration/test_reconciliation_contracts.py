@@ -49,7 +49,7 @@ def test_formal_m1_requires_explicit_hidden_size_selection():
     assert selected.model.hidden_size == 16
 
 
-def test_takeoff_delay_is_derived_from_off_block_and_taxi_delay():
+def test_legacy_additive_helper_is_not_the_v5_formal_delay_contract():
     assert takeoff_delay_minutes(12.5, 7.5) == 20.0
     assert takeoff_delay_minutes(None, 7.5) is None
     assert takeoff_delay_minutes(12.5, None) is None
@@ -112,10 +112,12 @@ def test_exp2_point_and_shuffle_reuse_the_frozen_m1_source():
     repeated, repeated_audit = shuffle_scenario_lineage(scenarios, seed=19)
 
     assert point["source_m1_artifact_hash"] == source_hash
-    assert point["r_ib_minutes"] == 7.0
-    assert point["r_ob_minutes"] == 17.5
-    assert point["t_tx_minutes"] == 5.0
-    assert point["d_to_minutes"] == 22.5
+    assert point["point_rule"] == "WEIGHTED_JOINT_SCENARIO_MEDOID"
+    assert point["r_ib_minutes"] == 8.0
+    assert point["r_ob_minutes"] == 20.0
+    assert point["t_tx_minutes"] == 6.0
+    assert point["d_to_minutes"] is None
+    assert point["d_to_status"] == "REFERENCE_TERMS_REQUIRED"
     assert first == repeated
     assert first_audit == repeated_audit
     assert first_audit["source_m1_artifact_hash"] == source_hash
