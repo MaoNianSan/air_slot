@@ -41,8 +41,7 @@ def test_refactor_behavioral_equivalence_across_pre_m4():
         stage="PRE_IB", observed={}, count=4, seed=11)
     assert [row.scenario_id for row in scenarios] == [0, 1, 2, 3]
     assert [row.scenario_seed_key for row in scenarios] == [row.scenario_seed_key for row in repeated]
-    assert [row.d_to_minutes for row in scenarios] == [
-        row.r_ob_minutes + row.t_tx_minutes for row in scenarios]
+    assert [row.d_to_minutes for row in scenarios] == [None] * len(scenarios)
 
     m2_scenarios = ({"decision_node_id": "node", "scenario_id": 0, "scenario_weight": 1.0,
                      "r_ib_minutes": 10, "r_ob_minutes": 5, "t_tx_minutes": 15,

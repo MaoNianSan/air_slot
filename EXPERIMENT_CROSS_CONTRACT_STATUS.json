@@ -1,0 +1,116 @@
+{
+  "checks": {
+    "DATA1_PORTABILITY_PROTOCOL_READY": {
+      "evidence": "support transition helper",
+      "status": "PASS"
+    },
+    "DATA1_SILENT_SUBSTITUTION_TEST_READY": {
+      "evidence": "hard gate helper",
+      "status": "PASS"
+    },
+    "DATA2_SPLIT_FROZEN": {
+      "evidence": "sha256:2643cc19e6679876466964ef37134566c1ad01ca1655773b10bc66a16057d86d",
+      "status": "PASS"
+    },
+    "DEEPSEEK_PROTOCOL_FROZEN": {
+      "evidence": "evaluation-only schema",
+      "status": "PASS"
+    },
+    "EPISODE_LEAKAGE": {
+      "evidence": "exp.common.split.validate_episode_split",
+      "status": "PASS"
+    },
+    "EXP1_VARIANTS_READY": {
+      "evidence": "protocol variant map",
+      "status": "PASS"
+    },
+    "EXP2_FORMAL_MULTI_ACTION_GATE_READY": {
+      "evidence": "formal feasibility gate",
+      "status": "PASS"
+    },
+    "EXP2_LINEAGE_CORRUPTION_VALIDATED": {
+      "evidence": "marginal-preserving shuffle",
+      "status": "PASS"
+    },
+    "EXP2_POINT_RULE_FROZEN": {
+      "evidence": "weighted joint medoid",
+      "status": "PASS"
+    },
+    "EXP2_VARIANTS_READY": {
+      "evidence": "protocol variant map",
+      "status": "PASS"
+    },
+    "EXP3_FORMAL_FEASIBILITY_AUDIT_READY": {
+      "evidence": "feasibility audit helper",
+      "status": "PASS"
+    },
+    "EXP3_VARIANTS_READY": {
+      "evidence": "one-change-at-a-time ablations",
+      "status": "PASS"
+    },
+    "EXP4_RESPONSE_SENSITIVITY_FROZEN": {
+      "evidence": "development freeze required",
+      "status": "PARTIAL"
+    },
+    "EXP4_VALUATION_SENSITIVITY_FROZEN": {
+      "evidence": "development freeze required",
+      "status": "PARTIAL"
+    },
+    "EXP4_VARIANTS_READY": {
+      "evidence": "sensitivity/portability/deployability map",
+      "status": "PASS"
+    },
+    "FORMAL_EVAL_BOUNDARY": {
+      "evidence": "formal artifact write-once guard",
+      "status": "PASS"
+    },
+    "M1_DELAY_ADDITIVITY_CONFLICT_REMOVED": {
+      "evidence": "derived event-time helper",
+      "status": "PASS"
+    },
+    "M1_EVENT_TIME_CONTRACT": {
+      "evidence": "model.M1.semantics",
+      "status": "PASS"
+    },
+    "M1_MODEL_FROZEN": {
+      "evidence": "hidden-size winner requires development selection",
+      "status": "PARTIAL"
+    },
+    "M1_SCENARIO_CONTRACT": {
+      "evidence": "model.M1.scenarios",
+      "status": "PASS"
+    },
+    "M2_CONTRACT_FROZEN": {
+      "evidence": "valuation registry remains development-only",
+      "status": "PARTIAL"
+    },
+    "M2_FIXED_FORMAL_SCOPE": {
+      "evidence": "fixed scope contract in cross-contract",
+      "status": "PASS"
+    },
+    "M3_REGISTRY_FROZEN": {
+      "evidence": "registry present; response parameters not fully frozen",
+      "status": "PARTIAL"
+    },
+    "M4_PRINCIPAL_CONFIG_FROZEN": {
+      "evidence": "lambda=0.25 alpha=0.90",
+      "status": "PASS"
+    },
+    "RNG_STREAMS_SEPARATED": {
+      "evidence": "m1_scenario,m3_m4_response,exp2_lineage_corruption,bootstrap,llm_case_selection,llm_repetition",
+      "status": "PASS"
+    },
+    "RUNTIME_PROTOCOL_READY": {
+      "evidence": "smoke/development/paper_full/numerical_stress",
+      "status": "PASS"
+    },
+    "STRATA_FROZEN": {
+      "evidence": "exp.common.stratification",
+      "status": "PASS"
+    }
+  },
+  "contract_hash": "sha256:c826148a147d76be3a9a94261eeb022e72a0a1f42fdc0f8a22eb36826e5d5f76",
+  "paper_full_approval_required": true,
+  "paper_full_eligible": false,
+  "schema_version": "V5.0"
+}

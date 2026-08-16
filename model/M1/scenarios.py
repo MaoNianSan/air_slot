@@ -5,7 +5,7 @@ from .contracts import AlignedScenario, TargetBinContract
 
 
 def _uniform(seed: int, episode: str, scenario: int, target: str):
-    key=f"{seed}|{episode}|{scenario}|{target}"; integer=int(sha256(key.encode()).hexdigest()[:16],16)
+    key=f"m1_scenario|{seed}|{episode}|{scenario}|{target}"; integer=int(sha256(key.encode()).hexdigest()[:16],16)
     return (integer + .5) / (2**64), f"sha256:{sha256(key.encode()).hexdigest()}"
 
 

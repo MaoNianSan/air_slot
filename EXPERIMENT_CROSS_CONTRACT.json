@@ -1,0 +1,84 @@
+{
+  "bootstrap_replicates": 2000,
+  "bootstrap_unit": "episode",
+  "calibration_end": "2019-07-31",
+  "calibration_start": "2019-07-01",
+  "contract_hash": "sha256:c826148a147d76be3a9a94261eeb022e72a0a1f42fdc0f8a22eb36826e5d5f76",
+  "corruption_q": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "deep_shuffle_replicates": 100,
+  "delay_thresholds_minutes": [
+    15,
+    30,
+    60
+  ],
+  "development_end": "2019-09-30",
+  "development_scenarios": [
+    250,
+    500
+  ],
+  "development_start": "2019-08-01",
+  "final_test_end": "2019-12-31",
+  "final_test_start": "2019-10-01",
+  "fixed_history_windows_minutes": [
+    30,
+    60,
+    120,
+    180
+  ],
+  "full_shuffle_replicates": 20,
+  "hidden_size_candidates": [
+    16,
+    32
+  ],
+  "independent_unit": "episode",
+  "lead_times_minutes": [
+    480,
+    420,
+    360,
+    300,
+    240,
+    180,
+    120,
+    60,
+    30,
+    15
+  ],
+  "monte_carlo_grid": [
+    250,
+    500,
+    1000,
+    2000,
+    10000
+  ],
+  "numerical_reference_scenarios": 10000,
+  "numerical_unit": "scenario",
+  "paper_full_scenarios": 1000,
+  "portability_dataset": "data1_2019",
+  "principal_alpha": 0.9,
+  "principal_dataset": "data2_2019",
+  "principal_lambda": 0.25,
+  "principal_roll_minutes": 5,
+  "repeated_unit": "decision_node",
+  "rng_streams": [
+    "m1_scenario",
+    "m3_m4_response",
+    "exp2_lineage_corruption",
+    "bootstrap",
+    "llm_case_selection",
+    "llm_repetition"
+  ],
+  "schema_version": "V5.0",
+  "sensitivity_roll_minutes": [
+    10
+  ],
+  "smoke_scenarios": 64,
+  "split_contract_hash": "sha256:2643cc19e6679876466964ef37134566c1ad01ca1655773b10bc66a16057d86d",
+  "train_end": "2019-06-30",
+  "train_start": "2019-01-01"
+}

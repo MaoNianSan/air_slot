@@ -3,7 +3,7 @@ from scipy.special import betaincinv
 from model.common.errors import ContractError
 
 def stable_uniform(seed,episode,scenario,action,response_component):
-    key=f"{seed}|{episode}|{scenario}|{action}|{response_component}"
+    key=f"m3_m4_response|{seed}|{episode}|{scenario}|{action}|{response_component}"
     return (int(sha256(key.encode()).hexdigest()[:16],16)+.5)/2**64
 
 def response_value(candidate,*,seed,episode,scenario,component=None):
