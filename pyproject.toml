@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "air-slot"
+version = "0.1.0"
+description = "Evidence-aware airline recovery scientific foundation"
+requires-python = ">=3.11,<3.12"
+classifiers = ["Programming Language :: Python :: 3.11"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+pythonpath = ["."]

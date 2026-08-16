@@ -1,72 +1,22 @@
 # ===== Python =====
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.so
-
-# Distribution / packaging
-*.egg
-*.egg-info/
-dist/
-build/
-eggs/
-*.whl
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
 .pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints/
-*.ipynb_checkpoints*
-
-# pyenv / virtual environments
-.venv/
-venv/
-env/
-ENV/
-env.bak/
-venv.bak/
-.python-version
+.mypy_cache/
+.ruff_cache/
+.pyright/
 
 # ===== IDE & Editor =====
 .vscode/
 .idea/
 *.swp
 *.swo
-*.sublime-project
-*.sublime-workspace
-.spyproject/
-*.sublime-workspace
 
 # ===== OS =====
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 Desktop.ini
 
@@ -75,70 +25,28 @@ Desktop.ini
 .env.*
 !.env.example
 *.local
+.venv/
+venv/
+env/
 
-# ===== Project Specific =====
-# Generated output logs — big baseline/runtime folders stay local;
-# top-level audit outputs (md/json) are synced
-output_logs/*
-!output_logs/*.md
-!output_logs/*.json
+# ===== Raw / local dataset content (kept local, never uploaded) =====
+# Data roots are read-only local inputs; only code/config/schema/docs are versioned.
+data1/raw/
+data1/_download/
+data2/raw/
+data2/_download/
+data2/logs/
+data2/manifests/
 
-# Raw data from external sources (can be re-downloaded, total ~80 GB)
-# Includes: eurostat, opensky, metar, iem_metar, ourairports
-data/raw/
-
-# Generated binary artifacts (large, regenerable) — never commit
-*.parquet
-*.joblib
-
-# Audit reports & analysis artifacts — published to GitHub (audit trail)
-# Exception: pytest_validator_tmp is throwaway validator output, still excluded
+# ===== Generated experiment / validation outputs =====
+outputs/
 reports/
-!reports/
-!reports/**
-reports/pytest_validator_tmp/
+data2/reports/
 
-# Staging / temporary folders
-.staging/
+# ===== Local temporary files =====
 *.tmp
 *.bak
-*.backup
+*.log
 
-# ===== PRE V2 Local Runtime Artifacts =====
-# Generated Core output, staging bundles, manifests and runtime logs
-/pre/output_core/
-
-# Retired PRE runtime output (kept ignored after local cleanup)
-/pre/output/
-
-# Reusable local extraction/model cache
-/pre/cache/
-
-# Local M4 formal/evaluation artifacts are generated only after upstream gates.
-/overall_run/output/m4/
-/overall_run/output/evaluation/
-
-# Root-level local status/audit files
-/PRE_DEBUG_STATUS.md
-/PRE_GITHUB_UPLOAD_AUDIT.md
-/PRE_GITHUB_UPLOAD_FILELIST.txt
-/PRE_GITHUB_UPLOAD_BLOCKERS.txt
-
-# Additional Python tooling caches
-.mypy_cache/
-.ruff_cache/
-.pyright/
-
-# ============================================================
-# PRE local runtime artifacts
-# ============================================================
-
-/pre/output/
-/pre/output_core/
-/pre/cache/
-
-# Local benchmark/runtime outputs
-/pre/tools/output/
-*.benchmark.tmp
-*.profile
-*.prof
+# ===== Spec archive (redundant with extracted specs/) =====
+specs/*.zip

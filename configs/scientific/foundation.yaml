@@ -1,0 +1,36 @@
+schema_version: "1.0.0"
+parameters:
+  replay_lag_minutes: {freeze_state: FROZEN, value: 0}
+  data2_weather_replay_lag_minutes:
+    freeze_state: FROZEN
+    value: 5
+    provenance: {selection_state: DEVELOPMENT_FROZEN, scope: data2_2019, decision: "D2-6 replay-lag new decision 2026-08-16 (user approved): data2 NOAA-ISD weather availability lag 5 min; data1 replay_lag_minutes unchanged at 0"}
+  replay_lag_sensitivity_minutes: {freeze_state: FROZEN, value: [0, 5, 10]}
+  weather_max_age_minutes: {freeze_state: FROZEN, value: 60}
+  cloud_encoding: {freeze_state: FROZEN, value: both}
+  roll_minutes: {freeze_state: FROZEN, value: 5}
+  roll_sensitivity_minutes: {freeze_state: FROZEN, value: [10]}
+  forecast_horizons_minutes: {freeze_state: FROZEN, value: [0, 30, 60, 120, 180, 240, 300, 360, 420, 480]}
+  delay_thresholds_minutes: {freeze_state: FROZEN, value: [15, 30, 60]}
+  m1_hidden_size: {freeze_state: FROZEN, value: 8}
+  m1_hidden_size_sensitivity: {freeze_state: FROZEN, value: [16]}
+  m1_bin_width_minutes: {freeze_state: FROZEN, value: 5}
+  m1_r_ib_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 360
+    provenance: &m1_target_support_provenance
+      selection_state: DEVELOPMENT_FROZEN
+      statistic: rolling_node_target_support_profile
+      included_splits: ["Train 2019-01--2019-06", "Development 2019-08--2019-09"]
+      excluded_splits: ["Calibration 2019-07", "Final test 2019-10--2019-12"]
+  m1_r_ob_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 180
+    provenance: *m1_target_support_provenance
+  m1_t_tx_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 60
+    provenance: *m1_target_support_provenance
+  scenario_count: {freeze_state: FROZEN, value: 1000}
+  m4_lambda: {freeze_state: FROZEN, value: 0.25}
+  m4_alpha: {freeze_state: FROZEN, value: 0.90}

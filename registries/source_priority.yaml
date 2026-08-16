@@ -1,0 +1,5 @@
+schema_version: "1.0.0"
+priorities:
+  - {scientific_object: current_weather, dataset_instance_id: data1_2019, rule_ids: [D1-METAR], priority: 10, condition: latest_legal, version: "1.0.0"}
+  - {scientific_object: schedule_reference, dataset_instance_id: data2_2019, rule_ids: [D2-BTS-SCHEDULE], priority: 10, condition: crs_reference, version: "1.0.0"}
+  - {scientific_object: realized_operational_event, dataset_instance_id: data2_2019, rule_ids: [D2-BTS-ACTUAL], priority: 10, condition: posthoc_only, version: "1.0.0"}
