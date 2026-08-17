@@ -98,7 +98,7 @@ path is not overwritten unless an explicit low-level override is supplied outsid
 
 ## D. Unresolved Items
 
-- `H_STAR=32` is Development-frozen by `D2_H_STAR`; `W_STAR` remains unselected pending the Development-only fixed-history comparison and human approval.
+- `H_STAR=32` and `W_STAR=30 minutes` are Development-frozen by `D2_H_STAR` and `D1_W_STAR`.
 - Development-frozen Exp1 warning thresholds have not been produced.
 - `N_FORMAL_MULTI` is unknown because no real frozen formal cohort was generated in this turn.
 - The paper-frozen M2 valuation registry/formal estimand artifact is not available.

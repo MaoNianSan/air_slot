@@ -33,6 +33,11 @@ def test_layers_load_separately():
     assert hidden_size.provenance["decision_id"] == "D2_H_STAR"
     assert hidden_size.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["m1_hidden_size_candidates"].value == [16,32]
+    fixed_window = layers.scientific.parameters["m1_fixed_history_window_minutes"]
+    assert fixed_window.freeze_state.value == "FROZEN"
+    assert fixed_window.value == 30
+    assert fixed_window.provenance["decision_id"] == "D1_W_STAR"
+    assert fixed_window.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["scenario_count"].value == 1000
     assert layers.scientific.parameters["weather_max_age_minutes"].value == 60
     assert layers.scientific.parameters["cloud_encoding"].value == "both"

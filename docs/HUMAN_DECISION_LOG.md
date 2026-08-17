@@ -101,3 +101,17 @@ frozen.
 - affected files: `configs/scientific/foundation.yaml`; `artifacts/diagnostics/v5_development_freeze/m1_hstar_evidence.json`; Development-only W-selection runner
 - affected hashes: H evidence `sha256:a56a7254e5e08c959d8e9d8be58456469b2f37a293f33495dfaf58cdf452b3a5`; M1 base cache `sha256:9c647c03a4bb59d8cc6568e14a34f431f5da84b6d179e55d2e416fe7e7ed180a`
 - reversible_before_paper_full: `YES`
+
+## D1_W_STAR
+
+- decision_id: `D1_W_STAR`
+- date/time: `2026-08-17T10:56:05+08:00`
+- status: `APPROVED`
+- question: Select `W_STAR` from 30, 60, 120, and 180 minutes after three-seed H=32 FIXED_HISTORY Development evidence is available.
+- options: `W_30`; `W_60`; `W_120`; `W_180`; `DEFER`
+- Codex recommendation: `W_30`
+- user decision: `W_STAR = 30 minutes`
+- scientific rationale: W=30 had the lowest mean Development episode-balanced joint NLL (`3.907730`) and was the shortest candidate in the pre-specified 0.5 percent practical-equivalence region. Relative differences from W=30 were 0.0891 percent for W=60, 0.2703 percent for W=120, and 0.4326 percent for W=180. No downstream metric or Final Test data participated.
+- affected files: `configs/scientific/foundation.yaml`; `artifacts/diagnostics/v5_development_freeze/m1_wstar_evidence.json`; future Development-only warning-threshold runner
+- affected hashes: W evidence `sha256:35fed8273d737762a8c48321a1ce8bbd0aee76ff7c27537a57266430d3038fa1`; M1 base cache `sha256:9c647c03a4bb59d8cc6568e14a34f431f5da84b6d179e55d2e416fe7e7ed180a`
+- reversible_before_paper_full: `YES`

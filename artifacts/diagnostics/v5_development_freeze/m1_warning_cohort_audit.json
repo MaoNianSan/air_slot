@@ -1,0 +1,82 @@
+{
+  "status": "HUMAN_DECISION_REQUIRED",
+  "decision_id": "D3_WARNING_COHORT_PREREQUISITES",
+  "development_only": true,
+  "paper_result": false,
+  "development_period": {
+    "start": "2019-08-01",
+    "end": "2019-09-30"
+  },
+  "dev_model_selection_episode_count": 128,
+  "development_episode_pool_count": 951359,
+  "total_eligible_episode_count": null,
+  "positive_episode_count": null,
+  "negative_episode_count": null,
+  "eligible_decision_node_count": null,
+  "abstained_episode_count": null,
+  "insufficient_history_episode_count": null,
+  "fpr_step": null,
+  "h_star": 32,
+  "w_star_minutes": 30,
+  "max_canonical_nodes_at_w_star": 7,
+  "base_cache_hash": "sha256:9c647c03a4bb59d8cc6568e14a34f431f5da84b6d179e55d2e416fe7e7ed180a",
+  "normalization_hash": "sha256:52885ab554b994f2332b4c9a26e00652e995d3fc24220dc0164abe83a8d0e08d",
+  "model_hash": null,
+  "calibration_hash": null,
+  "available_w30_models": [
+    {
+      "training_seed": 20260813,
+      "development_joint_nll": 3.9064841236769543,
+      "model_hash": "sha256:64f3de9ff5822e82573d6895786701e0db614ee69c09c166a8c3c36c33a01e62",
+      "calibration_hash": "sha256:84e1ba665801b1cca737c10da2478b1d426399f79b34b57d2e2fe6e6d1320582"
+    },
+    {
+      "training_seed": 20260814,
+      "development_joint_nll": 3.8436563037351372,
+      "model_hash": "sha256:d659b14d1156813e8e8e7a6f2fc103c18a645d4a51551b74bb5e7e597b8319f2",
+      "calibration_hash": "sha256:007f0898d4581fecd3a9aa00d62bb45707b5baf5ff614a9e2eec9095b56e05ca"
+    },
+    {
+      "training_seed": 20260815,
+      "development_joint_nll": 3.973049588926819,
+      "model_hash": "sha256:f34ff6dfe916eab94b74d7cf5f50d0b680c40fe498f4822160d755bf940455e5",
+      "calibration_hash": "sha256:e43720ca09583f6073d1d42b0abc0a47feddc65042572799d2f0b91640eac05e"
+    }
+  ],
+  "frozen_model_artifact_status": "NOT_FROZEN",
+  "formal_warning_event": "D_TO_POST_GT_30",
+  "formal_warning_probability_status": "CONTRACT_INCOMPLETE",
+  "formal_warning_probability_reason": "M1 has ordered R_IB/R_OB/T_TX heads rather than a direct D_TO head. Formal D_TO requires event-time and train-frozen taxi-reference terms; the W30 checkpoints do not freeze a direct joint-tail or scenario-enrichment rule for this warning probability.",
+  "full_cohort_feasibility_status": "NOT_FEASIBLE_WITH_CURRENT_PIPELINE_WITHOUT_NEW_STREAMING_BUILD",
+  "full_cohort_feasibility_evidence": {
+    "current_builder_strategy": "bounded reservoir before typed PRE construction",
+    "current_cached_development_episodes": 128,
+    "current_cached_development_examples": 1782,
+    "current_total_cache_episodes": 320,
+    "current_total_cache_nodes": 4979,
+    "current_cache_build_seconds": 1352.318455200002,
+    "current_cache_peak_rss_mb": 2769.86328125,
+    "development_pool_to_cached_development_ratio": 7432.4921875,
+    "pool_count_is_not_final_pre_support_eligibility_count": true,
+    "all_development_streaming_inference_path_exists": false
+  },
+  "sampling_performed": false,
+  "development_retraining_performed": false,
+  "normalization_refit_performed": false,
+  "scenario_generation_performed": false,
+  "raw_data_reads_during_this_audit": 0,
+  "final_test_access_count": 0,
+  "blockers": [
+    "No single W30 model checkpoint or pre-specified ensemble rule is frozen.",
+    "The formal D_TO greater-than-30 probability path is not frozen for the ordered M1 heads and taxi reference.",
+    "The current preparation path cannot determine final PRE/support eligibility across the 951359-episode Development pool without a new scalable streaming build; sampling requires prior human approval."
+  ],
+  "required_human_decisions": [
+    "Freeze one deterministic W30 checkpoint or approve a pre-specified ensemble rule.",
+    "Approve the formal D_TO tail-probability construction using train-frozen reference terms.",
+    "Authorize a scalable full-Development build or approve an explicit deterministic sampling design before any smaller cohort is used."
+  ],
+  "warning_operating_points_status": "NOT_RUN_PREREQUISITES_UNRESOLVED",
+  "warning_threshold_status": "NOT_FROZEN",
+  "paper_full_run": false
+}

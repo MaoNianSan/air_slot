@@ -24,6 +24,18 @@ parameters:
       evidence_hash: sha256:a56a7254e5e08c959d8e9d8be58456469b2f37a293f33495dfaf58cdf452b3a5
       final_test_access_count: 0
   m1_hidden_size_candidates: {freeze_state: FROZEN, value: [16, 32]}
+  m1_fixed_history_window_minutes:
+    freeze_state: FROZEN
+    value: 30
+    provenance:
+      selection_state: DEVELOPMENT_FROZEN
+      decision_id: D1_W_STAR
+      decision_date: "2026-08-17"
+      selection_metric: episode-balanced Development joint NLL
+      practical_equivalence_threshold: 0.005
+      evidence: artifacts/diagnostics/v5_development_freeze/m1_wstar_evidence.json
+      evidence_hash: sha256:35fed8273d737762a8c48321a1ce8bbd0aee76ff7c27537a57266430d3038fa1
+      final_test_access_count: 0
   m1_bin_width_minutes: {freeze_state: FROZEN, value: 5}
   m1_r_ib_max_finite_minutes:
     freeze_state: FROZEN
