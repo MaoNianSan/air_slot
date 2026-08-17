@@ -162,6 +162,7 @@ def iter_lightweight_flights(
     *,
     heartbeat: Heartbeat | None = None,
     phase: str = "DATA_PREPARATION_ONTIME",
+    include_warning_fields: bool = False,
 ):
     started = last_heartbeat = time.perf_counter()
     input_rows = skipped = 0
@@ -235,7 +236,7 @@ def iter_lightweight_flights(
                         "Dest",
                     )
                 }
-                yield {
+                row = {
                     "flight_id": deterministic_id("flight", flight_parts),
                     "aircraft_id": value("Tail_Number").strip(),
                     "aircraft_id_namespace": "REGISTRATION",
@@ -243,29 +244,35 @@ def iter_lightweight_flights(
                     "destination_airport_id": destination,
                     "event_start_time": scheduled_departure,
                     "event_end_time": scheduled_arrival,
-                    "scheduled_departure_utc": scheduled_departure,
-                    "scheduled_arrival_utc": scheduled_arrival,
                     "actual_arrival_utc": actual_arrival,
                     "actual_departure_utc": actual_departure,
-                    "wheels_off_utc": wheels_off,
-                    "taxi_out_minutes": taxi_out,
-                    "canonical_schedule_record_id": deterministic_id(
-                        "canonical-flight",
-                        {
-                            "raw": deterministic_id(
-                                "raw",
-                                {
-                                    "source": "bts_ontime",
-                                    **flight_parts,
-                                    "tail": value("Tail_Number"),
-                                },
-                            ),
-                            "role": "schedule",
-                        },
-                    ),
                     "dataset_instance_id": "data2_2019",
                     "service_date": day.isoformat(),
                 }
+                if include_warning_fields:
+                    row.update(
+                        {
+                            "scheduled_departure_utc": scheduled_departure,
+                            "scheduled_arrival_utc": scheduled_arrival,
+                            "wheels_off_utc": wheels_off,
+                            "taxi_out_minutes": taxi_out,
+                            "canonical_schedule_record_id": deterministic_id(
+                                "canonical-flight",
+                                {
+                                    "raw": deterministic_id(
+                                        "raw",
+                                        {
+                                            "source": "bts_ontime",
+                                            **flight_parts,
+                                            "tail": value("Tail_Number"),
+                                        },
+                                    ),
+                                    "role": "schedule",
+                                },
+                            ),
+                        }
+                    )
+                yield row
             except Exception:
                 skipped += 1
             now = time.perf_counter()
@@ -286,15 +293,25 @@ def lightweight_flights(
     zones: dict[str, str],
     *,
     heartbeat: Heartbeat | None = None,
+    include_warning_fields: bool = False,
 ) -> tuple[list[dict], int]:
     rows = []
-    generator = iter_lightweight_flights(path, zones, heartbeat=heartbeat)
+    generator = iter_lightweight_flights(
+        path,
+        zones,
+        heartbeat=heartbeat,
+        include_warning_fields=include_warning_fields,
+    )
     try:
         while True:
             rows.append(next(generator))
     except StopIteration as stop:
         audit = stop.value or {}
     return rows, int(audit.get("skipped_rows", 0))
+
+
+def episode_records_from_lightweight_flights(rows: Iterable[dict]):
+    return build_data2_episode_records(rows)
 
 
 def preparation_state_key(root: Path, paths: tuple[Path, ...], counts: dict, seed: int) -> str:

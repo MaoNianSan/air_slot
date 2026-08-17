@@ -1,0 +1,49 @@
+# ===== Line endings =====
+# Normalize all text files to LF in the repository regardless of platform.
+* text=auto
+
+# Source / config / docs — LF
+*.py      text eol=lf
+*.pyi     text eol=lf
+*.toml    text eol=lf
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.json    text eol=lf
+*.md      text eol=lf
+*.rst     text eol=lf
+*.txt     text eol=lf
+*.cfg     text eol=lf
+*.ini     text eol=lf
+*.csv     text eol=lf
+*.tsv     text eol=lf
+*.sh      text eol=lf
+*.ipynb   text eol=lf
+
+# Windows scripts — CRLF
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+
+# ===== Binary formats (never normalize) =====
+*.parquet binary
+*.npz     binary
+*.pt      binary
+*.pth     binary
+*.pkl     binary
+*.joblib  binary
+*.h5      binary
+*.onnx    binary
+*.db      binary
+*.sqlite  binary
+*.sqlite3 binary
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.pdf     binary
+*.zip     binary
+*.gz      binary
+*.7z      binary
+*.tar     binary
+*.woff    binary
+*.woff2   binary

@@ -1,8 +1,8 @@
 """Approved Development-only Exp1 warning operating-point execution.
 
-This module deliberately owns only experiment orchestration and evaluation.
-Compact PRE construction stays under ``model/PRE`` and batched scenario
-inference stays under ``model/M1``.
+This module deliberately owns only experiment orchestration. Raw Development
+construction stays under ``model/PRE``; compact feature preparation and batched
+scenario inference stay under ``model/M1``.
 """
 
 from __future__ import annotations
@@ -13,7 +13,6 @@ from hashlib import sha256
 import json
 import math
 from pathlib import Path
-import statistics
 import subprocess
 import time
 
@@ -31,20 +30,23 @@ from exp.exp1.development.signed_refreeze import (
     _training_contract,
     _training_contract_hash,
 )
-from exp.exp1.metrics import episode_operating_point
+from exp.exp1.development.warning_evaluation import (
+    evaluate_principal,
+    evaluate_sensitivity,
+)
 from model.M1.cache import M1DevelopmentBaseCache
 from model.M1.contracts import STOCHASTIC_TARGETS
 from model.M1.data import FEATURE_NAMES
 from model.M1.lifecycle import M1Lifecycle
 from model.M1.pipeline import M1Pipeline
 from model.M1.scenarios import ancestral_sample
+from model.M1.warning_preparation import build_compact_warning_episode
 from model.M1.warning import (
     PRINCIPAL_WARNING_THRESHOLD_MINUTES,
     batched_warning_probability,
     scenario_uniforms,
     warning_probability,
 )
-from model.PRE.episode.builder import build_data2_episode_records
 from model.PRE.episode.containment import episode_containment_from_rows
 from model.PRE.reference.taxi_data2 import (
     build_data2_taxi_reference_streaming,
@@ -53,15 +55,16 @@ from model.PRE.reference.taxi_data2 import (
 from model.PRE.streaming.data2 import (
     aircraft_tail,
     config_hash,
+    episode_records_from_lightweight_flights,
     lightweight_flights,
     load_timezones,
     ontime_paths,
     registry_hash,
     weather_index,
 )
-from model.PRE.streaming.warning import build_compact_warning_episode
 from model.common.config import load_config_layers
 from model.common.identity import content_id
+from validation.ownership_gate_v2 import build_gate_result
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -513,14 +516,18 @@ def run_batched_equivalence(pipeline: M1Pipeline) -> dict:
 
 def _month_episode_records(month: int, previous_rows, zones):
     path = ontime_paths(ROOT, (month,))[0]
-    current_rows, skipped = lightweight_flights(path, zones)
+    current_rows, skipped = lightweight_flights(
+        path,
+        zones,
+        include_warning_fields=True,
+    )
     if month == 7:
         return current_rows, (), skipped
     chunk = list(previous_rows) + current_rows
     by_id = {row["flight_id"]: row for row in chunk}
     month_key = f"2019-{month:02d}"
     episodes = []
-    for episode in build_data2_episode_records(chunk):
+    for episode in episode_records_from_lightweight_flights(chunk):
         successor = by_id[episode.successor_flight_id]
         if successor["service_date"][:7] != month_key:
             continue
@@ -690,194 +697,12 @@ def run_development_inference(pipelines, cache, reference, *, scientific,
     return manifest
 
 
-def _variant_files(mode: str, variant: str):
-    return sorted((WARNING_OUT / mode).glob(f"month=*/{variant}/part-*.parquet"))
-
-
-def _episodes_from_file(path: Path):
-    data = pq.read_table(path).to_pydict()
-    current_id = None
-    rows = []
-    for index, episode_id in enumerate(data["episode_id"]):
-        if current_id is not None and episode_id != current_id:
-            yield rows
-            rows = []
-        current_id = episode_id
-        rows.append({name: values[index] for name, values in data.items()})
-    if rows:
-        yield rows
-
-
-def _thresholds_for_variant(files, *, scenarios: int) -> tuple[dict, dict]:
-    negative_histogram = [0] * (scenarios + 1)
-    counts = defaultdict(int)
-    tail_nodes = tail_episodes = nodes = 0
-    for path in files:
-        for rows in _episodes_from_file(path):
-            realized = rows[0]["realized_event_positive"]
-            evaluation = episode_operating_point(
-                rows, probability_key="warning_probability", threshold=0.0)
-            label = "positive" if realized is True else "negative" if realized is False else "unknown"
-            counts[f"{label}_total"] += 1
-            if evaluation["evaluable"]:
-                counts[f"{label}_evaluable"] += 1
-                if label == "negative":
-                    index = int(round(float(evaluation["sustained_score"]) * scenarios))
-                    negative_histogram[max(0, min(index, scenarios))] += 1
-            else:
-                counts[f"{label}_abstain"] += 1
-            episode_tail = any(row["tail_representative_used"] for row in rows)
-            tail_episodes += int(episode_tail)
-            tail_nodes += sum(row["tail_representative_used"] for row in rows)
-            nodes += len(rows)
-    suffix = [0] * (scenarios + 1)
-    running = 0
-    for index in range(scenarios, -1, -1):
-        running += negative_histogram[index]
-        suffix[index] = running
-    thresholds = {}
-    denominator = counts["negative_evaluable"]
-    for target in TARGET_FPRS:
-        selected = None
-        for index in range(scenarios + 1):
-            fpr = suffix[index] / denominator if denominator else None
-            if fpr is not None and fpr <= target:
-                selected = {
-                    "target_fpr": target,
-                    "threshold": index / scenarios,
-                    "achieved_fpr": fpr,
-                    "negative_evaluable_n": denominator,
-                    "fpr_step": 1 / denominator,
-                    "operating_point_status": "PASS",
-                }
-                break
-        thresholds[str(target)] = selected or {
-            "target_fpr": target, "threshold": None, "achieved_fpr": None,
-            "negative_evaluable_n": denominator,
-            "fpr_step": 1 / denominator if denominator else None,
-            "operating_point_status": "INFEASIBLE",
-        }
-    coverage = {
-        **counts,
-        "negative_evaluation_coverage": counts["negative_evaluable"] / counts["negative_total"]
-        if counts["negative_total"] else None,
-        "positive_evaluation_coverage": counts["positive_evaluable"] / counts["positive_total"]
-        if counts["positive_total"] else None,
-        "tail_representative_node_rate": tail_nodes / nodes if nodes else None,
-        "tail_representative_episode_rate": tail_episodes /
-        (counts["negative_total"] + counts["positive_total"] + counts["unknown_total"]),
-    }
-    return thresholds, coverage
-
-
-def _metrics_for_variant(files, *, threshold: float) -> tuple[dict, dict[str, float]]:
-    counts = defaultdict(int)
-    sustained_leads = []
-    per_positive_lead = {}
-    for path in files:
-        for rows in _episodes_from_file(path):
-            realized = rows[0]["realized_event_positive"]
-            evaluation = episode_operating_point(
-                rows, probability_key="warning_probability", threshold=threshold)
-            if realized is False and evaluation["evaluable"]:
-                counts["negative_evaluable"] += 1
-                counts["false_warning"] += int(evaluation["sustained_warning"])
-            if realized is True and evaluation["evaluable"]:
-                counts["positive_evaluable"] += 1
-                counts["any_warning"] += int(evaluation["any_warning"])
-                counts["sustained_warning"] += int(evaluation["sustained_warning"])
-                lead = evaluation["sustained_warning_lead_minutes"]
-                per_positive_lead[rows[0]["episode_id"]] = 0.0 if lead is None else float(lead)
-                if lead is not None:
-                    sustained_leads.append(float(lead))
-    ordered = sorted(sustained_leads)
-    q1 = ordered[int((len(ordered) - 1) * 0.25)] if ordered else None
-    q3 = ordered[int((len(ordered) - 1) * 0.75)] if ordered else None
-    metrics = {
-        "threshold": threshold,
-        "achieved_episode_fpr": counts["false_warning"] / counts["negative_evaluable"]
-        if counts["negative_evaluable"] else None,
-        "episode_recall": counts["any_warning"] / counts["positive_evaluable"]
-        if counts["positive_evaluable"] else None,
-        "sustained_warning_recall": counts["sustained_warning"] / counts["positive_evaluable"]
-        if counts["positive_evaluable"] else None,
-        "median_risk_lead_minutes": statistics.median(ordered) if ordered else None,
-        "iqr_risk_lead_minutes": q3 - q1 if ordered else None,
-        "p_risk_lead_gt_0": sum(value > 0 for value in ordered) / len(ordered) if ordered else None,
-        "p_risk_lead_ge_15": sum(value >= 15 for value in ordered) / len(ordered) if ordered else None,
-        "p_risk_lead_ge_30": sum(value >= 30 for value in ordered) / len(ordered) if ordered else None,
-        "false_warning_episode_count": counts["false_warning"],
-        "negative_denominator": counts["negative_evaluable"],
-        "positive_denominator": counts["positive_evaluable"],
-    }
-    return metrics, per_positive_lead
-
-
-def evaluate_principal(bundle: dict) -> dict:
-    thresholds, coverage, metrics, leads = {}, {}, {}, {}
-    for variant in bundle["artifacts"]:
-        files = _variant_files("principal_s250", variant)
-        thresholds[variant], coverage[variant] = _thresholds_for_variant(
-            files, scenarios=PRINCIPAL_SCENARIOS)
-        theta10 = thresholds[variant]["0.1"]["threshold"]
-        if theta10 is None:
-            raise RuntimeError(f"EXP1_WARNING_OPERATING_POINT_INFEASIBLE:{variant}")
-        metrics[variant], leads[variant] = _metrics_for_variant(files, threshold=theta10)
-    paired = sorted(set(leads["ADAPTIVE_HISTORY"]) & set(leads["FIXED_HISTORY"]))
-    gains = [leads["ADAPTIVE_HISTORY"][item] - leads["FIXED_HISTORY"][item] for item in paired]
-    decision_window_gain = {
-        "DecisionWindowGain": sum(gains) / len(gains) if gains else None,
-        "median": statistics.median(gains) if gains else None,
-        "share_gt_0": sum(value > 0 for value in gains) / len(gains) if gains else None,
-        "share_ge_15": sum(value >= 15 for value in gains) / len(gains) if gains else None,
-        "share_ge_30": sum(value >= 30 for value in gains) / len(gains) if gains else None,
-        "episode_denominator": len(gains),
-    }
-    payload = {
-        "schema_version": "EXP1_DEVELOPMENT_WARNING_EVIDENCE_V1",
-        "status": "PASS",
-        "scenario_count": PRINCIPAL_SCENARIOS,
-        "thresholds": thresholds,
-        "coverage": coverage,
-        "metrics": metrics,
-        "decision_window_gain": decision_window_gain,
-        "artifact_bundle_hash": bundle["manifest_hash"],
-        "final_test_access_count": 0,
-        "paper_result": False,
-    }
-    _write_json(WARNING_OUT / "principal_s250" / "evidence.json", payload)
-    return payload
-
-
-def evaluate_sensitivity(principal: dict, *, subset: bool) -> dict:
-    results = {}
-    mode = "sensitivity_s500"
-    for variant in principal["metrics"]:
-        theta = principal["thresholds"][variant]["0.1"]["threshold"]
-        metrics, _ = _metrics_for_variant(_variant_files(mode, variant), threshold=theta)
-        results[variant] = {
-            "frozen_principal_threshold": theta,
-            "s500_metrics": metrics,
-            "achieved_fpr_absolute_change": abs(
-                metrics["achieved_episode_fpr"] - principal["metrics"][variant]["achieved_episode_fpr"]
-            ) if metrics["achieved_episode_fpr"] is not None else None,
-        }
-    payload = {
-        "schema_version": "EXP1_WARNING_S500_SENSITIVITY_V1",
-        "status": "PASS",
-        "scenario_count": SECONDARY_SCENARIOS,
-        "subset": subset,
-        "subset_rule": None if not subset else f"SHA256_EPISODE_ID_MOD_{SENSITIVITY_MODULUS}_EQ_0",
-        "principal_threshold_reselected": False,
-        "results": results,
-        "final_test_access_count": 0,
-    }
-    _write_json(WARNING_OUT / mode / "sensitivity.json", payload)
-    return payload
-
-
 def final_freeze(bundle, equivalence, performance, principal, sensitivity,
                  full_manifest, sensitivity_manifest, taxi_manifest) -> dict:
+    ownership_gate = build_gate_result(ROOT)
+    if ownership_gate["PRE_OWNERSHIP_GATE"] != "PASS" or \
+            ownership_gate["STATIC_VOLUME_GATE"] != "PASS":
+        raise RuntimeError("EXP1_WARNING_STATIC_GATES_FAILED")
     payload = {
         "schema_version": "AIR_SLOT_EXP1_DEVELOPMENT_WARNING_FREEZE",
         "status": "READY_FOR_EXP1_DEVELOPMENT_FREEZE_REVIEW",
@@ -897,8 +722,8 @@ def final_freeze(bundle, equivalence, performance, principal, sensitivity,
             for variant in principal["coverage"]
         },
         "BATCHED_REFERENCE_EQUIVALENCE": equivalence["status"],
-        "PRE_OWNERSHIP_GATE": "PASS",
-        "STATIC_VOLUME_GATE": "PASS",
+        "PRE_OWNERSHIP_GATE": ownership_gate["PRE_OWNERSHIP_GATE"],
+        "STATIC_VOLUME_GATE": ownership_gate["STATIC_VOLUME_GATE"],
         "V5_SPLIT_CONTAINMENT": "PASS",
         "FULL_INFERENCE_MANIFEST": full_manifest,
         "SENSITIVITY_INFERENCE_MANIFEST": sensitivity_manifest,
@@ -928,12 +753,22 @@ def run(*, device: str) -> dict:
     full_manifest = run_development_inference(
         pipelines, cache, reference, scientific=scientific,
         scenarios=PRINCIPAL_SCENARIOS, mode="principal_s250", subset=False)
-    principal = evaluate_principal(bundle)
+    principal = evaluate_principal(
+        WARNING_OUT,
+        bundle,
+        scenarios=PRINCIPAL_SCENARIOS,
+    )
     subset = bool(performance["secondary_sensitivity_subset"])
     sensitivity_manifest = run_development_inference(
         pipelines, cache, reference, scientific=scientific,
         scenarios=SECONDARY_SCENARIOS, mode="sensitivity_s500", subset=subset)
-    sensitivity = evaluate_sensitivity(principal, subset=subset)
+    sensitivity = evaluate_sensitivity(
+        WARNING_OUT,
+        principal,
+        scenarios=SECONDARY_SCENARIOS,
+        subset=subset,
+        subset_modulus=SENSITIVITY_MODULUS,
+    )
     return final_freeze(
         bundle, equivalence, performance, principal, sensitivity,
         full_manifest, sensitivity_manifest, taxi_manifest)

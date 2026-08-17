@@ -5,6 +5,12 @@ from math import isnan
 from statistics import median
 
 
+def scenario_grid_probability(value: float, scenario_count: int) -> float:
+    if scenario_count <= 0:
+        raise ValueError("EXP1_SCENARIO_COUNT_MUST_BE_POSITIVE")
+    return round(float(value) * scenario_count) / scenario_count
+
+
 def _ordered_rows(rows):
     return sorted(rows, key=lambda row: float(row["lead_time_minutes"]), reverse=True)
 
@@ -162,7 +168,8 @@ def select_threshold(rows, *, probability_key: str, target_fpr: float,
     for index in range(scenario_count + 1):
         threshold = index / scenario_count
         false_count = sum(
-            item["sustained_score"] is not None and item["sustained_score"] >= threshold
+            item["sustained_score"] is not None
+            and round(float(item["sustained_score"]) * scenario_count) >= index
             for item in evaluable
         )
         fpr = false_count / len(evaluable) if evaluable else None

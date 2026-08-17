@@ -172,7 +172,12 @@ def _sample_post_ib(
     delta_values = delta_rep[delta_indices]
     tx_rep, _tx_under, tx_over = _representatives(bins["T_TX"], device=device)
     d_to = delta_values + tx_rep[tx_indices] - taxi_reference[:, None]
-    probability = (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES).float().mean(dim=1)
+    probability = (
+        (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
+        .sum(dim=1, dtype=torch.int64)
+        .to(dtype=torch.float64)
+        / scenarios
+    )
     tail = (
         delta_under[delta_indices]
         | delta_over[delta_indices]
@@ -224,7 +229,12 @@ def _sample_pre_ib(
     delta_rep, delta_under, delta_over = _representatives(bins["DELTA_OB"], device=device)
     tx_rep, _tx_under, tx_over = _representatives(bins["T_TX"], device=device)
     d_to = delta_rep[delta_indices] + tx_rep[tx_indices] - taxi_reference[:, None]
-    probability = (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES).float().mean(dim=1)
+    probability = (
+        (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
+        .sum(dim=1, dtype=torch.int64)
+        .to(dtype=torch.float64)
+        / scenarios
+    )
     tail = (
         delta_under[delta_indices]
         | delta_over[delta_indices]
@@ -274,7 +284,7 @@ def batched_warning_probability(
     ib_observed = _encode_observed(observed_r_ib, pipeline.bins["R_IB"]).to(device)
     delta_observed = _encode_observed(observed_delta_ob, pipeline.bins["DELTA_OB"]).to(device)
     tx_observed = _encode_observed(observed_t_tx, pipeline.bins["T_TX"]).to(device)
-    probabilities = torch.zeros(n, dtype=torch.float32, device=device)
+    probabilities = torch.zeros(n, dtype=torch.float64, device=device)
     tails = torch.zeros(n, dtype=torch.bool, device=device)
     all_indices = {
         name: torch.full((n, count), -1, dtype=torch.long, device=device)

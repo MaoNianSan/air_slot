@@ -1,4 +1,4 @@
-"""Compact, production-owned PRE rows for Development warning inference.
+"""Compact M1 feature rows for Development warning inference.
 
 The regular PRE publisher intentionally returns typed ``PREState`` objects for
 audits and bounded cohorts.  Full Development keeps the same field semantics

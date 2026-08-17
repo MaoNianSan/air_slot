@@ -33,6 +33,7 @@ def test_batched_warning_matches_object_reference_categories_and_probability():
         seed=17,
         return_indices=True,
     )
+    assert result.probability.dtype == torch.float64
 
     stages = ("PRE_IB", "POST_IB_PRE_OB", "POST_OB_PRE_TO")
     for index, stage in enumerate(stages):
