@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import math
 import time
 import gc
 from collections import Counter
@@ -16,6 +15,10 @@ import torch
 from model.common.enums import SupportState
 from model.common.identity import content_id
 from model.PRE.episode.builder import build_data2_episode_records
+from model.PRE.episode.containment import (
+    episode_containment_from_rows,
+    episode_node_count,
+)
 from model.PRE.pipeline import ProductionPREPublisher
 from model.PRE.streaming.data2 import (
     aircraft_tail,
@@ -47,6 +50,7 @@ def pre_contract_hash(root: Path) -> str:
         root / "model" / "PRE" / "pipeline.py",
         root / "model" / "PRE" / "mapping.py",
         root / "model" / "PRE" / "episode" / "builder.py",
+        root / "model" / "PRE" / "episode" / "containment.py",
         root / "model" / "PRE" / "episode" / "node_builder.py",
         root / "model" / "PRE" / "streaming" / "data2.py",
         root / "model" / "PRE" / "streaming" / "development.py",
@@ -85,6 +89,8 @@ class StreamCounts:
     pre_eligible_nodes: int = 0
     abstain_episodes: int = 0
     insufficient_history_episodes: int = 0
+    cross_split_removed_episodes: int = 0
+    cross_split_removed_nodes: int = 0
     weather_supported_nodes: int = 0
     weather_abstain_nodes: int = 0
     target_support_counts: Counter = field(default_factory=Counter)
@@ -115,6 +121,8 @@ class StreamCounts:
             "pre_eligible_nodes": self.pre_eligible_nodes,
             "abstain_episodes": self.abstain_episodes,
             "insufficient_history_episodes": self.insufficient_history_episodes,
+            "cross_split_removed_episodes": self.cross_split_removed_episodes,
+            "cross_split_removed_nodes": self.cross_split_removed_nodes,
             "weather_supported_nodes": self.weather_supported_nodes,
             "weather_abstain_nodes": self.weather_abstain_nodes,
             "target_support_counts": dict(self.target_support_counts),
@@ -147,6 +155,8 @@ class StreamCounts:
             "pre_eligible_nodes",
             "abstain_episodes",
             "insufficient_history_episodes",
+            "cross_split_removed_episodes",
+            "cross_split_removed_nodes",
             "weather_supported_nodes",
             "weather_abstain_nodes",
         )
@@ -173,10 +183,12 @@ class StreamCounts:
 
 
 def _node_count(episode) -> int:
-    seconds = (episode.episode_end_time - episode.episode_start_time).total_seconds()
-    if seconds < 0:
+    if episode.episode_start_time > episode.episode_end_time:
         raise RuntimeError("PRE_STREAM_NEGATIVE_EPISODE_WINDOW")
-    return math.floor(seconds / 300) + 1
+    return episode_node_count(
+        episode_start_time=episode.episode_start_time,
+        episode_end_time=episode.episode_end_time,
+    )
 
 
 def summarize_episode_publication(
@@ -375,13 +387,17 @@ def run_development_pre_stream(
             chunk = list(previous_rows) + current_rows
             by_id = {row["flight_id"]: row for row in chunk}
             month_key = f"2019-{month:02d}"
-            episodes = [
-                episode
-                for episode in build_data2_episode_records(chunk)
-                if by_id[episode.successor_flight_id].get("service_date", "")[:7]
-                == month_key
-            ]
-            counts.candidate_episodes += len(episodes)
+            episodes = []
+            for episode in build_data2_episode_records(chunk):
+                if by_id[episode.successor_flight_id].get("service_date", "")[:7] != month_key:
+                    continue
+                counts.candidate_episodes += 1
+                containment = episode_containment_from_rows(episode, by_id)
+                if not containment.allowed:
+                    counts.cross_split_removed_episodes += 1
+                    counts.cross_split_removed_nodes += _node_count(episode)
+                    continue
+                episodes.append(episode)
             counts.constructed_episodes += len(episodes)
             for episode in episodes:
                 summary = summarize_episode_publication(
@@ -436,7 +452,7 @@ def run_development_pre_stream(
     elapsed = elapsed_before + (time.perf_counter() - started)
     completion_status = "PARTIAL_ENGINEERING_SMOKE" if stopped_early else "PASS"
     manifest = {
-        "schema_version": "AIR_SLOT_PRE_DEVELOPMENT_STREAM_MANIFEST_V1",
+        "schema_version": "AIR_SLOT_PRE_DEVELOPMENT_STREAM_MANIFEST_V2",
         "completion_status": completion_status,
         "run_key": run_key,
         "source_hashes": sources,
@@ -449,6 +465,12 @@ def run_development_pre_stream(
         },
         "minimum_history_nodes_for_count": minimum_history_nodes,
         "counts": counts.as_dict(),
+        "old_pre_eligible_episodes": 951359,
+        "old_pre_eligible_nodes": 13721540,
+        "new_pre_eligible_episodes": counts.pre_eligible_episodes,
+        "new_pre_eligible_nodes": counts.pre_eligible_nodes,
+        "cross_split_removed_episodes": counts.cross_split_removed_episodes,
+        "cross_split_removed_nodes": counts.cross_split_removed_nodes,
         "weather_audit": weather_audit,
         "elapsed_seconds": elapsed,
         "peak_rss_mb": peak_rss_mb,

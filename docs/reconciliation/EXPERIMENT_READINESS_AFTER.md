@@ -1,42 +1,67 @@
 # Experiment Readiness After Reconciliation
 
-Repository HEAD: `8aa01f9866d12fd7cdf01148087db7e5fb688b8b` (uncommitted worktree).
+Current engineering snapshot: `2026-08-17`.
 
-Scientific config hash: `sha256:92ecaba327c5660113fde8e108e39df80dfba4d91ef2ef2cea1a58e4c9b687a3`
-Registry manifest hash: `sha256:dbe3da2d8f8b74cf920d2b1bfc75519970ce7e6d71133bba8d19208b90f56aaa`
+Repository HEAD: `bfd3d34f83aa895b228492d90571047ad68d4492` with an
+uncommitted split-containment closure worktree.
 
-| Requirement | Producer | Consumer | Status | Evidence | Blocking |
-| --- | --- | --- | --- | --- | --- |
-| decision-time cutoff | PRE | Exp1 | PASS (contract) | `DecisionNodeRecord.information_cutoff`; PRE fixture and integration tests | No real paper cohort |
-| rolling history | PRE/M1 | Exp1 | PASS (engineering) | five-minute prefix guard; bounded smoke history report | Formal training artifact not frozen |
-| aligned scenarios | M1 | Exp2 | PASS | `AlignedScenario`; deterministic scenario tests and 64-row bounded smoke | No formal frozen bundle |
-| point-collapse source | M1 | Exp2 | PASS (evaluation wrapper) | `point_collapse` carries source artifact hash and derives `D_TO` | Formal Exp2 run deferred |
-| scenario lineage | M1/M2/M4 | Exp2 | PASS | scenario seed keys, IDs, M4 pair checks, marginal-preserving shuffle test | None at contract level |
-| consequence scope | M2 | Exp2/3 | PASS (contract) | `ConsequenceScope`, `FormalEstimandValue`, typed mapper equivalence | Valuation registry is development-only smoke |
-| evidence class | PRE/M2/M3 | Exp3 | PASS | support/evidence enums and M3 provenance contracts | No formal ablation artifact |
-| material coverage | M3 | Exp3 | PASS | hashed `ActionMaterialCoverageContract` and M4 eligibility | Formal M3 bundle absent |
-| induced consequence | M3 | Exp3 | PASS | separate induced/mitigation fields; copy-only ablation | No Exp3 run |
-| formal candidate lanes | M4 | Exp3 | PASS | lane assignment and decomposed ranking facade | No paper candidate manifest |
-| risk score | M4 | Exp3/4 | PASS (engineering) | residual-risk tests and M4 behavioral equivalence | Formal valuation inputs unresolved |
-| operational strata | PRE/eval | Exp4 | PASS (evaluation contract) | `configs/evaluation/exp4.yaml`, no-retrain strata test | No formal sensitivity run |
-| paper promotion | exp | reporting | CONDITIONAL | complete-manifest checks, dataset-role gate, FINAL_TEST guard | No paper-eligible frozen manifest |
+Scientific config hash:
+`sha256:dbcc3c5360ce23047b1f40d48fe207abb8c6e8e645b0f8ba3e50b10e71314662`
 
-## Experiment status
+Registry manifest hash:
+`sha256:dbe3da2d8f8b74cf920d2b1bfc75519970ce7e6d71133bba8d19208b90f56aaa`
 
-| Experiment | Status | Reason |
+## Current engineering gates
+
+| Gate | Status | Current evidence |
 | --- | --- | --- |
-| Exp1 | CONDITIONAL | protocol scaffolding and copy isolation pass; no frozen formal artifact/cohort |
-| Exp2 | CONDITIONAL | point/full representations and deterministic lineage shuffle pass; no paper run |
-| Exp3 | CONDITIONAL | copy-only ablations and provenance contracts pass; LLM audit is `NOT_RUN` |
-| Exp4 | CONDITIONAL | candidate namespace and frozen strata pass; hidden-size winner and sensitivity run absent |
+| PRE ownership | PASS | `PRE_DATA_CONSTRUCTION_OUTSIDE_PRE=0` |
+| Static volume | PASS | no `REFACTOR_REQUIRED` files |
+| Dependency boundaries | PASS | focused static tests |
+| V5 split containment | PASS | boundary-complete June-September audit |
+| Migration equivalence | PASS | `14 passed` |
+| Full regression suite | PASS | `393 passed, 1 skipped` |
+| Final Test isolation | PASS | `FINAL_TEST_ACCESS_COUNT=0` |
 
-## Evidence executed in this turn
+Compilation command:
+`python -m compileall -q model exp validation tests`.
 
-- `python -m compileall -q model exp validation tests`: PASS.
-- `pytest -q`: `342 passed, 1 skipped`.
-- `python -m validation.cli all --fixtures-only`: `409 PASS`, no failures or blocks.
-- `python -m validation.data2_m1_bounded_smoke_v2`: PASS, 64 deterministic scenarios,
-  finite normalized probabilities, and `raw_read_only=true`; `paper_result=false`.
-- No full-year validation and no formal Exp1-Exp4 run was executed.
+Full regression command: `python -m pytest -q`.
 
-Therefore: `GLOBAL_RECONCILIATION=PASS`; `EXPERIMENT_READINESS=CONDITIONAL`.
+## Split closure
+
+The current PRE publisher rejects episodes whose predecessor service date,
+successor service date, closed episode interval, or canonical decision-node
+interval spans more than one V5 split. Monthly carry remains enabled for
+ordinary same-split month boundaries.
+
+Authoritative artifacts:
+
+- `artifacts/diagnostics/v5_development_freeze/PRE_SPLIT_CONTAINMENT_AUDIT.json`
+- `artifacts/diagnostics/v5_development_freeze/PRE_DEVELOPMENT_STREAM_MANIFEST_V2.json`
+- `docs/reconciliation/V5_SPLIT_CONTAINMENT_CLOSURE.md`
+
+Corrected Development counts are `946981` eligible episodes and `13608096`
+eligible nodes. The historical successor-date pool contained `4378`
+cross-split Development episodes and `113444` associated nodes.
+
+## Scientific readiness
+
+The current H/W values remain the historical selections `H_STAR=32` and
+`W_STAR=30`, but their shared 320-episode cache contains three cross-split
+episodes. Consequently:
+
+- `H_W_FREEZE_STATUS = REQUIRES_RECONSIDERATION`
+- `H_W_RERUN_THIS_ROUND = FALSE`
+- `D_TO_TAIL_IDENTIFIABILITY = NOT_IDENTIFIED_FROM_CURRENT_M1_OUTPUTS`
+- `OPTION_A_REQUIRES_NEW_H_W_FREEZE = TRUE`
+- `CURRENT_H_W_ARTIFACTS_REUSABLE = NO_FOR_NEW_MODEL_SELECTION`
+
+No H/W retraining, warning inference, threshold search, M2-M4 run, Final Test,
+or `paper_full` run was performed in this closure.
+
+Therefore:
+
+- `GLOBAL_RECONCILIATION = PASS`
+- `EXPERIMENT_READINESS = CONDITIONAL`
+- `NEXT = READY_FOR_AGGRESSIVE_M1_SIGNED_TARGET_REFREEZE`

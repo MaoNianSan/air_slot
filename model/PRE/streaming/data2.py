@@ -22,6 +22,7 @@ from model.PRE.canonical.normalization_common import deterministic_id, missing, 
 from model.PRE.canonical.timezone import infer_rollover, local_hhmm_to_utc
 from model.PRE.cohort import split_for_date
 from model.PRE.episode.builder import build_data2_episode_records
+from model.PRE.episode.containment import episode_containment_from_rows
 from model.PRE.episode.node_builder import build_rolling_decision_nodes
 from model.PRE.feature_registry.loader import load_registry_bundle
 from model.PRE.pipeline import ProductionPREPublisher, ProductionPRERequest
@@ -282,6 +283,7 @@ def preparation_state_key(root: Path, paths: tuple[Path, ...], counts: dict, see
             "cohort_counts": counts,
             "cohort_seed": seed,
             "carry_rule": "LAST_ACTUAL_DEPARTURE_ROW_PER_AIRCRAFT",
+            "split_containment_rule": "V5_FULL_EPISODE_SUPPORT_V1",
         }
     )
 
@@ -380,6 +382,9 @@ def episode_reservoirs(
         ):
             service_date = by_id[episode.successor_flight_id].get("service_date")
             if not service_date or service_date[:7] != month_key:
+                continue
+            containment = episode_containment_from_rows(episode, by_id)
+            if not containment.allowed:
                 continue
             split = split_for_date(date.fromisoformat(service_date))
             if split == "test":

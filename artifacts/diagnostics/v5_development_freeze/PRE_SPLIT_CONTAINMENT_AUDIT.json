@@ -1,0 +1,782 @@
+{
+  "CALIBRATION_CROSS_SPLIT_EPISODES": 4382,
+  "CALIBRATION_TO_DEVELOPMENT": 4440,
+  "DEVELOPMENT_CROSS_SPLIT_EPISODES": 4378,
+  "DEVELOPMENT_TO_FINAL_TEST": 3287,
+  "TRAIN_CROSS_SPLIT_EPISODES": 3291,
+  "TRAIN_TO_CALIBRATION": 4324,
+  "audit_method": "BOUNDARY_COMPLETE_INTERVAL_CONTAINMENT_O1",
+  "audit_scope_basis": "MAX_CHAIN_GAP_360_MINUTES_AND_CONTIGUOUS_V5_SPLITS",
+  "cross_split_by_pool": {
+    "calibration": 4382,
+    "development": 4378,
+    "train": 3291
+  },
+  "cross_split_examples": {
+    "calibration": [
+      {
+        "episode_end_time": "2019-07-01T10:10:00+00:00",
+        "episode_id": "sha256:61a58f6d3860d272137c3e0c4bd85e27e2c1fb16850d5c1150a00a306d7e1a17",
+        "episode_start_time": "2019-07-01T05:24:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 58,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T02:57:00+00:00",
+        "episode_id": "sha256:c55e05ef12058b799353bbff2d375d95375d91b4c3862d6b4e007491ef508482",
+        "episode_start_time": "2019-08-01T02:12:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 10,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T06:47:00+00:00",
+        "episode_id": "sha256:aa08f70903c199db49734fb792b2f9fa796ab1440edeb5aa27266ad7c97d807f",
+        "episode_start_time": "2019-08-01T05:17:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 19,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T04:44:00+00:00",
+        "episode_id": "sha256:9138e06103504b5f0a96fa0f3e3a2d4c931eb6a867f304540fbfbef7e5ed55ae",
+        "episode_start_time": "2019-08-01T03:44:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 13,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T12:03:00+00:00",
+        "episode_id": "sha256:54d5f8f60427fc3478a30d2ffe0ecfc7c7349119e57ab7df08510ecb26c500a4",
+        "episode_start_time": "2019-07-01T05:09:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 83,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T12:00:00+00:00",
+        "episode_id": "sha256:91845fff1d13f34888f757f967be1b332d9c50f9d13140ffd68e6ae056a747cc",
+        "episode_start_time": "2019-07-01T04:59:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 85,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T12:26:00+00:00",
+        "episode_id": "sha256:64d8b4d86f0f43728233d6514748352658d5cc5adcad37b88dbfa67b334f53a3",
+        "episode_start_time": "2019-07-01T10:20:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 26,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T02:18:00+00:00",
+        "episode_id": "sha256:b44cb19ba6511ba4826034ca992dcf0a7efc0716cb759fa33d9076d399717196",
+        "episode_start_time": "2019-07-31T20:31:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 70,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T11:00:00+00:00",
+        "episode_id": "sha256:34902abb3641e48bf52fd3cb9f560649579e999992dd2252f3677fccdaa19144",
+        "episode_start_time": "2019-07-01T09:35:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 18,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T01:02:00+00:00",
+        "episode_id": "sha256:6087f236d534ddc3322ebe7bde610da0084e8a0671efa4a9421c950a1834c6c6",
+        "episode_start_time": "2019-08-01T00:07:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 12,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T12:00:00+00:00",
+        "episode_id": "sha256:84ef8a3cbc191be9e76a7ebf6ab85f061eaf6f489746ffb066db3cc9e0ee14f5",
+        "episode_start_time": "2019-07-01T07:23:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 56,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T02:36:00+00:00",
+        "episode_id": "sha256:e01c27239f1de7bc242a5ff55b7cd7cd80e3ca4455fdcdf89bad8232b9024c95",
+        "episode_start_time": "2019-08-01T01:22:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 15,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T10:30:00+00:00",
+        "episode_id": "sha256:be44739c676c33f68ccf71fd8d388b59f25722f2f44f1bcbe7cceb97b2c2310c",
+        "episode_start_time": "2019-07-01T09:27:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 13,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T00:40:00+00:00",
+        "episode_id": "sha256:e8df69fc1c941d99299c9a99b3e979c96032454a48b50ea0bede70df321533aa",
+        "episode_start_time": "2019-07-31T23:49:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T06:05:00+00:00",
+        "episode_id": "sha256:ae42dcf2c01640675196b1b0b5bf62e3065df06b2c4e00a3d55213d4ac044aab",
+        "episode_start_time": "2019-08-01T04:40:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 18,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T11:00:00+00:00",
+        "episode_id": "sha256:ebcd02bc664ba1df2c71933d5ff189e0214d37b66176f6de315281ab3d748bb7",
+        "episode_start_time": "2019-07-01T03:10:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 95,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T00:39:00+00:00",
+        "episode_id": "sha256:89a7b7e4f4fb69e6d87c8eb979f3e65b3358ea8a1e4773d89aa44369ec9b3f09",
+        "episode_start_time": "2019-07-31T23:54:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 10,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T04:25:00+00:00",
+        "episode_id": "sha256:38de2f4263be2ef6a6bad1ee04d9d32fd1bf93df99a8f416e270cccfbefc66e6",
+        "episode_start_time": "2019-08-01T02:59:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 18,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T10:25:00+00:00",
+        "episode_id": "sha256:334c353e337286d37738367d5c996864d764277df293b575cf4e013ad1473d05",
+        "episode_start_time": "2019-07-01T04:41:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 69,
+        "successor_service_date": "2019-07-01",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T02:01:00+00:00",
+        "episode_id": "sha256:2d2fa8a7a58afcaef5f7980b6997b3fb462d4e0d35b78a708c816451d3f0e5e3",
+        "episode_start_time": "2019-08-01T01:11:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-07-31",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      }
+    ],
+    "development": [
+      {
+        "episode_end_time": "2019-08-01T10:00:00+00:00",
+        "episode_id": "sha256:77f1e5c16cdf0212ccc1c2645a01048ba44e81a608f16c501e445c1061acff77",
+        "episode_start_time": "2019-08-01T02:11:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 94,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T10:00:00+00:00",
+        "episode_id": "sha256:8847ad00ec29670dde8e1e0848adc8faab588bbf415eaf177fa5e95ee00bfb30",
+        "episode_start_time": "2019-08-01T03:32:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 78,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T13:30:00+00:00",
+        "episode_id": "sha256:6d7e991bf7afc7ec18eaa31934795809d5de154404121fc5cd37927c09b7a480",
+        "episode_start_time": "2019-08-01T06:13:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 88,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T10:00:00+00:00",
+        "episode_id": "sha256:952b7e8fd0d9ef06ca1dbbb3f3acbe5c468b16a7679cbbcf87b0aa3fb6b7f972",
+        "episode_start_time": "2019-08-01T03:29:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 79,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T11:05:00+00:00",
+        "episode_id": "sha256:b90a5fdbbb3a42ee0f17217661a74f4e703bcaaac4ccf9e2b9f29758e2881892",
+        "episode_start_time": "2019-08-01T03:10:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 96,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T10:30:00+00:00",
+        "episode_id": "sha256:7a8a64bb15d4f0d711a88b033d2ff572e5059ed49be6035456fdbff3167a287d",
+        "episode_start_time": "2019-08-01T02:58:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 91,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T07:50:00+00:00",
+        "episode_id": "sha256:f33950083ee3493f20e5e98315da4d18007af6e519f72939f326db61845173d4",
+        "episode_start_time": "2019-08-01T06:43:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 14,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T11:05:00+00:00",
+        "episode_id": "sha256:df234ae8a4ee83e0f2a2ca7b1e4124cdbcf74fd63d4ba10520040e206e581f1a",
+        "episode_start_time": "2019-08-01T09:59:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 14,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T12:22:00+00:00",
+        "episode_id": "sha256:166f635a0602f0cf8aec7fc3ead502d146c6a008dec071f8a83b5b9085bb28d2",
+        "episode_start_time": "2019-08-01T11:20:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 13,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T12:35:00+00:00",
+        "episode_id": "sha256:f616cd282f1d2a9f329f28c323f43332e66fedb9bf9d36f3f6c3e41bc8917f77",
+        "episode_start_time": "2019-08-01T11:11:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 17,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T11:00:00+00:00",
+        "episode_id": "sha256:995c39b1750c247023f36cfdd238cb87a6aee4da45414184cbfbe4713aff17fa",
+        "episode_start_time": "2019-08-01T05:26:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 67,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T10:45:00+00:00",
+        "episode_id": "sha256:ba133a9d563a4d744bb27e69b8c3145e361b467fbf103382c3f7db5c564915ca",
+        "episode_start_time": "2019-08-01T04:59:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 70,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T14:00:00+00:00",
+        "episode_id": "sha256:dca3d942a3f1ab918183fb237eaa3ba34b6023ba57bb831b955c07eb01c7ecc8",
+        "episode_start_time": "2019-08-01T05:55:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 98,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T13:00:00+00:00",
+        "episode_id": "sha256:faa9fbf88ae26010a741e19320c777e02ecade971fd56f37bee1ea0cb9aa4a66",
+        "episode_start_time": "2019-08-01T06:51:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 74,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T07:40:00+00:00",
+        "episode_id": "sha256:539478c495a2b1bcab20fbd52cd053db2c6bb775730de3d965e99778bd6bb937",
+        "episode_start_time": "2019-08-01T06:13:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 18,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T12:10:00+00:00",
+        "episode_id": "sha256:943ff928f936be0118ff22a004fb65511e7599e9950d8edf6319eedcc1ea2b07",
+        "episode_start_time": "2019-08-01T10:46:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 17,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T12:00:00+00:00",
+        "episode_id": "sha256:4b1e8c752735369e56652658391e7eeccea6e6b77533c7c841210eeeff635b70",
+        "episode_start_time": "2019-08-01T10:50:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 15,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T11:25:00+00:00",
+        "episode_id": "sha256:f89823fa9b6ed2e64c40ad0a9a4be950f2d1c0a58b1897e881e806f8cd7d05ed",
+        "episode_start_time": "2019-08-01T09:48:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 20,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T07:55:00+00:00",
+        "episode_id": "sha256:c831ba2c0a4b29c62f84a3842f57f356f70e420bb1f1208a9979e8e1dc7e9d21",
+        "episode_start_time": "2019-08-01T06:52:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 13,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      },
+      {
+        "episode_end_time": "2019-08-01T08:01:00+00:00",
+        "episode_id": "sha256:b1925b5842906729832e4a5cdd0c4ba0fba0f7794ece8b60fd01bb5aeb1d4b51",
+        "episode_start_time": "2019-08-01T07:10:00+00:00",
+        "predecessor_service_date": "2019-07-31",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-08-01",
+        "transitions": [
+          "CALIBRATION_TO_DEVELOPMENT"
+        ]
+      }
+    ],
+    "train": [
+      {
+        "episode_end_time": "2019-07-01T02:48:00+00:00",
+        "episode_id": "sha256:34c47726abf1d136c0f276efbd6e203a1dd0d110f3c64e8ac311b681d5864f33",
+        "episode_start_time": "2019-07-01T01:43:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 14,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T01:46:00+00:00",
+        "episode_id": "sha256:bf25163355438a16c2017c3f8f63e6c72259d5b65d94816a926fa4c11d47ca91",
+        "episode_start_time": "2019-07-01T00:56:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T02:57:00+00:00",
+        "episode_id": "sha256:67da6e88a7b6a195c5b9bb5091516b9ed30cec24f9d70eaaa90b519d54143141",
+        "episode_start_time": "2019-07-01T02:12:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 10,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T03:00:00+00:00",
+        "episode_id": "sha256:55890443c3ea3bd2b1dcdfac14896d1c45076ca768a7b40a49c749a6f77c1d40",
+        "episode_start_time": "2019-07-01T02:04:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 12,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T05:43:00+00:00",
+        "episode_id": "sha256:4084b0b7c433eea009dbe855ff4b7700a3d399ff574f00f286e79ce977909a5e",
+        "episode_start_time": "2019-07-01T02:56:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 34,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T00:14:00+00:00",
+        "episode_id": "sha256:36fe6b7ff69d78b8c11fc4ef635940ba23f6a7a62da7af7e611e830cdff22f1d",
+        "episode_start_time": "2019-06-30T23:24:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T00:20:00+00:00",
+        "episode_id": "sha256:ef035b205730ee3ea5e4b9ee60325278c928d3374472d74e3d1260db86eb9ee9",
+        "episode_start_time": "2019-06-30T23:39:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 9,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T05:30:00+00:00",
+        "episode_id": "sha256:fc7712d076734ab04fe3606dc1cad916df6de7a56f3c8ba2cfe328b20556d225",
+        "episode_start_time": "2019-07-01T04:45:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 10,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T00:50:00+00:00",
+        "episode_id": "sha256:a9ae48fb8aaf5c211d9d3f4f89ebaf2dc6ba294c95e70d29e1ace557a25223eb",
+        "episode_start_time": "2019-06-30T23:59:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T00:07:00+00:00",
+        "episode_id": "sha256:5395f77ac9050fe68bce3d61ab506bddb5835fa1096508110b119a27754a6f11",
+        "episode_start_time": "2019-06-30T23:21:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 10,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T02:59:00+00:00",
+        "episode_id": "sha256:e158bf78e6d4e7a5ca4f4906c1e9ccda292f6a9b0f57130ec7f1ea9d876238df",
+        "episode_start_time": "2019-07-01T02:07:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T01:15:00+00:00",
+        "episode_id": "sha256:ffdfaa30cf1f09fe088d9201af1b5aef989f6252d89a33e99a717f688380884e",
+        "episode_start_time": "2019-07-01T00:07:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 14,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T03:36:00+00:00",
+        "episode_id": "sha256:28853ddb499da67fd0e1d0c852b65a79f6f8936d9d98d5b25055efb65d53db4c",
+        "episode_start_time": "2019-07-01T02:45:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T05:59:00+00:00",
+        "episode_id": "sha256:7f79cd7d60eae483a2cf87b4ffbdda68c8e7045ea75d467111ebe9359527acaa",
+        "episode_start_time": "2019-07-01T05:09:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T00:06:00+00:00",
+        "episode_id": "sha256:9bd0583e325260c733fd6a785ebfa0e0acea11067d661d6410aff54f24df9f54",
+        "episode_start_time": "2019-06-30T23:17:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 10,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T02:37:00+00:00",
+        "episode_id": "sha256:a86fd6b6864809e6cb60e70467c3574c6f3fa7339043a2371dceedf6f11ef477",
+        "episode_start_time": "2019-06-30T22:54:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 45,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T03:43:00+00:00",
+        "episode_id": "sha256:efdcb0950c773a8ffc3baa76099ef78951fb8aeedaa252ea263865a698af3b6c",
+        "episode_start_time": "2019-07-01T02:50:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T01:37:00+00:00",
+        "episode_id": "sha256:11752e35040eb7bd5cd9ec5c6d963887ba91398c628105772bf8626f778f9cd9",
+        "episode_start_time": "2019-07-01T00:42:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 12,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T06:10:00+00:00",
+        "episode_id": "sha256:4fbfa85227b9c3eb531c47ee84e18d556dcb2c6391dd9c0fbc35b45956ab7ca7",
+        "episode_start_time": "2019-07-01T05:25:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 10,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      },
+      {
+        "episode_end_time": "2019-07-01T01:48:00+00:00",
+        "episode_id": "sha256:4b2c259fa654ff72b5a2c3515be9f3adc6a05016ab35602ced84d79b67f3f061",
+        "episode_start_time": "2019-07-01T00:58:00+00:00",
+        "predecessor_service_date": "2019-06-30",
+        "removed_nodes": 11,
+        "successor_service_date": "2019-06-30",
+        "transitions": [
+          "TRAIN_TO_CALIBRATION"
+        ]
+      }
+    ]
+  },
+  "cross_split_total": 12051,
+  "cross_split_transitions": {
+    "CALIBRATION_TO_DEVELOPMENT": 4440,
+    "DEVELOPMENT_TO_FINAL_TEST": 3287,
+    "TRAIN_TO_CALIBRATION": 4324
+  },
+  "elapsed_seconds": 119.74719829999958,
+  "final_test_access_count": 0,
+  "historical_cross_split_episode_count": 3,
+  "historical_cross_split_episodes": {
+    "sha256:3121e48085ffada2bb136fdf3a619683c2ce6813b09e8bdbb8949ac3c4dc7e14": {
+      "episode_end_time": "2019-07-01T03:10:00+00:00",
+      "episode_id": "sha256:3121e48085ffada2bb136fdf3a619683c2ce6813b09e8bdbb8949ac3c4dc7e14",
+      "episode_normalized_weight": 1.0,
+      "episode_start_time": "2019-07-01T02:35:00+00:00",
+      "historical_split": "train",
+      "per_node_weight": 0.125,
+      "predecessor_service_date": "2019-06-30",
+      "removed_nodes": 8,
+      "split_evaluation_weight": 0.0078125,
+      "successor_service_date": "2019-06-30",
+      "transitions": [
+        "TRAIN_TO_CALIBRATION"
+      ]
+    },
+    "sha256:669e578f23cbbf94ae421ae886944cd53138c69fd3c21d389978a8132038d3ea": {
+      "episode_end_time": "2019-10-01T04:50:00+00:00",
+      "episode_id": "sha256:669e578f23cbbf94ae421ae886944cd53138c69fd3c21d389978a8132038d3ea",
+      "episode_normalized_weight": 1.0,
+      "episode_start_time": "2019-10-01T03:32:00+00:00",
+      "historical_split": "development",
+      "per_node_weight": 0.0625,
+      "predecessor_service_date": "2019-09-30",
+      "removed_nodes": 16,
+      "split_evaluation_weight": 0.0078125,
+      "successor_service_date": "2019-09-30",
+      "transitions": [
+        "DEVELOPMENT_TO_FINAL_TEST"
+      ]
+    },
+    "sha256:8bb9e56be0e1e4f7e53689026f314757349786f94b0125ff974e3ef40c4a9424": {
+      "episode_end_time": "2019-07-01T11:00:00+00:00",
+      "episode_id": "sha256:8bb9e56be0e1e4f7e53689026f314757349786f94b0125ff974e3ef40c4a9424",
+      "episode_normalized_weight": 1.0,
+      "episode_start_time": "2019-07-01T03:10:00+00:00",
+      "historical_split": "calibration",
+      "per_node_weight": 0.010526315789473684,
+      "predecessor_service_date": "2019-06-30",
+      "removed_nodes": 95,
+      "split_evaluation_weight": 0.015625,
+      "successor_service_date": "2019-07-01",
+      "transitions": [
+        "TRAIN_TO_CALIBRATION"
+      ]
+    }
+  },
+  "historical_h_selection_cross_split_episodes": 3,
+  "historical_h_selection_episodes_total": 320,
+  "historical_provenance": {
+    "cache_arrays": "artifacts/diagnostics/v5_development_freeze/M1_BASE_CACHE.npz",
+    "cache_manifest": "artifacts/diagnostics/v5_development_freeze/M1_BASE_CACHE_MANIFEST.json",
+    "h_evidence": "artifacts/diagnostics/v5_development_freeze/m1_hstar_evidence.json",
+    "w_evidence": "artifacts/diagnostics/v5_development_freeze/m1_wstar_evidence.json"
+  },
+  "historical_selected_episode_count": 320,
+  "historical_w_selection_cross_split_episodes": 3,
+  "historical_w_selection_episodes_total": 320,
+  "pool_after": {
+    "calibration": 491196,
+    "development": 946981,
+    "test": 0,
+    "train": 2667476
+  },
+  "pool_before": {
+    "calibration": 495578,
+    "development": 951359,
+    "test": 0,
+    "train": 2670767
+  },
+  "removed_insufficient_history_by_pool": {
+    "calibration": 4,
+    "development": 3,
+    "train": 1
+  },
+  "removed_nodes_by_pool": {
+    "calibration": 108335,
+    "development": 113444,
+    "train": 52085
+  },
+  "same_split_august_to_september_allowed": 326,
+  "schema_version": "AIR_SLOT_V5_SPLIT_CONTAINMENT_AUDIT_V2",
+  "source_months_read": [
+    "2019-06",
+    "2019-07",
+    "2019-08",
+    "2019-09"
+  ],
+  "source_rows": 2560160,
+  "source_rows_skipped": 83539
+}
