@@ -1,0 +1,250 @@
+{
+  "array_dtypes": {
+    "active_DELTA_OB": "bool",
+    "active_R_IB": "bool",
+    "active_T_TX": "bool",
+    "episode_ids": "<U71",
+    "episode_offsets": "int64",
+    "labels_DELTA_OB": "int32",
+    "labels_R_IB": "int32",
+    "labels_T_TX": "int32",
+    "sample_decision_node_ids": "<U71",
+    "sample_end_offsets": "int32",
+    "sample_episode_dates": "<U10",
+    "sample_episode_ids": "<U71",
+    "sample_episode_indices": "int32",
+    "sample_splits": "<U11",
+    "sample_start_offsets": "int32",
+    "values_flat": "float32"
+  },
+  "audit": {
+    "active_stage_counts": {
+      "calibration": {
+        "POST_IB_PRE_OB": 923,
+        "POST_OB_PRE_TO": 19,
+        "PRE_IB": 180
+      },
+      "development": {
+        "POST_IB_PRE_OB": 1502,
+        "POST_OB_PRE_TO": 53,
+        "PRE_IB": 269
+      },
+      "train": {
+        "POST_IB_PRE_OB": 1947,
+        "POST_OB_PRE_TO": 31,
+        "PRE_IB": 221
+      }
+    },
+    "cohort_counts": {
+      "calibration": 64,
+      "development": 128,
+      "test": 0,
+      "train": 128
+    },
+    "cohort_seed": 20260813,
+    "config_hash": "sha256:dbcc3c5360ce23047b1f40d48fe207abb8c6e8e645b0f8ba3e50b10e71314662",
+    "cross_split_episodes_in_new_cache": 0,
+    "delta_ob_tail_counts": {
+      "calibration": {
+        "finite": 1092,
+        "overflow": 11,
+        "underflow": 0
+      },
+      "development": {
+        "finite": 1759,
+        "overflow": 12,
+        "underflow": 0
+      },
+      "train": {
+        "finite": 2168,
+        "overflow": 0,
+        "underflow": 0
+      }
+    },
+    "examples": {
+      "calibration": 1122,
+      "development": 1824,
+      "train": 2199
+    },
+    "feature_count": 103,
+    "final_test_access_count": 0,
+    "ontime_rows_by_month": {
+      "01": 559098,
+      "02": 510259,
+      "03": 611338,
+      "04": 589233,
+      "05": 614364,
+      "06": 613368,
+      "07": 635790,
+      "08": 638146,
+      "09": 589317
+    },
+    "ontime_rows_skipped": 196894,
+    "partition_hashes": {
+      "calibration": "sha256:04531cc8f53303685714de45c97b7dd0dd6e97d657aaa3fc2ad6a8cfa036c487",
+      "development": "sha256:b9330099abdf4199caf8c59ea19a728f691c0405520f116b3c18916baf39f0c5",
+      "train": "sha256:376e9da51dc66a5c3913bf5988c90d83c3b40f245f67b8a95f6f920d14dd2cde"
+    },
+    "pool_sizes": {
+      "calibration": 491196,
+      "development": 946981,
+      "test": 0,
+      "train": 2667476
+    },
+    "pre_decision_nodes": {
+      "calibration": 1122,
+      "development": 1824,
+      "train": 2199
+    },
+    "registry_hash": "sha256:3a97c4b649b2d52fe5fabdbbd4b9c85bf1900d74ee23cca47a3cd4ba3b85b31f",
+    "sampled_episodes": {
+      "calibration": 64,
+      "development": 128,
+      "train": 128
+    },
+    "signed_bin_contract": {
+      "bin_width_minutes": 5,
+      "finite_bin_starts_minutes": [
+        -180,
+        180
+      ],
+      "tails": [
+        "UNDERFLOW",
+        "OVERFLOW"
+      ],
+      "target": "DELTA_OB"
+    },
+    "stage_counts": {
+      "calibration": {
+        "POST_IB_PRE_OB": 923,
+        "POST_OB_PRE_TO": 19,
+        "PRE_IB": 180
+      },
+      "development": {
+        "POST_IB_PRE_OB": 1502,
+        "POST_OB_PRE_TO": 53,
+        "PRE_IB": 269
+      },
+      "train": {
+        "POST_IB_PRE_OB": 1947,
+        "POST_OB_PRE_TO": 31,
+        "PRE_IB": 221
+      }
+    },
+    "target_contract": [
+      "R_IB",
+      "DELTA_OB",
+      "T_TX"
+    ],
+    "total_episode_pool": 4105653,
+    "weather": {
+      "accepted_train_calibration_development_observations": 473979,
+      "airports": 48,
+      "final_test_access_count": 0
+    }
+  },
+  "cache_build_scope": [
+    "train",
+    "calibration",
+    "development"
+  ],
+  "cache_bytes": 364756,
+  "cache_hash": "sha256:a34c5b1f4db3677a5caad8f4cd2538a1652bb6c81f1c33e366ef1ae4475e0829",
+  "cache_key": "sha256:671a775ba5c4c171fcae1fb71e1aefc139e77f9c0afa537c77da0a2d2c09f09f",
+  "cache_schema_version": "M1_SIGNED_OB_DEVELOPMENT_BASE_CACHE_V1",
+  "calibration_episode_count": 64,
+  "canonical_node_count": 5145,
+  "contract_hashes": {
+    "PRE_contract_hash": "sha256:7fc4da05365f6a29328d2fea71e7a945e630a52d6a1d64ef6d745d236e73dbab",
+    "episode_construction_hash": "sha256:20b6964b2f856e92b694c85bb6ab909c41e9b97bf060c0f09a80f791503aa0da",
+    "episode_contract_hash": "sha256:20b6964b2f856e92b694c85bb6ab909c41e9b97bf060c0f09a80f791503aa0da",
+    "feature_contract_hash": "sha256:8d3284f17d68d9a7dbe02e15518475a1f33c5c310f5884b062230231505ec523",
+    "normalization_contract_hash": "sha256:be1a50592197c4fc733be2db42dc4079f82609357f1a4567d51f962b1a932098",
+    "roll_contract_hash": "sha256:d979e99d1bfd27f0762c51b2d4c7cbdced1312678e5d46b7a0bc09ca01e759b1",
+    "split_contract_hash": "sha256:c1867f5d5763180ef78dd2e6bbe6ad5db4558659679387964b35746cc50200d8"
+  },
+  "development_episode_count": 128,
+  "episode_count": 320,
+  "expanded_prefix_node_count": 78952,
+  "feature_count": 103,
+  "final_test_access_count": 0,
+  "final_test_included": false,
+  "normalization": {
+    "fitted_split": "train",
+    "values": {
+      "motion.baro_altitude_m": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "motion.geo_altitude_m": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "motion.latitude_deg": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "motion.longitude_deg": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "motion.observation_age_minutes": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "motion.velocity_mps": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "motion.vertical_rate_mps": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "node.spacing_minutes": {
+        "mean": 4.696597588233671,
+        "std": 1.1937164803108629
+      },
+      "schedule.signed_minutes_to_crs_departure": {
+        "mean": 171.08946162973592,
+        "std": 106.269602424154
+      },
+      "weather.dewpoint_c": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "weather.observation_age_minutes": {
+        "mean": 26.597127600810165,
+        "std": 17.211442516172106
+      },
+      "weather.qnh_hpa": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "weather.temperature_c": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "weather.visibility_m": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "weather.wind_gust_mps": {
+        "mean": 0.0,
+        "std": 1.0
+      },
+      "weather.wind_speed_mps": {
+        "mean": 0.0,
+        "std": 1.0
+      }
+    }
+  },
+  "partition_counts": {
+    "calibration": 1122,
+    "development": 1824,
+    "train": 2199
+  },
+  "raw_input_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+  "sample_count": 5145,
+  "source_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+  "train_episode_count": 128
+}

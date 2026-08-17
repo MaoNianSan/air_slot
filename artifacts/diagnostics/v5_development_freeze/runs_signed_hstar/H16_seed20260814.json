@@ -1,0 +1,249 @@
+{
+  "batch_size": 128,
+  "cache_hash": "sha256:a34c5b1f4db3677a5caad8f4cd2538a1652bb6c81f1c33e366ef1ae4475e0829",
+  "cache_key": "sha256:671a775ba5c4c171fcae1fb71e1aefc139e77f9c0afa537c77da0a2d2c09f09f",
+  "cache_rebuilds": 0,
+  "calibration_seconds": 0.1554106999974465,
+  "checkpoint_hash": "sha256:fc3e7686f43d4cfd19adca29605e49b51b9d64cb090c9242d0f669ab24f93835",
+  "checkpoint_path": "artifacts\\diagnostics\\v5_development_freeze\\runs_signed_hstar\\H16_seed20260814.pt",
+  "completion_status": "PASS",
+  "development_episode_n": 128,
+  "development_only": true,
+  "episode_balanced_joint_nll": 4.579476759783846,
+  "episode_balanced_target_nll": {
+    "DELTA_OB": 2.264001447882206,
+    "R_IB": 3.116450407874994,
+    "T_TX": 1.8498534057373335
+  },
+  "epochs": 8,
+  "final_test_access_count": 0,
+  "fixed_history_window_minutes": null,
+  "hidden_size": 16,
+  "inference_seconds": 0.6360059999860823,
+  "learning_rate": 0.01,
+  "optimizer": "Adam",
+  "optimizer_steps_per_epoch": 1,
+  "paper_result": false,
+  "peak_rss_mb": 313.8828125,
+  "repository_sha": "9ce3cdabc16930dfd6a9f5bf6f336d44a404d949",
+  "signed_bin_contract": {
+    "bin_width_minutes": 5,
+    "finite_bin_starts_minutes": [
+      -180,
+      180
+    ],
+    "tails": [
+      "UNDERFLOW",
+      "OVERFLOW"
+    ],
+    "target": "DELTA_OB"
+  },
+  "target_contract": [
+    "R_IB",
+    "DELTA_OB",
+    "T_TX"
+  ],
+  "temperatures": {
+    "DELTA_OB": 0.4413420259952545,
+    "R_IB": 0.563198983669281,
+    "T_TX": 0.973369300365448
+  },
+  "training_contract": {
+    "batch_size": 128,
+    "epochs": 8,
+    "gradient_accumulation": true,
+    "learning_rate": 0.01,
+    "length_bucketed_microbatch": true,
+    "optimizer": "Adam",
+    "optimizer_steps_per_epoch": 1,
+    "signed_bin_contract": {
+      "bin_width_minutes": 5,
+      "finite_bin_starts_minutes": [
+        -180,
+        180
+      ],
+      "tails": [
+        "UNDERFLOW",
+        "OVERFLOW"
+      ],
+      "target": "DELTA_OB"
+    },
+    "stochastic_targets": [
+      "R_IB",
+      "DELTA_OB",
+      "T_TX"
+    ]
+  },
+  "training_contract_hash": "sha256:6c88c9864bab15a1106142a93d680d7405c4a1671d63d53a4307455d3dae40ce",
+  "training_history": [
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 1,
+      "loss": 11.556173723191023,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 4.408494126051664,
+        "R_IB": 4.395221542567015,
+        "T_TX": 2.752458054572344
+      }
+    },
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 2,
+      "loss": 10.954562237486243,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 4.124624289572239,
+        "R_IB": 4.2886524721980095,
+        "T_TX": 2.541285475715995
+      }
+    },
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 3,
+      "loss": 10.414432046934962,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 3.8699928037822247,
+        "R_IB": 4.195420753210783,
+        "T_TX": 2.3490184899419546
+      }
+    },
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 4,
+      "loss": 9.918703539296985,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 3.6423554196953773,
+        "R_IB": 4.104024652391672,
+        "T_TX": 2.172323467209935
+      }
+    },
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 5,
+      "loss": 9.449697464704514,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 3.419044554233551,
+        "R_IB": 4.00934437289834,
+        "T_TX": 2.0213085375726223
+      }
+    },
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 6,
+      "loss": 9.011660031974316,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 3.1932534147053957,
+        "R_IB": 3.9124967642128468,
+        "T_TX": 1.9059098530560732
+      }
+    },
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 7,
+      "loss": 8.612463777884841,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 2.970214946195483,
+        "R_IB": 3.815663918852806,
+        "T_TX": 1.8265849128365517
+      }
+    },
+    {
+      "active_counts": {
+        "DELTA_OB": 2168,
+        "R_IB": 221,
+        "T_TX": 2199
+      },
+      "epoch": 8,
+      "loss": 8.25170077290386,
+      "microbatch_count": 18,
+      "optimizer_steps": 1,
+      "padding_fraction": 0.10973812214415568,
+      "seed": 20260814,
+      "target_losses": {
+        "DELTA_OB": 2.753760887309909,
+        "R_IB": 3.7209473066031933,
+        "T_TX": 1.7769925789907575
+      }
+    }
+  ],
+  "training_seconds": 3.5656636000057915,
+  "training_seed": 20260814,
+  "view_summaries": {
+    "calibration": {
+      "identity_and_length_hash": "sha256:b10e749aac464094caa8068634b7e0a7a566ae53e4d015cb6d3734178f11bbe2",
+      "max_nodes": 75,
+      "mean_nodes": 17.375222816399287,
+      "min_nodes": 1,
+      "sample_count": 1122
+    },
+    "development": {
+      "identity_and_length_hash": "sha256:d439eb503c455a042ee797505f2016f55c46b217fcf60a5bfceca17b80938d6e",
+      "max_nodes": 88,
+      "mean_nodes": 12.729166666666666,
+      "min_nodes": 1,
+      "sample_count": 1824
+    },
+    "train": {
+      "identity_and_length_hash": "sha256:64856ad2f750033481ac51627436b10609379501c40f4daeecef5e5c3315c7f3",
+      "max_nodes": 78,
+      "mean_nodes": 16.479763528876763,
+      "min_nodes": 1,
+      "sample_count": 2199
+    }
+  }
+}

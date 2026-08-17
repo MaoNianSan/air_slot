@@ -15,7 +15,7 @@ from model.common.errors import ContractError
 
 def test_three_label_rules_registered_and_frozen():
     registry = current_transformation_registry()
-    for rule_id in ("DATA2_LABEL_R_IB", "DATA2_LABEL_R_OB", "DATA2_LABEL_T_TX"):
+    for rule_id in ("DATA2_LABEL_R_IB", "DATA2_LABEL_DELTA_OB", "DATA2_LABEL_T_TX"):
         rule = registry.get(rule_id, "1.0.0")
         assert rule.status is TransformationStatus.FROZEN
         assert rule.construction_type is ConstructionType.DETERMINISTIC_DERIVATION
@@ -27,16 +27,16 @@ def test_three_label_rules_registered_and_frozen():
 def test_label_formulas_and_caps_are_frozen():
     registry = current_transformation_registry()
     ib = registry.get("DATA2_LABEL_R_IB", "1.0.0")
-    ob = registry.get("DATA2_LABEL_R_OB", "1.0.0")
+    ob = registry.get("DATA2_LABEL_DELTA_OB", "1.0.0")
     tx = registry.get("DATA2_LABEL_T_TX", "1.0.0")
     assert "max(0, pred.actual_arrival_utc - decision_time)" in ib.formula_or_algorithm
     assert "m1_r_ib_max_finite_minutes=360" in ib.formula_or_algorithm
-    assert "max(0, succ.actual_departure_utc - succ.scheduled_departure_utc)" in ob.formula_or_algorithm
-    assert "m1_r_ob_max_finite_minutes=180" in ob.formula_or_algorithm
+    assert "DELTA_OB = succ.actual_departure_utc - succ.scheduled_departure_utc" in ob.formula_or_algorithm
+    assert "-180..+180" in ob.formula_or_algorithm
     assert "succ.taxi_out_minutes" in tx.formula_or_algorithm
     assert "m1_t_tx_max_finite_minutes=60" in tx.formula_or_algorithm
     for rule in (ib, ob, tx):
-        assert "OVERFLOW bin, no clip" in rule.formula_or_algorithm
+        assert "no clip" in rule.formula_or_algorithm
         assert "STAGE_GATED" in rule.formula_or_algorithm
 
 
@@ -46,7 +46,7 @@ def test_label_formulas_match_foundation_config_caps():
     cfg = yaml.safe_load(Path("configs/scientific/foundation.yaml").read_text(encoding="utf-8"))
     params = cfg["parameters"]
     assert params["m1_r_ib_max_finite_minutes"]["value"] == 360
-    assert params["m1_r_ob_max_finite_minutes"]["value"] == 180
+    assert "m1_delta_ob_max_finite_minutes" not in params
     assert params["m1_t_tx_max_finite_minutes"]["value"] == 60
     assert params["m1_r_ib_max_finite_minutes"]["freeze_state"] == "FROZEN"
 
@@ -54,7 +54,7 @@ def test_label_formulas_match_foundation_config_caps():
 def test_data_usage_rule_entries_frozen_eval_outcome():
     bundle = load_registry_bundle(Path("registries"))
     rules = {r.rule_id: r for r in bundle.data_usage_rules}
-    for rid, cap in (("D2-LABEL-R-IB", "360"), ("D2-LABEL-R-OB", "180"),
+    for rid, cap in (("D2-LABEL-R-IB", "360"), ("D2-LABEL-DELTA-OB", "180"),
                      ("D2-LABEL-T-TX", "60")):
         rule = rules[rid]
         assert rule.freeze_state.value == "FROZEN"

@@ -13,7 +13,12 @@ class M1Pipeline:
     @classmethod
     def smoke(cls,input_size=4):
         """Synthetic fixture helper; never resolves formal scientific bins."""
-        bins={n:TargetBinContract(target_name=n,bin_width_minutes=5,max_finite_minutes=20) for n in ("R_IB","R_OB","T_TX")}
+        bins={
+            "R_IB": TargetBinContract(target_name="R_IB", bin_width_minutes=5, max_finite_minutes=20),
+            "DELTA_OB": TargetBinContract(target_name="DELTA_OB", bin_width_minutes=5,
+                                            min_finite_minutes=-20, max_finite_minutes=20, signed=True),
+            "T_TX": TargetBinContract(target_name="T_TX", bin_width_minutes=5, max_finite_minutes=20),
+        }
         torch.manual_seed(0); return cls(OrderedEventGRU(input_size,16,bins),bins)
 
     @classmethod
@@ -22,9 +27,7 @@ class M1Pipeline:
         if not isinstance(normalization, M1NormalizationArtifact) \
                 or normalization.fitted_split != "train":
             raise ValueError("M1_FORMAL_TRAIN_NORMALIZATION_REQUIRED")
-        names={"R_IB":"m1_r_ib_max_finite_minutes",
-               "R_OB":"m1_r_ob_max_finite_minutes",
-               "T_TX":"m1_t_tx_max_finite_minutes"}
+        names={"R_IB":"m1_r_ib_max_finite_minutes", "T_TX":"m1_t_tx_max_finite_minutes"}
         width=scientific.parameters["m1_bin_width_minutes"].value
         bins={}
         for target, parameter in names.items():
@@ -33,6 +36,10 @@ class M1Pipeline:
                 raise ValueError(f"M1_FORMAL_FINITE_SUPPORT_UNFROZEN:{target}")
             bins[target]=TargetBinContract(target_name=target,
                 bin_width_minutes=width,max_finite_minutes=item.value)
+        bins["DELTA_OB"] = TargetBinContract(
+            target_name="DELTA_OB", bin_width_minutes=width,
+            min_finite_minutes=-180, max_finite_minutes=180, signed=True,
+        )
         selected = scientific.parameters["m1_hidden_size"].value
         candidates = scientific.parameters["m1_hidden_size_candidates"].value
         hidden = selected if hidden_size is None else hidden_size
@@ -49,7 +56,8 @@ class M1Pipeline:
 
     def sample_aligned(self,dist,**kwargs): return aligned_sample(dist,self.bins,**kwargs)
 
-    def sample_from_pre(self, pre_state, values, lengths, *, observed, count, seed):
+    def sample_from_pre(self, pre_state, values, lengths, *, observed, count, seed,
+                        taxi_reference=None):
         if values.shape[0] != 1:
             raise ValueError("formal scenario generation accepts one decision node at a time")
         support={item.target_name:(item.support_state.value if hasattr(item.support_state,"value") else str(item.support_state))
@@ -58,9 +66,41 @@ class M1Pipeline:
         stage=stage.value if hasattr(stage,"value") else str(stage)
         self.model.eval()
         with torch.no_grad(): history=self.model.encode_history(values,lengths)
+        schedule = pre_state.successor_state.get("schedule_reference")
+        schedule_value = None if schedule is None else schedule.value
+        scheduled_ob_utc = None
+        origin_airport_id = None
+        if isinstance(schedule_value, dict):
+            scheduled = schedule_value.get("scheduled_departure_utc")
+            scheduled_ob_utc = None if scheduled is None else scheduled.isoformat()
+            origin_airport_id = schedule_value.get("origin_airport_id")
+        reference_context = {
+            "tx_reference_minutes": None,
+            "taxi_reference_id": None,
+            "taxi_reference_hash": None,
+            "taxi_reference_fallback_level": None,
+            "taxi_reference_support_state": "ABSTAIN",
+        }
+        if taxi_reference is not None:
+            if getattr(taxi_reference, "dataset_instance_id", None) != "data2_2019" \
+                    or getattr(taxi_reference, "rule_id", None) != "DATA2_TAXI_REFERENCE":
+                raise ValueError("M1_REQUIRES_TRAIN_FROZEN_DATA2_TAXI_REFERENCE")
+            lookup = taxi_reference.lookup(origin_airport_id)
+            state = getattr(lookup.support_state, "value", str(lookup.support_state))
+            flags = set(getattr(lookup, "quality_flags", ()))
+            fallback = next((flag.removeprefix("REFERENCE_LEVEL_") for flag in flags
+                             if flag.startswith("REFERENCE_LEVEL_")), None)
+            reference_context = {
+                "tx_reference_minutes": lookup.value,
+                "taxi_reference_id": taxi_reference.reference_id,
+                "taxi_reference_hash": getattr(taxi_reference, "manifest_freeze_id", None),
+                "taxi_reference_fallback_level": fallback,
+                "taxi_reference_support_state": state,
+            }
         return ancestral_sample(self.model,history,self.bins,episode_id=pre_state.decision_node.episode_id,
             decision_node_id=pre_state.decision_node.decision_node_id,stage=stage,observed=observed,
-            count=count,seed=seed,target_support=support)
+            count=count,seed=seed,target_support=support,scheduled_ob_utc=scheduled_ob_utc,
+            **reference_context)
 
     def summarize(self,scenarios,**kwargs):
         from .summaries import horizon_summaries

@@ -128,9 +128,9 @@ def test_train_only_normalization_and_typed_labels_preserve_identity_and_split()
         config_hash="sha256:c",registry_hash="sha256:r")).pre_state
     labels=build_data2_target_labels(episode=episode,node=node,predecessor_outcome=pred_outcome,
         successor_schedule=succ_schedule,successor_outcome=succ_outcome,target_support=pre.target_support)
-    assert {x.target_name for x in labels} == {"R_IB","R_OB","T_TX"}
+    assert {x.target_name for x in labels} == {"R_IB","DELTA_OB","T_TX"}
     assert all(x.episode_id == "e" and x.split == "train" and x.provenance for x in labels)
-    assert {x.target_name:x.exact_minutes for x in labels} == {"R_IB":30.0,"R_OB":65.0,"T_TX":15.0}
+    assert {x.target_name:x.exact_minutes for x in labels} == {"R_IB":30.0,"DELTA_OB":65.0,"T_TX":15.0}
 
 
 def test_formal_pipeline_uses_frozen_target_supports():
@@ -138,13 +138,19 @@ def test_formal_pipeline_uses_frozen_target_supports():
     pipeline=M1Pipeline.from_scientific_config(scientific,input_size=len(FEATURE_NAMES),
                                                normalization=_normalization(), hidden_size=16)
     assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
-        "R_IB":360,"R_OB":180,"T_TX":60}
-    for target, finite, overflow in (("R_IB",360,365),("R_OB",180,185),("T_TX",60,65)):
+        "R_IB":360,"DELTA_OB":180,"T_TX":60}
+    for target, finite, overflow in (("R_IB",360,365),("T_TX",60,65)):
         bins=pipeline.bins[target]
         assert bins.encode(finite) == bins.class_count-2
         assert bins.encode(finite+4.999) == bins.class_count-2
         assert bins.encode(overflow) == bins.class_count-1
         assert bins.encode(overflow+10_000) == bins.class_count-1
+    signed = pipeline.bins["DELTA_OB"]
+    assert signed.signed and signed.min_finite_minutes == -180
+    assert signed.encode(-185) == signed.underflow_index
+    assert signed.encode(-180) == signed.finite_start_index
+    assert signed.encode(180) == signed.class_count - 2
+    assert signed.encode(185) == signed.overflow_index
 
 
 def test_output_support_change_cannot_change_full_input_history():
@@ -176,9 +182,9 @@ def test_output_support_change_cannot_change_full_input_history():
     assert encoded_a.shape[0] == 3
     assert {name:head.class_count for name,head in pipeline_a.bins.items()} != {
         name:head.class_count for name,head in pipeline_b.bins.items()}
-    assert pipeline_a.bins["R_OB"].encode(185) == pipeline_a.bins["R_OB"].class_count-1
-    assert pipeline_b.bins["R_OB"].encode(185) != pipeline_b.bins["R_OB"].class_count-1
-    assert pipeline_a.bins["R_OB"].encode(245) != pipeline_b.bins["R_OB"].encode(245)
+    assert pipeline_a.bins["DELTA_OB"].encode(-185) == pipeline_a.bins["DELTA_OB"].underflow_index
+    assert pipeline_b.bins["DELTA_OB"].encode(185) == pipeline_b.bins["DELTA_OB"].overflow_index
+    assert pipeline_a.bins["DELTA_OB"].class_count == pipeline_b.bins["DELTA_OB"].class_count
 
 
 def test_history_prefix_rejects_omission_and_wrong_grid():

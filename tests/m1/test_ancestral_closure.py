@@ -20,16 +20,16 @@ def test_true_ancestral_heads_receive_sampled_parent_categories(monkeypatch):
     pipe = M1Pipeline.smoke(input_size=4)
     calls = []
 
-    def conditioned(history, target, ib_index=None, ob_index=None):
-        calls.append((target, ib_index, ob_index))
+    def conditioned(history, target, ib_index=None, delta_ob_index=None):
+        calls.append((target, ib_index, delta_ob_index))
         size = pipe.bins[target].class_count
         logits = torch.full((1, size), -100.0)
         if target == "R_IB":
             index = 1
-        elif target == "R_OB":
+        elif target == "DELTA_OB":
             index = (ib_index + 1) % size
         else:
-            index = (ib_index + ob_index + 1) % size
+            index = (ib_index + delta_ob_index + 1) % size
         logits[0, index] = 100.0
         return logits
 
@@ -39,13 +39,13 @@ def test_true_ancestral_heads_receive_sampled_parent_categories(monkeypatch):
         observed={}, count=3, seed=9,
     )
     assert all(row.r_ib_minutes == 7.5 for row in rows)
-    assert all(row.r_ob_minutes == 12.5 for row in rows)
+    assert all(row.delta_ob_minutes == -12.5 and row.r_ob_minutes == 0 for row in rows)
     assert all(row.t_tx_minutes == 22.5 for row in rows)
-    assert ("R_OB", 1, None) in calls
+    assert ("DELTA_OB", 1, None) in calls
     assert ("T_TX", 1, 2) in calls
 
 
-def test_pre_support_automatically_suppresses_data1_r_ob_and_is_reproducible():
+def test_pre_support_automatically_suppresses_data1_delta_ob_and_is_reproducible():
     pipe = M1Pipeline.smoke(input_size=4)
     args = (_pre("data1_2019"), torch.zeros(1, 2, 4), torch.tensor([2]))
     first = pipe.sample_from_pre(*args, observed={}, count=8, seed=17)

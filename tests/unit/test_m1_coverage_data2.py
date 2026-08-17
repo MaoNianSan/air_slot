@@ -76,7 +76,7 @@ def _target_support():
                            dataset_ceiling=EvidenceClass.DIRECT,
                            formal_input_support=EvidenceClass.DIRECT,
                            realized_outcome_support=EvidenceClass.DIRECT)
-        for name in ("R_IB", "R_OB", "T_TX"))
+        for name in ("R_IB", "DELTA_OB", "T_TX"))
 
 
 def _scenario(*, pred_actual_arr, succ_crs_dep, succ_crs_arr, succ_actual_dep,
@@ -139,7 +139,7 @@ def test_data1_and_prior_d2_rules_untouched():
                 "D1-TRAJECTORY-EVENT", "D1-METAR", "D1-EUROSTAT"):
         assert rules[rid].freeze_state.value == "FROZEN"
         assert rules[rid].dataset_id == "data1_2019"
-    for rid in ("D2-CHAIN-GATE-GAP", "D2-LABEL-R-IB", "D2-LABEL-R-OB",
+    for rid in ("D2-CHAIN-GATE-GAP", "D2-LABEL-R-IB", "D2-LABEL-DELTA-OB",
                 "D2-LABEL-T-TX", "D2-NOAA-ISD", "D2-PASSENGER-REFERENCE"):
         assert rules[rid].freeze_state.value == "FROZEN"
     registry = current_transformation_registry()
@@ -188,7 +188,7 @@ def test_early_arrival_episode_without_pre_ib_still_contributes_nodes():
     by_name = {label.target_name: label for label in first_labels}
     assert by_name["R_IB"].active is False       # already realized at this stage
     assert by_name["R_IB"].abstention_reason == "TARGET_OBSERVED_AT_STAGE"
-    assert by_name["R_OB"].active is True
+    assert by_name["DELTA_OB"].active is True
     assert by_name["T_TX"].active is True
 
 
@@ -209,7 +209,7 @@ def test_late_arrival_episode_keeps_pre_ib_nodes():
     assert prefixes[0][0].operational_stage is OperationalStage.PRE_IB
     by_name = {label.target_name: label for label in prefixes[0][2]}
     assert by_name["R_IB"].active is True
-    assert by_name["R_OB"].active is True
+    assert by_name["DELTA_OB"].active is True
     assert by_name["T_TX"].active is True
 
 
@@ -252,8 +252,8 @@ def test_build_all_node_examples_one_example_per_node_in_order():
     for index, example in enumerate(examples):
         assert example.values.shape[0] == index + 1     # full prefix per node
         assert example.episode_id == episode.episode_id
-    assert examples[0].active == {"R_IB": False, "R_OB": True, "T_TX": True}
-    assert examples[-1].active == {"R_IB": False, "R_OB": True, "T_TX": True}
+    assert examples[0].active == {"R_IB": False, "DELTA_OB": True, "T_TX": True}
+    assert examples[-1].active == {"R_IB": False, "DELTA_OB": True, "T_TX": True}
 
 
 def test_nodes_states_length_mismatch_rejected():

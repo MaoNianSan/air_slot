@@ -37,7 +37,7 @@ def test_registry_controls_family_evidence_and_explicit_support():
     assert result.successor_state["schedule_reference"].support_state.value == "ABSTAIN"
     assert result.successor_state["schedule_reference"].reason_code == "NO_SCHEDULE"
     support = {item.target_name:item for item in result.target_support}
-    assert not support["R_OB"].active and support["R_OB"].abstention_reason == "TARGET_SEMANTICS_UNSUPPORTED"
+    assert not support["DELTA_OB"].active and support["DELTA_OB"].abstention_reason == "TARGET_SEMANTICS_UNSUPPORTED"
     assert result.decision_node.status == "CONSTRUCTED"
 
 

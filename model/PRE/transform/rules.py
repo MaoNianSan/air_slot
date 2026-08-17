@@ -554,7 +554,7 @@ TransformationRule(
             status=TransformationStatus.FROZEN,
         ),
         TransformationRule(
-            transformation_rule_id="DATA2_LABEL_R_OB",
+            transformation_rule_id="DATA2_LABEL_DELTA_OB",
             version="1.0.0",
             construction_type=ConstructionType.DETERMINISTIC_DERIVATION,
             input_object_types=("OperationalEventRecord", "FlightRecord", "DecisionNodeRecord"),
@@ -573,10 +573,10 @@ TransformationRule(
             duplicate_rule="REJECT_EXACT_DUPLICATE_DECISION_NODE",
             missing_key_rule="MISSING_OUTCOME_ABSTAIN",
             temporal_rule="POSTHOC_ONLY",
-            formula_or_algorithm=("R_OB = max(0, succ.actual_departure_utc - succ.scheduled_departure_utc); "
-                                 "m1_r_ob_max_finite_minutes=180; OVERFLOW bin, no clip; "
+            formula_or_algorithm=("DELTA_OB = succ.actual_departure_utc - succ.scheduled_departure_utc; "
+                                 "signed finite starts -180..+180, UNDERFLOW and OVERFLOW bins, no clip; "
                                  "STAGE_GATED"),
-            output_variable="r_ob_label",
+            output_variable="delta_ob_label",
             output_unit="minutes",
             evidence_rule="DIRECT_GATE_DEPARTURE_MINUS_CRS_DEPARTURE",
             support_rule="DIRECT_OUTCOME_STAGE_GATED_MISSING_ABSTAIN",
@@ -640,7 +640,7 @@ TransformationRule(
             temporal_rule="POSTHOC_ONLY",
             formula_or_algorithm=("all rolling grid nodes -> one M1 training example per node; "
                                  "D2-2 anchors unchanged; stage-gated labels "
-                                 "(R_IB:{PRE_IB}; R_OB:{PRE_IB,POST_IB_PRE_OB}; "
+                                 "(R_IB:{PRE_IB}; DELTA_OB:{PRE_IB,POST_IB_PRE_OB}; "
                                  "T_TX:{PRE_IB,POST_IB_PRE_OB,POST_OB_PRE_TO}); "
                                  "node-level equal weight; "
                                  "nodes with no active target (all realized) excluded"),

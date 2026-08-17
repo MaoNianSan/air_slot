@@ -54,7 +54,7 @@ legacy-only tree.
 - Public interfaces: `M1Pipeline`, `M1Service.predict_now`, `M1Service.generate_scenarios`,
   `AlignedScenario`, and typed target/forecast contracts.
 - Inputs: typed PRE state plus normalized historical feature sequences and model artifacts.
-- Outputs: ordered `R_IB`, `R_OB`, `T_TX` distributions and aligned scenario bundles.
+- Outputs: ordered `R_IB`, `DELTA_OB`, `T_TX` distributions and aligned scenario bundles; `R_OB` is derived compatibility output.
 - Configuration: scientific foundation YAML; formal horizons are `(0, 15, 60)`, delay thresholds
   are `(15, 30, 60)`, and hidden-size candidates are `[16, 32]` but no winner is frozen.
 - RNG: deterministic hash-based scenario keys in `model/M1/scenarios.py`; no shared global RNG.
@@ -132,11 +132,10 @@ checkout. Historical references appear in reports and validation notes only. The
 
 ### 4.1 M1 event-time and delay semantics
 
-`model/M1/semantics.py::takeoff_delay_minutes` currently returns `R_OB + T_TX`. The supplied V5
-contract requires event-time identity `T_TO = T_OB + T_TX` while defining total takeoff delay from
+The D3 signed target contract derives total takeoff delay from `DELTA_OB`, `T_TX`, and the train-frozen taxi reference. It
+requires the event-time identity `T_TO = T_OB + T_TX` while defining total takeoff delay from
 its own schedule/reference terms; therefore `D_TO` must not be treated as a generally additive
-`D_OB + D_TX` identity. This is an open implementation conflict and requires a canonical helper
-that accepts event times and references.
+`D_OB + D_TX` identity. The canonical helper accepts the signed offset and train-frozen reference.
 
 ### 4.2 M1 capacity
 

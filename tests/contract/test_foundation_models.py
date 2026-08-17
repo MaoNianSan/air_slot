@@ -18,12 +18,13 @@ def test_weather_contract_rejects_raw_names_and_is_immutable():
 
 
 def test_node_and_object_abstention_are_separate():
-    node = DecisionNodeRecord(decision_node_id="n", episode_id="e", decision_time=datetime.now(UTC),
-        information_cutoff=datetime.now(UTC), operational_stage="PRE_IB", roll_minutes=5,
+    now = datetime.now(UTC)
+    node = DecisionNodeRecord(decision_node_id="n", episode_id="e", decision_time=now,
+        information_cutoff=now, operational_stage="PRE_IB", roll_minutes=5,
         node_index=0, status="CONSTRUCTED", formal_eligible=True, config_hash="sha256:a",
         registry_manifest_hash="sha256:b", legal_record_ids=())
-    target = TargetSupportState(target_name="R_OB", active=False, support_state="ABSTAIN",
-        target_definition_id="R_OB_V1", dataset_ceiling="UNSUPPORTED",
+    target = TargetSupportState(target_name="DELTA_OB", active=False, support_state="ABSTAIN",
+        target_definition_id="DELTA_OB_V1", dataset_ceiling="UNSUPPORTED",
         formal_input_support="UNSUPPORTED", realized_outcome_support="DERIVED",
         abstention_reason="TARGET_SEMANTICS_UNSUPPORTED")
     assert node.status == "CONSTRUCTED" and target.support_state.value == "ABSTAIN"

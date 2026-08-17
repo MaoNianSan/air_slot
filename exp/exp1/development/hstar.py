@@ -17,6 +17,7 @@ import torch
 
 from model.common.config import load_config_layers
 from model.common.identity import content_id
+from model.M1.contracts import STOCHASTIC_TARGETS
 from model.M1.cache import M1DevelopmentBaseCache, cache_key as development_cache_key
 from model.M1.data import FEATURE_NAMES, fit_train_normalization
 from model.M1.lifecycle import M1Lifecycle, M1TrainingExample
@@ -172,7 +173,7 @@ def _ece(probabilities, labels, bins=10):
 
 def evaluate(lifecycle, examples):
     episode_joint = defaultdict(list)
-    target_episode = {name: defaultdict(list) for name in ("R_IB", "R_OB", "T_TX")}
+    target_episode = {name: defaultdict(list) for name in STOCHASTIC_TARGETS}
     started = time.perf_counter()
     logits, labels, active = lifecycle.batched_logits(
         examples, batch_size=256, teacher_forcing=True

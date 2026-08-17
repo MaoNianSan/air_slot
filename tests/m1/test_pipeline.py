@@ -20,7 +20,7 @@ def test_abstained_target_is_not_sampled_and_stage_requires_observed_events():
     pipe=M1Pipeline.smoke(input_size=4);values=torch.zeros(1,2,4);lengths=torch.tensor([2])
     dist=pipe.predict_distributions(values,lengths)
     rows=pipe.sample_aligned(dist,episode_id="e",decision_node_id="n",stage="PRE_IB",observed={},
-        target_support={"R_IB":"SUPPORTED","R_OB":"ABSTAIN","T_TX":"SUPPORTED"},count=2,seed=7)
+        target_support={"R_IB":"SUPPORTED","DELTA_OB":"ABSTAIN","T_TX":"SUPPORTED"},count=2,seed=7)
     assert all(row.r_ob_minutes is None and row.ob_support=="ABSTAIN" for row in rows)
     with pytest.raises(ContractError,match="M1_STAGE_OBSERVATION_MISSING"):
         pipe.sample_aligned(dist,episode_id="e",decision_node_id="n",stage="POST_OB_PRE_TO",observed={"R_IB":1},count=2,seed=7)

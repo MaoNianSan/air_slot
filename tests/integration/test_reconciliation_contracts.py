@@ -16,7 +16,7 @@ from model.M1.data import M1NormalizationArtifact
 from model.M1.semantics import (
     DELAY_THRESHOLDS_MINUTES,
     FORMAL_FORECAST_HORIZONS_MINUTES,
-    takeoff_delay_minutes,
+    total_takeoff_delay_minutes,
 )
 from model.common.config import load_config_layers
 from model.common.errors import ContractError
@@ -49,10 +49,16 @@ def test_formal_m1_uses_development_frozen_hidden_size_selection():
     assert selected.model.hidden_size == 16
 
 
-def test_legacy_additive_helper_is_not_the_v5_formal_delay_contract():
-    assert takeoff_delay_minutes(12.5, 7.5) == 20.0
-    assert takeoff_delay_minutes(None, 7.5) is None
-    assert takeoff_delay_minutes(12.5, None) is None
+def test_signed_takeoff_delay_requires_the_train_frozen_taxi_reference():
+    assert total_takeoff_delay_minutes(
+        delta_ob_minutes=12.5, t_tx_minutes=7.5, taxi_reference_minutes=5.0
+    ) == 15.0
+    assert total_takeoff_delay_minutes(
+        delta_ob_minutes=None, t_tx_minutes=7.5, taxi_reference_minutes=5.0
+    ) is None
+    assert total_takeoff_delay_minutes(
+        delta_ob_minutes=12.5, t_tx_minutes=7.5, taxi_reference_minutes=None
+    ) is None
 
 
 def test_m1_service_labels_fast_and_state_paths_explicitly():

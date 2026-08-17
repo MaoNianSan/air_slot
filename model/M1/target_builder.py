@@ -11,7 +11,7 @@ def _active(support: dict[str, TargetSupportState], target: str, stage: Operatio
         return False
     unresolved = {
         "R_IB": {OperationalStage.PRE_IB},
-        "R_OB": {OperationalStage.PRE_IB, OperationalStage.POST_IB_PRE_OB},
+        "DELTA_OB": {OperationalStage.PRE_IB, OperationalStage.POST_IB_PRE_OB},
         "T_TX": {OperationalStage.PRE_IB, OperationalStage.POST_IB_PRE_OB,
                  OperationalStage.POST_OB_PRE_TO},
     }
@@ -50,16 +50,16 @@ def build_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
     continuous = {
         "R_IB": None if not predecessor_complete or predecessor_outcome.actual_arrival_utc is None else max(0.0,
             (predecessor_outcome.actual_arrival_utc - node.decision_time).total_seconds() / 60.0),
-        "R_OB": None if not successor_complete or successor_outcome.actual_departure_utc is None
-            or successor_schedule.scheduled_departure_utc is None else max(0.0,
+        "DELTA_OB": None if not successor_complete or successor_outcome.actual_departure_utc is None
+            or successor_schedule.scheduled_departure_utc is None else (
             (successor_outcome.actual_departure_utc - successor_schedule.scheduled_departure_utc).total_seconds() / 60.0),
         "T_TX": successor_outcome.taxi_out_minutes if successor_complete else None,
     }
     support = {item.target_name: item for item in target_support}
     result = []
-    for target in ("R_IB", "R_OB", "T_TX"):
+    for target in ("R_IB", "DELTA_OB", "T_TX"):
         active = _active(support, target, node.operational_stage) and continuous[target] is not None
-        if active and continuous[target] < 0:
+        if active and target != "DELTA_OB" and continuous[target] < 0:
             raise ContractError("M1_TARGET_NEGATIVE")
         result.append(M1TargetLabel(target_name=target, active=active,
             exact_minutes=continuous[target] if active else None,
@@ -71,7 +71,7 @@ def build_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
                 "TARGET_OBSERVED_AT_STAGE" if continuous[target] is not None
                 else "REALIZED_OUTCOME_UNAVAILABLE"),
             provenance=(predecessor_outcome.provenance,) if target == "R_IB"
-                else (successor_schedule.provenance, successor_outcome.provenance) if target == "R_OB"
+                else (successor_schedule.provenance, successor_outcome.provenance) if target == "DELTA_OB"
                 else (successor_outcome.provenance,),
             split=split_for_date(successor_schedule.service_date),
             episode_date=successor_schedule.service_date))

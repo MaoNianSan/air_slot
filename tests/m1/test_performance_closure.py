@@ -16,7 +16,7 @@ from model.PRE.episode.builder import build_data2_episode_records
 from model.PRE.streaming.data2 import aircraft_tail
 
 
-TARGETS = ("R_IB", "R_OB", "T_TX")
+TARGETS = ("R_IB", "DELTA_OB", "T_TX")
 
 
 def _example(episode, day, length, offset, *, node=None):
@@ -25,7 +25,7 @@ def _example(episode, day, length, offset, *, node=None):
         episode_date=day,
         values=torch.arange(length * 4, dtype=torch.float32).reshape(length, 4) / 10 + offset,
         labels={name: (offset + index) % 6 for index, name in enumerate(TARGETS)},
-        active={"R_IB": True, "R_OB": offset % 2 == 0, "T_TX": True},
+        active={"R_IB": True, "DELTA_OB": offset % 2 == 0, "T_TX": True},
         decision_node_id=node or f"{episode}-n{length}",
     )
 

@@ -7,7 +7,7 @@ import torch
 from .calibration import fit_temperature
 from .loss import exact_nll
 from .pipeline import M1Pipeline
-from .contracts import M1TargetLabel
+from .contracts import M1TargetLabel, STOCHASTIC_TARGETS
 from model.PRE.contracts.pre_state import TargetSupportState
 
 
@@ -31,7 +31,7 @@ class M1TrainingExample:
     @classmethod
     def from_target_labels(cls, *, values: torch.Tensor,
                            labels: tuple[M1TargetLabel, ...], bins):
-        if {item.target_name for item in labels} != {"R_IB", "R_OB", "T_TX"}:
+        if {item.target_name for item in labels} != set(STOCHASTIC_TARGETS):
             raise ValueError("M1_TYPED_TARGET_SET_INCOMPLETE")
         episodes={item.episode_id for item in labels}; dates={item.episode_date for item in labels}
         if len(episodes)!=1 or len(dates)!=1:
@@ -89,7 +89,7 @@ class M1Lifecycle:
             [row.values for row in examples],batch_first=True).to(target)
         labels={name:torch.tensor([row.labels[name] for row in examples],
                                   dtype=torch.long,device=target)
-                for name in ("R_IB","R_OB","T_TX")}
+                for name in STOCHASTIC_TARGETS}
         active={name:torch.tensor([row.active[name] for row in examples],
                                   dtype=torch.bool,device=target) for name in labels}
         return values,lengths,labels,active
@@ -123,7 +123,7 @@ class M1Lifecycle:
         batches=self._batch_indices(examples,batch_size,bucketed=batch_size is not None)
         optimizer=torch.optim.Adam(self.pipeline.model.parameters(),lr=learning_rate); history=[]
         totals={name:sum(int(examples[index].active[name]) for index in range(len(examples)))
-                for name in ("R_IB","R_OB","T_TX")}
+                for name in STOCHASTIC_TARGETS}
         diagnostics=self.batching_diagnostics(
             examples,batch_size=batch_size,bucketed=batch_size is not None)
         for epoch_index in range(epochs):
@@ -133,7 +133,7 @@ class M1Lifecycle:
                 batch=[examples[index] for index in indices]
                 values,lengths,labels,active=self._batch(batch,device=self.device)
                 logits=self.pipeline.model(values,lengths,teacher={
-                    "R_IB":labels["R_IB"],"R_OB":labels["R_OB"],"_active":active})
+                    "R_IB":labels["R_IB"],"DELTA_OB":labels["DELTA_OB"],"_active":active})
                 contributions=[]
                 for name in logits:
                     losses=torch.nn.functional.cross_entropy(
@@ -160,7 +160,7 @@ class M1Lifecycle:
     def batched_logits(self,examples,*,batch_size=None,teacher_forcing=True):
         if not examples: raise ValueError("empty M1 inference split")
         batches=self._batch_indices(examples,batch_size,bucketed=batch_size is not None)
-        output={name:None for name in ("R_IB","R_OB","T_TX")}
+        output={name:None for name in STOCHASTIC_TARGETS}
         all_labels={name:torch.empty(len(examples),dtype=torch.long) for name in output}
         all_active={name:torch.empty(len(examples),dtype=torch.bool) for name in output}
         self.pipeline.model.eval()
@@ -169,7 +169,7 @@ class M1Lifecycle:
                 batch=[examples[index] for index in indices]
                 values,lengths,labels,active=self._batch(batch,device=self.device)
                 teacher=None if not teacher_forcing else {
-                    "R_IB":labels["R_IB"],"R_OB":labels["R_OB"],"_active":active}
+                    "R_IB":labels["R_IB"],"DELTA_OB":labels["DELTA_OB"],"_active":active}
                 logits=self.pipeline.model(values,lengths,teacher=teacher)
                 target_indices=torch.tensor(indices,dtype=torch.long)
                 for name,value in logits.items():

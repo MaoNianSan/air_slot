@@ -89,7 +89,7 @@ path is not overwritten unless an explicit low-level override is supplied outsid
 | --- | --- | --- |
 | `fast/middle/full` as experiment modes | `smoke/development/paper_full/numerical_stress`; M1 `FAST` remains a model path | MIGRATED |
 | component-wise point means | weighted joint scenario medoid | MIGRATED |
-| total delay inferred as `R_OB + T_TX` in experiment evaluation | total delay requires event time plus schedule/taxi reference | MIGRATED; legacy fixture helper isolated |
+| total delay inferred as `R_OB + T_TX` in experiment evaluation | total delay requires signed off-block timing plus train-frozen taxi reference | MIGRATED to `max(0, DELTA_OB + T_TX - taxi_reference)` |
 | unkeyed/offset shuffle RNG | episode/node/q/replicate/component keyed stream | MIGRATED |
 | generic Exp1/2/3/4 variant names | canonical V5 protocol variants plus legacy aliases | MIGRATED |
 | available-component total could be mistaken for formal scope | fixed formal scope remains distinct from diagnostic sum | CONTRACT ENFORCED |

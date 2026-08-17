@@ -16,8 +16,8 @@ from .data import M1NormalizationArtifact
 from .lifecycle import M1TrainingExample
 
 
-CACHE_SCHEMA_VERSION = "M1_DEVELOPMENT_BASE_CACHE_V1"
-TARGET_NAMES = ("R_IB", "R_OB", "T_TX")
+CACHE_SCHEMA_VERSION = "M1_SIGNED_OB_DEVELOPMENT_BASE_CACHE_V1"
+TARGET_NAMES = ("R_IB", "DELTA_OB", "T_TX")
 ALLOWED_SPLITS = ("train", "calibration", "development")
 REQUIRED_CONTRACT_HASHES = (
     "PRE_contract_hash",
@@ -239,10 +239,19 @@ class M1DevelopmentBaseCache:
             "audit": audit,
             "episode_count": len(store.episode_ids),
             "sample_count": len(store.sample_splits),
+            "feature_count": int(store.values_flat.shape[1]),
             "canonical_node_count": store.canonical_node_count,
             "expanded_prefix_node_count": store.expanded_prefix_node_count,
             "partition_counts": {
                 split: store.sample_splits.count(split) for split in ALLOWED_SPLITS},
+            **{
+                f"{split}_episode_count": len({
+                    episode_id
+                    for index, episode_id in enumerate(store.sample_episode_ids)
+                    if store.sample_splits[index] == split
+                })
+                for split in ALLOWED_SPLITS
+            },
         }
         return cls(store=store, normalization=normalization, audit=audit, manifest=manifest)
 

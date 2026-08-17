@@ -14,7 +14,7 @@ def main(argv=None):
         pipe=M1Pipeline.smoke(4); optimizer=torch.optim.Adam(pipe.model.parameters(),lr=.01); values=torch.randn(8,3,4); lengths=torch.full((8,),3)
         labels={n:torch.arange(8)%b.class_count for n,b in pipe.bins.items()}; initial=None
         for _ in range(8):
-            optimizer.zero_grad(); out=pipe.model(values,lengths,teacher={"R_IB":labels["R_IB"],"R_OB":labels["R_OB"]})
+            optimizer.zero_grad(); out=pipe.model(values,lengths,teacher={"R_IB":labels["R_IB"],"DELTA_OB":labels["DELTA_OB"]})
             loss=sum(torch.nn.functional.cross_entropy(out[n],labels[n]) for n in out); initial=float(loss.detach()) if initial is None else initial; loss.backward(); optimizer.step()
         path=args.output/"m1.pt"; pipe.save(path); result={"status":"PASS","initial_loss":initial,"final_loss":float(loss.detach()),"artifact":path.as_posix()}
     elif args.command=="infer-smoke":
@@ -22,6 +22,6 @@ def main(argv=None):
     elif args.command=="inspect-artifact":
         lifecycle=M1Lifecycle.load(args.artifact); result={"status":"PASS","hidden_size":lifecycle.pipeline.model.hidden_size,
             "temperatures":lifecycle.pipeline.temperatures,"ordered_heads":list(lifecycle.pipeline.bins)}
-    else: result={"status":"PASS","architecture":"one_layer_unidirectional_gru","ordered_heads":["R_IB","R_OB","T_TX"]}
+    else: result={"status":"PASS","architecture":"one_layer_unidirectional_gru","ordered_heads":["R_IB","DELTA_OB","T_TX"]}
     print(json.dumps(result,sort_keys=True)); return 0
 if __name__=="__main__": raise SystemExit(main())

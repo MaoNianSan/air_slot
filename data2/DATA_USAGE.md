@@ -16,7 +16,7 @@ Historical experiment outputs, manifests, and run artifacts are **not** evidence
 Data2 (`data2_2019`) is the **primary experimental dataset** of the current Air Slot implementation.
 
 - It is the only dataset instance with registered M1 training-label rules
-  (`D2-LABEL-R-IB`, `D2-LABEL-R-OB`, `D2-LABEL-T-TX`, `D2-M1-TRAINING-COVERAGE`,
+  (`D2-LABEL-R-IB`, `D2-LABEL-DELTA-OB`, `D2-LABEL-T-TX`, `D2-M1-TRAINING-COVERAGE`,
   `D2-TEMPORAL-SPLIT` in `registries/data_usage_rules.yaml`) and the only instance with an M1
   training-coverage/target-label code path (`model/M1/coverage.py`,
   `model/M1/target_builder.py:build_data2_target_labels`).
@@ -152,7 +152,7 @@ conversion and airport identity, respectively.
 | `schedule_reference` (FlightRecord) | `CRSDepTime`, `CRSArrTime` + timezone | `local_hhmm_to_utc`, rollover inference | `SCHEDULE_REFERENCE_ASSUMPTION`; semantics = CRS departure, **not** SOBT | explicit missing; no fallback | EMPIRICAL_REFERENCE / ceiling EMPIRICAL_REFERENCE; `D2-BTS-SCHEDULE` | PRE, M1, M2 |
 | `realized_operational_event` (OperationalEventRecord) | `DepTime/ArrTime/WheelsOff/WheelsOn/TaxiOut/TaxiIn/DepDelayMinutes/ArrDelayMinutes/Cancelled/Diverted` | local actual -> UTC with delay-minute date offset; wheels from taxi | `POSTHOC_ONLY`; never inference evidence | explicit cancelled; no fallback | DIRECT / DIRECT; `D2-BTS-ACTUAL` | EVALUATION_ONLY |
 | `R_IB` label | `ArrTime` (pred), decision time | `max(0, pred.actual_arrival - decision_time)`, cap 360 | post-hoc | explicit | DIRECT; `D2-LABEL-R-IB` | M1 |
-| `R_OB` label | `DepTime`, `CRSDepTime` (succ) | `max(0, succ.actual_departure - succ.CRS_departure)`, cap 180 | post-hoc | explicit | DIRECT; `D2-LABEL-R-OB` | M1 |
+| `DELTA_OB` label | `DepTime`, `CRSDepTime` (succ) | `succ.actual_departure - succ.CRS_departure`, signed bins -180..+180 plus tails | post-hoc | explicit | DIRECT; `D2-LABEL-DELTA-OB` | M1 |
 | `T_TX` label | `TaxiOut` (succ) | preserved minutes, cap 60 | post-hoc | explicit | DIRECT; `D2-LABEL-T-TX` | M1 |
 | `M1 training coverage` | all rolling-grid decision nodes | stage-gated, node-equal weight | post-hoc | explicit | DERIVED, ceiling DIRECT; `D2-M1-TRAINING-COVERAGE` | M1 |
 | `dataset_partition` | `FlightDate` (successor service date) | temporal split: train <= 2019-06-30, calibration <= 2019-07-31, development <= 2019-09-30, else test (`model/M1/target_builder.py:split_for_date`) | post-hoc | explicit | DERIVED; `D2-TEMPORAL-SPLIT` | M1, M2, M3 |
@@ -264,7 +264,7 @@ BTS/NOAA raw  ->  Data2Adapter (model/PRE/adapters/data2.py) + D2 registry rules
 | `airport_timezone` | reference_state | SUPPORTED | EXTERNAL_STANDARD / UNSUPPORTED (static) |
 | `realized_operational_event` | realized_outcome | DERIVED-to-DIRECT (post-hoc, evaluation-only) | UNSUPPORTED formal / DIRECT realized |
 | `R_IB` target | — | SUPPORTED | DERIVED / DERIVED |
-| `R_OB` target | — | SUPPORTED | DIRECT / DIRECT |
+| `DELTA_OB` target | — | SUPPORTED | DIRECT / DIRECT |
 | `T_TX` target | — | SUPPORTED | DERIVED / DERIVED |
 
 ---
