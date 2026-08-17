@@ -15,7 +15,11 @@ from model.PRE.adapters.registry import RawReadRequest
 from model.PRE.canonical.normalization import canonicalize_ontime_row
 from model.PRE.episode.node_builder import build_rolling_decision_nodes
 from model.PRE.feature_registry.loader import load_registry_bundle
-from model.PRE.pipeline import ProductionPRERequest, publish_production_pre
+from model.PRE.pipeline import (
+    ProductionPREPublisher,
+    ProductionPRERequest,
+    publish_production_pre,
+)
 
 
 def load_timezones(path: Path) -> dict[str, str]:
@@ -241,7 +245,7 @@ def load_typed_records(episodes, *, csv_paths, projected, zones_path):
 
 
 def publish_states(item, config_hash_value, registry_hash_value, weather_index=None,
-                   weather_max_age_minutes=None):
+                   weather_max_age_minutes=None, *, publisher: ProductionPREPublisher | None = None):
     episode, successor_schedule, predecessor_outcome, successor_outcome = item
     nodes = build_rolling_decision_nodes(episode=episode, predecessor_outcome=predecessor_outcome,
         successor_outcome=successor_outcome, config_hash=config_hash_value,
@@ -252,14 +256,16 @@ def publish_states(item, config_hash_value, registry_hash_value, weather_index=N
             weather_index, episode.connection_airport_id, node.information_cutoff,
             weather_max_age_minutes)
         records = (successor_schedule,) if weather is None else (successor_schedule, weather)
-        states.append(publish_production_pre(ProductionPRERequest(
+        request = ProductionPRERequest(
             episode_id=episode.episode_id, predecessor_id=episode.predecessor_flight_id,
             successor_id=episode.successor_flight_id, dataset_instance_id="data2_2019",
             decision_time=node.decision_time, information_cutoff=node.information_cutoff,
             records=records, config_hash=config_hash_value, registry_hash=registry_hash_value,
             connection_airport_id=episode.connection_airport_id,
             operational_stage=node.operational_stage, node_index=node.node_index,
-            roll_minutes=node.roll_minutes)).pre_state)
+            roll_minutes=node.roll_minutes)
+        result = publish_production_pre(request) if publisher is None else publisher.publish(request)
+        states.append(result.pre_state)
     return nodes, states
 
 

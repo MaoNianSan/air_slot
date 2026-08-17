@@ -49,43 +49,74 @@ class ProductionPRERequest(FrozenModel):
     roll_minutes: int = 5
 
 
+class ProductionPREPublisher:
+    """Reuse immutable registry/config state across a preparation run."""
+
+    def __init__(self, bundle: RegistryBundle, *, weather_max_age_minutes: int):
+        self.bundle = bundle
+        self.weather_max_age_minutes = weather_max_age_minutes
+        self.mapper = RegistryPREMapper(bundle)
+        self._target_support_cache: dict[str, tuple[TargetSupportState, ...]] = {}
+
+    @classmethod
+    def from_project(cls) -> "ProductionPREPublisher":
+        bundle = load_registry_bundle(project_path("registries"))
+        scientific = load_config_layers(project_path("configs")).scientific
+        return cls(bundle, weather_max_age_minutes=int(
+            scientific.parameters["weather_max_age_minutes"].value))
+
+    def publish(self, request: ProductionPRERequest) -> PREBuildResult:
+        mapper = self.mapper
+        provisional = build_decision_node(
+            episode_id=request.episode_id, predecessor_id=request.predecessor_id,
+            successor_id=request.successor_id, decision_time=request.decision_time,
+            information_cutoff=request.information_cutoff, config_hash=request.config_hash,
+            registry_hash=request.registry_hash, legal_record_ids=(),
+            operational_stage=request.operational_stage, node_index=request.node_index,
+            roll_minutes=request.roll_minutes)
+        mapped_records = tuple(
+            item for item in (mapper.map_record(record) for record in request.records)
+            if item is not None)
+        mapped = mapped_records + mapper.complete_missing(
+            request.dataset_instance_id,
+            {item.scientific_variable for item in mapped_records})
+        schedule = next((item.value.value for item in mapped_records
+                         if item.scientific_variable == "schedule_reference"), None)
+        airport_roles = None if schedule is None else {
+            "origin": schedule.get("origin_airport_id"),
+            "destination": schedule.get("destination_airport_id"),
+            "connection": request.connection_airport_id or schedule.get("origin_airport_id"),
+        }
+        families, ledger, lineage, ids = publish_mapped(
+            mapped, cutoff=request.information_cutoff,
+            decision_node_id=provisional.decision_node_id,
+            airport_roles=airport_roles,
+            weather_max_age_minutes=self.weather_max_age_minutes)
+        node = build_decision_node(
+            episode_id=request.episode_id, predecessor_id=request.predecessor_id,
+            successor_id=request.successor_id, decision_time=request.decision_time,
+            information_cutoff=request.information_cutoff, config_hash=request.config_hash,
+            registry_hash=request.registry_hash, legal_record_ids=ids,
+            operational_stage=request.operational_stage, node_index=request.node_index,
+            roll_minutes=request.roll_minutes)
+        # Re-key entries to final deterministic node identity.
+        ledger = tuple(item.model_copy(update={"decision_node_id": node.decision_node_id})
+                       for item in ledger)
+        lineage = tuple(item.model_copy(update={"decision_node_id": node.decision_node_id})
+                        for item in lineage)
+        target_support = self._target_support_cache.get(request.dataset_instance_id)
+        if target_support is None:
+            target_support = _target_support(request.dataset_instance_id, self.bundle)
+            self._target_support_cache[request.dataset_instance_id] = target_support
+        return PREBuildResult(pre_state=PREState(
+            decision_node=node, predecessor_state=families["predecessor_state"],
+            current_state=families["current_state"],
+            successor_state=families["successor_state"], evidence_ledger=ledger,
+            variable_lineage=lineage,
+            reference_state=ReferenceState(entries=families["reference_state"]),
+            target_support=target_support), FIXTURE_ONLY=False,
+            evaluation_scope="PRODUCTION")
+
+
 def publish_production_pre(request: ProductionPRERequest) -> PREBuildResult:
-    bundle = load_registry_bundle(project_path("registries"))
-    scientific = load_config_layers(project_path("configs")).scientific
-    weather_max_age_minutes = scientific.parameters["weather_max_age_minutes"].value
-    mapper = RegistryPREMapper(bundle)
-    provisional = build_decision_node(episode_id=request.episode_id, predecessor_id=request.predecessor_id,
-        successor_id=request.successor_id, decision_time=request.decision_time,
-        information_cutoff=request.information_cutoff, config_hash=request.config_hash,
-        registry_hash=request.registry_hash, legal_record_ids=(),
-        operational_stage=request.operational_stage, node_index=request.node_index,
-        roll_minutes=request.roll_minutes)
-    mapped_records = tuple(item for item in (mapper.map_record(record) for record in request.records)
-                           if item is not None)
-    mapped = mapped_records + mapper.complete_missing(request.dataset_instance_id,
-        {item.scientific_variable for item in mapped_records})
-    schedule = next((item.value.value for item in mapped_records
-                     if item.scientific_variable == "schedule_reference"), None)
-    airport_roles = None if schedule is None else {
-        "origin": schedule.get("origin_airport_id"),
-        "destination": schedule.get("destination_airport_id"),
-        "connection": request.connection_airport_id or schedule.get("origin_airport_id"),
-    }
-    families, ledger, lineage, ids = publish_mapped(mapped,
-        cutoff=request.information_cutoff, decision_node_id=provisional.decision_node_id,
-        airport_roles=airport_roles, weather_max_age_minutes=weather_max_age_minutes)
-    node = build_decision_node(episode_id=request.episode_id, predecessor_id=request.predecessor_id,
-        successor_id=request.successor_id, decision_time=request.decision_time,
-        information_cutoff=request.information_cutoff, config_hash=request.config_hash,
-        registry_hash=request.registry_hash, legal_record_ids=ids,
-        operational_stage=request.operational_stage, node_index=request.node_index,
-        roll_minutes=request.roll_minutes)
-    # Re-key entries to final deterministic node identity.
-    ledger = tuple(item.model_copy(update={"decision_node_id": node.decision_node_id}) for item in ledger)
-    lineage = tuple(item.model_copy(update={"decision_node_id": node.decision_node_id}) for item in lineage)
-    return PREBuildResult(pre_state=PREState(decision_node=node,
-        predecessor_state=families["predecessor_state"], current_state=families["current_state"],
-        successor_state=families["successor_state"], evidence_ledger=ledger,
-        variable_lineage=lineage, reference_state=ReferenceState(entries=families["reference_state"]),
-        target_support=_target_support(request.dataset_instance_id, bundle)), FIXTURE_ONLY=False,
-        evaluation_scope="PRODUCTION")
+    return ProductionPREPublisher.from_project().publish(request)

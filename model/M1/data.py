@@ -142,12 +142,12 @@ def _scaled(normalization: M1NormalizationArtifact, name: str, value) -> float:
     return normalization.normalize(name, float(value))
 
 
-def validate_full_history_prefix(states: list[PREState]) -> None:
-    """Require the complete frozen five-minute prefix from episode node zero.
+def validate_history_sequence(states: list[PREState] | tuple[PREState, ...], *,
+                              require_episode_start: bool) -> None:
+    """Validate one contiguous causal sequence on the frozen five-minute grid.
 
-    M1 has no scientific lookback or truncation parameter.  A caller therefore
-    may end a sequence at any current decision node, but may not omit earlier
-    legal nodes from that episode's rolling grid.
+    ADAPTIVE history starts at episode node zero. CURRENT and FIXED history are
+    legal contiguous suffixes of that same episode grid.
     """
     if not states:
         raise ContractError("M1_EMPTY_PRE_SEQUENCE")
@@ -155,22 +155,30 @@ def validate_full_history_prefix(states: list[PREState]) -> None:
     if len(episode_ids) != 1:
         raise ContractError("M1_HISTORY_MULTIPLE_EPISODES")
     first = states[0].decision_node
-    if first.node_index != 0:
+    if require_episode_start and first.node_index != 0:
         raise ContractError("M1_HISTORY_MUST_START_AT_NODE_ZERO")
-    for expected_index, state in enumerate(states):
+    for offset, state in enumerate(states):
         node = state.decision_node
-        if node.node_index != expected_index:
+        if node.node_index != first.node_index + offset:
             raise ContractError("M1_HISTORY_NONCONTIGUOUS_NODE_INDEX")
         if node.roll_minutes != 5:
             raise ContractError("M1_HISTORY_GRID_MUST_BE_FIVE_MINUTES")
-        expected_time = first.decision_time + timedelta(minutes=5 * expected_index)
+        expected_time = first.decision_time + timedelta(minutes=5 * offset)
         if node.decision_time != expected_time:
             raise ContractError("M1_HISTORY_NONCONTIGUOUS_DECISION_TIME")
+        if node.information_cutoff > node.decision_time:
+            raise ContractError("M1_HISTORY_FUTURE_INFORMATION")
 
 
-def encode_pre_sequence(states: list[PREState],
-                        normalization: M1NormalizationArtifact) -> torch.Tensor:
-    validate_full_history_prefix(states)
+def validate_full_history_prefix(states: list[PREState] | tuple[PREState, ...]) -> None:
+    """Require the complete ADAPTIVE prefix from episode node zero."""
+    validate_history_sequence(states, require_episode_start=True)
+
+
+def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
+                        normalization: M1NormalizationArtifact, *,
+                        require_episode_start: bool = True) -> torch.Tensor:
+    validate_history_sequence(states, require_episode_start=require_episode_start)
     rows = []
     previous_time = None
     for pre in states:

@@ -1,0 +1,78 @@
+{
+  "schema_version": "AIR_SLOT_MORNING_PERFORMANCE_VALIDATION_V1",
+  "execution_date": "2026-08-17",
+  "repository_sha": "6df4a31bac6c6cbe4d3de9455021976247871e79",
+  "old_baseline_process_status": "ALREADY_STOPPED",
+  "observed_full_prep_baseline": {
+    "elapsed_seconds_approx": 1560,
+    "scope": "Jan-Sep pairing completed; weather preparation in progress",
+    "training_started": false,
+    "peak_rss_mb_approx": 4958.3
+  },
+  "controlled_replay": {
+    "profile_scope": "2019-01:first_50000_projected_rows:SLC:8_episodes",
+    "profile_input_hash": "sha256:0f641ff4851d786b8f1d052790a1e6b8d00161844fedab6f7749a9818081095a",
+    "baseline_seconds": 15.136410999999498,
+    "optimized_seconds": 7.22451639999781,
+    "speedup": 2.095145219686135,
+    "data_equivalence": "PASS",
+    "numerical_equivalence": "PASS",
+    "primary_bottleneck": "dtype_datetime_conversion",
+    "top_3_hotspots": [
+      "dtype_datetime_conversion",
+      "predecessor_successor_pairing",
+      "CSV read"
+    ]
+  },
+  "full_cache": {
+    "status": "PASS",
+    "build_seconds": 1352.318455200002,
+    "warm_load_seconds": 0.07660630000464153,
+    "cache_hash": "sha256:9c647c03a4bb59d8cc6568e14a34f431f5da84b6d179e55d2e416fe7e7ed180a",
+    "episodes": 320,
+    "nodes": 4979,
+    "feature_count": 103,
+    "cache_reuse_status": "PASS",
+    "peak_rss_mb": 2769.86328125,
+    "final_test_included": false,
+    "final_test_access_count": 0
+  },
+  "one_seed_h16": {
+    "status": "PASS",
+    "seed": 20260813,
+    "cache_load_seconds": 0.05124179999984335,
+    "training_seconds": 4.81390090000059,
+    "seconds_per_epoch": 0.6017376125000737,
+    "calibration_seconds": 0.137131399998907,
+    "development_inference_seconds": 0.5422383000041009,
+    "development_episode_balanced_joint_nll": 4.293847241167518,
+    "peak_rss_mb": 318.93359375,
+    "average_cpu_utilization": null,
+    "average_cpu_utilization_note": "Not captured retrospectively; not inferred.",
+    "device": "cpu",
+    "thread_config": {
+      "torch_intra_op": 8,
+      "torch_inter_op": 16
+    }
+  },
+  "runtime_estimate": {
+    "method": "H16 measured total scaled for H32 by H32/H16 parameter-count ratio",
+    "h16_parameter_count": 10798,
+    "h32_parameter_count": 23006,
+    "parameter_ratio": 2.1305797369883313,
+    "estimated_h16_five_seed_seconds": 27.46635300001799,
+    "estimated_h32_five_seed_seconds": 58.51925515080699,
+    "estimated_total_10_run_seconds": 85.98560815082499,
+    "estimated_total_10_run_minutes": 1.4330934691804165
+  },
+  "heartbeat_status": "PARTIAL_STRICT_CADENCE_GAP",
+  "heartbeat_note": "Month-complete output was 108-150 seconds apart; typed/weather phase output included a 45-second heartbeat.",
+  "resume_status": "PASS_MONTH_AND_H_SEED_MANIFESTS",
+  "scenario_vectorization_status": "NOT_IMPLEMENTED_NONBLOCKING_P1",
+  "m4_vectorization_status": "NOT_IMPLEMENTED_NONBLOCKING_P1",
+  "paper_full_run": false,
+  "human_decision_required": true,
+  "decision_id": "PERF_AUTHORIZE_FULL_H_SELECTION",
+  "codex_recommendation": "PROCEED",
+  "recommended_user_response": "APPROVE H_SELECTION_RUN"
+}

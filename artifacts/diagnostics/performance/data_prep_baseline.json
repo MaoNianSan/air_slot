@@ -1,0 +1,186 @@
+{
+  "TOP_1_BOTTLENECK": "pre_safe_feature_construction",
+  "TOP_2_BOTTLENECK": "dtype_datetime_conversion",
+  "TOP_3_BOTTLENECK": "predecessor_successor_pairing",
+  "bytes_read": 271293314,
+  "cpu_seconds": 13.9375,
+  "final_test_access_count": 0,
+  "paper_result": false,
+  "peak_rss_mb": 915.92578125,
+  "profile_airports": [
+    "SLC"
+  ],
+  "profile_dates": [
+    "2019-01"
+  ],
+  "profile_decision_nodes": 120,
+  "profile_episodes": 8,
+  "profile_examples": 120,
+  "profile_input_hash": "sha256:0f641ff4851d786b8f1d052790a1e6b8d00161844fedab6f7749a9818081095a",
+  "profile_kind": "BEFORE_P0_FIXED_REAL_SUBSET",
+  "profile_rows": 50000,
+  "profile_scope": "2019-01:first_50000_projected_rows:SLC:8_episodes",
+  "required_columns": [
+    "FlightDate",
+    "Reporting_Airline",
+    "Tail_Number",
+    "Flight_Number_Reporting_Airline",
+    "Origin",
+    "Dest",
+    "CRSDepTime",
+    "CRSArrTime",
+    "DepTime",
+    "ArrTime",
+    "WheelsOff",
+    "WheelsOn",
+    "TaxiOut",
+    "TaxiIn",
+    "DepDelayMinutes",
+    "ArrDelayMinutes",
+    "Cancelled",
+    "Diverted"
+  ],
+  "schema_version": "AIR_SLOT_DATA_PREP_PROFILE_V2",
+  "source_format": "CSV",
+  "stages": {
+    "airport_flow_construction": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 8,
+      "note": "Not present in the current frozen M1 FEATURE_NAMES contract; no flow field was removed.",
+      "output_rows": 8,
+      "peak_rss_mb": 910.37109375,
+      "wall_seconds": 0.0
+    },
+    "canonical_rolling_node_construction": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 8,
+      "output_rows": 8,
+      "peak_rss_mb": 910.37109375,
+      "wall_seconds": 0.0019023999993805774
+    },
+    "dtype_datetime_conversion": {
+      "bytes_read": 0,
+      "cpu_seconds": 3.984375,
+      "input_rows": 50000,
+      "output_rows": 49850,
+      "peak_rss_mb": 754.0859375,
+      "wall_seconds": 4.5031638000000385
+    },
+    "episode_sequence_construction": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.015625,
+      "input_rows": 120,
+      "output_rows": 120,
+      "peak_rss_mb": 913.12890625,
+      "wall_seconds": 0.0036503000010270625
+    },
+    "file_discovery": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 0,
+      "output_rows": 0,
+      "peak_rss_mb": 206.96484375,
+      "wall_seconds": 0.0038996000002953224
+    },
+    "flight_filtering": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.109375,
+      "input_rows": 49850,
+      "output_rows": 2,
+      "peak_rss_mb": 785.0078125,
+      "wall_seconds": 0.11361599999509053
+    },
+    "hashing": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 647743,
+      "output_rows": 71,
+      "peak_rss_mb": 915.92578125,
+      "wall_seconds": 0.02184300000226358
+    },
+    "label_construction": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 120,
+      "note": "Labels are produced by the frozen active_node_prefixes path and identity-checked here.",
+      "output_rows": 120,
+      "peak_rss_mb": 913.12890625,
+      "wall_seconds": 0.00013980000221636146
+    },
+    "parquet_read": {
+      "bytes_read": 263023752,
+      "cpu_seconds": 0.953125,
+      "input_rows": 0,
+      "note": "Active V5 source is BTS CSV. The reader projects only PRE/M1-required columns.",
+      "output_rows": 50000,
+      "peak_rss_mb": 284.74609375,
+      "wall_seconds": 0.47392910000053234
+    },
+    "pre_safe_feature_construction": {
+      "bytes_read": 0,
+      "cpu_seconds": 7.078125,
+      "input_rows": 120,
+      "note": "Controlled old path reloads registry/config per decision node.",
+      "output_rows": 8,
+      "peak_rss_mb": 913.12890625,
+      "wall_seconds": 8.055254399994737
+    },
+    "predecessor_successor_pairing": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.9375,
+      "input_rows": 47478,
+      "note": "Sort plus adjacent-row scan; no per-flight successor search.",
+      "output_rows": 35893,
+      "peak_rss_mb": 906.1796875,
+      "wall_seconds": 1.0413733999957913
+    },
+    "schedule_identity_join": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 8,
+      "output_rows": 8,
+      "peak_rss_mb": 906.328125,
+      "wall_seconds": 0.00013500000204658136
+    },
+    "serialization": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 120,
+      "note": "Controlled legacy arbitrary-object serialization for before/after comparison.",
+      "output_rows": 0,
+      "peak_rss_mb": 915.4296875,
+      "wall_seconds": 0.011352200002875179
+    },
+    "tensor_conversion": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.046875,
+      "input_rows": 120,
+      "output_rows": 2,
+      "peak_rss_mb": 915.08984375,
+      "wall_seconds": 0.06046580000111135
+    },
+    "weather_matching_join": {
+      "bytes_read": 0,
+      "cpu_seconds": 0.0,
+      "input_rows": 120,
+      "note": "Indexed latest-admissible lookup; no future or nearest-time substitution.",
+      "output_rows": 8,
+      "peak_rss_mb": 910.37109375,
+      "wall_seconds": 0.0003797999961534515
+    },
+    "weather_read": {
+      "bytes_read": 8264261,
+      "cpu_seconds": 0.0625,
+      "input_rows": 0,
+      "note": "One frozen airport-to-station map and one January station scan.",
+      "output_rows": 1182,
+      "peak_rss_mb": 909.1640625,
+      "wall_seconds": 0.08435260000260314
+    }
+  },
+  "wall_seconds": 15.136410999999498,
+  "weather_rows": 1182,
+  "weather_station": "72572024127"
+}
