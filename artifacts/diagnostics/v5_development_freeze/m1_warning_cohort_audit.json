@@ -1,6 +1,9 @@
 {
   "status": "HUMAN_DECISION_REQUIRED",
   "decision_id": "D3_WARNING_COHORT_PREREQUISITES",
+  "architectural_drift": "PRE_OWNERSHIP_VIOLATION",
+  "pre_ownership_gate": "FAIL",
+  "pre_ownership_audit": "docs/reconciliation/PRE_OWNERSHIP_GATE_2026-08-17.md",
   "development_only": true,
   "paper_result": false,
   "development_period": {
@@ -67,6 +70,7 @@
   "raw_data_reads_during_this_audit": 0,
   "final_test_access_count": 0,
   "blockers": [
+    "PRE data construction, M1 history logic, and H/W experiment evaluation are implemented outside their required architecture owners.",
     "No single W30 model checkpoint or pre-specified ensemble rule is frozen.",
     "The formal D_TO greater-than-30 probability path is not frozen for the ordered M1 heads and taxi reference.",
     "The current preparation path cannot determine final PRE/support eligibility across the 951359-episode Development pool without a new scalable streaming build; sampling requires prior human approval."

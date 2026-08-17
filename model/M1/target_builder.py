@@ -1,18 +1,9 @@
-from datetime import date
-
 from model.common.enums import DecisionTimeRole, OperationalStage, SupportState
 from model.common.errors import ContractError
 from model.M1.contracts import M1TargetLabel
+from model.PRE.cohort import split_for_date
 from model.PRE.contracts.canonical import FlightRecord, OperationalEventRecord
 from model.PRE.contracts.pre_state import DecisionNodeRecord, EpisodeRecord, TargetSupportState
-
-
-def split_for_date(value: date) -> str:
-    if value <= date(2019, 6, 30): return "train"
-    if value <= date(2019, 7, 31): return "calibration"
-    if value <= date(2019, 9, 30): return "development"
-    return "test"
-
 
 def _active(support: dict[str, TargetSupportState], target: str, stage: OperationalStage) -> bool:
     if target not in support or not support[target].active \

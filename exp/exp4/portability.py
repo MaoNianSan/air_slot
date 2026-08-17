@@ -3,13 +3,10 @@ from __future__ import annotations
 from collections import Counter
 
 from model.common.errors import ContractError
+from model.PRE.raw_schema import RAW_SCHEMA_TOKENS
 
 
 SUPPORT_TRANSITIONS = {"PRESERVED", "DEGRADED", "ABSTAIN", "UNSUPPORTED"}
-RAW_SCHEMA_TOKENS = {
-    "icao24", "firstseen", "lastseen", "metar", "callsign", "tail_number",
-    "crsdeptime", "depdelayminutes", "taxiout",
-}
 
 
 def classify_support_transition(data2_state: str, data1_state: str) -> str:

@@ -65,6 +65,13 @@ class ProductionPREPublisher:
         return cls(bundle, weather_max_age_minutes=int(
             scientific.parameters["weather_max_age_minutes"].value))
 
+    def target_support(self, dataset_instance_id: str) -> tuple[TargetSupportState, ...]:
+        support = self._target_support_cache.get(dataset_instance_id)
+        if support is None:
+            support = _target_support(dataset_instance_id, self.bundle)
+            self._target_support_cache[dataset_instance_id] = support
+        return support
+
     def publish(self, request: ProductionPRERequest) -> PREBuildResult:
         mapper = self.mapper
         provisional = build_decision_node(
@@ -104,10 +111,7 @@ class ProductionPREPublisher:
                        for item in ledger)
         lineage = tuple(item.model_copy(update={"decision_node_id": node.decision_node_id})
                         for item in lineage)
-        target_support = self._target_support_cache.get(request.dataset_instance_id)
-        if target_support is None:
-            target_support = _target_support(request.dataset_instance_id, self.bundle)
-            self._target_support_cache[request.dataset_instance_id] = target_support
+        target_support = self.target_support(request.dataset_instance_id)
         return PREBuildResult(pre_state=PREState(
             decision_node=node, predecessor_state=families["predecessor_state"],
             current_state=families["current_state"],

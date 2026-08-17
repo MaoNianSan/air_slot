@@ -1,6 +1,6 @@
 import pytest
 
-from validation.data2_v5_wstar_development import (
+from exp.exp1.development.wstar import (
     SECONDARY_TRAINING_SEEDS,
     recommend_window,
 )

@@ -13,7 +13,7 @@ from model.M1.data import fit_train_normalization
 from model.M1.lifecycle import M1Lifecycle, M1TrainingExample
 from model.M1.pipeline import M1Pipeline
 from model.PRE.episode.builder import build_data2_episode_records
-from validation.data2_v5_hstar_development import _aircraft_tail
+from model.PRE.streaming.data2 import aircraft_tail
 
 
 TARGETS = ("R_IB", "R_OB", "T_TX")
@@ -170,7 +170,7 @@ def test_cross_month_aircraft_tail_preserves_current_month_pairs():
     }
     optimized = {
         episode.episode_id for episode in build_data2_episode_records(
-            list(_aircraft_tail(previous)) + current)
+            list(aircraft_tail(previous)) + current)
         if episode.successor_flight_id in current_ids
     }
     assert optimized == baseline
