@@ -91,13 +91,13 @@ frozen.
 ## D2_H_STAR
 
 - decision_id: `D2_H_STAR`
-- date/time: `PENDING_EVIDENCE`
-- status: `PENDING`
+- date/time: `2026-08-17T10:23:30+08:00`
+- status: `APPROVED`
 - question: Select `H_STAR` from 16 and 32 after five-seed ADAPTIVE Development evidence is available.
 - options: `H_16`; `H_32`; `DEFER`
-- Codex recommendation: `PENDING_EVIDENCE`
-- user decision: `PENDING`
-- scientific rationale: Selection must use Development predictive evidence, calibration, variability, and the pre-registered 0.5 percent equivalence rule without downstream action results.
-- affected files: `configs/scientific/foundation.yaml`; future Development freeze manifest
-- affected hashes: `PENDING`
+- Codex recommendation: `H_32`
+- user decision: `H_STAR = 32`
+- scientific rationale: Five-seed Development episode-balanced joint NLL was `4.036163 +/- 0.156007` for H=32 versus `4.240034 +/- 0.184308` for H=16. The relative difference was `5.0511%`, outside the pre-specified `0.5%` practical-equivalence region, so the simplicity tie-break for H=16 did not apply. No downstream M2-M4 metric or Final Test data participated.
+- affected files: `configs/scientific/foundation.yaml`; `artifacts/diagnostics/v5_development_freeze/m1_hstar_evidence.json`; Development-only W-selection runner
+- affected hashes: H evidence `sha256:a56a7254e5e08c959d8e9d8be58456469b2f37a293f33495dfaf58cdf452b3a5`; M1 base cache `sha256:9c647c03a4bb59d8cc6568e14a34f431f5da84b6d179e55d2e416fe7e7ed180a`
 - reversible_before_paper_full: `YES`

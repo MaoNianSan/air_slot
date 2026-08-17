@@ -12,7 +12,17 @@ parameters:
   roll_sensitivity_minutes: {freeze_state: FROZEN, value: [10]}
   forecast_horizons_minutes: {freeze_state: FROZEN, value: [0, 15, 60]}
   delay_thresholds_minutes: {freeze_state: FROZEN, value: [15, 30, 60]}
-  m1_hidden_size: {freeze_state: DEVELOPMENT_FROZEN}
+  m1_hidden_size:
+    freeze_state: FROZEN
+    value: 32
+    provenance:
+      selection_state: DEVELOPMENT_FROZEN
+      decision_id: D2_H_STAR
+      decision_date: "2026-08-17"
+      selection_metric: episode-balanced Development joint NLL
+      evidence: artifacts/diagnostics/v5_development_freeze/m1_hstar_evidence.json
+      evidence_hash: sha256:a56a7254e5e08c959d8e9d8be58456469b2f37a293f33495dfaf58cdf452b3a5
+      final_test_access_count: 0
   m1_hidden_size_candidates: {freeze_state: FROZEN, value: [16, 32]}
   m1_bin_width_minutes: {freeze_state: FROZEN, value: 5}
   m1_r_ib_max_finite_minutes:

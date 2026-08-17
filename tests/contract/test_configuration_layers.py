@@ -27,7 +27,11 @@ def test_layers_load_separately():
     assert layers.scientific.parameters["replay_lag_minutes"].value == 0
     assert layers.scientific.parameters["forecast_horizons_minutes"].value == [0,15,60]
     assert layers.scientific.parameters["delay_thresholds_minutes"].value == [15,30,60]
-    assert layers.scientific.parameters["m1_hidden_size"].value is None
+    hidden_size = layers.scientific.parameters["m1_hidden_size"]
+    assert hidden_size.freeze_state.value == "FROZEN"
+    assert hidden_size.value == 32
+    assert hidden_size.provenance["decision_id"] == "D2_H_STAR"
+    assert hidden_size.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["m1_hidden_size_candidates"].value == [16,32]
     assert layers.scientific.parameters["scenario_count"].value == 1000
     assert layers.scientific.parameters["weather_max_age_minutes"].value == 60

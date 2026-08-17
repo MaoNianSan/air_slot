@@ -4,6 +4,7 @@ import argparse
 import csv
 import gc
 import json
+import math
 import random
 import statistics
 import subprocess
@@ -64,6 +65,8 @@ LEARNING_RATE = 0.01
 BATCH_SIZE = 128
 FINAL_TEST_START = "2019-10-01"
 FULL_H_APPROVAL_TOKEN = "APPROVE_H_SELECTION_RUN"
+APPROVED_CACHE_HASH = (
+    "sha256:9c647c03a4bb59d8cc6568e14a34f431f5da84b6d179e55d2e416fe7e7ed180a")
 
 
 def _heartbeat(phase: str, *, started: float, rows: int = 0, episodes: int = 0,
@@ -627,6 +630,97 @@ def _expected_cache_key(scientific) -> tuple[str, str, dict[str, str]]:
     return key, source_hash, contracts
 
 
+def _scientific_config_hash() -> str:
+    return config_hash(ROOT)
+
+
+def _training_contract_payload() -> dict:
+    return {
+        "epochs": EPOCHS,
+        "learning_rate": LEARNING_RATE,
+        "batch_size": BATCH_SIZE,
+        "optimizer": "Adam",
+        "optimizer_steps_per_epoch": 1,
+        "length_bucketed_microbatch": True,
+        "gradient_accumulation": True,
+    }
+
+
+def _training_contract_hash() -> str:
+    return content_id(_training_contract_payload())
+
+
+def _validate_cache_for_h(cache, scientific) -> dict:
+    manifest = cache.manifest
+    if manifest.get("cache_hash") != APPROVED_CACHE_HASH:
+        raise RuntimeError(
+            f"H_SELECTION_CACHE_HASH_MISMATCH:{manifest.get('cache_hash')}"
+            f"!={APPROVED_CACHE_HASH}")
+    if manifest.get("feature_count") != len(FEATURE_NAMES):
+        raise RuntimeError("H_SELECTION_FEATURE_COUNT_MISMATCH")
+    if manifest.get("final_test_included") is not False:
+        raise RuntimeError("H_SELECTION_FINAL_TEST_INCLUDED")
+    if manifest.get("final_test_access_count", 0) != 0:
+        raise RuntimeError("H_SELECTION_FINAL_TEST_ACCESS_NONZERO")
+    contracts = _contract_hashes(scientific)
+    for name, expected in contracts.items():
+        if manifest.get("contract_hashes", {}).get(name) != expected:
+            raise RuntimeError(f"H_SELECTION_CONTRACT_HASH_MISMATCH:{name}")
+    current_config_hash = _scientific_config_hash()
+    if cache.audit.get("config_hash") != current_config_hash:
+        raise RuntimeError("H_SELECTION_SCIENTIFIC_CONFIG_HASH_MISMATCH")
+    partition_hashes = cache.audit.get("partition_hashes", {})
+    for split in ("train", "calibration", "development"):
+        dataset = cache.partition(split)
+        observed = content_id(sorted({row.episode_id for row in dataset}))
+        if partition_hashes.get(split) != observed:
+            raise RuntimeError(f"H_SELECTION_EPISODE_IDS_MISMATCH:{split}")
+        if any(row.episode_date >= date(2019, 10, 1) for row in dataset):
+            raise RuntimeError(f"H_SELECTION_FINAL_TEST_DATE:{split}")
+    if set(cache.store.sample_splits) - {"train", "calibration", "development"}:
+        raise RuntimeError("H_SELECTION_SPLIT_MISMATCH")
+    return {
+        "cache_hash": manifest["cache_hash"],
+        "feature_count": manifest["feature_count"],
+        "scientific_config_hash": current_config_hash,
+        "training_contract_hash": _training_contract_hash(),
+        "final_test_access_count": 0,
+        "cache_rebuilds": 0,
+    }
+
+
+def _validate_manifest_for_resume(manifest: dict, cache, scientific) -> tuple[bool, str]:
+    expected = _validate_cache_for_h(cache, scientific)
+    required_values = {
+        "completion_status": "PASS",
+        "cache_hash": expected["cache_hash"],
+        "hidden_size": manifest.get("hidden_size"),
+        "training_seed": manifest.get("training_seed"),
+        "epochs": EPOCHS,
+        "learning_rate": LEARNING_RATE,
+        "batch_size": BATCH_SIZE,
+        "optimizer": "Adam",
+        "optimizer_steps_per_epoch": 1,
+        "final_test_access_count": 0,
+    }
+    if manifest.get("hidden_size") not in HIDDEN_SIZES:
+        return False, "hidden_size_not_in_candidate_set"
+    if manifest.get("training_seed") not in TRAINING_SEEDS:
+        return False, "training_seed_not_in_principal_seed_set"
+    if any(manifest.get(name) != value for name, value in required_values.items()
+           if name not in {"hidden_size", "training_seed"}):
+        return False, "explicit_training_contract_field_mismatch"
+    if manifest.get("scientific_config_hash") == expected["scientific_config_hash"] \
+            and manifest.get("training_contract_hash") == expected["training_contract_hash"]:
+        return True, "validated"
+    # The first approved H16 seed predates these two metadata fields. Its
+    # scientific config is still verified through the immutable cache audit and
+    # its explicit training fields above; do not rerun it solely for metadata.
+    if "scientific_config_hash" not in manifest and "training_contract_hash" not in manifest:
+        return True, "legacy_manifest_verified_from_cache_audit"
+    return False, "scientific_or_training_contract_hash_mismatch"
+
+
 def _peak_rss_mb() -> float:
     info = psutil.Process().memory_info()
     return float(getattr(info, "peak_wset", info.rss)) / 1024 ** 2
@@ -695,13 +789,16 @@ def _run_paths(hidden_size: int, seed: int):
 
 def _run_candidate(scientific, cache, *, hidden_size: int, seed: int,
                    device: str, resume: bool):
+    cache_validation = _validate_cache_for_h(cache, scientific)
     checkpoint_path, manifest_path = _run_paths(hidden_size, seed)
     if resume and manifest_path.is_file() and checkpoint_path.is_file():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if (manifest.get("completion_status") == "PASS"
-                and manifest.get("cache_key") == cache.manifest["cache_key"]):
+        valid, validation_reason = _validate_manifest_for_resume(
+            manifest, cache, scientific)
+        if valid:
             print(json.dumps({"PHASE": "M1_TRAIN", "H": hidden_size, "SEED": seed,
-                              "CACHE": "HIT", "RESUME": "SKIP_COMPLETED"},
+                              "CACHE": "HIT", "RESUME": "SKIP_COMPLETED",
+                              "VALIDATION": validation_reason},
                              sort_keys=True), flush=True)
             return manifest
     train_examples = cache.partition("train")
@@ -712,6 +809,8 @@ def _run_candidate(scientific, cache, *, hidden_size: int, seed: int,
         scientific, input_size=len(FEATURE_NAMES), normalization=cache.normalization,
         hidden_size=hidden_size)
     lifecycle = M1Lifecycle(pipeline, device=device)
+    run_started = time.perf_counter()
+    process_cpu_started = time.process_time()
     training_started = time.perf_counter()
 
     def progress(row):
@@ -733,6 +832,19 @@ def _run_candidate(scientific, cache, *, hidden_size: int, seed: int,
     temperatures = lifecycle.calibrate(calibration_examples, batch_size=256)
     calibration_seconds = time.perf_counter() - calibration_started
     metrics = evaluate(lifecycle, development_examples)
+    finite_values = list(history)
+    finite_values.extend([temperatures, metrics])
+    if not all(math.isfinite(float(row["loss"])) for row in history):
+        raise RuntimeError(f"H_SELECTION_NONFINITE_LOSS:H{hidden_size}:SEED{seed}")
+    if any(not math.isfinite(float(value)) for value in temperatures.values()):
+        raise RuntimeError(f"H_SELECTION_NONFINITE_TEMPERATURE:H{hidden_size}:SEED{seed}")
+    if not math.isfinite(float(metrics["episode_balanced_joint_nll"])):
+        raise RuntimeError(f"H_SELECTION_NONFINITE_METRIC:H{hidden_size}:SEED{seed}")
+    process_cpu_seconds = time.process_time() - process_cpu_started
+    run_wall_seconds = time.perf_counter() - run_started
+    logical_cores = max(psutil.cpu_count(logical=True) or 1, 1)
+    average_cpu_utilization = process_cpu_seconds / max(run_wall_seconds, 1e-12) \
+        / logical_cores * 100.0
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
     temporary_checkpoint = checkpoint_path.with_suffix(".pt.tmp")
     lifecycle.save(temporary_checkpoint)
@@ -742,6 +854,9 @@ def _run_candidate(scientific, cache, *, hidden_size: int, seed: int,
         "repository_sha": _repository_sha(),
         "cache_key": cache.manifest["cache_key"],
         "cache_hash": cache.manifest["cache_hash"],
+        "scientific_config_hash": cache_validation["scientific_config_hash"],
+        "training_contract_hash": cache_validation["training_contract_hash"],
+        "training_contract": _training_contract_payload(),
         "hidden_size": hidden_size,
         "training_seed": seed,
         "epochs": EPOCHS,
@@ -759,6 +874,10 @@ def _run_candidate(scientific, cache, *, hidden_size: int, seed: int,
         "thread_config": {"torch_intra_op": torch.get_num_threads(),
                           "torch_inter_op": torch.get_num_interop_threads()},
         "peak_rss_mb": _peak_rss_mb(),
+        "run_wall_seconds": run_wall_seconds,
+        "process_cpu_seconds": process_cpu_seconds,
+        "average_cpu_utilization_percent": average_cpu_utilization,
+        "cache_rebuilds": 0,
         "final_test_access_count": 0,
         **metrics,
     }
@@ -766,6 +885,14 @@ def _run_candidate(scientific, cache, *, hidden_size: int, seed: int,
     temporary_manifest.write_text(
         json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
     temporary_manifest.replace(manifest_path)
+    print(json.dumps({
+        "PHASE": "M1_TRAIN_COMPLETE", "H": hidden_size, "SEED": seed,
+        "TRAIN_SECONDS": training_seconds,
+        "CALIBRATION_SECONDS": calibration_seconds,
+        "INFERENCE_SECONDS": metrics["inference_seconds"],
+        "AVERAGE_CPU_UTILIZATION_PERCENT": average_cpu_utilization,
+        "CACHE_REBUILDS": 0, "FINAL_TEST_ACCESS_COUNT": 0,
+    }, sort_keys=True), flush=True)
     return manifest
 
 
@@ -777,6 +904,8 @@ def _write_h_decision(cache, rows):
         candidates[str(hidden_size)] = {
             "mean_joint_nll": statistics.mean(scores),
             "sd_joint_nll": statistics.stdev(scores),
+            "min_joint_nll": min(scores),
+            "max_joint_nll": max(scores),
             "mean_calibration_ece": statistics.mean(
                 row["mean_calibration_ece"] for row in selected),
             "mean_training_seconds": statistics.mean(
@@ -784,11 +913,11 @@ def _write_h_decision(cache, rows):
             "mean_inference_seconds": statistics.mean(
                 row["inference_seconds"] for row in selected),
         }
-    best = min(candidates, key=lambda key: candidates[key]["mean_joint_nll"])
-    reference = candidates[best]["mean_joint_nll"]
-    for values in candidates.values():
-        values["relative_vs_best"] = (values["mean_joint_nll"] - reference) / reference
-    equivalent = candidates["16"]["relative_vs_best"] <= 0.005
+    h16_mean = candidates["16"]["mean_joint_nll"]
+    h32_mean = candidates["32"]["mean_joint_nll"]
+    relative_difference = abs(h16_mean - h32_mean) / min(h16_mean, h32_mean)
+    equivalent = relative_difference <= 0.005
+    recommendation = 16 if equivalent else (16 if h16_mean < h32_mean else 32)
     evidence = {
         "status": "HUMAN_DECISION_REQUIRED", "decision_id": "D2_H_STAR",
         "paper_result": False, "development_only": True,
@@ -800,8 +929,10 @@ def _write_h_decision(cache, rows):
         "selection_metric": "episode-balanced Development joint NLL",
         "tie_rule": "if relative joint-NLL difference <= 0.5%, recommend H=16",
         "candidate_summary": candidates, "per_seed": rows,
-        "codex_recommendation": 16 if equivalent else int(best),
+        "codex_recommendation": recommendation,
         "within_0_5_percent_equivalence_region": equivalent,
+        "relative_nll_difference": relative_difference,
+        "cache_rebuilds": 0,
         "data_audit": cache.audit, "final_test_access_count": 0,
         "w_comparison_status": "NOT_RUN_AWAITING_H_STAR_APPROVAL",
     }

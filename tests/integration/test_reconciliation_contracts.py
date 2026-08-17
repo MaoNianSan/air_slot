@@ -30,14 +30,14 @@ def test_m1_forecast_horizons_are_not_delay_thresholds():
     assert FORMAL_FORECAST_HORIZONS_MINUTES != DELAY_THRESHOLDS_MINUTES
 
 
-def test_formal_m1_requires_explicit_hidden_size_selection():
+def test_formal_m1_uses_development_frozen_hidden_size_selection():
     scientific = load_config_layers(Path("configs")).scientific
     normalization = M1NormalizationArtifact(fitted_split="train", values={})
 
-    with pytest.raises(ValueError, match="M1_HIDDEN_SIZE_SELECTION_REQUIRED"):
-        M1.M1Pipeline.from_scientific_config(
-            scientific, input_size=4, normalization=normalization
-        )
+    frozen = M1.M1Pipeline.from_scientific_config(
+        scientific, input_size=4, normalization=normalization
+    )
+    assert frozen.model.hidden_size == 32
     with pytest.raises(ValueError, match="M1_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES"):
         M1.M1Pipeline.from_scientific_config(
             scientific, input_size=4, normalization=normalization, hidden_size=8

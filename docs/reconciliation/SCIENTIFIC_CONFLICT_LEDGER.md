@@ -32,7 +32,7 @@ The current worktree resolves the critical conflicts as follows:
 
 | ID | Current status | Evidence | Remaining boundary |
 | --- | --- | --- | --- |
-| M1-HIDDEN-001 | RESOLVED_CODE_CONDITIONAL | `foundation.yaml` leaves the formal value unset; `M1Pipeline.from_scientific_config` requires an explicit 16/32 candidate; Exp4 uses 16/32 | No development winner or frozen formal artifact exists |
+| M1-HIDDEN-001 | DEVELOPMENT_FROZEN | `D2_H_STAR` freezes `foundation.yaml` at H=32 from five-seed Development-only evidence; Exp4 retains the approved 16/32 sensitivity candidates | Final Test remains sealed; no paper-full artifact exists |
 | M1-HORIZON-001 | RESOLVED | `model/M1/semantics.py`, configuration tests, `M1Forecast` contract | Evaluation-only long horizon grid remains intentionally non-formal |
 | M1-TARGET-001 | RESOLVED | canonical target map and `takeoff_delay_minutes`; behavioral equivalence and reconciliation tests | No fourth trainable head was introduced |
 | DATASET-001 | RESOLVED | typed dataset identity check in target builder; adapter isolation and foundation smoke | Data2 validation aliases remain validation-only |
