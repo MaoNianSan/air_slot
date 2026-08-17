@@ -22,7 +22,12 @@ M2 (reference), M1 (floor boundary). data1 TAXI_REFERENCE@1.0.0 is untouched.
 """
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass
+from datetime import date
+from hashlib import sha256
+import json
+from pathlib import Path
 from statistics import median
 from typing import Any, Literal
 
@@ -30,6 +35,8 @@ from model.common.enums import EvidenceClass, SupportState
 from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import SupportedValue
+from model.PRE.canonical.normalization_common import deterministic_id, missing, number
+from model.PRE.canonical.timezone import infer_rollover, local_hhmm_to_utc
 from model.PRE.transformation import (
     TransformationStatus,
     build_reference_fit_manifest,
@@ -302,3 +309,164 @@ def build_data2_taxi_reference(
         support_state=SupportState.SUPPORTED,
         reason_code="DIRECT_TAXI_OUT_REFERENCE",
     )
+
+
+def data2_taxi_reference_payload(reference: Data2TaxiReference) -> dict[str, Any]:
+    return {
+        "schema_version": "DATA2_TAXI_REFERENCE_ARTIFACT_V1",
+        "reference_id": reference.reference_id,
+        "dataset_instance_id": reference.dataset_instance_id,
+        "rule_id": reference.rule_id,
+        "rule_version": reference.rule_version,
+        "fit_period": reference.fit_period,
+        "statistic_id": reference.statistic_id,
+        "minimum_support_rule": reference.minimum_support_rule,
+        "fallback_hierarchy": list(reference.fallback_hierarchy),
+        "applicability_scope": reference.applicability_scope,
+        "global_value_minutes": reference.global_value_minutes,
+        "global_sample_count": reference.global_sample_count,
+        "cells": [
+            {
+                "airport_id": item.airport_id,
+                "value_minutes": item.value_minutes,
+                "sample_count": item.sample_count,
+                "fallback_level": item.fallback_level,
+                "provenance": list(item.provenance),
+            }
+            for item in reference.cells
+        ],
+        "manifest_freeze_id": reference.manifest_freeze_id,
+        "support_state": reference.support_state.value,
+        "reason_code": reference.reason_code,
+    }
+
+
+def data2_taxi_reference_from_payload(payload: dict[str, Any]) -> Data2TaxiReference:
+    return Data2TaxiReference(
+        reference_id=payload["reference_id"],
+        dataset_instance_id=payload["dataset_instance_id"],
+        rule_id=payload["rule_id"],
+        rule_version=payload["rule_version"],
+        fit_period=payload["fit_period"],
+        statistic_id=payload["statistic_id"],
+        minimum_support_rule=payload["minimum_support_rule"],
+        fallback_hierarchy=tuple(payload["fallback_hierarchy"]),
+        applicability_scope=payload["applicability_scope"],
+        global_value_minutes=float(payload["global_value_minutes"]),
+        global_sample_count=int(payload["global_sample_count"]),
+        cells=tuple(Data2TaxiReferenceCell(
+            airport_id=item["airport_id"],
+            value_minutes=float(item["value_minutes"]),
+            sample_count=int(item["sample_count"]),
+            fallback_level=item["fallback_level"],
+            provenance=tuple(item["provenance"]),
+        ) for item in payload["cells"]),
+        manifest_freeze_id=payload["manifest_freeze_id"],
+        support_state=SupportState(payload["support_state"]),
+        reason_code=payload["reason_code"],
+    )
+
+
+def build_data2_taxi_reference_streaming(
+    csv_paths: tuple[Path, ...],
+    timezones: dict[str, str],
+    *,
+    fit_period: str = "2019-01..2019-06",
+    min_cell_size: int = 50,
+) -> tuple[Data2TaxiReference, dict[str, Any]]:
+    """Fit the frozen reference without materializing row-shaped dictionaries."""
+    values_by_airport: dict[str, list[float]] = {}
+    input_rows = accepted_rows = 0
+    source_hashes = {}
+    projected = (
+        "FlightDate", "Reporting_Airline", "Flight_Number_Reporting_Airline",
+        "Origin", "Dest", "CRSDepTime", "CRSArrTime", "Tail_Number",
+        "TaxiOut", "Cancelled", "Diverted",
+    )
+    for path in csv_paths:
+        source_hashes[str(path)] = f"sha256:{sha256(path.read_bytes()).hexdigest()}"
+        with path.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
+            for raw in csv.DictReader(stream):
+                input_rows += 1
+                row = {name: raw.get(name, "") for name in projected}
+                try:
+                    day = date.fromisoformat(str(row["FlightDate"])[:10])
+                    origin, destination = str(row["Origin"]), str(row["Dest"])
+                    if origin not in timezones or destination not in timezones \
+                            or missing(row["Tail_Number"]):
+                        continue
+                    scheduled_departure = local_hhmm_to_utc(
+                        day, row["CRSDepTime"], timezones[origin])
+                    scheduled_arrival = local_hhmm_to_utc(
+                        day, row["CRSArrTime"], timezones[destination])
+                    if scheduled_departure is None or scheduled_arrival is None:
+                        continue
+                    infer_rollover(scheduled_departure, scheduled_arrival)
+                    if bool(number(row["Cancelled"]) or 0) or bool(number(row["Diverted"]) or 0):
+                        continue
+                    taxi = number(row["TaxiOut"])
+                    if taxi is None or float(taxi) <= 0:
+                        continue
+                except (TypeError, ValueError):
+                    continue
+                values_by_airport.setdefault(origin, []).append(float(taxi))
+                accepted_rows += 1
+    all_values = [value for values in values_by_airport.values() for value in values]
+    if len(all_values) < min_cell_size:
+        raise ContractError("REFERENCE_MINIMUM_SUPPORT_UNMET:GLOBAL")
+    global_value = float(median(all_values))
+    cells = []
+    for airport in sorted(values_by_airport):
+        values = values_by_airport[airport]
+        if len(values) >= min_cell_size:
+            value, level = float(median(values)), _LEVEL_CELL
+        else:
+            value, level = global_value, _LEVEL_GLOBAL
+        cells.append(Data2TaxiReferenceCell(
+            airport_id=airport,
+            value_minutes=value,
+            sample_count=len(values),
+            fallback_level=level,
+            provenance=(
+                f"airport={airport}", f"n={len(values)}", f"fallback_level={level}",
+                f"{RULE_ID}@{RULE_VERSION}",
+            ),
+        ))
+    freeze_payload = {
+        "rule": f"{RULE_ID}@{RULE_VERSION}",
+        "fit_period": fit_period,
+        "min_cell_size": min_cell_size,
+        "source_hashes": source_hashes,
+        "accepted_rows": accepted_rows,
+        "global_value_minutes": global_value,
+        "cells": [
+            [item.airport_id, item.value_minutes, item.sample_count, item.fallback_level]
+            for item in cells
+        ],
+    }
+    freeze_id = content_id(freeze_payload)
+    reference_id = content_id({**freeze_payload, "freeze_id": freeze_id})
+    reference = Data2TaxiReference(
+        reference_id=reference_id,
+        dataset_instance_id="data2_2019",
+        rule_id=RULE_ID,
+        rule_version=RULE_VERSION,
+        fit_period=fit_period,
+        statistic_id=STATISTIC_ID,
+        minimum_support_rule=f"MIN_CELL_SIZE_{min_cell_size}",
+        fallback_hierarchy=FALLBACK_HIERARCHY,
+        applicability_scope=APPLICABILITY_SCOPE,
+        global_value_minutes=global_value,
+        global_sample_count=accepted_rows,
+        cells=tuple(cells),
+        manifest_freeze_id=freeze_id,
+        support_state=SupportState.SUPPORTED,
+        reason_code="DIRECT_TAXI_OUT_REFERENCE",
+    )
+    return reference, {
+        **data2_taxi_reference_payload(reference),
+        "input_rows": input_rows,
+        "accepted_rows": accepted_rows,
+        "source_hashes": source_hashes,
+        "final_test_access_count": 0,
+    }

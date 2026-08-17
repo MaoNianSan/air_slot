@@ -90,7 +90,8 @@ def ancestral_sample(model, history: torch.Tensor, bins: dict[str, TargetBinCont
                      target_support: dict[str, str], scheduled_ob_utc: str | None = None,
                      tx_reference_minutes: float | None = None, taxi_reference_id: str | None = None,
                      taxi_reference_hash: str | None = None, taxi_reference_fallback_level: str | None = None,
-                     taxi_reference_support_state: str | None = None):
+                     taxi_reference_support_state: str | None = None,
+                     temperatures: dict[str, float] | None = None):
     required = _required_observations(stage)
     if not required <= set(observed):
         raise ContractError("M1_STAGE_OBSERVATION_MISSING")
@@ -119,7 +120,8 @@ def ancestral_sample(model, history: torch.Tensor, bins: dict[str, TargetBinCont
             logits = model.conditioned_logits(
                 history, target, ib_index=ib_index, delta_ob_index=delta_ob_index
             )
-            probabilities = torch.softmax(logits[0], -1)
+            temperature = 1.0 if temperatures is None else float(temperatures.get(target, 1.0))
+            probabilities = torch.softmax(logits[0] / temperature, -1)
             index, _ = _sample_index(probabilities, seed, episode_id, scenario_id, target)
             indices[target] = index
             values[target], underflow[target], overflow[target] = bins[target].representative(index)

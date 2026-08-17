@@ -1,0 +1,50 @@
+{
+  "artifact_selection_rule": "FIRST_PRE_REGISTERED_SEED",
+  "artifacts": {
+    "ADAPTIVE_HISTORY": {
+      "H": 32,
+      "W": null,
+      "calibration_hash": "sha256:f776cbb16be66eb4dc22dfe8e08f192f2c97d4874cfc45d26430a19289244d6f",
+      "checkpoint": "artifacts\\diagnostics\\v5_development_freeze\\runs_signed_hstar\\H32_seed20260813.pt",
+      "checkpoint_hash": "sha256:6f38c6b5f1d6d2963a622ed4a9b87205d75eb01d57bba21a7ad3a101262b99a3",
+      "history_contract": "FULL_ADMISSIBLE_CURRENT_EPISODE_PREFIX",
+      "manifest": "artifacts\\diagnostics\\v5_development_freeze\\runs_signed_hstar\\H32_seed20260813.json",
+      "manifest_hash": "sha256:7378a29b936a136e7d9f621ddc0b2633481ecacc838a42127de67de356502a7f",
+      "training_seed": 20260813
+    },
+    "CURRENT": {
+      "H": 32,
+      "W": null,
+      "calibration_hash": "sha256:76a9df712609ff8fcd4339a9e782bb2869457963da3afff6590c5b6c142a425f",
+      "checkpoint": "artifacts\\diagnostics\\v5_development_freeze\\runs_signed_current\\CURRENT_H32_seed20260813.pt",
+      "checkpoint_hash": "sha256:36ed79397bfea7f8952d2ad8844f12ed2e61832babbcd4122a1293ecf3af25b5",
+      "history_contract": "CURRENT_LENGTH_1",
+      "manifest": "artifacts\\diagnostics\\v5_development_freeze\\runs_signed_current\\CURRENT_H32_seed20260813.json",
+      "manifest_hash": "sha256:0ad5fd316b3566e6d00247defc313f951db1d185da2954e27496dc69cc6d4c34",
+      "training_seed": 20260813
+    },
+    "FIXED_HISTORY": {
+      "H": 32,
+      "W": 30,
+      "calibration_hash": "sha256:431027c26dc0c1d9fec18b263489354b18dde2afc9d8bee3f46d84b67c01a298",
+      "checkpoint": "artifacts\\diagnostics\\v5_development_freeze\\M1_SIGNED_WARNING_MODEL_V1.pt",
+      "checkpoint_hash": "sha256:a522985e07564c34d947b8ca891b1b3bf810ac0044e0b578710cd693957215db",
+      "history_contract": "CLOSED_CURRENT_EPISODE_INTERVAL_[t-30,t]",
+      "manifest": "artifacts\\diagnostics\\v5_development_freeze\\M1_SIGNED_WARNING_MODEL_V1_MANIFEST.json",
+      "manifest_hash": "sha256:b560b8c0e66a5094975ff5be8784a22e99c677ed646be224139f490406b2ad89",
+      "training_seed": 20260813
+    }
+  },
+  "derived_warning_event": "D_TO_POST_GT_30",
+  "final_test_access_count": 0,
+  "h_w_rerun": false,
+  "manifest_hash": "sha256:dc5ec26710d32504b7cf5ebf381cf4c6325a6cf82852e62ee6526022148bf2e7",
+  "paper_full_run": false,
+  "schema_version": "EXP1_SIGNED_WARNING_ARTIFACT_BUNDLE_V1",
+  "signed_target_contract": [
+    "R_IB",
+    "DELTA_OB",
+    "T_TX"
+  ],
+  "status": "FROZEN"
+}

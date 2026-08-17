@@ -104,7 +104,7 @@ class M1Pipeline:
         return ancestral_sample(self.model,history,self.bins,episode_id=pre_state.decision_node.episode_id,
             decision_node_id=pre_state.decision_node.decision_node_id,stage=stage,observed=observed,
             count=count,seed=seed,target_support=support,scheduled_ob_utc=scheduled_ob_utc,
-            **reference_context)
+            temperatures=self.temperatures, **reference_context)
 
     def summarize(self,scenarios,**kwargs):
         from .summaries import horizon_summaries

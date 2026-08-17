@@ -211,6 +211,7 @@ def iter_lightweight_flights(
                     actual_arrival = infer_rollover(scheduled_arrival, actual_arrival)
                 departure_delay = number(value("DepDelayMinutes"))
                 arrival_delay = number(value("ArrDelayMinutes"))
+                taxi_out = number(value("TaxiOut"))
                 if departure_delay is not None:
                     actual_departure = scheduled_departure + timedelta(
                         minutes=departure_delay
@@ -219,6 +220,11 @@ def iter_lightweight_flights(
                     actual_arrival = scheduled_arrival + timedelta(minutes=arrival_delay)
                 if actual_departure is None or actual_arrival is None:
                     raise ValueError
+                wheels_off = (
+                    None
+                    if taxi_out is None
+                    else actual_departure + timedelta(minutes=taxi_out)
+                )
                 flight_parts = {
                     name: value(name)
                     for name in (
@@ -237,8 +243,26 @@ def iter_lightweight_flights(
                     "destination_airport_id": destination,
                     "event_start_time": scheduled_departure,
                     "event_end_time": scheduled_arrival,
+                    "scheduled_departure_utc": scheduled_departure,
+                    "scheduled_arrival_utc": scheduled_arrival,
                     "actual_arrival_utc": actual_arrival,
                     "actual_departure_utc": actual_departure,
+                    "wheels_off_utc": wheels_off,
+                    "taxi_out_minutes": taxi_out,
+                    "canonical_schedule_record_id": deterministic_id(
+                        "canonical-flight",
+                        {
+                            "raw": deterministic_id(
+                                "raw",
+                                {
+                                    "source": "bts_ontime",
+                                    **flight_parts,
+                                    "tail": value("Tail_Number"),
+                                },
+                            ),
+                            "role": "schedule",
+                        },
+                    ),
                     "dataset_instance_id": "data2_2019",
                     "service_date": day.isoformat(),
                 }
