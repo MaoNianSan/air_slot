@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Any
 
 from model.common.identity import content_id
+from model.M3.registry import ActionRegistry
 
 from .artifacts import FormalArtifactBundle, FormalDecisionNodeArtifact
 
@@ -13,6 +14,18 @@ def _text(value: Any) -> str:
     if isinstance(value, datetime):
         return value.isoformat()
     return str(value)
+
+
+def _m3_registry_hash(value: Any) -> str:
+    if isinstance(value, ActionRegistry):
+        return value.digest()
+    if isinstance(value, Mapping):
+        if "schema_version" in value and "templates" in value:
+            try:
+                return ActionRegistry.model_validate(value).digest()
+            except Exception:
+                pass
+    return content_id(value)
 
 
 def run_formal_pipeline(nodes: Iterable[Mapping[str, Any]], *, dataset_instance_id: str = "data2_2019",
@@ -35,7 +48,7 @@ def run_formal_pipeline(nodes: Iterable[Mapping[str, Any]], *, dataset_instance_
             M1_model_hash=hashes.get("M1_model_hash", content_id(row.get("m1_model", {}))),
             M1_scenario_hash=hashes.get("M1_scenario_hash", content_id(row.get("m1_scenarios", ()))),
             M2_contract_hash=hashes.get("M2_contract_hash", content_id(row.get("m2_contract", {}))),
-            M3_registry_hash=hashes.get("M3_registry_hash", content_id(row.get("m3_registry", {}))),
+            M3_registry_hash=hashes.get("M3_registry_hash", _m3_registry_hash(row.get("m3_registry", {}))),
             M4_config_hash=hashes.get("M4_config_hash", content_id(row.get("m4_config", {}))),
             global_seed=int(row.get("global_seed", global_seed)),
             pre_state=dict(row.get("pre_state", {})),

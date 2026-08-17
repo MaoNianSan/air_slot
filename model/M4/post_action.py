@@ -69,11 +69,7 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
             if candidate.response_parameter_status is ResponseParameterStatus.FROZEN:
                 response = response_value(candidate, seed=seed, episode=episode_id,
                                           scenario=scenario["scenario_id"])
-            elif candidate.response_provenance in {
-                ResponseProvenance.PURE_SCENARIO,
-                ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO,
-                ResponseProvenance.UNSUPPORTED,
-            }:
+            else:
                 formal_status = FormalEstimandStatus.FORMAL_AGGREGATE_UNRESOLVED
                 continue
         total = 0.0

@@ -288,3 +288,53 @@ def build_data2_turnaround_reference(
         support_state=SupportState.SUPPORTED,
         reason_code="DIRECT_GATE_TURNAROUND_REFERENCE",
     )
+
+
+def _require(payload: dict[str, Any], key: str) -> Any:
+    if key not in payload:
+        raise ContractError(f"REFERENCE_PAYLOAD_MISSING:{key}")
+    return payload[key]
+
+
+def data2_turnaround_reference_from_payload(
+    payload: dict[str, Any],
+) -> Data2TurnaroundReference:
+    """Reuse an existing train-frozen turnaround payload without refitting."""
+    cells = tuple(
+        Data2TurnaroundReferenceCell(
+            airport_id=item["airport_id"],
+            value_minutes=float(item["value_minutes"]),
+            sample_count=int(item["sample_count"]),
+            fallback_level=item["fallback_level"],
+            provenance=tuple(item.get("provenance", ())),
+        )
+        for item in _require(payload, "cells")
+    )
+    cells_count = payload.get("cells_count")
+    if cells_count is not None and int(cells_count) != len(cells):
+        raise ContractError("REFERENCE_PAYLOAD_CELL_COUNT_MISMATCH")
+    return Data2TurnaroundReference(
+        reference_id=_require(payload, "reference_id"),
+        dataset_instance_id=payload.get("dataset_instance_id", "data2_2019"),
+        rule_id=_require(payload, "rule_id"),
+        rule_version=_require(payload, "rule_version"),
+        fit_period=_require(payload, "fit_period"),
+        statistic_id=payload.get("statistic_id", STATISTIC_ID),
+        minimum_support_rule=payload.get(
+            "minimum_support_rule", MINIMUM_SUPPORT_RULE
+        ),
+        fallback_hierarchy=tuple(
+            payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)
+        ),
+        applicability_scope=payload.get(
+            "applicability_scope", APPLICABILITY_SCOPE
+        ),
+        global_value_minutes=float(_require(payload, "global_value_minutes")),
+        global_sample_count=int(_require(payload, "global_sample_count")),
+        cells=cells,
+        manifest_freeze_id=_require(payload, "manifest_freeze_id"),
+        support_state=SupportState(_require(payload, "support_state")),
+        reason_code=payload.get(
+            "reason_code", "DIRECT_GATE_TURNAROUND_REFERENCE"
+        ),
+    )

@@ -20,6 +20,10 @@
       "evidence": "exp.common.split.validate_episode_split",
       "status": "PASS"
     },
+    "EXP1_DEVELOPMENT_FREEZE": {
+      "evidence": "sha256:a3ef4bd20048658783f36c2234df986409a7adaefbd3cca0bce722beb6ea1c46",
+      "status": "PASS"
+    },
     "EXP1_VARIANTS_READY": {
       "evidence": "protocol variant map",
       "status": "PASS"
@@ -36,6 +40,10 @@
       "evidence": "weighted joint medoid",
       "status": "PASS"
     },
+    "EXP2_READINESS": {
+      "evidence": "M2_FORMAL_FREEZE_PENDING",
+      "status": "PARTIAL"
+    },
     "EXP2_VARIANTS_READY": {
       "evidence": "protocol variant map",
       "status": "PASS"
@@ -44,9 +52,17 @@
       "evidence": "feasibility audit helper",
       "status": "PASS"
     },
+    "EXP3_READINESS": {
+      "evidence": "M3_RESPONSE_PARAMETERS_NOT_FROZEN",
+      "status": "PARTIAL"
+    },
     "EXP3_VARIANTS_READY": {
       "evidence": "one-change-at-a-time ablations",
       "status": "PASS"
+    },
+    "EXP4_READINESS": {
+      "evidence": "M2_VALUATION_AND_M3_RESPONSE_SENSITIVITY_REQUIRE_FREEZE",
+      "status": "PARTIAL"
     },
     "EXP4_RESPONSE_SENSITIVITY_FROZEN": {
       "evidence": "development freeze required",
@@ -73,27 +89,39 @@
       "status": "PASS"
     },
     "M1_MODEL_FROZEN": {
-      "evidence": "hidden-size winner requires development selection",
-      "status": "PARTIAL"
+      "evidence": "signed H=32 W=30 and warning artifact under D3",
+      "status": "PASS"
     },
     "M1_SCENARIO_CONTRACT": {
       "evidence": "model.M1.scenarios",
       "status": "PASS"
     },
+    "M2_CONTEXT_ADAPTER_READY": {
+      "evidence": "model.M2.context consumes frozen Data2 reference payloads",
+      "status": "PASS"
+    },
     "M2_CONTRACT_FROZEN": {
-      "evidence": "valuation registry remains development-only",
+      "evidence": "frozen Data2 reference adapter ready; valuation registry development-only",
       "status": "PARTIAL"
     },
     "M2_FIXED_FORMAL_SCOPE": {
-      "evidence": "fixed scope contract in cross-contract",
-      "status": "PASS"
+      "evidence": "exp2 config lists components; no frozen typed scope/valuation registry",
+      "status": "PARTIAL"
     },
     "M3_REGISTRY_FROZEN": {
       "evidence": "registry present; response parameters not fully frozen",
       "status": "PARTIAL"
     },
+    "M3_REGISTRY_MANIFEST_READY": {
+      "evidence": "sha256:0377713716444ec207cdc048ee6d16d2468d2307723b0744876e6447867b6054",
+      "status": "PASS"
+    },
     "M4_PRINCIPAL_CONFIG_FROZEN": {
-      "evidence": "lambda=0.25 alpha=0.90",
+      "evidence": "lambda=0.25 alpha=0.9",
+      "status": "PASS"
+    },
+    "M4_PRINCIPAL_CONFIG_READY": {
+      "evidence": "lambda=0.25 alpha=0.9; typed M4 request and lane closure",
       "status": "PASS"
     },
     "RNG_STREAMS_SEPARATED": {

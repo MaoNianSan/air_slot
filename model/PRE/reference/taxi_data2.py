@@ -342,28 +342,43 @@ def data2_taxi_reference_payload(reference: Data2TaxiReference) -> dict[str, Any
 
 
 def data2_taxi_reference_from_payload(payload: dict[str, Any]) -> Data2TaxiReference:
-    return Data2TaxiReference(
-        reference_id=payload["reference_id"],
-        dataset_instance_id=payload["dataset_instance_id"],
-        rule_id=payload["rule_id"],
-        rule_version=payload["rule_version"],
-        fit_period=payload["fit_period"],
-        statistic_id=payload["statistic_id"],
-        minimum_support_rule=payload["minimum_support_rule"],
-        fallback_hierarchy=tuple(payload["fallback_hierarchy"]),
-        applicability_scope=payload["applicability_scope"],
-        global_value_minutes=float(payload["global_value_minutes"]),
-        global_sample_count=int(payload["global_sample_count"]),
-        cells=tuple(Data2TaxiReferenceCell(
+    cells = tuple(
+        Data2TaxiReferenceCell(
             airport_id=item["airport_id"],
             value_minutes=float(item["value_minutes"]),
             sample_count=int(item["sample_count"]),
             fallback_level=item["fallback_level"],
-            provenance=tuple(item["provenance"]),
-        ) for item in payload["cells"]),
+            provenance=tuple(item.get("provenance", ())),
+        )
+        for item in payload["cells"]
+    )
+    cells_count = payload.get("cells_count")
+    if cells_count is not None and int(cells_count) != len(cells):
+        raise ContractError("REFERENCE_PAYLOAD_CELL_COUNT_MISMATCH")
+    return Data2TaxiReference(
+        reference_id=payload["reference_id"],
+        dataset_instance_id=payload.get("dataset_instance_id", "data2_2019"),
+        rule_id=payload["rule_id"],
+        rule_version=payload["rule_version"],
+        fit_period=payload["fit_period"],
+        statistic_id=payload.get("statistic_id", STATISTIC_ID),
+        minimum_support_rule=payload.get(
+            "minimum_support_rule", MINIMUM_SUPPORT_RULE
+        ),
+        fallback_hierarchy=tuple(
+            payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)
+        ),
+        applicability_scope=payload.get(
+            "applicability_scope", APPLICABILITY_SCOPE
+        ),
+        global_value_minutes=float(payload["global_value_minutes"]),
+        global_sample_count=int(payload["global_sample_count"]),
+        cells=cells,
         manifest_freeze_id=payload["manifest_freeze_id"],
         support_state=SupportState(payload["support_state"]),
-        reason_code=payload["reason_code"],
+        reason_code=payload.get(
+            "reason_code", "DIRECT_TAXI_OUT_REFERENCE"
+        ),
     )
 
 

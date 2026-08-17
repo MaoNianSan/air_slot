@@ -12,7 +12,7 @@ from exp.exp2.representations import corrupt_scenario_lineage, point_collapse
 from exp.exp3.ablations import transformed_ablation
 from exp.exp4.portability import portability_hard_gates
 from formal.artifacts import load_formal_bundle, write_formal_bundle
-from formal.pipeline import run_formal_pipeline
+from formal.pipeline import _m3_registry_hash, run_formal_pipeline
 from model.M1.semantics import total_takeoff_delay_minutes
 from model.common.errors import ContractError
 
@@ -120,6 +120,16 @@ def test_formal_artifact_is_write_once_and_hash_checked(tmp_path: Path):
     assert loaded.bundle_hash == bundle.bundle_hash
     with pytest.raises(ContractError, match="FORMAL_ARTIFACT_IMMUTABLE_OVERWRITE"):
         write_formal_bundle(path, bundle)
+
+
+def test_m3_registry_hash_uses_action_registry_digest():
+    from pathlib import Path
+
+    from model.M3.registry import ActionRegistry
+
+    registry = ActionRegistry.load(Path("registries/action_templates.yaml"))
+    assert _m3_registry_hash(registry) == registry.digest()
+    assert _m3_registry_hash(registry.model_dump(mode="json")) == registry.digest()
 
 
 def test_paper_full_requires_explicit_approval():

@@ -131,3 +131,35 @@ frozen.
 - affected hashes: H evidence `sha256:ba8b6dd01ea0bcd00c9d94103bb2d7db7756178c01862fb6475a8f5ea1862057`; W evidence `sha256:a3da36adae926b206a7073edf88b7dcbf49b8ee01949820543c2aaf3473247ff`; warning checkpoint `sha256:a522985e07564c34d947b8ca891b1b3bf810ac0044e0b578710cd693957215db`
 - execution boundary: H/W rerun `FALSE`; full Development warning inference `NOT_RUN`; Final Test access `0`; `paper_full` `FALSE`
 - reversible_before_paper_full: `YES`
+
+## EXP1_DEVELOPMENT_FREEZE
+
+- decision_id: `EXP1_DEVELOPMENT_FREEZE`
+- date/time: `2026-08-18`
+- status: `APPROVED`
+- question: Approve the Development warning freeze and permanently retain the empirical boundary result.
+- user decision: `AIR_SLOT_EXP1_DEVELOPMENT_WARNING_FREEZE` is `PASS`; do not rerun or retune Exp1 to reverse the result.
+- freeze_hash: `sha256:a3ef4bd20048658783f36c2234df986409a7adaefbd3cca0bce722beb6ea1c46`
+- scientific interpretation: ADAPTIVE_HISTORY does NOT outperform FIXED_HISTORY; extending admissible history from the frozen 30-minute window to the full current episode does not improve the frozen warning operating point.
+- classification: `EMPIRICAL_BOUNDARY_NOT_FAILED_RUN`
+- execution boundary: Final Test access `0`; `paper_full` `FALSE`
+- reversible_before_paper_full: `YES`
+
+## M2_FORMAL_FREEZE
+
+- decision_id: `M2_FORMAL_FREEZE`
+- date/time: `2026-08-18`
+- status: `PENDING`
+- question: Freeze the remaining M2 formal choices required before M2 can be marked fully frozen.
+- open items: valuation `V_k` coefficients and registry identity; formal `ConsequenceScope` registry and aggregation rule; Data2 passenger reference variant/artifact; service policy threshold; itinerary disruption evidence policy.
+- boundary: no normative valuation or service value is selected from Development performance.
+
+## M3_RESPONSE_PARAMETER_FREEZE
+
+- decision_id: `M3_RESPONSE_PARAMETER_FREEZE`
+- date/time: `2026-08-18`
+- status: `PENDING`
+- question: Freeze non-A00 recovery-action response parameters required for formal multi-action M4 ranking.
+- open items: response models/parameters for the 22 non-A00 templates; empirical/operator provenance support; low/base/high sensitivity ranges consumed by Exp4.
+- current contract: A00 is `NOT_REQUIRED`; all other templates remain `NOT_FROZEN` and are forced out of M4 formal ranking.
+- boundary: no response utility weight or action parameter is selected from Development performance.

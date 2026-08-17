@@ -14,6 +14,8 @@ def main(argv=None):
             "lambda": 0.25,
             "alpha": 0.9,
             "formal_input": "TYPED_COMMON_ESTIMAND_AND_MATERIAL_COVERAGE_REQUIRED",
+            "formal_actions_require_frozen_response_parameters": True,
+            "final_test_access_count": 0,
         }
     print(json.dumps(result, sort_keys=True))
     return 0

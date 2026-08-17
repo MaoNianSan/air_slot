@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Mapping
 
 from .common.contracts import ExperimentCrossContract, default_cross_contract
+from .readiness import build_development_readiness
 
 
 STATUS_VALUES = {"PASS", "PARTIAL", "BLOCKED", "FAIL", "NOT_RUN"}
@@ -18,28 +19,54 @@ def _entry(value: str, evidence: str = "") -> dict[str, str]:
 
 def build_cross_contract_status(contract: ExperimentCrossContract | None = None) -> dict:
     contract = contract or default_cross_contract()
+    readiness = build_development_readiness()
     checks = {
         "DATA2_SPLIT_FROZEN": _entry("PASS", contract.split_contract_hash),
         "EPISODE_LEAKAGE": _entry("PASS", "exp.common.split.validate_episode_split"),
         "STRATA_FROZEN": _entry("PASS", "exp.common.stratification"),
-        "M1_MODEL_FROZEN": _entry("PARTIAL", "hidden-size winner requires development selection"),
+        "M1_MODEL_FROZEN": _entry("PASS", "signed H=32 W=30 and warning artifact under D3"),
         "M1_EVENT_TIME_CONTRACT": _entry("PASS", "model.M1.semantics"),
         "M1_DELAY_ADDITIVITY_CONFLICT_REMOVED": _entry("PASS", "derived event-time helper"),
         "M1_SCENARIO_CONTRACT": _entry("PASS", "model.M1.scenarios"),
-        "M2_CONTRACT_FROZEN": _entry("PARTIAL", "valuation registry remains development-only"),
-        "M2_FIXED_FORMAL_SCOPE": _entry("PASS", "fixed scope contract in cross-contract"),
+        "M2_CONTRACT_FROZEN": _entry("PARTIAL", "frozen Data2 reference adapter ready; valuation registry development-only"),
+        "M2_FIXED_FORMAL_SCOPE": _entry("PARTIAL", "exp2 config lists components; no frozen typed scope/valuation registry"),
+        "M2_CONTEXT_ADAPTER_READY": _entry("PASS", "model.M2.context consumes frozen Data2 reference payloads"),
+        "EXP1_DEVELOPMENT_FREEZE": _entry("PASS", "sha256:a3ef4bd20048658783f36c2234df986409a7adaefbd3cca0bce722beb6ea1c46"),
         "M3_REGISTRY_FROZEN": _entry("PARTIAL", "registry present; response parameters not fully frozen"),
-        "M4_PRINCIPAL_CONFIG_FROZEN": _entry("PASS", "lambda=0.25 alpha=0.90"),
+        "M3_REGISTRY_MANIFEST_READY": _entry(
+            readiness["M3_REGISTRY_READY"],
+            readiness["M3_REGISTRY_HASH"],
+        ),
+        "M4_PRINCIPAL_CONFIG_FROZEN": _entry(
+            "PASS",
+            f"lambda={readiness['M4_PRINCIPAL_LAMBDA']} alpha={readiness['M4_PRINCIPAL_ALPHA']}",
+        ),
+        "M4_PRINCIPAL_CONFIG_READY": _entry(
+            readiness["M4_PRINCIPAL_CONFIG_READY"],
+            f"lambda={readiness['M4_PRINCIPAL_LAMBDA']} alpha={readiness['M4_PRINCIPAL_ALPHA']}; typed M4 request and lane closure",
+        ),
         "RNG_STREAMS_SEPARATED": _entry("PASS", ",".join(contract.rng_streams)),
         "FORMAL_EVAL_BOUNDARY": _entry("PASS", "formal artifact write-once guard"),
         "EXP1_VARIANTS_READY": _entry("PASS", "protocol variant map"),
         "EXP2_VARIANTS_READY": _entry("PASS", "protocol variant map"),
+        "EXP2_READINESS": _entry(
+            readiness["EXP2_READINESS"],
+            readiness["EXP2_READINESS_REASON"],
+        ),
         "EXP2_FORMAL_MULTI_ACTION_GATE_READY": _entry("PASS", "formal feasibility gate"),
         "EXP2_POINT_RULE_FROZEN": _entry("PASS", "weighted joint medoid"),
         "EXP2_LINEAGE_CORRUPTION_VALIDATED": _entry("PASS", "marginal-preserving shuffle"),
         "EXP3_VARIANTS_READY": _entry("PASS", "one-change-at-a-time ablations"),
+        "EXP3_READINESS": _entry(
+            readiness["EXP3_READINESS"],
+            readiness["EXP3_READINESS_REASON"],
+        ),
         "EXP3_FORMAL_FEASIBILITY_AUDIT_READY": _entry("PASS", "feasibility audit helper"),
         "EXP4_VARIANTS_READY": _entry("PASS", "sensitivity/portability/deployability map"),
+        "EXP4_READINESS": _entry(
+            readiness["EXP4_READINESS"],
+            readiness["EXP4_READINESS_REASON"],
+        ),
         "EXP4_VALUATION_SENSITIVITY_FROZEN": _entry("PARTIAL", "development freeze required"),
         "EXP4_RESPONSE_SENSITIVITY_FROZEN": _entry("PARTIAL", "development freeze required"),
         "DEEPSEEK_PROTOCOL_FROZEN": _entry("PASS", "evaluation-only schema"),

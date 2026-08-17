@@ -1,0 +1,38 @@
+{
+  "decision_id": "AIR_SLOT_POST_EXP1_DEVELOPMENT_FREEZE",
+  "status": "HUMAN_DECISION_REQUIRED",
+  "completed_without_user": [
+    "EXP1_DEVELOPMENT_FREEZE_CLOSURE",
+    "M2_REFERENCE_BUNDLE_ADAPTER",
+    "M2_FOCUSED_TESTS",
+    "M3_REGISTRY_HASH_AND_MANIFEST",
+    "M3_FOCUSED_TESTS",
+    "M4_FORMAL_LANE_RESPONSE_HARDENING",
+    "M4_FOCUSED_TESTS",
+    "EXP2_EXP4_READINESS_PLUMBING"
+  ],
+  "blocked_modules": [
+    "M2_FORMAL_FREEZE",
+    "M3_RESPONSE_PARAMETER_FREEZE",
+    "M4_FORMAL_RANKING",
+    "EXP2_READINESS",
+    "EXP3_READINESS",
+    "EXP4_READINESS"
+  ],
+  "decisions": [
+    {
+      "decision_id": "M2_FORMAL_FREEZE",
+      "module": "M2",
+      "question": "Freeze valuation V_k coefficients/registry, formal ConsequenceScope/aggregation rule, passenger reference variant, service policy threshold, and itinerary disruption evidence policy."
+    },
+    {
+      "decision_id": "M3_RESPONSE_PARAMETER_FREEZE",
+      "module": "M3",
+      "question": "Freeze non-A00 response models/parameters, provenance support, and Exp4 low/base/high sensitivity ranges."
+    }
+  ],
+  "final_test_access_count": 0,
+  "paper_full_run": false,
+  "expensive_upstream_rerun_count": 0,
+  "upstream_reused": true
+}

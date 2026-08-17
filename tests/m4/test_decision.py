@@ -83,6 +83,27 @@ def test_material_pure_scenario_response_is_scenario():
     assert next(item for item in result.actions if item.template_id == "A11").lane == "SCENARIO"
 
 
+def test_operator_unfrozen_response_never_claims_formal_aggregate():
+    action = candidate(
+        "A11",
+        provenance=ResponseProvenance.OPERATOR_INDUSTRY,
+        parameter_status=ResponseParameterStatus.NOT_FROZEN,
+    )
+    result = evaluate_decision(
+        "e",
+        m1(),
+        (consequence(),),
+        (candidate("A00"), action),
+        material_coverage_contract=coverage_contract(),
+    )
+    evaluation = next(item for item in result.actions if item.template_id == "A11")
+    assert evaluation.lane == "SCENARIO"
+    assert (
+        evaluation.formal_aggregate_status
+        is FormalEstimandStatus.FORMAL_AGGREGATE_UNRESOLVED
+    )
+
+
 def test_missing_a00_comparator_makes_authoritative_decision_unavailable():
     result = evaluate_decision(
         "e",

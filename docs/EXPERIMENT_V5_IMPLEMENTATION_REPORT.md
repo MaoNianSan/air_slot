@@ -1,6 +1,6 @@
 # Air Slot EXPERIMENT_PROTOCOL_V5 Implementation Report
 
-Date: 2026-08-16
+Date: 2026-08-18
 Repository: `D:\research\air_slot\code\explore`
 Branch: `main`
 
@@ -99,9 +99,9 @@ path is not overwritten unless an explicit low-level override is supplied outsid
 ## D. Unresolved Items
 
 - Signed-target `H_STAR=32` and `W_STAR=30 minutes` are Development-frozen by `D3_SIGNED_M1_H_W_REFREEZE`.
-- The final signed warning-model checkpoint is frozen by the first pre-registered W seed rule; full Development warning inference and warning operating-point selection have not run.
+- The final signed warning-model checkpoint is frozen by the first pre-registered W seed rule; Exp1 Development warning inference and operating-point freeze are `PASS` under `AIR_SLOT_EXP1_DEVELOPMENT_WARNING_FREEZE`.
 - `N_FORMAL_MULTI` is unknown because no real frozen formal cohort was generated in this turn.
-- The paper-frozen M2 valuation registry/formal estimand artifact is not available.
+- The paper-frozen M2 valuation registry/formal estimand artifact is not available. The M2 context adapter (`model/M2/context.py`) is implemented and consumes frozen Data2 reference payloads without rebuilding PRE/M1.
 - Most non-A00 M3 response parameters are not frozen; formal multi-action support is therefore
   expected to remain limited until that scientific work is authorized.
 - Exp4 valuation profiles are named, but their numerical weights still require Development freeze.
@@ -147,10 +147,47 @@ python -m exp.cli status --output .
 
 ## F. Validation Evidence
 
+Historical initial validation (current overnight-focused evidence is in G):
+
 - `python -m compileall -q formal exp model tests`: PASS.
-- `pytest -q`: 354 passed, 1 skipped.
+- Full regression baseline: 412 passed, 1 skipped.
 - `python -m validation.cli all --fixtures-only`: 421 PASS, 0 FAIL/BLOCKED.
 - `python -m exp.cli smoke-all --output artifacts\diagnostics\v5_smoke`: PASS;
   synthetic only, `paper_result=false`.
 
 Final state: `PAPER_FULL_BLOCKED` pending Development freezes and a real frozen formal cohort.
+
+## G. Overnight Development Closure 2026-08-18
+
+Exp1 Development freeze is recorded as `PASS` and reused without upstream rerun.
+
+Completed deterministic Development work:
+
+- M2 typed Data2 reference bundle/context adapter and focused smoke.
+- M3 action-registry source/content hashes, atomic manifest writer, and CLI.
+- M4 formal-lane hardening: non-A00 response parameters that are not `FROZEN` cannot enter a formal
+  aggregate or authoritative ranking.
+- Exp2-Exp4 orchestration readiness summarized by `exp.readiness.build_development_readiness`.
+
+Current Development gates:
+
+- `M2_ENGINEERING_STATUS`: PASS with deterministic adapter/context/tests.
+- `M2_SCIENTIFIC_STATUS`: PARTIAL; `M2_FORMAL_FREEZE` pending.
+- `M3_ENGINEERING_STATUS`: PASS with registry hash/manifest/tests.
+- `M3_SCIENTIFIC_STATUS`: PARTIAL; 22 non-A00 response-parameter templates remain `NOT_FROZEN`.
+- `M4_ENGINEERING_STATUS`: PASS with typed request, lane, ranking, and response tests.
+- `M4_SCIENTIFIC_STATUS`: PARTIAL; formal M4 ranking depends on M2/M3 freeze.
+- `EXP2_READINESS`: PARTIAL.
+- `EXP3_READINESS`: PARTIAL.
+- `EXP4_READINESS`: PARTIAL.
+
+Validation during this pass:
+
+- `python -m compileall -q model\M3 model\M4 formal tests\m3 tests\m4 tests\contract`: PASS.
+- Focused M3/M4/integration/static suite: 36 passed.
+- `python -m model.M3.cli validate`: PASS with `final_test_access_count=0`.
+- `python -m model.M4.cli validate`: PASS with `final_test_access_count=0`.
+- `python -m exp.cli status --output .`: PASS.
+
+The previously recorded full regression baseline is 412 passed, 1 skipped; it was not rerun during
+this overnight pass. `FINAL_TEST_ACCESS_COUNT=0` and `PAPER_FULL_RUN=FALSE` remain enforced.
