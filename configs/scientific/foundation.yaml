@@ -17,11 +17,12 @@ parameters:
     value: 32
     provenance:
       selection_state: DEVELOPMENT_FROZEN
-      decision_id: D2_H_STAR
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
       decision_date: "2026-08-17"
       selection_metric: episode-balanced Development joint NLL
-      evidence: artifacts/diagnostics/v5_development_freeze/m1_hstar_evidence.json
-      evidence_hash: sha256:a56a7254e5e08c959d8e9d8be58456469b2f37a293f33495dfaf58cdf452b3a5
+      target_contract: [R_IB, DELTA_OB, T_TX]
+      evidence: artifacts/diagnostics/v5_development_freeze/m1_signed_hstar_evidence.json
+      evidence_hash: sha256:ba8b6dd01ea0bcd00c9d94103bb2d7db7756178c01862fb6475a8f5ea1862057
       final_test_access_count: 0
   m1_hidden_size_candidates: {freeze_state: FROZEN, value: [16, 32]}
   m1_fixed_history_window_minutes:
@@ -29,12 +30,22 @@ parameters:
     value: 30
     provenance:
       selection_state: DEVELOPMENT_FROZEN
-      decision_id: D1_W_STAR
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
       decision_date: "2026-08-17"
       selection_metric: episode-balanced Development joint NLL
       practical_equivalence_threshold: 0.005
-      evidence: artifacts/diagnostics/v5_development_freeze/m1_wstar_evidence.json
-      evidence_hash: sha256:35fed8273d737762a8c48321a1ce8bbd0aee76ff7c27537a57266430d3038fa1
+      target_contract: [R_IB, DELTA_OB, T_TX]
+      evidence: artifacts/diagnostics/v5_development_freeze/m1_signed_wstar_evidence.json
+      evidence_hash: sha256:a3da36adae926b206a7073edf88b7dcbf49b8ee01949820543c2aaf3473247ff
+      final_test_access_count: 0
+  m1_stochastic_targets:
+    freeze_state: FROZEN
+    value: [R_IB, DELTA_OB, T_TX]
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
+      decision_date: "2026-08-17"
+      derived_scenario_values: [R_OB, T_OB, T_TO, D_TO]
       final_test_access_count: 0
   m1_bin_width_minutes: {freeze_state: FROZEN, value: 5}
   m1_r_ib_max_finite_minutes:
@@ -45,14 +56,38 @@ parameters:
       statistic: rolling_node_target_support_profile
       included_splits: ["Train 2019-01--2019-06", "Development 2019-08--2019-09"]
       excluded_splits: ["Calibration 2019-07", "Final test 2019-10--2019-12"]
-  m1_r_ob_max_finite_minutes:
+  m1_delta_ob_min_finite_minutes:
+    freeze_state: FROZEN
+    value: -180
+    provenance: &m1_signed_target_support_provenance
+      selection_state: HUMAN_APPROVED
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
+      decision_date: "2026-08-17"
+      support_rule: symmetric_signed_support_with_explicit_tails
+      bin_width_minutes: 5
+      final_test_access_count: 0
+  m1_delta_ob_max_finite_minutes:
     freeze_state: FROZEN
     value: 180
-    provenance: *m1_target_support_provenance
+    provenance: *m1_signed_target_support_provenance
   m1_t_tx_max_finite_minutes:
     freeze_state: FROZEN
     value: 60
     provenance: *m1_target_support_provenance
   scenario_count: {freeze_state: FROZEN, value: 1000}
+  m1_warning_model_artifact:
+    freeze_state: FROZEN
+    value: artifacts/diagnostics/v5_development_freeze/M1_SIGNED_WARNING_MODEL_V1.pt
+    provenance:
+      selection_state: DEVELOPMENT_FROZEN
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
+      decision_date: "2026-08-17"
+      selection_rule: FIRST_PRE_REGISTERED_W_SEED
+      training_seed: 20260813
+      source_checkpoint: artifacts/diagnostics/v5_development_freeze/runs_signed_wstar/W30_H32_seed20260813.pt
+      artifact_hash: sha256:a522985e07564c34d947b8ca891b1b3bf810ac0044e0b578710cd693957215db
+      manifest: artifacts/diagnostics/v5_development_freeze/M1_SIGNED_WARNING_MODEL_V1_MANIFEST.json
+      principal_event: D_TO_POST_GT_30
+      final_test_access_count: 0
   m4_lambda: {freeze_state: FROZEN, value: 0.25}
   m4_alpha: {freeze_state: FROZEN, value: 0.90}

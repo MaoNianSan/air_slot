@@ -36,9 +36,13 @@ class M1Pipeline:
                 raise ValueError(f"M1_FORMAL_FINITE_SUPPORT_UNFROZEN:{target}")
             bins[target]=TargetBinContract(target_name=target,
                 bin_width_minutes=width,max_finite_minutes=item.value)
+        delta_min = scientific.parameters["m1_delta_ob_min_finite_minutes"].value
+        delta_max = scientific.parameters["m1_delta_ob_max_finite_minutes"].value
+        if delta_min is None or delta_max is None:
+            raise ValueError("M1_FORMAL_FINITE_SUPPORT_UNFROZEN:DELTA_OB")
         bins["DELTA_OB"] = TargetBinContract(
             target_name="DELTA_OB", bin_width_minutes=width,
-            min_finite_minutes=-180, max_finite_minutes=180, signed=True,
+            min_finite_minutes=delta_min, max_finite_minutes=delta_max, signed=True,
         )
         selected = scientific.parameters["m1_hidden_size"].value
         candidates = scientific.parameters["m1_hidden_size_candidates"].value
@@ -105,6 +109,10 @@ class M1Pipeline:
     def summarize(self,scenarios,**kwargs):
         from .summaries import horizon_summaries
         return horizon_summaries(scenarios,**kwargs)
+
+    def warning_probability(self, scenarios, **kwargs):
+        from .warning import warning_probability
+        return warning_probability(scenarios, **kwargs)
 
     def save(self,path:Path):
         path.parent.mkdir(parents=True,exist_ok=True); torch.save({"state":self.model.state_dict(),"input_size":self.model.input_size,

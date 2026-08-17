@@ -32,7 +32,7 @@ The current worktree resolves the critical conflicts as follows:
 
 | ID | Current status | Evidence | Remaining boundary |
 | --- | --- | --- | --- |
-| M1-HIDDEN-001 | DEVELOPMENT_FROZEN | `D2_H_STAR` freezes `foundation.yaml` at H=32 from five-seed Development-only evidence; Exp4 retains the approved 16/32 sensitivity candidates | Final Test remains sealed; no paper-full artifact exists |
+| M1-HIDDEN-001 | DEVELOPMENT_FROZEN | `D3_SIGNED_M1_H_W_REFREEZE` freezes the signed target chain at H=32 and W=30; Exp4 retains the approved 16/32 sensitivity candidates | Final Test remains sealed; no paper-full artifact exists |
 | M1-HORIZON-001 | RESOLVED | `model/M1/semantics.py`, configuration tests, `M1Forecast` contract | Evaluation-only long horizon grid remains intentionally non-formal |
 | M1-TARGET-001 | RESOLVED | canonical target map and `takeoff_delay_minutes`; behavioral equivalence and reconciliation tests | No fourth trainable head was introduced |
 | DATASET-001 | RESOLVED | typed dataset identity check in target builder; adapter isolation and foundation smoke | Data2 validation aliases remain validation-only |
@@ -42,6 +42,7 @@ The current worktree resolves the critical conflicts as follows:
 | DEP-001 | RESOLVED_ENGINEERING | dependency scanner, adapter boundary checks, zero-cycle scan | A real CI job is not configured in this checkout |
 | STATUS-001 | RESOLVED_ENGINEERING_CONDITIONAL | after readiness matrix and promotion metadata contract | Scientific readiness remains conditional, not PASS |
 
-The only unresolved scientific choice is the formal hidden-size selection. It is
-therefore reported as `EXPERIMENT_READINESS=CONDITIONAL`, while the repository
-reconciliation itself is `GLOBAL_RECONCILIATION=PASS`.
+Formal hidden size and fixed-history window are now resolved for the signed M1
+contract. Experiment readiness remains conditional on later warning operating-point
+selection and the other experiment-specific freezes, while repository reconciliation
+itself remains `GLOBAL_RECONCILIATION=PASS`.

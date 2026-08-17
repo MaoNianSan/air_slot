@@ -41,12 +41,14 @@ def test_label_formulas_and_caps_are_frozen():
 
 
 def test_label_formulas_match_foundation_config_caps():
-    # The D2-8 freeze must agree with the shared foundation config that M1
+    # The signed D3 freeze must agree with the shared foundation config that M1
     # actually consumes; any drift would change label binning silently.
     cfg = yaml.safe_load(Path("configs/scientific/foundation.yaml").read_text(encoding="utf-8"))
     params = cfg["parameters"]
     assert params["m1_r_ib_max_finite_minutes"]["value"] == 360
-    assert "m1_delta_ob_max_finite_minutes" not in params
+    assert params["m1_delta_ob_min_finite_minutes"]["value"] == -180
+    assert params["m1_delta_ob_max_finite_minutes"]["value"] == 180
+    assert "m1_r_ob_max_finite_minutes" not in params
     assert params["m1_t_tx_max_finite_minutes"]["value"] == 60
     assert params["m1_r_ib_max_finite_minutes"]["freeze_state"] == "FROZEN"
 

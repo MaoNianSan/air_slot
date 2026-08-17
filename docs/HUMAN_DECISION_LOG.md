@@ -115,3 +115,19 @@ frozen.
 - affected files: `configs/scientific/foundation.yaml`; `artifacts/diagnostics/v5_development_freeze/m1_wstar_evidence.json`; future Development-only warning-threshold runner
 - affected hashes: W evidence `sha256:35fed8273d737762a8c48321a1ce8bbd0aee76ff7c27537a57266430d3038fa1`; M1 base cache `sha256:9c647c03a4bb59d8cc6568e14a34f431f5da84b6d179e55d2e416fe7e7ed180a`
 - reversible_before_paper_full: `YES`
+
+## D3_SIGNED_M1_H_W_REFREEZE
+
+- decision_id: `D3_SIGNED_M1_H_W_REFREEZE`
+- date/time: `2026-08-17T18:05:04+08:00`
+- status: `APPROVED`
+- question: Permanently freeze the signed M1 target chain and its Development-selected H/W values, then freeze the warning-model artifact without rerunning model selection.
+- options: signed chain `R_IB -> DELTA_OB -> T_TX` with `H=32`, `W=30`; defer; reject
+- Codex recommendation: approve the signed chain and H/W evidence; use the first pre-registered W seed as the artifact rule so Development seed performance is not used post hoc
+- user decision: `R_IB -> DELTA_OB -> T_TX`, `SIGNED H_STAR = 32`, `SIGNED W_STAR = 30`; authorize permanent freeze synchronization, provenance reconciliation, D3 warning-probability implementation, and final warning-model-artifact freeze
+- scientific rationale: Signed five-seed H evidence placed H=32 outside the 0.5 percent equivalence region versus H=16. Signed three-seed W evidence placed W=30 in the practical-equivalence set and selected the shortest equivalent window. `D_TO` is derived as `max(0, DELTA_OB + T_TX - train-frozen taxi reference)`; `R_OB` is derived only. No Final Test, downstream experiment metric, or warning operating point selected H/W.
+- artifact rule: `FIRST_PRE_REGISTERED_W_SEED`; seed `20260813`; source `runs_signed_wstar/W30_H32_seed20260813.pt`; no Development score was used to choose the seed
+- affected files: `configs/scientific/foundation.yaml`; signed H/W evidence; `model/M1/warning.py`; `M1_SIGNED_WARNING_MODEL_V1.pt`; warning-model manifest; reconciliation documents
+- affected hashes: H evidence `sha256:ba8b6dd01ea0bcd00c9d94103bb2d7db7756178c01862fb6475a8f5ea1862057`; W evidence `sha256:a3da36adae926b206a7073edf88b7dcbf49b8ee01949820543c2aaf3473247ff`; warning checkpoint `sha256:a522985e07564c34d947b8ca891b1b3bf810ac0044e0b578710cd693957215db`
+- execution boundary: H/W rerun `FALSE`; full Development warning inference `NOT_RUN`; Final Test access `0`; `paper_full` `FALSE`
+- reversible_before_paper_full: `YES`

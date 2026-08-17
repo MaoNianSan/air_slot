@@ -56,7 +56,8 @@ legacy-only tree.
 - Inputs: typed PRE state plus normalized historical feature sequences and model artifacts.
 - Outputs: ordered `R_IB`, `DELTA_OB`, `T_TX` distributions and aligned scenario bundles; `R_OB` is derived compatibility output.
 - Configuration: scientific foundation YAML; formal horizons are `(0, 15, 60)`, delay thresholds
-  are `(15, 30, 60)`, and hidden-size candidates are `[16, 32]` but no winner is frozen.
+  are `(15, 30, 60)`, hidden-size candidates are `[16, 32]`, and the signed-target Development
+  freeze selects `H=32` with fixed history `W=30`.
 - RNG: deterministic hash-based scenario keys in `model/M1/scenarios.py`; no shared global RNG.
 - Artifacts: M1 normalization/model/scenario objects exist as typed pieces, but no single immutable
   formal artifact writer captures the V5 hash set.
@@ -139,9 +140,9 @@ its own schedule/reference terms; therefore `D_TO` must not be treated as a gene
 
 ### 4.2 M1 capacity
 
-The current foundation config correctly exposes candidates `[16, 32]` and leaves the formal winner
-unset. Existing historical reports mention an older 8/16 contract; no active 8-size formal value
-may be reintroduced.
+The current foundation config exposes candidates `[16, 32]` and freezes the signed-target winner
+at `H=32` with `W=30` under `D3_SIGNED_M1_H_W_REFREEZE`. Existing historical reports mention an
+older 8/16 contract; no active 8-size formal value may be reintroduced.
 
 ### 4.3 M2 formal scope
 

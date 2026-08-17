@@ -30,25 +30,36 @@ def test_layers_load_separately():
     hidden_size = layers.scientific.parameters["m1_hidden_size"]
     assert hidden_size.freeze_state.value == "FROZEN"
     assert hidden_size.value == 32
-    assert hidden_size.provenance["decision_id"] == "D2_H_STAR"
+    assert hidden_size.provenance["decision_id"] == "D3_SIGNED_M1_H_W_REFREEZE"
+    assert hidden_size.provenance["target_contract"] == ["R_IB", "DELTA_OB", "T_TX"]
+    assert hidden_size.provenance["evidence"].endswith("m1_signed_hstar_evidence.json")
     assert hidden_size.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["m1_hidden_size_candidates"].value == [16,32]
     fixed_window = layers.scientific.parameters["m1_fixed_history_window_minutes"]
     assert fixed_window.freeze_state.value == "FROZEN"
     assert fixed_window.value == 30
-    assert fixed_window.provenance["decision_id"] == "D1_W_STAR"
+    assert fixed_window.provenance["decision_id"] == "D3_SIGNED_M1_H_W_REFREEZE"
+    assert fixed_window.provenance["target_contract"] == ["R_IB", "DELTA_OB", "T_TX"]
+    assert fixed_window.provenance["evidence"].endswith("m1_signed_wstar_evidence.json")
     assert fixed_window.provenance["final_test_access_count"] == 0
+    assert layers.scientific.parameters["m1_stochastic_targets"].value == [
+        "R_IB", "DELTA_OB", "T_TX"]
     assert layers.scientific.parameters["scenario_count"].value == 1000
     assert layers.scientific.parameters["weather_max_age_minutes"].value == 60
     assert layers.scientific.parameters["cloud_encoding"].value == "both"
     assert layers.scientific.parameters["m1_r_ib_max_finite_minutes"].value == 360
-    assert layers.scientific.parameters["m1_r_ob_max_finite_minutes"].value == 180
+    assert layers.scientific.parameters["m1_delta_ob_min_finite_minutes"].value == -180
+    assert layers.scientific.parameters["m1_delta_ob_max_finite_minutes"].value == 180
     assert layers.scientific.parameters["m1_t_tx_max_finite_minutes"].value == 60
-    for name in ("m1_r_ib_max_finite_minutes", "m1_r_ob_max_finite_minutes",
-                 "m1_t_tx_max_finite_minutes"):
+    for name in ("m1_r_ib_max_finite_minutes", "m1_t_tx_max_finite_minutes"):
         provenance = layers.scientific.parameters[name].provenance
         assert provenance["selection_state"] == "DEVELOPMENT_FROZEN"
         assert "Calibration 2019-07" in provenance["excluded_splits"]
+    warning_artifact = layers.scientific.parameters["m1_warning_model_artifact"]
+    assert warning_artifact.value.endswith("M1_SIGNED_WARNING_MODEL_V1.pt")
+    assert warning_artifact.provenance["selection_rule"] == "FIRST_PRE_REGISTERED_W_SEED"
+    assert warning_artifact.provenance["training_seed"] == 20260813
+    assert warning_artifact.provenance["final_test_access_count"] == 0
     assert layers.engineering.device == "cpu"
     assert resolve_raw_roots(layers.engineering) == {
         "data1": PROJECT_ROOT / "data1", "data2": PROJECT_ROOT / "data2"}

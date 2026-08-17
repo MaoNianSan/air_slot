@@ -1,0 +1,53 @@
+{
+  "artifact_selection_rule": "FIRST_PRE_REGISTERED_W_SEED",
+  "decision_date": "2026-08-17",
+  "decision_id": "D3_SIGNED_M1_H_W_REFREEZE",
+  "derived_scenario_values": [
+    "R_OB",
+    "T_OB",
+    "T_TO",
+    "D_TO"
+  ],
+  "development_metric_not_used_for_seed_selection": true,
+  "final_test_access_count": 0,
+  "fixed_history_window_minutes": 30,
+  "freeze_sync_repository_sha": "a16179f5a7f32d764376c2629394dead784b26e1",
+  "frozen_checkpoint": "artifacts\\diagnostics\\v5_development_freeze\\M1_SIGNED_WARNING_MODEL_V1.pt",
+  "frozen_checkpoint_hash": "sha256:a522985e07564c34d947b8ca891b1b3bf810ac0044e0b578710cd693957215db",
+  "full_development_warning_inference": "NOT_RUN",
+  "h_w_rerun": false,
+  "hidden_size": 32,
+  "manifest_hash": "sha256:678eb4ded041686148433f129d36fa33423961db6b6f3f4ada7ae138332c38cb",
+  "paper_full_run": false,
+  "schema_version": "M1_SIGNED_WARNING_MODEL_V1",
+  "signed_cache_hash": "sha256:a34c5b1f4db3677a5caad8f4cd2538a1652bb6c81f1c33e366ef1ae4475e0829",
+  "signed_h_evidence": "artifacts\\diagnostics\\v5_development_freeze\\m1_signed_hstar_evidence.json",
+  "signed_h_evidence_byte_hash": "sha256:261631d94f3acf19d8f238cf37a4fc9267aa9ef6820078a79ced3b5584cb8d52",
+  "signed_h_evidence_hash": "sha256:ba8b6dd01ea0bcd00c9d94103bb2d7db7756178c01862fb6475a8f5ea1862057",
+  "signed_w_evidence": "artifacts\\diagnostics\\v5_development_freeze\\m1_signed_wstar_evidence.json",
+  "signed_w_evidence_byte_hash": "sha256:d42d1c06558a380779e42ce1bf660fc2c3d3b4ae890c75ef1844a239d4ce9c42",
+  "signed_w_evidence_hash": "sha256:a3da36adae926b206a7073edf88b7dcbf49b8ee01949820543c2aaf3473247ff",
+  "source_checkpoint": "artifacts\\diagnostics\\v5_development_freeze\\runs_signed_wstar\\W30_H32_seed20260813.pt",
+  "source_checkpoint_hash": "sha256:a522985e07564c34d947b8ca891b1b3bf810ac0044e0b578710cd693957215db",
+  "source_checkpoint_manifest": "artifacts\\diagnostics\\v5_development_freeze\\runs_signed_wstar\\W30_H32_seed20260813.json",
+  "source_checkpoint_manifest_hash": "sha256:109b7252b5c0b91ffc764100f0db2a0133f9201ee00f497da9b401af79d5b6c8",
+  "source_training_repository_sha": "9ce3cdabc16930dfd6a9f5bf6f336d44a404d949",
+  "status": "FROZEN",
+  "target_contract": [
+    "R_IB",
+    "DELTA_OB",
+    "T_TX"
+  ],
+  "training_seed": 20260813,
+  "warning_operating_point_status": "NOT_FROZEN",
+  "warning_probability_contract": {
+    "delay_threshold_minutes": 30.0,
+    "derived_quantity": "max(0, DELTA_OB + T_TX - train_frozen_taxi_reference)",
+    "estimator": "WEIGHTED_ALIGNED_SCENARIO_FREQUENCY",
+    "missing_taxi_reference": "ABSTAIN",
+    "principal_event": "D_TO_POST_GT_30",
+    "strict_operator": ">",
+    "tail_value_policy": "TARGET_BIN_REPRESENTATIVE"
+  },
+  "warning_probability_implementation_status": "READY"
+}

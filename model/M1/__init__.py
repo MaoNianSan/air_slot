@@ -3,6 +3,7 @@
 from .contracts import AlignedScenario
 from .pipeline import M1Pipeline
 from .service import M1Forecast, M1ModelPath, M1Service
+from .warning import WarningProbability, warning_probability
 
 __all__ = [
     "AlignedScenario",
@@ -10,4 +11,6 @@ __all__ = [
     "M1ModelPath",
     "M1Pipeline",
     "M1Service",
+    "WarningProbability",
+    "warning_probability",
 ]

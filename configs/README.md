@@ -6,5 +6,6 @@ contrasts and may not silently redefine scientific defaults. `configs/engineerin
 runtime concerns such as device, workers, and raw-root resolution. `configs/reproducibility/`
 contains seed and fixture/runtime reproducibility settings.
 
-Unresolved scientific values stay unset. In particular, M1 hidden-size candidates are `[16, 32]`
-and no winner is frozen. Evaluation config loading rejects scientific-default keys.
+Unresolved scientific values stay unset. M1 retains hidden-size candidates `[16, 32]`, while the
+approved signed-target Development freeze selects `H=32` and `W=30`. Evaluation config loading
+rejects scientific-default keys.

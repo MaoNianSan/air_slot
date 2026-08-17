@@ -98,8 +98,8 @@ path is not overwritten unless an explicit low-level override is supplied outsid
 
 ## D. Unresolved Items
 
-- `H_STAR=32` and `W_STAR=30 minutes` are Development-frozen by `D2_H_STAR` and `D1_W_STAR`.
-- Development-frozen Exp1 warning thresholds have not been produced.
+- Signed-target `H_STAR=32` and `W_STAR=30 minutes` are Development-frozen by `D3_SIGNED_M1_H_W_REFREEZE`.
+- The final signed warning-model checkpoint is frozen by the first pre-registered W seed rule; full Development warning inference and warning operating-point selection have not run.
 - `N_FORMAL_MULTI` is unknown because no real frozen formal cohort was generated in this turn.
 - The paper-frozen M2 valuation registry/formal estimand artifact is not available.
 - Most non-A00 M3 response parameters are not frozen; formal multi-action support is therefore
