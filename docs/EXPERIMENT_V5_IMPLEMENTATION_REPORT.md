@@ -159,6 +159,9 @@ Final state: `PAPER_FULL_BLOCKED` pending Development freezes and a real frozen 
 
 ## G. Overnight Development Closure 2026-08-18
 
+> NOTE (2026-08-18, later pass): the Exp234 cohort execution and the DeepSeek LLM audit V2
+> supersede parts of this section; see section H below. Historical text is preserved as-is.
+
 Exp1 Development freeze is recorded as `PASS` and reused without upstream rerun.
 
 Frozen Development contracts (scenario-only numerical freeze; freeze does not equal formal
@@ -228,3 +231,97 @@ Validation during this pass:
 - `python -m exp.cli status --output artifacts/diagnostics/v5_development_freeze/status_refresh`:
   `status=PASS` with all readiness gates `PASS`.
 - Full regression at global closure: `python -m pytest -q` -> 464 passed, 1 skipped.
+
+## H. Exp234 Development Execution and LLM Audit V2 (2026-08-18)
+
+Decision: `AIR_SLOT_EXP234_SCENARIO_ARTIFACT_AND_LLM_EXECUTION` (derived downstream artifact
+generation, automatic continuation). Decision:
+`AIR_SLOT_LLM_AUDIT_V2_STATE_CONDITIONED_EXPLANATION` (approved protocol change for Exp3.7).
+
+M1 scenario artifact (`M1_SIGNED_DEVELOPMENT_SCENARIOS_V1`):
+
+- `node.parquet` 1824 nodes, `scenario.parquet` 456000 rows (1824 x 250), 128 episodes;
+- artifact hash `sha256:ca3370a30ff93c0a50232484de235eaca595a7812c4da3e98a13027f4301dfec`;
+- semantics: cache `active[name]=True` means NOT observed (labels are realized training labels
+  only); all 3864 active labels match the pinned BTS exact values
+  (`realized_label_verified=3864, mismatch=0`);
+- `EXP234_BATCHED_WARNING_EQUIVALENCE_V1.json` = PASS (3 nodes across stages).
+
+Exp2 Development (`EXP2_DEVELOPMENT_V1.json`, 1824/1824 nodes, 0 ABSTAIN):
+
+- fast M2 path equals the frozen `M2Mapper` component-wise (`fast_m2_path_equivalence=PASS`,
+  max diff 0.0);
+- q=0 fully self-consistent (all distortion 0.0, top3 overlap 1.0); distortion rises
+  monotonically with q; point-collapse largest (AGD 0.231, top1 disagreement 48.9%);
+- authoritative ranking claim BLOCKED (`M4_MATERIAL_COVERAGE_UNFROZEN`) although the protocol
+  gate `STRONG_AUTHORITATIVE_RANKING_CLAIM_ALLOWED` is satisfied;
+- Exp2 status reconciliation: `EXP2_CONSEQUENCE_DEVELOPMENT=COMPLETED_TEMPORARY`,
+  `EXP2_SCENARIO_ACTION_DEVELOPMENT=COMPLETED_TEMPORARY`,
+  `EXP2_AUTHORITATIVE_FORMAL_RANKING=BLOCKED_BY_M4_MATERIAL_COVERAGE_UNFROZEN`;
+  tracked summary `docs/results/EXP2_DEVELOPMENT_TEMP_RESULT_SUMMARY.md`
+  (`DEVELOPMENT_ONLY` / `NOT_FINAL_PAPER_RESULT`, `FINAL_TEST_ACCESS_COUNT=0`);
+- M3 response seed not frozen in registry; reuse of M1 `SCENARIO_SEED=20260813` recorded
+  (`m3_response_seed_provenance`).
+
+Exp3 Development (`EXP3_DEVELOPMENT_V1.json`):
+
+- 1824/1824 numerically evaluable, `FormalMultiActionRate=1.0`,
+  `no_authoritative_decision_cohort=1824` (M4 blocker);
+- `invalidated_top1_rate=0.0`, `coverage_inflation=0.0` (M2 layer fully supported, no ABSTAIN);
+- all M4-gated lanes/ablations = `NOT_RUN_M4_BLOCKED`.
+
+Exp4 Development (`EXP4_DEVELOPMENT_V1.json`, 1824 nodes):
+
+- M3 LOW/BASE/HIGH sensitivity: top1 agreement LOW-BASE 0.8246 / BASE-HIGH 0.8114,
+  rank agreement ~0.64 across pairs;
+- `m4_ranking`/`deployability` = NOT_RUN (M4 blocker); portability hard gates PASS
+  (static registry-contract check, no Data1 raw access).
+
+LLM audit V1 (superseded construct, preserved):
+
+- V1 pilot ran on the real API: flash and pro both failed the V1 pilot gates
+  (prereq/hallucination semantics under `BLINDED_CHOICE_V2`); official run terminated with
+  `DEEPSEEK_PILOT_NO_MODEL_PASSED`;
+- recorded as `LLM_AUDIT_V1_STATUS = DIAGNOSTIC_FAIL_UNDER_SUPERSEDED_AUDIT_CONSTRUCT`;
+  evidence preserved at `EXP234_LLM_AUDIT_PILOT_EVIDENCE_V1.json` (never overwritten).
+
+LLM audit V2 (`exp/exp234/llm_audit_v2.py`, status COMPLETED):
+
+- auxiliary / evaluation-only / state-conditioned operational reasonableness explanation;
+  no feedback into PRE/M1/M2/M3/M4; `LLM_TO_MODEL_FEEDBACK=FALSE`;
+- frozen model `deepseek-v4-flash` (COST_FIRST_WITH_QUALITY_GATE, no escalation);
+- V2 pilot PASS on the same 50 cases: schema 0.98, parse 0.02, unsupported-fact-assertion 0.0,
+  known-false-prerequisite-ignored 0.0, unknown-prerequisite-asserted-true 0.0;
+- principal: 128 independent episodes (TARGET 400 / AVAILABLE 128, all episodes covered,
+  deterministic redistribution recorded) x 3 repeated judgements = 382 completed judgements;
+- verdict rates: ACCEPT 3.9%, ACCEPT_WITH_RESERVATIONS 70.2%, REJECT 0.0%,
+  INSUFFICIENT_INFORMATION 25.9%; repeat exact agreement 0.453, accept-family agreement 0.453;
+- hashes: prompt `sha256:771121de…c8af`, schema `sha256:16ca615e…cc88`,
+  contract `sha256:8cc0b226…e350`; report `llm_audit_v2/DEEPSEEK_LLM_AUDIT_REPORT_V2.json`,
+  evidence `EXP234_LLM_AUDIT_PILOT_EVIDENCE_V2.json` +
+  `EXP234_LLM_AUDIT_PILOT_DIAGNOSTIC_V2.json`;
+- scientific description: DeepSeek provides an auxiliary, state-conditioned operational
+  explanation and reasonableness audit of frozen Air Slot recommendations; it does not
+  validate model correctness, estimate counterfactual action effects, or modify the formal
+  recommendation.
+
+Validation (final pass, 2026-08-18):
+
+- focused tests: 44 passed (V2 audit 32, development 5, scenario artifact 7);
+  `scenario_artifact --verify-only` PASS, artifact hash unchanged;
+- full regression `python -m pytest -q`: 508 passed, 1 skipped;
+- static volume gate: user-granted exemption (2026-08-18) for
+  `exp/exp234/development_execution.py` (812 logical lines; recorded as EXEMPT in
+  `validation/code_size.py`); no other `REFACTOR_REQUIRED` files remain.
+
+Closures (recomputed `closure_hash` after this pass):
+
+- `AIR_SLOT_EXP2_3_4_DEVELOPMENT_COMPONENT_CLOSURE.json`
+  `sha256:ffd6506abb68aa90dd92fba729c7bb647b4f5d618e0438907b94d9454fa61ee8`;
+- `AIR_SLOT_GLOBAL_DEVELOPMENT_CLOSURE.json`
+  `sha256:d43ae36f5539ca9bf64ccf3e874581fa4abd0a5c13b3013acdd75a41c924b1ad`.
+
+Gates remain: `FINAL_TEST_ACCESS_COUNT=0`, `PAPER_FULL_RUN=FALSE`,
+`EXPENSIVE_UPSTREAM_RERUN_COUNT=0`; formal 2019-10..12 Final Test never accessed; PRE/M1/Exp1
+upstreams reused, not rerun. Remaining blocker: `M4_MATERIAL_COVERAGE_UNFROZEN` (all M4
+decision lanes stay blocked until the material-coverage contract exists as a frozen artifact).

@@ -37,5 +37,5 @@ python -m exp.cli status --output .
 Formal experiment modes are `smoke`, `development`, `paper_full`, and `numerical_stress`. `FAST`
 is an M1 computational path, not an experiment mode. `paper_full` requires explicit approval and a
 fully passing cross-contract gate. The bounded smoke is non-paper evidence; formal Exp1-Exp4 Final
-Test, LLM audit, paper promotion, and numerical-stress execution have not run. Hidden-size selection
-remains pending Development; candidates are `[16, 32]`, with no winner frozen.
+Test, paper promotion, and numerical-stress execution have not run. The Development-scope LLM audit (Exp3.7 V2, state-conditioned operational reasonableness explanation) completed on the frozen scenario artifact; the Final Test remains untouched. Hidden-size selection
+is Development-frozen at `H=32` / `W=30 minutes` (decisions `D2_H_STAR` / `D3_SIGNED_M1_H_W_REFREEZE`); no Final Test selection was used.

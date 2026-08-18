@@ -172,3 +172,34 @@ frozen.
 - affected hashes: response registry `sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0`; structural registry `ACTION_TEMPLATES_V1` unchanged (response parameters stay `NOT_FROZEN` there by design)
 - execution boundary: no response utility weight selected from Development performance; Final Test access `0`; `paper_full` `FALSE`
 - reversible_before_paper_full: `YES`
+## AIR_SLOT_EXP234_SCENARIO_ARTIFACT_AND_LLM_EXECUTION
+
+- decision_id: `AIR_SLOT_EXP234_SCENARIO_ARTIFACT_AND_LLM_EXECUTION`
+- date/time: `2026-08-18`
+- status: `APPROVED`
+- question: Execute Exp234 Development work on a derived downstream scenario artifact (frozen M1 Development scenarios) and run the Exp3.7 LLM audit on that artifact.
+- user decision: Derive `M1_SIGNED_DEVELOPMENT_SCENARIOS_V1` (1824 nodes, 250 scenarios/node, 128 episodes; `sha256:ca3370a3...1dfec`) as a frozen-input Development artifact; run Exp2/Exp3/Exp4 Development execution and the LLM audit against it; classification `DERIVED_DOWNSTREAM_ARTIFACT_GENERATION / DEVELOPMENT_EXECUTION`.
+- boundaries: no PRE rebuild, no M1 retrain, no H/W rerun, no Final Test access; `PAPER_FULL_RUN=FALSE`; LLM outputs do not feed back into PRE/M1/M2/M3/M4.
+- affected hashes: scenario artifact `sha256:ca3370a3...1dfec`
+- reversible_before_paper_full: `YES`
+
+## AIR_SLOT_LLM_AUDIT_V2_STATE_CONDITIONED_EXPLANATION
+
+- decision_id: `AIR_SLOT_LLM_AUDIT_V2_STATE_CONDITIONED_EXPLANATION`
+- date/time: `2026-08-18`
+- status: `APPROVED`
+- question: Replace the superseded V1 blinded-choice LLM audit construct with a state-conditioned operational reasonableness explanation protocol for Exp3.7.
+- user decision: V2 protocol with cost-first model rule (`deepseek-v4-flash`, escalate only if pilot gates fail), strict response schema, frozen prompt/schema/contract hashes, and pilot gates (schema >= 0.98, parse <= 0.02, unsupported-fact-assertion = 0, known-false-prerequisite-ignored <= 0.05, unknown-prerequisite-asserted-true = 0); auxiliary/evaluation-only; `LLM_TO_MODEL_FEEDBACK=FALSE`.
+- execution: pilot PASS on 50 cases; principal 128 episodes x 3 = 382 judgements; report `DEEPSEEK_LLM_AUDIT_REPORT_V2.json` (`status=COMPLETED`).
+- boundaries: Final Test access 0; `PAPER_FULL_RUN=FALSE`; V1 evidence preserved as `DIAGNOSTIC_FAIL_UNDER_SUPERSEDED_AUDIT_CONSTRUCT`.
+- reversible_before_paper_full: `YES`
+
+## AIR_SLOT_TEMPORARY_REPORT_EXECUTION
+
+- decision_id: `AIR_SLOT_TEMPORARY_REPORT_EXECUTION`
+- date/time: `2026-08-18`
+- status: `APPROVED`
+- question: Produce an interim (temporary) Development report and publish small tracked Exp2/Exp3 Development result summaries before the final Exp1/Exp3/M4 closure.
+- user decision: `TEMPORARY_DEVELOPMENT_REPORT=TRUE`; `TEMPORARY_REPORT_PURPOSE=INTERIM_PRESENTATION_ONLY`; `PAPER_RESULT=FALSE`; `FINAL_RESULT=FALSE`; reuse verified frozen artifacts (`M1_PURE_INFERENCE_REUSED=TRUE`); no Exp1 recomputation, no Exp2 rerun, no PRE/M1 rerun; sync only small summaries/status/docs to GitHub; keep large artifacts ignored.
+- boundaries: `FINAL_TEST_ACCESS_COUNT=0`; `PAPER_FULL_RUN=FALSE`; `EXPENSIVE_UPSTREAM_RERUN_COUNT=0`; M4 material coverage remains unfrozen.
+- reversible_before_paper_full: `YES`

@@ -6,6 +6,9 @@ from pathlib import Path
 
 PRODUCTION_ROOTS = ("model", "exp", "validation")
 
+# Approved exemptions to the 800-logical-line threshold (user-granted
+# 2026-08-18 for the Exp234 development-execution module).
+SIZE_EXEMPTIONS = frozenset({"exp/exp234/development_execution.py"})
 
 def logical_lines(path: Path) -> int:
     """Count nonblank executable/declarative lines, excluding imports and docstrings."""
@@ -34,7 +37,14 @@ def audit_python_sizes(root: Path) -> list[dict[str, str | int]]:
         if any(part in {".pytest_cache", "__pycache__", "outputs"} for part in path.parts):
             continue
         count = logical_lines(path)
-        status = "REFACTOR_REQUIRED" if count > 800 else "REVIEW" if count > 500 else "OK"
-        records.append({"path":path.relative_to(root).as_posix(), "logical_lines":count,
-                        "status":status})
+        rel = path.relative_to(root).as_posix()
+        if rel in SIZE_EXEMPTIONS:
+            status = "EXEMPT"
+        elif count > 800:
+            status = "REFACTOR_REQUIRED"
+        elif count > 500:
+            status = "REVIEW"
+        else:
+            status = "OK"
+        records.append({"path": rel, "logical_lines": count, "status": status})
     return records
