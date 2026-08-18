@@ -1,0 +1,72 @@
+schema_version: M3_RESPONSE_SCENARIO_V1
+registry_id: M3_RESPONSE_SCENARIO_V1
+
+scientific_status: HUMAN_APPROVED_SCENARIO_SPECIFICATION
+formal_support_upgrade: false
+
+response_model: BERNOULLI_BETA
+response_provenance_default: PURE_SCENARIO
+
+beta_concentration: 12.0
+induced_score_to_cu: 0.10
+
+sensitivity:
+  principal_axis: RESPONSE_EFFICACY
+  low:
+    success_probability_delta: -0.15
+    response_mean_delta: -0.10
+  base:
+    success_probability_delta: 0.00
+    response_mean_delta: 0.00
+  high:
+    success_probability_delta: 0.15
+    response_mean_delta: 0.10
+
+secondary_burden_sensitivity:
+  enabled: true
+  induced_score_to_cu: [0.075, 0.10, 0.125]
+  principal: false
+
+tiers:
+  T1: {success_probability: 0.80, beta_mean: 0.70}
+  T2: {success_probability: 0.65, beta_mean: 0.60}
+  T3: {success_probability: 0.50, beta_mean: 0.50}
+  T4: {success_probability: 0.35, beta_mean: 0.45}
+  T5: {success_probability: 0.95, beta_mean: 0.90}
+  T6: {success_probability: 0.90, beta_mean: 0.85}
+
+actions:
+  A00:
+    response_model: DETERMINISTIC
+    response_parameter_status: NOT_REQUIRED
+    response_provenance: OPERATOR_INDUSTRY
+    value: 0.0
+
+  A11: {tier: T1, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A13: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+
+  A21: {tier: T1, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A22: {tier: T3, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A23: {tier: T3, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+
+  A31: {tier: T1, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A32: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A33: {tier: T1, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+
+  A41: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A42: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A43: {tier: T3, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+
+  A51: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A52: {tier: T3, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A53: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A54: {tier: T4, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A55: {tier: T4, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+
+  A61: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A62: {tier: T2, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A63: {tier: T4, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A64: {tier: T3, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+
+  A71: {tier: T5, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}
+  A72: {tier: T6, response_parameter_status: FROZEN, response_provenance: PURE_SCENARIO}

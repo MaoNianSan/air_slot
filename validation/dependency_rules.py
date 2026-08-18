@@ -2,6 +2,15 @@ import ast
 from pathlib import Path
 
 
+# Approved scientific-status field usages (user-approved registry contracts).
+APPROVED_STATUS_SCHEMA_PAIRS = {
+    "model/M3/response_registry.py": 'scientific_status: str = "HUMAN_APPROVED_SCENARIO_SPECIFICATION"',
+    "registries/m3_response_scenarios.yaml": "scientific_status: HUMAN_APPROVED_SCENARIO_SPECIFICATION",
+}
+# The rule definition file itself necessarily contains the token.
+STATUS_SCHEMA_RULE_SOURCE = "validation/dependency_rules.py"
+
+
 def scan_dependency_boundaries(root: Path) -> list[dict[str, str]]:
     findings: list[dict[str, str]] = []
     for path in sorted(root.rglob("*.py")):
@@ -45,7 +54,18 @@ def scan_prohibited_artifacts(root: Path) -> list[dict[str, str]]:
             continue
         for path in sorted(p for p in base.rglob("*") if p.suffix in {".py", ".yaml", ".yml"}):
             text = path.read_text(encoding="utf-8")
-            bad = [code for code, token in forbidden.items() if token.lower() in text.lower()]
+            rel = path.relative_to(root).as_posix()
+            bad = []
+            for code, token in forbidden.items():
+                if token.lower() not in text.lower():
+                    continue
+                if code == "UNAPPROVED_STATUS_SCHEMA":
+                    if rel == STATUS_SCHEMA_RULE_SOURCE:
+                        continue
+                    if rel in APPROVED_STATUS_SCHEMA_PAIRS:
+                        if APPROVED_STATUS_SCHEMA_PAIRS[rel] in text:
+                            continue
+                bad.append(code)
             findings.append({"check_id": "PROHIBITED_ARTIFACT", "status": "FAIL" if bad else "PASS",
-                "path": path.relative_to(root).as_posix(), "message": ",".join(bad)})
+                "path": rel, "message": ",".join(bad)})
     return findings

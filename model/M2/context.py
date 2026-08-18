@@ -221,7 +221,18 @@ def build_m2_context(
 def build_exp2_fixed_scope_pending(
     config: Mapping[str, Any] | None = None,
 ) -> ConsequenceScope:
-    """Typed fixed Exp2 scope object with formal decisions left unresolved."""
+    """Deprecated pre-freeze alias; superseded by build_m2_frozen_scope."""
+    return build_m2_frozen_scope(config)
+
+
+def build_m2_frozen_scope(
+    config: Mapping[str, Any] | None = None,
+) -> ConsequenceScope:
+    """Frozen M2 Data2 formal scope (M2_DATA2_FORMAL_CU_V1, DECISION 1).
+
+    Exactly the five principal components; P_itinerary/P_service stay
+    outside the principal aggregate; the support rule is UNAVAILABLE/ABSTAIN.
+    """
     components = tuple(
         config.get("formal_scope") or _EXP2_FIXED_SCOPE
         if config is not None
@@ -229,14 +240,16 @@ def build_exp2_fixed_scope_pending(
     )
     if not components or not set(components) <= set(COMPONENTS):
         raise ContractError("M2_EXP2_FIXED_SCOPE_INVALID")
+    if tuple(components) != _EXP2_FIXED_SCOPE:
+        raise ContractError("M2_FROZEN_SCOPE_NOT_FIVE_COMPONENT_FIXED")
     return ConsequenceScope.create(
-        estimand_id="EXP2_FULL_FIXED_FORMAL_SCOPE",
+        estimand_id="M2_DATA2_FORMAL_CU",
         estimand_version="V5.0",
         included_components=components,
-        aggregation_rule_id="PENDING_M2_FORMAL_FREEZE",
-        valuation_registry_id="PENDING_M2_FORMAL_FREEZE",
-        material_coverage_contract_id="PENDING_M2_FORMAL_FREEZE",
-        scope_status=ScopeStatus.FORMAL_AGGREGATE_UNRESOLVED,
+        aggregation_rule_id="SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED",
+        valuation_registry_id="M2_DATA2_FORMAL_CU_V1",
+        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V1",
+        scope_status=ScopeStatus.FORMAL_READY,
     )
 
 
@@ -354,6 +367,7 @@ __all__ = [
     "M2ReferenceBundle",
     "build_exp2_fixed_scope_pending",
     "build_m2_context",
+    "build_m2_frozen_scope",
     "load_data2_reference_bundle",
     "smoke_reference_payloads",
 ]

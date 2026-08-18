@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pydantic import model_validator
+
 from model.common.estimand import FormalEstimandStatus
 from model.common.value_objects import FrozenModel
 
@@ -21,9 +23,21 @@ class ActionEvaluation(FrozenModel):
     cvar: float | None
     residual_risk_j: float | None
     post_totals: tuple[float, ...]
+    scenario_conditioned: bool = False
+    post_total_status: str = "NOT_COMPUTED"
     quality_flags: tuple[str, ...]
     coverage_explanation: tuple[str, ...]
     ranking_position: int | None = None
+
+    @model_validator(mode="after")
+    def post_total_label_contract(self):
+        if self.post_total_status not in {
+            "FORMAL_ESTIMAND", "SCENARIO_CONDITIONED", "NOT_COMPUTED",
+        }:
+            raise ValueError("UNKNOWN_POST_TOTAL_STATUS")
+        if self.scenario_conditioned and self.post_total_status == "FORMAL_ESTIMAND":
+            raise ValueError("SCENARIO_CONDITIONED_MISLABELED_FORMAL")
+        return self
 
 
 class EpisodeDecision(FrozenModel):

@@ -161,33 +161,70 @@ Final state: `PAPER_FULL_BLOCKED` pending Development freezes and a real frozen 
 
 Exp1 Development freeze is recorded as `PASS` and reused without upstream rerun.
 
-Completed deterministic Development work:
+Frozen Development contracts (scenario-only numerical freeze; freeze does not equal formal
+empirical support):
 
-- M2 typed Data2 reference bundle/context adapter and focused smoke.
-- M3 action-registry source/content hashes, atomic manifest writer, and CLI.
-- M4 formal-lane hardening: non-A00 response parameters that are not `FROZEN` cannot enter a formal
-  aggregate or authoritative ranking.
-- Exp2-Exp4 orchestration readiness summarized by `exp.readiness.build_development_readiness`.
+- M2 formal freeze `M2_DATA2_FORMAL_CU_V1` is COMPLETE:
+  - registry `registries/m2_data2_formal_cu_v1.json`, registry hash
+    `sha256:c257debc032bff2553b7ffdc4eb4305261f7183c45c1a43ad9164d865af2b029`;
+  - train fit (2019-01..06 On-Time + Q1/Q2 DB1B, train partition only) is PRE-owned
+    (`model/PRE/reference/data2_m2_train_fit.py`); turnaround/downstream-exposure/passenger
+    references re-fitted deterministically; frozen taxi reference reused;
+  - train scales = positive Train-period medians (`F_continuity` 43.0 min,
+    `F_execution` 17.0 min, `F_propagation` 11.0 exposure-min, `P_time` 1,037,820
+    passenger-min, `R_operating` 5.0 excess-taxi-min), byte-identical to the earlier
+    partial run;
+  - closure `artifacts/diagnostics/v5_development_freeze/M2_FORMAL_FREEZE_CLOSURE.json`
+    (elapsed 786.8 s, `final_test_access_count=0`).
+- M3 numerical response freeze `M3_RESPONSE_SCENARIO_V1` is COMPLETE (scenario-only,
+  `formal_support_upgrade=false`): response registry
+  `sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0`, manifest
+  `M3_RESPONSE_SCENARIO_V1_MANIFEST.json`. FROZEN numerical response does not imply formal
+  empirical support.
+- M4 formal support-aware ranking is COMPLETE: non-A00 scenario response parameters cannot
+  enter a formal aggregate or authoritative ranking; `scenario_conditioned` /
+  `post_total_status` labeling is sticky and validated.
 
-Current Development gates:
+Exp2-Exp4 Development:
 
-- `M2_ENGINEERING_STATUS`: PASS with deterministic adapter/context/tests.
-- `M2_SCIENTIFIC_STATUS`: PARTIAL; `M2_FORMAL_FREEZE` pending.
-- `M3_ENGINEERING_STATUS`: PASS with registry hash/manifest/tests.
-- `M3_SCIENTIFIC_STATUS`: PARTIAL; 22 non-A00 response-parameter templates remain `NOT_FROZEN`.
-- `M4_ENGINEERING_STATUS`: PASS with typed request, lane, ranking, and response tests.
-- `M4_SCIENTIFIC_STATUS`: PARTIAL; formal M4 ranking depends on M2/M3 freeze.
-- `EXP2_READINESS`: PARTIAL.
-- `EXP3_READINESS`: PARTIAL.
-- `EXP4_READINESS`: PARTIAL.
+- Readiness: `EXP2_READINESS=PASS`, `EXP3_READINESS=PASS`, `EXP4_READINESS=PASS`
+  (evidence: `M2_FORMAL_SCOPE_READY`, `M3_RESPONSE_PARAMETERS_FROZEN`,
+  `M2_VALUATION_AND_M3_RESPONSE_SENSITIVITY_FROZEN`).
+- Component closure `AIR_SLOT_EXP2_3_4_DEVELOPMENT_COMPONENT_CLOSURE.json` hash
+  `sha256:48c889fa1f605dec5d74c28ac7c73d9fa16c0ffe68c8a6728cbbbbf151c00607`: Exp2
+  point/lineage/metric gates, Exp3 ablations/feasibility/lane, Exp4 portability/strata all
+  `PASS` on fixtures.
+- Cohort-scale Exp2/3/4 runs remain data-path blocked:
+  `DEVELOPMENT_M1_SCENARIO_DRAWS_NONEXISTENT` (no per-node M1 scenario-draw artifact exists
+  for the Development cohort; reconstruction would require re-running the Development PRE
+  stream / signed M1 cache, which is prohibited), plus
+  `DEVELOPMENT_FORMAL_ARTIFACT_ROWS_NONEXISTENT` (Exp3) and
+  `DEVELOPMENT_PRINCIPAL_OUTPUT_ROWS_NONEXISTENT` (Exp4). These are recorded as blocked
+  subcomponents, not scientific PASS.
+
+DeepSeek LLM audit:
+
+- Protocol implemented and offline-tested (`exp/exp3/llm_audit.py`): pilot 50 -> principal
+  1200 -> 10% repeat-stability on the same frozen model, request-hash cache, checkpoint/
+  resume, `MAX_LLM_CALLS=1500`, `MODEL_SELECTION_RULE=COST_FIRST_WITH_QUALITY_GATE`
+  (DeepSeek-V4-Flash first, cheaper chat fallback, escalation only when the pilot quality
+  gate fails: `schema_pass_rate>=0.98`, `parse_failure<=0.02`, no systematic prerequisite or
+  hallucination failures).
+- Runtime `BLOCKED`: `DEEPSEEK_API_KEY` is not configured in the environment. No pilot or
+  principal calls were made (`calls_used=0`). The key is read only from `DEEPSEEK_API_KEY`
+  and never written to code, logs, artifacts, manifests, or git.
+
+Gates:
+
+- `FINAL_TEST_ACCESS_COUNT=0`, `PAPER_FULL_RUN=FALSE`, `EXPENSIVE_UPSTREAM_RERUN_COUNT=0`;
+  formal 2019-10..12 Final Test is never accessed; PRE/M1/Exp1/taxi upstreams were reused,
+  not rerun.
 
 Validation during this pass:
 
-- `python -m compileall -q model\M3 model\M4 formal tests\m3 tests\m4 tests\contract`: PASS.
-- Focused M3/M4/integration/static suite: 36 passed.
-- `python -m model.M3.cli validate`: PASS with `final_test_access_count=0`.
-- `python -m model.M4.cli validate`: PASS with `final_test_access_count=0`.
-- `python -m exp.cli status --output .`: PASS.
-
-The previously recorded full regression baseline is 412 passed, 1 skipped; it was not rerun during
-this overnight pass. `FINAL_TEST_ACCESS_COUNT=0` and `PAPER_FULL_RUN=FALSE` remain enforced.
+- Focused suites: `tests/m2` 26, `tests/m3` 18, `tests/m4` 17,
+  `tests/experiments`+`tests/contract` 64, `tests/pre`+reference unit 82, integration and
+  static green; `python -m validation.cli all --fixtures-only`: 515 PASS / 0 FAIL.
+- `python -m exp.cli status --output artifacts/diagnostics/v5_development_freeze/status_refresh`:
+  `status=PASS` with all readiness gates `PASS`.
+- Full regression at global closure: `python -m pytest -q` -> 464 passed, 1 skipped.

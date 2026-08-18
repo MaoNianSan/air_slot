@@ -147,19 +147,28 @@ frozen.
 
 ## M2_FORMAL_FREEZE
 
-- decision_id: `M2_FORMAL_FREEZE`
+- decision_id: `M2_FORMAL_FREEZE` (`AIR_SLOT_POST_EXP1_DEVELOPMENT_FREEZE_RESOLUTION` DECISION 1)
 - date/time: `2026-08-18`
-- status: `PENDING`
-- question: Freeze the remaining M2 formal choices required before M2 can be marked fully frozen.
-- open items: valuation `V_k` coefficients and registry identity; formal `ConsequenceScope` registry and aggregation rule; Data2 passenger reference variant/artifact; service policy threshold; itinerary disruption evidence policy.
-- boundary: no normative valuation or service value is selected from Development performance.
+- status: `APPROVED`
+- user decision: Data2 formal M2 consequence scope is exactly `K_FORMAL_DATA2 = {F_continuity, F_execution, F_propagation, P_time, R_operating}`; `P_itinerary`/`P_service` stay `OUTSIDE_PRINCIPAL_FORMAL_SCOPE` and must not enter the principal aggregate; the component set is fixed episode-by-episode.
+- native quantities: `Z_turn = max(0, R_IB - turnaround_reference)`; `Z_exec = max(0, DELTA_OB)`; `Z_takeoff = max(0, DELTA_OB + T_TX - taxi_reference)`; `Z_taxi = max(0, T_TX - taxi_reference)`; `q_F_continuity = Z_turn`; `q_F_execution = Z_exec`; `q_F_propagation = Z_takeoff * E_down`; `q_P_time = V_OD_pax * Z_takeoff`; `q_R_operating = Z_taxi`.
+- valuation: `s_k_CU = positive Train-period median` per frozen component; `U_pre_CU = q / s_k_CU`; `w_k = 1` for every formal component; total `= sum over the five components ONLY IF every required component is supported`; otherwise `UNAVAILABLE / ABSTAIN` (no drop, no renormalization, no zero-fill, no proxy).
+- passenger reference: existing train-frozen `DATA2_PASSENGER_REFERENCE_H1@1.0.0` (Q1+Q2 DB1B coupon, x10); supports `P_time` as frozen passenger exposure proxy; no global route fallback; if the OD reference is unavailable, `P_time` is unsupported and the five-component total is unavailable.
+- registry: `M2_DATA2_FORMAL_CU_V1` immutable registry with schema, formal scope, native quantity definitions, train-scale artifact paths/hashes, reference IDs/hashes (turnaround/taxi/downstream exposure/passenger), component weights, aggregation rule, support rule, `final_test_access_count = 0`.
+- affected files: `model/M2/freeze.py`; `model/M2/freeze_cli.py`; `model/M2/drivers.py`; `model/M2/context.py`; `registries/m2_data2_formal_cu_v1.json`; `artifacts/diagnostics/v5_development_freeze/M2_DATA2_FORMAL_CU_V1_MANIFEST.json`; focused M2 tests
+- affected hashes: registry hash and manifest hash recorded in `artifacts/diagnostics/v5_development_freeze/M2_FORMAL_FREEZE_CLOSURE.json`
+- execution boundary: no normative value selected from Development performance; Final Test access `0`; `paper_full` `FALSE`
+- reversible_before_paper_full: `YES`
 
 ## M3_RESPONSE_PARAMETER_FREEZE
 
-- decision_id: `M3_RESPONSE_PARAMETER_FREEZE`
+- decision_id: `M3_RESPONSE_PARAMETER_FREEZE` (`AIR_SLOT_POST_EXP1_DEVELOPMENT_FREEZE_RESOLUTION` DECISION 2; user-approved `M3_RESPONSE_SCENARIO_V1` scenario-only numerical response freeze)
 - date/time: `2026-08-18`
-- status: `PENDING`
-- question: Freeze non-A00 recovery-action response parameters required for formal multi-action M4 ranking.
-- open items: response models/parameters for the 22 non-A00 templates; empirical/operator provenance support; low/base/high sensitivity ranges consumed by Exp4.
-- current contract: A00 is `NOT_REQUIRED`; all other templates remain `NOT_FROZEN` and are forced out of M4 formal ranking.
-- boundary: no response utility weight or action parameter is selected from Development performance.
+- status: `APPROVED`
+- user decision: freeze the 23-template active structural action registry as the authoritative M3 action catalog (A12 absent; no legacy 13/21/26-action matrix import); freeze `M3_RESPONSE_SCENARIO_V1` as a scenario-only numerical response contract with `BERNOULLI_BETA` (`beta_concentration = 12.0`, `induced_score_to_cu = 0.10`), tiers T1-T6, LOW/BASE/HIGH deltas `pm 0.15 / pm 0.10`, LOW/HIGH clipping `p in [0.05, 0.95]`, `mean in [0.20, 0.95]`, secondary burden `[0.075, 0.10, 0.125]`.
+- core rule: FROZEN numerical response `!=` FORMAL empirical support; scenario-defined response `!=` empirical action response; numerically evaluable action `!=` FORMAL action; freezing scenario parameters never upgrades evidence class (`formal_support_upgrade = false`).
+- provenance hierarchy preserved: `EMPIRICAL_ACTION_LOG > OPERATOR_INDUSTRY > STRUCTURAL_BOUNDED_SCENARIO > PURE_SCENARIO`, with `UNSUPPORTED` retained separately; all 22 non-A00 actions are `FROZEN`/`PURE_SCENARIO`; `A00` is `NOT_REQUIRED`/`DETERMINISTIC`.
+- registry: `registries/m3_response_scenarios.yaml` (23 IDs), manifest `M3_RESPONSE_SCENARIO_V1_MANIFEST.json`
+- affected hashes: response registry `sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0`; structural registry `ACTION_TEMPLATES_V1` unchanged (response parameters stay `NOT_FROZEN` there by design)
+- execution boundary: no response utility weight selected from Development performance; Final Test access `0`; `paper_full` `FALSE`
+- reversible_before_paper_full: `YES`

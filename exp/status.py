@@ -28,11 +28,20 @@ def build_cross_contract_status(contract: ExperimentCrossContract | None = None)
         "M1_EVENT_TIME_CONTRACT": _entry("PASS", "model.M1.semantics"),
         "M1_DELAY_ADDITIVITY_CONFLICT_REMOVED": _entry("PASS", "derived event-time helper"),
         "M1_SCENARIO_CONTRACT": _entry("PASS", "model.M1.scenarios"),
-        "M2_CONTRACT_FROZEN": _entry("PARTIAL", "frozen Data2 reference adapter ready; valuation registry development-only"),
-        "M2_FIXED_FORMAL_SCOPE": _entry("PARTIAL", "exp2 config lists components; no frozen typed scope/valuation registry"),
+        "M2_CONTRACT_FROZEN": _entry(
+            readiness["M2_REGISTRY_READY"],
+            f"M2_DATA2_FORMAL_CU_V1 registry {readiness['M2_REGISTRY_HASH']}",
+        ),
+        "M2_FIXED_FORMAL_SCOPE": _entry(
+            readiness["M2_REGISTRY_READY"],
+            f"five-component fixed scope status={readiness['M2_FORMAL_SCOPE_STATUS']}",
+        ),
         "M2_CONTEXT_ADAPTER_READY": _entry("PASS", "model.M2.context consumes frozen Data2 reference payloads"),
         "EXP1_DEVELOPMENT_FREEZE": _entry("PASS", "sha256:a3ef4bd20048658783f36c2234df986409a7adaefbd3cca0bce722beb6ea1c46"),
-        "M3_REGISTRY_FROZEN": _entry("PARTIAL", "registry present; response parameters not fully frozen"),
+        "M3_REGISTRY_FROZEN": _entry(
+            readiness["M3_RESPONSE_REGISTRY_READY"],
+            f"response registry {readiness['M3_RESPONSE_REGISTRY_HASH']}; structural registry {readiness['M3_REGISTRY_HASH']}",
+        ),
         "M3_REGISTRY_MANIFEST_READY": _entry(
             readiness["M3_REGISTRY_READY"],
             readiness["M3_REGISTRY_HASH"],
@@ -67,8 +76,14 @@ def build_cross_contract_status(contract: ExperimentCrossContract | None = None)
             readiness["EXP4_READINESS"],
             readiness["EXP4_READINESS_REASON"],
         ),
-        "EXP4_VALUATION_SENSITIVITY_FROZEN": _entry("PARTIAL", "development freeze required"),
-        "EXP4_RESPONSE_SENSITIVITY_FROZEN": _entry("PARTIAL", "development freeze required"),
+        "EXP4_VALUATION_SENSITIVITY_FROZEN": _entry(
+            readiness["EXP4_READINESS"],
+            "M2_DATA2_FORMAL_CU_V1 valuation registry frozen",
+        ),
+        "EXP4_RESPONSE_SENSITIVITY_FROZEN": _entry(
+            readiness["EXP4_READINESS"],
+            "M3_RESPONSE_SCENARIO_V1 LOW/BASE/HIGH sensitivity frozen",
+        ),
         "DEEPSEEK_PROTOCOL_FROZEN": _entry("PASS", "evaluation-only schema"),
         "DATA1_PORTABILITY_PROTOCOL_READY": _entry("PASS", "support transition helper"),
         "DATA1_SILENT_SUBSTITUTION_TEST_READY": _entry("PASS", "hard gate helper"),

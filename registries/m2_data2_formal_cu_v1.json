@@ -1,0 +1,132 @@
+{
+  "aggregation_rule": "SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED",
+  "component_weights": {
+    "F_continuity": 1.0,
+    "F_execution": 1.0,
+    "F_propagation": 1.0,
+    "P_time": 1.0,
+    "R_operating": 1.0
+  },
+  "final_test_access_count": 0,
+  "formal_scope": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "R_operating"
+  ],
+  "native_quantity_definitions": {
+    "F_continuity": {
+      "definition": "max(0, R_IB - turnaround_reference(connection_airport))",
+      "driver": "turnaround_compression",
+      "quantity": "Z_turn",
+      "unit": "minutes"
+    },
+    "F_execution": {
+      "definition": "max(0, DELTA_OB) = R_OB",
+      "driver": "additional_off_block_wait",
+      "quantity": "Z_exec",
+      "unit": "minutes"
+    },
+    "F_propagation": {
+      "definition": "max(0, DELTA_OB + T_TX - taxi_reference(origin)) * expected_downstream_exposure(origin)",
+      "driver": "takeoff_delay_x_expected_downstream_exposure",
+      "quantity": "Z_takeoff * E_down",
+      "unit": "exposure_minutes"
+    },
+    "P_time": {
+      "definition": "passenger_exposure(origin,destination) * max(0, DELTA_OB + T_TX - taxi_reference(origin))",
+      "driver": "passenger_exposure_x_delay",
+      "quantity": "V_OD_pax * Z_takeoff",
+      "unit": "passenger_minutes"
+    },
+    "R_operating": {
+      "definition": "max(0, T_TX - taxi_reference(origin))",
+      "driver": "excess_taxi",
+      "quantity": "Z_taxi",
+      "unit": "excess_taxi_minutes"
+    }
+  },
+  "outside_principal_scope": [
+    "P_itinerary",
+    "P_service"
+  ],
+  "paper_full_run": false,
+  "reference_artifacts": {
+    "downstream_exposure": {
+      "artifact_hash": "sha256:f47a69f539c56efebee9ca812b2b2cbb580f9921d351ce8f3b031df7aa2712b3",
+      "manifest_freeze_id": "sha256:31c7be57fbf935d3e347ca7ae5b1ffc829f0c0f6a1b203523faf3dad25d8484c",
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_DOWNSTREAM_EXPOSURE_REFERENCE_TRAIN_FROZEN_V1.json",
+      "reference_id": "sha256:71a5c42da0e38cff0e5e10eb89ebffd8fdd0c3733febf17a8c485cbf15c8767c"
+    },
+    "passenger": {
+      "artifact_hash": "sha256:7cc8a0b2ddc0f0ff1ea6908cf0b4f70685baf0b68a871275292e2f769ccc23c6",
+      "manifest_freeze_id": "sha256:2467699400e7740642a9adbe6ca2b676f9e1de14deee72fb8a1d4ff69e701ad7",
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_PASSENGER_REFERENCE_H1_TRAIN_FROZEN_V1.json",
+      "reference_id": "sha256:30c3873a736eacf95d215266d025a8f0b11db93ed6a36cdc3928cd5eb775745b"
+    },
+    "taxi": {
+      "artifact_hash": "sha256:9e67d6f5d0b9870947e1c882fdf65ecc7609404cdf209f7162f381889ecab4dc",
+      "manifest_freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json",
+      "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3"
+    },
+    "turnaround": {
+      "artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+      "manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
+      "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+    }
+  },
+  "registry_hash": "sha256:c257debc032bff2553b7ffdc4eb4305261f7183c45c1a43ad9164d865af2b029",
+  "registry_id": "M2_DATA2_FORMAL_CU_V1",
+  "schema_version": "M2_DATA2_FORMAL_CU_V1",
+  "support_rule": "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY",
+  "train_scale_artifact": {
+    "F_continuity": {
+      "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
+      "definition": "max(0, R_IB - turnaround_reference(connection_airport))",
+      "median": 43.0,
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
+      "population_rows": 2670770,
+      "positive_n": 205973,
+      "unit": "minutes"
+    },
+    "F_execution": {
+      "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
+      "definition": "max(0, DELTA_OB) = R_OB",
+      "median": 17.0,
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
+      "population_rows": 3497660,
+      "positive_n": 1250179,
+      "unit": "minutes"
+    },
+    "F_propagation": {
+      "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
+      "definition": "max(0, DELTA_OB + T_TX - taxi_reference(origin)) * expected_downstream_exposure(origin)",
+      "median": 11.0,
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
+      "population_rows": 3497660,
+      "positive_n": 2170175,
+      "unit": "exposure_minutes"
+    },
+    "P_time": {
+      "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
+      "definition": "passenger_exposure(origin,destination) * max(0, DELTA_OB + T_TX - taxi_reference(origin))",
+      "median": 1037820.0,
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
+      "population_rows": 3497259,
+      "positive_n": 2177821,
+      "unit": "passenger_minutes"
+    },
+    "R_operating": {
+      "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
+      "definition": "max(0, T_TX - taxi_reference(origin))",
+      "median": 5.0,
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
+      "population_rows": 3497660,
+      "positive_n": 1619429,
+      "unit": "excess_taxi_minutes"
+    }
+  }
+}

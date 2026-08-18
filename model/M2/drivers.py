@@ -89,11 +89,23 @@ def _scenario_value(scenario: dict, name: str) -> tuple[float | None, SupportSta
         "r_ib_minutes": "ib_support",
         "r_ob_minutes": "ob_support",
         "t_tx_minutes": "tx_support",
+        "delta_ob_minutes": "delta_ob_support",
     }[name]
     support = SupportState(scenario.get(support_name, "SUPPORTED"))
     if value is None or support is SupportState.ABSTAIN:
         return None, SupportState.ABSTAIN
     return float(value), support
+
+
+def _off_block(scenario: dict) -> tuple[float | None, SupportState]:
+    """Signed DELTA_OB when present, else the non-negative R_OB fallback.
+
+    Production M1 scenario rows carry the signed delta_ob_minutes; the
+    R_OB fallback exists only for compact fixtures.
+    """
+    if scenario.get("delta_ob_minutes") is not None:
+        return _scenario_value(scenario, "delta_ob_minutes")
+    return _scenario_value(scenario, "r_ob_minutes")
 
 
 def _context_value(
@@ -123,12 +135,20 @@ def native_quantities(
         context = M2ScientificContext.model_validate(context)
     sid = int(scenario["scenario_id"])
     rib, rib_support = _scenario_value(scenario, "r_ib_minutes")
-    rob, rob_support = _scenario_value(scenario, "r_ob_minutes")
+    delta_ob, delta_ob_support = _off_block(scenario)
+    rob = None if delta_ob is None else max(0.0, delta_ob)
+    rob_support = delta_ob_support
     taxi, taxi_support = _scenario_value(scenario, "t_tx_minutes")
-    takeoff = None if rob is None or taxi is None else rob + taxi
 
     def ctx(name):
         return _context_value(context, name)
+
+    taxi_reference = ctx("taxi_reference").value
+    takeoff = (
+        None
+        if delta_ob is None or taxi is None or taxi_reference is None
+        else max(0.0, delta_ob + taxi - float(taxi_reference))
+    )
 
     def publish(
         component,

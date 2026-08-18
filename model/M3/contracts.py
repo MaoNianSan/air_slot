@@ -142,6 +142,9 @@ class CandidateAction(FrozenModel):
     response_parameters: dict[str, Any]
     response_provenance: ResponseProvenance
     response_parameter_status: ResponseParameterStatus
+    response_registry_id: str | None = None
+    response_registry_hash: str | None = None
+    response_sensitivity_level: str = "BASE"
     coverage: str
     preparation_time_minutes: float
     deadline_semantics: str
