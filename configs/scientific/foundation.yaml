@@ -127,6 +127,27 @@ parameters:
       note: "no numeric tail rule is frozen; Q(u) for u > q_max must raise/ABSTAIN in the principal path and never clamp to Q(q_max). Decisions needed: positive quantile levels, q_max, upper-tail representation/extrapolation rule, calibration/freeze procedure. TEST_ONLY rules are forbidden here."
       cvar_alpha_reference: 0.90
       final_test_access_count: 0
+  m1_v2_representation_contract:
+    freeze_state: FROZEN
+    value: ROUND2_2_MANUSCRIPT_IMPLEMENTATION
+    provenance:
+      selection_state: DEVELOPMENT_FROZEN_POLICY
+      role: ROUND2_MANUSCRIPT_IMPLEMENTATION
+      implementation_choice: ROUND2_2_DETERMINISTIC_CURRENT_AR_BLOCK_NO_SEARCH
+      static_context_status: STATIC_REFERENCE_CONTEXT_PENDING_PRE
+      note: "state-aware = concat(GRU(history), projection(r_fast)); FAST consumes r_fast directly (no GRU). schedule.signed_minutes_to_crs_departure is a DYNAMIC countdown and is NOT duplicated as a static branch (Tranche 2.1 static closure SUPERSEDED_PARTIALLY)."
+      final_test_access_count: 0
+  m1_v2_calibration_contract:
+    freeze_state: FROZEN
+    value: M1_CALIBRATION_CONTRACT_V1
+    provenance:
+      selection_state: DEVELOPMENT_FROZEN_POLICY
+      predecessor_probability_calibration: DISCRETE_HAZARD_EVENT_TIME_NLL
+      successor_zero_mass_calibration: HURDLE_ZERO_BINARY_CE_TEMPERATURE
+      positive_quantile_calibration: QUANTILE_CALIBRATION_NOT_APPLIED
+      split: calibration
+      note: "no fitted calibration artifact yet; shared by STATE_AWARE and FAST; Final Test forbidden"
+      final_test_access_count: 0
   scenario_count: {freeze_state: FROZEN, value: 1000}
   m1_warning_model_artifact:
     freeze_state: FROZEN

@@ -8,6 +8,14 @@
   M2 七分量、RMB omega、Exp1-4、formal paper run
 - FINAL_TEST_ACCESS_COUNT: 0（未访问 final test，未做 formal 全量实验）
 
+> **Tranche 2.2 注解（2026-08-19）**: 本文件为 Tranche 2.1 历史快照，全部原始内容保留。
+> 本节 2（B. static/recurrent representation）closure 被 `AIR_SLOT_ROUND2_M1_V2_2_CONTRACT_CORRECTION`
+> （attachment e9181943）**SUPERSEDED_PARTIALLY**：Tranche 2.1 的 schedule countdown duplicate
+> 并非 manuscript 要求的 static/reference context 实现。当前实现见
+> `docs/reconciliation/ROUND2_M1_V2_2_AFTER.md`。
+> 仍正确保留的 closure：tail（§1 A）、marginal（§3 C）、T_IB（§4 D）、FAST executable scaffold（§5 E）。
+> `M1_FAST_FUSION_INTERPRETATION_REQUIRED` 已在 Tranche 2.2 撤销（manuscript 语义无歧义证据）。
+
 ## 0. 结论摘要
 
 | 项 | BEFORE | AFTER |
@@ -43,6 +51,13 @@
   显式规则打开 gate。
 
 ## 2. B. Static + recurrent representation — RESOLVED (FAST_FUSION DECISION_PENDING)
+
+> **SUPERSEDED_PARTIALLY（Tranche 2.2）**: 本节的 `M1V2StaticContext` / `StaticContextEncoder` /
+> `CONCAT_RECURRENT_STATIC` 静态融合已被撤销：schedule countdown 只是 DYNAMIC current-AR 变量，
+> 重复进入 static branch 构成 fake static duplicate，并非 manuscript static/reference context。
+> Tranche 2.2 以 `M1StaticReferenceContext`（全部 `UPSTREAM_PRE_INTERFACE_REQUIRED`）+
+> `FastRepresentationEncoder`（r_fast projection）替代；fast-fusion human gate 已撤销。
+> 以下为本 tranche 历史实现记录，保留不删。
 
 实现：
 - `model/M1/contracts.py::M1V2StaticContext`：
@@ -145,6 +160,11 @@
 5. `m1_v2_quantile_levels`（未变）：DEVELOPMENT_ONLY / NOT_FROZEN。
 6. Data2 factual replay availability freeze（未变）：独立 Round-2 gate。
 
+> **Tranche 2.2 注解**: 上列第 2 项 `M1_FAST_FUSION_INTERPRETATION_REQUIRED` 已由 Tranche 2.2
+> 撤销（见 `ROUND2_M1_V2_2_AFTER.md` §4）；Tranche 2.2 之后保留的 human decisions 以
+> Tranche 2.2 spec §15 清单为准（positive tail / quantile freeze / horizon / Data2 replay /
+> FAST artifact freeze）。
+
 ## 8. FINAL REPORT
 
 ```
@@ -185,3 +205,8 @@ HUMAN_DECISIONS_REQUIRED = M1_POSITIVE_TAIL_DECISION_REQUIRED; M1_FAST_FUSION_IN
 
 FINAL_STATUS = PASS_WITH_SCIENTIFIC_DECISIONS_PENDING
 ```
+
+> **Tranche 2.2 注解**: 以上为 Tranche 2.1 当时的 FINAL REPORT（HEAD `d506d60c`，580 passed/1
+> skipped），属历史快照。`STATIC_CONTEXT_SUPPORT/FUSION` 与 `FAST_FUSION_INTERPRETATION` 行已由
+> Tranche 2.2 取代；当前状态以 `ROUND2_M1_V2_2_AFTER.md` §9 FINAL REPORT 为准（HEAD `8404e67d`，
+> 604 passed/1 skipped，`PASS_WITH_UPSTREAM_PRE_AND_SCIENTIFIC_DECISIONS_PENDING`）。

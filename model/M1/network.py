@@ -88,15 +88,15 @@ class OrderedEventGRU(nn.Module):
 
 
 
-class StaticContextEncoder(nn.Module):
-    """Minimal projection of supported static context to the shared dimension.
+class FastRepresentationEncoder(nn.Module):
+    """Projection of the deterministic current/AR block ``r_fast``.
 
-    IMPLEMENTATION_CHOICE (Round 2.1): a single linear projection to the
-    recurrent hidden dimension (``hidden_size``, the natural shared dimension
-    used by the frozen ``m1_hidden_size=32``); no hyperparameter search.
-    Unsupported manuscript static fields never reach this encoder
-    (``SUPPORT_ABSTAIN``); they enter as an explicit zero block through
-    ``M1V2GRU.state_representation`` so no context is fabricated.
+    IMPLEMENTATION_CHOICE (Round 2.2): a single linear projection to the
+    recurrent hidden dimension (``hidden_size``, the frozen ``m1_hidden_size=32``);
+    ``IMPLEMENTATION_CHOICE_NO_SEARCH`` — no development search.  ``r_fast``
+    is the decision-node current/local-change/short-term AR feature block
+    (``fast_features_from_sequence``), never a LightGBM prediction or hidden
+    state.
     """
 
     def __init__(self, input_size: int, hidden_size: int):
@@ -105,8 +105,8 @@ class StaticContextEncoder(nn.Module):
         self.hidden_size = hidden_size
         self.projection = nn.Linear(input_size, hidden_size)
 
-    def forward(self, static: torch.Tensor) -> torch.Tensor:
-        return self.projection(static)
+    def forward(self, fast: torch.Tensor) -> torch.Tensor:
+        return self.projection(fast)
 
 
 class M1V2GRU(nn.Module):
@@ -116,19 +116,23 @@ class M1V2GRU(nn.Module):
     this order):
 
         h = GRU(full admissible causal history)
-        state = concat(recurrent_repr=h, static_repr=static_encoder(static))
+        state = concat(recurrent_repr=h, fast_repr=fast_encoder(r_fast))
         T_IB_A00 ~ p(. | state)             discrete hazard over remaining time
         D_OB     ~ p(. | T_IB_A00, state)   hurdle + positive conditional quantile
         D_TX     ~ p(. | T_IB_A00, D_OB, state) hurdle + positive conditional
                                               quantile
         D_TO = D_OB + D_TX                  derived, never a separate head
 
-    The manuscript static context (schedule / route / aircraft / turnaround
-    reference / taxi reference / carrier) is retained separately and fused
-    before the common heads.  Only schedule timing is currently SUPPORTED by
-    Data2/PRE; all other manuscript static fields stay ``SUPPORT_ABSTAIN``
-    (zero static block, no fabricated context).  The ``optional_fast_repr``
-    fusion remains human-gated (``M1_FAST_FUSION_INTERPRETATION_REQUIRED``).
+    The state-aware representation is
+    ``state = concat(GRU(history), projection(r_fast))`` with
+    ``r_fast`` the deterministic current/AR feature block; manuscript
+    static/reference context is retained separately via
+    ``M1StaticReferenceContext`` and stays
+    ``UPSTREAM_PRE_INTERFACE_REQUIRED`` (``STATIC_REFERENCE_CONTEXT_PENDING_PRE``)
+    until PRE publishes it — no static block is fabricated and the Tranche 2.1
+    schedule-countdown duplicate is removed.  The FAST path consumes ``r_fast``
+    directly (no GRU recurrent hidden state) and shares the same target /
+    output / calibration semantics.
 
     Signed DELTA_OB never enters the graph: D_TX conditions on the formal D_OB
     parent only.  The hazard head emits logits over the INTERNAL remaining-time
@@ -144,7 +148,7 @@ class M1V2GRU(nn.Module):
         d_ob: HurdleQuantileContract,
         d_tx: HurdleQuantileContract,
         *,
-        static_input_size: int = 0,
+        fast_input_size: int = 0,
     ):
         super().__init__()
         self.input_size = input_size
@@ -152,13 +156,17 @@ class M1V2GRU(nn.Module):
         self.hazard_contract = hazard
         self.d_ob_contract = d_ob
         self.d_tx_contract = d_tx
-        self.static_input_size = int(static_input_size)
-        # state_repr = concat(recurrent_repr, static_repr): the recurrent
-        # hidden block plus the projected static block (zero when unsupported).
-        self.state_width = hidden_size * 2
-        self.static_encoder = (
-            StaticContextEncoder(self.static_input_size, hidden_size)
-            if self.static_input_size > 0 else None
+        self.fast_input_size = int(fast_input_size)
+        # state_repr = concat(recurrent_repr, projection(r_fast)): the
+        # recurrent hidden block plus the projected current/AR block (zero
+        # block when fast features are absent).  Manuscript static/reference
+        # context is NOT fused yet (UPSTREAM_PRE_INTERFACE_REQUIRED).
+        self.state_width = (
+            hidden_size * 2 if self.fast_input_size > 0 else hidden_size
+        )
+        self.fast_encoder = (
+            FastRepresentationEncoder(self.fast_input_size, hidden_size)
+            if self.fast_input_size > 0 else None
         )
         self.gru = nn.GRU(
             input_size, hidden_size, num_layers=1, batch_first=True, bidirectional=False
@@ -181,22 +189,23 @@ class M1V2GRU(nn.Module):
     def state_representation(
         self,
         history: torch.Tensor,
-        static_features: torch.Tensor | None = None,
+        fast_features: torch.Tensor | None = None,
     ) -> torch.Tensor:
         """Fused state fed to every common head.
 
-        ``state = concat(recurrent_repr, static_repr)``.  Supported static
-        context (schedule timing) is projected by the static encoder; when no
-        static features are available the static block is an explicit zero
-        representation (SUPPORT_ABSTAIN — nothing is fabricated).
+        ``state = concat(recurrent_repr, projection(r_fast))``.  The current/AR
+        block is projected by the fast encoder; when no fast features are
+        available the fast block is an explicit zero representation (nothing is
+        fabricated).  Static/reference context is not fused until PRE
+        publishes it (``M1StaticReferenceContext``, pending-PRE).
         """
-        if static_features is not None and self.static_encoder is None:
-            raise ValueError("M1_STATIC_PROJECTION_UNAVAILABLE")
-        if static_features is None or self.static_encoder is None:
-            static = torch.zeros_like(history)
+        if fast_features is not None and self.fast_encoder is None:
+            raise ValueError("M1_FAST_PROJECTION_UNAVAILABLE")
+        if fast_features is None or self.fast_encoder is None:
+            fast = torch.zeros_like(history)
         else:
-            static = self.static_encoder(static_features)
-        return torch.cat([history, static], dim=-1)
+            fast = self.fast_encoder(fast_features)
+        return torch.cat([history, fast], dim=-1)
 
     def _as_index(self, index, device, batch_size: int) -> torch.Tensor:
         tensor = torch.as_tensor(index, dtype=torch.long, device=device).reshape(-1)
@@ -270,18 +279,18 @@ class M1V2GRU(nn.Module):
         values: torch.Tensor,
         lengths: torch.Tensor,
         teacher: dict[str, torch.Tensor] | None = None,
-        static_features: torch.Tensor | None = None,
+        fast_features: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor]:
         """Teacher-forced forward pass.
 
         ``teacher`` may carry internal target names {"T_IB_REMAINING_HAZARD",
         "D_OB", "D_TX"} parent bin indices plus "_active" per-target
         availability masks; unavailable parents fall back to the
-        marginal/masked conditioning described above.  ``static_features``
+        marginal/masked conditioning described above.  ``fast_features``
         feeds the static encoder when supported static context is available.
         """
         history = self.encode_history(values, lengths)
-        state = self.state_representation(history, static_features)
+        state = self.state_representation(history, fast_features)
         active = {} if teacher is None else teacher.get("_active", {})
         hazard = self.hazard_head(state)
         ib_index = None if teacher is None else teacher.get(M1_V2_HAZARD_COORDINATE)

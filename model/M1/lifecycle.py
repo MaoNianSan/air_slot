@@ -11,14 +11,14 @@ from pathlib import Path
 
 import torch
 
-from .calibration import fit_temperature
+from .calibration import fit_hazard_temperature, require_no_final_test
 from .loss import (
     hazard_interval_nll,
     hurdle_quantile_loss,
 )
 from .pipeline import M1Pipeline
 from .contracts import M1V2TargetLabel, M1_V2_HAZARD_COORDINATE, V2_TARGETS
-from .data import static_features_from_sequence
+from .data import fast_features_from_sequence
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 from model.PRE.contracts.pre_state import TargetSupportState
 
@@ -271,7 +271,7 @@ class M1Lifecycle:
                     }
                 logits = self.pipeline.model(
                     values, lengths, teacher=teacher,
-                    static_features=static_features_from_sequence(values, lengths))
+                    fast_features=fast_features_from_sequence(values, lengths))
                 loss = self._loss(logits, encoded, self.pipeline.contracts, counts)
                 total = total + loss.detach()
                 loss.backward()
@@ -312,7 +312,7 @@ class M1Lifecycle:
                 }
                 logits = self.pipeline.model(
                     values, lengths, teacher=teacher,
-                    static_features=static_features_from_sequence(values, lengths))
+                    fast_features=fast_features_from_sequence(values, lengths))
                 target_indices = torch.tensor(indices, dtype=torch.long)
                 if output is None:
                     output = {name: torch.empty(
@@ -331,17 +331,24 @@ class M1Lifecycle:
     def calibrate(self, examples, *, batch_size=None):
         if not examples:
             raise ValueError("empty calibration split")
-        # V2 temperature calibration applies to the discrete-hazard head only;
-        # hurdle-quantile heads keep temperature 1.0 (no frozen V2 selection).
+        # V2 calibration follows the common Round 2.2 policy
+        # (``M1CalibrationContract``, calibration split only): the predecessor
+        # temperature is fit by discrete-hazard EVENT-TIME NLL (never multiclass
+        # softmax CE); hurdle-quantile heads keep temperature 1.0 and positive
+        # quantiles stay ``QUANTILE_CALIBRATION_NOT_APPLIED``.
+        require_no_final_test(0)
         logits, labels, active = self.batched_logits(
             examples, batch_size=batch_size, teacher_forcing=True)
         temperatures = {name: 1.0 for name in V2_TARGETS}
         hazard = self.pipeline.contracts[M1_V2_HAZARD_COORDINATE]
         encoded_active = active[M1_V2_HAZARD_COORDINATE]
         if encoded_active.any():
-            temperatures[M1_V2_HAZARD_COORDINATE] = fit_temperature(
+            temperatures[M1_V2_HAZARD_COORDINATE] = fit_hazard_temperature(
                 logits[M1_V2_HAZARD_COORDINATE],
-                labels[M1_V2_HAZARD_COORDINATE], encoded_active)
+                labels[M1_V2_HAZARD_COORDINATE],
+                encoded_active,
+                hazard,
+            )
         self.pipeline.temperatures = temperatures
         return dict(self.pipeline.temperatures)
 

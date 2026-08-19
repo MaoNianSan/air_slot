@@ -107,3 +107,43 @@ Tranche 2.1 修复 scientific closure，尤其：
 `exp/` 未修改；无 commit/push。
 最终状态: `PASS_WITH_SCIENTIFIC_DECISIONS_PENDING`（详见
 `docs/reconciliation/ROUND2_M1_V2_1_AFTER.md`）。
+
+## 7. Tranche 2.2 — Contract Correction（2026-08-19）
+
+规格: `AIR_SLOT_ROUND2_M1_V2_2_CONTRACT_CORRECTION`（attachment e9181943）。
+Tranche 2.2 修正四个 contract 问题，不推翻 Tranche 2/2.1 已建立的核心图（`T_IB_A00 -> D_OB -> D_TX`、
+派生 `R_IB`/`D_TO`）与 tail/marginal/T_IB/FAST-executable closure：
+
+- **A. static/reference representation**：撤销 Tranche 2.1 的 fake static duplicate
+  （`V2_STATIC_FIELDS` / `static_features_from_sequence` / `StaticContextEncoder` /
+  `M1V2StaticContext` / `CONCAT_RECURRENT_STATIC` 移除）；schedule countdown 回归 DYNAMIC
+  current-AR 变量；新增 typed `M1StaticReferenceContext`（route/carrier/aircraft/schedule-reference/
+  turnaround/taxi，全部 `UPSTREAM_PRE_INTERFACE_REQUIRED`）与
+  `M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE`；static/reference 只在 PRE 发布后进入 estimator。
+- **B. FAST discrete-hazard risk-set**：FAST hazard 每 bin 按 risk set
+  `R_k = {n : active AND remaining >= start(B_k)}` 训练（`y_{n,k} = 1[remaining in B_k]`）；
+  tail rows 保持 at-risk 并被 survival tail 吸收；退化 risk set 仅 TEST_ONLY constant surrogate
+  （principal raise `M1_FAST_HAZARD_RISK_SET_DEGENERATE`）；共享 `loss.hazard_pmf`，与
+  STATE_AWARE hazard PMF 语义一致。
+- **C. common calibration contract**：`M1CalibrationContract`（predecessor=
+  `DISCRETE_HAZARD_EVENT_TIME_NLL`、successor_zero_mass=`HURDLE_ZERO_BINARY_CE_TEMPERATURE`、
+  positive_quantile=`QUANTILE_CALIBRATION_NOT_APPLIED`、split=calibration、version
+  `M1_CALIBRATION_CONTRACT_V1`、final_test_access_count=0）；hazard 温度改由 event-time NLL 拟合
+  （`fit_hazard_temperature`）；hazard logits 使用 multiclass CE 一律 raise
+  `M1_HAZARD_MULTICLASS_CALIBRATION_FORBIDDEN`；STATE_AWARE 与 FAST 共享同一 policy。
+- **D. fast/current-AR representation**：`r_fast` = 最后一个 causal row 的确定性 V2 特征块；
+  STATE_AWARE = `concat(GRU(history), projection(r_fast))`（`FastRepresentationEncoder`，H=32
+  `IMPLEMENTATION_CHOICE_NO_SEARCH`）；FAST 直接消费 r_fast；撤销
+  `M1_FAST_FUSION_INTERPRETATION_REQUIRED`（最新 manuscript Section 3–4 语义无歧义证据）。
+- config: `m1_v2_representation_contract`（FROZEN, `ROUND2_2_MANUSCRIPT_IMPLEMENTATION`,
+  `STATIC_REFERENCE_CONTEXT_PENDING_PRE`）、`m1_v2_calibration_contract`（FROZEN,
+  `M1_CALIBRATION_CONTRACT_V1`）。
+- horizon 文档状态改为 `MANUSCRIPT_REQUIREMENT_CLEAR` / `CODE_LABEL_EXECUTION_CONTRACT_INCOMPLETE`
+  （不再用 `MANUSCRIPT_AMBIGUOUS` 表述）；代码 gate `HORIZON_SEMANTICS_DECISION_REQUIRED` 保持。
+
+结果: 全仓 **604 passed, 1 skipped**（Tranche 2.1 基线 580 passed/1 skipped；新增 24 个
+`tests/m1/test_v2_2_contract_correction.py` A–X 测试；M1 + reconciliation/contract/unit 定向套件
+145 passed）；`FINAL_TEST_ACCESS_COUNT = 0`；`exp/` 未修改；无 commit/push。
+最终状态: `PASS_WITH_UPSTREAM_PRE_AND_SCIENTIFIC_DECISIONS_PENDING`（详见
+`docs/reconciliation/ROUND2_M1_V2_2_AFTER.md`）。
+

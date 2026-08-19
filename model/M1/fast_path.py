@@ -3,24 +3,36 @@
 The FAST path shares with STATE_AWARE the V2 formal semantics:
 
 - primitive chain T_IB_A00 -> D_OB -> D_TX
-- predecessor head: discrete hazard over the INTERNAL remaining-time
+- predecessor head: TRUE discrete hazard over the INTERNAL remaining-time
   coordinate (``T_IB_REMAINING_HAZARD``; public ``T_IB_A00`` = decision time
-  + coordinate)
+  + coordinate).  Each finite-bin model is trained on its risk set
+  ``R_k = {n : active AND remaining >= start(B_k)}`` with
+  ``y_{n,k} = 1[T_n in B_k]``; rows beyond ``max_finite`` stay at-risk in
+  every finite risk set and are absorbed by the survival tail
+  (``hazard_pmf = h_k * prod_{j<k}(1-h_j)``, tail = ``prod_j(1-h_j)``).
 - successor heads: hurdle + positive conditional quantile, D_TX conditioned
   on the formal D_OB parent
 - output schema (``{T_IB_A00: pmf, D_OB: {...}, D_TX: {...}}``) via
   ``conditional_head_summary``
 - support schema and V2 scenario schema (``model.M1.scenarios.ancestral_sample_v2``)
 
-Round 2.1 executable architecture (ARX-LightGBM):
-- T_IB_REMAINING_HAZARD: one LightGBM binary hazard model per finite bin
-- D_OB / D_TX: zero classifier + per-level positive quantile regressors,
-  conditioned on the formal parents (T_IB hazard coordinate; D_TX also on the
-  formal D_OB minutes)
-- fitted models stay DEVELOPMENT_ONLY; ``predict_distributions`` keeps
-  ABSTAIN until a train-frozen V2 artifact is registered
-  (``final_test_access_count == 0``, no paper promotion).  Synthetic/unit
-  training smoke exercises the architecture through ``predict_development``.
+Round 2.2 representation contract (``r_fast``):
+- ``r_fast(i, t)`` is the deterministic current/local-change/short-term AR
+  feature block (last causal row of the V2 feature vector:
+  current state + weather + decision-node schedule countdown + Delta X +
+  AR summaries + masks + evidence/support + stage) — NOT a second flattening
+  of the full sequence and NOT a LightGBM prediction/hidden state.
+- FAST consumes ``r_fast`` directly (never the GRU recurrent hidden state);
+  STATE_AWARE consumes ``concat(GRU(history), projection(r_fast))``.
+- Degenerate synthetic risk sets may use a TEST_ONLY deterministic/constant
+  hazard surrogate (``allow_test_only_surrogate``, fixture-only); principal
+  training never silently substitutes one and the statistical definition
+  (risk-set discrete hazard) never changes.
+
+Fitted models stay DEVELOPMENT_ONLY; ``predict_distributions`` keeps ABSTAIN
+until a train-frozen V2 artifact is registered (``final_test_access_count ==
+0``, no paper promotion).  Synthetic/unit training smoke exercises the
+architecture through ``predict_development``.
 """
 
 from __future__ import annotations
@@ -40,6 +52,7 @@ from .contracts import (
     HurdleQuantileContract,
     M1_V2_HAZARD_COORDINATE,
 )
+from .data import fast_features_from_sequence
 from .pipeline import conditional_head_summary
 from .scenarios import ancestral_sample_v2
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
@@ -66,8 +79,10 @@ class FastPathContract:
     """Typed V2 contract shared by FAST and STATE_AWARE M1 paths."""
 
     status: M1FastPathStatus
-    feature_semantics: str = "CAUSAL_HISTORY_PREFIX_ONLY"
+    feature_semantics: str = "R_FAST_CURRENT_AR_BLOCK_DETERMINISTIC"
     target_semantics: str = "T_IB_A00_D_OB_D_TX_HAZARD_HURDLE_QUANTILE_CONTRACTS"
+    hazard_semantics: str = "DISCRETE_HAZARD_RISK_SET"
+    calibration_version: str = "M1_CALIBRATION_CONTRACT_V1"
     output_schema: str = "V2_TARGET_KEYED_DISTRIBUTION_SUMMARY"
     support_schema: str = "M1V2_SCENARIO_SUPPORT"
     scenario_schema: str = "M1V2_SCENARIO"
@@ -85,6 +100,37 @@ def _require_lightgbm():
 
 def _clip_probability(values: np.ndarray) -> np.ndarray:
     return np.clip(np.asarray(values, dtype=float), 1e-7, 1.0 - 1e-7)
+
+
+class _ConstantValuePredictor:
+    """TEST_ONLY constant-value predictor (quantile-regressor surrogate)."""
+
+    def __init__(self, value: float):
+        self.value = float(value)
+        self.test_only_surrogate = True
+
+    def predict(self, features: np.ndarray) -> np.ndarray:
+        return np.full(np.asarray(features).shape[0], self.value, dtype=float)
+
+
+class _ConstantHazardSurrogate:
+    """TEST_ONLY deterministic/constant hazard surrogate.
+
+    Used ONLY for degenerate synthetic risk sets (single-class) under
+    ``allow_test_only_surrogate=True``.  It is explicitly fixture-only: the
+    principal path raises instead of silently substituting a surrogate, and
+    the discrete-hazard statistical definition never changes.
+    """
+
+    def __init__(self, probability: float):
+        if not 0.0 < probability < 1.0:
+            raise ValueError("M1_FAST_TEST_ONLY_HAZARD_SURROGATE_OUT_OF_RANGE")
+        self.probability = float(probability)
+        self.test_only_surrogate = True
+
+    def predict(self, features: np.ndarray) -> np.ndarray:
+        return np.full(np.asarray(features).shape[0], self.probability,
+                       dtype=float)
 
 
 def _quantile_logits_from_values(values: np.ndarray) -> np.ndarray:
@@ -115,34 +161,34 @@ def _classifier_logits(classifier, features: np.ndarray) -> torch.Tensor:
 
 
 class LightGBMDistributionalPredictor:
-    """ARX-lagged LightGBM distributional V2 baseline (DEVELOPMENT_ONLY).
+    """ARX-LightGBM distributional V2 baseline (DEVELOPMENT_ONLY).
 
     ``contracts`` maps each V2 INTERNAL target to its typed contract
     (``HazardBinContract`` for T_IB_REMAINING_HAZARD; ``HurdleQuantileContract``
     for D_OB/D_TX).  ``models`` is the fitted architecture:
 
     - ``T_IB_REMAINING_HAZARD.hazard_models``: one binary classifier per
-      finite remaining-time bin (discrete-hazard semantics);
+      finite remaining-time bin trained on the bin's risk set
+      ``{remaining >= start(B_k)}`` (true discrete hazard; the PMF is
+      ``h_k * prod_{j<k}(1-h_j)`` with survival tail);
     - ``D_OB`` / ``D_TX``: ``zero`` classifier plus ``quantiles`` per-level
       positive regressors, conditioned on the formal parents.
 
-    Without a registered train-frozen fitted artifact the principal
-    ``predict_distributions`` path abstains (``ABSTAIN``) instead of
-    fabricating distributions; ``predict_development`` executes the fitted
-    architecture for synthetic/unit smoke only.
+    The predictor consumes ``r_fast`` (deterministic current/AR block), never
+    a GRU recurrent hidden state.  Without a registered train-frozen fitted
+    artifact the principal ``predict_distributions`` path abstains
+    (``ABSTAIN``) instead of fabricating distributions;
+    ``predict_development`` executes the fitted architecture for
+    synthetic/unit smoke only.
     """
 
     def __init__(
         self,
         contracts: Mapping[str, object],
         models: Mapping[str, object] | None = None,
-        feature_window: int = 6,
     ):
         self.contracts = dict(contracts)
         self.models = dict(models or {})
-        self.feature_window = int(feature_window)
-        if self.feature_window < 1:
-            raise ValueError("M1_FAST_FEATURE_WINDOW_MUST_BE_POSITIVE")
         missing = set(self._model_spec_keys()) - set(self.models)
         self.status = (
             M1FastPathStatus.DEVELOPMENT_ONLY
@@ -166,16 +212,24 @@ class LightGBMDistributionalPredictor:
         *,
         seed: int = 0,
         n_estimators: int = 32,
+        allow_test_only_surrogate: bool = False,
     ) -> "LightGBMDistributionalPredictor":
         """Fit the ARX-LightGBM architecture on one bundle (no paper fitting).
 
-        ``targets`` keys are the V2 INTERNAL training-target names:
+        ``X`` is the ``r_fast`` feature matrix (B, F).  ``targets`` keys are
+        the V2 INTERNAL training-target names:
         - ``T_IB_REMAINING_HAZARD``: remaining minutes (or NaN for inactive);
         - ``D_OB`` / ``D_TX``: nonnegative minutes (or NaN).
 
-        D_OB models condition on the T_IB hazard coordinate; D_TX models also
-        condition on the formal D_OB parent minutes.  Rows whose required
-        formal parent is missing are excluded from the child model's fit.
+        Hazard fitting follows the true discrete-hazard definition: for each
+        finite bin ``k`` the binary model is fit ONLY on the risk set
+        ``R_k = {n : active AND remaining >= start(B_k)}`` with
+        ``y_{n,k} = 1[remaining in B_k]``.  Rows with
+        ``remaining >= max_finite`` remain at-risk in every finite risk set
+        and produce no finite-bin event (survival tail absorbs them).  A
+        single-class risk set on a synthetic bundle raises unless
+        ``allow_test_only_surrogate=True``, in which case a TEST_ONLY
+        constant-hazard surrogate is used for that bin (fixture-only).
         """
         lgbm = _require_lightgbm()
         hazard: HazardBinContract = self.contracts[M1_V2_HAZARD_COORDINATE]
@@ -199,26 +253,43 @@ class LightGBMDistributionalPredictor:
                 learning_rate=0.1, random_state=int(seed), verbose=-1,
             )
 
-        # --- T_IB hazard: one binary model per finite remaining-time bin ---
+        # --- T_IB hazard: per-bin risk-set binary models ---
         ib_valid = ~np.isnan(ib_target)
-        ib_bin = np.full(ib_target.shape, -1, dtype=np.int64)
-        ib_bin[ib_valid] = np.minimum(
-            (np.maximum(0.0, ib_target[ib_valid]) // hazard.bin_width_minutes).astype(
-                np.int64),
-            hazard.finite_class_count - 1,
-        )
-        hazard_models = []
+        if ib_valid.sum() < 4:
+            raise ContractError("M1_FAST_HAZARD_TRAINING_ROWS_INSUFFICIENT")
+        width = hazard.bin_width_minutes
+        hazard_models: list[object] = []
+        risk_set_sizes: list[int] = []
+        test_only_surrogates: list[int] = []
         for bin_index in range(hazard.finite_class_count):
-            if ib_valid.sum() < 4:
-                raise ContractError("M1_FAST_HAZARD_TRAINING_ROWS_INSUFFICIENT")
-            y = (ib_bin[ib_valid] == bin_index).astype(np.int32)
-            if y.sum() < 1 or (1 - y).sum() < 1:
-                # degenerate bin on the tiny smoke set: zero-hazard surrogate
-                model = _classifier()
-                model.fit(features[ib_valid][:4], np.zeros(4, dtype=np.int32))
+            bin_start = float(bin_index * width)
+            risk_mask = ib_valid & (ib_target >= bin_start)
+            risk_size = int(risk_mask.sum())
+            risk_set_sizes.append(risk_size)
+            if risk_size < 2:
+                degenerate = True
             else:
-                model = _classifier()
-                model.fit(features[ib_valid], y)
+                event = (
+                    (ib_target[risk_mask] >= bin_start)
+                    & (ib_target[risk_mask] < bin_start + width)
+                )
+                degenerate = bool(event.sum() < 1 or (1 - event).sum() < 1)
+            if degenerate:
+                if not allow_test_only_surrogate:
+                    raise ContractError(
+                        "M1_FAST_HAZARD_RISK_SET_DEGENERATE:"
+                        f"BIN={bin_index}:RISK_SIZE={risk_size}"
+                    )
+                # TEST_ONLY constant-hazard surrogate: fixture-only, never
+                # silently substituted in the principal path, and the
+                # statistical definition is unchanged (still a conditional
+                # hazard on the bin's risk set).
+                surrogate = _ConstantHazardSurrogate(0.5)
+                hazard_models.append(surrogate)
+                test_only_surrogates.append(bin_index)
+                continue
+            model = _classifier()
+            model.fit(features[risk_mask], event.astype(np.int32))
             hazard_models.append(model)
 
         # --- D_OB: zero classifier + positive quantile regressors ---
@@ -259,29 +330,45 @@ class LightGBMDistributionalPredictor:
             tx_quantile_models.append(model)
 
         self.models = {
-            M1_V2_HAZARD_COORDINATE_TARGET: {"hazard_models": hazard_models},
+            M1_V2_HAZARD_COORDINATE_TARGET: {
+                "hazard_models": hazard_models,
+                "risk_set_sizes": risk_set_sizes,
+                "test_only_surrogates": test_only_surrogates,
+            },
             "D_OB": {"zero": ob_zero_model, "quantiles": ob_quantile_models},
             "D_TX": {"zero": tx_zero_model, "quantiles": tx_quantile_models},
         }
         self.status = M1FastPathStatus.DEVELOPMENT_ONLY
         return self
 
-    def _arx_features(self, values: torch.Tensor) -> np.ndarray:
-        """Lag matrix from the causal history prefix; never future rows."""
-        batch, time, features = values.shape
-        window = self.feature_window
-        rows = []
-        for index in range(batch):
-            length = time
-            seq = values[index, max(0, length - window):, :]
-            if seq.shape[0] < window:
-                pad = torch.zeros(window - seq.shape[0], features, dtype=seq.dtype)
-                seq = torch.cat((pad, seq), dim=0)
-            rows.append(seq.reshape(-1).numpy())
-        return np.stack(rows, axis=0)
+    def _fast_features(self, values: torch.Tensor, lengths=None) -> torch.Tensor:
+        """Deterministic current/AR block ``r_fast`` (last causal row)."""
+        return fast_features_from_sequence(values, lengths)
 
-    def state_representation(self, features: torch.Tensor, static_features=None) -> torch.Tensor:
-        """FAST state is the ARX feature matrix itself (identity adapter)."""
+    def hazard_risk_set_sizes(
+        self, ib_target, active=None,
+    ) -> list[int]:
+        """Risk-set sizes ``R_k = {n : active AND remaining >= start(B_k)}``.
+
+        Contract used by ``fit`` for every finite hazard bin and directly
+        verifiable in tests: a later-bin model never sees rows whose event
+        already happened, and rows with ``remaining >= max_finite`` remain
+        at-risk in every finite risk set (absorbed by the survival tail).
+        """
+        hazard: HazardBinContract = self.contracts[M1_V2_HAZARD_COORDINATE]
+        ib = np.asarray(ib_target, dtype=float)
+        if active is None:
+            mask = ~np.isnan(ib)
+        else:
+            mask = np.asarray(active, dtype=bool) & ~np.isnan(ib)
+        return [
+            int((mask & (ib >= float(k) * hazard.bin_width_minutes)).sum())
+            for k in range(hazard.finite_class_count)
+        ]
+
+    def state_representation(self, features: torch.Tensor,
+                             fast_features=None) -> torch.Tensor:
+        """FAST consumes ``r_fast`` directly (identity adapter; no GRU)."""
         return features
 
     def _ib_representatives(self, ib_index, batch: int) -> np.ndarray:
@@ -293,7 +380,12 @@ class LightGBMDistributionalPredictor:
                           dtype=float)
 
     def hazard_logits(self, state: torch.Tensor) -> torch.Tensor:
-        """Hazard logits over the internal remaining-time coordinate."""
+        """Hazard logits over the internal remaining-time coordinate.
+
+        Each logit is the conditional hazard ``h_k`` of its finite bin; the
+        shared ``hazard_pmf`` turns these into
+        ``pmf_k = h_k * prod_{j<k}(1-h_j)`` with survival tail.
+        """
         models = self.models.get(M1_V2_HAZARD_COORDINATE_TARGET, {}).get("hazard_models")
         if not models:
             raise ContractError("M1_FAST_HAZARD_MODELS_MISSING")
@@ -340,7 +432,7 @@ class LightGBMDistributionalPredictor:
         return zero, quantile_logits
 
     def _predict_heads(self, values: torch.Tensor, lengths=None):
-        features = self._arx_features(values)
+        features = self._fast_features(values, lengths)
         state = torch.tensor(features, dtype=torch.float32)
         return conditional_head_summary(self, state, self.contracts)
 
@@ -403,7 +495,12 @@ class LightGBMDistributionalPredictor:
         )
 
     def __call__(self, pre_state, values, lengths) -> dict[str, object]:
-        """Adapter matching ``M1Service(fast_predictor=...)`` callback signature."""
+        """Adapter matching ``M1Service(fast_predictor=...)`` callback signature.
+
+        No train-frozen V2 FAST artifact is registered, so the callback
+        abstains (``M1_FAST_V2_FITTED_ARTIFACT_NOT_REGISTERED``) and never
+        fabricates distributional outputs.
+        """
         return self.predict_distributions(values, lengths)
 
 

@@ -25,19 +25,18 @@ from model.common.errors import ContractError
 def _fitted_predictor(*, n_estimators=8):
     pipeline = M1Pipeline.smoke(input_size=4)
     rng = np.random.default_rng(0)
-    X = rng.normal(size=(64, 12))
+    X = rng.normal(size=(64, 4))
     ib = np.abs(rng.normal(30.0, 15.0, size=64))
     d_ob = np.where(rng.random(64) < 0.3, 0.0,
                     np.abs(rng.normal(40.0, 25.0, size=64)))
     d_tx = np.where(rng.random(64) < 0.3, 0.0,
                     np.abs(rng.normal(15.0, 10.0, size=64)))
-    predictor = LightGBMDistributionalPredictor(
-        pipeline.contracts, feature_window=3)
+    predictor = LightGBMDistributionalPredictor(pipeline.contracts)
     predictor.fit(X, {
         "T_IB_REMAINING_HAZARD": ib,
         "D_OB": d_ob,
         "D_TX": d_tx,
-    }, seed=7, n_estimators=n_estimators)
+    }, seed=7, n_estimators=n_estimators, allow_test_only_surrogate=True)
     return pipeline, predictor
 
 
@@ -55,7 +54,8 @@ def test_fast_distributions_share_state_aware_schema_and_scenarios():
     pipeline, predictor = _fitted_predictor()
     assert predictor.status is M1FastPathStatus.DEVELOPMENT_ONLY
     contract = predictor.contract()
-    assert contract.feature_semantics == "CAUSAL_HISTORY_PREFIX_ONLY"
+    assert contract.feature_semantics == "R_FAST_CURRENT_AR_BLOCK_DETERMINISTIC"
+    assert contract.hazard_semantics == "DISCRETE_HAZARD_RISK_SET"
     assert contract.target_semantics == "T_IB_A00_D_OB_D_TX_HAZARD_HURDLE_QUANTILE_CONTRACTS"
     assert contract.output_schema == "V2_TARGET_KEYED_DISTRIBUTION_SUMMARY"
     assert contract.scenario_schema == "M1V2_SCENARIO"
@@ -85,7 +85,7 @@ def test_fast_distributions_share_state_aware_schema_and_scenarios():
         "T_IB_A00", "D_OB", "D_TX"}
 
     # Both paths consume the same V2 scenario schema through the FAST heads.
-    features = predictor._arx_features(values)
+    features = predictor._fast_features(values)
     scenarios = predictor.sample(
         features=torch.tensor(features, dtype=torch.float32),
         episode_id="e", decision_node_id="n", stage="PRE_IB",

@@ -527,48 +527,108 @@ def require_cvar_support(contract: HurdleQuantileContract, alpha: float) -> None
         )
 
 
-class M1V2StaticContext(FrozenModel):
-    """Typed static-context support for the M1 V2 representation.
+PRE_STATIC_FIELD_STATUS = Literal[
+    "AVAILABLE_ALREADY",
+    "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
+    "NEEDS_PRE_REFERENCE_BINDING",
+    "UNSUPPORTED",
+]
 
-    Manuscript static context (schedule, route, aircraft, turnaround
-    reference, taxi reference, carrier) is retained separately and fused
-    before the common distributional heads
-    (``state_repr = concat(recurrent_repr, static_repr, optional_fast_repr)``).
 
-    Only fields with a real Data2/PRE canonical path are ``SUPPORTED``; the
-    remaining manuscript fields are ``SUPPORT_ABSTAIN`` (no canonical M1
-    encoder path yet, and never fabricated).  ``forbidden_fields`` may never be
-    constructed as static context at all.
+class M1StaticReferenceField(FrozenModel):
+    """One manuscript static/reference field of the M1 input contract.
+
+    ``support_state`` is the M1-side support:
+    - ``UPSTREAM_PRE_INTERFACE_REQUIRED``: PRE has not published a canonical
+      path to M1 yet (Round 2.2 principal status for every field);
+    - ``SUPPORTED``: PRE published and the field may enter the estimator as a
+      typed MODEL_FEATURE;
+    - ``SUPPORT_ABSTAIN``: retained for identity/provenance only.
+    ``pre_status`` follows the tranche-required classification:
+    AVAILABLE_ALREADY / AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 /
+    NEEDS_PRE_REFERENCE_BINDING / UNSUPPORTED.
     """
 
-    supported_fields: tuple[str, ...] = ("schedule.signed_minutes_to_crs_departure",)
-    abstained_fields: tuple[str, ...] = (
-        "route",
-        "aircraft_identity",
-        "carrier",
-        "turnaround_reference",
-        "taxi_reference",
+    field: str
+    support_state: str = "UPSTREAM_PRE_INTERFACE_REQUIRED"
+    pre_status: str = "NEEDS_PRE_REFERENCE_BINDING"
+    provenance_reference_id: str | None = None
+    freeze_id: str | None = None
+
+
+# Tranche 2.2 typed M1 input contract.  Every manuscript static/reference
+# field must be published by PRE through a typed object (never read by M1
+# directly from raw/BTS/reference files).  ``schedule.signed_minutes_to_crs_departure``
+# is a DYNAMIC current-AR variable (already inside the recurrent sequence) and
+# is deliberately NOT a static/reference field here (Tranche 2.1 duplicated
+# fusion removed).
+M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE: dict[str, str] = {
+    "route_context": "NEEDS_PRE_REFERENCE_BINDING",
+    "carrier_context": "NEEDS_PRE_REFERENCE_BINDING",
+    "aircraft_identity": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
+    "schedule_reference_context": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
+    "turnaround_reference": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
+    "taxi_reference": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
+}
+
+
+def _static_reference_field(name: str) -> M1StaticReferenceField:
+    return M1StaticReferenceField(
+        field=name,
+        support_state="UPSTREAM_PRE_INTERFACE_REQUIRED",
+        pre_status=M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE[name],
     )
-    forbidden_fields: tuple[str, ...] = (
-        "live_aircraft_availability",
-        "gate",
-        "crew",
-        "slot",
-        "standby_aircraft",
-    )
-    fusion: str = "CONCAT_RECURRENT_STATIC"
+
+
+class M1StaticReferenceContext(FrozenModel):
+    """Typed separately-retained static/reference context for M1.
+
+    Manuscript Section 3-4: static context (schedule / route / aircraft /
+    turnaround reference / taxi reference / carrier) is retained separately —
+    ``RETAINED_IDENTITY`` (episode identity, provenance, lineage,
+    routing/reference lookup) is NOT automatically a numeric MODEL_FEATURE.
+    A field becomes a numeric predictor only after PRE publishes a canonical
+    typed path (then a deterministic encoding contract may be designed).
+
+    Round 2.2: PRE has not published any field to M1, so every field is
+    ``UPSTREAM_PRE_INTERFACE_REQUIRED`` and the STATE_AWARE principal path
+    stays recurrent + current-AR only
+    (``STATIC_REFERENCE_CONTEXT_PENDING_PRE``).  No static block is
+    fabricated, and the Tranche 2.1 schedule-countdown duplicate is removed.
+    """
+
+    route_context: M1StaticReferenceField = Field(
+        default_factory=lambda: _static_reference_field("route_context"))
+    carrier_context: M1StaticReferenceField = Field(
+        default_factory=lambda: _static_reference_field("carrier_context"))
+    aircraft_identity: M1StaticReferenceField = Field(
+        default_factory=lambda: _static_reference_field("aircraft_identity"))
+    schedule_reference_context: M1StaticReferenceField = Field(
+        default_factory=lambda: _static_reference_field("schedule_reference_context"))
+    turnaround_reference: M1StaticReferenceField = Field(
+        default_factory=lambda: _static_reference_field("turnaround_reference"))
+    taxi_reference: M1StaticReferenceField = Field(
+        default_factory=lambda: _static_reference_field("taxi_reference"))
+    static_context_status: str = "STATIC_REFERENCE_CONTEXT_PENDING_PRE"
+    fusion: str = "CONCAT_RECURRENT_FAST_PLUS_OPTIONAL_STATIC"
     implementation_choice: str = (
-        "ROUND2_1_SINGLE_LINEAR_PROJECTION_HIDDEN32_NO_SEARCH"
+        "ROUND2_2_DETERMINISTIC_CURRENT_AR_BLOCK_NO_SEARCH"
     )
 
     def support(self, field: str) -> str:
-        if field in self.supported_fields:
-            return "SUPPORTED"
-        if field in self.abstained_fields:
-            return "SUPPORT_ABSTAIN"
-        if field in self.forbidden_fields:
+        if field in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
+            return getattr(self, field).support_state
+        if field in (
+            "live_aircraft_availability", "gate", "crew", "slot",
+            "standby_aircraft",
+        ):
             raise ValueError(f"M1_STATIC_CONTEXT_FORBIDDEN:{field}")
         raise ValueError(f"M1_STATIC_CONTEXT_UNKNOWN:{field}")
+
+    def pre_status(self, field: str) -> str:
+        if field not in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
+            raise ValueError(f"M1_STATIC_CONTEXT_UNKNOWN:{field}")
+        return getattr(self, field).pre_status
 
 
 class M1V2TargetLabel(TargetLabel):

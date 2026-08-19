@@ -272,7 +272,7 @@ def ancestral_sample_v2(
     taxi_reference_fallback_level: str | None = None,
     taxi_reference_support_state: str | None = None,
     temperatures: dict[str, float] | None = None,
-    static_features: torch.Tensor | None = None,
+    fast_features: torch.Tensor | None = None,
 ) -> tuple[M1V2Scenario, ...]:
     """Ancestral V2 draws in the formal order T_IB_A00 -> D_OB -> D_TX.
 
@@ -298,7 +298,7 @@ def ancestral_sample_v2(
     if not required <= set(observed):
         raise ContractError("M1_STAGE_OBSERVATION_MISSING")
     # Fused state representation shared by every head call in this bundle.
-    state = model.state_representation(history, static_features)
+    state = model.state_representation(history, fast_features)
     rows = []
     for scenario_id in range(count):
         keys = [

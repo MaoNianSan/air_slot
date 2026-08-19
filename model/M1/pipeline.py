@@ -6,16 +6,23 @@ Round-2 M1 V2 real estimator:
         -> D_TX (hurdle + conditional quantile, conditioned on formal D_OB)
     R_IB = max(0, T_IB_A00 - t), D_TO = D_OB + D_TX (derived).
 
-Round 2.1 scientific closure:
+Round 2.1 scientific closure (kept):
 - The hazard head/label are the INTERNAL remaining-time coordinate
   ``T_IB_REMAINING_HAZARD``; the public primitive ``T_IB_A00`` stays the
   absolute ISO UTC event time and remains the public output key.
-- Supported static context (schedule timing) is fused with the recurrent
-  representation before the common heads
-  (``state_repr = concat(recurrent_repr, static_repr)``).
 - ``predict_distributions`` returns clearly CONDITIONAL head summaries only;
   genuine marginal summaries come from aligned scenarios via
   ``scenario_marginal_summary`` (see ``model.M1.summaries``).
+
+Round 2.2 contract correction:
+- The state-aware representation is
+  ``state = concat(GRU(history), projection(r_fast))`` where ``r_fast`` is
+  the deterministic current/local-change/short-term AR block (last causal
+  row); the Tranche 2.1 schedule-countdown static duplicate is removed.
+- Manuscript static/reference context is retained separately and typed
+  (``M1StaticReferenceContext``); every field is
+  ``UPSTREAM_PRE_INTERFACE_REQUIRED`` until PRE publishes it
+  (``STATIC_REFERENCE_CONTEXT_PENDING_PRE``) — no static block is fused yet.
 
 The V1 signed estimator (R_IB -> DELTA_OB -> T_TX categorical) is
 LEGACY_V1/HISTORICAL_ONLY: ``M1Pipeline.load`` can still deserialize frozen V1
@@ -33,7 +40,7 @@ from .contracts import (
     M1_V2_HAZARD_COORDINATE,
     TargetBinContract,
 )
-from .data import M1NormalizationArtifact, V2_STATIC_FIELDS
+from .data import M1NormalizationArtifact, fast_features_from_sequence
 from .network import M1V2GRU, OrderedEventGRU
 from .scenarios import ancestral_sample_v2
 from .loss import hazard_pmf, monotone_positive_quantiles
@@ -47,8 +54,8 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
 
     Returns a dict keyed by the public primitive names ``{T_IB_A00, D_OB,
     D_TX}``.  ``state`` is the fused representation consumed by the common
-    heads (for STATE_AWARE: ``concat(recurrent_repr, static_repr)``; for FAST:
-    the ARX feature matrix).
+    heads (for STATE_AWARE: ``concat(recurrent_repr, projection(r_fast))``;
+    for FAST: the deterministic current/AR feature block ``r_fast``).
 
     Round 2.1 summary contract:
     - ``T_IB_A00``: hazard PMF over the INTERNAL remaining-time coordinate
@@ -155,7 +162,7 @@ class M1Pipeline:
         torch.manual_seed(0)
         return cls(M1V2GRU(input_size, 16, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                            contracts["D_OB"], contracts["D_TX"],
-                           static_input_size=len(V2_STATIC_FIELDS)), contracts)
+                           fast_input_size=input_size), contracts)
 
     @classmethod
     def from_scientific_config(cls, scientific, *, input_size, normalization,
@@ -195,10 +202,10 @@ class M1Pipeline:
         }
         return cls(M1V2GRU(input_size, hidden, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                            contracts["D_OB"], contracts["D_TX"],
-                           static_input_size=len(V2_STATIC_FIELDS)),
+                           fast_input_size=input_size),
                    contracts, normalization=normalization)
 
-    def predict_distributions(self, values, lengths, static_features=None):
+    def predict_distributions(self, values, lengths, fast_features=None):
         """Conditional head summary (V2 schema); alias of the module function.
 
         Returns clearly CONDITIONAL head summaries keyed by the public
@@ -211,7 +218,7 @@ class M1Pipeline:
         summaries live in ``model.M1.summaries.scenario_marginal_summary``.
         """
         history = self.model.encode_history(values, lengths)
-        state = self.model.state_representation(history, static_features)
+        state = self.model.state_representation(history, fast_features)
         return conditional_head_summary(self.model, state, self.contracts,
                                         temperatures=self.temperatures)
 
@@ -241,18 +248,11 @@ class M1Pipeline:
             scheduled = schedule_value.get("scheduled_departure_utc")
             scheduled_ob_utc = None if scheduled is None else scheduled.isoformat()
             origin_airport_id = schedule_value.get("origin_airport_id")
-        static_features = None
-        if self.normalization is not None and isinstance(schedule_value, dict) \
-                and scheduled is not None:
-            # Supported static context: schedule timing at the decision node,
-            # normalized with the train-only artifact (SUPPORT_ABSTAIN for all
-            # other manuscript static fields; nothing is fabricated).
-            schedule_minutes = (
-                scheduled - pre_state.decision_node.decision_time
-            ).total_seconds() / 60.0
-            scaled = self.normalization.normalize(
-                "schedule.signed_minutes_to_crs_departure", schedule_minutes)
-            static_features = torch.tensor([[scaled]], dtype=torch.float32)
+        # r_fast: deterministic current/local-change/short-term AR block from
+        # the last causal row of the encoded sequence.  Manuscript
+        # static/reference context is NOT fused (UPSTREAM_PRE_INTERFACE_REQUIRED,
+        # ``M1StaticReferenceContext``); nothing is fabricated.
+        fast_features = fast_features_from_sequence(values, lengths)
         reference_context = {
             "taxi_reference_id": None,
             "taxi_reference_hash": None,
@@ -282,8 +282,13 @@ class M1Pipeline:
             target_support=support, decision_time_utc=decision_time_utc,
             scheduled_ob_utc=scheduled_ob_utc,
             temperatures=self.temperatures,
-            static_features=static_features, **reference_context,
+            fast_features=fast_features, **reference_context,
         )
+
+    def calibration_policy(self):
+        """Single scientific calibration policy shared with the FAST path."""
+        from .calibration import common_calibration_policy
+        return common_calibration_policy()
 
     def summarize(self, scenarios, **kwargs):
         from .summaries import horizon_summaries
@@ -299,11 +304,11 @@ class M1Pipeline:
             "state": self.model.state_dict(),
             "input_size": self.model.input_size,
             "hidden_size": self.model.hidden_size,
-            "static_input_size": getattr(self.model, "static_input_size", 0),
+            "fast_input_size": getattr(self.model, "fast_input_size", 0),
             "contracts": {
                 name: contract.model_dump() for name, contract in self.contracts.items()
             },
-            "contract_version": "M1_STATE_ESTIMATOR_V2",
+            "contract_version": "M1_STATE_ESTIMATOR_V2_2",
             "temperatures": self.temperatures,
             "normalization": None if self.normalization is None
                 else self.normalization.model_dump(mode="json"),
@@ -325,10 +330,11 @@ class M1Pipeline:
                    else HurdleQuantileContract(**value))
             for name, value in payload["contracts"].items()
         }
+        fast_input_size = payload.get("fast_input_size", payload["input_size"])
         model = M1V2GRU(payload["input_size"], payload["hidden_size"],
                         contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                         contracts["D_OB"], contracts["D_TX"],
-                        static_input_size=payload.get("static_input_size", 0))
+                        fast_input_size=fast_input_size)
         model.load_state_dict(payload["state"])
         normalization = payload.get("normalization")
         if normalization is not None:

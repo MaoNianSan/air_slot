@@ -25,13 +25,16 @@ from model.M1.contracts import (
     HazardBinContract,
     HurdleQuantileContract,
     M1V2Scenario,
-    M1V2StaticContext,
+    M1StaticReferenceContext,
     M1V2TargetLabel,
     M1_V2_HAZARD_COORDINATE,
     cvar_support_status,
     require_cvar_support,
 )
-from model.M1.data import FEATURE_NAMES_V2, V2_WEATHER_FIELDS, encode_pre_sequence
+from model.M1.data import (
+    FEATURE_NAMES_V2, V2_WEATHER_FIELDS, encode_pre_sequence,
+    fast_features_from_sequence,
+)
 from model.M1.fast_path import LightGBMDistributionalPredictor
 from model.M1.loss import (
     hazard_pmf,
@@ -93,19 +96,18 @@ def _hazard_label(*, active, exact_minutes, t_ib_a00_utc, decision_time_utc,
 def _fitted_fast(*, n_estimators=8):
     pipeline = M1Pipeline.smoke(input_size=4)
     rng = np.random.default_rng(0)
-    X = rng.normal(size=(64, 12))
+    X = rng.normal(size=(64, 4))
     ib = np.abs(rng.normal(30.0, 15.0, size=64))
     d_ob = np.where(rng.random(64) < 0.3, 0.0,
                     np.abs(rng.normal(40.0, 25.0, size=64)))
     d_tx = np.where(rng.random(64) < 0.3, 0.0,
                     np.abs(rng.normal(15.0, 10.0, size=64)))
-    predictor = LightGBMDistributionalPredictor(
-        pipeline.contracts, feature_window=3)
+    predictor = LightGBMDistributionalPredictor(pipeline.contracts)
     predictor.fit(X, {
         "T_IB_REMAINING_HAZARD": ib,
         "D_OB": d_ob,
         "D_TX": d_tx,
-    }, seed=7, n_estimators=n_estimators)
+    }, seed=7, n_estimators=n_estimators, allow_test_only_surrogate=True)
     return pipeline, predictor
 
 
@@ -270,52 +272,63 @@ def test_e_conditional_quantile_mixture_not_mislabeled_marginal(monkeypatch):
 # F. recurrent + supported static context reaches the common representation
 # ---------------------------------------------------------------------------
 
-def test_f_supported_static_context_reaches_common_heads():
+def test_f_current_ar_block_reaches_common_heads():
     pipe = M1Pipeline.smoke(input_size=4)
     model = pipe.model
     history = model.encode_history(torch.zeros(1, 2, 4), torch.tensor([2]))
-    state_a = model.state_representation(history, torch.tensor([[0.0]]))
-    state_b = model.state_representation(history, torch.tensor([[5.0]]))
+    fast_a = torch.tensor([[0.0, 0.0, 0.0, 0.0]])
+    fast_b = torch.tensor([[1.0, -1.0, 2.0, 0.5]])
+    state_a = model.state_representation(history, fast_a)
+    state_b = model.state_representation(history, fast_b)
     assert state_a.shape == (1, model.state_width)
     assert state_a.shape[1] == 2 * model.hidden_size
     assert not torch.allclose(state_a, state_b)
-    recurrent, static = torch.split(state_a, model.hidden_size, dim=-1)
+    recurrent, fast = torch.split(state_a, model.hidden_size, dim=-1)
     assert torch.allclose(recurrent, history)
-    assert not torch.allclose(static, torch.zeros_like(static))
+    assert not torch.allclose(fast, torch.zeros_like(fast))
     assert not torch.allclose(
         model.hazard_logits(state_a), model.hazard_logits(state_b))
     zero_a, _ = model.d_ob_heads(state_a, torch.tensor([0]))
     zero_b, _ = model.d_ob_heads(state_b, torch.tensor([0]))
     assert not torch.allclose(zero_a, zero_b)
-    ctx = M1V2StaticContext()
-    assert ctx.support("schedule.signed_minutes_to_crs_departure") == "SUPPORTED"
+    # r_fast is the deterministic last-causal-row block.
+    fast_from_seq = fast_features_from_sequence(
+        torch.zeros(1, 2, 4), torch.tensor([2]))
+    assert fast_from_seq.shape == (1, 4)
+    # Static/reference context stays pending-PRE (never fused, never fabricated).
+    ctx = M1StaticReferenceContext()
+    assert ctx.static_context_status == "STATIC_REFERENCE_CONTEXT_PENDING_PRE"
 
 
 # ---------------------------------------------------------------------------
 # G. unsupported static context remains ABSTAIN
 # ---------------------------------------------------------------------------
 
-def test_g_unsupported_static_context_remains_abstain():
-    ctx = M1V2StaticContext()
-    for field in ("route", "aircraft_identity", "carrier",
-                  "turnaround_reference", "taxi_reference"):
-        assert ctx.support(field) == "SUPPORT_ABSTAIN"
+def test_g_static_reference_pending_pre_and_not_fabricated():
+    ctx = M1StaticReferenceContext()
+    for field in ("route_context", "carrier_context", "aircraft_identity",
+                  "schedule_reference_context", "turnaround_reference",
+                  "taxi_reference"):
+        assert ctx.support(field) == "UPSTREAM_PRE_INTERFACE_REQUIRED"
+        assert ctx.pre_status(field) in (
+            "AVAILABLE_ALREADY", "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
+            "NEEDS_PRE_REFERENCE_BINDING", "UNSUPPORTED")
     for forbidden in ("live_aircraft_availability", "gate", "crew", "slot",
                       "standby_aircraft"):
         with pytest.raises(ValueError, match="M1_STATIC_CONTEXT_FORBIDDEN"):
             ctx.support(forbidden)
-    # Without supported static features the static block is an explicit zero
-    # representation (nothing is fabricated).
+    # Without fast features the fast block is an explicit zero representation
+    # (nothing is fabricated); static context is never fused.
     pipe = M1Pipeline.smoke(input_size=4)
     history = pipe.model.encode_history(torch.zeros(1, 2, 4), torch.tensor([2]))
     state = pipe.model.state_representation(history)
     assert torch.allclose(state[:, pipe.model.hidden_size:],
                           torch.zeros_like(history))
-    # A model without a static encoder cannot accept static features.
+    # A model without a fast encoder cannot accept fast features.
     bare = M1V2GRU(4, 16, pipe.contracts[M1_V2_HAZARD_COORDINATE],
                    pipe.contracts["D_OB"], pipe.contracts["D_TX"])
-    with pytest.raises(ValueError, match="M1_STATIC_PROJECTION_UNAVAILABLE"):
-        bare.state_representation(history, torch.tensor([[0.0]]))
+    with pytest.raises(ValueError, match="M1_FAST_PROJECTION_UNAVAILABLE"):
+        bare.state_representation(history, torch.tensor([[0.0, 0.0, 0.0, 0.0]]))
 
 
 # ---------------------------------------------------------------------------
@@ -421,7 +434,7 @@ def test_l_d_to_identity_still_exact():
 
 def test_m_fast_synthetic_hazard_path_executable():
     pipeline, predictor = _fitted_fast()
-    features = predictor._arx_features(torch.zeros(1, 6, 4))
+    features = predictor._fast_features(torch.zeros(1, 6, 4))
     logits = predictor.hazard_logits(torch.tensor(features, dtype=torch.float32))
     hazard = pipeline.contracts[M1_V2_HAZARD_COORDINATE]
     assert logits.shape == (1, hazard.finite_class_count)
@@ -431,7 +444,7 @@ def test_m_fast_synthetic_hazard_path_executable():
 
 def test_n_fast_synthetic_hurdle_path_executable():
     pipeline, predictor = _fitted_fast()
-    features = torch.tensor(predictor._arx_features(torch.zeros(1, 6, 4)),
+    features = torch.tensor(predictor._fast_features(torch.zeros(1, 6, 4)),
                             dtype=torch.float32)
     zero, quantile_logits = predictor.d_ob_heads(features, torch.tensor([0]))
     quantiles = monotone_positive_quantiles(quantile_logits)
