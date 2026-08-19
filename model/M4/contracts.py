@@ -13,19 +13,28 @@ from model.common.value_objects import FrozenModel
 
 
 class M4DecisionRequest(FrozenModel):
-    """Typed scientific boundary: PRE + M1 + M2 + M3, never raw rows."""
+    """Typed scientific boundary: PRE + M1 + M2 + M3, never raw rows.
+
+    The monetary contract is explicit: ranking happens in a selected monetary
+    system under a frozen monetary mapping registry, never on raw CU.
+    """
 
     pre_state: PREState
     m1_scenarios: tuple[AlignedScenario, ...]
     m2_consequences: tuple[ScenarioConsequence, ...]
     candidates: tuple[CandidateAction, ...]
     material_coverage_contract: ActionMaterialCoverageContract
+    monetary_system: str = "RMB"
+    monetary_mapping_registry_id: str
+    monetary_mapping_registry_hash: str
     lambda_risk: float = Field(default=0.25, ge=0, le=1)
     alpha: float = Field(default=0.90, gt=0, lt=1)
     seed: int = 0
 
     @model_validator(mode="after")
     def aligned_chain(self):
+        if not self.monetary_mapping_registry_id or not self.monetary_mapping_registry_hash:
+            raise ValueError("M4_MONETARY_MAPPING_REGISTRY_REQUIRED")
         episode = self.pre_state.decision_node.episode_id
         node = self.pre_state.decision_node.decision_node_id
         if not self.m1_scenarios or not self.m2_consequences:

@@ -4,7 +4,13 @@ from model.M2.contracts import (
     ConsequenceRow,
     FormalEstimandValue,
     ScenarioConsequence,
-    ValuationStatus,
+)
+from model.common.cu_normalization import CUNormalizationStatus
+from model.common.monetary_system import (
+    MonetaryMappingRegistry,
+    MonetaryMappingRule,
+    MonetaryMappingStatus,
+    MonetarySystem,
 )
 from model.M3.contracts import (
     ActionMaterialCoverageContract,
@@ -30,14 +36,14 @@ def scope_fixture(
     *,
     estimand_id="LOCAL-FLIGHT",
     components=("F_execution",),
-    valuation_registry_id="TEST-VALUATION-V1",
+    cu_normalization_registry_id="TEST-CU-NORMALIZATION-V1",
 ):
     return ConsequenceScope.create(
         estimand_id=estimand_id,
         estimand_version="1.0.0",
         included_components=tuple(components),
         aggregation_rule_id="TEST-SUM-V1",
-        valuation_registry_id=valuation_registry_id,
+        cu_normalization_registry_id=cu_normalization_registry_id,
         material_coverage_contract_id="TEST-COVERAGE",
         scope_status=ScopeStatus.FORMAL_READY,
     )
@@ -137,14 +143,16 @@ def consequence(
                 evidence_class=(
                     EvidenceClass.UNSUPPORTED if absent else EvidenceClass.DERIVED
                 ),
-                valuation_status=(
-                    ValuationStatus.VALUATION_UNSUPPORTED
+                cu_status=(
+                    CUNormalizationStatus.CU_UNSUPPORTED
                     if absent
-                    else ValuationStatus.VALUATION_FROZEN
+                    else CUNormalizationStatus.CU_FROZEN
                 ),
-                valuation_registry_id=None if absent else "TEST-VALUATION-V1",
-                valuation_rule_id=None if absent else f"TEST-{component}",
-                valuation_parameter_version=None if absent else "1.0.0",
+                cu_normalization_registry_id=(
+                    None if absent else "TEST-CU-NORMALIZATION-V1"
+                ),
+                cu_normalization_rule_id=None if absent else f"TEST-{component}",
+                cu_normalization_parameter_version=None if absent else "1.0.0",
                 reason_code="NO_EVIDENCE" if absent else None,
             )
         )
@@ -163,7 +171,7 @@ def consequence(
         estimand_id=scope.estimand_id,
         estimand_version=scope.estimand_version,
         scope_hash=scope.scope_hash,
-        valuation_registry_id=scope.valuation_registry_id,
+        cu_normalization_registry_id=scope.cu_normalization_registry_id,
         aggregation_rule_id=scope.aggregation_rule_id,
         included_components=scope.included_components,
         reason_code=None if formal_ok else "INCLUDED_COMPONENT_ABSTAIN",
@@ -181,6 +189,49 @@ def consequence(
         ),
         formal_estimand_value=formal,
     )
+
+def monetary_fixture(
+    *,
+    registry_id="TEST-RMB-V1",
+    weights=None,
+    frozen=True,
+):
+    """FROZEN test RMB mapping over the seven consequence components.
+
+    Default weights are unity so the fixture preserves the historical CU
+    values numerically while making the monetary layer explicit.
+    """
+    weights = weights or {component: 1.0 for component in CONSEQUENCE_COMPONENTS}
+    if frozen:
+        rules = {
+            component: MonetaryMappingRule(
+                component_id=component,
+                rule_id=f"{component}_RMB_LINEAR",
+                version="1.0.0",
+                weight=float(weight),
+                parameter_provenance=("TEST_FIXTURE",),
+            )
+            for component, weight in weights.items()
+        }
+        return MonetaryMappingRegistry(
+            monetary_system_id=MonetarySystem.RMB.value,
+            registry_id=registry_id,
+            mapping_form="LINEAR",
+            freeze_status=MonetaryMappingStatus.FROZEN,
+            freeze_id="TEST-RMB-FREEZE",
+            reference_period="TEST",
+            component_weights=rules,
+            parameter_provenance=("TEST_FIXTURE",),
+        )
+    return MonetaryMappingRegistry.not_frozen(
+        monetary_system_id=MonetarySystem.RMB.value,
+        registry_id=registry_id,
+    )
+
+
+def monetary_fixture_hash():
+    return monetary_fixture().digest()
+
 
 
 def candidate(

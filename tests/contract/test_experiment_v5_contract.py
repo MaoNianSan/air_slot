@@ -40,15 +40,22 @@ def test_v5_split_is_episode_safe():
         ])
 
 
-def test_delay_is_derived_from_event_time_and_own_reference():
+def test_delay_identity_is_d_ob_plus_d_tx_per_scenario():
+    # Manuscript identity (reconciliation 2026-08-19): D_TO = D_OB + D_TX.
     d_to = total_takeoff_delay_minutes(
         t_ob_minutes=80, t_tx_minutes=30,
         scheduled_ob_minutes=90, taxi_reference_minutes=15,
     )
     d_ob = max(0, 80 - 90)
     d_tx = max(0, 30 - 15)
-    assert d_to == 5
-    assert d_to != d_ob + d_tx
+    assert d_to == d_ob + d_tx
+    assert d_to == 15
+    assert total_takeoff_delay_minutes(
+        delta_ob_minutes=-5, t_tx_minutes=30, taxi_reference_minutes=15
+    ) == 15
+    assert total_takeoff_delay_minutes(
+        delta_ob_minutes=12.5, t_tx_minutes=7.5, taxi_reference_minutes=5.0
+    ) == 15.0
 
 
 def test_point_collapse_is_a_coherent_observed_scenario():

@@ -3,17 +3,26 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from model.M2.contracts import ConsequenceRow, NativeQuantity, ValuationStatus
+from model.M2.contracts import ConsequenceRow, NativeQuantity
+from model.common.cu_normalization import (
+    CUNormalizationRegistry,
+    CUNormalizationRule,
+    CUNormalizationStatus,
+)
 from model.common.enums import SupportState
 
 
 class ValuationRuleStatus(str, Enum):
+    """Deprecated compatibility status; canonical rules use CUNormalizationRule."""
+
     FROZEN = "FROZEN"
     DEVELOPMENT_ONLY = "DEVELOPMENT_ONLY"
 
 
 @dataclass(frozen=True)
 class ValuationRule:
+    """Deprecated compatibility rule; canonical path uses CUNormalizationRule."""
+
     component_id: str
     rule_id: str
     version: str
@@ -21,28 +30,24 @@ class ValuationRule:
     status: ValuationRuleStatus = ValuationRuleStatus.DEVELOPMENT_ONLY
 
 
-class ValuationRegistry:
-    def __init__(self, registry_id: str, rules):
-        self.registry_id = registry_id
-        self.rules = {rule.component_id: rule for rule in rules}
+class M2CUNormalizationAdapter:
+    """Canonical M2 adapter: NativeQuantity -> ConsequenceRow through CU normalization.
+
+    CU normalization (q_k -> C_k^CU) is strictly separate from monetary
+    mapping (C_k^CU -> L_k^m), which lives in M4.
+    """
+
+    def __init__(self, registry: CUNormalizationRegistry | None = None):
+        if registry is not None and not isinstance(registry, CUNormalizationRegistry):
+            registry = CUNormalizationRegistry.model_validate(registry)
+        self.registry = registry
+        self.registry_id = registry.registry_id if registry is not None else "DEV-1"
+        self.development_only = registry is None
 
     @classmethod
-    def smoke(cls):
-        return cls(
-            "DEV-1",
-            [
-                ValuationRule(name, f"{name.upper()}_LINEAR", "DEV-1", multiplier)
-                for name, multiplier in {
-                    "F_continuity": 2,
-                    "F_execution": 1,
-                    "F_propagation": 1.5,
-                    "P_time": 0.01,
-                    "P_itinerary": 5,
-                    "P_service": 3,
-                    "R_operating": 1,
-                }.items()
-            ],
-        )
+    def smoke(cls) -> "M2CUNormalizationAdapter":
+        """Development-only fixture adapter; never resolves formal CU."""
+        return cls(registry=None)
 
     def value(self, native: NativeQuantity) -> ConsequenceRow:
         aspect = (
@@ -68,24 +73,58 @@ class ValuationRegistry:
             return ConsequenceRow(
                 **base,
                 constructed_value_cu=None,
-                valuation_status=ValuationStatus.VALUATION_UNSUPPORTED,
+                cu_status=CUNormalizationStatus.CU_UNSUPPORTED,
             )
-        rule = self.rules.get(native.component_id)
-        if rule is None or rule.status is not ValuationRuleStatus.FROZEN:
-            base["reason_code"] = "VALUATION_NOT_FROZEN"
+        if self.development_only or self.registry is None:
+            base["reason_code"] = "CU_NORMALIZATION_NOT_FROZEN"
             return ConsequenceRow(
                 **base,
                 constructed_value_cu=None,
-                valuation_status=ValuationStatus.VALUATION_NOT_FROZEN,
-                valuation_registry_id=self.registry_id,
-                valuation_rule_id=rule.rule_id if rule else None,
-                valuation_parameter_version=rule.version if rule else None,
+                cu_status=CUNormalizationStatus.CU_NOT_FROZEN,
+                cu_normalization_registry_id=self.registry_id,
+            )
+        try:
+            rule = self.registry.rule(native.component_id)
+        except ValueError:
+            base["reason_code"] = "CU_NORMALIZATION_NOT_FROZEN"
+            return ConsequenceRow(
+                **base,
+                constructed_value_cu=None,
+                cu_status=CUNormalizationStatus.CU_NOT_FROZEN,
+                cu_normalization_registry_id=self.registry_id,
+            )
+        constructed = self.registry.to_cu(native.component_id, native.native_quantity)
+        if constructed is None:
+            base["reason_code"] = "CU_NORMALIZATION_UNAVAILABLE"
+            return ConsequenceRow(
+                **base,
+                constructed_value_cu=None,
+                cu_status=CUNormalizationStatus.CU_NOT_FROZEN,
+                cu_normalization_registry_id=self.registry_id,
+                cu_normalization_rule_id=rule.rule_id,
+                cu_normalization_parameter_version=rule.version,
             )
         return ConsequenceRow(
             **base,
-            constructed_value_cu=native.native_quantity * rule.multiplier,
-            valuation_status=ValuationStatus.VALUATION_FROZEN,
-            valuation_registry_id=self.registry_id,
-            valuation_rule_id=rule.rule_id,
-            valuation_parameter_version=rule.version,
+            constructed_value_cu=constructed,
+            cu_status=CUNormalizationStatus.CU_FROZEN,
+            cu_normalization_registry_id=self.registry_id,
+            cu_normalization_rule_id=rule.rule_id,
+            cu_normalization_parameter_version=rule.version,
         )
+
+
+class ValuationRegistry(M2CUNormalizationAdapter):
+    """Deprecated compatibility alias of M2CUNormalizationAdapter.
+
+    The alias exists only for short-term migration; canonical code must use
+    M2CUNormalizationAdapter with a CUNormalizationRegistry.
+    """
+
+
+__all__ = [
+    "M2CUNormalizationAdapter",
+    "ValuationRegistry",
+    "ValuationRule",
+    "ValuationRuleStatus",
+]

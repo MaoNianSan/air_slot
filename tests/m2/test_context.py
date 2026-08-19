@@ -16,16 +16,24 @@ from model.common.errors import ContractError
 
 
 def scenario():
+    # Formal M1 scenario contract: D_OB/D_TX/D_TO supplied by M1; M2 never
+    # reconstructs delay state from DELTA_OB/T_TX/taxi reference.
     return {
         "decision_node_id": "n",
         "scenario_id": 0,
         "scenario_weight": 1.0,
         "r_ib_minutes": 10,
-        "r_ob_minutes": 20,
+        "delta_ob_minutes": 20,
         "t_tx_minutes": 15,
+        "d_ob_minutes": 20,
+        "d_tx_minutes": 0,
+        "d_to_minutes": 20,
         "ib_support": "SUPPORTED",
-        "ob_support": "SUPPORTED",
+        "delta_ob_support": "SUPPORTED",
         "tx_support": "SUPPORTED",
+        "d_ob_support": "SUPPORTED",
+        "d_tx_support": "SUPPORTED",
+        "d_to_support": "SUPPORTED",
     }
 
 
@@ -99,7 +107,7 @@ def test_mapping_uses_frozen_context():
     )
     by_component = {row.component_id: row for row in native_quantities(scenario(), context)}
     assert by_component["F_continuity"].native_quantity == 0.0
-    # Frozen Z_takeoff = max(0, DELTA_OB + T_TX - taxi_reference) = 20+15-15.
+    # Formal D_TO = D_OB + D_TX = 20 + 0.
     assert by_component["F_propagation"].native_quantity == 20.0
     assert by_component["P_time"].native_quantity == 2000.0
     assert by_component["R_operating"].native_quantity == 0.0
@@ -107,7 +115,7 @@ def test_mapping_uses_frozen_context():
     assert by_component["P_service"].support_state is SupportState.ABSTAIN
 
 
-def test_z_takeoff_uses_signed_delta_ob_and_frozen_taxi_reference():
+def test_d_to_identity_consumes_formal_scenario_fields():
     bundle = load_data2_reference_bundle(smoke_reference_payloads())
     context = build_m2_context(
         bundle,
@@ -116,17 +124,32 @@ def test_z_takeoff_uses_signed_delta_ob_and_frozen_taxi_reference():
             successor_destination_airport_id="ATL",
         ),
     )
-    # Early departure (negative DELTA_OB) must not inflate Z_takeoff.
+    # Early departure without excess taxi: D_TO = D_OB + D_TX = 0 + 0.
     early = {
         **scenario(),
-        "r_ob_minutes": 0,
         "delta_ob_minutes": -10,
+        "t_tx_minutes": 15,
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "d_to_minutes": 0,
         "delta_ob_support": "SUPPORTED",
-        "t_tx_minutes": 25,
     }
     by_component = {row.component_id: row for row in native_quantities(early, context)}
     assert by_component["F_propagation"].native_quantity == 0.0
     assert by_component["P_time"].native_quantity == 0.0
+    # Excess taxi still contributes to the formal D_TO identity.
+    with_excess = {
+        **scenario(),
+        "delta_ob_minutes": -10,
+        "t_tx_minutes": 25,
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 10,
+        "d_to_minutes": 10,
+        "delta_ob_support": "SUPPORTED",
+    }
+    by_component = {row.component_id: row for row in native_quantities(with_excess, context)}
+    assert by_component["F_propagation"].native_quantity == 10.0
+    assert by_component["P_time"].native_quantity == 1000.0
 
 
 def test_m2_frozen_scope_is_five_component_fixed_and_formal_ready():
@@ -142,7 +165,7 @@ def test_m2_frozen_scope_is_five_component_fixed_and_formal_ready():
         }
     )
     assert scope.scope_status is ScopeStatus.FORMAL_READY
-    assert scope.valuation_registry_id == "M2_DATA2_FORMAL_CU_V1"
+    assert scope.cu_normalization_registry_id == "M2_DATA2_FORMAL_CU_V1"
     assert scope.aggregation_rule_id == "SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED"
     assert scope.included_components == (
         "F_continuity",

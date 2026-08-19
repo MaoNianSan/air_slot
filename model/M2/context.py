@@ -247,7 +247,7 @@ def build_m2_frozen_scope(
         estimand_version="V5.0",
         included_components=components,
         aggregation_rule_id="SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED",
-        valuation_registry_id="M2_DATA2_FORMAL_CU_V1",
+        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V1",
         material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V1",
         scope_status=ScopeStatus.FORMAL_READY,
     )

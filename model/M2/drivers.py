@@ -27,16 +27,12 @@ COMPONENT_INPUT_CONTRACTS = {
         ),
         ComponentInputContract(
             component_id="F_execution",
-            critical_inputs=("r_ob_minutes",),
+            critical_inputs=("d_ob_minutes",),
             irrelevant_inputs=_CONTEXT_FIELDS,
         ),
         ComponentInputContract(
             component_id="F_propagation",
-            critical_inputs=(
-                "r_ob_minutes",
-                "t_tx_minutes",
-                "expected_downstream_exposure",
-            ),
+            critical_inputs=("d_to_minutes", "expected_downstream_exposure"),
             irrelevant_inputs=tuple(
                 name
                 for name in _CONTEXT_FIELDS
@@ -45,7 +41,7 @@ COMPONENT_INPUT_CONTRACTS = {
         ),
         ComponentInputContract(
             component_id="P_time",
-            critical_inputs=("r_ob_minutes", "t_tx_minutes", "passenger_exposure"),
+            critical_inputs=("d_to_minutes", "passenger_exposure"),
             irrelevant_inputs=tuple(
                 name for name in _CONTEXT_FIELDS if name != "passenger_exposure"
             ),
@@ -61,11 +57,7 @@ COMPONENT_INPUT_CONTRACTS = {
         ),
         ComponentInputContract(
             component_id="P_service",
-            critical_inputs=(
-                "r_ob_minutes",
-                "t_tx_minutes",
-                "service_policy_reference",
-            ),
+            critical_inputs=("d_to_minutes", "service_policy_reference"),
             irrelevant_inputs=tuple(
                 name
                 for name in _CONTEXT_FIELDS
@@ -74,7 +66,7 @@ COMPONENT_INPUT_CONTRACTS = {
         ),
         ComponentInputContract(
             component_id="R_operating",
-            critical_inputs=("t_tx_minutes", "taxi_reference"),
+            critical_inputs=("d_tx_minutes",),
             irrelevant_inputs=tuple(
                 name for name in _CONTEXT_FIELDS if name != "taxi_reference"
             ),
@@ -82,30 +74,21 @@ COMPONENT_INPUT_CONTRACTS = {
     )
 }
 
+_FORMAL_FIELD_SUPPORT = {
+    "r_ib_minutes": "ib_support",
+    "d_ob_minutes": "d_ob_support",
+    "d_tx_minutes": "d_tx_support",
+    "d_to_minutes": "d_to_support",
+}
+
 
 def _scenario_value(scenario: dict, name: str) -> tuple[float | None, SupportState]:
     value = scenario.get(name)
-    support_name = {
-        "r_ib_minutes": "ib_support",
-        "r_ob_minutes": "ob_support",
-        "t_tx_minutes": "tx_support",
-        "delta_ob_minutes": "delta_ob_support",
-    }[name]
+    support_name = _FORMAL_FIELD_SUPPORT[name]
     support = SupportState(scenario.get(support_name, "SUPPORTED"))
     if value is None or support is SupportState.ABSTAIN:
         return None, SupportState.ABSTAIN
     return float(value), support
-
-
-def _off_block(scenario: dict) -> tuple[float | None, SupportState]:
-    """Signed DELTA_OB when present, else the non-negative R_OB fallback.
-
-    Production M1 scenario rows carry the signed delta_ob_minutes; the
-    R_OB fallback exists only for compact fixtures.
-    """
-    if scenario.get("delta_ob_minutes") is not None:
-        return _scenario_value(scenario, "delta_ob_minutes")
-    return _scenario_value(scenario, "r_ob_minutes")
 
 
 def _context_value(
@@ -131,24 +114,21 @@ def _abstain(component: str, scenario_id: int, unit: str, driver: str, reasons):
 def native_quantities(
     scenario: dict, context: M2ScientificContext
 ) -> tuple[NativeQuantity, ...]:
+    """Consume the formal M1 scenario contract (D_OB/D_TX/D_TO).
+
+    M2 never reconstructs M1 delay state from DELTA_OB/T_TX/taxi reference;
+    scenarios without the formal fields abstain rather than fabricate values.
+    """
     if not isinstance(context, M2ScientificContext):
         context = M2ScientificContext.model_validate(context)
     sid = int(scenario["scenario_id"])
     rib, rib_support = _scenario_value(scenario, "r_ib_minutes")
-    delta_ob, delta_ob_support = _off_block(scenario)
-    rob = None if delta_ob is None else max(0.0, delta_ob)
-    rob_support = delta_ob_support
-    taxi, taxi_support = _scenario_value(scenario, "t_tx_minutes")
+    d_ob, d_ob_support = _scenario_value(scenario, "d_ob_minutes")
+    d_tx, d_tx_support = _scenario_value(scenario, "d_tx_minutes")
+    d_to, d_to_support = _scenario_value(scenario, "d_to_minutes")
 
     def ctx(name):
         return _context_value(context, name)
-
-    taxi_reference = ctx("taxi_reference").value
-    takeoff = (
-        None
-        if delta_ob is None or taxi is None or taxi_reference is None
-        else max(0.0, delta_ob + taxi - float(taxi_reference))
-    )
 
     def publish(
         component,
@@ -202,31 +182,25 @@ def native_quantities(
         ),
         publish(
             "F_execution",
-            lambda: rob,
+            lambda: d_ob,
             "minutes",
             "additional_off_block_wait",
-            (("r_ob_minutes", rob, rob_support),),
+            (("d_ob_minutes", d_ob, d_ob_support),),
         ),
         publish(
             "F_propagation",
-            lambda: takeoff * float(ctx("expected_downstream_exposure").value),
+            lambda: d_to * float(ctx("expected_downstream_exposure").value),
             "exposure_minutes",
             "takeoff_delay_x_expected_downstream_exposure",
-            (
-                ("r_ob_minutes", rob, rob_support),
-                ("t_tx_minutes", taxi, taxi_support),
-            ),
+            (("d_to_minutes", d_to, d_to_support),),
             ("expected_downstream_exposure",),
         ),
         publish(
             "P_time",
-            lambda: float(ctx("passenger_exposure").value) * takeoff,
+            lambda: float(ctx("passenger_exposure").value) * d_to,
             "passenger_minutes",
             "passenger_exposure_x_delay",
-            (
-                ("r_ob_minutes", rob, rob_support),
-                ("t_tx_minutes", taxi, taxi_support),
-            ),
+            (("d_to_minutes", d_to, d_to_support),),
             ("passenger_exposure",),
             EvidenceClass.DOMAIN_PROXY,
         ),
@@ -241,14 +215,11 @@ def native_quantities(
         publish(
             "P_service",
             lambda: 1.0
-            if takeoff >= float(ctx("service_policy_reference").value)
+            if d_to >= float(ctx("service_policy_reference").value)
             else 0.0,
             "threshold_events",
             "service_policy_threshold",
-            (
-                ("r_ob_minutes", rob, rob_support),
-                ("t_tx_minutes", taxi, taxi_support),
-            ),
+            (("d_to_minutes", d_to, d_to_support),),
             ("service_policy_reference",),
             EvidenceClass.SCENARIO_PARAMETER
             if ctx("service_policy_reference").evidence_class
@@ -257,13 +228,11 @@ def native_quantities(
         ),
         publish(
             "R_operating",
-            lambda: max(0.0, taxi - float(ctx("taxi_reference").value)),
+            lambda: d_tx,
             "excess_taxi_minutes",
             "excess_taxi",
-            (("t_tx_minutes", taxi, taxi_support),),
-            ("taxi_reference",),
+            (("d_tx_minutes", d_tx, d_tx_support),),
         ),
     )
     assert tuple(row.component_id for row in rows) == COMPONENTS
     return rows
-

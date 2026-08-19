@@ -41,9 +41,12 @@ def _scenario(*, delta_ob_minutes, tx_reference_minutes):
 def test_signed_scenario_derives_r_ob_and_event_time_identities():
     scenario = _scenario(delta_ob_minutes=-10, tx_reference_minutes=12)
     assert scenario.r_ob_minutes == 0
+    assert scenario.d_ob_minutes == 0
+    assert scenario.d_tx_minutes == 3
+    assert scenario.d_to_minutes == 3
+    assert scenario.d_to_minutes == scenario.d_ob_minutes + scenario.d_tx_minutes
     assert scenario.t_ob_utc == datetime(2019, 1, 1, 11, 50, tzinfo=UTC).isoformat()
     assert scenario.t_to_utc == datetime(2019, 1, 1, 12, 5, tzinfo=UTC).isoformat()
-    assert scenario.d_to_minutes == 0
     assert total_takeoff_delay_minutes(
         delta_ob_minutes=20, t_tx_minutes=15, taxi_reference_minutes=12
     ) == 23
@@ -70,12 +73,15 @@ def test_post_ob_stage_requires_and_preserves_observed_signed_delta():
     assert all(row.r_ob_minutes == 0 for row in scenarios)
 
 
-def test_network_uses_unambiguous_delta_ob_head_and_m2_reads_derived_r_ob():
+def test_network_uses_unambiguous_delta_ob_head_and_m2_reads_formal_d_ob():
     pipe = M1Pipeline.smoke(input_size=4)
     assert hasattr(pipe.model, "delta_ob_head")
     assert not hasattr(pipe.model, "ob_head")
     scenario = _scenario(delta_ob_minutes=25, tx_reference_minutes=12)
-    assert _scenario_value(scenario.model_dump(), "r_ob_minutes") == (25, SupportState.SUPPORTED)
+    dumped = scenario.model_dump()
+    assert _scenario_value(dumped, "d_ob_minutes") == (25, SupportState.SUPPORTED)
+    assert dumped["d_tx_minutes"] == 3
+    assert dumped["d_to_minutes"] == 28
 
 
 def test_aligned_scenario_rejects_independent_legacy_r_ob_input():

@@ -47,6 +47,18 @@ parameters:
       decision_date: "2026-08-17"
       derived_scenario_values: [R_OB, T_OB, T_TO, D_TO]
       final_test_access_count: 0
+  m1_formal_output_contract:
+    freeze_state: FROZEN
+    value: [R_IB, D_OB, D_TX, D_TO]
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_MODEL_MANUSCRIPT_RECONCILIATION_2026-08-19
+      decision_date: "2026-08-19"
+      formal_successor_targets: [D_OB, D_TX]
+      derived_targets: [D_TO]
+      internal_auxiliaries: [DELTA_OB, T_TX]
+      d_to_identity: "D_TO = D_OB + D_TX per scenario"
+      final_test_access_count: 0
   m1_bin_width_minutes: {freeze_state: FROZEN, value: 5}
   m1_r_ib_max_finite_minutes:
     freeze_state: FROZEN

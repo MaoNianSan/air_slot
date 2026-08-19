@@ -12,6 +12,8 @@ from tests.fixtures.p0_p1_contracts import (
     candidate,
     consequence,
     coverage_contract,
+    monetary_fixture,
+    monetary_fixture_hash,
     scope_fixture,
 )
 
@@ -81,9 +83,12 @@ def test_typed_request_preserves_lineage_and_allows_non_scope_abstain():
         m2_consequences=(consequence_row,),
         candidates=(candidate("A00"), candidate("A11")),
         material_coverage_contract=coverage_contract(p_service_nonmaterial=True),
+        monetary_system="RMB",
+        monetary_mapping_registry_id="TEST-RMB-V1",
+        monetary_mapping_registry_hash=monetary_fixture_hash(),
         seed=3,
     )
-    result = evaluate_request(request)
+    result = evaluate_request(request, monetary_mapping=monetary_fixture())
     assert result.ranking_at_1 == "A11:instance-0"
     assert next(item for item in result.actions if item.template_id == "A00").post_totals == (10.0,)
 
@@ -105,4 +110,7 @@ def test_request_rejects_mixed_scopes_explicitly():
             m2_consequences=(first, second),
             candidates=(candidate("A00"),),
             material_coverage_contract=coverage_contract(),
+            monetary_system="RMB",
+            monetary_mapping_registry_id="TEST-RMB-V1",
+            monetary_mapping_registry_hash=monetary_fixture_hash(),
         )

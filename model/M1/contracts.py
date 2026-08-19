@@ -4,11 +4,19 @@ from typing import Literal
 from pydantic import computed_field, Field, model_validator
 
 from model.common.value_objects import FrozenModel, ProvenanceRef
-from .semantics import external_target_name
+from .semantics import (
+    external_target_name,
+    derived_d_ob_minutes,
+    derived_d_tx_minutes,
+    derived_d_to_minutes,
+)
 
 
 TargetName = Literal["R_IB", "DELTA_OB", "T_TX"]
 STOCHASTIC_TARGETS: tuple[TargetName, ...] = ("R_IB", "DELTA_OB", "T_TX")
+# Internal auxiliary heads only: the formal successor contract is
+# D_OB / D_TX / D_TO(derived).  See model/M1/semantics.py.
+AUXILIARY_TARGETS: tuple[str, ...] = ("DELTA_OB", "T_TX")
 
 
 class TargetBinContract(FrozenModel):
@@ -146,7 +154,12 @@ class M1TargetLabel(TargetLabel):
 
 
 class AlignedScenario(FrozenModel):
-    """One joint draw from the signed M1 chain and its derived quantities."""
+    """One joint draw from the M1 chain and its derived formal quantities.
+
+    Formal successor contract: D_OB >= 0, D_TX >= 0, D_TO = D_OB + D_TX per
+    scenario.  ``delta_ob_minutes`` / ``t_tx_minutes`` are internal auxiliary
+    values and are not formal downstream estimands.
+    """
 
     episode_id: str
     decision_node_id: str
@@ -173,10 +186,65 @@ class AlignedScenario(FrozenModel):
     overflow_tx: bool = False
     scenario_seed_key: str
 
+    @model_validator(mode="after")
+    def formal_delay_contract(self):
+        if self.d_ob_minutes is not None and self.d_ob_minutes < 0:
+            raise ValueError("D_OB must be nonnegative")
+        if self.d_tx_minutes is not None and self.d_tx_minutes < 0:
+            raise ValueError("D_TX must be nonnegative")
+        d_to = self.d_to_minutes
+        if d_to is not None and (d_to < 0 or abs(d_to - (self.d_ob_minutes + self.d_tx_minutes)) > 1e-6):
+            raise ValueError("D_TO must equal D_OB + D_TX per scenario")
+        return self
+
     @computed_field
     @property
     def r_ob_minutes(self) -> float | None:
-        return None if self.delta_ob_minutes is None else max(0.0, self.delta_ob_minutes)
+        """Compatibility alias of formal D_OB."""
+        return self.d_ob_minutes
+
+    @computed_field
+    @property
+    def d_ob_minutes(self) -> float | None:
+        """Formal nonnegative successor off-block delay D_OB = max(0, DELTA_OB)."""
+        return derived_d_ob_minutes(self.delta_ob_minutes)
+
+    @computed_field
+    @property
+    def d_tx_minutes(self) -> float | None:
+        """Formal nonnegative successor excess taxi delay D_TX."""
+        return derived_d_tx_minutes(self.t_tx_minutes, self.tx_reference_minutes)
+
+    @computed_field
+    @property
+    def d_to_minutes(self) -> float | None:
+        """Formal total takeoff delay D_TO = D_OB + D_TX (manuscript identity)."""
+        return derived_d_to_minutes(
+            self.delta_ob_minutes, self.t_tx_minutes, self.tx_reference_minutes
+        )
+
+    @computed_field
+    @property
+    def d_ob_support(self) -> str:
+        if self.d_ob_minutes is None:
+            return "ABSTAIN"
+        return self.delta_ob_support if self.delta_ob_support != "ABSTAIN" else "SUPPORTED"
+
+    @computed_field
+    @property
+    def d_tx_support(self) -> str:
+        if self.d_tx_minutes is None:
+            return "ABSTAIN"
+        return self.tx_support if self.tx_support != "ABSTAIN" else "SUPPORTED"
+
+    @computed_field
+    @property
+    def d_to_support(self) -> str:
+        if self.d_to_minutes is None:
+            return "ABSTAIN"
+        if "ABSTAIN" in {self.d_ob_support, self.d_tx_support}:
+            return "ABSTAIN"
+        return "SUPPORTED"
 
     @computed_field
     @property
@@ -202,20 +270,6 @@ class AlignedScenario(FrozenModel):
         except ValueError:
             return None
 
-    @computed_field
-    @property
-    def d_to_minutes(self) -> float | None:
-        if (
-            self.delta_ob_minutes is None
-            or self.t_tx_minutes is None
-            or self.tx_reference_minutes is None
-        ):
-            return None
-        return max(
-            0.0,
-            self.delta_ob_minutes + self.t_tx_minutes - self.tx_reference_minutes,
-        )
-
     @property
     def ob_observed(self) -> bool:
         """Compatibility alias for consumers that only need the observed state."""
@@ -223,8 +277,8 @@ class AlignedScenario(FrozenModel):
 
     @property
     def ob_support(self) -> str:
-        """Compatibility alias for consumers that consume derived R_OB."""
-        return self.delta_ob_support
+        """Compatibility alias for consumers that consume derived R_OB/D_OB."""
+        return self.d_ob_support
 
     @property
     def overflow_ob(self) -> bool:
@@ -232,5 +286,5 @@ class AlignedScenario(FrozenModel):
 
     @property
     def target_semantics(self) -> dict[str, str]:
-        names = ("R_IB", "DELTA_OB", "T_TX", "R_OB", "T_OB", "T_TO", "D_TO")
+        names = ("R_IB", "D_OB", "D_TX", "D_TO", "DELTA_OB", "T_TX", "R_OB", "T_OB", "T_TO")
         return {name: external_target_name(name) for name in names}

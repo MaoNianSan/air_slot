@@ -44,10 +44,13 @@ def test_refactor_behavioral_equivalence_across_pre_m4():
     assert [row.d_to_minutes for row in scenarios] == [None] * len(scenarios)
 
     m2_scenarios = ({"decision_node_id": "node", "scenario_id": 0, "scenario_weight": 1.0,
-                     "r_ib_minutes": 10, "r_ob_minutes": 5, "t_tx_minutes": 15,
-                     "ib_support": "SUPPORTED", "ob_support": "SUPPORTED", "tx_support": "SUPPORTED"},)
+                     "r_ib_minutes": 10, "delta_ob_minutes": 5, "t_tx_minutes": 15,
+                     "d_ob_minutes": 5, "d_tx_minutes": 0, "d_to_minutes": 5,
+                     "ib_support": "SUPPORTED", "delta_ob_support": "SUPPORTED",
+                     "tx_support": "SUPPORTED", "d_ob_support": "SUPPORTED",
+                     "d_tx_support": "SUPPORTED", "d_to_support": "SUPPORTED"},)
     registry = ValuationRegistry.smoke()
-    scope = scope_fixture(valuation_registry_id="DEV-1")
+    scope = scope_fixture(cu_normalization_registry_id="DEV-1")
     direct_m2 = M2Mapper(registry, scope).map_scenarios(m2_scenarios, _unsupported_context())
     public_m2 = M2.map_pre_action_consequence(m2_scenarios, _unsupported_context(),
                                                registry=registry, consequence_scope=scope)
@@ -60,10 +63,13 @@ def test_refactor_behavioral_equivalence_across_pre_m4():
     assert m3_candidates[0].template_id == "A00"
     assert len({row.candidate_action_id for row in m3_candidates}) == len(m3_candidates)
 
+    from tests.fixtures.p0_p1_contracts import monetary_fixture
+
     decision = M4.evaluate_decision("episode",
         [{"scenario_id": 0, "scenario_weight": 1.0, "deadline_minutes": 30}],
         (consequence(),), (candidate("A00"), candidate("A11")),
-        material_coverage_contract=coverage_contract())
+        material_coverage_contract=coverage_contract(),
+        monetary_mapping=monetary_fixture())
     assert [row.template_id for row in decision.actions] == ["A00", "A11"]
     assert decision.actions[0].post_totals == (10.0,)
     assert decision.actions[1].residual_risk_j == 5.0

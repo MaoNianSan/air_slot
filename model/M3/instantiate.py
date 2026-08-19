@@ -41,6 +41,7 @@ def instantiate_candidates(pre_state:dict,registry,*,response_registry=None,sens
             precondition_state=precondition,authority_capabilities=template.authority_capabilities,
             mitigation=template.mitigation,induced=template.induced,induced_response=template.induced_response,response_model=response_model,
             response_parameters=response_parameters,response_provenance=response_provenance,
+            response_support=getattr(template, "response_support", None),
             response_parameter_status=response_status,
             response_registry_id=response_registry_id,response_registry_hash=response_registry_hash,
             response_sensitivity_level=sensitivity,

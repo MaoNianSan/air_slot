@@ -13,6 +13,7 @@ from model.M3.response import action_post_consequences, response_draw
 from model.M4.results import ActionEvaluation
 from model.M4.risk import weighted_mean, weighted_var_cvar
 from model.common.estimand import FormalEstimandStatus
+from model.common.monetary_system import MonetaryMappingRegistry, MonetaryMappingStatus
 
 
 def aggregate_a00_baseline_gate(m2_consequences, material_coverage_contract):
@@ -42,17 +43,23 @@ def _aggregate_candidate_coverage(candidate, m2_consequences, material_coverage_
 
 
 def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
-                       material_coverage_contract, baseline_gate, lambda_risk, alpha, seed):
+                       material_coverage_contract, baseline_gate, monetary_mapping,
+                       lambda_risk, alpha, seed):
+    if not isinstance(monetary_mapping, MonetaryMappingRegistry):
+        monetary_mapping = MonetaryMappingRegistry.model_validate(monetary_mapping)
     by_scenario = {row.scenario_id: row for row in m2_consequences}
     weights = [float(scenario["scenario_weight"]) for scenario in m1_scenarios]
     opportunities = scenario_opportunities(candidate, m1_scenarios)
     opportunity = weighted_mean(opportunities, weights)
     coverage = _aggregate_candidate_coverage(candidate, m2_consequences, material_coverage_contract)
+    monetary_frozen = monetary_mapping.frozen
     lane = assign_lane(candidate, opportunity, baseline_valid=baseline_gate.valid,
-                       material_coverage_valid=coverage.formal_coverage_valid)
+                       material_coverage_valid=coverage.formal_coverage_valid,
+                       monetary_mapping_frozen=monetary_frozen)
     formal_status = FormalEstimandStatus.FORMAL_AVAILABLE
     post = []
     any_scenario_conditioned = False
+    monetary_blocker = False
     for scenario, open_ in zip(m1_scenarios, opportunities):
         consequence = by_scenario[scenario["scenario_id"]]
         formal = consequence.formal_estimand_value
@@ -64,6 +71,10 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
                   if row.component_id in formal.included_components}
         if any(value is None for value in values.values()) or len(values) != len(formal.included_components):
             formal_status = FormalEstimandStatus.FORMAL_AGGREGATE_UNRESOLVED
+            continue
+        if not monetary_frozen:
+            formal_status = FormalEstimandStatus.MONETARY_MAPPING_NOT_FROZEN
+            monetary_blocker = True
             continue
         response = 0.0
         if candidate.template_id != "A00" and open_:
@@ -85,9 +96,9 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
                 formal_status = FormalEstimandStatus.FORMAL_AGGREGATE_UNRESOLVED
                 continue
         if candidate.template_id == "A00" or not open_:
-            total = sum(float(pre) for pre in values.values())
+            post_cu = dict(values)
         else:
-            post_values = action_post_consequences(
+            post_cu = action_post_consequences(
                 pre_by_component=values,
                 mitigation=candidate.mitigation,
                 induced=candidate.induced,
@@ -95,8 +106,13 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
                 induced_score_to_cu=0.10,
                 included_components=formal.included_components,
             )
-            total = sum(post_values.values())
-        post.append(total)
+        # Monetary conversion happens per scenario: L_a^m = sum_k omega_k^m * C_a,k^CU.
+        total_money = monetary_mapping.to_money(post_cu)
+        if total_money is None:
+            formal_status = FormalEstimandStatus.MONETARY_MAPPING_NOT_FROZEN
+            monetary_blocker = True
+            continue
+        post.append(total_money)
     scenario_conditioned = any_scenario_conditioned
     if len(post) != len(m1_scenarios):
         mean = var = cvar = risk = None
@@ -112,6 +128,8 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
             "SCENARIO_CONDITIONED" if scenario_conditioned else "FORMAL_ESTIMAND"
         )
     scope = m2_consequences[0].consequence_scope
+    if monetary_blocker and formal_status is FormalEstimandStatus.FORMAL_AVAILABLE:
+        formal_status = FormalEstimandStatus.MONETARY_MAPPING_NOT_FROZEN
     return ActionEvaluation(
         candidate_action_id=candidate.candidate_action_id,
         template_id=candidate.template_id,
@@ -122,7 +140,10 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
         estimand_id=scope.estimand_id,
         estimand_version=scope.estimand_version,
         scope_hash=scope.scope_hash,
-        valuation_registry_id=scope.valuation_registry_id,
+        cu_normalization_registry_id=scope.cu_normalization_registry_id,
+        monetary_system=monetary_mapping.monetary_system_id,
+        monetary_mapping_registry_id=monetary_mapping.registry_id,
+        monetary_mapping_registry_hash=monetary_mapping.registry_hash or monetary_mapping.digest(),
         formal_aggregate_status=formal_status,
         expected_residual=mean,
         var=var,

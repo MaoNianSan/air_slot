@@ -6,13 +6,25 @@ from model.M4.contracts import M4DecisionRequest
 from model.M4.post_action import aggregate_a00_baseline_gate, evaluate_candidate
 from model.M4.ranking import compatible_formal_ranking, finalize_ranking
 from model.M4.results import ActionEvaluation, EpisodeDecision
+from model.common.monetary_system import MonetaryMappingRegistry
 
 
 _compatible_formal_ranking = compatible_formal_ranking
 
 
 def evaluate_decision(episode_id, m1_scenarios, m2_consequences, candidates, *,
-                      material_coverage_contract, lambda_risk=0.25, alpha=0.9, seed=0):
+                      material_coverage_contract, lambda_risk=0.25, alpha=0.9, seed=0,
+                      monetary_mapping=None):
+    """Evaluate one episode decision under a monetary mapping.
+
+    ``monetary_mapping`` defaults to a NOT_FROZEN RMB registry: without a
+    frozen monetary mapping, authoritative ranking is unavailable and there is
+    no raw-CU fallback.
+    """
+    if monetary_mapping is None:
+        monetary_mapping = MonetaryMappingRegistry.not_frozen()
+    elif not isinstance(monetary_mapping, MonetaryMappingRegistry):
+        monetary_mapping = MonetaryMappingRegistry.model_validate(monetary_mapping)
     baseline_gate = aggregate_a00_baseline_gate(m2_consequences, material_coverage_contract)
     evaluations = tuple(evaluate_candidate(
         candidate,
@@ -21,6 +33,7 @@ def evaluate_decision(episode_id, m1_scenarios, m2_consequences, candidates, *,
         m2_consequences=m2_consequences,
         material_coverage_contract=material_coverage_contract,
         baseline_gate=baseline_gate,
+        monetary_mapping=monetary_mapping,
         lambda_risk=lambda_risk,
         alpha=alpha,
         seed=seed,
@@ -40,8 +53,20 @@ def evaluate_decision(episode_id, m1_scenarios, m2_consequences, candidates, *,
     )
 
 
-def evaluate_request(request: M4DecisionRequest) -> EpisodeDecision:
+def evaluate_request(request: M4DecisionRequest,
+                     monetary_mapping: MonetaryMappingRegistry | None = None) -> EpisodeDecision:
     scenarios = [row.model_dump(mode="json") for row in request.m1_scenarios]
+    if monetary_mapping is None:
+        monetary_mapping = MonetaryMappingRegistry.not_frozen(
+            monetary_system_id=request.monetary_system,
+            registry_id=request.monetary_mapping_registry_id,
+        )
+    if monetary_mapping.registry_id != request.monetary_mapping_registry_id:
+        raise ValueError("M4_REQUEST_MONETARY_REGISTRY_MISMATCH")
+    if request.monetary_mapping_registry_hash and (
+        monetary_mapping.registry_hash or monetary_mapping.digest()
+    ) != request.monetary_mapping_registry_hash:
+        raise ValueError("M4_REQUEST_MONETARY_REGISTRY_HASH_MISMATCH")
     return evaluate_decision(
         request.pre_state.decision_node.episode_id,
         scenarios,
@@ -51,6 +76,7 @@ def evaluate_request(request: M4DecisionRequest) -> EpisodeDecision:
         lambda_risk=request.lambda_risk,
         alpha=request.alpha,
         seed=request.seed,
+        monetary_mapping=monetary_mapping,
     )
 
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from model.M2.contracts import ConsequenceRow, ValuationStatus
+from model.M2.contracts import ConsequenceRow
+from model.common.cu_normalization import CUNormalizationStatus
 from model.M3.contracts import (
     ActionMaterialCoverageContract,
     CoverageRequirement,
@@ -58,7 +59,7 @@ def _entry_satisfied(entry, row: ConsequenceRow) -> bool:
         entry.coverage_requirement is CoverageRequirement.VALUED_COMPONENT
         and (
             row.constructed_value_cu is None
-            or row.valuation_status is not ValuationStatus.VALUATION_FROZEN
+            or row.cu_status is not CUNormalizationStatus.CU_FROZEN
         )
     ):
         return False

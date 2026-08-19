@@ -6,9 +6,9 @@ from model.M2.contracts import (
     FormalEstimandValue,
     M2ScientificContext,
     ScenarioConsequence,
-    ValuationStatus,
 )
 from model.M2.drivers import native_quantities
+from model.common.cu_normalization import CUNormalizationStatus
 from model.common.enums import SupportState
 from model.common.estimand import FormalEstimandStatus, ScopeStatus
 
@@ -17,8 +17,8 @@ class M2Mapper:
     def __init__(self, registry, consequence_scope):
         self.registry = registry
         self.consequence_scope = consequence_scope
-        if registry.registry_id != consequence_scope.valuation_registry_id:
-            raise ValueError("M2_SCOPE_VALUATION_REGISTRY_MISMATCH")
+        if registry.registry_id != consequence_scope.cu_normalization_registry_id:
+            raise ValueError("M2_SCOPE_CU_NORMALIZATION_REGISTRY_MISMATCH")
 
     def map_scenarios(self, scenarios, context: M2ScientificContext):
         outputs = []
@@ -47,12 +47,12 @@ class M2Mapper:
                 value = None
                 reason = "INCLUDED_COMPONENT_ABSTAIN"
             elif any(
-                row.valuation_status is not ValuationStatus.VALUATION_FROZEN
+                row.cu_status is not CUNormalizationStatus.CU_FROZEN
                 for row in selected
             ):
                 status = FormalEstimandStatus.VALUATION_NOT_FROZEN
                 value = None
-                reason = "INCLUDED_COMPONENT_VALUATION_NOT_FROZEN"
+                reason = "INCLUDED_COMPONENT_CU_NORMALIZATION_NOT_FROZEN"
             else:
                 status = FormalEstimandStatus.FORMAL_AVAILABLE
                 value = sum(row.constructed_value_cu for row in selected)
@@ -63,7 +63,7 @@ class M2Mapper:
                 estimand_id=self.consequence_scope.estimand_id,
                 estimand_version=self.consequence_scope.estimand_version,
                 scope_hash=self.consequence_scope.scope_hash,
-                valuation_registry_id=self.consequence_scope.valuation_registry_id,
+                cu_normalization_registry_id=self.consequence_scope.cu_normalization_registry_id,
                 aggregation_rule_id=self.consequence_scope.aggregation_rule_id,
                 included_components=included,
                 reason_code=reason,
@@ -80,4 +80,3 @@ class M2Mapper:
                 )
             )
         return tuple(outputs)
-

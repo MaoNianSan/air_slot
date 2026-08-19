@@ -18,7 +18,13 @@ from typing import Any, Mapping
 
 from pydantic import Field, model_validator
 
-from model.M2.valuation import ValuationRegistry, ValuationRule, ValuationRuleStatus
+from model.M2.valuation import (
+    M2CUNormalizationAdapter,
+    ValuationRegistry,
+    ValuationRule,
+    ValuationRuleStatus,
+)
+from model.common.cu_normalization import CUNormalizationRegistry
 from model.PRE.reference.data2_m2_train_fit import (
     collect_train_rows,
     compute_train_scales,
@@ -375,26 +381,32 @@ def write_m2_registry(
     return registry_path, manifest_path
 
 
-class FrozenData2ValuationRegistry(ValuationRegistry):
-    """Production valuation registry consuming the frozen M2 scales.
+class FrozenData2CUNormalizationRegistry(M2CUNormalizationAdapter):
+    """Production CU-normalization adapter consuming the frozen M2 scales.
 
-    U_pre_CU(k) = q_k / s_k_CU with w_k = 1 for every frozen component.
+    C_k^CU = q_k / s_k_CU where s_k_CU is the train-frozen median scale.
+    Monetary mapping is deliberately separate and lives in M4.
     """
 
     def __init__(self, registry: M2Data2FormalCuRegistry | Mapping):
         if not isinstance(registry, M2Data2FormalCuRegistry):
             registry = M2Data2FormalCuRegistry.model_validate(registry)
-        rules = tuple(
-            ValuationRule(
-                component_id=component,
-                rule_id=f"{component}_POSITIVE_TRAIN_MEDIAN_CU",
-                version=registry.schema_version,
-                multiplier=1.0 / registry.scale(component),
-                status=ValuationRuleStatus.FROZEN,
-            )
-            for component in FORMAL_SCOPE
+        cu_registry = CUNormalizationRegistry.from_scales(
+            registry_id=registry.registry_id,
+            version=registry.schema_version,
+            freeze_id=registry.registry_id,
+            reference_period="2019-H1",
+            scales={component: registry.scale(component) for component in FORMAL_SCOPE},
+            provenance=tuple(
+                f"{component}={registry.train_scale_artifact[component]['definition']}"
+                for component in FORMAL_SCOPE
+            ),
         )
-        super().__init__(registry.registry_id, rules)
+        super().__init__(cu_registry)
+
+
+class FrozenData2ValuationRegistry(FrozenData2CUNormalizationRegistry):
+    """Deprecated compatibility alias of FrozenData2CUNormalizationRegistry."""
 
 
 def load_m2_registry(path: Path) -> M2Data2FormalCuRegistry:

@@ -34,7 +34,7 @@ def _smoke_scope() -> ConsequenceScope:
         estimand_version="1.0.0",
         included_components=COMPONENTS,
         aggregation_rule_id="DEV-SUM-1",
-        valuation_registry_id="DEV-1",
+        cu_normalization_registry_id="DEV-1",
         material_coverage_contract_id="DEV-COVERAGE",
         scope_status=ScopeStatus.FORMAL_READY,
     )

@@ -16,7 +16,10 @@ class ActionEvaluation(FrozenModel):
     estimand_id: str
     estimand_version: str
     scope_hash: str
-    valuation_registry_id: str
+    cu_normalization_registry_id: str
+    monetary_system: str
+    monetary_mapping_registry_id: str
+    monetary_mapping_registry_hash: str
     formal_aggregate_status: FormalEstimandStatus
     expected_residual: float | None
     var: float | None
@@ -37,6 +40,8 @@ class ActionEvaluation(FrozenModel):
             raise ValueError("UNKNOWN_POST_TOTAL_STATUS")
         if self.scenario_conditioned and self.post_total_status == "FORMAL_ESTIMAND":
             raise ValueError("SCENARIO_CONDITIONED_MISLABELED_FORMAL")
+        if not self.monetary_system or not self.monetary_mapping_registry_id:
+            raise ValueError("MONETARY_MAPPING_LINEAGE_REQUIRED")
         return self
 
 

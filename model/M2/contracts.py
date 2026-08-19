@@ -7,6 +7,7 @@ from typing import Any, Literal
 from pydantic import Field, model_validator
 
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
+from model.common.cu_normalization import CUNormalizationStatus
 from model.common.enums import EvidenceClass, SupportState
 from model.common.estimand import ConsequenceScope, FormalEstimandStatus
 from model.common.value_objects import FrozenModel
@@ -26,10 +27,17 @@ Component = Literal[
 
 
 class ValuationStatus(str, Enum):
-    VALUATION_FROZEN = "VALUATION_FROZEN"
-    VALUATION_NOT_FROZEN = "VALUATION_NOT_FROZEN"
-    VALUATION_NOT_REQUIRED_FOR_SCOPE = "VALUATION_NOT_REQUIRED_FOR_SCOPE"
-    VALUATION_UNSUPPORTED = "VALUATION_UNSUPPORTED"
+    """Deprecated alias of CUNormalizationStatus.
+
+    Kept only for short-term compatibility; the canonical contract uses
+    CUNormalizationStatus and CU normalization is separate from any monetary
+    mapping.
+    """
+
+    VALUATION_FROZEN = "CU_FROZEN"
+    VALUATION_NOT_FROZEN = "CU_NOT_FROZEN"
+    VALUATION_NOT_REQUIRED_FOR_SCOPE = "CU_NOT_REQUIRED_FOR_SCOPE"
+    VALUATION_UNSUPPORTED = "CU_UNSUPPORTED"
 
 
 class ScientificContextValue(FrozenModel):
@@ -128,29 +136,29 @@ class ConsequenceRow(FrozenModel):
     constructed_value_cu: float | None
     support_state: SupportState
     evidence_class: EvidenceClass
-    valuation_status: ValuationStatus
-    valuation_registry_id: str | None = None
-    valuation_rule_id: str | None = None
-    valuation_parameter_version: str | None = None
+    cu_status: CUNormalizationStatus = CUNormalizationStatus.CU_UNSUPPORTED
+    cu_normalization_registry_id: str | None = None
+    cu_normalization_rule_id: str | None = None
+    cu_normalization_parameter_version: str | None = None
     reason_code: str | None = None
     provenance: tuple[str, ...] = ()
 
     @model_validator(mode="after")
-    def value_support_and_valuation(self):
+    def value_support_and_normalization(self):
         if self.support_state is SupportState.ABSTAIN:
             if self.native_quantity is not None or self.constructed_value_cu is not None:
                 raise ValueError("ABSTAIN_COMPONENT_MUST_REMAIN_NULL")
         if self.constructed_value_cu is not None and (
-            self.valuation_status is not ValuationStatus.VALUATION_FROZEN
-            or not self.valuation_registry_id
+            self.cu_status is not CUNormalizationStatus.CU_FROZEN
+            or not self.cu_normalization_registry_id
         ):
-            raise ValueError("CONSTRUCTED_CU_REQUIRES_FROZEN_VALUATION")
-        if self.valuation_status is ValuationStatus.VALUATION_FROZEN and (
+            raise ValueError("CONSTRUCTED_CU_REQUIRES_FROZEN_CU_NORMALIZATION")
+        if self.cu_status is CUNormalizationStatus.CU_FROZEN and (
             self.constructed_value_cu is None
-            or not self.valuation_rule_id
-            or not self.valuation_parameter_version
+            or not self.cu_normalization_rule_id
+            or not self.cu_normalization_parameter_version
         ):
-            raise ValueError("FROZEN_VALUATION_REQUIRES_VALUE_AND_LINEAGE")
+            raise ValueError("FROZEN_CU_NORMALIZATION_REQUIRES_VALUE_AND_LINEAGE")
         return self
 
 
@@ -189,7 +197,7 @@ class FormalEstimandValue(FrozenModel):
     estimand_id: str
     estimand_version: str
     scope_hash: str
-    valuation_registry_id: str
+    cu_normalization_registry_id: str
     aggregation_rule_id: str
     included_components: tuple[Component, ...]
     reason_code: str | None = None
@@ -225,15 +233,14 @@ class ScenarioConsequence(FrozenModel):
             formal.estimand_id,
             formal.estimand_version,
             formal.scope_hash,
-            formal.valuation_registry_id,
+            formal.cu_normalization_registry_id,
             formal.aggregation_rule_id,
         ) != (
             scope.estimand_id,
             scope.estimand_version,
             scope.scope_hash,
-            scope.valuation_registry_id,
+            scope.cu_normalization_registry_id,
             scope.aggregation_rule_id,
         ):
             raise ValueError("M2_FORMAL_ESTIMAND_SCOPE_MISMATCH")
         return self
-

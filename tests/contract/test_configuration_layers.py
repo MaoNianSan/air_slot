@@ -44,6 +44,12 @@ def test_layers_load_separately():
     assert fixed_window.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["m1_stochastic_targets"].value == [
         "R_IB", "DELTA_OB", "T_TX"]
+    formal_contract = layers.scientific.parameters["m1_formal_output_contract"]
+    assert formal_contract.freeze_state.value == "FROZEN"
+    assert formal_contract.value == ["R_IB", "D_OB", "D_TX", "D_TO"]
+    assert formal_contract.provenance["decision_id"] == (
+        "AIR_SLOT_MODEL_MANUSCRIPT_RECONCILIATION_2026-08-19")
+    assert formal_contract.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["scenario_count"].value == 1000
     assert layers.scientific.parameters["weather_max_age_minutes"].value == 60
     assert layers.scientific.parameters["cloud_encoding"].value == "both"

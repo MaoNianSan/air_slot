@@ -34,11 +34,94 @@ RESPONSE_MODELS = {
 
 
 class ResponseProvenance(str, Enum):
+    """Legacy single-label provenance (deprecated for new Pi_a contracts)."""
+
     EMPIRICAL_ACTION_LOG = "EMPIRICAL_ACTION_LOG"
     OPERATOR_INDUSTRY = "OPERATOR_INDUSTRY"
     STRUCTURAL_BOUNDED_SCENARIO = "STRUCTURAL_BOUNDED_SCENARIO"
     PURE_SCENARIO = "PURE_SCENARIO"
     UNSUPPORTED = "UNSUPPORTED"
+
+
+class EvidenceBasis(str, Enum):
+    """Structured evidence bases for an action-response provenance (Pi_a)."""
+
+    PUBLISHED_EVIDENCE = "PUBLISHED_EVIDENCE"
+    OPERATIONAL_RULE = "OPERATIONAL_RULE"
+    EXPERT_ENGINEERING_JUDGEMENT = "EXPERT_ENGINEERING_JUDGEMENT"
+    SCENARIO_ASSUMPTION = "SCENARIO_ASSUMPTION"
+    EMPIRICAL_ACTION_EVIDENCE = "EMPIRICAL_ACTION_EVIDENCE"
+    DECLARED_HYBRID = "DECLARED_HYBRID"
+    UNSUPPORTED = "UNSUPPORTED"
+
+
+class ActionResponseSupportState(str, Enum):
+    SUPPORTED = "SUPPORTED"
+    CONDITIONAL = "CONDITIONAL"
+    UNSUPPORTED = "UNSUPPORTED"
+
+
+class ActionResponseSupport(FrozenModel):
+    """Structured response provenance ``Pi_a`` with full source lineage.
+
+    A hybrid support declares multiple evidence bases and keeps every source
+    reference; scenario assumptions are never relabeled as empirical evidence
+    and expert judgement is never relabeled as published evidence.
+    """
+
+    evidence_bases: tuple[EvidenceBasis, ...] = Field(min_length=1)
+    source_refs: tuple[str, ...] = ()
+    support_state: ActionResponseSupportState
+    freeze_id: str | None = None
+    parameter_version: str | None = None
+    interpretation_scope: str | None = None
+    hybrid: bool = False
+    provenance: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def hybrid_contract(self):
+        bases = set(self.evidence_bases)
+        if self.hybrid != (len(bases) >= 2):
+            raise ValueError("HYBRID_FLAG_MUST_MATCH_MULTI_BASE_EVIDENCE")
+        if EvidenceBasis.UNSUPPORTED in bases and len(bases) > 1:
+            raise ValueError("UNSUPPORTED_EVIDENCE_CANNOT_BE_HYBRID")
+        if self.support_state is ActionResponseSupportState.SUPPORTED and bases == {
+            EvidenceBasis.SCENARIO_ASSUMPTION
+        }:
+            raise ValueError("SCENARIO_ONLY_SUPPORT_CANNOT_BE_UNCONDITIONAL")
+        if self.support_state is ActionResponseSupportState.UNSUPPORTED and bases != {
+            EvidenceBasis.UNSUPPORTED
+        }:
+            raise ValueError("UNSUPPORTED_SUPPORT_REQUIRES_UNSUPPORTED_BASIS_ONLY")
+        if EvidenceBasis.DECLARED_HYBRID in bases:
+            if not self.hybrid or not self.source_refs:
+                raise ValueError("DECLARED_HYBRID_REQUIRES_FLAG_AND_SOURCES")
+        return self
+
+    @classmethod
+    def from_legacy_provenance(
+        cls, provenance: ResponseProvenance | str
+    ) -> "ActionResponseSupport":
+        value = ResponseProvenance(provenance)
+        mapping = {
+            ResponseProvenance.EMPIRICAL_ACTION_LOG: (EvidenceBasis.EMPIRICAL_ACTION_EVIDENCE,),
+            ResponseProvenance.OPERATOR_INDUSTRY: (EvidenceBasis.OPERATIONAL_RULE,),
+            ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO: (EvidenceBasis.SCENARIO_ASSUMPTION,),
+            ResponseProvenance.PURE_SCENARIO: (EvidenceBasis.SCENARIO_ASSUMPTION,),
+            ResponseProvenance.UNSUPPORTED: (EvidenceBasis.UNSUPPORTED,),
+        }
+        bases = mapping[value]
+        state = (
+            ActionResponseSupportState.UNSUPPORTED
+            if value is ResponseProvenance.UNSUPPORTED
+            else ActionResponseSupportState.CONDITIONAL
+        )
+        return cls(
+            evidence_bases=bases,
+            support_state=state,
+            hybrid=False,
+            provenance=(f"legacy:{value.value}",),
+        )
 
 
 class ResponseParameterStatus(str, Enum):
@@ -86,6 +169,7 @@ class ActionTemplate(FrozenModel):
     response_model: str = "BERNOULLI_BETA"
     response_parameters: dict[str, Any] = {}
     response_provenance: ResponseProvenance = ResponseProvenance.PURE_SCENARIO
+    response_support: ActionResponseSupport | None = None
     response_parameter_status: ResponseParameterStatus = ResponseParameterStatus.NOT_FROZEN
     coverage: str = "PARTIAL"
     preparation_time_minutes: float = Field(default=0, ge=0)
@@ -141,6 +225,7 @@ class CandidateAction(FrozenModel):
     response_model: str
     response_parameters: dict[str, Any]
     response_provenance: ResponseProvenance
+    response_support: ActionResponseSupport | None = None
     response_parameter_status: ResponseParameterStatus
     response_registry_id: str | None = None
     response_registry_hash: str | None = None

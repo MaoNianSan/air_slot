@@ -7,7 +7,15 @@ from model.common.estimand import FormalEstimandStatus
 def compatible_formal_ranking(evaluations):
     formal = [item for item in evaluations if item.lane == "FORMAL"]
     identities = {
-        (item.estimand_id, item.estimand_version, item.scope_hash, item.valuation_registry_id)
+        (
+            item.estimand_id,
+            item.estimand_version,
+            item.scope_hash,
+            item.cu_normalization_registry_id,
+            item.monetary_system,
+            item.monetary_mapping_registry_id,
+            item.monetary_mapping_registry_hash,
+        )
         for item in formal
     }
     if len(identities) > 1:

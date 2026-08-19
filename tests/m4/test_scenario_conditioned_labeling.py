@@ -11,6 +11,7 @@ from tests.fixtures.p0_p1_contracts import (
     candidate,
     consequence,
     coverage_contract,
+    monetary_fixture,
 )
 
 
@@ -30,6 +31,7 @@ def test_pure_scenario_frozen_response_is_scenario_conditioned_non_authoritative
         (consequence(),),
         (candidate("A00"), action),
         material_coverage_contract=coverage_contract(),
+        monetary_mapping=monetary_fixture(),
     )
     evaluation = next(item for item in result.actions if item.template_id == "A11")
     assert evaluation.lane == "SCENARIO"
@@ -51,6 +53,7 @@ def test_a00_post_totals_are_formal_estimand_not_scenario_conditioned():
         (consequence(),),
         (candidate("A00"),),
         material_coverage_contract=coverage_contract(),
+        monetary_mapping=monetary_fixture(),
     )
     evaluation = next(item for item in result.actions if item.template_id == "A00")
     assert evaluation.lane == "FORMAL"
@@ -71,6 +74,7 @@ def test_incomplete_post_totals_are_not_computed():
         (consequence(),),
         (candidate("A00"), action),
         material_coverage_contract=coverage_contract(),
+        monetary_mapping=monetary_fixture(),
     )
     evaluation = next(item for item in result.actions if item.template_id == "A11")
     assert evaluation.lane == "SCENARIO"
@@ -99,6 +103,7 @@ def test_mixed_open_closed_scenarios_remain_scenario_conditioned():
         rows,
         (candidate("A00"), action),
         material_coverage_contract=coverage_contract(),
+        monetary_mapping=monetary_fixture(),
     )
     evaluation = next(item for item in result.actions if item.template_id == "A11")
     assert evaluation.lane == "SCENARIO"

@@ -33,6 +33,7 @@ class FormalEstimandStatus(ScientificStrEnum):
     FORMAL_AVAILABLE = "FORMAL_AVAILABLE"
     FORMAL_AGGREGATE_UNRESOLVED = "FORMAL_AGGREGATE_UNRESOLVED"
     VALUATION_NOT_FROZEN = "VALUATION_NOT_FROZEN"
+    MONETARY_MAPPING_NOT_FROZEN = "MONETARY_MAPPING_NOT_FROZEN"
     BASELINE_COMPARATOR_INVALID = "BASELINE_COMPARATOR_INVALID"
 
 
@@ -55,7 +56,7 @@ def _scope_payload(
     included_components: tuple[str, ...],
     component_role: tuple[ComponentRoleEntry, ...],
     aggregation_rule_id: str,
-    valuation_registry_id: str,
+    cu_normalization_registry_id: str,
     material_coverage_contract_id: str,
     scope_status: ScopeStatus,
 ) -> dict:
@@ -71,7 +72,7 @@ def _scope_payload(
         "included_components": list(included_components),
         "material_coverage_contract_id": material_coverage_contract_id,
         "scope_status": scope_status.value,
-        "valuation_registry_id": valuation_registry_id,
+        "cu_normalization_registry_id": cu_normalization_registry_id,
     }
 
 
@@ -89,7 +90,7 @@ class ConsequenceScope(FrozenModel):
     included_components: tuple[str, ...]
     component_role: tuple[ComponentRoleEntry, ...]
     aggregation_rule_id: str = Field(min_length=1)
-    valuation_registry_id: str = Field(min_length=1)
+    cu_normalization_registry_id: str = Field(min_length=1)
     material_coverage_contract_id: str = Field(min_length=1)
     scope_status: ScopeStatus
     scope_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
@@ -102,7 +103,7 @@ class ConsequenceScope(FrozenModel):
         estimand_version: str,
         included_components: tuple[str, ...],
         aggregation_rule_id: str,
-        valuation_registry_id: str,
+        cu_normalization_registry_id: str,
         material_coverage_contract_id: str,
         scope_status: ScopeStatus = ScopeStatus.FORMAL_AGGREGATE_UNRESOLVED,
         decision_domain: DecisionDomain = DecisionDomain.LOCAL_EPISODE,
@@ -126,7 +127,7 @@ class ConsequenceScope(FrozenModel):
             "included_components": included,
             "component_role": roles,
             "aggregation_rule_id": aggregation_rule_id,
-            "valuation_registry_id": valuation_registry_id,
+            "cu_normalization_registry_id": cu_normalization_registry_id,
             "material_coverage_contract_id": material_coverage_contract_id,
             "scope_status": scope_status,
         }
@@ -156,7 +157,7 @@ class ConsequenceScope(FrozenModel):
             "included_components": self.included_components,
             "component_role": self.component_role,
             "aggregation_rule_id": self.aggregation_rule_id,
-            "valuation_registry_id": self.valuation_registry_id,
+            "cu_normalization_registry_id": self.cu_normalization_registry_id,
             "material_coverage_contract_id": self.material_coverage_contract_id,
             "scope_status": self.scope_status,
         }
@@ -169,10 +170,10 @@ class ConsequenceScope(FrozenModel):
             self.estimand_id,
             self.estimand_version,
             self.scope_hash,
-            self.valuation_registry_id,
+            self.cu_normalization_registry_id,
         ) == (
             other.estimand_id,
             other.estimand_version,
             other.scope_hash,
-            other.valuation_registry_id,
+            other.cu_normalization_registry_id,
         )

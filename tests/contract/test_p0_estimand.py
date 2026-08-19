@@ -10,7 +10,7 @@ def test_scope_is_local_episode_versioned_and_hash_verified():
         estimand_version="1.0.0",
         included_components=("F_execution",),
         aggregation_rule_id="SUM-V1",
-        valuation_registry_id="VALUATION-V1",
+        cu_normalization_registry_id="CU-V1",
         material_coverage_contract_id="COVERAGE-V1",
         scope_status=ScopeStatus.FORMAL_READY,
     )

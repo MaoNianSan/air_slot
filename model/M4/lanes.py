@@ -1,4 +1,8 @@
-from model.M3.contracts import ResponseParameterStatus, ResponseProvenance
+from model.M3.contracts import (
+    ActionResponseSupportState,
+    ResponseParameterStatus,
+    ResponseProvenance,
+)
 
 
 def assign_lane(
@@ -7,6 +11,7 @@ def assign_lane(
     *,
     baseline_valid=True,
     material_coverage_valid=True,
+    monetary_mapping_frozen=True,
 ):
     if candidate.precondition_state == "FALSE" or opportunity_probability == 0:
         return "EXCLUDED"
@@ -14,11 +19,22 @@ def assign_lane(
         return "CONDITIONAL"
     if not baseline_valid:
         return "SCENARIO"
+    if not monetary_mapping_frozen:
+        # No authoritative ranking exists without a frozen monetary mapping;
+        # raw CU ranking is disabled and must never silently replace it.
+        return "SCENARIO"
     if candidate.template_id == "A00":
         return "FORMAL"
     if not material_coverage_valid:
         return "SCENARIO"
-    if candidate.response_provenance in {
+    if candidate.response_support is not None:
+        if (
+            candidate.response_support.support_state
+            is not ActionResponseSupportState.SUPPORTED
+        ):
+            # Conditional or unsupported Pi_a never grants FORMAL authority.
+            return "SCENARIO"
+    elif candidate.response_provenance in {
         ResponseProvenance.PURE_SCENARIO,
         ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO,
         ResponseProvenance.UNSUPPORTED,

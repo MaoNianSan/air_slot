@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from model.M2.contracts import ValuationStatus
+from model.common.cu_normalization import CUNormalizationStatus
 from model.M2.freeze import (
     FORMAL_SCOPE,
     FrozenData2ValuationRegistry,
@@ -107,7 +107,7 @@ def test_frozen_valuation_uses_positive_train_median_scale():
         component_weights={name: 1.0 for name in FORMAL_SCOPE},
     )
     valuation = FrozenData2ValuationRegistry(registry)
-    scope = scope_fixture(valuation_registry_id=REGISTRY_ID)
+    scope = scope_fixture(cu_normalization_registry_id=REGISTRY_ID)
     mapper = M2Mapper(valuation, scope)
     output = mapper.map_scenarios(
         (scenario(),),
@@ -121,7 +121,7 @@ def test_frozen_valuation_uses_positive_train_median_scale():
     by_component = {row.component_id: row for row in output.component_vector.rows}
     for component in FORMAL_SCOPE:
         row = by_component[component]
-        assert row.valuation_status is ValuationStatus.VALUATION_FROZEN
+        assert row.cu_status is CUNormalizationStatus.CU_FROZEN
         scale = registry.scale(component)
         assert row.constructed_value_cu == pytest.approx(row.native_quantity / scale)
     assert (
@@ -184,7 +184,7 @@ def test_frozen_valuation_abstains_when_passenger_route_missing():
     valuation = FrozenData2ValuationRegistry(registry)
     scope = scope_fixture(
         components=("F_continuity", "F_execution", "F_propagation", "P_time", "R_operating"),
-        valuation_registry_id=REGISTRY_ID,
+        cu_normalization_registry_id=REGISTRY_ID,
     )
     output = M2Mapper(valuation, scope).map_scenarios(
         (scenario(),),

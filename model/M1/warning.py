@@ -171,7 +171,9 @@ def _sample_post_ib(
 
     delta_values = delta_rep[delta_indices]
     tx_rep, _tx_under, tx_over = _representatives(bins["T_TX"], device=device)
-    d_to = delta_values + tx_rep[tx_indices] - taxi_reference[:, None]
+    d_ob = torch.clamp_min(delta_values, 0.0)
+    d_tx = torch.clamp_min(tx_rep[tx_indices] - taxi_reference[:, None], 0.0)
+    d_to = d_ob + d_tx
     probability = (
         (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
         .sum(dim=1, dtype=torch.int64)
@@ -228,7 +230,9 @@ def _sample_pre_ib(
     )
     delta_rep, delta_under, delta_over = _representatives(bins["DELTA_OB"], device=device)
     tx_rep, _tx_under, tx_over = _representatives(bins["T_TX"], device=device)
-    d_to = delta_rep[delta_indices] + tx_rep[tx_indices] - taxi_reference[:, None]
+    d_ob = torch.clamp_min(delta_rep[delta_indices], 0.0)
+    d_tx = torch.clamp_min(tx_rep[tx_indices] - taxi_reference[:, None], 0.0)
+    d_to = d_ob + d_tx
     probability = (
         (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
         .sum(dim=1, dtype=torch.int64)

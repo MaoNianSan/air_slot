@@ -273,7 +273,9 @@ def build_compact_warning_episode(
         realized_delta = (
             _value(successor_outcome, "actual_departure_utc") - schedule["scheduled_departure_utc"]
         ).total_seconds() / 60.0
-        realized_d_to = max(0.0, realized_delta + float(_value(successor_outcome, "taxi_out_minutes")) - reference_minutes)
+        realized_d_to = max(0.0, realized_delta) + max(
+            0.0, float(_value(successor_outcome, "taxi_out_minutes")) - reference_minutes
+        )
 
     return CompactWarningEpisode(
         episode_id=episode.episode_id,
