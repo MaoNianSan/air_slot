@@ -26,9 +26,11 @@ parameters:
       final_test_access_count: 0
   m1_hidden_size_candidates: {freeze_state: FROZEN, value: [16, 32]}
   m1_fixed_history_window_minutes:
-    freeze_state: FROZEN
+    freeze_state: SENSITIVITY_ONLY
     value: 30
     provenance:
+      role: HISTORICAL_V1_SENSITIVITY_ONLY
+      migration: "ROUND2_M1_V2 (2026-08-19): the fixed 30-minute window is a V1 sensitivity artifact; the V2 principal history is FULL_ADAPTIVE_CAUSAL_PREFIX"
       selection_state: DEVELOPMENT_FROZEN
       decision_id: D3_SIGNED_M1_H_W_REFREEZE
       decision_date: "2026-08-17"
@@ -42,6 +44,8 @@ parameters:
     freeze_state: FROZEN
     value: [R_IB, DELTA_OB, T_TX]
     provenance:
+      role: LEGACY_V1
+      migration: "ROUND2_M1_V2 (2026-08-19): retained as LEGACY_V1 provenance only; the V2 principal targets are m1_state_estimator_v2 primitive_targets=[T_IB_A00, D_OB, D_TX]"
       selection_state: HUMAN_APPROVED
       decision_id: D3_SIGNED_M1_H_W_REFREEZE
       decision_date: "2026-08-17"
@@ -86,6 +90,34 @@ parameters:
     freeze_state: FROZEN
     value: 60
     provenance: *m1_target_support_provenance
+  m1_state_estimator_v2:
+    freeze_state: FROZEN
+    value: M1_STATE_ESTIMATOR_V2
+    provenance:
+      selection_state: ROUND2_TRANCHE2_SPEC
+      decision_id: AIR_SLOT_ROUND2_EMPIRICAL_MODEL_ALIGNMENT_TRANCHE2
+      decision_date: "2026-08-19"
+      primitive_targets: [T_IB_A00, D_OB, D_TX]
+      derived_targets: [R_IB, D_TO]
+      dependency_chain: "T_IB_A00 -> D_OB -> D_TX"
+      state_aware: causal_GRU_H32
+      predecessor_head: DISCRETE_HAZARD
+      successor_heads: HURDLE_QUANTILE
+      successor_conditioning: "D_TX | T_IB_A00, D_OB (formal D_OB only; never signed DELTA_OB)"
+      r_ib_identity: "R_IB = max(0, T_IB_A00 - t); derived, never a separate head"
+      d_to_identity: "D_TO = D_OB + D_TX per scenario; never a separate head"
+      history: FULL_ADAPTIVE_CAUSAL_PREFIX
+      scenario_count: 1000
+      support_sources: "finite supports reused from V1 development-frozen support statistics (m1_r_ib_max_finite_minutes=360, m1_delta_ob_max_finite_minutes=180, m1_t_tx_max_finite_minutes=60, m1_bin_width_minutes=5)"
+      legacy_v1: "m1_stochastic_targets=[R_IB, DELTA_OB, T_TX] retained as LEGACY_V1 provenance only; m1_fixed_history_window_minutes=30 migrated to SENSITIVITY_ONLY/HISTORICAL_V1"
+      final_test_access_count: 0
+  m1_v2_quantile_levels:
+    freeze_state: DEVELOPMENT_ONLY
+    value: [0.1, 0.3, 0.5, 0.7, 0.9]
+    provenance:
+      selection_state: NOT_FROZEN
+      note: "manuscript does not freeze numeric positive-quantile levels; DEVELOPMENT_ONLY scaffold pending HUMAN_DECISION_REQUIRED"
+      final_test_access_count: 0
   scenario_count: {freeze_state: FROZEN, value: 1000}
   m1_warning_model_artifact:
     freeze_state: FROZEN

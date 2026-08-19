@@ -65,7 +65,11 @@ class M1Service:
         else:
             raise ContractError("M1_MODEL_PATH_UNKNOWN")
         state_updated_at = self._state_updated_at.get(node.episode_id, node.decision_time)
-        support = {item.target_name: item.support_state.value for item in pre_state.target_support}
+        from .pipeline import V1_TO_V2_SUPPORT
+        support = {
+            V1_TO_V2_SUPPORT.get(item.target_name, item.target_name): item.support_state.value
+            for item in pre_state.target_support
+        }
         return M1Forecast(
             episode_id=node.episode_id,
             decision_node_id=node.decision_node_id,

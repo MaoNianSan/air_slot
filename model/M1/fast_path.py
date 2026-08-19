@@ -1,19 +1,19 @@
-"""M1 FAST path: ARX-LightGBM distributional baseline.
+"""M1 FAST path V2: ARX-LightGBM distributional baseline scaffold.
 
-The FAST path is a coded contract scaffold for the manuscript's ARX / LightGBM
-distributional baseline.  It shares with STATE_AWARE:
+The FAST path shares with STATE_AWARE the V2 formal semantics:
 
-- feature semantics (decision-time causal history prefix only)
-- target semantics (R_IB / DELTA_OB / T_TX bin contracts)
-- output schema (``{target: per-class probability tensor}``)
-- support schema and scenario schema (via model.M1.scenarios.aligned_sample)
+- primitive chain T_IB_A00 -> D_OB -> D_TX
+- predecessor head: discrete hazard over remaining time
+- successor heads: hurdle + positive conditional quantile, D_TX conditioned on
+  formal D_OB
+- output schema (``{T_IB_A00: pmf, D_OB: {...}, D_TX: {...}}``)
+- support schema and V2 scenario schema (``model.M1.scenarios.ancestral_sample_v2``)
 
-FAST differs only in history representation (lagged ARX features instead of
-the GRU encoder) and model class (LightGBM multiclass per target).
-
-Scientific status: DEVELOPMENT_ONLY until a train-frozen artifact is
-registered.  No fitted model produced here may be promoted to a paper result,
-and no final-test access is permitted (``final_test_access_count == 0``).
+Scientific status: DEVELOPMENT_ONLY until a train-frozen V2 artifact is
+registered; without fitted models the predictor abstains (``ABSTAIN``) instead
+of fabricating distributions.  No fitted model produced here may be promoted
+to a paper result and no final-test access is permitted
+(``final_test_access_count == 0``).
 """
 
 from __future__ import annotations
@@ -27,7 +27,6 @@ import numpy as np
 import torch
 
 from model.common.errors import ContractError
-from .contracts import TargetBinContract
 
 
 class M1FastPathStatus(str, Enum):
@@ -35,41 +34,52 @@ class M1FastPathStatus(str, Enum):
     ABSTAIN = "ABSTAIN"
 
 
+def fast_v2_distribution_schema() -> dict[str, object]:
+    """Formal V2 output schema shared by FAST and STATE_AWARE paths."""
+    return {
+        "T_IB_A00": "hazard_pmf",
+        "D_OB": {"zero_probability": "scalar",
+                 "positive_quantiles_minutes": "vector"},
+        "D_TX": {"zero_probability": "scalar",
+                 "positive_quantiles_minutes": "vector"},
+    }
+
+
 @dataclass(frozen=True)
 class FastPathContract:
-    """Typed contract shared by FAST and STATE_AWARE M1 paths."""
+    """Typed V2 contract shared by FAST and STATE_AWARE M1 paths."""
 
     status: M1FastPathStatus
     feature_semantics: str = "CAUSAL_HISTORY_PREFIX_ONLY"
-    target_semantics: str = "R_IB_DELTA_OB_T_TX_BIN_CONTRACTS"
-    output_schema: str = "TARGET_KEYED_CLASS_PROBABILITIES"
-    support_schema: str = "ALIGNED_SCENARIO_SUPPORT"
-    scenario_schema: str = "ALIGNED_SCENARIO"
+    target_semantics: str = "T_IB_A00_D_OB_D_TX_HAZARD_HURDLE_QUANTILE_CONTRACTS"
+    output_schema: str = "V2_TARGET_KEYED_DISTRIBUTION_SUMMARY"
+    support_schema: str = "M1V2_SCENARIO_SUPPORT"
+    scenario_schema: str = "M1V2_SCENARIO"
     final_test_access_count: int = 0
     paper_full_run: bool = False
 
 
 class LightGBMDistributionalPredictor:
-    """ARX-lagged LightGBM multiclass distributional baseline (DEVELOPMENT_ONLY).
+    """ARX-lagged LightGBM distributional V2 baseline (DEVELOPMENT_ONLY).
 
-    ``models`` maps each stochastic target to a fitted LightGBM classifier
-    whose class space equals the target's ``TargetBinContract`` class count.
-    Without a fitted model the predictor abstains (``ABSTAIN``) instead of
-    fabricating distributions.
+    ``contracts`` maps each V2 primitive target to its typed contract
+    (``HazardBinContract`` for T_IB_A00; ``HurdleQuantileContract`` for
+    D_OB/D_TX).  Without a registered train-frozen fitted artifact the
+    predictor abstains (``ABSTAIN``) instead of fabricating distributions.
     """
 
     def __init__(
         self,
-        bins: Mapping[str, TargetBinContract],
+        contracts: Mapping[str, object],
         models: Mapping[str, object] | None = None,
         feature_window: int = 6,
     ):
-        self.bins = dict(bins)
+        self.contracts = dict(contracts)
         self.models = dict(models or {})
         self.feature_window = int(feature_window)
         if self.feature_window < 1:
             raise ValueError("M1_FAST_FEATURE_WINDOW_MUST_BE_POSITIVE")
-        missing = set(self.bins) - set(self.models)
+        missing = set(self.contracts) - set(self.models)
         self.status = (
             M1FastPathStatus.DEVELOPMENT_ONLY
             if models is not None and not missing
@@ -95,41 +105,28 @@ class LightGBMDistributionalPredictor:
 
     def predict_distributions(
         self, values: torch.Tensor, lengths: torch.Tensor | None = None
-    ) -> dict[str, torch.Tensor]:
-        """Return ``{target: (batch, class_count) probabilities}`` like M1Pipeline."""
+    ) -> dict[str, torch.Tensor | dict[str, torch.Tensor]]:
+        """Return the V2 distribution summary schema like ``M1Pipeline``.
+
+        Fitted V2 FAST artifacts are not yet registered; until then the
+        predictor abstains instead of emitting hazard/hurdle-quantile outputs
+        that have not been trained.
+        """
         if self.status is M1FastPathStatus.ABSTAIN:
             raise ContractError("M1_FAST_PATH_ABSTAIN_NO_FITTED_MODELS")
-        features = self._arx_features(values)
-        output = {}
-        for target, model in self.models.items():
-            class_count = self.bins[target].class_count
-            if model.n_classes_ > class_count:
-                raise ContractError("M1_FAST_MODEL_CLASS_SPACE_MISMATCH")
-            scores = model.predict_proba(features.numpy())
-            # LightGBM drops classes absent from its fit labels; scatter the
-            # predicted probabilities back into the full bin class space.
-            probabilities = torch.zeros(
-                (values.shape[0], class_count), dtype=torch.float32
-            )
-            classes = np.asarray(model.classes_, dtype=np.int64)
-            probabilities[:, classes] = torch.tensor(scores, dtype=torch.float32)
-            row_sums = probabilities.sum(dim=-1, keepdim=True)
-            if torch.any(row_sums <= 0):
-                raise ContractError("M1_FAST_OUTPUT_INVALID")
-            probabilities = probabilities / row_sums
-            output[target] = probabilities
-        return output
+        raise ContractError("M1_FAST_V2_FITTED_ARTIFACT_NOT_REGISTERED")
 
-    def __call__(self, pre_state, values, lengths) -> dict[str, torch.Tensor]:
+    def __call__(self, pre_state, values, lengths) -> dict[str, object]:
         """Adapter matching ``M1Service(fast_predictor=...)`` callback signature."""
         return self.predict_distributions(values, lengths)
 
 
-FastPredictor = Callable[[object, torch.Tensor, torch.Tensor | None], dict[str, torch.Tensor]]
+FastPredictor = Callable[[object, torch.Tensor, torch.Tensor | None], dict[str, object]]
 
 __all__ = [
     "FastPathContract",
     "FastPredictor",
     "LightGBMDistributionalPredictor",
     "M1FastPathStatus",
+    "fast_v2_distribution_schema",
 ]

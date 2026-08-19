@@ -1,13 +1,19 @@
 """Single source of truth for M1 event-time semantics.
 
-Formal successor contract (manuscript reconciliation 2026-08-19):
+V2 principal contract (Round-2 empirical model alignment, Tranche 2):
 
-    D_OB >= 0      successor off-block delay  = max(0, DELTA_OB)
-    D_TX >= 0      successor excess taxi delay = max(0, T_TX - taxi_reference)
-    D_TO = D_OB + D_TX   (per-scenario identity, not a separately trained head)
+    T_IB_A00 -> D_OB -> D_TX          (formal primitive chain)
+    R_IB = max(0, T_IB_A00 - t)       (derived)
+    D_TO = D_OB + D_TX                (derived, never a separate head)
 
-``DELTA_OB`` and ``T_TX`` remain internal predictive auxiliaries; downstream
-M2/M4 may only consume the formal scenario contract fields.
+    D_OB >= 0    successor off-block delay (hurdle + conditional quantile)
+    D_TX >= 0    successor excess taxi delay (hurdle + conditional quantile)
+    D_TX conditions on formal D_OB, never on signed DELTA_OB.
+
+``DELTA_OB`` / ``T_TX`` / taxi-reference reconstructions are LEGACY_V1 /
+LABEL_CONSTRUCTION / EVALUATION_AUXILIARY only and are not V2 formal
+stochastic parents.  The V1 helper functions below are retained unchanged so
+that historical V1 artifacts and legacy consumers keep their provenance.
 """
 
 from __future__ import annotations
@@ -22,8 +28,18 @@ EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (
     0, 30, 60, 120, 180, 240, 300, 360, 420, 480
 )
 
-# Formal M1 output contract: predecessor in-block (R_IB / T_IB_A00) plus the
-# nonnegative successor delay pair; D_TO is always derived from D_OB + D_TX.
+# ---------------------------------------------------------------------------
+# V2 principal contract (Round-2 M1 V2 real estimator).
+# ---------------------------------------------------------------------------
+M1_V2_PRIMITIVE_TARGETS: Final[tuple[str, ...]] = ("T_IB_A00", "D_OB", "D_TX")
+M1_V2_DERIVED_TARGETS: Final[tuple[str, ...]] = ("R_IB", "D_TO")
+M1_V2_ALL_TARGETS: Final[tuple[str, ...]] = M1_V2_PRIMITIVE_TARGETS + M1_V2_DERIVED_TARGETS
+# DELTA_OB / raw T_TX are LEGACY_V1 / LABEL_CONSTRUCTION / EVALUATION_AUXILIARY
+# only; they are never V2 formal stochastic parents.
+M1_V2_LEGACY_AUXILIARY_TARGETS: Final[tuple[str, ...]] = ("DELTA_OB", "T_TX")
+
+# V1 formal output contract (Round-1 reconciliation 2026-08-19): predecessor
+# in-block (R_IB) plus the nonnegative successor delay pair; D_TO derived.
 M1_FORMAL_TARGETS: Final[tuple[str, ...]] = ("R_IB", "D_OB", "D_TX")
 M1_DERIVED_TARGETS: Final[tuple[str, ...]] = ("D_TO",)
 M1_INTERNAL_AUXILIARY_TARGETS: Final[tuple[str, ...]] = ("DELTA_OB", "T_TX")
@@ -76,6 +92,62 @@ M1_TARGET_SEMANTICS: Final[dict[str, dict[str, str]]] = {
         "role": "DERIVED",
     },
 }
+
+
+M1_V2_TARGET_SEMANTICS: Final[dict[str, dict[str, str]]] = {
+    "T_IB_A00": {
+        "external_name": "predecessor_A00_in_block_event_time",
+        "quantity": "absolute predecessor in-block event time (decision-time unresolved; discrete hazard)",
+        "role": "FORMAL_PRIMITIVE",
+    },
+    "R_IB": {
+        "external_name": "predecessor_in_block_remaining_time",
+        "quantity": "derived max(0, T_IB_A00 - t); never a separately trained head",
+        "role": "FORMAL_DERIVED",
+    },
+    "D_OB": {
+        "external_name": "successor_off_block_delay_distribution",
+        "quantity": "nonnegative successor off-block delay; hurdle + positive conditional quantile",
+        "role": "FORMAL_PRIMITIVE",
+    },
+    "D_TX": {
+        "external_name": "successor_excess_taxi_delay_distribution",
+        "quantity": "nonnegative successor excess taxi delay; hurdle + positive conditional quantile conditioned on formal D_OB",
+        "role": "FORMAL_PRIMITIVE",
+    },
+    "D_TO": {
+        "external_name": "successor_total_takeoff_delay_distribution",
+        "quantity": "D_OB plus D_TX per aligned scenario; never a separately trained head",
+        "role": "FORMAL_DERIVED",
+    },
+}
+
+
+def derived_r_ib_minutes(t_ib_a00_utc: str | None, decision_time_utc: str | None) -> float | None:
+    """Derived R_IB = max(0, T_IB_A00 - t); never a trained head."""
+    if t_ib_a00_utc is None or decision_time_utc is None:
+        return None
+    try:
+        remaining = (
+            datetime.fromisoformat(t_ib_a00_utc) - datetime.fromisoformat(decision_time_utc)
+        ).total_seconds() / 60.0
+    except ValueError:
+        return None
+    return max(0.0, remaining)
+
+
+def derived_r_ib_from_remaining(remaining_minutes: float | None) -> float | None:
+    """Derived R_IB from a nonnegative remaining-time draw (hazard parameterization)."""
+    if remaining_minutes is None:
+        return None
+    return max(0.0, float(remaining_minutes))
+
+
+def derived_d_to_from_primitives(d_ob_minutes: float | None, d_tx_minutes: float | None) -> float | None:
+    """V2 D_TO = D_OB + D_TX per scenario (never a separate head)."""
+    if d_ob_minutes is None or d_tx_minutes is None:
+        return None
+    return float(d_ob_minutes) + float(d_tx_minutes)
 
 
 def derived_r_ob_minutes(delta_ob_minutes: float | None) -> float | None:
@@ -141,6 +213,8 @@ def delay_from_event_times(t_ob: datetime | None, taxi_duration_minutes: float |
 
 
 def external_target_name(target_name: str) -> str:
+    if target_name in M1_V2_TARGET_SEMANTICS:
+        return M1_V2_TARGET_SEMANTICS[target_name]["external_name"]
     try:
         return M1_TARGET_SEMANTICS[target_name]["external_name"]
     except KeyError as exc:

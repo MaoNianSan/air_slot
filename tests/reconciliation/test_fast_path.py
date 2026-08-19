@@ -1,47 +1,26 @@
-"""FAST path closure tests — ARX-LightGBM shares the STATE_AWARE contract."""
+"""FAST path closure tests — V2 schema is shared with STATE_AWARE M1.
 
-import numpy as np
+The FAST predictor abstains (``ABSTAIN``) and raises until a train-frozen V2
+artifact is registered; the formal contract and the V2 scenario schema
+(``M1V2_SCENARIO``) are identical to the state-aware path.
+"""
+
 import pytest
 import torch
 
 from model.M1.fast_path import (
     LightGBMDistributionalPredictor,
     M1FastPathStatus,
+    fast_v2_distribution_schema,
 )
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import aligned_sample
+from model.M1.scenarios import ancestral_sample_v2
 from model.common.errors import ContractError
-
-lgb = pytest.importorskip("lightgbm")
-
-
-def _fit_predictor(pipeline, seed=0):
-    rng = np.random.default_rng(seed)
-    batch, time, features = 24, 6, 4
-    values = torch.tensor(rng.normal(size=(batch, time, features)), dtype=torch.float32)
-    models = {}
-    for target in ("R_IB", "DELTA_OB", "T_TX"):
-        class_count = pipeline.bins[target].class_count
-        labels = rng.integers(0, class_count, size=batch)
-        # ARX features replicate the predictor's lag-matrix construction.
-        lag = np.zeros((batch, time * features), dtype=np.float32)
-        for index in range(batch):
-            window = values[index].numpy()
-            lag[index] = window.reshape(-1)
-        model = lgb.LGBMClassifier(
-            n_estimators=4, max_depth=2, num_leaves=4,
-            objective="multiclass", num_class=class_count, verbose=-1,
-        )
-        model.fit(lag, labels)
-        models[target] = model
-    return LightGBMDistributionalPredictor(
-        pipeline.bins, models=models, feature_window=time
-    )
 
 
 def test_fast_predictor_abstains_without_fitted_models():
     pipeline = M1Pipeline.smoke(input_size=4)
-    predictor = LightGBMDistributionalPredictor(pipeline.bins)
+    predictor = LightGBMDistributionalPredictor(pipeline.contracts)
     assert predictor.status is M1FastPathStatus.ABSTAIN
     with pytest.raises(ContractError, match="M1_FAST_PATH_ABSTAIN"):
         predictor.predict_distributions(torch.zeros(1, 2, 4))
@@ -49,34 +28,38 @@ def test_fast_predictor_abstains_without_fitted_models():
 
 def test_fast_distributions_share_state_aware_schema_and_scenarios():
     pipeline = M1Pipeline.smoke(input_size=4)
-    predictor = _fit_predictor(pipeline)
+    # Even a fitted model cannot emit V2 distributions until a train-frozen
+    # V2 artifact is registered (no fabricated development outputs).
+    predictor = LightGBMDistributionalPredictor(
+        pipeline.contracts, models={name: object() for name in pipeline.contracts})
     assert predictor.status is M1FastPathStatus.DEVELOPMENT_ONLY
     contract = predictor.contract()
     assert contract.feature_semantics == "CAUSAL_HISTORY_PREFIX_ONLY"
-    assert contract.target_semantics == "R_IB_DELTA_OB_T_TX_BIN_CONTRACTS"
-    assert contract.output_schema == "TARGET_KEYED_CLASS_PROBABILITIES"
-    assert contract.scenario_schema == "ALIGNED_SCENARIO"
+    assert contract.target_semantics == "T_IB_A00_D_OB_D_TX_HAZARD_HURDLE_QUANTILE_CONTRACTS"
+    assert contract.output_schema == "V2_TARGET_KEYED_DISTRIBUTION_SUMMARY"
+    assert contract.scenario_schema == "M1V2_SCENARIO"
     assert contract.final_test_access_count == 0
     assert contract.paper_full_run is False
+    with pytest.raises(ContractError, match="M1_FAST_V2_FITTED_ARTIFACT_NOT_REGISTERED"):
+        predictor.predict_distributions(torch.zeros(1, 6, 4))
 
-    values = torch.zeros(1, 6, 4)
-    distributions = predictor.predict_distributions(values)
-    assert set(distributions) == {"R_IB", "DELTA_OB", "T_TX"}
-    for target in distributions:
-        class_count = pipeline.bins[target].class_count
-        assert distributions[target].shape == (1, class_count)
-        assert torch.allclose(distributions[target].sum(dim=-1),
-                              torch.ones(1), atol=1e-4)
+    # FAST and STATE_AWARE declare the same formal distribution schema.
+    assert set(fast_v2_distribution_schema()) == {"T_IB_A00", "D_OB", "D_TX"}
+    assert fast_v2_distribution_schema()["D_OB"] == {
+        "zero_probability": "scalar", "positive_quantiles_minutes": "vector"}
+    assert set(pipeline.predict_distributions(
+        torch.zeros(1, 6, 4), torch.ones(1, dtype=torch.long))) == {
+        "T_IB_A00", "D_OB", "D_TX"}
 
-    # Same aligned scenario contract as the GRU path.
-    scenarios = aligned_sample(
-        distributions, pipeline.bins,
+    # Both paths consume the same V2 scenario schema.
+    history = pipeline.model.encode_history(
+        torch.zeros(1, 6, 4), torch.ones(1, dtype=torch.long))
+    scenarios = ancestral_sample_v2(
+        pipeline.model, history, pipeline.contracts,
         episode_id="e", decision_node_id="n", stage="PRE_IB",
         observed={}, count=8, seed=11,
-        target_support={name: "SUPPORTED" for name in pipeline.bins},
-        tx_reference_minutes=12.0,
-        taxi_reference_id="reference", taxi_reference_hash="freeze",
-        taxi_reference_support_state="SUPPORTED",
+        target_support={name: "SUPPORTED" for name in pipeline.contracts},
+        decision_time_utc="2019-01-01T12:00:00+00:00",
     )
     assert all(row.scenario_weight == 1 / 8 for row in scenarios)
     assert all(row.d_to_minutes is None or row.d_to_minutes >= 0 for row in scenarios)
@@ -91,7 +74,8 @@ def test_fast_path_works_through_m1_service_callback_contract():
     from model.M1.service import M1Service
 
     pipeline = M1Pipeline.smoke(input_size=4)
-    predictor = _fit_predictor(pipeline, seed=3)
+    predictor = LightGBMDistributionalPredictor(
+        pipeline.contracts, models={name: object() for name in pipeline.contracts})
     service = M1Service(pipeline, model_version="fixture", fast_predictor=predictor)
     values = torch.zeros(1, 6, 4)
     lengths = torch.tensor([6])
@@ -101,6 +85,7 @@ def test_fast_path_works_through_m1_service_callback_contract():
     with pytest.raises(ContractError, match="M1_FAST_PATH_NOT_CONFIGURED"):
         M1Service(pipeline, model_version="fixture").predict_now(
             pre_state, values, lengths, mode="fast")
-    # Callback returns the shared distribution schema before M1Forecast wraps it.
-    distributions = predictor.predict_distributions(values)
-    assert set(distributions) == set(pipeline.bins)
+    # The callback abstains until a train-frozen V2 FAST artifact is
+    # registered; it never fabricates distributional outputs.
+    with pytest.raises(ContractError, match="M1_FAST_V2_FITTED_ARTIFACT_NOT_REGISTERED"):
+        predictor(pre_state, values, lengths)

@@ -1,0 +1,79 @@
+# ROUND2_M1_V2_MIGRATION — M1 V2 真实估计器重建（Tranche 2）
+
+- 日期: 2026-08-19
+- REPOSITORY_HEAD: `dc41d21d64eb58277cda73a7fea7bfa3680f9521`
+- WORKTREE_STATUS: dirty（本 tranche 全部改动未提交；无 commit/push）
+- 规格: `AIR_SLOT_ROUND2_EMPIRICAL_MODEL_ALIGNMENT` Tranche 2（attachment 90ef0a7d）
+- 范围: 仅 M1 + 其依赖的 shared contracts/config/tests；未进入 M2 七分量、PRE factual replay freeze、
+  RMB omega freeze、Exp1-4
+- FINAL_TEST_ACCESS_COUNT: 0（未访问 final test，未做 formal 全量实验）
+
+## 0. 结论摘要
+
+| 项 | 状态 |
+|---|---|
+| M1 principal 语义 | 由 `R_IB -> DELTA_OB -> T_TX` 三头 softmax 分类器迁移为 `T_IB_A00 -> D_OB -> D_TX` 真实估计器 |
+| predecessor head | DISCRETE_HAZARD（remaining-time bins + survival tail，PMF 恒归 1） |
+| successor heads | HURDLE_QUANTILE（零质量 hurdle + positive conditional quantiles，softplus cumsum 保证单调正） |
+| D_TX 形式父节点 | formal D_OB（signed DELTA_OB 永不进入 D_TX 图） |
+| D_TO | `D_OB + D_TX` 逐 scenario 派生，无独立 head |
+| R_IB | `max(0, T_IB_A00 - t)` 派生，无独立 head |
+| history | FULL_ADAPTIVE_CAUSAL_PREFIX，H=32（`m1_fixed_history_window_minutes=30` 迁为 SENSITIVITY_ONLY/HISTORICAL_V1） |
+| 最终状态 | PASS_WITH_HORIZON_DECISION_PENDING（唯一 HUMAN_DECISION_REQUIRED: `m1_v2_quantile_levels` 为 DEVELOPMENT_ONLY） |
+
+## 1. 正式科学契约
+
+- primitive chain: `T_IB_A00 -> D_OB -> D_TX`
+- 派生量: `R_IB = max(0, T_IB_A00 - t)`、`D_TO = D_OB + D_TX`（逐 scenario）
+- 前驱 head: discrete hazard；公开 scenario 可恢复绝对事件时间 `T_IB_A00`
+- 后继 head: `P(D=0 | parents, h) + P(D>0 | parents, h) * Q_D(u | D>0, parents, h)`
+- Data2 编码器不要求 trajectory；`ceiling_base_m` 进入受支持 weather 特征集
+- 警告事件: `P(D_TO > 30)`，只消费 V2 formal scenario（T_IB_A00 / D_OB / D_TX / D_TO）
+- config: `m1_state_estimator_v2 = M1_STATE_ESTIMATOR_V2`（FROZEN，ROUND2_TRANCHE2_SPEC provenance）
+
+## 2. 实现落点（未提交）
+
+- `model/M1/semantics.py` — V2 常量与派生 helper（`derived_r_ib_minutes`、`derived_d_to_from_primitives`）
+- `model/M1/contracts.py` — `HazardBinContract`、`HurdleQuantileContract`、`M1V2TargetLabel`、`M1V2Scenario`
+- `model/M1/loss.py` — `hazard_pmf`、`hazard_interval_nll`、`pinball_loss`、`hurdle_quantile_loss`、
+  `monotone_positive_quantiles`、`quantile_value`（含全局分母 batch-split invariant 支持）
+- `model/M1/network.py` — `M1V2GRU`（hazard_head / ib_embedding / d_ob 双 head / d_ob_embedding / d_tx 双 head）
+- `model/M1/scenarios.py` — `_uniform_v2`、`ancestral_sample_v2`（T_IB_A00 -> D_OB -> D_TX 祖先序、
+  typed observed 替换、父节点 ABSTAIN 传播到子 scenario）
+- `model/M1/pipeline.py` — V2 `M1Pipeline`（smoke/from_scientific_config/predict_distributions/sample_from_pre/save/load）
+- `model/M1/lifecycle.py` — V2 training lifecycle（teacher forcing 依 formal 序；microbatch == fullbatch 梯度）
+- `model/M1/warning.py` — V2 `batched_warning_probability` / `warning_probability`
+- `model/M1/data.py` — V2 特征组（X=30, M=36, Delta=2, E=30, S=4，合计 102）与无 trajectory 编码器
+- `model/M1/target_builder.py` — `build_v2_target_labels`（T_IB_A00 / D_OB / D_TX，stage-gated）
+- `model/M1/{cache,coverage,preparation,fast_path,service,summaries,cli,__init__}.py` — V2 消费方
+- `configs/scientific/foundation.yaml` — `m1_state_estimator_v2`、`m1_v2_quantile_levels`(DEVELOPMENT_ONLY)、
+  `m1_fixed_history_window_minutes` -> SENSITIVITY_ONLY、`m1_stochastic_targets` 增加 LEGACY_V1 role
+
+## 3. 测试执行
+
+- 新增 V2 focused tests: `tests/m1/test_v2_contracts.py`、`tests/m1/test_v2_loss.py`、
+  `tests/m1/test_v2_science_closure.py`（observed-IB contraction、signed-DELTA_OB 隔离、网络级零质量/单调、
+  无 trajectory 编码、CIG 支持、full-history prefix）
+- 迁移 `tests/m1/*` 至 V2：ancestral/batched warning/lifecycle/performance/pipeline/signed-ob/warning 等
+- 跨模块更新：`tests/reconciliation/test_m1_joint_identity.py`、`tests/reconciliation/test_fast_path.py`、
+  `tests/integration/test_refactor_behavioral_equivalence.py`、`tests/contract/test_configuration_layers.py`、
+  `tests/unit/test_m1_coverage_data2.py`、`tests/static/test_pre_ownership_gate_v2.py`
+- 全仓结果: **562 passed, 1 skipped**（Tranche 2 前基线 543 passed, 1 skipped）
+- `exp/` 未修改；未出现需分类 `EXPECTED_EXPERIMENT_STALE` 的失败
+
+## 4. 修复的沿路缺陷（不要回退）
+
+- `hurdle_quantile_loss` 对 `(B,1)` zero logit 兼容 `(B,)` target
+- 非激活行 NaN value 不再污染 pinball 均值
+- loss 项按全局 active count 归一（denominator），microbatch 与 fullbatch loss/gradient 严格一致
+- `batching_diagnostics` padding 计算恢复为 `max_len * batch_size` 口径
+- `quantile_value` 支持 scalar / (B,) / (B,S) uniform
+- Data1 父 ABSTAIN 传播：D_OB 不支持时 D_TX 一并 ABSTAIN（不再抛 PARENT_UNSUPPORTED）
+- `_sample_from_pmf` 消除非连续 searchsorted warning
+
+## 5. 保留的 human gates
+
+- `HORIZON_SEMANTICS_DECISION_REQUIRED`：不伪造 `tau={0,15,60}`；horizon 语义保持待决策
+- `m1_v2_quantile_levels` = DEVELOPMENT_ONLY（manuscript 未冻结正分位数值；`[0.1,0.3,0.5,0.7,0.9]` 仅 scaffold）
+- Data2 factual replay availability freeze 未执行（Round-2 独立 gate）
+- `FINAL_TEST_ACCESS_COUNT = 0`

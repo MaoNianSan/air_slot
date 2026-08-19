@@ -36,14 +36,28 @@ def test_layers_load_separately():
     assert hidden_size.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["m1_hidden_size_candidates"].value == [16,32]
     fixed_window = layers.scientific.parameters["m1_fixed_history_window_minutes"]
-    assert fixed_window.freeze_state.value == "FROZEN"
+    assert fixed_window.freeze_state.value == "SENSITIVITY_ONLY"
     assert fixed_window.value == 30
+    assert fixed_window.provenance["role"] == "HISTORICAL_V1_SENSITIVITY_ONLY"
     assert fixed_window.provenance["decision_id"] == "D3_SIGNED_M1_H_W_REFREEZE"
     assert fixed_window.provenance["target_contract"] == ["R_IB", "DELTA_OB", "T_TX"]
     assert fixed_window.provenance["evidence"].endswith("m1_signed_wstar_evidence.json")
     assert fixed_window.provenance["final_test_access_count"] == 0
-    assert layers.scientific.parameters["m1_stochastic_targets"].value == [
-        "R_IB", "DELTA_OB", "T_TX"]
+    stochastic = layers.scientific.parameters["m1_stochastic_targets"]
+    assert stochastic.value == ["R_IB", "DELTA_OB", "T_TX"]
+    assert stochastic.provenance["role"] == "LEGACY_V1"
+    v2_contract = layers.scientific.parameters["m1_state_estimator_v2"]
+    assert v2_contract.freeze_state.value == "FROZEN"
+    assert v2_contract.value == "M1_STATE_ESTIMATOR_V2"
+    assert v2_contract.provenance["primitive_targets"] == ["T_IB_A00", "D_OB", "D_TX"]
+    assert v2_contract.provenance["derived_targets"] == ["R_IB", "D_TO"]
+    assert v2_contract.provenance["predecessor_head"] == "DISCRETE_HAZARD"
+    assert v2_contract.provenance["history"] == "FULL_ADAPTIVE_CAUSAL_PREFIX"
+    assert v2_contract.provenance["final_test_access_count"] == 0
+    quantile_levels = layers.scientific.parameters["m1_v2_quantile_levels"]
+    assert quantile_levels.freeze_state.value == "DEVELOPMENT_ONLY"
+    assert quantile_levels.value == [0.1, 0.3, 0.5, 0.7, 0.9]
+    assert quantile_levels.provenance["final_test_access_count"] == 0
     formal_contract = layers.scientific.parameters["m1_formal_output_contract"]
     assert formal_contract.freeze_state.value == "FROZEN"
     assert formal_contract.value == ["R_IB", "D_OB", "D_TX", "D_TO"]

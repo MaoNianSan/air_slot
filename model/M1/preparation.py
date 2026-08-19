@@ -1,3 +1,10 @@
+"""M1 V2 training example preparation from PRE episodes.
+
+Builds legal adaptive V2 histories and stage-gated labels
+(T_IB_A00 / D_OB / D_TX); D_TX labels require the train-frozen taxi reference
+at label construction.
+"""
+
 from __future__ import annotations
 
 from collections import Counter
@@ -8,8 +15,9 @@ from model.M1.history import adaptive_history
 from model.M1.lifecycle import M1TrainingExample
 
 
-def active_rows(partition) -> tuple[tuple, dict[str, int]]:
-    """Construct legal adaptive M1 histories and labels from PRE episodes."""
+def active_rows(partition, *, taxi_reference_minutes=None, taxi_reference_id=None,
+                taxi_reference_hash=None) -> tuple[tuple, dict[str, int]]:
+    """Construct legal adaptive M1 V2 histories and labels from PRE episodes."""
     output = []
     stages = Counter()
     for prepared in partition:
@@ -20,6 +28,9 @@ def active_rows(partition) -> tuple[tuple, dict[str, int]]:
             successor_schedule=prepared.successor_schedule,
             predecessor_outcome=prepared.predecessor_outcome,
             successor_outcome=prepared.successor_outcome,
+            taxi_reference_minutes=taxi_reference_minutes,
+            taxi_reference_id=taxi_reference_id,
+            taxi_reference_hash=taxi_reference_hash,
         ):
             history = adaptive_history(prefix)
             output.append((prepared.episode, history, labels))
@@ -28,17 +39,17 @@ def active_rows(partition) -> tuple[tuple, dict[str, int]]:
 
 
 def build_training_examples(rows, normalization, bins):
-    """Encode legal M1 histories into model-owned training examples."""
+    """Encode legal M1 V2 histories into model-owned training examples."""
     return tuple(
-        M1TrainingExample.from_target_labels(
-            values=encode_pre_sequence(prefix, normalization), labels=labels, bins=bins
+        M1TrainingExample.from_v2_target_labels(
+            values=encode_pre_sequence(prefix, normalization), labels=labels
         )
         for _, prefix, labels in rows
     )
 
 
 def normalization_rows(prefixes):
-    """Extract M1 normalization inputs from legal PRE-state sequences."""
+    """Extract V2 normalization inputs from legal PRE-state sequences."""
     rows = []
     for states in prefixes:
         previous = None
@@ -51,20 +62,16 @@ def normalization_rows(prefixes):
                     row["schedule.signed_minutes_to_crs_departure"] = (
                         departure - state.decision_node.decision_time
                     ).total_seconds() / 60
-            for variable, name in (
-                ("predecessor_motion", "motion.observation_age_minutes"),
-                ("current_weather", "weather.observation_age_minutes"),
-            ):
-                lineage = next(
-                    (
-                        entry
-                        for entry in state.variable_lineage
-                        if entry.scientific_variable == variable
-                    ),
-                    None,
-                )
-                if lineage and lineage.age_seconds is not None:
-                    row[name] = lineage.age_seconds / 60
+            weather_lineage = next(
+                (
+                    entry
+                    for entry in state.variable_lineage
+                    if entry.scientific_variable == "current_weather"
+                ),
+                None,
+            )
+            if weather_lineage and weather_lineage.age_seconds is not None:
+                row["weather.observation_age_minutes"] = weather_lineage.age_seconds / 60
             row["node.spacing_minutes"] = (
                 0.0
                 if previous is None

@@ -5,10 +5,10 @@ import torch
 
 from model.common.errors import ContractError
 from model.common.enums import SupportState
-from model.M1.data import (E_NAMES, FEATURE_NAMES, GROUP_SLICES, M1NormalizationArtifact,
-                           NormalizationValue, encode_pre_sequence,
-                           fit_train_normalization)
-from model.M1.target_builder import build_data2_target_labels
+from model.M1.data import (E_NAMES_V2, FEATURE_NAMES_V2, GROUP_SLICES_V2,
+                           M1NormalizationArtifact, NormalizationValue,
+                           encode_pre_sequence, fit_train_normalization)
+from model.M1.target_builder import build_v2_target_labels
 from model.M1.pipeline import M1Pipeline
 from model.common.config import ScientificConfig, load_config_layers
 from model.PRE.canonical.normalization import canonicalize_airport_row, canonicalize_ontime_row
@@ -34,7 +34,7 @@ def _row(**updates):
 def _normalization():
     return M1NormalizationArtifact(fitted_split="train",
         values={name: NormalizationValue(mean=0, std=1)
-                for name in __import__("model.M1.data", fromlist=["NORMALIZED_NAMES"]).NORMALIZED_NAMES})
+                for name in __import__("model.M1.data", fromlist=["NORMALIZED_NAMES_V2"]).NORMALIZED_NAMES_V2})
 
 
 def test_multiday_data2_actual_timestamp_uses_posthoc_date_offset():
@@ -100,11 +100,11 @@ def test_typed_features_use_approved_groups_and_ignore_outcomes_ids_and_airports
         DepDelayMinutes="120", ArrDelayMinutes="180", TaxiOut="40"), ZONES)
     second = publish_production_pre(request.model_copy(update={"records":(changed_schedule,changed_outcome)})).pre_state
     a=encode_pre_sequence([first],_normalization());b=encode_pre_sequence([second],_normalization())
-    assert a.shape == (1,len(FEATURE_NAMES)) and torch.equal(a,b)
+    assert a.shape == (1,len(FEATURE_NAMES_V2)) and torch.equal(a,b)
     assert all("airport" not in name and "flight_id" not in name and "dataset" not in name
-               for name in FEATURE_NAMES)
-    e=a[0,GROUP_SLICES["E"]]
-    assert e.shape[0] == len(E_NAMES)
+               for name in FEATURE_NAMES_V2)
+    e=a[0,GROUP_SLICES_V2["E"]]
+    assert e.shape[0] == len(E_NAMES_V2)
 
 
 def test_train_only_normalization_and_typed_labels_preserve_identity_and_split():
@@ -126,31 +126,32 @@ def test_train_only_normalization_and_typed_labels_preserve_identity_and_split()
         successor_id=episode.successor_flight_id,dataset_instance_id="data2_2019",
         decision_time=node.decision_time,information_cutoff=node.information_cutoff,records=(succ_schedule,),
         config_hash="sha256:c",registry_hash="sha256:r")).pre_state
-    labels=build_data2_target_labels(episode=episode,node=node,predecessor_outcome=pred_outcome,
-        successor_schedule=succ_schedule,successor_outcome=succ_outcome,target_support=pre.target_support)
-    assert {x.target_name for x in labels} == {"R_IB","DELTA_OB","T_TX"}
+    labels=build_v2_target_labels(episode=episode,node=node,predecessor_outcome=pred_outcome,
+        successor_schedule=succ_schedule,successor_outcome=succ_outcome,target_support=pre.target_support,
+        taxi_reference_minutes=0.0,taxi_reference_id="DATA2_TAXI_REFERENCE@1.0.0",
+        taxi_reference_hash="sha256:reference")
+    assert {x.target_name for x in labels} == {"T_IB_A00","D_OB","D_TX"}
     assert all(x.episode_id == "e" and x.split == "train" and x.provenance for x in labels)
-    assert {x.target_name:x.exact_minutes for x in labels} == {"R_IB":30.0,"DELTA_OB":65.0,"T_TX":15.0}
+    assert {x.target_name:x.exact_minutes for x in labels} == {
+        "T_IB_A00":30.0,"D_OB":65.0,"D_TX":15.0}
 
 
 def test_formal_pipeline_uses_frozen_target_supports():
     scientific=load_config_layers(__import__("pathlib").Path("configs")).scientific
-    pipeline=M1Pipeline.from_scientific_config(scientific,input_size=len(FEATURE_NAMES),
+    pipeline=M1Pipeline.from_scientific_config(scientific,input_size=len(FEATURE_NAMES_V2),
                                                normalization=_normalization(), hidden_size=16)
     assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
-        "R_IB":360,"DELTA_OB":180,"T_TX":60}
-    for target, finite, overflow in (("R_IB",360,365),("T_TX",60,65)):
+        "T_IB_A00":360,"D_OB":180,"D_TX":60}
+    for target, finite, overflow in (("T_IB_A00",360,365),("D_OB",180,185),("D_TX",60,65)):
         bins=pipeline.bins[target]
-        assert bins.encode(finite) == bins.class_count-2
-        assert bins.encode(finite+4.999) == bins.class_count-2
+        assert bins.encode(finite-0.001) == bins.class_count-2
+        assert bins.encode(finite) == bins.class_count-1
         assert bins.encode(overflow) == bins.class_count-1
         assert bins.encode(overflow+10_000) == bins.class_count-1
-    signed = pipeline.bins["DELTA_OB"]
-    assert signed.signed and signed.min_finite_minutes == -180
-    assert signed.encode(-185) == signed.underflow_index
-    assert signed.encode(-180) == signed.finite_start_index
-    assert signed.encode(180) == signed.class_count - 2
-    assert signed.encode(185) == signed.overflow_index
+    # Formal D_OB / D_TX supports are nonnegative; signed DELTA_OB is legacy.
+    for target in ("D_OB", "D_TX"):
+        with pytest.raises(ValueError, match="nonnegative"):
+            pipeline.bins[target].encode(-1)
 
 
 def test_output_support_change_cannot_change_full_input_history():
@@ -169,22 +170,23 @@ def test_output_support_change_cannot_change_full_input_history():
     alternate=ScientificConfig.model_validate({"schema_version":base.schema_version,
         "parameters":{name:item.model_dump() for name,item in base.parameters.items()}})
     replacements={"m1_r_ib_max_finite_minutes":480,
-                  "m1_r_ob_max_finite_minutes":240,
+                  "m1_delta_ob_max_finite_minutes":240,
                   "m1_t_tx_max_finite_minutes":90}
     alternate=alternate.model_copy(update={"parameters":{
         name:(item.model_copy(update={"value":replacements[name]}) if name in replacements else item)
         for name,item in alternate.parameters.items()}})
-    pipeline_a=M1Pipeline.from_scientific_config(base,input_size=len(FEATURE_NAMES),normalization=normalization, hidden_size=16)
-    pipeline_b=M1Pipeline.from_scientific_config(alternate,input_size=len(FEATURE_NAMES),normalization=normalization, hidden_size=16)
+    pipeline_a=M1Pipeline.from_scientific_config(base,input_size=len(FEATURE_NAMES_V2),normalization=normalization, hidden_size=16)
+    pipeline_b=M1Pipeline.from_scientific_config(alternate,input_size=len(FEATURE_NAMES_V2),normalization=normalization, hidden_size=16)
     assert torch.equal(encoded_a,encoded_b)
     assert [state.decision_node.decision_time for state in states] == [
         schedule.scheduled_departure_utc+timedelta(minutes=5*i) for i in range(3)]
     assert encoded_a.shape[0] == 3
     assert {name:head.class_count for name,head in pipeline_a.bins.items()} != {
         name:head.class_count for name,head in pipeline_b.bins.items()}
-    assert pipeline_a.bins["DELTA_OB"].encode(-185) == pipeline_a.bins["DELTA_OB"].underflow_index
-    assert pipeline_b.bins["DELTA_OB"].encode(185) == pipeline_b.bins["DELTA_OB"].overflow_index
-    assert pipeline_a.bins["DELTA_OB"].class_count == pipeline_b.bins["DELTA_OB"].class_count
+    assert pipeline_a.bins["T_IB_A00"].class_count != pipeline_b.bins["T_IB_A00"].class_count
+    assert pipeline_a.bins["D_OB"].class_count != pipeline_b.bins["D_OB"].class_count
+    assert pipeline_a.bins["D_TX"].class_count != pipeline_b.bins["D_TX"].class_count
+    assert pipeline_a.bins["D_OB"].encode(0) == 0
 
 
 def test_history_prefix_rejects_omission_and_wrong_grid():

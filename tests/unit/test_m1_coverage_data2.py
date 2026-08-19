@@ -15,7 +15,7 @@ from model.common.enums import (AvailabilityBasis, DecisionTimeRole, EvidenceCla
 from model.common.errors import ContractError
 from model.common.value_objects import ProvenanceRef
 from model.M1.coverage import active_node_prefixes, build_all_node_examples
-from model.M1.data import FEATURE_NAMES, fit_train_normalization
+from model.M1.data import FEATURE_NAMES_V2, fit_train_normalization
 from model.M1.pipeline import M1Pipeline
 from model.PRE.contracts.canonical import FlightRecord, OperationalEventRecord
 from model.PRE.contracts.pre_state import PREState, TargetSupportState
@@ -181,15 +181,18 @@ def test_early_arrival_episode_without_pre_ib_still_contributes_nodes():
     prefixes = list(active_node_prefixes(
         episode=episode, nodes=nodes, states=states,
         successor_schedule=schedule, predecessor_outcome=pred_out,
-        successor_outcome=succ_out))
+        successor_outcome=succ_out,
+        taxi_reference_minutes=12.0,
+        taxi_reference_id="DATA2_TAXI_REFERENCE@1.0.0",
+        taxi_reference_hash="sha256:reference"))
     assert len(prefixes) == len(nodes)          # every node still contributes
     first_node, first_prefix, first_labels = prefixes[0]
     assert first_node.operational_stage is OperationalStage.POST_IB_PRE_OB
     by_name = {label.target_name: label for label in first_labels}
-    assert by_name["R_IB"].active is False       # already realized at this stage
-    assert by_name["R_IB"].abstention_reason == "TARGET_OBSERVED_AT_STAGE"
-    assert by_name["DELTA_OB"].active is True
-    assert by_name["T_TX"].active is True
+    assert by_name["T_IB_A00"].active is False  # already realized at this stage
+    assert by_name["T_IB_A00"].abstention_reason == "TARGET_OBSERVED_AT_STAGE"
+    assert by_name["D_OB"].active is True
+    assert by_name["D_TX"].active is True
 
 
 def test_late_arrival_episode_keeps_pre_ib_nodes():
@@ -204,13 +207,16 @@ def test_late_arrival_episode_keeps_pre_ib_nodes():
     prefixes = list(active_node_prefixes(
         episode=episode, nodes=nodes, states=states,
         successor_schedule=schedule, predecessor_outcome=pred_out,
-        successor_outcome=succ_out))
+        successor_outcome=succ_out,
+        taxi_reference_minutes=10.0,
+        taxi_reference_id="DATA2_TAXI_REFERENCE@1.0.0",
+        taxi_reference_hash="sha256:reference"))
     assert len(prefixes) == len(nodes)
     assert prefixes[0][0].operational_stage is OperationalStage.PRE_IB
     by_name = {label.target_name: label for label in prefixes[0][2]}
-    assert by_name["R_IB"].active is True
-    assert by_name["DELTA_OB"].active is True
-    assert by_name["T_TX"].active is True
+    assert by_name["T_IB_A00"].active is True
+    assert by_name["D_OB"].active is True
+    assert by_name["D_TX"].active is True
 
 
 def test_completed_nodes_with_no_active_target_are_excluded():
@@ -225,7 +231,10 @@ def test_completed_nodes_with_no_active_target_are_excluded():
     prefixes = list(active_node_prefixes(
         episode=episode, nodes=nodes, states=states,
         successor_schedule=schedule, predecessor_outcome=pred_out,
-        successor_outcome=succ_out))
+        successor_outcome=succ_out,
+        taxi_reference_minutes=8.0,
+        taxi_reference_id="DATA2_TAXI_REFERENCE@1.0.0",
+        taxi_reference_hash="sha256:reference"))
     assert len(prefixes) < len(nodes)
     assert all(node.operational_stage is not OperationalStage.COMPLETED
                for node, _, _ in prefixes)
@@ -242,7 +251,7 @@ def test_build_all_node_examples_one_example_per_node_in_order():
         succ_actual_dep=t + timedelta(minutes=195),
         succ_wheels_off=t + timedelta(minutes=202), taxi_out=12.0)
     normalization = fit_train_normalization([], split="train")
-    pipeline = M1Pipeline.smoke(input_size=len(FEATURE_NAMES))
+    pipeline = M1Pipeline.smoke(input_size=len(FEATURE_NAMES_V2))
     examples = build_all_node_examples(
         episode=episode, nodes=nodes, states=states,
         successor_schedule=schedule, predecessor_outcome=pred_out,
@@ -252,8 +261,9 @@ def test_build_all_node_examples_one_example_per_node_in_order():
     for index, example in enumerate(examples):
         assert example.values.shape[0] == index + 1     # full prefix per node
         assert example.episode_id == episode.episode_id
-    assert examples[0].active == {"R_IB": False, "DELTA_OB": True, "T_TX": True}
-    assert examples[-1].active == {"R_IB": False, "DELTA_OB": True, "T_TX": True}
+    # D_TX labels abstain without a train-frozen taxi reference.
+    assert examples[0].active == {"T_IB_A00": False, "D_OB": True, "D_TX": False}
+    assert examples[-1].active == {"T_IB_A00": False, "D_OB": True, "D_TX": False}
 
 
 def test_nodes_states_length_mismatch_rejected():

@@ -16,8 +16,8 @@ from .data import M1NormalizationArtifact
 from .lifecycle import M1TrainingExample
 
 
-CACHE_SCHEMA_VERSION = "M1_SIGNED_OB_DEVELOPMENT_BASE_CACHE_V1"
-TARGET_NAMES = ("R_IB", "DELTA_OB", "T_TX")
+CACHE_SCHEMA_VERSION = "M1_V2_DEVELOPMENT_BASE_CACHE_V1"
+TARGET_NAMES = ("T_IB_A00", "D_OB", "D_TX")
 ALLOWED_SPLITS = ("train", "calibration", "development")
 REQUIRED_CONTRACT_HASHES = (
     "PRE_contract_hash",
@@ -119,7 +119,8 @@ class M1CanonicalRaggedStore:
         sample_end_offsets = torch.tensor(
             [len(example.values) for _, example in samples], dtype=torch.int32)
         labels = {name: torch.tensor(
-            [example.labels[name] for _, example in samples], dtype=torch.int32)
+            [(-1.0 if example.targets.get(name) is None else float(example.targets[name]))
+             for _, example in samples], dtype=torch.float32)
             for name in TARGET_NAMES}
         active = {name: torch.tensor(
             [example.active[name] for _, example in samples], dtype=torch.bool)
@@ -192,11 +193,15 @@ class M1RaggedDataset(Sequence[M1TrainingExample]):
             width_nodes = self.window_minutes // 5 + 1
             start = max(start, end - width_nodes)
         values = self.store.values_flat[episode_start + start:episode_start + end]
+        targets = {}
+        for name in TARGET_NAMES:
+            stored = float(self.store.labels[name][sample_index])
+            targets[name] = None if stored < 0 else stored
         return M1TrainingExample(
             episode_id=self.store.sample_episode_ids[sample_index],
             episode_date=date.fromisoformat(self.store.sample_episode_dates[sample_index]),
             values=values,
-            labels={name: int(self.store.labels[name][sample_index]) for name in TARGET_NAMES},
+            targets=targets,
             active={name: bool(self.store.active[name][sample_index]) for name in TARGET_NAMES},
             decision_node_id=self.store.sample_decision_node_ids[sample_index] or None,
         )
@@ -321,7 +326,7 @@ class M1DevelopmentBaseCache:
                     str(value) for value in arrays["sample_decision_node_ids"]),
                 sample_episode_dates=tuple(str(value) for value in arrays["sample_episode_dates"]),
                 sample_splits=tuple(str(value) for value in arrays["sample_splits"]),
-                labels={name: tensor(f"labels_{name}").to(dtype=torch.int32)
+                labels={name: tensor(f"labels_{name}").to(dtype=torch.float32)
                         for name in TARGET_NAMES},
                 active={name: tensor(f"active_{name}").to(dtype=torch.bool)
                         for name in TARGET_NAMES},

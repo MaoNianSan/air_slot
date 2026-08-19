@@ -1,14 +1,39 @@
+"""V2 batched warning closure: vectorized path equals the object path.
+
+The batched sampler must agree with ``ancestral_sample_v2`` +
+``warning_probability`` on every sampled index and on the derived D_TO
+probability, and it must abstain when formal inputs are missing.
+"""
+
 import pytest
 import torch
 
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import ancestral_sample
+from model.M1.scenarios import ancestral_sample_v2
 from model.M1.warning import batched_warning_probability, warning_probability
+
+
+def _object_scenarios(pipeline, history, *, episode, node, stage, decision_time_utc,
+                      observed, count, seed):
+    return ancestral_sample_v2(
+        pipeline.model,
+        history,
+        pipeline.contracts,
+        episode_id=episode,
+        decision_node_id=node,
+        stage=stage,
+        observed=observed,
+        count=count,
+        seed=seed,
+        target_support={name: "SUPPORTED" for name in pipeline.contracts},
+        decision_time_utc=decision_time_utc,
+        temperatures=pipeline.temperatures,
+    )
 
 
 def test_batched_warning_matches_object_reference_categories_and_probability():
     pipeline = M1Pipeline.smoke(input_size=4)
-    pipeline.temperatures = {"R_IB": 1.3, "DELTA_OB": 0.8, "T_TX": 1.1}
+    pipeline.temperatures = {"T_IB_A00": 1.3, "D_OB": 0.8, "D_TX": 1.1}
     values = torch.tensor([
         [[0.1, 0.2, 0.3, 0.4]],
         [[0.4, 0.3, 0.2, 0.1]],
@@ -18,65 +43,59 @@ def test_batched_warning_matches_object_reference_categories_and_probability():
     with torch.no_grad():
         histories = pipeline.model.encode_history(values, lengths)
     episodes = ("episode-a", "episode-b", "episode-c")
-    observed_r_ib = (None, 0.0, 0.0)
-    observed_delta = (None, None, 10.0)
-    observed_tx = (None, None, None)
+    decision_times = ("2019-01-01T12:00:00+00:00",) * 3
+    observed_t_ib = (None, "2019-01-01T12:07:30+00:00", "2019-01-01T12:07:30+00:00")
+    observed_d_ob = (None, None, 10.0)
+    observed_d_tx = (None, None, None)
+    stages = ("PRE_IB", "POST_IB_PRE_OB", "POST_OB_PRE_TO")
     result = batched_warning_probability(
         pipeline,
         histories,
         episode_ids=episodes,
-        observed_r_ib=observed_r_ib,
-        observed_delta_ob=observed_delta,
-        observed_t_tx=observed_tx,
-        taxi_reference_minutes=(12.0, 12.0, 12.0),
+        stages=stages,
+        decision_times_utc=decision_times,
+        observed_t_ib=observed_t_ib,
+        observed_d_ob=observed_d_ob,
+        observed_d_tx=observed_d_tx,
         count=32,
         seed=17,
         return_indices=True,
     )
     assert result.probability.dtype == torch.float64
 
-    stages = ("PRE_IB", "POST_IB_PRE_OB", "POST_OB_PRE_TO")
+    hazard = pipeline.contracts["T_IB_A00"]
+    d_ob = pipeline.contracts["D_OB"]
+    d_tx = pipeline.contracts["D_TX"]
     for index, stage in enumerate(stages):
         observed = {}
-        if observed_r_ib[index] is not None:
-            observed["R_IB"] = observed_r_ib[index]
-        if observed_delta[index] is not None:
-            observed["DELTA_OB"] = observed_delta[index]
-        if observed_tx[index] is not None:
-            observed["T_TX"] = observed_tx[index]
-        scenarios = ancestral_sample(
-            pipeline.model,
-            histories[index:index + 1],
-            pipeline.bins,
-            episode_id=episodes[index],
-            decision_node_id=f"node-{index}",
-            stage=stage,
-            observed=observed,
-            count=32,
-            seed=17,
-            target_support={name: "SUPPORTED" for name in pipeline.bins},
-            tx_reference_minutes=12.0,
-            taxi_reference_id="reference",
-            taxi_reference_hash="freeze",
-            taxi_reference_support_state="SUPPORTED",
-            temperatures=pipeline.temperatures,
+        if observed_t_ib[index] is not None:
+            observed["T_IB_A00"] = observed_t_ib[index]
+        if observed_d_ob[index] is not None:
+            observed["D_OB"] = observed_d_ob[index]
+        if observed_d_tx[index] is not None:
+            observed["D_TX"] = observed_d_tx[index]
+        scenarios = _object_scenarios(
+            pipeline, histories[index:index + 1],
+            episode=episodes[index], node=f"node-{index}", stage=stage,
+            decision_time_utc=decision_times[index],
+            observed=observed, count=32, seed=17,
         )
         reference = warning_probability(scenarios)
         assert result.probability[index].item() == pytest.approx(reference.probability, abs=0.0)
-        for target, attribute in (
-            ("R_IB", "r_ib_minutes"),
-            ("DELTA_OB", "delta_ob_minutes"),
-            ("T_TX", "t_tx_minutes"),
+        for target, attribute, contract in (
+            ("T_IB_A00", "r_ib_minutes", hazard),
+            ("D_OB", "d_ob_minutes", d_ob),
+            ("D_TX", "d_tx_minutes", d_tx),
         ):
             expected = torch.tensor([
-                pipeline.bins[target].encode(getattr(row, attribute))
+                contract.encode(getattr(row, attribute))
                 for row in scenarios
             ])
             assert torch.equal(result.sampled_indices[target][index].cpu(), expected)
         assert result.tail_representative_used[index].item() == reference.tail_representative_used
 
 
-def test_batched_warning_abstains_when_reference_is_missing():
+def test_batched_warning_abstains_when_formal_input_is_missing():
     pipeline = M1Pipeline.smoke(input_size=4)
     values = torch.zeros((1, 1, 4))
     with torch.no_grad():
@@ -85,10 +104,11 @@ def test_batched_warning_abstains_when_reference_is_missing():
         pipeline,
         history,
         episode_ids=("episode",),
-        observed_r_ib=(None,),
-        observed_delta_ob=(None,),
-        observed_t_tx=(None,),
-        taxi_reference_minutes=(None,),
+        stages=("PRE_IB",),
+        decision_times_utc=(None,),
+        observed_t_ib=(None,),
+        observed_d_ob=(None,),
+        observed_d_tx=(None,),
         count=8,
         seed=7,
     )

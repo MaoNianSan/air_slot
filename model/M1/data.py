@@ -1,4 +1,5 @@
 from collections import Counter
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import timedelta
 from math import cos, radians, sin
@@ -88,12 +89,90 @@ GROUP_SLICES = {
 NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", ".cos"))
                          and name != "motion.on_ground") + DELTA_NAMES
 
+# ---------------------------------------------------------------------------
+# V2 principal input groups (Round-2 M1 V2).
+#
+# Dataset support split:
+#   SHARED            current operational/factual state, schedule timing,
+#                     NOAA weather (incl. ceiling-base ceiling_base_m), Delta X,
+#                     short-term AR summaries, Delta t, missing/stale/fallback
+#                     masks, evidence/support quality.
+#   DATA1_SUPPORTED   predecessor_motion trajectory fields (NOT part of the V2
+#                     shared principal encoder; Data2 never requires them).
+#   UNSUPPORTED       crew / gate / slot / standby aircraft (no raw path).
+#   SUPPORT_ABSTAIN   route/carrier/aircraft static context and turnaround /
+#                     taxi reference features: no M1 canonical encoder path
+#                     yet; taxi reference enters only at label construction
+#                     and scenario provenance, never as an encoder input.
+# ---------------------------------------------------------------------------
+V2_WEATHER_FIELDS = (
+    "temperature_c", "dewpoint_c", "wind_direction_deg", "wind_speed_mps",
+    "wind_gust_mps", "qnh_hpa", "visibility_m", "ceiling_base_m",
+)
+V2_STATE_FIELDS = ("ib_realized", "ob_realized", "to_realized")
+V2_SCHEDULE_FIELDS = ("signed_minutes_to_crs_departure",)
+V2_OBJECTS = ("current_weather", "schedule_reference", "current_state")
+V2_STATE_REALIZED_BY_STAGE = {
+    "ib_realized": frozenset({"POST_IB_PRE_OB", "POST_OB_PRE_TO", "COMPLETED"}),
+    "ob_realized": frozenset({"POST_OB_PRE_TO", "COMPLETED"}),
+    "to_realized": frozenset({"COMPLETED"}),
+}
+V2_DELTA_X_FIELDS = tuple(f"delta.weather.{name}" for name in V2_WEATHER_FIELDS) + (
+    "delta.schedule.signed_minutes_to_crs_departure",
+)
+V2_AR_FIELDS = tuple(f"ar.weather.{name}" for name in V2_WEATHER_FIELDS)
+V2_DELTA_T_FIELDS = ("weather.observation_age_minutes", "node.spacing_minutes")
 
-def fit_train_normalization(rows: list[dict[str, float]], *, split: str) -> M1NormalizationArtifact:
+
+def _v2_x_names() -> tuple[str, ...]:
+    result = [f"state.{name}" for name in V2_STATE_FIELDS]
+    result.append("schedule.signed_minutes_to_crs_departure")
+    for field in V2_WEATHER_FIELDS:
+        if field == "wind_direction_deg":
+            result.extend(("weather.wind_direction_deg.sin", "weather.wind_direction_deg.cos"))
+        else:
+            result.append(f"weather.{field}")
+    result.extend(V2_DELTA_X_FIELDS)
+    result.extend(V2_AR_FIELDS)
+    return tuple(result)
+
+
+X_NAMES_V2 = _v2_x_names()
+MASK_FIELDS_V2 = tuple(f"weather.{name}" for name in V2_WEATHER_FIELDS) + (
+    "schedule.signed_minutes_to_crs_departure",
+) + tuple(f"state.{name}" for name in V2_STATE_FIELDS)
+M_NAMES_V2 = tuple(f"{name}.{kind}_mask" for name in MASK_FIELDS_V2
+                   for kind in ("missing", "stale", "fallback"))
+DELTA_NAMES_V2 = V2_DELTA_T_FIELDS
+E_NAMES_V2 = tuple(f"{obj}.evidence.{level}" for obj in V2_OBJECTS
+                   for level in EVIDENCE_LEVELS) + tuple(
+                   f"{obj}.support.{level}" for obj in V2_OBJECTS
+                   for level in SUPPORT_LEVELS)
+S_NAMES_V2 = tuple(f"stage.{name}" for name in STAGE_LEVELS)
+FEATURE_NAMES_V2 = X_NAMES_V2 + M_NAMES_V2 + DELTA_NAMES_V2 + E_NAMES_V2 + S_NAMES_V2
+GROUP_SLICES_V2 = {
+    "X": slice(0, len(X_NAMES_V2)),
+    "M": slice(len(X_NAMES_V2), len(X_NAMES_V2) + len(M_NAMES_V2)),
+    "Delta": slice(len(X_NAMES_V2) + len(M_NAMES_V2),
+                   len(X_NAMES_V2) + len(M_NAMES_V2) + len(DELTA_NAMES_V2)),
+    "E": slice(len(X_NAMES_V2) + len(M_NAMES_V2) + len(DELTA_NAMES_V2),
+               len(FEATURE_NAMES_V2) - len(S_NAMES_V2)),
+    "S": slice(len(FEATURE_NAMES_V2) - len(S_NAMES_V2), len(FEATURE_NAMES_V2)),
+}
+NORMALIZED_NAMES_V2 = tuple(
+    name for name in X_NAMES_V2
+    if name.startswith(("weather.", "schedule.")) and not name.endswith((".sin", ".cos"))
+) + V2_DELTA_T_FIELDS
+
+
+def fit_train_normalization(rows: list[dict[str, float]], *, split: str,
+                                names: Sequence[str] | None = None) -> M1NormalizationArtifact:
+    """Train-only normalization over the V2 principal feature names."""
     if split != "train":
         raise ContractError("M1_NORMALIZATION_MUST_BE_TRAIN_ONLY")
+    selected = NORMALIZED_NAMES_V2 if names is None else tuple(names)
     values = {}
-    for name in NORMALIZED_NAMES:
+    for name in selected:
         observed = [float(row[name]) for row in rows if name in row]
         if not observed:
             values[name] = NormalizationValue(mean=0.0, std=1.0)
@@ -175,63 +254,104 @@ def validate_full_history_prefix(states: list[PREState] | tuple[PREState, ...]) 
     validate_history_sequence(states, require_episode_start=True)
 
 
+def _state_support_value() -> SupportedValue:
+    """Decision-time operational stage as a supported current-state object."""
+    return SupportedValue(
+        value=None, unit="canonical",
+        evidence_class=EvidenceClass.DIRECT,
+        support_ceiling=EvidenceClass.DIRECT,
+        support_state=SupportState.SUPPORTED,
+        reason_code="STAGE_DERIVED_DECISION_TIME_FACT",
+    )
+
+
 def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
                         normalization: M1NormalizationArtifact, *,
                         require_episode_start: bool = True) -> torch.Tensor:
+    """Encode the V2 principal feature vector for one causal PRE prefix.
+
+    The V2 encoder never requires predecessor_motion trajectory fields
+    (DATA1_SUPPORTED only); Data2 principal inference is fully supported by
+    current state, schedule timing, NOAA weather (incl. ceiling-base), Delta X,
+    short-term AR summaries, Delta t, masks, and evidence/support quality.
+    """
     validate_history_sequence(states, require_episode_start=require_episode_start)
     rows = []
     previous_time = None
-    for pre in states:
-        motion = _find(pre, "predecessor_state", "predecessor_motion")
+    previous_x: dict[str, float] | None = None
+    previous_raw: dict[str, float] | None = None
+    ar_accum = {name: 0.0 for name in V2_WEATHER_FIELDS}
+    for row_index, pre in enumerate(states):
         weather = _find(pre, "current_state", "current_weather")
         schedule = _find(pre, "successor_state", "schedule_reference")
-        objects = {"predecessor_motion": motion, "current_weather": weather,
-                   "schedule_reference": schedule}
-        lineages = {name: _lineage(pre, name) for name in objects}
-        x, masks = [], []
-        for prefix, value, fields in (("motion", motion, MOTION_FIELDS),
-                                      ("weather", weather, WEATHER_FIELDS)):
-            lineage = lineages["predecessor_motion" if prefix == "motion" else "current_weather"]
-            stale, fallback = _quality_masks(value, lineage)
-            for field in fields:
-                raw = _field(value, field)
-                missing = float(raw is None)
-                masks.extend((missing, stale, fallback))
-                if field in {"heading_deg", "wind_direction_deg"}:
-                    angle = radians(float(raw)) if raw is not None else 0.0
-                    x.extend((sin(angle) if raw is not None else 0.0,
-                              cos(angle) if raw is not None else 0.0))
-                elif field == "on_ground":
-                    x.append(float(bool(raw)) if raw is not None else 0.0)
-                else:
-                    name = f"{prefix}.{field}"
-                    x.append(_scaled(normalization, name, raw) if raw is not None else 0.0)
+        stage = pre.decision_node.operational_stage.value
+        x = []
+        for name in V2_STATE_FIELDS:
+            x.append(float(stage in V2_STATE_REALIZED_BY_STAGE[name]))
         schedule_time = _field(schedule, "scheduled_departure_utc")
-        schedule_minutes = None if schedule_time is None else \
-            (schedule_time - pre.decision_node.decision_time).total_seconds() / 60.0
-        stale, fallback = _quality_masks(schedule, lineages["schedule_reference"])
-        masks.extend((float(schedule_minutes is None), stale, fallback))
-        x.append(_scaled(normalization, "schedule.signed_minutes_to_crs_departure", schedule_minutes)
-                 if schedule_minutes is not None else 0.0)
+        schedule_minutes = None if schedule_time is None else             (schedule_time - pre.decision_node.decision_time).total_seconds() / 60.0
+        schedule_scaled = _scaled(normalization,
+            "schedule.signed_minutes_to_crs_departure", schedule_minutes)             if schedule_minutes is not None else 0.0
+        x.append(schedule_scaled)
+        weather_values: dict[str, float] = {}
+        weather_raw: dict[str, float] = {}
+        for field in V2_WEATHER_FIELDS:
+            raw = _field(weather, field)
+            if field == "wind_direction_deg":
+                angle = radians(float(raw)) if raw is not None else 0.0
+                x.extend((sin(angle) if raw is not None else 0.0,
+                          cos(angle) if raw is not None else 0.0))
+                weather_raw[field] = float(raw) if raw is not None else 0.0
+            else:
+                name = f"weather.{field}"
+                value = _scaled(normalization, name, raw) if raw is not None else 0.0
+                weather_values[field] = value
+                x.append(value)
+                weather_raw[field] = float(raw) if raw is not None else 0.0
+        for field in V2_WEATHER_FIELDS:
+            if field == "wind_direction_deg":
+                raw = weather_raw.get(field)
+                prev = 0.0 if previous_raw is None else previous_raw.get(field, 0.0)
+                x.append((raw - prev) if previous_raw is not None else 0.0)
+            else:
+                value = weather_values.get(field, 0.0)
+                prev = 0.0 if previous_x is None else previous_x.get(field, 0.0)
+                x.append(value - prev)
+        schedule_delta = 0.0 if previous_x is None else schedule_scaled - previous_x.get("_schedule", 0.0)
+        x.append(schedule_delta)
+        for field in V2_WEATHER_FIELDS:
+            ar_accum[field] = (ar_accum[field] * row_index + weather_raw.get(field, 0.0)) / (row_index + 1)
+            x.append(ar_accum[field])
+        weather_lineage = _lineage(pre, "current_weather")
+        schedule_lineage = _lineage(pre, "schedule_reference")
+        stale_w, fallback_w = _quality_masks(weather, weather_lineage)
+        stale_s, fallback_s = _quality_masks(schedule, schedule_lineage)
+        masks = []
+        for field in V2_WEATHER_FIELDS:
+            raw = _field(weather, field)
+            masks.extend((float(raw is None), stale_w, fallback_w))
+        masks.extend((float(schedule_minutes is None), stale_s, fallback_s))
+        for _ in V2_STATE_FIELDS:
+            masks.extend((0.0, 0.0, 0.0))
         delta = []
-        for variable in ("predecessor_motion", "current_weather"):
-            lineage = lineages[variable]
-            age = None if lineage is None or lineage.age_seconds is None else lineage.age_seconds / 60.0
-            delta.append(_scaled(normalization,
-                "motion.observation_age_minutes" if variable == "predecessor_motion"
-                else "weather.observation_age_minutes", age) if age is not None else 0.0)
-        spacing = 0.0 if previous_time is None else \
-            (pre.decision_node.decision_time - previous_time).total_seconds() / 60.0
+        age = None if weather_lineage is None or weather_lineage.age_seconds is None             else weather_lineage.age_seconds / 60.0
+        delta.append(_scaled(normalization,
+            "weather.observation_age_minutes", age) if age is not None else 0.0)
+        spacing = 0.0 if previous_time is None else             (pre.decision_node.decision_time - previous_time).total_seconds() / 60.0
         delta.append(_scaled(normalization, "node.spacing_minutes", spacing))
         previous_time = pre.decision_node.decision_time
         evidence = []
-        for name in SCIENTIFIC_OBJECTS:
+        objects = {"current_weather": weather, "schedule_reference": schedule,
+                   "current_state": _state_support_value()}
+        for name in V2_OBJECTS:
             value = objects[name]
             evidence.extend(float(value.evidence_class.value == level) for level in EVIDENCE_LEVELS)
-        for name in SCIENTIFIC_OBJECTS:
+        for name in V2_OBJECTS:
             value = objects[name]
             evidence.extend(float(value.support_state.value == level) for level in SUPPORT_LEVELS)
-        stage = pre.decision_node.operational_stage.value
         stages = [float(stage == name) for name in STAGE_LEVELS]
         rows.append(x + masks + delta + evidence + stages)
+        previous_x = dict(weather_values)
+        previous_x["_schedule"] = schedule_scaled
+        previous_raw = dict(weather_raw)
     return torch.tensor(rows, dtype=torch.float32)

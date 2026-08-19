@@ -1,3 +1,5 @@
+"""M1 V2 performance closure: cache store, microbatch equivalence, bucketing."""
+
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -16,7 +18,9 @@ from model.PRE.episode.builder import build_data2_episode_records
 from model.PRE.streaming.data2 import aircraft_tail
 
 
-TARGETS = ("R_IB", "DELTA_OB", "T_TX")
+TARGETS = ("T_IB_A00", "D_OB", "D_TX")
+LOGIT_KEYS = ("T_IB_A00", "D_OB_zero", "D_OB_quantile",
+              "D_TX_zero", "D_TX_quantile")
 
 
 def _example(episode, day, length, offset, *, node=None):
@@ -24,8 +28,8 @@ def _example(episode, day, length, offset, *, node=None):
         episode_id=episode,
         episode_date=day,
         values=torch.arange(length * 4, dtype=torch.float32).reshape(length, 4) / 10 + offset,
-        labels={name: (offset + index) % 6 for index, name in enumerate(TARGETS)},
-        active={"R_IB": True, "DELTA_OB": offset % 2 == 0, "T_TX": True},
+        targets={name: (offset + index) % 6 for index, name in enumerate(TARGETS)},
+        active={"T_IB_A00": True, "D_OB": offset % 2 == 0, "D_TX": True},
         decision_node_id=node or f"{episode}-n{length}",
     )
 
@@ -60,7 +64,7 @@ def test_cache_roundtrip_and_history_views(tmp_path: Path):
         episode_id=long_e1.episode_id,
         episode_date=long_e1.episode_date,
         values=long_e1.values[:2],
-        labels=dict(long_e1.labels),
+        targets=dict(long_e1.targets),
         active=dict(long_e1.active),
         decision_node_id="e1-n2",
     )
@@ -124,8 +128,9 @@ def test_microbatch_gradient_and_batched_inference_match_fullbatch():
         examples, batch_size=None)
     batched_logits, batched_labels, batched_active = full_lifecycle.batched_logits(
         examples, batch_size=3)
-    for name in TARGETS:
+    for name in LOGIT_KEYS:
         assert torch.allclose(full_logits[name], batched_logits[name], rtol=1e-5, atol=1e-6)
+    for name in TARGETS:
         assert torch.equal(full_labels[name], batched_labels[name])
         assert torch.equal(full_active[name], batched_active[name])
 

@@ -11,7 +11,14 @@ HORIZONS = FORMAL_FORECAST_HORIZONS_MINUTES
 
 def horizon_summaries(scenarios_by_horizon, *, thresholds=DELAY_THRESHOLDS_MINUTES,
                       horizons=FORMAL_FORECAST_HORIZONS_MINUTES):
-    """Summarize formal horizons; legacy grids require explicit evaluation opt-in."""
+    """Summarize formal horizons over V2 aligned scenarios.
+
+Consumes only V2 formal scenario quantities (T_IB_A00 / D_OB / D_TX /
+derived D_TO via ``M1V2Scenario``); legacy grids require explicit evaluation
+opt-in.  The horizon layer itself stays gated
+(``HORIZON_SEMANTICS_DECISION_REQUIRED``) until manuscript Eq. (18) semantics
+are uniquely resolved.
+"""
     horizons = tuple(horizons)
     allowed = set(FORMAL_FORECAST_HORIZONS_MINUTES) | set(EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES)
     if not set(horizons) <= allowed:

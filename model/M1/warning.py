@@ -1,22 +1,32 @@
+"""M1 V2 warning: P(D_TO > 30) from formal V2 aligned scenarios.
+
+The V2 warning consumes only formal V2 scenario quantities
+(T_IB_A00 / D_OB / D_TX / derived D_TO).  D_TO is never reconstructed from
+DELTA_OB / raw T_TX / taxi reference: D_TX is itself a formal sampled
+quantity and the legacy V1 signed-warning artifact is HISTORICAL_ONLY.
+"""
+
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from typing import Literal, Sequence
 
 import torch
-from torch.nn import functional as F
 from pydantic import Field, model_validator
 
 from model.common.value_objects import FrozenModel
 
-from .contracts import AlignedScenario
-from .scenarios import _uniform
+from .contracts import HazardBinContract, HurdleQuantileContract, M1V2Scenario
+from .loss import hazard_pmf, monotone_positive_quantiles, quantile_value
+from .scenarios import _uniform_v2, required_observations_v2
 
 
 PRINCIPAL_WARNING_EVENT = "D_TO_POST_GT_30"
 PRINCIPAL_WARNING_THRESHOLD_MINUTES = 30.0
+V2_WARNING_TARGETS = ("T_IB_A00", "D_OB", "D_TX")
 
 
 class WarningProbability(FrozenModel):
-    """Weighted probability for the frozen signed-M1 takeoff-delay event."""
+    """Weighted probability for the formal V2 takeoff-delay event."""
 
     episode_id: str | None
     decision_node_id: str | None
@@ -55,7 +65,7 @@ class BatchedWarningResult:
 
 
 def scenario_uniforms(episode_ids: Sequence[str], *, count: int, seed: int) -> torch.Tensor:
-    """Return the frozen target-keyed uniforms, reusing rows for repeated episodes."""
+    """V2 target-keyed uniforms, reusing rows for repeated episodes."""
     if count <= 0:
         raise ValueError("M1_SCENARIO_COUNT_MUST_BE_POSITIVE")
     unique = {}
@@ -65,190 +75,59 @@ def scenario_uniforms(episode_ids: Sequence[str], *, count: int, seed: int) -> t
         values = []
         for scenario_id in range(count):
             values.append([
-                _uniform(seed, episode_id, scenario_id, target)[0]
-                for target in ("R_IB", "DELTA_OB", "T_TX")
+                _uniform_v2(seed, episode_id, scenario_id, target)[0]
+                for target in V2_WARNING_TARGETS
             ])
         unique[episode_id] = torch.tensor(values, dtype=torch.float32)
     return torch.stack([unique[item] for item in episode_ids], dim=0)
 
 
-def _encode_observed(values: Sequence[float | None], bin_contract) -> torch.Tensor:
-    return torch.tensor([
-        -1 if value is None else bin_contract.encode(float(value))
-        for value in values
-    ], dtype=torch.long)
-
-
-def _representatives(bin_contract, *, device):
-    values, underflow, overflow = zip(*(
-        bin_contract.representative(index)
-        for index in range(bin_contract.class_count)
-    ))
-    return (
-        torch.tensor(values, dtype=torch.float32, device=device),
-        torch.tensor(underflow, dtype=torch.bool, device=device),
-        torch.tensor(overflow, dtype=torch.bool, device=device),
-    )
-
-
-def _sample_from_logits(logits: torch.Tensor, uniforms: torch.Tensor) -> torch.Tensor:
-    while logits.ndim - 1 < uniforms.ndim:
-        logits = logits.unsqueeze(-2)
-    if logits.shape[:-1] != uniforms.shape:
-        logits = logits.expand(*uniforms.shape, logits.shape[-1])
-    probabilities = torch.softmax(logits, dim=-1)
-    cumulative = torch.cumsum(probabilities, dim=-1)
+def _sample_from_pmf(pmf: torch.Tensor, uniforms: torch.Tensor) -> torch.Tensor:
+    while pmf.ndim - 1 < uniforms.ndim:
+        pmf = pmf.unsqueeze(-2)
+    if pmf.shape[:-1] != uniforms.shape:
+        pmf = pmf.expand(*uniforms.shape, pmf.shape[-1])
+    cumulative = torch.cumsum(pmf, dim=-1)
     flat = torch.searchsorted(
         cumulative.reshape(-1, cumulative.shape[-1]),
-        uniforms.reshape(-1, 1),
+        uniforms.reshape(-1, 1).contiguous(),
     ).clamp_max(cumulative.shape[-1] - 1).reshape(-1)
     return flat.reshape(uniforms.shape).to(dtype=torch.long)
 
 
-def _sample_post_ib(
-    model,
-    history: torch.Tensor,
-    ib_indices: torch.Tensor,
-    uniforms: torch.Tensor,
-    bins,
-    temperatures: dict[str, float],
-    taxi_reference: torch.Tensor,
-    *,
-    observed_delta: torch.Tensor,
-    observed_tx: torch.Tensor,
-    return_indices: bool,
-) -> tuple[torch.Tensor, torch.Tensor, dict[str, torch.Tensor] | None]:
-    """Sample the common POST_IB_PRE_OB / POST_OB_PRE_TO path.
+def _gather_heads(zero: torch.Tensor, quantile: torch.Tensor,
+                  ib_bin: torch.Tensor, d_ob_bin: torch.Tensor | None):
+    """Gather (K, ...)/(K, G, ...) head tables by sampled parent bins."""
+    if d_ob_bin is None:
+        zero_g = zero[ib_bin]
+        quant_g = quantile[ib_bin]
+    else:
+        zero_g = zero[ib_bin, d_ob_bin]
+        quant_g = quantile[ib_bin, d_ob_bin]
+    return zero_g, quant_g
 
-    The T_TX head is affine in the two parent embeddings. Evaluating all DELTA
-    categories once per node avoids constructing one Python scenario object per
-    draw while preserving the ordered factorization and target-keyed uniforms.
-    """
-    device = history.device
-    n, scenarios = uniforms.shape[:2]
-    ib = ib_indices[:, 0]
-    ib_logits = model.conditioned_logits(history, "DELTA_OB", ib_index=ib)
-    delta_rep, delta_under, delta_over = _representatives(bins["DELTA_OB"], device=device)
-    delta_indices = observed_delta[:, None].expand(n, scenarios).clone()
-    sampled_delta = observed_delta < 0
-    if sampled_delta.any():
-        sampled = _sample_from_logits(
-            ib_logits[sampled_delta] / float(temperatures["DELTA_OB"]),
-            uniforms[sampled_delta, :, 1],
+
+def _sample_hurdle_quantile_batch(zero_logit: torch.Tensor,
+                                  quantile_logits: torch.Tensor,
+                                  contract: HurdleQuantileContract,
+                                  uniforms: torch.Tensor,
+                                  device: torch.device):
+    zero_probability = torch.sigmoid(zero_logit)
+    quantiles = monotone_positive_quantiles(quantile_logits)
+    value = torch.zeros_like(uniforms, dtype=torch.float32, device=device)
+    positive = uniforms >= zero_probability
+    if positive.any():
+        positive_uniform = (uniforms[positive] - zero_probability[positive]) / (
+            (1.0 - zero_probability[positive]).clamp_min(1e-12)
         )
-        delta_indices[sampled_delta] = sampled
-
-    tx_indices = observed_tx[:, None].expand(n, scenarios).clone()
-    sampled_tx = observed_tx < 0
-    tx_tail = torch.zeros((n, scenarios), dtype=torch.bool, device=device)
-    if sampled_tx.any():
-        history_tx = history[sampled_tx]
-        ib_tx = ib[sampled_tx]
-        sampled_delta_tx = delta_indices[sampled_tx]
-        # Dense parent-conditioned logits are evaluated for the unique DELTA
-        # support and gathered by the sampled category.
-        tx_base = model.tx_head(
-            torch.cat([
-                history_tx,
-                model.ib_embedding(ib_tx),
-                torch.zeros_like(model.delta_ob_embedding.weight[0]).expand(history_tx.shape[0], -1),
-            ], dim=-1)
+        value[positive] = quantile_value(
+            quantiles[positive], contract.quantile_levels, positive_uniform
         )
-        tx_w_delta = model.tx_head.weight[:, -model.hidden_size:]
-        tx_delta_contrib = F.linear(model.delta_ob_embedding.weight, tx_w_delta, None)
-        tx_delta_logits = tx_base[:, None, :] + tx_delta_contrib[None, :, :]
-        tx_probs = torch.softmax(tx_delta_logits / float(temperatures["T_TX"]), dim=-1)
-        tx_cdf = torch.cumsum(tx_probs, dim=-1)
-        gathered = tx_cdf.gather(
-            1, sampled_delta_tx[..., None].expand(-1, -1, tx_cdf.shape[-1])
-        )
-        tx_uniforms = uniforms[sampled_tx, :, 2]
-        sampled = torch.searchsorted(
-            gathered.reshape(-1, gathered.shape[-1]), tx_uniforms.reshape(-1, 1)
-        ).clamp_max(bins["T_TX"].class_count - 1).reshape(-1, scenarios)
-        tx_indices[sampled_tx] = sampled
-        tx_tail[sampled_tx] = sampled == bins["T_TX"].overflow_index
-
-    delta_values = delta_rep[delta_indices]
-    tx_rep, _tx_under, tx_over = _representatives(bins["T_TX"], device=device)
-    d_ob = torch.clamp_min(delta_values, 0.0)
-    d_tx = torch.clamp_min(tx_rep[tx_indices] - taxi_reference[:, None], 0.0)
-    d_to = d_ob + d_tx
-    probability = (
-        (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
-        .sum(dim=1, dtype=torch.int64)
-        .to(dtype=torch.float64)
-        / scenarios
+    index = torch.clamp(
+        (value / contract.bin_width_minutes).long(), 0, contract.overflow_index
     )
-    tail = (
-        delta_under[delta_indices]
-        | delta_over[delta_indices]
-        | tx_tail
-        | tx_over[tx_indices]
-    ).any(dim=1)
-    indices = None
-    if return_indices:
-        indices = {"R_IB": ib_indices, "DELTA_OB": delta_indices, "T_TX": tx_indices}
-    return probability, tail, indices
-
-
-def _sample_pre_ib(
-    model,
-    history: torch.Tensor,
-    uniforms: torch.Tensor,
-    bins,
-    temperatures: dict[str, float],
-    taxi_reference: torch.Tensor,
-    *,
-    return_indices: bool,
-) -> tuple[torch.Tensor, torch.Tensor, dict[str, torch.Tensor] | None]:
-    device = history.device
-    n, scenarios = uniforms.shape[:2]
-    ib_logits = model.conditioned_logits(history, "R_IB")
-    ib_indices = _sample_from_logits(
-        ib_logits[:, None, :].expand(n, scenarios, -1) / float(temperatures["R_IB"]),
-        uniforms[..., 0],
-    )
-    delta_w_history = model.delta_ob_head.weight[:, :model.hidden_size]
-    delta_w_ib = model.delta_ob_head.weight[:, model.hidden_size:]
-    delta_base = F.linear(history, delta_w_history, model.delta_ob_head.bias)
-    delta_parent = F.linear(model.ib_embedding.weight, delta_w_ib, None)
-    delta_logits = delta_base[:, None, :] + delta_parent[ib_indices]
-    delta_indices = _sample_from_logits(
-        delta_logits / float(temperatures["DELTA_OB"]), uniforms[..., 1]
-    )
-
-    tx_w_history = model.tx_head.weight[:, :model.hidden_size]
-    tx_w_ib = model.tx_head.weight[:, model.hidden_size:2 * model.hidden_size]
-    tx_w_delta = model.tx_head.weight[:, 2 * model.hidden_size:]
-    tx_base = F.linear(history, tx_w_history, model.tx_head.bias)
-    tx_ib = F.linear(model.ib_embedding.weight, tx_w_ib, None)
-    tx_delta = F.linear(model.delta_ob_embedding.weight, tx_w_delta, None)
-    tx_logits = tx_base[:, None, :] + tx_ib[ib_indices] + tx_delta[delta_indices]
-    tx_indices = _sample_from_logits(
-        tx_logits / float(temperatures["T_TX"]), uniforms[..., 2]
-    )
-    delta_rep, delta_under, delta_over = _representatives(bins["DELTA_OB"], device=device)
-    tx_rep, _tx_under, tx_over = _representatives(bins["T_TX"], device=device)
-    d_ob = torch.clamp_min(delta_rep[delta_indices], 0.0)
-    d_tx = torch.clamp_min(tx_rep[tx_indices] - taxi_reference[:, None], 0.0)
-    d_to = d_ob + d_tx
-    probability = (
-        (d_to > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
-        .sum(dim=1, dtype=torch.int64)
-        .to(dtype=torch.float64)
-        / scenarios
-    )
-    tail = (
-        delta_under[delta_indices]
-        | delta_over[delta_indices]
-        | tx_over[tx_indices]
-        | (ib_indices == bins["R_IB"].overflow_index)
-    ).any(dim=1)
-    indices = None
-    if return_indices:
-        indices = {"R_IB": ib_indices, "DELTA_OB": delta_indices, "T_TX": tx_indices}
-    return probability, tail, indices
+    overflow = index == contract.overflow_index
+    return value, index, overflow
 
 
 def batched_warning_probability(
@@ -256,92 +135,176 @@ def batched_warning_probability(
     histories: torch.Tensor,
     *,
     episode_ids: Sequence[str],
-    observed_r_ib: Sequence[float | None],
-    observed_delta_ob: Sequence[float | None],
-    observed_t_tx: Sequence[float | None],
-    taxi_reference_minutes: Sequence[float | None],
+    stages: Sequence[str],
+    decision_times_utc: Sequence[str | None],
+    observed_t_ib: Sequence[str | None],
+    observed_d_ob: Sequence[float | None],
+    observed_d_tx: Sequence[float | None],
     count: int,
     seed: int,
     return_indices: bool = False,
-    uniforms: torch.Tensor | None = None,
 ) -> BatchedWarningResult:
-    """Vectorized aligned scenario sampling for one node batch.
+    """Vectorized V2 P(D_TO > 30) sampling for one bundle of decision nodes.
 
-    RNG keys, ordered parent conditioning, representative tails, and strict
-    ``D_TO > 30`` semantics are shared with :func:`ancestral_sample`.
+    The ancestral order T_IB_A00 -> D_OB|T_IB_A00 -> D_TX|T_IB_A00,D_OB is
+    preserved; D_TO = D_OB + D_TX is derived per scenario.
     """
-    if histories.ndim != 2 or len(episode_ids) != histories.shape[0]:
-        raise ValueError("M1_BATCHED_WARNING_HISTORY_SHAPE_MISMATCH")
+    model = pipeline.model
+    contracts = pipeline.contracts
+    hazard: HazardBinContract = contracts["T_IB_A00"]
+    d_ob_contract: HurdleQuantileContract = contracts["D_OB"]
+    d_tx_contract: HurdleQuantileContract = contracts["D_TX"]
     device = histories.device
     n = histories.shape[0]
-    if uniforms is None:
-        uniforms = scenario_uniforms(episode_ids, count=count, seed=seed)
-    uniforms = uniforms.to(device)
-    if uniforms.shape != (n, count, 3):
-        raise ValueError("M1_BATCHED_WARNING_UNIFORM_SHAPE_MISMATCH")
-    refs = torch.tensor([
-        float(value) if value is not None else float("nan")
-        for value in taxi_reference_minutes
-    ], dtype=torch.float32, device=device)
-    supported = torch.isfinite(refs)
-    safe_refs = torch.where(supported, refs, torch.zeros_like(refs))
-    ib_observed = _encode_observed(observed_r_ib, pipeline.bins["R_IB"]).to(device)
-    delta_observed = _encode_observed(observed_delta_ob, pipeline.bins["DELTA_OB"]).to(device)
-    tx_observed = _encode_observed(observed_t_tx, pipeline.bins["T_TX"]).to(device)
-    probabilities = torch.zeros(n, dtype=torch.float64, device=device)
+    if len({len(episode_ids), len(stages), len(decision_times_utc),
+            len(observed_t_ib), len(observed_d_ob), len(observed_d_tx)}) != 1:
+        raise ValueError("M1_V2_BATCHED_WARNING_SEQUENCE_LENGTH_MISMATCH")
+    if n != len(episode_ids):
+        raise ValueError("M1_V2_BATCHED_WARNING_NODE_COUNT_MISMATCH")
+
+    uniforms = scenario_uniforms(episode_ids, count=count, seed=seed).to(device)
+    supported = torch.ones(n, dtype=torch.bool, device=device)
+    temperature = pipeline.temperatures
+
+    # ---- T_IB_A00 (discrete hazard) ----
+    hazard_pmfs = hazard_pmf(
+        model.hazard_logits(histories) / float(temperature.get("T_IB_A00", 1.0)),
+        hazard,
+    )  # (n, K)
+    ib_bin = torch.full((n, count), -1, dtype=torch.long, device=device)
+    overflow_ib = torch.zeros((n, count), dtype=torch.bool, device=device)
+    for i in range(n):
+        stage = stages[i]
+        required = required_observations_v2(stage)
+        missing = [target for target in required
+                   if (target == "T_IB_A00" and observed_t_ib[i] is None)
+                   or (target == "D_OB" and observed_d_ob[i] is None)
+                   or (target == "D_TX" and observed_d_tx[i] is None)]
+        if missing:
+            supported[i] = False
+            continue
+        if observed_t_ib[i] is not None:
+            if decision_times_utc[i] is None:
+                supported[i] = False
+                continue
+            remaining = max(0.0, (
+                datetime.fromisoformat(observed_t_ib[i])
+                - datetime.fromisoformat(decision_times_utc[i])
+            ).total_seconds() / 60.0)
+            index = hazard.encode(remaining)
+            ib_bin[i] = index
+            overflow_ib[i] = hazard.tail_state(index) == "OVERFLOW"
+        else:
+            if decision_times_utc[i] is None:
+                supported[i] = False
+                continue
+            index = _sample_from_pmf(hazard_pmfs[i:i + 1], uniforms[i:i + 1, :, 0])
+            ib_bin[i] = index
+            overflow_ib[i] = index == hazard.overflow_index
+
+    # ---- D_OB (hurdle + conditional quantile, parent T_IB_A00) ----
+    d_ob_value = torch.full((n, count), float("nan"), dtype=torch.float32, device=device)
+    d_ob_bin = torch.full((n, count), -1, dtype=torch.long, device=device)
+    overflow_ob = torch.zeros((n, count), dtype=torch.bool, device=device)
+    for i in range(n):
+        if not supported[i]:
+            continue
+        if observed_d_ob[i] is not None:
+            value = float(observed_d_ob[i])
+            index = d_ob_contract.encode(value)
+            d_ob_value[i] = value
+            d_ob_bin[i] = index
+            overflow_ob[i] = d_ob_contract.tail_state(index) == "OVERFLOW"
+            continue
+        if (ib_bin[i] < 0).any():
+            supported[i] = False
+            continue
+        # Evaluate the D_OB heads for every hazard bin once per node.
+        all_bins = torch.arange(hazard.class_count, device=device)
+        hist = histories[i:i + 1].expand(hazard.class_count, -1)
+        zero, quant = model.d_ob_heads(hist, all_bins)
+        zero = zero.squeeze(-1) / float(temperature.get("D_OB", 1.0))
+        quant = quant / float(temperature.get("D_OB", 1.0))
+        zero_g, quant_g = _gather_heads(zero, quant, ib_bin[i], None)
+        value, index, overflow = _sample_hurdle_quantile_batch(
+            zero_g, quant_g, d_ob_contract, uniforms[i, :, 1], device
+        )
+        d_ob_value[i] = value
+        d_ob_bin[i] = index
+        overflow_ob[i] = overflow
+
+    # ---- D_TX (hurdle + conditional quantile, parents T_IB_A00, D_OB) ----
+    d_tx_value = torch.full((n, count), float("nan"), dtype=torch.float32, device=device)
+    overflow_tx = torch.zeros((n, count), dtype=torch.bool, device=device)
+    for i in range(n):
+        if not supported[i]:
+            continue
+        if observed_d_tx[i] is not None:
+            d_tx_value[i] = float(observed_d_tx[i])
+            continue
+        if (ib_bin[i] < 0).any() or (d_ob_bin[i] < 0).any():
+            supported[i] = False
+            continue
+        hidden = model.hidden_size
+        hazard_count = hazard.class_count
+        ob_count = d_ob_contract.class_count
+        all_ib = torch.arange(hazard_count, device=device)
+        hist = histories[i:i + 1].expand(hazard_count, -1)
+        ibc = model.ib_embedding(all_ib)
+        features = torch.cat([hist, ibc, torch.zeros_like(ibc)], dim=-1)
+        zero_base = model.d_tx_zero_head(features).squeeze(-1)   # (K,)
+        quant_base = model.d_tx_quantile_head(features)          # (K, Q)
+        ob_emb = model.d_ob_embedding.weight                     # (G, H)
+        zero_contrib = model.d_tx_zero_head.weight[:, -hidden:] @ ob_emb.t()   # (1, G)
+        quant_contrib = model.d_tx_quantile_head.weight[:, -hidden:] @ ob_emb.t()  # (Q, G)
+        zero = (zero_base[:, None] + zero_contrib) / float(temperature.get("D_TX", 1.0))  # (K, G)
+        quant = (quant_base[:, None, :] + quant_contrib.permute(1, 0)[None, :, :]) \
+            / float(temperature.get("D_TX", 1.0))                # (K, G, Q)
+        zero_g, quant_g = _gather_heads(zero, quant, ib_bin[i], d_ob_bin[i])
+        value, _, overflow = _sample_hurdle_quantile_batch(
+            zero_g, quant_g, d_tx_contract, uniforms[i, :, 2], device
+        )
+        d_tx_value[i] = value
+        overflow_tx[i] = overflow
+
+    d_to = d_ob_value + d_tx_value
+    probabilities = torch.full((n,), float("nan"), dtype=torch.float64, device=device)
     tails = torch.zeros(n, dtype=torch.bool, device=device)
-    all_indices = {
-        name: torch.full((n, count), -1, dtype=torch.long, device=device)
-        for name in ("R_IB", "DELTA_OB", "T_TX")
-    } if return_indices else None
-
-    pre = ib_observed < 0
-    if pre.any():
-        probability, tail, indices = _sample_pre_ib(
-            pipeline.model, histories[pre], uniforms[pre], pipeline.bins,
-            pipeline.temperatures, safe_refs[pre], return_indices=return_indices,
-        )
-        probabilities[pre], tails[pre] = probability, tail
-        if all_indices is not None and indices is not None:
-            for name in all_indices:
-                all_indices[name][pre] = indices[name]
-
-    post_ib = ~pre
-    if post_ib.any():
-        probability, tail, indices = _sample_post_ib(
-            pipeline.model, histories[post_ib],
-            ib_observed[post_ib, None].expand(-1, count), uniforms[post_ib], pipeline.bins,
-            pipeline.temperatures, safe_refs[post_ib], observed_delta=delta_observed[post_ib],
-            observed_tx=tx_observed[post_ib], return_indices=return_indices,
-        )
-        probabilities[post_ib], tails[post_ib] = probability, tail
-        if all_indices is not None and indices is not None:
-            for name in all_indices:
-                all_indices[name][post_ib] = indices[name]
-
-    probabilities[~supported] = float("nan")
-    tails[~supported] = False
-    if all_indices is not None:
-        for name in all_indices:
-            all_indices[name][~supported] = -1
+    probabilities[supported] = (
+        (d_to[supported] > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
+        .sum(dim=1, dtype=torch.int64)
+        .to(dtype=torch.float64)
+        / count
+    )
+    tails[supported] = (overflow_ib[supported] | overflow_ob[supported]
+                        | overflow_tx[supported]).any(dim=1)
+    indices = None
+    if return_indices:
+        indices = {
+            "T_IB_A00": ib_bin,
+            "D_OB": d_ob_bin,
+            "D_TX": torch.where(d_tx_value >= 0,
+                                (d_tx_value / d_tx_contract.bin_width_minutes).long(),
+                                torch.tensor(-1, device=device)),
+        }
     return BatchedWarningResult(
         probability=probabilities,
         support=supported,
         tail_representative_used=tails,
-        sampled_indices=all_indices,
+        sampled_indices=indices,
     )
 
 
 def warning_probability(
-    scenarios: Sequence[AlignedScenario],
+    scenarios: Sequence[M1V2Scenario],
     *,
     threshold_minutes: float = PRINCIPAL_WARNING_THRESHOLD_MINUTES,
     event_id: str = PRINCIPAL_WARNING_EVENT,
 ) -> WarningProbability:
-    """Estimate P(D_TO > threshold) from one aligned joint-scenario bundle.
+    """Estimate P(D_TO > threshold) from one V2 aligned scenario bundle.
 
-    The function never drops unsupported scenarios. If the train-frozen taxi
-    reference or any derived D_TO value is unavailable, the whole node abstains.
+    The function never drops unsupported scenarios; if any formal D_TO value
+    is unavailable the whole node abstains.
     """
 
     if threshold_minutes < 0:
@@ -370,29 +333,22 @@ def warning_probability(
 
     episode_id, decision_node_id = next(iter(identities))
     weight_sum = float(sum(row.scenario_weight for row in rows))
-    reference_ids = {row.taxi_reference_id for row in rows}
-    reference_hashes = {row.taxi_reference_hash for row in rows}
-    reference_states = {row.taxi_reference_support_state for row in rows}
-    formal_reference = (
-        len(reference_ids) == 1
-        and None not in reference_ids
-        and len(reference_hashes) == 1
-        and None not in reference_hashes
-        and reference_states == {"SUPPORTED"}
-    )
     derived = tuple(row.d_to_minutes for row in rows)
+    supports = {row.d_to_support for row in rows}
     tail_used = any(
-        row.underflow_delta_ob or row.overflow_delta_ob or row.overflow_tx
+        row.overflow_t_ib or row.overflow_d_ob or row.overflow_d_tx
         for row in rows
     )
-    if not formal_reference or any(value is None for value in derived):
+    reference_ids = {row.taxi_reference_id for row in rows}
+    reference_hashes = {row.taxi_reference_hash for row in rows}
+    if any(value is None for value in derived) or supports != {"SUPPORTED"}:
         return WarningProbability(
             episode_id=episode_id,
             decision_node_id=decision_node_id,
             event_id=event_id,
             delay_threshold_minutes=threshold_minutes,
             support_state="ABSTAIN",
-            reason_code="TRAIN_FROZEN_TAXI_REFERENCE_OR_D_TO_UNAVAILABLE",
+            reason_code="M1_V2_D_TO_UNAVAILABLE",
             scenario_count=len(rows),
             scenario_weight_sum=weight_sum,
             exceedance_weight=0.0,
@@ -415,11 +371,11 @@ def warning_probability(
         delay_threshold_minutes=threshold_minutes,
         probability=exceedance_weight / weight_sum,
         support_state="SUPPORTED",
-        reason_code="SIGNED_D_TO_ALIGNED_SCENARIOS",
+        reason_code="M1_V2_D_TO_ALIGNED_SCENARIOS",
         scenario_count=len(rows),
         scenario_weight_sum=weight_sum,
         exceedance_weight=exceedance_weight,
         tail_representative_used=tail_used,
-        taxi_reference_id=next(iter(reference_ids)),
-        taxi_reference_hash=next(iter(reference_hashes)),
+        taxi_reference_id=next(iter(reference_ids)) if len(reference_ids) == 1 else None,
+        taxi_reference_hash=next(iter(reference_hashes)) if len(reference_hashes) == 1 else None,
     )

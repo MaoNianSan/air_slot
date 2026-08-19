@@ -5,10 +5,14 @@ from pydantic import computed_field, Field, model_validator
 
 from model.common.value_objects import FrozenModel, ProvenanceRef
 from .semantics import (
-    external_target_name,
+    M1_V2_ALL_TARGETS,
+    M1_V2_LEGACY_AUXILIARY_TARGETS,
     derived_d_ob_minutes,
-    derived_d_tx_minutes,
+    derived_d_to_from_primitives,
     derived_d_to_minutes,
+    derived_d_tx_minutes,
+    derived_r_ib_minutes,
+    external_target_name,
 )
 
 
@@ -287,4 +291,271 @@ class AlignedScenario(FrozenModel):
     @property
     def target_semantics(self) -> dict[str, str]:
         names = ("R_IB", "D_OB", "D_TX", "D_TO", "DELTA_OB", "T_TX", "R_OB", "T_OB", "T_TO")
+        return {name: external_target_name(name) for name in names}
+
+
+
+# ---------------------------------------------------------------------------
+# V2 principal contracts (Round-2 M1 V2 real estimator).
+#
+# Formal primitive chain: T_IB_A00 -> D_OB -> D_TX
+# Derived: R_IB = max(0, T_IB_A00 - t); D_TO = D_OB + D_TX.
+# The V1 classes above (TargetBinContract / AlignedScenario / ...) remain as
+# LEGACY_V1 contracts for historical artifacts and legacy provenance; they are
+# not the V2 principal estimator semantics.
+# ---------------------------------------------------------------------------
+
+V2TargetName = Literal["T_IB_A00", "D_OB", "D_TX"]
+V2_TARGETS: tuple[V2TargetName, ...] = ("T_IB_A00", "D_OB", "D_TX")
+
+
+class HazardBinContract(FrozenModel):
+    """Discrete-hazard support for the unresolved predecessor in-block time.
+
+    Parameterized as remaining-time-from-decision-time bins (equivalent
+    re-parameterization of the event time T_IB_A00).  The head emits one
+    hazard per finite bin; the last class is the survival/overflow tail, so
+    the induced PMF always sums to one.  A plain categorical softmax is never
+    used to imitate this hazard.
+    """
+
+    target_name: Literal["T_IB_A00"]
+    bin_width_minutes: int = Field(gt=0)
+    max_finite_minutes: int = Field(gt=0)
+
+    @model_validator(mode="after")
+    def validate_support(self):
+        if self.max_finite_minutes % self.bin_width_minutes:
+            raise ValueError("finite support must align to bin width")
+        return self
+
+    @property
+    def finite_class_count(self) -> int:
+        return self.max_finite_minutes // self.bin_width_minutes
+
+    @property
+    def class_count(self) -> int:
+        """Finite remaining-time bins plus the survival/overflow tail."""
+        return self.finite_class_count + 1
+
+    @property
+    def overflow_index(self) -> int:
+        return self.class_count - 1
+
+    def encode(self, minutes: float) -> int:
+        value = float(minutes)
+        if value < 0:
+            raise ValueError("remaining-time hazard target cannot be negative")
+        if value >= self.max_finite_minutes:
+            return self.overflow_index
+        return min(int(value // self.bin_width_minutes), self.overflow_index - 1)
+
+    def tail_state(self, index: int) -> Literal["OVERFLOW"] | None:
+        if index < 0 or index >= self.class_count:
+            raise ValueError("hazard bin index outside support")
+        return "OVERFLOW" if index == self.overflow_index else None
+
+    def bin_start(self, index: int) -> float:
+        if index < 0 or index >= self.class_count:
+            raise ValueError("hazard bin index outside support")
+        return float(index) * self.bin_width_minutes
+
+    def bin_end(self, index: int) -> float:
+        if index < 0 or index >= self.class_count:
+            raise ValueError("hazard bin index outside support")
+        if index == self.overflow_index:
+            return float("inf")
+        return float(index + 1) * self.bin_width_minutes
+
+    def representative(self, index: int) -> tuple[float, bool, bool]:
+        """Return (representative minutes, underflow, overflow)."""
+        tail = self.tail_state(index)
+        if tail == "OVERFLOW":
+            return self.max_finite_minutes + self.bin_width_minutes, False, True
+        return self.bin_start(index) + self.bin_width_minutes / 2, False, False
+
+
+class HurdleQuantileContract(FrozenModel):
+    """Zero-mass hurdle plus positive conditional quantiles for D_OB / D_TX.
+
+    P(D = 0 | parents, h) + P(D > 0 | parents, h) * Q_D(u | D > 0, parents, h)
+
+    The positive conditional quantiles are strictly increasing and positive by
+    construction of the head parameterization.  ``bin_width_minutes`` /
+    ``max_finite_minutes`` also define the conditioning-embedding grid
+    (positive support with an overflow tail).
+    """
+
+    target_name: Literal["D_OB", "D_TX"]
+    max_finite_minutes: int = Field(gt=0)
+    bin_width_minutes: int = Field(gt=0)
+    quantile_levels: tuple[float, ...]
+
+    @model_validator(mode="after")
+    def validate_support(self):
+        if self.max_finite_minutes % self.bin_width_minutes:
+            raise ValueError("finite support must align to bin width")
+        levels = tuple(self.quantile_levels)
+        if not levels or any(not (0.0 < level < 1.0) for level in levels):
+            raise ValueError("quantile levels must lie strictly inside (0, 1)")
+        if any(right <= left for left, right in zip(levels, levels[1:])):
+            raise ValueError("quantile levels must be strictly increasing")
+        return self
+
+    @property
+    def quantile_count(self) -> int:
+        return len(self.quantile_levels)
+
+    @property
+    def positive_bin_count(self) -> int:
+        return self.max_finite_minutes // self.bin_width_minutes
+
+    @property
+    def class_count(self) -> int:
+        """Conditioning-embedding grid: positive bins plus the overflow tail."""
+        return self.positive_bin_count + 1
+
+    @property
+    def overflow_index(self) -> int:
+        return self.class_count - 1
+
+    def encode(self, minutes: float) -> int:
+        value = float(minutes)
+        if value < 0:
+            raise ValueError("nonnegative delay target cannot be negative")
+        if value >= self.max_finite_minutes:
+            return self.overflow_index
+        return min(int(value // self.bin_width_minutes), self.overflow_index - 1)
+
+    def tail_state(self, index: int) -> Literal["OVERFLOW"] | None:
+        if index < 0 or index >= self.class_count:
+            raise ValueError("hurdle-quantile bin index outside support")
+        return "OVERFLOW" if index == self.overflow_index else None
+
+    def representative(self, index: int) -> tuple[float, bool, bool]:
+        tail = self.tail_state(index)
+        if tail == "OVERFLOW":
+            return self.max_finite_minutes + self.bin_width_minutes, False, True
+        return (float(index) + 0.5) * self.bin_width_minutes, False, False
+
+
+class M1V2TargetLabel(TargetLabel):
+    """Typed V2 training label for one primitive target."""
+
+    target_name: V2TargetName
+    episode_id: str
+    decision_node_id: str
+    target_definition_id: str
+    target_definition_version: str
+    label_status: Literal["EXACT", "INTERVAL", "INACTIVE"]
+    provenance: tuple[ProvenanceRef, ...]
+    split: Literal["train", "calibration", "development", "test"]
+    episode_date: date
+    abstention_reason: str | None = None
+
+    @model_validator(mode="after")
+    def status_matches_value(self):
+        if self.label_status == "INACTIVE" and self.active:
+            raise ValueError("inactive label status cannot be active")
+        if self.label_status == "EXACT" and self.exact_minutes is None:
+            raise ValueError("exact label status requires exact minutes")
+        if self.label_status == "INTERVAL" and self.lower_minutes is None:
+            raise ValueError("interval label status requires bounds")
+        return self
+
+
+class M1V2Scenario(FrozenModel):
+    """One V2 joint draw from the formal chain T_IB_A00 -> D_OB -> D_TX.
+
+    Derived quantities per scenario:
+        R_IB = max(0, T_IB_A00 - t)
+        D_TO = D_OB + D_TX
+
+    ``delta_ob_minutes`` / ``t_tx_minutes`` / ``tx_reference_minutes`` are
+    LEGACY_V1 / LABEL_CONSTRUCTION / EVALUATION_AUXILIARY provenance only and
+    never condition V2 sampling or V2 downstream quantities.
+    """
+
+    episode_id: str
+    decision_node_id: str
+    scenario_id: int
+    scenario_weight: float
+    operational_stage: str
+    decision_time_utc: str | None
+    t_ib_a00_utc: str | None
+    d_ob_minutes: float | None
+    d_tx_minutes: float | None
+    scheduled_ob_utc: str | None = None
+    t_ib_observed: bool = False
+    d_ob_observed: bool = False
+    d_tx_observed: bool = False
+    t_ib_support: str = "ABSTAIN"
+    d_ob_support: str = "ABSTAIN"
+    d_tx_support: str = "ABSTAIN"
+    overflow_t_ib: bool = False
+    overflow_d_ob: bool = False
+    overflow_d_tx: bool = False
+    scenario_seed_key: str
+    delta_ob_minutes: float | None = None
+    t_tx_minutes: float | None = None
+    tx_reference_minutes: float | None = None
+    taxi_reference_id: str | None = None
+    taxi_reference_hash: str | None = None
+    taxi_reference_fallback_level: str | None = None
+    taxi_reference_support_state: str | None = None
+
+    @model_validator(mode="after")
+    def formal_v2_contract(self):
+        if self.d_ob_minutes is not None and self.d_ob_minutes < 0:
+            raise ValueError("D_OB must be nonnegative")
+        if self.d_tx_minutes is not None and self.d_tx_minutes < 0:
+            raise ValueError("D_TX must be nonnegative")
+        d_to = self.d_to_minutes
+        if d_to is not None and (
+            d_to < 0
+            or self.d_ob_minutes is None
+            or self.d_tx_minutes is None
+            or abs(d_to - (self.d_ob_minutes + self.d_tx_minutes)) > 1e-6
+        ):
+            raise ValueError("D_TO must equal D_OB + D_TX per scenario")
+        r_ib = self.r_ib_minutes
+        if r_ib is not None and r_ib < 0:
+            raise ValueError("R_IB must be nonnegative")
+        return self
+
+    @computed_field
+    @property
+    def r_ib_minutes(self) -> float | None:
+        """Derived R_IB = max(0, T_IB_A00 - t); never a trained head."""
+        return derived_r_ib_minutes(self.t_ib_a00_utc, self.decision_time_utc)
+
+    @computed_field
+    @property
+    def d_to_minutes(self) -> float | None:
+        """Derived D_TO = D_OB + D_TX per scenario; never a separate head."""
+        return derived_d_to_from_primitives(self.d_ob_minutes, self.d_tx_minutes)
+
+    @computed_field
+    @property
+    def d_to_support(self) -> str:
+        if self.d_to_minutes is None:
+            return "ABSTAIN"
+        if "ABSTAIN" in {self.d_ob_support, self.d_tx_support}:
+            return "ABSTAIN"
+        return "SUPPORTED"
+
+    @computed_field
+    @property
+    def t_ib_a00_minutes(self) -> float | None:
+        """Absolute predecessor in-block time as minutes-since-epoch (recovery aid)."""
+        if self.t_ib_a00_utc is None:
+            return None
+        try:
+            return datetime.fromisoformat(self.t_ib_a00_utc).timestamp() / 60.0
+        except ValueError:
+            return None
+
+    @property
+    def target_semantics(self) -> dict[str, str]:
+        names = M1_V2_ALL_TARGETS + M1_V2_LEGACY_AUXILIARY_TARGETS
         return {name: external_target_name(name) for name in names}

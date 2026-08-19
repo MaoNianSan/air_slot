@@ -34,13 +34,16 @@ def test_refactor_behavioral_equivalence_across_pre_m4():
 
     pipeline = M1.M1Pipeline.smoke(input_size=4)
     values, lengths = torch.zeros(1, 2, 4), torch.tensor([2])
-    distributions = pipeline.predict_distributions(values, lengths)
-    scenarios = pipeline.sample_aligned(distributions, episode_id="episode", decision_node_id="node",
-        stage="PRE_IB", observed={}, count=4, seed=11)
-    repeated = pipeline.sample_aligned(distributions, episode_id="episode", decision_node_id="later",
-        stage="PRE_IB", observed={}, count=4, seed=11)
+    scenarios = pipeline.sample_from_pre(
+        direct_pre, values, lengths, observed={}, count=4, seed=11)
+    later_pre = repeated_pre.model_copy(update={"decision_node":
+        repeated_pre.decision_node.model_copy(update={"decision_node_id": "later"})})
+    repeated = pipeline.sample_from_pre(
+        later_pre, values, lengths, observed={}, count=4, seed=11)
     assert [row.scenario_id for row in scenarios] == [0, 1, 2, 3]
     assert [row.scenario_seed_key for row in scenarios] == [row.scenario_seed_key for row in repeated]
+    # build_request() is the data1 fixture: formal D_OB parent abstains, so
+    # D_TO is unavailable per scenario rather than reconstructed.
     assert [row.d_to_minutes for row in scenarios] == [None] * len(scenarios)
 
     m2_scenarios = ({"decision_node_id": "node", "scenario_id": 0, "scenario_weight": 1.0,
