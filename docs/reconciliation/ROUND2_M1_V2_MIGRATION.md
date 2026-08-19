@@ -77,3 +77,33 @@
 - `m1_v2_quantile_levels` = DEVELOPMENT_ONLY（manuscript 未冻结正分位数值；`[0.1,0.3,0.5,0.7,0.9]` 仅 scaffold）
 - Data2 factual replay availability freeze 未执行（Round-2 独立 gate）
 - `FINAL_TEST_ACCESS_COUNT = 0`
+
+## 6. Tranche 2.1 — Scientific Closure（2026-08-19）
+
+规格: `AIR_SLOT_ROUND2_M1_V2_1_SCIENTIFIC_CLOSURE`（attachment fcf473d4）。
+Tranche 2 建立了 real estimator（`T_IB_A00 -> D_OB -> D_TX` + 派生 `R_IB`/`D_TO`）；
+Tranche 2.1 修复 scientific closure，尤其：
+
+- **positive-tail / CVaR compatibility**：`quantile_value` 不再静默 clamp `u > q_max`；
+  typed `upper_tail_policy`（UNRESOLVED 主路径 raise / TEST_ONLY_LINEAR 仅 smoke /
+  DECLARED_FROZEN 未注册规则）；CVaR 依赖经 `M1_POSITIVE_TAIL_DECISION_REQUIRED` gate；
+  config `m1_v2_positive_tail_policy = HUMAN_DECISION_REQUIRED/UNRESOLVED`。
+- **state/static representation**：`M1V2StaticContext` + `StaticContextEncoder` +
+  `state_representation = concat(recurrent, static)`；仅 schedule timing SUPPORTED，
+  其余 manuscript static 字段 ABSTAIN/FORBIDDEN；fast-fusion 解释保持
+  `M1_FAST_FUSION_INTERPRETATION_REQUIRED`。
+- **marginal summary semantics**：`conditional_head_summary`（单次 sigmoid，显式
+  CONDITIONAL_MIXTURE_NOT_MARGINAL / CONDITIONAL_AT_EXPECTED_D_OB_BIN_NOT_MARGINAL）
+  与 `scenario_marginal_summary`（empirical weighted marginal）分离，不再误标。
+- **T_IB coordinate separation**：internal `T_IB_REMAINING_HAZARD`（remaining-minutes bins）
+  与 public `T_IB_A00`（ISO UTC 绝对时间）分离；label 保留 `t_ib_a00_utc` +
+  `decision_time_utc`，R_IB=0 历史事件仍可区分。
+- **FAST executable boundary**：`LightGBMDistributionalPredictor` 从 scaffold 变为
+  executable ARX-LightGBM（fit/heads/predict_development/sample/state_representation）；
+  无 train-frozen artifact 时 principal predict 仍 ABSTAIN（artifact freeze 为 human gate）。
+
+结果: 全仓 **580 passed, 1 skipped**（Tranche 2 基线 562 passed/1 skipped，新增 18 个
+`test_v2_1_scientific_closure.py` A–R 测试）；`FINAL_TEST_ACCESS_COUNT = 0`；
+`exp/` 未修改；无 commit/push。
+最终状态: `PASS_WITH_SCIENTIFIC_DECISIONS_PENDING`（详见
+`docs/reconciliation/ROUND2_M1_V2_1_AFTER.md`）。

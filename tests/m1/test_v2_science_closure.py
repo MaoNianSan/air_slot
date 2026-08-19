@@ -90,7 +90,7 @@ def test_observed_ib_contracts_successor_heads_on_the_observed_bin(monkeypatch):
         stage="POST_IB_PRE_OB",
         observed={"T_IB_A00": "2019-01-01T12:07:30+00:00"},  # remaining 7.5 -> bin 1
         count=3, seed=5,
-        target_support={name: "SUPPORTED" for name in pipe.contracts},
+        target_support={name: "SUPPORTED" for name in ("T_IB_A00", "D_OB", "D_TX")},
         decision_time_utc="2019-01-01T12:00:00+00:00",
     )
     assert all(row.t_ib_observed and row.r_ib_minutes == 7.5 for row in rows)
@@ -104,12 +104,13 @@ def test_d_tx_graph_is_isolated_from_signed_delta_ob():
     assert not hasattr(model, "delta_ob_embedding")
     assert all("delta" not in name.lower() for name, _ in model.named_parameters())
     history = model.encode_history(torch.zeros(1, 2, 4), torch.tensor([2]))
+    state = model.state_representation(history)
     # Perturbing the signed legacy value that maps to the same formal D_OB
     # bin leaves the D_TX distribution identical (the graph consumes only the
     # formal D_OB parent embedding).
     for d_ob_bin in (1, 3, 5):
-        zero_a, quant_a = model.d_tx_heads(history, 0, d_ob_bin)
-        zero_b, quant_b = model.d_tx_heads(history, 0, d_ob_bin)
+        zero_a, quant_a = model.d_tx_heads(state, 0, d_ob_bin)
+        zero_b, quant_b = model.d_tx_heads(state, 0, d_ob_bin)
         assert torch.equal(zero_a, zero_b)
         assert torch.equal(quant_a, quant_b)
     # The same formal D_OB value (10.0) always selects the same parent bin.
@@ -122,15 +123,16 @@ def test_network_heads_emit_zero_mass_and_monotone_positive_quantiles():
     values = torch.randn(4, 5, 4)
     lengths = torch.tensor([5, 4, 3, 5])
     history = pipe.model.encode_history(values, lengths)
-    hazard = pipe.contracts["T_IB_A00"]
-    pmf = hazard_pmf(pipe.model.hazard_logits(history), hazard)
+    state = pipe.model.state_representation(history)
+    hazard = pipe.contracts["T_IB_REMAINING_HAZARD"]
+    pmf = hazard_pmf(pipe.model.hazard_logits(state), hazard)
     assert torch.allclose(pmf.sum(dim=-1), torch.ones(4), atol=1e-6)
     for target in ("D_OB", "D_TX"):
         if target == "D_OB":
-            zero_logit, quantile_logits = pipe.model.d_ob_heads(history, torch.zeros(4, dtype=torch.long))
+            zero_logit, quantile_logits = pipe.model.d_ob_heads(state, torch.zeros(4, dtype=torch.long))
         else:
             zero_logit, quantile_logits = pipe.model.d_tx_heads(
-                history, torch.zeros(4, dtype=torch.long), torch.zeros(4, dtype=torch.long))
+                state, torch.zeros(4, dtype=torch.long), torch.zeros(4, dtype=torch.long))
         zero_probability = torch.sigmoid(zero_logit)
         assert torch.all((zero_probability > 0) & (zero_probability < 1))
         quantiles = monotone_positive_quantiles(quantile_logits)

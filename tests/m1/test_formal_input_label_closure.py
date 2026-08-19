@@ -130,10 +130,10 @@ def test_train_only_normalization_and_typed_labels_preserve_identity_and_split()
         successor_schedule=succ_schedule,successor_outcome=succ_outcome,target_support=pre.target_support,
         taxi_reference_minutes=0.0,taxi_reference_id="DATA2_TAXI_REFERENCE@1.0.0",
         taxi_reference_hash="sha256:reference")
-    assert {x.target_name for x in labels} == {"T_IB_A00","D_OB","D_TX"}
+    assert {x.target_name for x in labels} == {"T_IB_REMAINING_HAZARD","D_OB","D_TX"}
     assert all(x.episode_id == "e" and x.split == "train" and x.provenance for x in labels)
     assert {x.target_name:x.exact_minutes for x in labels} == {
-        "T_IB_A00":30.0,"D_OB":65.0,"D_TX":15.0}
+        "T_IB_REMAINING_HAZARD":30.0,"D_OB":65.0,"D_TX":15.0}
 
 
 def test_formal_pipeline_uses_frozen_target_supports():
@@ -141,8 +141,8 @@ def test_formal_pipeline_uses_frozen_target_supports():
     pipeline=M1Pipeline.from_scientific_config(scientific,input_size=len(FEATURE_NAMES_V2),
                                                normalization=_normalization(), hidden_size=16)
     assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
-        "T_IB_A00":360,"D_OB":180,"D_TX":60}
-    for target, finite, overflow in (("T_IB_A00",360,365),("D_OB",180,185),("D_TX",60,65)):
+        "T_IB_REMAINING_HAZARD":360,"D_OB":180,"D_TX":60}
+    for target, finite, overflow in (("T_IB_REMAINING_HAZARD",360,365),("D_OB",180,185),("D_TX",60,65)):
         bins=pipeline.bins[target]
         assert bins.encode(finite-0.001) == bins.class_count-2
         assert bins.encode(finite) == bins.class_count-1
@@ -183,7 +183,7 @@ def test_output_support_change_cannot_change_full_input_history():
     assert encoded_a.shape[0] == 3
     assert {name:head.class_count for name,head in pipeline_a.bins.items()} != {
         name:head.class_count for name,head in pipeline_b.bins.items()}
-    assert pipeline_a.bins["T_IB_A00"].class_count != pipeline_b.bins["T_IB_A00"].class_count
+    assert pipeline_a.bins["T_IB_REMAINING_HAZARD"].class_count != pipeline_b.bins["T_IB_REMAINING_HAZARD"].class_count
     assert pipeline_a.bins["D_OB"].class_count != pipeline_b.bins["D_OB"].class_count
     assert pipeline_a.bins["D_TX"].class_count != pipeline_b.bins["D_TX"].class_count
     assert pipeline_a.bins["D_OB"].encode(0) == 0

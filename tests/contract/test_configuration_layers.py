@@ -58,6 +58,11 @@ def test_layers_load_separately():
     assert quantile_levels.freeze_state.value == "DEVELOPMENT_ONLY"
     assert quantile_levels.value == [0.1, 0.3, 0.5, 0.7, 0.9]
     assert quantile_levels.provenance["final_test_access_count"] == 0
+    tail_policy = layers.scientific.parameters["m1_v2_positive_tail_policy"]
+    assert tail_policy.freeze_state.value == "HUMAN_DECISION_REQUIRED"
+    assert tail_policy.value == "UNRESOLVED"
+    assert tail_policy.provenance["human_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+    assert tail_policy.provenance["selection_state"] == "NOT_FROZEN"
     formal_contract = layers.scientific.parameters["m1_formal_output_contract"]
     assert formal_contract.freeze_state.value == "FROZEN"
     assert formal_contract.value == ["R_IB", "D_OB", "D_TX", "D_TO"]

@@ -20,8 +20,7 @@ from model.M1.loss import (
 
 
 def _hazard():
-    return HazardBinContract(target_name="T_IB_A00", bin_width_minutes=5,
-                             max_finite_minutes=60)
+    return HazardBinContract(bin_width_minutes=5, max_finite_minutes=60)
 
 
 def _d_tx():
@@ -88,6 +87,11 @@ def test_pinball_loss_is_convex_and_minimized_at_the_quantile():
 def test_quantile_value_is_monotone_in_uniform():
     quantiles = torch.tensor([[5.0, 10.0, 15.0]])
     levels = (0.1, 0.5, 0.9)
-    values = [quantile_value(quantiles, levels, u).item() for u in (0.05, 0.3, 0.5, 0.7, 0.95)]
+    # TEST_ONLY_LINEAR is the smoke-fixture tail rule; the principal default
+    # UNRESOLVED raises above q_max (covered by the v2.1 closure tests).
+    values = [
+        quantile_value(quantiles, levels, u, upper_tail_policy="TEST_ONLY_LINEAR").item()
+        for u in (0.05, 0.3, 0.5, 0.7, 0.95)
+    ]
     assert values == sorted(values)
     assert values[0] >= 0

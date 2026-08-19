@@ -18,8 +18,8 @@ from model.PRE.episode.builder import build_data2_episode_records
 from model.PRE.streaming.data2 import aircraft_tail
 
 
-TARGETS = ("T_IB_A00", "D_OB", "D_TX")
-LOGIT_KEYS = ("T_IB_A00", "D_OB_zero", "D_OB_quantile",
+TARGETS = ("T_IB_REMAINING_HAZARD", "D_OB", "D_TX")
+LOGIT_KEYS = ("T_IB_REMAINING_HAZARD", "D_OB_zero", "D_OB_quantile",
               "D_TX_zero", "D_TX_quantile")
 
 
@@ -29,7 +29,7 @@ def _example(episode, day, length, offset, *, node=None):
         episode_date=day,
         values=torch.arange(length * 4, dtype=torch.float32).reshape(length, 4) / 10 + offset,
         targets={name: (offset + index) % 6 for index, name in enumerate(TARGETS)},
-        active={"T_IB_A00": True, "D_OB": offset % 2 == 0, "D_TX": True},
+        active={"T_IB_REMAINING_HAZARD": True, "D_OB": offset % 2 == 0, "D_TX": True},
         decision_node_id=node or f"{episode}-n{length}",
     )
 

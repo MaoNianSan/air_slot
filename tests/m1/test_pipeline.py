@@ -56,6 +56,6 @@ def test_abstained_target_is_not_sampled_and_stage_requires_observed_events():
             episode_id="e", decision_node_id="n", stage="POST_OB_PRE_TO",
             observed={"T_IB_A00": "2019-01-01T12:05:00+00:00"},
             count=2, seed=7,
-            target_support={name: "SUPPORTED" for name in pipe.contracts},
+            target_support={name: "SUPPORTED" for name in ("T_IB_A00", "D_OB", "D_TX")},
             decision_time_utc="2019-01-01T12:00:00+00:00",
         )

@@ -6,6 +6,17 @@ Round-2 M1 V2 real estimator:
         -> D_TX (hurdle + conditional quantile, conditioned on formal D_OB)
     R_IB = max(0, T_IB_A00 - t), D_TO = D_OB + D_TX (derived).
 
+Round 2.1 scientific closure:
+- The hazard head/label are the INTERNAL remaining-time coordinate
+  ``T_IB_REMAINING_HAZARD``; the public primitive ``T_IB_A00`` stays the
+  absolute ISO UTC event time and remains the public output key.
+- Supported static context (schedule timing) is fused with the recurrent
+  representation before the common heads
+  (``state_repr = concat(recurrent_repr, static_repr)``).
+- ``predict_distributions`` returns clearly CONDITIONAL head summaries only;
+  genuine marginal summaries come from aligned scenarios via
+  ``scenario_marginal_summary`` (see ``model.M1.summaries``).
+
 The V1 signed estimator (R_IB -> DELTA_OB -> T_TX categorical) is
 LEGACY_V1/HISTORICAL_ONLY: ``M1Pipeline.load`` can still deserialize frozen V1
 artifacts for provenance, but no V1 semantics are presented as principal and
@@ -16,13 +27,95 @@ from pathlib import Path
 
 import torch
 
-from .contracts import HazardBinContract, HurdleQuantileContract, TargetBinContract
-from .data import M1NormalizationArtifact
+from .contracts import (
+    HazardBinContract,
+    HurdleQuantileContract,
+    M1_V2_HAZARD_COORDINATE,
+    TargetBinContract,
+)
+from .data import M1NormalizationArtifact, V2_STATIC_FIELDS
 from .network import M1V2GRU, OrderedEventGRU
 from .scenarios import ancestral_sample_v2
 from .loss import hazard_pmf, monotone_positive_quantiles
+from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 
 V1_TO_V2_SUPPORT = {"R_IB": "T_IB_A00", "DELTA_OB": "D_OB", "T_TX": "D_TX"}
+
+
+def conditional_head_summary(model, state, contracts, *, temperatures=None):
+    """Conditional head summaries shared by STATE_AWARE and FAST paths.
+
+    Returns a dict keyed by the public primitive names ``{T_IB_A00, D_OB,
+    D_TX}``.  ``state`` is the fused representation consumed by the common
+    heads (for STATE_AWARE: ``concat(recurrent_repr, static_repr)``; for FAST:
+    the ARX feature matrix).
+
+    Round 2.1 summary contract:
+    - ``T_IB_A00``: hazard PMF over the INTERNAL remaining-time coordinate
+      (public event time ``T_IB_A00 = decision_time + coordinate``).
+    - ``D_OB.zero_probability``: exact marginal P(D_OB = 0 | state) over the
+      hazard PMF (single logit->prob transformation per head).
+    - ``D_OB.positive_quantiles_minutes``: mixture of CONDITIONAL quantile
+      curves; explicitly labeled ``CONDITIONAL_MIXTURE_NOT_MARGINAL``.
+    - ``D_TX.zero_probability``: exact marginal over the hazard PMF given the
+      expected-D_OB-bin proxy (single transformation per head).
+    - ``D_TX.positive_quantiles_minutes``: CONDITIONAL curves at the expected
+      D_OB bin; explicitly labeled ``..._NOT_MARGINAL``.
+
+    Genuine marginal summaries are computed from aligned ancestral scenarios
+    via ``model.M1.summaries.scenario_marginal_summary``; no weighted mean of
+    conditional quantiles is ever presented as a marginal quantile here.
+    """
+    hazard = contracts[M1_V2_HAZARD_COORDINATE_TARGET]
+    d_ob = contracts["D_OB"]
+    d_tx = contracts["D_TX"]
+    temps = temperatures or {}
+    batch = state.shape[0]
+    device = state.device
+    with torch.no_grad():
+        hazard_logits = model.hazard_logits(state) / float(
+            temps.get(M1_V2_HAZARD_COORDINATE, 1.0))
+        pmf = hazard_pmf(hazard_logits, hazard)  # (B, K)
+        k = hazard.class_count
+        d_ob_zero = torch.zeros(batch, device=device)
+        d_ob_quant = torch.zeros(batch, d_ob.quantile_count, device=device)
+        d_tx_zero = torch.zeros(batch, device=device)
+        d_tx_quant = torch.zeros(batch, d_tx.quantile_count, device=device)
+        for b in range(k):
+            weight = pmf[:, b]  # (B,)
+            ib = torch.full((batch,), b, dtype=torch.long, device=device)
+            zero_ob, quant_ob = model.d_ob_heads(state, ib)
+            z_ob = torch.sigmoid(zero_ob.squeeze(-1) / float(temps.get("D_OB", 1.0)))
+            q_ob = monotone_positive_quantiles(quant_ob / float(temps.get("D_OB", 1.0)))
+            d_ob_zero = d_ob_zero + weight * z_ob
+            d_ob_quant = d_ob_quant + weight[:, None] * q_ob
+            expected_d_ob = (1.0 - z_ob) * q_ob.mean(dim=-1)
+            expected_bin = torch.clamp(
+                (expected_d_ob / d_ob.bin_width_minutes).long(),
+                0, d_ob.overflow_index,
+            )
+            zero_tx, quant_tx = model.d_tx_heads(state, ib, expected_bin)
+            z_tx = torch.sigmoid(zero_tx.squeeze(-1) / float(temps.get("D_TX", 1.0)))
+            q_tx = monotone_positive_quantiles(quant_tx / float(temps.get("D_TX", 1.0)))
+            d_tx_zero = d_tx_zero + weight * z_tx
+            d_tx_quant = d_tx_quant + weight[:, None] * q_tx
+        norm = pmf.sum(dim=-1).clamp_min(1e-12)
+        return {
+            "T_IB_A00": pmf,
+            "D_OB": {
+                "zero_probability": d_ob_zero / norm,
+                "positive_quantiles_minutes": d_ob_quant / norm[:, None],
+                "summary_kind": "CONDITIONAL_HEAD_SUMMARY",
+                "quantile_kind": "CONDITIONAL_MIXTURE_NOT_MARGINAL",
+            },
+            "D_TX": {
+                "zero_probability": d_tx_zero / norm,
+                "positive_quantiles_minutes": d_tx_quant / norm[:, None],
+                "summary_kind": "CONDITIONAL_HEAD_SUMMARY",
+                "quantile_kind": "CONDITIONAL_AT_EXPECTED_D_OB_BIN_NOT_MARGINAL",
+                "zero_kind": "MARGINAL_OVER_T_IB_HAZARD_GIVEN_EXPECTED_D_OB_BIN",
+            },
+        }
 
 
 class M1Pipeline:
@@ -41,20 +134,28 @@ class M1Pipeline:
 
     @classmethod
     def smoke(cls, input_size=4):
-        """Synthetic fixture helper; never resolves formal scientific bins."""
+        """Synthetic fixture helper; never resolves formal scientific bins.
+
+        Smoke contracts carry the explicitly-labeled ``TEST_ONLY_LINEAR``
+        upper-tail rule so synthetic sampling stays executable; this policy
+        is forbidden in foundation scientific configs.
+        """
         contracts = {
-            "T_IB_A00": HazardBinContract(target_name="T_IB_A00", bin_width_minutes=5,
-                                          max_finite_minutes=60),
+            M1_V2_HAZARD_COORDINATE_TARGET: HazardBinContract(
+                bin_width_minutes=5, max_finite_minutes=60),
             "D_OB": HurdleQuantileContract(target_name="D_OB", bin_width_minutes=5,
                                            max_finite_minutes=60,
-                                           quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9)),
+                                           quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
+                                           upper_tail_policy="TEST_ONLY_LINEAR"),
             "D_TX": HurdleQuantileContract(target_name="D_TX", bin_width_minutes=5,
                                            max_finite_minutes=30,
-                                           quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9)),
+                                           quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
+                                           upper_tail_policy="TEST_ONLY_LINEAR"),
         }
         torch.manual_seed(0)
-        return cls(M1V2GRU(input_size, 16, contracts["T_IB_A00"],
-                           contracts["D_OB"], contracts["D_TX"]), contracts)
+        return cls(M1V2GRU(input_size, 16, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
+                           contracts["D_OB"], contracts["D_TX"],
+                           static_input_size=len(V2_STATIC_FIELDS)), contracts)
 
     @classmethod
     def from_scientific_config(cls, scientific, *, input_size, normalization,
@@ -69,6 +170,10 @@ class M1Pipeline:
         quantile_levels = scientific.parameters["m1_v2_quantile_levels"].value
         if None in (ib_max, d_ob_max, d_tx_max) or not quantile_levels:
             raise ValueError("M1_V2_FINITE_SUPPORT_UNFROZEN")
+        tail_param = scientific.parameters.get("m1_v2_positive_tail_policy")
+        tail_policy = "UNRESOLVED" if tail_param is None else tail_param.value
+        if tail_policy not in ("UNRESOLVED", "DECLARED_FROZEN"):
+            raise ValueError("M1_V2_PRINCIPAL_TAIL_POLICY_TEST_ONLY_FORBIDDEN")
         selected = scientific.parameters["m1_hidden_size"].value
         hidden = selected if hidden_size is None else hidden_size
         if hidden is None:
@@ -77,80 +182,38 @@ class M1Pipeline:
         if candidates is not None and hidden not in candidates.value:
             raise ValueError("M1_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES")
         contracts = {
-            "T_IB_A00": HazardBinContract(target_name="T_IB_A00",
-                                          bin_width_minutes=width,
-                                          max_finite_minutes=ib_max),
+            M1_V2_HAZARD_COORDINATE_TARGET: HazardBinContract(
+                bin_width_minutes=width, max_finite_minutes=ib_max),
             "D_OB": HurdleQuantileContract(target_name="D_OB", bin_width_minutes=width,
                                            max_finite_minutes=d_ob_max,
-                                           quantile_levels=tuple(quantile_levels)),
+                                           quantile_levels=tuple(quantile_levels),
+                                           upper_tail_policy=tail_policy),
             "D_TX": HurdleQuantileContract(target_name="D_TX", bin_width_minutes=width,
                                            max_finite_minutes=d_tx_max,
-                                           quantile_levels=tuple(quantile_levels)),
+                                           quantile_levels=tuple(quantile_levels),
+                                           upper_tail_policy=tail_policy),
         }
-        return cls(M1V2GRU(input_size, hidden, contracts["T_IB_A00"],
-                           contracts["D_OB"], contracts["D_TX"]),
+        return cls(M1V2GRU(input_size, hidden, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
+                           contracts["D_OB"], contracts["D_TX"],
+                           static_input_size=len(V2_STATIC_FIELDS)),
                    contracts, normalization=normalization)
 
-    def predict_distributions(self, values, lengths):
-        """Current-state marginal distribution summary (V2 schema).
+    def predict_distributions(self, values, lengths, static_features=None):
+        """Conditional head summary (V2 schema); alias of the module function.
 
-        Returns ``{T_IB_A00: hazard PMF, D_OB: {zero_probability,
-        positive_quantiles_minutes}, D_TX: {...}}``.  Successor heads are
-        summarized conditional on the marginal T_IB_A00 mixture (D_OB) and on
-        that mixture plus the expected D_OB (D_TX).  Ancestral scenario draws
-        always use the true conditional heads via ``sample_from_pre``.
+        Returns clearly CONDITIONAL head summaries keyed by the public
+        primitive names ``{T_IB_A00, D_OB, D_TX}``.  The ``T_IB_A00`` PMF is
+        over the internal remaining-time coordinate
+        (``T_IB_A00 = decision_time + coordinate``).  D_OB/D_TX zero
+        probabilities are genuine marginals over the drawn hazard/bin
+        structure; positive quantile rows are CONDITIONAL mixtures and are
+        labeled as such (never ``marginal``).  Scenario-derived marginal
+        summaries live in ``model.M1.summaries.scenario_marginal_summary``.
         """
-        self.model.eval()
-        with torch.no_grad():
-            history = self.model.encode_history(values, lengths)
-            hazard_logits = self.model.hazard_logits(history)
-            pmf = hazard_pmf(hazard_logits, self.contracts["T_IB_A00"])
-            zero_probs = []
-            quantiles = []
-            for bin_index in range(self.contracts["T_IB_A00"].class_count):
-                zero_logit, quantile_logits = self.model.d_ob_heads(
-                    history, torch.full((history.shape[0],), bin_index, dtype=torch.long)
-                )
-                zero_probs.append(torch.sigmoid(zero_logit))
-                quantiles.append(monotone_positive_quantiles(quantile_logits))
-            d_ob_zero = sum(weight * value for weight, value in zip(
-                pmf.t(), zero_probs)) / pmf.sum(dim=-1, keepdim=True).clamp_min(1e-12)
-            d_ob_quantiles = sum(weight * value for weight, value in zip(
-                pmf.t(), quantiles)) / pmf.sum(dim=-1, keepdim=True).clamp_min(1e-12)
-            zero_probability = d_ob_zero.squeeze(-1)
-            expected_d_ob = (1.0 - zero_probability) * d_ob_quantiles.mean(dim=-1)
-            expected_bin = torch.clamp(
-                (expected_d_ob / self.contracts["D_OB"].bin_width_minutes).long(),
-                0, self.contracts["D_OB"].overflow_index,
-            )
-            # D_TX summary conditions on the marginal T_IB_A00 mixture by
-            # re-running the D_OB parent expectation over each IB bin.
-            zero_probe, quantile_probe = self.model.d_tx_heads(
-                history, torch.full((history.shape[0],), 0, dtype=torch.long),
-                expected_bin,
-            )
-            d_tx_zero_acc = torch.zeros_like(zero_probe)
-            d_tx_quant_acc = torch.zeros_like(quantile_probe)
-            for bin_index in range(self.contracts["T_IB_A00"].class_count):
-                zero_logit, quantile_logits = self.model.d_tx_heads(
-                    history, torch.full((history.shape[0],), bin_index, dtype=torch.long),
-                    expected_bin,
-                )
-                d_tx_zero_acc = d_tx_zero_acc + pmf[:, bin_index:bin_index + 1] * zero_logit
-                d_tx_quant_acc = d_tx_quant_acc + pmf[:, bin_index:bin_index + 1] * quantile_logits
-            d_tx_zero = d_tx_zero_acc / pmf.sum(dim=-1, keepdim=True).clamp_min(1e-12)
-            d_tx_quantiles = d_tx_quant_acc / pmf.sum(dim=-1, keepdim=True).clamp_min(1e-12)
-            return {
-                "T_IB_A00": pmf,
-                "D_OB": {
-                    "zero_probability": torch.sigmoid(zero_probability),
-                    "positive_quantiles_minutes": d_ob_quantiles,
-                },
-                "D_TX": {
-                    "zero_probability": torch.sigmoid(d_tx_zero.squeeze(-1)),
-                    "positive_quantiles_minutes": d_tx_quantiles,
-                },
-            }
+        history = self.model.encode_history(values, lengths)
+        state = self.model.state_representation(history, static_features)
+        return conditional_head_summary(self.model, state, self.contracts,
+                                        temperatures=self.temperatures)
 
     def sample_from_pre(self, pre_state, values, lengths, *, observed, count, seed,
                         taxi_reference=None):
@@ -178,6 +241,18 @@ class M1Pipeline:
             scheduled = schedule_value.get("scheduled_departure_utc")
             scheduled_ob_utc = None if scheduled is None else scheduled.isoformat()
             origin_airport_id = schedule_value.get("origin_airport_id")
+        static_features = None
+        if self.normalization is not None and isinstance(schedule_value, dict) \
+                and scheduled is not None:
+            # Supported static context: schedule timing at the decision node,
+            # normalized with the train-only artifact (SUPPORT_ABSTAIN for all
+            # other manuscript static fields; nothing is fabricated).
+            schedule_minutes = (
+                scheduled - pre_state.decision_node.decision_time
+            ).total_seconds() / 60.0
+            scaled = self.normalization.normalize(
+                "schedule.signed_minutes_to_crs_departure", schedule_minutes)
+            static_features = torch.tensor([[scaled]], dtype=torch.float32)
         reference_context = {
             "taxi_reference_id": None,
             "taxi_reference_hash": None,
@@ -206,7 +281,8 @@ class M1Pipeline:
             stage=stage, observed=observed, count=count, seed=seed,
             target_support=support, decision_time_utc=decision_time_utc,
             scheduled_ob_utc=scheduled_ob_utc,
-            temperatures=self.temperatures, **reference_context,
+            temperatures=self.temperatures,
+            static_features=static_features, **reference_context,
         )
 
     def summarize(self, scenarios, **kwargs):
@@ -223,6 +299,7 @@ class M1Pipeline:
             "state": self.model.state_dict(),
             "input_size": self.model.input_size,
             "hidden_size": self.model.hidden_size,
+            "static_input_size": getattr(self.model, "static_input_size", 0),
             "contracts": {
                 name: contract.model_dump() for name, contract in self.contracts.items()
             },
@@ -244,12 +321,14 @@ class M1Pipeline:
             pipeline._legacy_v1 = True
             return pipeline
         contracts = {
-            name: (HazardBinContract(**value) if name == "T_IB_A00"
+            name: (HazardBinContract(**value) if name == M1_V2_HAZARD_COORDINATE_TARGET
                    else HurdleQuantileContract(**value))
             for name, value in payload["contracts"].items()
         }
         model = M1V2GRU(payload["input_size"], payload["hidden_size"],
-                        contracts["T_IB_A00"], contracts["D_OB"], contracts["D_TX"])
+                        contracts[M1_V2_HAZARD_COORDINATE_TARGET],
+                        contracts["D_OB"], contracts["D_TX"],
+                        static_input_size=payload.get("static_input_size", 0))
         model.load_state_dict(payload["state"])
         normalization = payload.get("normalization")
         if normalization is not None:

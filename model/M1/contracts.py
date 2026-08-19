@@ -3,11 +3,14 @@ from typing import Literal
 
 from pydantic import computed_field, Field, model_validator
 
+from model.common.errors import ContractError
 from model.common.value_objects import FrozenModel, ProvenanceRef
 from .semantics import (
     M1_V2_ALL_TARGETS,
+    M1_V2_HAZARD_COORDINATE_TARGET,
     M1_V2_LEGACY_AUXILIARY_TARGETS,
     derived_d_ob_minutes,
+    remaining_hazard_coordinate_minutes,
     derived_d_to_from_primitives,
     derived_d_to_minutes,
     derived_d_tx_minutes,
@@ -145,6 +148,11 @@ class M1TargetLabel(TargetLabel):
     split: Literal["train", "calibration", "development", "test"]
     episode_date: date
     abstention_reason: str | None = None
+    # Public absolute predecessor in-block event time (ISO UTC) and the
+    # decision time.  Only the internal hazard-coordinate label carries them;
+    # they preserve the public T_IB_A00 identity even when R_IB == 0.
+    t_ib_a00_utc: str | None = None
+    decision_time_utc: str | None = None
 
     @model_validator(mode="after")
     def status_matches_value(self):
@@ -154,6 +162,22 @@ class M1TargetLabel(TargetLabel):
             raise ValueError("exact label status requires exact minutes")
         if self.label_status == "INTERVAL" and self.lower_minutes is None:
             raise ValueError("interval label status requires bounds")
+        return self
+
+    @model_validator(mode="after")
+    def hazard_label_coordinate_contract(self):
+        if self.target_name != M1_V2_HAZARD_COORDINATE_TARGET:
+            return self
+        if self.exact_minutes is not None:
+            if self.t_ib_a00_utc is None or self.decision_time_utc is None:
+                raise ValueError(
+                    "hazard-coordinate label requires the public T_IB_A00 and decision time"
+                )
+            expected = remaining_hazard_coordinate_minutes(
+                self.t_ib_a00_utc, self.decision_time_utc
+            )
+            if expected is None or abs(expected - self.exact_minutes) > 1e-6:
+                raise ValueError("hazard-coordinate label inconsistent with T_IB_A00")
         return self
 
 
@@ -305,21 +329,29 @@ class AlignedScenario(FrozenModel):
 # not the V2 principal estimator semantics.
 # ---------------------------------------------------------------------------
 
-V2TargetName = Literal["T_IB_A00", "D_OB", "D_TX"]
-V2_TARGETS: tuple[V2TargetName, ...] = ("T_IB_A00", "D_OB", "D_TX")
+V2TargetName = Literal["T_IB_REMAINING_HAZARD", "D_OB", "D_TX"]
+# Internal head/label target names.  The public primitive T_IB_A00 (absolute
+# ISO UTC event time) is distinct from the internal remaining-time hazard
+# coordinate ``T_IB_REMAINING_HAZARD`` (minutes from the decision node).
+V2_TARGETS: tuple[V2TargetName, ...] = (
+    "T_IB_REMAINING_HAZARD", "D_OB", "D_TX",
+)
+M1_V2_HAZARD_COORDINATE = M1_V2_HAZARD_COORDINATE_TARGET
 
 
 class HazardBinContract(FrozenModel):
-    """Discrete-hazard support for the unresolved predecessor in-block time.
+    """Discrete-hazard support for the internal remaining-time coordinate.
 
-    Parameterized as remaining-time-from-decision-time bins (equivalent
-    re-parameterization of the event time T_IB_A00).  The head emits one
-    hazard per finite bin; the last class is the survival/overflow tail, so
-    the induced PMF always sums to one.  A plain categorical softmax is never
-    used to imitate this hazard.
+    The head predicts the internal hazard coordinate ``T_IB_REMAINING_HAZARD``
+    (remaining minutes from the decision node), an equivalent
+    re-parameterization of the public predecessor in-block event time
+    ``T_IB_A00 = decision_time + coordinate``.  The head emits one hazard per
+    finite bin; the last class is the survival/overflow tail, so the induced
+    PMF always sums to one.  A plain categorical softmax is never used to
+    imitate this hazard.
     """
 
-    target_name: Literal["T_IB_A00"]
+    target_name: Literal["T_IB_REMAINING_HAZARD"] = "T_IB_REMAINING_HAZARD"
     bin_width_minutes: int = Field(gt=0)
     max_finite_minutes: int = Field(gt=0)
 
@@ -375,6 +407,16 @@ class HazardBinContract(FrozenModel):
         return self.bin_start(index) + self.bin_width_minutes / 2, False, False
 
 
+# Round 2.1 upper-tail contract.  ``UNRESOLVED`` is the only state allowed in
+# the principal scientific config: the manuscript does not freeze a positive
+# tail rule, so ``Q(u)`` for ``u > q_max`` must never silently clamp to
+# ``Q(q_max)``.  ``TEST_ONLY_LINEAR`` exists solely for synthetic smoke
+# fixtures and is forbidden in foundation configs.
+UpperTailPolicyName = Literal["UNRESOLVED", "TEST_ONLY_LINEAR", "DECLARED_FROZEN"]
+
+M1_POSITIVE_TAIL_DECISION_REQUIRED = "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+
+
 class HurdleQuantileContract(FrozenModel):
     """Zero-mass hurdle plus positive conditional quantiles for D_OB / D_TX.
 
@@ -384,12 +426,22 @@ class HurdleQuantileContract(FrozenModel):
     construction of the head parameterization.  ``bin_width_minutes`` /
     ``max_finite_minutes`` also define the conditioning-embedding grid
     (positive support with an overflow tail).
+
+    ``upper_tail_policy`` gates the behaviour of ``Q(u)`` for
+    ``u > max(quantile_levels)`` (see ``model.M1.loss.quantile_value``):
+    - ``UNRESOLVED``: raising/ABSTAIN in the principal path; no silent clamp.
+    - ``TEST_ONLY_LINEAR``: linear extrapolation for synthetic smoke fixtures
+      only; never carried by a foundation scientific config.
+    - ``DECLARED_FROZEN``: a frozen tail rule exists (``upper_tail_policy_reference``
+      points to its provenance); no such rule is frozen in this tranche.
     """
 
     target_name: Literal["D_OB", "D_TX"]
     max_finite_minutes: int = Field(gt=0)
     bin_width_minutes: int = Field(gt=0)
     quantile_levels: tuple[float, ...]
+    upper_tail_policy: UpperTailPolicyName = "UNRESOLVED"
+    upper_tail_policy_reference: str | None = None
 
     @model_validator(mode="after")
     def validate_support(self):
@@ -400,11 +452,20 @@ class HurdleQuantileContract(FrozenModel):
             raise ValueError("quantile levels must lie strictly inside (0, 1)")
         if any(right <= left for left, right in zip(levels, levels[1:])):
             raise ValueError("quantile levels must be strictly increasing")
+        if self.upper_tail_policy == "DECLARED_FROZEN"                 and not self.upper_tail_policy_reference:
+            raise ValueError("declared tail rule requires a policy reference")
+        if self.upper_tail_policy == "UNRESOLVED"                 and self.upper_tail_policy_reference is not None:
+            raise ValueError("unresolved tail policy cannot carry a reference")
         return self
 
     @property
     def quantile_count(self) -> int:
         return len(self.quantile_levels)
+
+    @property
+    def q_max(self) -> float:
+        """Largest declared positive quantile level."""
+        return float(max(self.quantile_levels))
 
     @property
     def positive_bin_count(self) -> int:
@@ -439,6 +500,77 @@ class HurdleQuantileContract(FrozenModel):
         return (float(index) + 0.5) * self.bin_width_minutes, False, False
 
 
+def cvar_support_status(contract: HurdleQuantileContract, alpha: float) -> str:
+    """Return ``SUPPORTED`` / ``GATED`` for a CVaR_alpha downstream consumer.
+
+    CVaR_alpha needs the distribution on the tail ``(alpha, 1]``.  The gate is
+    closed unless every region beyond ``alpha`` is covered by a resolved
+    upper-tail policy:
+    - ``alpha > q_max``: the alpha-quantile itself is not declared;
+    - ``upper_tail_policy == UNRESOLVED``: the tail beyond ``q_max`` is not
+      representable (so ``Q(q_max)`` must never stand in for the tail).
+    """
+    q_max = contract.q_max
+    if q_max < alpha - 1e-12:
+        return "GATED"
+    if contract.upper_tail_policy == "UNRESOLVED":
+        return "GATED"
+    return "SUPPORTED"
+
+
+def require_cvar_support(contract: HurdleQuantileContract, alpha: float) -> None:
+    """Raise ``M1_POSITIVE_TAIL_DECISION_REQUIRED`` when CVaR_alpha is gated."""
+    status = cvar_support_status(contract, alpha)
+    if status != "SUPPORTED":
+        raise ContractError(
+            f"{M1_POSITIVE_TAIL_DECISION_REQUIRED}:CVAR_ALPHA={alpha}:STATUS={status}"
+        )
+
+
+class M1V2StaticContext(FrozenModel):
+    """Typed static-context support for the M1 V2 representation.
+
+    Manuscript static context (schedule, route, aircraft, turnaround
+    reference, taxi reference, carrier) is retained separately and fused
+    before the common distributional heads
+    (``state_repr = concat(recurrent_repr, static_repr, optional_fast_repr)``).
+
+    Only fields with a real Data2/PRE canonical path are ``SUPPORTED``; the
+    remaining manuscript fields are ``SUPPORT_ABSTAIN`` (no canonical M1
+    encoder path yet, and never fabricated).  ``forbidden_fields`` may never be
+    constructed as static context at all.
+    """
+
+    supported_fields: tuple[str, ...] = ("schedule.signed_minutes_to_crs_departure",)
+    abstained_fields: tuple[str, ...] = (
+        "route",
+        "aircraft_identity",
+        "carrier",
+        "turnaround_reference",
+        "taxi_reference",
+    )
+    forbidden_fields: tuple[str, ...] = (
+        "live_aircraft_availability",
+        "gate",
+        "crew",
+        "slot",
+        "standby_aircraft",
+    )
+    fusion: str = "CONCAT_RECURRENT_STATIC"
+    implementation_choice: str = (
+        "ROUND2_1_SINGLE_LINEAR_PROJECTION_HIDDEN32_NO_SEARCH"
+    )
+
+    def support(self, field: str) -> str:
+        if field in self.supported_fields:
+            return "SUPPORTED"
+        if field in self.abstained_fields:
+            return "SUPPORT_ABSTAIN"
+        if field in self.forbidden_fields:
+            raise ValueError(f"M1_STATIC_CONTEXT_FORBIDDEN:{field}")
+        raise ValueError(f"M1_STATIC_CONTEXT_UNKNOWN:{field}")
+
+
 class M1V2TargetLabel(TargetLabel):
     """Typed V2 training label for one primitive target."""
 
@@ -452,6 +584,11 @@ class M1V2TargetLabel(TargetLabel):
     split: Literal["train", "calibration", "development", "test"]
     episode_date: date
     abstention_reason: str | None = None
+    # Public absolute predecessor in-block event time (ISO UTC) and the
+    # decision time.  Only the internal hazard-coordinate label carries them;
+    # they preserve the public T_IB_A00 identity even when R_IB == 0.
+    t_ib_a00_utc: str | None = None
+    decision_time_utc: str | None = None
 
     @model_validator(mode="after")
     def status_matches_value(self):
@@ -461,6 +598,22 @@ class M1V2TargetLabel(TargetLabel):
             raise ValueError("exact label status requires exact minutes")
         if self.label_status == "INTERVAL" and self.lower_minutes is None:
             raise ValueError("interval label status requires bounds")
+        return self
+
+    @model_validator(mode="after")
+    def hazard_label_coordinate_contract(self):
+        if self.target_name != M1_V2_HAZARD_COORDINATE_TARGET:
+            return self
+        if self.exact_minutes is not None:
+            if self.t_ib_a00_utc is None or self.decision_time_utc is None:
+                raise ValueError(
+                    "hazard-coordinate label requires the public T_IB_A00 and decision time"
+                )
+            expected = remaining_hazard_coordinate_minutes(
+                self.t_ib_a00_utc, self.decision_time_utc
+            )
+            if expected is None or abs(expected - self.exact_minutes) > 1e-6:
+                raise ValueError("hazard-coordinate label inconsistent with T_IB_A00")
         return self
 
 

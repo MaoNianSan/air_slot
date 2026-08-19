@@ -47,6 +47,10 @@ class FreezeState(StrEnum):
     DEVELOPMENT_FROZEN = "DEVELOPMENT_FROZEN"
     SENSITIVITY_ONLY = "SENSITIVITY_ONLY"
     DEVELOPMENT_ONLY = "DEVELOPMENT_ONLY"
+    # Round 2.1: a scientific decision is required before any numeric rule may
+    # be frozen; the parameter carries a policy name, never a numeric rule.
+    HUMAN_DECISION_REQUIRED = "HUMAN_DECISION_REQUIRED"
+    NOT_FROZEN = "NOT_FROZEN"
     UNSUPPORTED = "UNSUPPORTED"
 
 

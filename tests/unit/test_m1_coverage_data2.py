@@ -189,8 +189,8 @@ def test_early_arrival_episode_without_pre_ib_still_contributes_nodes():
     first_node, first_prefix, first_labels = prefixes[0]
     assert first_node.operational_stage is OperationalStage.POST_IB_PRE_OB
     by_name = {label.target_name: label for label in first_labels}
-    assert by_name["T_IB_A00"].active is False  # already realized at this stage
-    assert by_name["T_IB_A00"].abstention_reason == "TARGET_OBSERVED_AT_STAGE"
+    assert by_name["T_IB_REMAINING_HAZARD"].active is False  # already realized at this stage
+    assert by_name["T_IB_REMAINING_HAZARD"].abstention_reason == "TARGET_OBSERVED_AT_STAGE"
     assert by_name["D_OB"].active is True
     assert by_name["D_TX"].active is True
 
@@ -214,7 +214,7 @@ def test_late_arrival_episode_keeps_pre_ib_nodes():
     assert len(prefixes) == len(nodes)
     assert prefixes[0][0].operational_stage is OperationalStage.PRE_IB
     by_name = {label.target_name: label for label in prefixes[0][2]}
-    assert by_name["T_IB_A00"].active is True
+    assert by_name["T_IB_REMAINING_HAZARD"].active is True
     assert by_name["D_OB"].active is True
     assert by_name["D_TX"].active is True
 
@@ -262,8 +262,8 @@ def test_build_all_node_examples_one_example_per_node_in_order():
         assert example.values.shape[0] == index + 1     # full prefix per node
         assert example.episode_id == episode.episode_id
     # D_TX labels abstain without a train-frozen taxi reference.
-    assert examples[0].active == {"T_IB_A00": False, "D_OB": True, "D_TX": False}
-    assert examples[-1].active == {"T_IB_A00": False, "D_OB": True, "D_TX": False}
+    assert examples[0].active == {"T_IB_REMAINING_HAZARD": False, "D_OB": True, "D_TX": False}
+    assert examples[-1].active == {"T_IB_REMAINING_HAZARD": False, "D_OB": True, "D_TX": False}
 
 
 def test_nodes_states_length_mismatch_rejected():

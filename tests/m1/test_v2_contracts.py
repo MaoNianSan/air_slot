@@ -30,7 +30,8 @@ UTC = timezone.utc
 
 
 def _hazard(max_finite=60, width=5):
-    return HazardBinContract(target_name="T_IB_A00", bin_width_minutes=width,
+    return HazardBinContract(target_name="T_IB_REMAINING_HAZARD",
+                             bin_width_minutes=width,
                              max_finite_minutes=max_finite)
 
 

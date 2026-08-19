@@ -16,8 +16,8 @@ from .data import M1NormalizationArtifact
 from .lifecycle import M1TrainingExample
 
 
-CACHE_SCHEMA_VERSION = "M1_V2_DEVELOPMENT_BASE_CACHE_V1"
-TARGET_NAMES = ("T_IB_A00", "D_OB", "D_TX")
+CACHE_SCHEMA_VERSION = "M1_V2_DEVELOPMENT_BASE_CACHE_V2"
+TARGET_NAMES = ("T_IB_REMAINING_HAZARD", "D_OB", "D_TX")
 ALLOWED_SPLITS = ("train", "calibration", "development")
 REQUIRED_CONTRACT_HASHES = (
     "PRE_contract_hash",

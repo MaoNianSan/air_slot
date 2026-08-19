@@ -71,7 +71,7 @@ def test_legacy_missing_train_frozen_taxi_reference_abstains_from_d_to():
 def test_post_ob_stage_requires_and_preserves_observed_formal_d_ob():
     pipe = M1Pipeline.smoke(input_size=4)
     history = pipe.model.encode_history(torch.zeros(1, 2, 4), torch.tensor([2]))
-    support = {name: "SUPPORTED" for name in pipe.contracts}
+    support = {name: "SUPPORTED" for name in ("T_IB_A00", "D_OB", "D_TX")}
     with pytest.raises(ContractError, match="M1_STAGE_OBSERVATION_MISSING"):
         ancestral_sample_v2(
             pipe.model, history, pipe.contracts, episode_id="e",

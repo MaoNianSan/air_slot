@@ -104,12 +104,21 @@ NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", 
 #                     taxi reference features: no M1 canonical encoder path
 #                     yet; taxi reference enters only at label construction
 #                     and scenario provenance, never as an encoder input.
+#                     Round 2.1 keeps schedule timing as the sole SUPPORTED
+#                     static field (``V2_STATIC_FIELDS``) and fuses it before
+#                     the common heads; everything else stays SUPPORT_ABSTAIN.
 # ---------------------------------------------------------------------------
 V2_WEATHER_FIELDS = (
     "temperature_c", "dewpoint_c", "wind_direction_deg", "wind_speed_mps",
     "wind_gust_mps", "qnh_hpa", "visibility_m", "ceiling_base_m",
 )
 V2_STATE_FIELDS = ("ib_realized", "ob_realized", "to_realized")
+# Round 2.1 typed static context: only schedule timing has a real Data2/PRE
+# canonical path into the M1 encoder.  Route / aircraft identity / carrier /
+# turnaround reference / taxi reference are SUPPORT_ABSTAIN (see
+# ``M1V2StaticContext`` in model/M1/contracts.py); gate / crew / slot /
+# standby / live-aircraft context may never be constructed.
+V2_STATIC_FIELDS = ("schedule.signed_minutes_to_crs_departure",)
 V2_SCHEDULE_FIELDS = ("signed_minutes_to_crs_departure",)
 V2_OBJECTS = ("current_weather", "schedule_reference", "current_state")
 V2_STATE_REALIZED_BY_STAGE = {
@@ -150,6 +159,7 @@ E_NAMES_V2 = tuple(f"{obj}.evidence.{level}" for obj in V2_OBJECTS
                    for level in SUPPORT_LEVELS)
 S_NAMES_V2 = tuple(f"stage.{name}" for name in STAGE_LEVELS)
 FEATURE_NAMES_V2 = X_NAMES_V2 + M_NAMES_V2 + DELTA_NAMES_V2 + E_NAMES_V2 + S_NAMES_V2
+V2_STATIC_FIELD_INDEX = FEATURE_NAMES_V2.index(V2_STATIC_FIELDS[0])
 GROUP_SLICES_V2 = {
     "X": slice(0, len(X_NAMES_V2)),
     "M": slice(len(X_NAMES_V2), len(X_NAMES_V2) + len(M_NAMES_V2)),
@@ -163,6 +173,24 @@ NORMALIZED_NAMES_V2 = tuple(
     name for name in X_NAMES_V2
     if name.startswith(("weather.", "schedule.")) and not name.endswith((".sin", ".cos"))
 ) + V2_DELTA_T_FIELDS
+
+
+def static_features_from_sequence(
+    values: torch.Tensor, lengths: torch.Tensor | None = None
+) -> torch.Tensor:
+    """Supported static context at the decision node (last causal row).
+
+    The supported static field (schedule timing) is already part of every V2
+    feature row; this helper extracts the decision-node value as the typed
+    static-context input for ``M1V2GRU.state_representation``.  Rows whose
+    length is zero fall back to the leading padded value (never fabricated;
+    the sequence contract guarantees length >= 1 for supported nodes).
+    """
+    if lengths is None:
+        lengths = torch.full((values.shape[0],), values.shape[1], dtype=torch.long)
+    rows = torch.arange(values.shape[0], device=values.device)
+    indices = (lengths - 1).clamp_min(0)
+    return values[rows, indices, V2_STATIC_FIELD_INDEX].unsqueeze(-1)
 
 
 def fit_train_normalization(rows: list[dict[str, float]], *, split: str,

@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from hashlib import sha256
 
 import torch
@@ -9,12 +8,21 @@ from .contracts import (
     HazardBinContract,
     HurdleQuantileContract,
     M1V2Scenario,
+    M1_V2_HAZARD_COORDINATE,
     STOCHASTIC_TARGETS,
     TargetBinContract,
     V2_TARGETS,
 )
 from .loss import hazard_pmf, monotone_positive_quantiles, quantile_value
-from .semantics import M1_V2_LEGACY_AUXILIARY_TARGETS
+from .semantics import (
+    M1_V2_HAZARD_COORDINATE_TARGET,
+    M1_V2_LEGACY_AUXILIARY_TARGETS,
+    t_ib_a00_from_remaining_minutes,
+)
+
+# Public primitive name for the predecessor in-block event time; the sampled
+# scenario always stores the absolute ISO UTC time under this name.
+PUBLIC_T_IB_A00 = "T_IB_A00"
 
 
 def _uniform(seed: int, episode: str, scenario: int, target: str):
@@ -193,14 +201,19 @@ def required_observations_v2(stage: str) -> frozenset[str]:
 def _remaining_from_observed(
     t_ib_a00_utc: str, decision_time_utc: str | None
 ) -> float:
-    """R_IB = max(0, T_IB_A00 - t) for an observed absolute event time."""
+    """Internal hazard coordinate = max(0, T_IB_A00 - t) minutes.
+
+    The public absolute event time is converted to the internal remaining-time
+    coordinate; the absolute value itself stays in ``t_ib_a00_utc`` so past
+    events with R_IB == 0 remain distinguishable.
+    """
+    from .semantics import remaining_hazard_coordinate_minutes
     if decision_time_utc is None:
         raise ContractError("M1_V2_DECISION_TIME_REQUIRED")
-    remaining = (
-        datetime.fromisoformat(t_ib_a00_utc)
-        - datetime.fromisoformat(decision_time_utc)
-    ).total_seconds() / 60.0
-    return max(0.0, remaining)
+    remaining = remaining_hazard_coordinate_minutes(t_ib_a00_utc, decision_time_utc)
+    if remaining is None:
+        raise ContractError("M1_V2_INVALID_T_IB_A00_TIMESTAMP")
+    return float(remaining)
 
 
 def _sample_categorical(pmf: torch.Tensor, uniform: float) -> int:
@@ -218,14 +231,22 @@ def _sample_hurdle_quantile(
     contract: HurdleQuantileContract,
     uniform: float,
 ) -> tuple[float, int, bool]:
-    """One draw from P(D=0) + P(D>0) * Q_D(u | D>0)."""
+    """One draw from P(D=0) + P(D>0) * Q_D(u | D>0).
+
+    ``u > q_max`` follows the contract tail policy: with ``UNRESOLVED`` the
+    draw raises instead of silently truncating the positive tail; smoke
+    fixtures use ``TEST_ONLY_LINEAR``.
+    """
     zero_probability = float(torch.sigmoid(zero_logit[0]).detach())
     quantiles = monotone_positive_quantiles(quantile_logits)[0].detach()
     if uniform < zero_probability:
         return 0.0, 0, False
     positive_uniform = (uniform - zero_probability) / max(1.0 - zero_probability, 1e-12)
     value = float(
-        quantile_value(quantiles.unsqueeze(0), contract.quantile_levels, positive_uniform)[0]
+        quantile_value(
+            quantiles.unsqueeze(0), contract.quantile_levels, positive_uniform,
+            upper_tail_policy=contract.upper_tail_policy,
+        )[0]
     )
     index = contract.encode(value)
     overflow = bool(contract.tail_state(index) == "OVERFLOW")
@@ -251,17 +272,22 @@ def ancestral_sample_v2(
     taxi_reference_fallback_level: str | None = None,
     taxi_reference_support_state: str | None = None,
     temperatures: dict[str, float] | None = None,
+    static_features: torch.Tensor | None = None,
 ) -> tuple[M1V2Scenario, ...]:
     """Ancestral V2 draws in the formal order T_IB_A00 -> D_OB -> D_TX.
 
-    ``observed`` accepts typed factual replacement:
+    ``observed`` accepts typed factual replacement with PUBLIC primitive names:
         "T_IB_A00": absolute UTC ISO event-time string,
         "D_OB"/"D_TX": nonnegative minutes.
-    Only unresolved variables are drawn; upstream variables that are already
-    decision-time facts are consumed as observed.  The Data2 factual
-    availability rule itself is NOT decided here (Round-2 human gate).
+    ``target_support`` is keyed by the same public primitive names.  The
+    internal contracts/heads are addressed through
+    ``M1_V2_HAZARD_COORDINATE_TARGET`` (remaining-time coordinate) while the
+    scenario stores the public absolute ``t_ib_a00_utc``.  Only unresolved
+    variables are drawn; upstream variables that are already decision-time
+    facts are consumed as observed.  The Data2 factual availability rule
+    itself is NOT decided here (Round-2 human gate).
     """
-    hazard = contracts["T_IB_A00"]
+    hazard = contracts[M1_V2_HAZARD_COORDINATE_TARGET]
     d_ob_contract = contracts["D_OB"]
     d_tx_contract = contracts["D_TX"]
     if not isinstance(hazard, HazardBinContract) or not isinstance(
@@ -271,6 +297,8 @@ def ancestral_sample_v2(
     required = required_observations_v2(stage)
     if not required <= set(observed):
         raise ContractError("M1_STAGE_OBSERVATION_MISSING")
+    # Fused state representation shared by every head call in this bundle.
+    state = model.state_representation(history, static_features)
     rows = []
     for scenario_id in range(count):
         keys = [
@@ -279,31 +307,32 @@ def ancestral_sample_v2(
         ]
         supports = dict(target_support)
 
-        # --- T_IB_A00 (discrete hazard over remaining time) ---
+        # --- T_IB_A00 (public) via internal remaining-time hazard coordinate ---
         t_ib_a00_utc: str | None = None
         ib_bin: int | None = None
-        t_ib_observed = "T_IB_A00" in observed
+        t_ib_observed = PUBLIC_T_IB_A00 in observed
         overflow_t_ib = False
-        if supports.get("T_IB_A00") == "ABSTAIN":
+        if supports.get(PUBLIC_T_IB_A00) == "ABSTAIN":
             pass
         elif t_ib_observed:
-            t_ib_a00_utc = str(observed["T_IB_A00"])
+            t_ib_a00_utc = str(observed[PUBLIC_T_IB_A00])
             remaining = _remaining_from_observed(t_ib_a00_utc, decision_time_utc)
             ib_bin = hazard.encode(remaining)
             overflow_t_ib = bool(hazard.tail_state(ib_bin) == "OVERFLOW")
         else:
             if decision_time_utc is None:
                 raise ContractError("M1_V2_DECISION_TIME_REQUIRED")
-            logits = model.hazard_logits(history)
-            temperature = 1.0 if temperatures is None else float(temperatures.get("T_IB_A00", 1.0))
+            logits = model.hazard_logits(state)
+            temperature = 1.0 if temperatures is None else float(
+                temperatures.get(M1_V2_HAZARD_COORDINATE, 1.0))
             pmf = hazard_pmf(logits[0].detach() / temperature, hazard)
-            uniform, _ = _uniform_v2(seed, episode_id, scenario_id, "T_IB_A00")
+            uniform, _ = _uniform_v2(seed, episode_id, scenario_id,
+                                     M1_V2_HAZARD_COORDINATE)
             ib_bin = _sample_categorical(pmf, uniform)
             overflow_t_ib = bool(hazard.tail_state(ib_bin) == "OVERFLOW")
             remaining = float(hazard.representative(ib_bin)[0])
-            t_ib_a00_utc = (
-                datetime.fromisoformat(decision_time_utc) + timedelta(minutes=remaining)
-            ).isoformat()
+            t_ib_a00_utc = t_ib_a00_from_remaining_minutes(
+                decision_time_utc, remaining)
 
         # --- D_OB (hurdle + conditional quantile, parent T_IB_A00) ---
         d_ob_minutes: float | None = None
@@ -322,7 +351,7 @@ def ancestral_sample_v2(
             # Formal parent abstention propagates to the child scenario.
             supports["D_OB"] = "ABSTAIN"
         else:
-            zero_logit, quantile_logits = model.d_ob_heads(history, ib_bin)
+            zero_logit, quantile_logits = model.d_ob_heads(state, ib_bin)
             temperature = 1.0 if temperatures is None else float(temperatures.get("D_OB", 1.0))
             uniform, _ = _uniform_v2(seed, episode_id, scenario_id, "D_OB")
             d_ob_minutes, d_ob_bin, overflow_d_ob = _sample_hurdle_quantile(
@@ -343,7 +372,7 @@ def ancestral_sample_v2(
             # Formal parent abstention propagates to the child scenario.
             supports["D_TX"] = "ABSTAIN"
         else:
-            zero_logit, quantile_logits = model.d_tx_heads(history, ib_bin, d_ob_bin)
+            zero_logit, quantile_logits = model.d_tx_heads(state, ib_bin, d_ob_bin)
             temperature = 1.0 if temperatures is None else float(temperatures.get("D_TX", 1.0))
             uniform, _ = _uniform_v2(seed, episode_id, scenario_id, "D_TX")
             d_tx_minutes, d_tx_bin, overflow_d_tx = _sample_hurdle_quantile(
@@ -364,7 +393,7 @@ def ancestral_sample_v2(
             t_ib_observed=t_ib_observed,
             d_ob_observed=d_ob_observed,
             d_tx_observed=d_tx_observed,
-            t_ib_support=supports.get("T_IB_A00", "ABSTAIN"),
+            t_ib_support=supports.get(PUBLIC_T_IB_A00, "ABSTAIN"),
             d_ob_support=supports.get("D_OB", "ABSTAIN"),
             d_tx_support=supports.get("D_TX", "ABSTAIN"),
             overflow_t_ib=overflow_t_ib,

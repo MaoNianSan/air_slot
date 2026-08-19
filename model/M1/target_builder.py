@@ -1,6 +1,7 @@
 from model.common.enums import DecisionTimeRole, OperationalStage, SupportState
 from model.common.errors import ContractError
 from model.M1.contracts import M1TargetLabel, M1V2TargetLabel, V2_TARGETS
+from model.M1.semantics import M1_V2_HAZARD_COORDINATE_TARGET
 from model.PRE.cohort import split_for_date
 from model.common.value_objects import ProvenanceRef
 from model.PRE.contracts.canonical import FlightRecord, OperationalEventRecord
@@ -90,15 +91,18 @@ build_data2_target_labels = build_target_labels
 # ---------------------------------------------------------------------------
 
 V2_STAGE_ACTIVE = {
-    "T_IB_A00": frozenset({OperationalStage.PRE_IB}),
+    M1_V2_HAZARD_COORDINATE_TARGET: frozenset({OperationalStage.PRE_IB}),
     "D_OB": frozenset({OperationalStage.PRE_IB, OperationalStage.POST_IB_PRE_OB}),
     "D_TX": frozenset({OperationalStage.PRE_IB, OperationalStage.POST_IB_PRE_OB,
                        OperationalStage.POST_OB_PRE_TO}),
 }
 
-# PRE target-support names (V1) mapped onto V2 primitive targets.
+# PRE target-support names (V1) mapped onto V2 INTERNAL training-target names.
+# The predecessor hazard label is the internal remaining-time coordinate
+# (T_IB_REMAINING_HAZARD); the public absolute T_IB_A00 is carried by the
+# label's ``t_ib_a00_utc`` field.
 V2_SUPPORT_MAP = {
-    "R_IB": "T_IB_A00",
+    "R_IB": M1_V2_HAZARD_COORDINATE_TARGET,
     "DELTA_OB": "D_OB",
     "T_TX": "D_TX",
 }
@@ -119,10 +123,13 @@ def build_v2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
                            taxi_reference_minutes: float | None = None,
                            taxi_reference_id: str | None = None,
                            taxi_reference_hash: str | None = None) -> tuple[M1V2TargetLabel, ...]:
-    """V2 training labels for T_IB_A00 / D_OB / D_TX.
+    """V2 training labels for T_IB_REMAINING_HAZARD / D_OB / D_TX.
 
-    T_IB_A00 is the remaining time max(0, actual_arrival - decision_time)
-    (hazard support).  D_OB = max(0, actual_departure - scheduled_departure).
+    The predecessor hazard label is the INTERNAL remaining-time coordinate
+    ``max(0, actual_arrival - decision_time)``; its public absolute event
+    time ``T_IB_A00`` (ISO UTC) and the decision time are retained on the
+    label so past events with R_IB == 0 stay distinguishable.
+    D_OB = max(0, actual_departure - scheduled_departure).
     D_TX = max(0, taxi_out - taxi_reference); without the train-frozen taxi
     reference the D_TX label abstains.
     """
@@ -151,7 +158,8 @@ def build_v2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
     predecessor_complete = not predecessor_outcome.cancelled and not predecessor_outcome.diverted
     successor_complete = not successor_outcome.cancelled and not successor_outcome.diverted
     continuous = {
-        "T_IB_A00": None if not predecessor_complete or predecessor_outcome.actual_arrival_utc is None
+        M1_V2_HAZARD_COORDINATE_TARGET: None
+            if not predecessor_complete or predecessor_outcome.actual_arrival_utc is None
             else max(0.0, (predecessor_outcome.actual_arrival_utc - node.decision_time).total_seconds() / 60.0),
         "D_OB": None if not successor_complete or successor_outcome.actual_departure_utc is None
             or successor_schedule.scheduled_departure_utc is None else max(0.0, (
@@ -188,7 +196,7 @@ def build_v2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
             abstention_reason = "TAXI_REFERENCE_UNAVAILABLE"
         else:
             abstention_reason = "REALIZED_OUTCOME_UNAVAILABLE"
-        if target == "T_IB_A00":
+        if target == M1_V2_HAZARD_COORDINATE_TARGET:
             provenance = (predecessor_outcome.provenance,)
         elif target == "D_OB":
             provenance = (successor_schedule.provenance, successor_outcome.provenance)
@@ -202,6 +210,14 @@ def build_v2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
                 rule_id="DATA2_TAXI_REFERENCE",
                 source_version=taxi_reference_hash,
             ),)
+        t_ib_a00_utc = None
+        decision_time_utc = None
+        if target == M1_V2_HAZARD_COORDINATE_TARGET:
+            if predecessor_complete and predecessor_outcome.actual_arrival_utc is not None:
+                # Public identity is preserved even when the remaining time is
+                # already zero (past event): R_IB == 0 never erases the event.
+                t_ib_a00_utc = predecessor_outcome.actual_arrival_utc.isoformat()
+                decision_time_utc = node.decision_time.isoformat()
         result.append(M1V2TargetLabel(
             target_name=target,
             active=active,
@@ -215,5 +231,7 @@ def build_v2_target_labels(*, episode: EpisodeRecord, node: DecisionNodeRecord,
             abstention_reason=abstention_reason,
             provenance=provenance,
             split=split_for_date(successor_schedule.service_date),
-            episode_date=successor_schedule.service_date))
+            episode_date=successor_schedule.service_date,
+            t_ib_a00_utc=t_ib_a00_utc,
+            decision_time_utc=decision_time_utc))
     return tuple(result)

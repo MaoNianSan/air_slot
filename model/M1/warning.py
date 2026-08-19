@@ -15,14 +15,23 @@ from pydantic import Field, model_validator
 
 from model.common.value_objects import FrozenModel
 
-from .contracts import HazardBinContract, HurdleQuantileContract, M1V2Scenario
+from .contracts import (
+    HazardBinContract,
+    HurdleQuantileContract,
+    M1V2Scenario,
+    M1_V2_HAZARD_COORDINATE,
+    V2_TARGETS,
+)
 from .loss import hazard_pmf, monotone_positive_quantiles, quantile_value
 from .scenarios import _uniform_v2, required_observations_v2
+from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 
 
 PRINCIPAL_WARNING_EVENT = "D_TO_POST_GT_30"
 PRINCIPAL_WARNING_THRESHOLD_MINUTES = 30.0
-V2_WARNING_TARGETS = ("T_IB_A00", "D_OB", "D_TX")
+# Seed-key targets follow the internal V2 target names so the vectorized path
+# produces the exact uniforms of ``ancestral_sample_v2``.
+V2_WARNING_TARGETS = V2_TARGETS
 
 
 class WarningProbability(FrozenModel):
@@ -121,7 +130,8 @@ def _sample_hurdle_quantile_batch(zero_logit: torch.Tensor,
             (1.0 - zero_probability[positive]).clamp_min(1e-12)
         )
         value[positive] = quantile_value(
-            quantiles[positive], contract.quantile_levels, positive_uniform
+            quantiles[positive], contract.quantile_levels, positive_uniform,
+            upper_tail_policy=contract.upper_tail_policy,
         )
     index = torch.clamp(
         (value / contract.bin_width_minutes).long(), 0, contract.overflow_index
@@ -151,10 +161,12 @@ def batched_warning_probability(
     """
     model = pipeline.model
     contracts = pipeline.contracts
-    hazard: HazardBinContract = contracts["T_IB_A00"]
+    hazard: HazardBinContract = contracts[M1_V2_HAZARD_COORDINATE]
     d_ob_contract: HurdleQuantileContract = contracts["D_OB"]
     d_tx_contract: HurdleQuantileContract = contracts["D_TX"]
     device = histories.device
+    # Fused state representation consumed by every head call in this bundle.
+    state = model.state_representation(histories)
     n = histories.shape[0]
     if len({len(episode_ids), len(stages), len(decision_times_utc),
             len(observed_t_ib), len(observed_d_ob), len(observed_d_tx)}) != 1:
@@ -166,9 +178,10 @@ def batched_warning_probability(
     supported = torch.ones(n, dtype=torch.bool, device=device)
     temperature = pipeline.temperatures
 
-    # ---- T_IB_A00 (discrete hazard) ----
+    # ---- T_IB_A00 (discrete hazard over the internal remaining-time coord) ----
     hazard_pmfs = hazard_pmf(
-        model.hazard_logits(histories) / float(temperature.get("T_IB_A00", 1.0)),
+        model.hazard_logits(state) / float(
+            temperature.get(M1_V2_HAZARD_COORDINATE, 1.0)),
         hazard,
     )  # (n, K)
     ib_bin = torch.full((n, count), -1, dtype=torch.long, device=device)
@@ -221,7 +234,7 @@ def batched_warning_probability(
             continue
         # Evaluate the D_OB heads for every hazard bin once per node.
         all_bins = torch.arange(hazard.class_count, device=device)
-        hist = histories[i:i + 1].expand(hazard.class_count, -1)
+        hist = state[i:i + 1].expand(hazard.class_count, -1)
         zero, quant = model.d_ob_heads(hist, all_bins)
         zero = zero.squeeze(-1) / float(temperature.get("D_OB", 1.0))
         quant = quant / float(temperature.get("D_OB", 1.0))
@@ -249,12 +262,14 @@ def batched_warning_probability(
         hazard_count = hazard.class_count
         ob_count = d_ob_contract.class_count
         all_ib = torch.arange(hazard_count, device=device)
-        hist = histories[i:i + 1].expand(hazard_count, -1)
+        hist = state[i:i + 1].expand(hazard_count, -1)
         ibc = model.ib_embedding(all_ib)
         features = torch.cat([hist, ibc, torch.zeros_like(ibc)], dim=-1)
         zero_base = model.d_tx_zero_head(features).squeeze(-1)   # (K,)
         quant_base = model.d_tx_quantile_head(features)          # (K, Q)
         ob_emb = model.d_ob_embedding.weight                     # (G, H)
+        # The D_OB parent block is the trailing ``hidden_size`` columns of the
+        # D_TX head input regardless of the fused state width.
         zero_contrib = model.d_tx_zero_head.weight[:, -hidden:] @ ob_emb.t()   # (1, G)
         quant_contrib = model.d_tx_quantile_head.weight[:, -hidden:] @ ob_emb.t()  # (Q, G)
         zero = (zero_base[:, None] + zero_contrib) / float(temperature.get("D_TX", 1.0))  # (K, G)

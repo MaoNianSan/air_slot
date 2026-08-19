@@ -18,7 +18,7 @@ that historical V1 artifacts and legacy consumers keep their provenance.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Final
 
 
@@ -34,6 +34,11 @@ EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (
 M1_V2_PRIMITIVE_TARGETS: Final[tuple[str, ...]] = ("T_IB_A00", "D_OB", "D_TX")
 M1_V2_DERIVED_TARGETS: Final[tuple[str, ...]] = ("R_IB", "D_TO")
 M1_V2_ALL_TARGETS: Final[tuple[str, ...]] = M1_V2_PRIMITIVE_TARGETS + M1_V2_DERIVED_TARGETS
+# Round 2.1 coordinate separation: the public primitive T_IB_A00 is the
+# absolute predecessor in-block event time (ISO UTC); the hazard head/label
+# parameterize the INTERNAL remaining-time coordinate from the decision node.
+# Public T_IB_A00 = decision_time + internal hazard coordinate.
+M1_V2_HAZARD_COORDINATE_TARGET: Final[str] = "T_IB_REMAINING_HAZARD"
 # DELTA_OB / raw T_TX are LEGACY_V1 / LABEL_CONSTRUCTION / EVALUATION_AUXILIARY
 # only; they are never V2 formal stochastic parents.
 M1_V2_LEGACY_AUXILIARY_TARGETS: Final[tuple[str, ...]] = ("DELTA_OB", "T_TX")
@@ -120,6 +125,11 @@ M1_V2_TARGET_SEMANTICS: Final[dict[str, dict[str, str]]] = {
         "quantity": "D_OB plus D_TX per aligned scenario; never a separately trained head",
         "role": "FORMAL_DERIVED",
     },
+    "T_IB_REMAINING_HAZARD": {
+        "external_name": "predecessor_in_block_remaining_time_hazard_coordinate",
+        "quantity": "internal remaining-time hazard coordinate in minutes from the decision node; public T_IB_A00 = decision_time + coordinate; R_IB = max(0, T_IB_A00 - decision_time)",
+        "role": "INTERNAL_HAZARD_COORDINATE",
+    },
 }
 
 
@@ -134,6 +144,32 @@ def derived_r_ib_minutes(t_ib_a00_utc: str | None, decision_time_utc: str | None
     except ValueError:
         return None
     return max(0.0, remaining)
+
+
+def remaining_hazard_coordinate_minutes(
+    t_ib_a00_utc: str | None, decision_time_utc: str | None
+) -> float | None:
+    """Internal hazard coordinate: max(0, T_IB_A00 - decision_time) minutes.
+
+    This is the same quantity as the derived R_IB; the name makes the
+    remaining-time hazard-coordinate semantics explicit for the internal
+    head/label parameterization.
+    """
+    return derived_r_ib_minutes(t_ib_a00_utc, decision_time_utc)
+
+
+def t_ib_a00_from_remaining_minutes(decision_time_utc: str, remaining_minutes: float) -> str:
+    """Public absolute event time T_IB_A00 = decision_time + remaining minutes.
+
+    Raises ``ValueError`` (``M1_V2_DECISION_TIME_REQUIRED``) when the decision
+    time is missing; the caller decides the error class.
+    """
+    if decision_time_utc is None:
+        raise ValueError("M1_V2_DECISION_TIME_REQUIRED")
+    return (
+        datetime.fromisoformat(decision_time_utc)
+        + timedelta(minutes=float(remaining_minutes))
+    ).isoformat()
 
 
 def derived_r_ib_from_remaining(remaining_minutes: float | None) -> float | None:

@@ -1,4 +1,7 @@
 import torch
+
+from model.common.errors import ContractError
+
 from .contracts import TargetBinContract
 
 
@@ -200,17 +203,82 @@ def hurdle_quantile_loss(
 
 
 
+def _quantile_tail_values(
+    quantiles: torch.Tensor,
+    levels: tuple[float, ...],
+) -> tuple[float, torch.Tensor, torch.Tensor]:
+    """Return (q_max level, anchor Q(q_max) (B,), last-segment slope (B,))."""
+    batch, quantile_count = quantiles.shape
+    q_max = float(levels[-1])
+    v_max = quantiles[:, -1]
+    if quantile_count >= 2:
+        q_prev = float(levels[-2])
+        v_prev = quantiles[:, -2]
+    else:
+        q_prev = 0.0
+        v_prev = torch.zeros(batch, dtype=quantiles.dtype, device=quantiles.device)
+    slope = (v_max - v_prev) / max(q_max - q_prev, 1e-12)
+    return q_max, v_max, slope
+
+
+def _apply_quantile_piecewise(
+    flat_uu: torch.Tensor,
+    lo: torch.Tensor,
+    hi: torch.Tensor,
+    vlo: torch.Tensor,
+    vhi: torch.Tensor,
+    *,
+    q_max: float,
+    tail_anchor: torch.Tensor,
+    slope: torch.Tensor,
+    upper_tail_policy: str,
+) -> torch.Tensor:
+    """Evaluate Q(flat_uu) on the declared grid, then resolve the tail region.
+
+    ``flat_uu`` is 1-D; ``lo/hi/vlo/vhi`` have the same leading length.
+    ``u > q_max`` is never silently clamped to ``Q(q_max)`` (Round 2.1).
+    """
+    weight = ((flat_uu - lo) / (hi - lo).clamp_min(1e-12)).clamp(0.0, 1.0)
+    base = vlo + weight * (vhi - vlo)
+    tail_mask = flat_uu > q_max + 1e-9
+    if not bool(tail_mask.any()):
+        return base
+    if upper_tail_policy == "UNRESOLVED":
+        raise ContractError("M1_QUANTILE_UPPER_TAIL_UNRESOLVED")
+    if upper_tail_policy == "DECLARED_FROZEN":
+        raise ContractError("M1_QUANTILE_UPPER_TAIL_RULE_NOT_IMPLEMENTED")
+    if upper_tail_policy != "TEST_ONLY_LINEAR":
+        raise ContractError(f"M1_QUANTILE_UPPER_TAIL_POLICY_UNKNOWN:{upper_tail_policy}")
+    tail = tail_anchor + (flat_uu - q_max) * slope
+    return torch.where(tail_mask, tail, base)
+
+
 def quantile_value(
     quantiles: torch.Tensor,
     levels: tuple[float, ...],
     u: torch.Tensor,
+    *,
+    upper_tail_policy: str = "UNRESOLVED",
+    upper_tail_policy_reference: str | None = None,
 ) -> torch.Tensor:
     """Piecewise-linear interpolation of the positive quantile function Q(u).
 
     ``quantiles`` has shape (B, Q) and is strictly increasing positive; the
-    curve is anchored at Q(0) = 0 and extended linearly beyond the largest
-    declared level.  ``u`` may be a scalar (same uniform for every row), a
-    (B,) tensor (one uniform per row), or a (B, S) tensor of uniforms.
+    curve is anchored at Q(0) = 0.  ``u`` may be a scalar (same uniform for
+    every row), a (B,) tensor (one uniform per row), or a (B, S) tensor of
+    uniforms; the output mirrors the ``u`` shape (scalar ``u`` still returns
+    one value per row, (B,)).
+
+    Round 2.1 tail contract: for ``u > q_max`` the value is never silently
+    clamped to ``Q(q_max)``.  ``upper_tail_policy`` follows
+    ``HurdleQuantileContract.upper_tail_policy``:
+    - ``UNRESOLVED`` (principal default): raise
+      ``M1_QUANTILE_UPPER_TAIL_UNRESOLVED``;
+    - ``TEST_ONLY_LINEAR``: linear extrapolation with the last-segment slope
+      (synthetic smoke fixtures only);
+    - ``DECLARED_FROZEN``: raise ``M1_QUANTILE_UPPER_TAIL_RULE_NOT_IMPLEMENTED``
+      until a frozen tail rule is registered; ``upper_tail_policy_reference``
+      is accepted for the future frozen-rule registry and otherwise unused.
     """
     batch, quantile_count = quantiles.shape
     if quantile_count != len(levels):
@@ -218,24 +286,31 @@ def quantile_value(
     levels_t = torch.as_tensor(levels, dtype=quantiles.dtype, device=quantiles.device)
     grid = torch.cat([torch.zeros(1, dtype=levels_t.dtype, device=levels_t.device), levels_t])
     values = torch.cat([torch.zeros(batch, 1, dtype=quantiles.dtype, device=quantiles.device), quantiles], dim=-1)
-    uu = torch.clamp(torch.as_tensor(u, dtype=quantiles.dtype, device=quantiles.device), 0.0, 1.0)
+    uu = torch.as_tensor(u, dtype=quantiles.dtype, device=quantiles.device)
+    q_max, tail_anchor, slope = _quantile_tail_values(quantiles, levels)
+
+    def _resolve(flat_uu, lo, hi, vlo, vhi, per_row_anchor, per_row_slope):
+        return _apply_quantile_piecewise(
+            flat_uu, lo, hi, vlo, vhi,
+            q_max=q_max, tail_anchor=per_row_anchor, slope=per_row_slope,
+            upper_tail_policy=upper_tail_policy,
+        )
+
     if uu.dim() == 0:
         index = int(torch.searchsorted(grid, uu, right=False).clamp(1, quantile_count)) - 1
-        lo, hi = grid[index], grid[index + 1]
-        vlo, vhi = values[:, index], values[:, index + 1]
-        weight = ((uu - lo) / (hi - lo).clamp_min(1e-12)).clamp(0.0, 1.0)
-        return vlo + weight * (vhi - vlo)
+        lo = grid[index].expand(batch)
+        hi = grid[index + 1].expand(batch)
+        vlo = values[:, index]
+        vhi = values[:, index + 1]
+        return _resolve(uu.expand(batch), lo, hi, vlo, vhi, tail_anchor, slope)
     if uu.dim() == 1:
         if uu.shape[0] != batch:
             raise ValueError("one uniform per row required for 1-D quantile interpolation")
         index = torch.searchsorted(grid, uu, right=False).clamp(1, quantile_count) - 1
         rows = torch.arange(batch, device=uu.device)
-        lo = grid[index]
-        hi = grid[index + 1]
-        vlo = values[rows, index]
-        vhi = values[rows, index + 1]
-        weight = ((uu - lo) / (hi - lo).clamp_min(1e-12)).clamp(0.0, 1.0)
-        return vlo + weight * (vhi - vlo)
+        return _resolve(uu, grid[index], grid[index + 1],
+                        values[rows, index], values[rows, index + 1],
+                        tail_anchor, slope)
     if uu.dim() == 2:
         rows_count, scenarios = uu.shape
         if rows_count != batch:
@@ -249,12 +324,10 @@ def quantile_value(
             .clamp(1, quantile_count)
             - 1
         )
-        lo = grid[index]
-        hi = grid[index + 1]
         rows = torch.arange(total, device=uu.device) // scenarios
         flat_values = values.reshape(-1)
         vlo = flat_values[rows * (quantile_count + 1) + index]
         vhi = flat_values[rows * (quantile_count + 1) + index + 1]
-        weight = ((flat_u - lo) / (hi - lo).clamp_min(1e-12)).clamp(0.0, 1.0)
-        return (vlo + weight * (vhi - vlo)).reshape(uu.shape)
+        return _resolve(flat_u, grid[index], grid[index + 1], vlo, vhi,
+                        tail_anchor[rows], slope[rows]).reshape(uu.shape)
     raise ValueError("quantile interpolation supports scalar, (B,), or (B, S) uniforms")

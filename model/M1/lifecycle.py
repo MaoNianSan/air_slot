@@ -17,9 +17,18 @@ from .loss import (
     hurdle_quantile_loss,
 )
 from .pipeline import M1Pipeline
-from .contracts import M1V2TargetLabel, V2_TARGETS
-from .semantics import M1_V2_PRIMITIVE_TARGETS
+from .contracts import M1V2TargetLabel, M1_V2_HAZARD_COORDINATE, V2_TARGETS
+from .data import static_features_from_sequence
+from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 from model.PRE.contracts.pre_state import TargetSupportState
+
+# V1 support names -> V2 internal training-target names (the hazard label is
+# the internal remaining-time coordinate, never the public absolute T_IB_A00).
+_V1_TO_V2_TRAINING_TARGETS = {
+    "R_IB": M1_V2_HAZARD_COORDINATE_TARGET,
+    "DELTA_OB": "D_OB",
+    "T_TX": "D_TX",
+}
 
 
 @dataclass(frozen=True)
@@ -41,10 +50,9 @@ class M1TrainingExample:
     @classmethod
     def from_pre_support(cls, *, episode_id, episode_date, values, targets,
                          target_support: tuple[TargetSupportState, ...]):
-        from .pipeline import V1_TO_V2_SUPPORT
         active = {}
         for item in target_support:
-            name = V1_TO_V2_SUPPORT.get(item.target_name, item.target_name)
+            name = _V1_TO_V2_TRAINING_TARGETS.get(item.target_name, item.target_name)
             active[name] = item.active \
                 and str(item.support_state.value) != "ABSTAIN"
         return cls(episode_id=episode_id, episode_date=episode_date, values=values,
@@ -106,7 +114,7 @@ class M1Lifecycle:
     @staticmethod
     def _encode(values, contracts, device):
         """V2 label encodings for teacher forcing and losses."""
-        hazard = contracts["T_IB_A00"]
+        hazard = contracts[M1_V2_HAZARD_COORDINATE]
         d_ob = contracts["D_OB"]
         d_tx = contracts["D_TX"]
         ib_bin = torch.full((len(values),), -1, dtype=torch.long, device=device)
@@ -122,8 +130,8 @@ class M1Lifecycle:
         for index, row in enumerate(values):
             for name in V2_TARGETS:
                 active[name][index] = row.active.get(name, False)
-            if row.targets.get("T_IB_A00") is not None:
-                minutes = max(0.0, float(row.targets["T_IB_A00"]))
+            if row.targets.get(M1_V2_HAZARD_COORDINATE) is not None:
+                minutes = max(0.0, float(row.targets[M1_V2_HAZARD_COORDINATE]))
                 ib_minutes[index] = minutes
                 ib_bin[index] = hazard.encode(minutes)
             if row.targets.get("D_OB") is not None:
@@ -185,7 +193,7 @@ class M1Lifecycle:
         tx_zero_count = 0
         tx_positive_count = 0
         for row in examples:
-            if row.active.get("T_IB_A00"):
+            if row.active.get(M1_V2_HAZARD_COORDINATE):
                 ib_count += 1
             if row.active.get("D_OB"):
                 ob_zero_count += 1
@@ -212,9 +220,9 @@ class M1Lifecycle:
         """
         active = encoded["active"]
         ib_loss = hazard_interval_nll(
-            logits["T_IB_A00"], contracts["T_IB_A00"],
+            logits[M1_V2_HAZARD_COORDINATE], contracts[M1_V2_HAZARD_COORDINATE],
             lower=encoded["ib_minutes"], upper=encoded["ib_minutes"],
-            active=active["T_IB_A00"], denominator=counts["ib"],
+            active=active[M1_V2_HAZARD_COORDINATE], denominator=counts["ib"],
         )
         d_ob_loss = hurdle_quantile_loss(
             logits["D_OB_zero"], logits["D_OB_quantile"], contracts["D_OB"],
@@ -252,16 +260,18 @@ class M1Lifecycle:
                 teacher = None
                 if teacher_forcing:
                     teacher = {
-                        "T_IB_A00": encoded["ib_bin"],
+                        M1_V2_HAZARD_COORDINATE: encoded["ib_bin"],
                         "D_OB": encoded["d_ob_bin"],
                         "D_TX": encoded["d_tx_bin"],
                         "_active": {
-                            "T_IB_A00": encoded["ib_bin"] >= 0,
+                            M1_V2_HAZARD_COORDINATE: encoded["ib_bin"] >= 0,
                             "D_OB": encoded["d_ob_bin"] >= 0,
                             "D_TX": encoded["d_tx_bin"] >= 0,
                         },
                     }
-                logits = self.pipeline.model(values, lengths, teacher=teacher)
+                logits = self.pipeline.model(
+                    values, lengths, teacher=teacher,
+                    static_features=static_features_from_sequence(values, lengths))
                 loss = self._loss(logits, encoded, self.pipeline.contracts, counts)
                 total = total + loss.detach()
                 loss.backward()
@@ -291,16 +301,18 @@ class M1Lifecycle:
                 values, lengths, encoded = self._batch(batch, self.pipeline.contracts,
                                                        device=self.device)
                 teacher = None if not teacher_forcing else {
-                    "T_IB_A00": encoded["ib_bin"],
+                    M1_V2_HAZARD_COORDINATE: encoded["ib_bin"],
                     "D_OB": encoded["d_ob_bin"],
                     "D_TX": encoded["d_tx_bin"],
                     "_active": {
-                        "T_IB_A00": encoded["ib_bin"] >= 0,
+                        M1_V2_HAZARD_COORDINATE: encoded["ib_bin"] >= 0,
                         "D_OB": encoded["d_ob_bin"] >= 0,
                         "D_TX": encoded["d_tx_bin"] >= 0,
                     },
                 }
-                logits = self.pipeline.model(values, lengths, teacher=teacher)
+                logits = self.pipeline.model(
+                    values, lengths, teacher=teacher,
+                    static_features=static_features_from_sequence(values, lengths))
                 target_indices = torch.tensor(indices, dtype=torch.long)
                 if output is None:
                     output = {name: torch.empty(
@@ -309,7 +321,8 @@ class M1Lifecycle:
                 for name, value in logits.items():
                     value = value.detach().cpu()
                     output[name][target_indices] = value
-                label_map = {"T_IB_A00": "ib_bin", "D_OB": "d_ob_bin", "D_TX": "d_tx_bin"}
+                label_map = {M1_V2_HAZARD_COORDINATE: "ib_bin",
+                             "D_OB": "d_ob_bin", "D_TX": "d_tx_bin"}
                 for name in V2_TARGETS:
                     all_labels[name][target_indices] = encoded[label_map[name]].detach().cpu()
                     all_active[name][target_indices] = encoded["active"][name].detach().cpu()
@@ -323,11 +336,12 @@ class M1Lifecycle:
         logits, labels, active = self.batched_logits(
             examples, batch_size=batch_size, teacher_forcing=True)
         temperatures = {name: 1.0 for name in V2_TARGETS}
-        hazard = self.pipeline.contracts["T_IB_A00"]
-        encoded_active = active["T_IB_A00"]
+        hazard = self.pipeline.contracts[M1_V2_HAZARD_COORDINATE]
+        encoded_active = active[M1_V2_HAZARD_COORDINATE]
         if encoded_active.any():
-            temperatures["T_IB_A00"] = fit_temperature(
-                logits["T_IB_A00"], labels["T_IB_A00"], encoded_active)
+            temperatures[M1_V2_HAZARD_COORDINATE] = fit_temperature(
+                logits[M1_V2_HAZARD_COORDINATE],
+                labels[M1_V2_HAZARD_COORDINATE], encoded_active)
         self.pipeline.temperatures = temperatures
         return dict(self.pipeline.temperatures)
 

@@ -118,6 +118,15 @@ parameters:
       selection_state: NOT_FROZEN
       note: "manuscript does not freeze numeric positive-quantile levels; DEVELOPMENT_ONLY scaffold pending HUMAN_DECISION_REQUIRED"
       final_test_access_count: 0
+  m1_v2_positive_tail_policy:
+    freeze_state: HUMAN_DECISION_REQUIRED
+    value: UNRESOLVED
+    provenance:
+      selection_state: NOT_FROZEN
+      human_gate: M1_POSITIVE_TAIL_DECISION_REQUIRED
+      note: "no numeric tail rule is frozen; Q(u) for u > q_max must raise/ABSTAIN in the principal path and never clamp to Q(q_max). Decisions needed: positive quantile levels, q_max, upper-tail representation/extrapolation rule, calibration/freeze procedure. TEST_ONLY rules are forbidden here."
+      cvar_alpha_reference: 0.90
+      final_test_access_count: 0
   scenario_count: {freeze_state: FROZEN, value: 1000}
   m1_warning_model_artifact:
     freeze_state: FROZEN

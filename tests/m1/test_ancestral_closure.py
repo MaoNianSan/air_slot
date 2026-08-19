@@ -32,7 +32,7 @@ def _as_index(value):
 def test_true_ancestral_heads_receive_sampled_parent_categories(monkeypatch):
     pipe = M1Pipeline.smoke(input_size=4)
     model = pipe.model
-    hazard = pipe.contracts["T_IB_A00"]
+    hazard = pipe.contracts["T_IB_REMAINING_HAZARD"]
     d_ob = pipe.contracts["D_OB"]
     d_tx = pipe.contracts["D_TX"]
     calls = []

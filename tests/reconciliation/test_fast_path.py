@@ -1,10 +1,14 @@
-"""FAST path closure tests — V2 schema is shared with STATE_AWARE M1.
+"""FAST path closure tests — executable ARX-LightGBM V2 baseline.
 
-The FAST predictor abstains (``ABSTAIN``) and raises until a train-frozen V2
-artifact is registered; the formal contract and the V2 scenario schema
-(``M1V2_SCENARIO``) are identical to the state-aware path.
+The FAST predictor shares the V2 schema and the V2 scenario sampler with the
+STATE_AWARE path; the principal ``predict_distributions`` stays ABSTAIN until
+a train-frozen V2 artifact is registered.  Round 2.1 adds an executable
+architecture (hazard models + zero classifiers + positive quantile
+regressors), exercised here through synthetic fitting and
+``predict_development`` (never a paper result).
 """
 
+import numpy as np
 import pytest
 import torch
 
@@ -18,20 +22,37 @@ from model.M1.scenarios import ancestral_sample_v2
 from model.common.errors import ContractError
 
 
+def _fitted_predictor(*, n_estimators=8):
+    pipeline = M1Pipeline.smoke(input_size=4)
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(64, 12))
+    ib = np.abs(rng.normal(30.0, 15.0, size=64))
+    d_ob = np.where(rng.random(64) < 0.3, 0.0,
+                    np.abs(rng.normal(40.0, 25.0, size=64)))
+    d_tx = np.where(rng.random(64) < 0.3, 0.0,
+                    np.abs(rng.normal(15.0, 10.0, size=64)))
+    predictor = LightGBMDistributionalPredictor(
+        pipeline.contracts, feature_window=3)
+    predictor.fit(X, {
+        "T_IB_REMAINING_HAZARD": ib,
+        "D_OB": d_ob,
+        "D_TX": d_tx,
+    }, seed=7, n_estimators=n_estimators)
+    return pipeline, predictor
+
+
 def test_fast_predictor_abstains_without_fitted_models():
     pipeline = M1Pipeline.smoke(input_size=4)
     predictor = LightGBMDistributionalPredictor(pipeline.contracts)
     assert predictor.status is M1FastPathStatus.ABSTAIN
     with pytest.raises(ContractError, match="M1_FAST_PATH_ABSTAIN"):
         predictor.predict_distributions(torch.zeros(1, 2, 4))
+    with pytest.raises(ContractError, match="M1_FAST_PATH_ABSTAIN"):
+        predictor.predict_development(torch.zeros(1, 2, 4))
 
 
 def test_fast_distributions_share_state_aware_schema_and_scenarios():
-    pipeline = M1Pipeline.smoke(input_size=4)
-    # Even a fitted model cannot emit V2 distributions until a train-frozen
-    # V2 artifact is registered (no fabricated development outputs).
-    predictor = LightGBMDistributionalPredictor(
-        pipeline.contracts, models={name: object() for name in pipeline.contracts})
+    pipeline, predictor = _fitted_predictor()
     assert predictor.status is M1FastPathStatus.DEVELOPMENT_ONLY
     contract = predictor.contract()
     assert contract.feature_semantics == "CAUSAL_HISTORY_PREFIX_ONLY"
@@ -40,25 +61,37 @@ def test_fast_distributions_share_state_aware_schema_and_scenarios():
     assert contract.scenario_schema == "M1V2_SCENARIO"
     assert contract.final_test_access_count == 0
     assert contract.paper_full_run is False
+
+    # Fitted-but-unfrozen models still abstain on the principal path; the
+    # executable architecture is exercised through predict_development only.
     with pytest.raises(ContractError, match="M1_FAST_V2_FITTED_ARTIFACT_NOT_REGISTERED"):
         predictor.predict_distributions(torch.zeros(1, 6, 4))
+
+    values = torch.zeros(1, 6, 4)
+    lengths = torch.tensor([6])
+    dist = predictor.predict_development(values, lengths)
+    assert set(dist) == {"T_IB_A00", "D_OB", "D_TX"}
+    assert dist["T_IB_A00"].shape == (
+        1, pipeline.contracts["T_IB_REMAINING_HAZARD"].class_count)
+    assert dist["D_OB"]["zero_probability"].shape == (1,)
+    assert dist["D_OB"]["positive_quantiles_minutes"].shape == (1, 5)
+    assert dist["D_OB"]["summary_kind"] == "CONDITIONAL_HEAD_SUMMARY"
 
     # FAST and STATE_AWARE declare the same formal distribution schema.
     assert set(fast_v2_distribution_schema()) == {"T_IB_A00", "D_OB", "D_TX"}
     assert fast_v2_distribution_schema()["D_OB"] == {
         "zero_probability": "scalar", "positive_quantiles_minutes": "vector"}
-    assert set(pipeline.predict_distributions(
-        torch.zeros(1, 6, 4), torch.ones(1, dtype=torch.long))) == {
+    assert set(pipeline.predict_distributions(values, lengths)) == {
         "T_IB_A00", "D_OB", "D_TX"}
 
-    # Both paths consume the same V2 scenario schema.
-    history = pipeline.model.encode_history(
-        torch.zeros(1, 6, 4), torch.ones(1, dtype=torch.long))
-    scenarios = ancestral_sample_v2(
-        pipeline.model, history, pipeline.contracts,
+    # Both paths consume the same V2 scenario schema through the FAST heads.
+    features = predictor._arx_features(values)
+    scenarios = predictor.sample(
+        features=torch.tensor(features, dtype=torch.float32),
         episode_id="e", decision_node_id="n", stage="PRE_IB",
         observed={}, count=8, seed=11,
-        target_support={name: "SUPPORTED" for name in pipeline.contracts},
+        target_support={name: "SUPPORTED"
+                        for name in ("T_IB_A00", "D_OB", "D_TX")},
         decision_time_utc="2019-01-01T12:00:00+00:00",
     )
     assert all(row.scenario_weight == 1 / 8 for row in scenarios)
@@ -68,14 +101,25 @@ def test_fast_distributions_share_state_aware_schema_and_scenarios():
         or row.d_to_minutes == pytest.approx(row.d_ob_minutes + row.d_tx_minutes, abs=1e-9)
         for row in scenarios
     )
+    # The STATE_AWARE sampler consumes the identical scenario schema.
+    state_aware_history = pipeline.model.encode_history(values, lengths)
+    reference = ancestral_sample_v2(
+        pipeline.model, state_aware_history, pipeline.contracts,
+        episode_id="e", decision_node_id="n", stage="PRE_IB",
+        observed={}, count=8, seed=11,
+        target_support={name: "SUPPORTED"
+                        for name in ("T_IB_A00", "D_OB", "D_TX")},
+        decision_time_utc="2019-01-01T12:00:00+00:00",
+    )
+    assert {row.scenario_seed_key for row in scenarios} == {
+        row.scenario_seed_key for row in reference}
 
 
 def test_fast_path_works_through_m1_service_callback_contract():
     from model.M1.service import M1Service
 
     pipeline = M1Pipeline.smoke(input_size=4)
-    predictor = LightGBMDistributionalPredictor(
-        pipeline.contracts, models={name: object() for name in pipeline.contracts})
+    _, predictor = _fitted_predictor()
     service = M1Service(pipeline, model_version="fixture", fast_predictor=predictor)
     values = torch.zeros(1, 6, 4)
     lengths = torch.tensor([6])
