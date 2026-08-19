@@ -28,6 +28,7 @@ class ActionEvaluation(FrozenModel):
     post_totals: tuple[float, ...]
     scenario_conditioned: bool = False
     post_total_status: str = "NOT_COMPUTED"
+    interpretation_class: str = "NOT_DECLARED"
     quality_flags: tuple[str, ...]
     coverage_explanation: tuple[str, ...]
     ranking_position: int | None = None

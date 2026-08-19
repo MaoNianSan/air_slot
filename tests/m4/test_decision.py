@@ -72,7 +72,7 @@ def test_unknown_is_conditional_and_false_is_excluded():
     assert next(item for item in closed.actions if item.template_id == "A11").lane == "EXCLUDED"
 
 
-def test_material_pure_scenario_response_is_scenario():
+def test_unfrozen_response_is_not_formal_regardless_of_provenance():
     action = candidate(
         "A11",
         provenance=ResponseProvenance.PURE_SCENARIO,

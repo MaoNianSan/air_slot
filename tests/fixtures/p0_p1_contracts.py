@@ -247,6 +247,10 @@ def candidate(
     induced=None,
 ):
     is_a00 = template == "A00"
+    response_parameters = {"value": 0.0 if is_a00 else 1.0}
+    if not is_a00:
+        # gamma must come from the frozen response registry (Round 2, spec 9.2).
+        response_parameters["induced_score_to_cu"] = 0.10
     return CandidateAction(
         candidate_action_id=f"{template}:instance-{candidate_index}",
         template_id=template,
@@ -259,7 +263,7 @@ def candidate(
         mitigation={} if is_a00 else (mitigation or {"F_execution": 0.5}),
         induced={} if is_a00 else (induced or {}),
         response_model="DETERMINISTIC",
-        response_parameters={"value": 0.0 if is_a00 else 1.0},
+        response_parameters=response_parameters,
         response_provenance=provenance,
         response_parameter_status=(
             ResponseParameterStatus.NOT_REQUIRED if is_a00 else parameter_status

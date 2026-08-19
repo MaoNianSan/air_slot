@@ -18,7 +18,7 @@ from typing import Any, Mapping
 import yaml
 from pydantic import Field, model_validator
 
-from model.M3.registry import ActionRegistry
+from model.M3.registry import ActionRegistry, PRINCIPAL_IDS
 from model.common.errors import RegistryError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
@@ -26,11 +26,8 @@ from model.common.value_objects import FrozenModel
 
 REGISTRY_ID = "M3_RESPONSE_SCENARIO_V1"
 SCHEMA_VERSION = "M3_RESPONSE_SCENARIO_V1"
-PRINCIPAL_IDS = (
-    "A00", "A11", "A13", "A21", "A22", "A23", "A31", "A32", "A33",
-    "A41", "A42", "A43", "A51", "A52", "A53", "A54", "A55",
-    "A61", "A62", "A63", "A64", "A71", "A72",
-)
+# Backwards-compatible alias: the principal-23 set now lives in model.M3.registry.
+PRINCIPAL_IDS = PRINCIPAL_IDS
 SENSITIVITY_LEVELS = ("LOW", "BASE", "HIGH")
 PARAMETER_BASIS = "TRANSPARENT_TIERED_SCENARIO_V1"
 
@@ -56,8 +53,8 @@ class ResponseScenarioAction(FrozenModel):
                 raise RegistryError("M3_RESPONSE_A00_NOT_REQUIRED_VIOLATION")
             if self.response_model != "DETERMINISTIC":
                 raise RegistryError("M3_RESPONSE_A00_DETERMINISTIC_REQUIRED")
-        elif self.response_parameter_status != "FROZEN":
-            raise RegistryError("M3_RESPONSE_NON_A00_MUST_BE_FROZEN")
+        elif self.response_parameter_status not in {"FROZEN", "NOT_FROZEN"}:
+            raise RegistryError("M3_RESPONSE_NON_A00_MUST_BE_FROZEN_OR_NOT_FROZEN")
         if self.response_provenance not in {
             "PURE_SCENARIO", "OPERATOR_INDUSTRY", "STRUCTURAL_BOUNDED_SCENARIO",
         }:
@@ -117,8 +114,8 @@ class ResponseScenarioRegistry(FrozenModel):
         ids = tuple(self.actions)
         if len(ids) != len(set(ids)):
             raise RegistryError("M3_RESPONSE_DUPLICATE_ACTION_ID")
-        if ids != PRINCIPAL_IDS:
-            raise RegistryError("M3_RESPONSE_ACTION_SET_MISMATCH")
+        if not set(PRINCIPAL_IDS) <= set(ids):
+            raise RegistryError("M3_RESPONSE_PRINCIPAL_ACTION_SUBSET_MISMATCH")
         unknown = set(self.tiers) - {f"T{i}" for i in range(1, 7)}
         if unknown:
             raise RegistryError("M3_RESPONSE_UNKNOWN_TIER")
@@ -130,6 +127,10 @@ class ResponseScenarioRegistry(FrozenModel):
             raise RegistryError("M3_RESPONSE_INVALID_INDUCED_CONVERSION")
         for name, item in self.actions.items():
             if name == "A00":
+                continue
+            if item.response_parameter_status == "NOT_FROZEN":
+                # Library entry only: no numerical response contract declared yet,
+                # so no tier materialization and no comparison-set eligibility.
                 continue
             tier = self.tiers.get(item.tier)
             if tier is None:
@@ -152,8 +153,8 @@ class ResponseScenarioRegistry(FrozenModel):
         if tuple(structural.templates) is None:
             raise RegistryError("M3_RESPONSE_STRUCTURAL_REGISTRY_HASH_MISMATCH")
         structural_ids = tuple(item.template_id for item in structural.templates)
-        if structural_ids != PRINCIPAL_IDS:
-            raise RegistryError("M3_RESPONSE_STRUCTURAL_REGISTRY_HASH_MISMATCH")
+        if not set(PRINCIPAL_IDS) <= set(structural_ids):
+            raise RegistryError("M3_RESPONSE_STRUCTURAL_PRINCIPAL_SUBSET_MISMATCH")
 
     def parameters(self, template_id: str, *, sensitivity: str = "BASE") -> dict[str, Any]:
         """Materialized response parameters for one action at one sensitivity."""
@@ -166,6 +167,14 @@ class ResponseScenarioRegistry(FrozenModel):
                 "response_parameter_status": "NOT_REQUIRED",
                 "response_provenance": action.response_provenance,
                 "value": float(action.value or 0.0),
+            }
+        if action.response_parameter_status == "NOT_FROZEN":
+            # Library entry only: no frozen response contract, so no materialized
+            # numerical parameters and no comparison-set eligibility.
+            return {
+                "response_model": action.response_model,
+                "response_parameter_status": "NOT_FROZEN",
+                "response_provenance": action.response_provenance,
             }
         if sensitivity not in SENSITIVITY_LEVELS:
             raise RegistryError("M3_RESPONSE_SENSITIVITY_UNKNOWN")
@@ -197,6 +206,9 @@ class ResponseScenarioRegistry(FrozenModel):
             "beta": (1.0 - mean) * concentration,
             "parameter_basis": PARAMETER_BASIS,
             "sensitivity_level": sensitivity,
+            # gamma single source of truth (Round 2, spec 9.2): frozen registry
+            # value; sensitivity never perturbs the principal frozen parameter.
+            "induced_score_to_cu": float(self.induced_score_to_cu),
         }
 
     def tier_for(self, template_id: str) -> str:

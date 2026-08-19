@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from model.M3.contracts import ResponseParameterStatus, ResponseProvenance
+from model.common.errors import ContractError
 from model.M4.coverage import (
     A00BaselineComparatorGate,
     MaterialCoverageEvaluation,
@@ -14,6 +15,25 @@ from model.M4.results import ActionEvaluation
 from model.M4.risk import weighted_mean, weighted_var_cvar
 from model.common.estimand import FormalEstimandStatus
 from model.common.monetary_system import MonetaryMappingRegistry, MonetaryMappingStatus
+
+
+def _interpretation_class(candidate) -> str:
+    """Carry the Pi_a evidence interpretation class separately from eligibility.
+
+    Structured response_support evidence bases win; legacy single-label
+    provenance maps to the declared interpretation category.
+    """
+    support = getattr(candidate, "response_support", None)
+    if support is not None and getattr(support, "evidence_bases", ()):
+        return "+".join(sorted(item.value for item in support.evidence_bases))
+    mapping = {
+        ResponseProvenance.PURE_SCENARIO: "SCENARIO_BASED",
+        ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO: "STRUCTURAL_SCENARIO",
+        ResponseProvenance.OPERATOR_INDUSTRY: "OPERATIONAL_RULE",
+        ResponseProvenance.EMPIRICAL_ACTION_LOG: "EMPIRICALLY_ANCHORED",
+        ResponseProvenance.UNSUPPORTED: "UNSUPPORTED",
+    }
+    return mapping.get(getattr(candidate, "response_provenance", None), "NOT_DECLARED")
 
 
 def aggregate_a00_baseline_gate(m2_consequences, material_coverage_contract):
@@ -98,12 +118,15 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
         if candidate.template_id == "A00" or not open_:
             post_cu = dict(values)
         else:
+            gamma = candidate.response_parameters.get("induced_score_to_cu")
+            if gamma is None:
+                raise ContractError("M4_INDUCED_SCORE_TO_CU_SOURCE_MISSING")
             post_cu = action_post_consequences(
                 pre_by_component=values,
                 mitigation=candidate.mitigation,
                 induced=candidate.induced,
                 rho=response,
-                induced_score_to_cu=0.10,
+                induced_score_to_cu=float(gamma),
                 included_components=formal.included_components,
             )
         # Monetary conversion happens per scenario: L_a^m = sum_k omega_k^m * C_a,k^CU.
@@ -152,6 +175,7 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
         post_totals=tuple(post),
         scenario_conditioned=scenario_conditioned,
         post_total_status=post_total_status,
+        interpretation_class=_interpretation_class(candidate),
         quality_flags=coverage.quality_flags,
         coverage_explanation=tuple(sorted(set(coverage.coverage_explanation + baseline_gate.explanation))),
     )

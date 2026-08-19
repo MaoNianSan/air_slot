@@ -1,8 +1,10 @@
 """M4 scenario-conditioned labeling closure tests.
 
-FROZEN scenario responses never upgrade an action to FORMAL support; the
-post totals they produce are SCENARIO_CONDITIONED / NON_AUTHORITATIVE and
-must be labeled as such on ActionEvaluation.
+Round 2 (spec 7): response provenance constrains interpretation, not
+comparison eligibility.  A FROZEN PURE_SCENARIO response is FORMAL-comparable
+(formal model comparability); its per-scenario response draws are still
+labeled SCENARIO_CONDITIONED and the interpretation class is carried
+separately on ActionEvaluation.
 """
 
 from model.M3.contracts import ResponseParameterStatus, ResponseProvenance
@@ -19,7 +21,7 @@ def m1():
     return [{"scenario_id": 0, "scenario_weight": 1.0, "deadline_minutes": 30}]
 
 
-def test_pure_scenario_frozen_response_is_scenario_conditioned_non_authoritative():
+def test_pure_scenario_frozen_response_is_formal_comparable_with_interpretation():
     action = candidate(
         "A11",
         provenance=ResponseProvenance.PURE_SCENARIO,
@@ -34,13 +36,15 @@ def test_pure_scenario_frozen_response_is_scenario_conditioned_non_authoritative
         monetary_mapping=monetary_fixture(),
     )
     evaluation = next(item for item in result.actions if item.template_id == "A11")
-    assert evaluation.lane == "SCENARIO"
+    # Provenance class alone no longer blocks model comparison (Round 2 spec 7).
+    assert evaluation.lane == "FORMAL"
     assert evaluation.scenario_conditioned is True
     assert evaluation.post_total_status == "SCENARIO_CONDITIONED"
     assert evaluation.residual_risk_j is not None
-    # scenario-conditioned totals are numerical, never FORMAL evidence
-    assert evaluation.lane != "FORMAL"
+    # Interpretation class is carried separately, not as an eligibility gate.
+    assert evaluation.interpretation_class == "SCENARIO_BASED"
     assert result.decision_outcome in {
+        "FORMAL_ACTION_PREFERRED_WITHIN_DECLARED_ESTIMAND",
         "NO_OTHER_ACTION_CURRENTLY_FORMALLY_COMPARABLE",
         "AUTHORITATIVE_DECISION_UNAVAILABLE",
     }
@@ -106,6 +110,8 @@ def test_mixed_open_closed_scenarios_remain_scenario_conditioned():
         monetary_mapping=monetary_fixture(),
     )
     evaluation = next(item for item in result.actions if item.template_id == "A11")
-    assert evaluation.lane == "SCENARIO"
+    # Provenance class alone does not block comparison; per-scenario response
+    # draws still make the totals SCENARIO_CONDITIONED (Round 2 spec 7).
+    assert evaluation.lane == "FORMAL"
     assert evaluation.scenario_conditioned is True
     assert evaluation.post_total_status == "SCENARIO_CONDITIONED"

@@ -218,6 +218,7 @@ class CandidateAction(FrozenModel):
     candidate_index: int = Field(ge=0)
     parameters: dict[str, Any]
     precondition_state: str
+    instantiable: bool = True
     authority_capabilities: tuple[str, ...]
     mitigation: dict[str, float]
     induced: dict[str, float]
@@ -238,6 +239,8 @@ class CandidateAction(FrozenModel):
     def typed_boundaries(self):
         if self.precondition_state not in {"TRUE", "FALSE", "UNKNOWN"}:
             raise ValueError("UNKNOWN_PRECONDITION_STATE")
+        if not self.instantiable:
+            raise ValueError("NON_INSTANTIABLE_CANDIDATE_MUST_NOT_ENTER_A")
         if self.template_id != "A00" and (
             self.response_parameter_status is ResponseParameterStatus.FROZEN
             and not self.response_parameters

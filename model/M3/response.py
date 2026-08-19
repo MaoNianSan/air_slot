@@ -79,8 +79,12 @@ def response_draw(*, seed, episode_id, decision_node_id, scenario_id,
 
 def scenario_update(*, pre_cu: float, mitigation_coefficient: float,
                     rho: float, induced_score: float,
-                    induced_score_to_cu: float = 0.10) -> float:
-    """Frozen post-action consequence update per component."""
+                    induced_score_to_cu: float) -> float:
+    """Frozen post-action consequence update per component.
+
+    ``induced_score_to_cu`` (gamma) must come from the frozen response/action
+    registry; no hard-coded scientific default is permitted (Round 2, spec 9.2).
+    """
     if pre_cu is None:
         raise ContractError("M3_SCENARIO_UPDATE_PRE_CU_MISSING")
     if not 0.0 <= rho <= 1.0:
@@ -93,7 +97,7 @@ def action_post_consequences(*, pre_by_component: Mapping[str, float],
                              mitigation: Mapping[str, float],
                              induced: Mapping[str, float],
                              rho: float,
-                             induced_score_to_cu: float = 0.10,
+                             induced_score_to_cu: float,
                              included_components) -> dict[str, float]:
     """Frozen per-component U_post for one action realization.
 
