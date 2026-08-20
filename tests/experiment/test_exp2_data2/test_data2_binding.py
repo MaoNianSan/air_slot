@@ -66,9 +66,14 @@ def test_data2_manifest_and_pilot_config_are_loading_and_explicitly_blocked():
 
     assert manifest.dataset.dataset_id == "DATA2"
     assert manifest.dataset.source_dataset_id == "data2_2019"
-    assert manifest.dataset.version == "DATA2_VERSION_PENDING"
+    assert manifest.dataset.version == "DATA2_2019_DEVELOPMENT_AUG_SEP_V1"
     assert result.status is ScientificManifestStatus.BLOCKED_MISSING_ARTIFACT
-    assert "DATA2_VERSION_PENDING" in result.reason_codes
+    assert result.dataset_binding_valid is True
+    assert result.lineage_valid is True
+    assert "M1_ARTIFACT_REQUIRED" in result.reason_codes
+    assert manifest.dataset.cohort_hash.startswith("sha256:")
+    assert manifest.m3.artifact_id == "DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE_V1"
+    assert manifest.m4.risk_policy_status.value == "FROZEN"
     assert pilot["dataset"]["dataset_id"] == "DATA2"
     assert pilot["dataset"]["maximum_episode_count"] == 5
     assert pilot["variants"] == {

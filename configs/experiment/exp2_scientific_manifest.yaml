@@ -3,24 +3,26 @@ execution_intent: ARTIFACT_FREEZE_PREPARATION_ONLY
 scientific_run: false
 paper_result: false
 
-# This declaration binds known registry identities only. Every REQUIRED_* value
-# remains a human scientific freeze gate; it is not an executable fallback.
+# This declaration binds the materialized Development cohort plus the typed
+# M3/M4 artifacts. M1/M2 retain their explicit scientific freeze gates.
 dataset:
-  # DATA2 is the Exp2 binding identity.  ``source_dataset_id`` names the
-  # registered source instance; a frozen data version is still deliberately
-  # absent and must not be inferred from local raw files.
   dataset_id: DATA2
   source_dataset_id: data2_2019
-  version: DATA2_VERSION_PENDING
-  data_source_identifier: data2/manifests/data2_bts_2019_sha256.csv
-  split: REQUIRED_FROZEN_SPLIT
-  episode_selector: REQUIRED_FROZEN_DATA2_EPISODE_SELECTOR
+  version: DATA2_2019_DEVELOPMENT_AUG_SEP_V1
+  data_source_identifier: artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json
+  split: DEVELOPMENT
+  episode_selector: exp.exp2.execution.data2_development_cohort.materialize_development_pilot_cohort
   schema_version: "1.0.0"
   capabilities_registry: registries/dataset_capabilities.yaml
   capabilities_registry_hash: sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b
   required_capabilities:
     - {scientific_object: realized_events, decision_time_role: EVAL_OUTCOME}
     - {scientific_object: weather, decision_time_role: INFERENCE_EVIDENCE}
+  cohort_artifact: artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json
+  cohort_hash: sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63
+  cohort_artifact_hash: sha256:66d1a0bfcea84164713e1db476f98ccf47fe19c494509495080f3c559c10b43e
+  final_test_access_count: 0
+  paper_full_run: false
 
 M1:
   dataset_id: DATA2
@@ -54,21 +56,26 @@ M3:
     path: registries/m3_response_scenarios.yaml
     source_sha256: sha256:38df6e070932aab041c779478bec91da71601ee28413f4e3af7c64926328280a
     registry_hash: sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0
-  artifact_id: REQUIRED_TYPED_M3_ACTION_RESPONSE_BUNDLE_ID
-  hash: REQUIRED_FROZEN_M3_ACTION_RESPONSE_BUNDLE_SHA256
-  status: BLOCKED_UNTIL_TYPED_NON_A00_RESPONSE_BUNDLE_EXISTS
+  artifact_path: artifacts/experiment/exp2/DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE.json
+  artifact_id: DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE_V1
+  hash: sha256:e80c77261101231760be90cfbe603aec36e8f6c386badabb9d6acecf881baf02
+  status: MATERIALIZED_CONDITIONAL_SCENARIO_ASSUMPTION
 
 M4:
   dataset_id: DATA2
   mapping_registry:
     path: registries/m4_v2_monetary_mapping_design.json
     source_sha256: sha256:8959b0efd3740587deadad44ad233948c447525ca998941b4e8de547d85d0ea9
-  risk_policy: REQUIRED_FROZEN_RESIDUAL_RISK_POLICY_ARTIFACT
-  artifact_id: REQUIRED_FROZEN_M4_MAPPING_AND_POLICY_ARTIFACT_ID
-  hash: REQUIRED_FROZEN_M4_MAPPING_AND_POLICY_SHA256
+  risk_policy: artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json
+  risk_policy_hash: sha256:158a09bb47d4b715e0a97a1da74d6b64b2dd4ab5c99eb1cba1f00475f016a2dc
+  artifact_id: EXP2_DATA2_DEVELOPMENT_RESIDUAL_RISK_POLICY_V1
+  hash: sha256:7436ea696c3f1f3da2a1dff04eeeb164a8fe3c1508b69550367383eee4c486db
   mapping_status: NOT_FROZEN
-  risk_policy_status: NOT_FROZEN
+  risk_policy_status: FROZEN
   support_status: ABSTAIN
   mapping_resolved: false
   mapping_provenance: []
-  risk_policy_provenance: []
+  risk_policy_provenance:
+    - configs/scientific/foundation.yaml:m4_lambda=0.25
+    - configs/scientific/foundation.yaml:m4_alpha=0.90
+    - CURRENT_MANUSCRIPT_PRINCIPAL_EMPIRICAL_SPECIFICATION

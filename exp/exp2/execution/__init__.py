@@ -36,6 +36,8 @@ from .data2_selector import (
     M2ConsequenceBinding,
     SelectedData2Episode,
 )
+from .data2_development_cohort import materialize_development_pilot_cohort
+from .development_materialization import materialize_development_pre_m4
 
 __all__ = [
     "ArtifactKind",
@@ -65,5 +67,7 @@ __all__ = [
     "M1ScenarioBinding",
     "M2ConsequenceBinding",
     "SelectedData2Episode",
+    "materialize_development_pilot_cohort",
+    "materialize_development_pre_m4",
     "validate_variant_manifests",
 ]

@@ -69,6 +69,11 @@ class DatasetBinding(BaseModel):
     capabilities_registry: str = Field(min_length=1)
     capabilities_registry_hash: str = Field(pattern=SHA256_PATTERN)
     required_capabilities: tuple[dict[str, str], ...] = Field(min_length=1)
+    cohort_artifact: str = Field(min_length=1)
+    cohort_hash: str = Field(pattern=SHA256_PATTERN)
+    cohort_artifact_hash: str = Field(pattern=SHA256_PATTERN)
+    final_test_access_count: int = Field(ge=0)
+    paper_full_run: bool
 
 
 class M1ScientificBinding(BaseModel):
@@ -125,6 +130,7 @@ class M3ScientificBinding(BaseModel):
     dataset_id: str = Field(min_length=1)
     action_manifest: RegistryReference
     response_bundle: RegistryReference
+    artifact_path: str = Field(min_length=1)
     artifact_id: str = Field(min_length=1)
     hash: str = Field(min_length=1)
     status: str = Field(min_length=1)
@@ -141,6 +147,7 @@ class M4ScientificBinding(BaseModel):
     dataset_id: str = Field(min_length=1)
     mapping_registry: RegistryReference
     risk_policy: str = Field(min_length=1)
+    risk_policy_hash: str = Field(pattern=SHA256_PATTERN)
     artifact_id: str = Field(min_length=1)
     hash: str = Field(min_length=1)
     mapping_status: MonetaryMappingStatus
@@ -263,8 +270,13 @@ class ScientificManifestValidator:
 
         reasons: list[str] = []
         dataset_valid = self._validate_dataset(manifest.dataset, reasons)
+        dataset_valid = self._validate_materialized_dataset_binding(
+            manifest.dataset, reasons
+        ) and dataset_valid
         lineage_valid = self._validate_lineage(manifest, reasons)
         self._validate_registry_hashes(manifest, reasons)
+        self._validate_materialized_m3_binding(manifest.m3, reasons)
+        self._validate_materialized_m4_binding(manifest.m4, reasons)
         self._validate_unresolved_artifacts(manifest, reasons)
         m4_gate = M4ScientificGate().validate(manifest.m4)
         reasons.extend(m4_gate.reason_codes if m4_gate.status is not M4ScientificGateStatus.READY else ())
@@ -361,6 +373,36 @@ class ScientificManifestValidator:
             reasons.append("DATASET_EPISODE_SELECTOR_REQUIRED")
         return compatible
 
+    def _validate_materialized_dataset_binding(
+        self, dataset: DatasetBinding, reasons: list[str]
+    ) -> bool:
+        try:
+            cohort_path = self._path(dataset.cohort_artifact)
+            payload = json.loads(cohort_path.read_text(encoding="utf-8"))
+        except (OSError, TypeError, json.JSONDecodeError):
+            reasons.append("DATASET_COHORT_ARTIFACT_UNAVAILABLE")
+            return False
+        artifact_hash = payload.pop("artifact_hash", None)
+        if artifact_hash != content_id(payload) or artifact_hash != dataset.cohort_artifact_hash:
+            reasons.append("DATASET_COHORT_CONTENT_HASH_MISMATCH")
+        if payload.get("cohort_hash") != dataset.cohort_hash:
+            reasons.append("DATASET_COHORT_HASH_MISMATCH")
+        if (
+            payload.get("dataset_id") != dataset.dataset_id
+            or payload.get("source_dataset_id") != dataset.source_dataset_id
+            or payload.get("dataset_version") != dataset.version
+            or payload.get("split") != dataset.split
+        ):
+            reasons.append("DATASET_COHORT_IDENTITY_MISMATCH")
+        if (
+            payload.get("FINAL_TEST_ACCESS_COUNT") != dataset.final_test_access_count
+            or payload.get("PAPER_FULL_RUN") != dataset.paper_full_run
+            or payload.get("FINAL_TEST_ACCESS_COUNT") != 0
+            or payload.get("PAPER_FULL_RUN") is not False
+        ):
+            reasons.append("DATASET_COHORT_FINAL_TEST_OR_PAPER_VIOLATION")
+        return not any(code.startswith("DATASET_COHORT_") for code in reasons)
+
     def _validate_lineage(
         self, manifest: ScientificArtifactManifest, reasons: list[str]
     ) -> bool:
@@ -422,6 +464,56 @@ class ScientificManifestValidator:
                 reasons.append("M4_MAPPING_DESIGN_UNRESOLVED")
         except (OSError, json.JSONDecodeError, TypeError):
             reasons.append("M4_MAPPING_DESIGN_REGISTRY_UNAVAILABLE")
+
+    def _validate_materialized_m3_binding(
+        self, binding: M3ScientificBinding, reasons: list[str]
+    ) -> None:
+        try:
+            from exp.exp2.artifacts.m3_scenario_bundle import M3ScenarioBundle
+
+            path = self._path(binding.artifact_path)
+            bundle = M3ScenarioBundle.model_validate_json(path.read_text(encoding="utf-8"))
+        except (OSError, TypeError, ValueError):
+            reasons.append("M3_TYPED_SCENARIO_BUNDLE_UNAVAILABLE")
+            return
+        if bundle.bundle_id != binding.artifact_id or bundle.bundle_hash != binding.hash:
+            reasons.append("M3_TYPED_SCENARIO_BUNDLE_IDENTITY_MISMATCH")
+        if (
+            bundle.action_registry_hash != binding.action_manifest.registry_hash
+            or bundle.response_registry_hash != binding.response_bundle.registry_hash
+        ):
+            reasons.append("M3_TYPED_SCENARIO_BUNDLE_REGISTRY_LINEAGE_MISMATCH")
+        if any(rule.formal_support_upgrade for rule in bundle.rules):
+            reasons.append("M3_TYPED_SCENARIO_BUNDLE_SUPPORT_UPGRADE_FORBIDDEN")
+        if any(
+            rule.action_id != "A00" and rule.support_state != "SCENARIO_ASSUMPTION"
+            for rule in bundle.rules
+        ):
+            reasons.append("M3_TYPED_SCENARIO_BUNDLE_SUPPORT_STATE_INVALID")
+        if bundle.FINAL_TEST_ACCESS_COUNT != 0 or bundle.PAPER_FULL_RUN:
+            reasons.append("M3_TYPED_SCENARIO_BUNDLE_FINAL_TEST_OR_PAPER_VIOLATION")
+
+    def _validate_materialized_m4_binding(
+        self, binding: M4ScientificBinding, reasons: list[str]
+    ) -> None:
+        try:
+            from model.M4.residual_risk import ResidualRiskPolicy
+
+            path = self._path(binding.risk_policy)
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            artifact_hash = payload.pop("artifact_hash", None)
+            policy = ResidualRiskPolicy.model_validate(payload["policy"])
+        except (OSError, TypeError, ValueError, KeyError, json.JSONDecodeError):
+            reasons.append("M4_TYPED_RISK_POLICY_ARTIFACT_UNAVAILABLE")
+            return
+        if artifact_hash != content_id(payload) or artifact_hash != binding.hash:
+            reasons.append("M4_TYPED_RISK_POLICY_ARTIFACT_HASH_MISMATCH")
+        if policy.policy_hash != binding.risk_policy_hash:
+            reasons.append("M4_TYPED_RISK_POLICY_HASH_MISMATCH")
+        if policy.policy_status is not binding.risk_policy_status:
+            reasons.append("M4_TYPED_RISK_POLICY_STATUS_MISMATCH")
+        if payload.get("FINAL_TEST_ACCESS_COUNT") != 0 or payload.get("PAPER_FULL_RUN"):
+            reasons.append("M4_TYPED_RISK_POLICY_FINAL_TEST_OR_PAPER_VIOLATION")
 
     @staticmethod
     def _validate_unresolved_artifacts(

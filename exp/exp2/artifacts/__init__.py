@@ -18,6 +18,8 @@ from .action_manifest import (
     ActionSupportStatus,
     ScientificActionManifest,
 )
+from .m3_scenario_bundle import M3ScenarioBundle, ScenarioResponseRule, materialize_m3_scenario_bundle
+from .m4_policy_binding import materialize_m4_policy
 from .validator import (
     Exp2ExecutionGate,
     Exp2ExecutionGateResult,
@@ -42,4 +44,8 @@ __all__ = [
     "Exp2ResponseSupport",
     "Exp2RiskPolicyBundle",
     "ScientificActionManifest",
+    "M3ScenarioBundle",
+    "ScenarioResponseRule",
+    "materialize_m3_scenario_bundle",
+    "materialize_m4_policy",
 ]

@@ -1,0 +1,693 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "PAPER_FULL_RUN": false,
+  "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+  "bundle_hash": "sha256:e80c77261101231760be90cfbe603aec36e8f6c386badabb9d6acecf881baf02",
+  "bundle_id": "DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE_V1",
+  "response_registry_hash": "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+  "rules": [
+    {
+      "action_id": "A00",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "response_model": "DETERMINISTIC",
+        "response_parameter_status": "NOT_REQUIRED",
+        "response_provenance": "OPERATOR_INDUSTRY",
+        "value": 0.0
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "OPERATOR_INDUSTRY"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A00:BASE",
+      "rule_hash": "sha256:47d531f10ac80506fef6f103dc6fa6f5afb41c28151d40ebd8bf77518fc42486",
+      "source_type": "BASELINE_IDENTITY",
+      "support_state": "BASELINE_IDENTITY"
+    },
+    {
+      "action_id": "A11",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 8.399999999999999,
+        "beta": 3.6000000000000005,
+        "beta_mean": 0.7,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.7,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.8,
+        "tier": "T1"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A11:BASE",
+      "rule_hash": "sha256:dac11582611c321a77a6727c7e239b73c0a403a63d1014d7f9f51089bc180305",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A13",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A13:BASE",
+      "rule_hash": "sha256:e8729a511037eccfafc5784eefb4d6c1420a49172b7c4ae1578c79813c19efeb",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A21",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 8.399999999999999,
+        "beta": 3.6000000000000005,
+        "beta_mean": 0.7,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.7,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.8,
+        "tier": "T1"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A21:BASE",
+      "rule_hash": "sha256:d3b4e3876486498b2d8662a6f9811e010d6de69d79a30d0920524c3a58c60f38",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A22",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 6.0,
+        "beta": 6.0,
+        "beta_mean": 0.5,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.5,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.5,
+        "tier": "T3"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A22:BASE",
+      "rule_hash": "sha256:62b56b4a0f9e3add853b526458c88d3adfdad410fd8d877c5822d621db0c229d",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A23",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 6.0,
+        "beta": 6.0,
+        "beta_mean": 0.5,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.5,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.5,
+        "tier": "T3"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A23:BASE",
+      "rule_hash": "sha256:0118d21f896098cf3225e52051e90723ee71fd22053d76c032ab05c5f3c417af",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A31",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 8.399999999999999,
+        "beta": 3.6000000000000005,
+        "beta_mean": 0.7,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.7,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.8,
+        "tier": "T1"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A31:BASE",
+      "rule_hash": "sha256:948186110dd0e39d2e3646720c4b230a63af3df2d64c39285c5bb547f396aa05",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A32",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A32:BASE",
+      "rule_hash": "sha256:dac5d9b961aed0dfd8dcb88027179592a63803fe7e4e41bae0f53bb54400a74c",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A33",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 8.399999999999999,
+        "beta": 3.6000000000000005,
+        "beta_mean": 0.7,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.7,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.8,
+        "tier": "T1"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A33:BASE",
+      "rule_hash": "sha256:b0b5fa630bc1f280e8e6652e7378314a3de1231fc4f1bb99a6ab798b07e65d48",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A41",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A41:BASE",
+      "rule_hash": "sha256:64c452ef107c1c64221bdb0ba1a8f71f27af7022bb02e918e0558b72185da36d",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A42",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A42:BASE",
+      "rule_hash": "sha256:11633b7d4697c082fbbbd8b58f361a3b87cebf3cd9574872179538ff3e042924",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A43",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 6.0,
+        "beta": 6.0,
+        "beta_mean": 0.5,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.5,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.5,
+        "tier": "T3"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A43:BASE",
+      "rule_hash": "sha256:3209f9ec52500402ad1ed382088f7cc3b4da94f38d0840f32bac74a7088efdde",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A51",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A51:BASE",
+      "rule_hash": "sha256:dc5e47ac0b4ead9f679be371f8b0c2799152024a19322116b711a10dfa24ec35",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A52",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 6.0,
+        "beta": 6.0,
+        "beta_mean": 0.5,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.5,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.5,
+        "tier": "T3"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A52:BASE",
+      "rule_hash": "sha256:c811b792f1d0f76c2195d0c7579bba1b58411ec025e7ada411737b5e694f47ac",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A53",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A53:BASE",
+      "rule_hash": "sha256:5316208499bd134542ee43d98921f51971950636061ebe22f040a9da6a1b732f",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A54",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 5.4,
+        "beta": 6.6000000000000005,
+        "beta_mean": 0.45,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.45,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.35,
+        "tier": "T4"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A54:BASE",
+      "rule_hash": "sha256:90a35bbc9b1ba366fe480974844cbe2204740e040f991d539ac2f84fc11fc020",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A55",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 5.4,
+        "beta": 6.6000000000000005,
+        "beta_mean": 0.45,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.45,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.35,
+        "tier": "T4"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A55:BASE",
+      "rule_hash": "sha256:0f7354375b7d88845bbc48869c0578c79f98c4617d759e5652a677174e99df9f",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A61",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A61:BASE",
+      "rule_hash": "sha256:5451e22fb010be40eb86459025dd9a0ce97da40934e466eaebd8f84e39ebaec7",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A62",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 7.199999999999999,
+        "beta": 4.800000000000001,
+        "beta_mean": 0.6,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.6,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.65,
+        "tier": "T2"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A62:BASE",
+      "rule_hash": "sha256:b9d9ff8cbd25cac2efdfac47460fcb1cbb6be1a8f8be682d213df326e4906223",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A63",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 5.4,
+        "beta": 6.6000000000000005,
+        "beta_mean": 0.45,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.45,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.35,
+        "tier": "T4"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A63:BASE",
+      "rule_hash": "sha256:6ae131703509e5babe92dcabe7dfd3994fa19bfa3c96eb709fa3b054fbd6ef58",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A64",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 6.0,
+        "beta": 6.0,
+        "beta_mean": 0.5,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.5,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.5,
+        "tier": "T3"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A64:BASE",
+      "rule_hash": "sha256:a12b00c42e471208cb6e7f96444f9008a5626e75f0f91c54c49fb01d1e7b1bd6",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A71",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 10.8,
+        "beta": 1.1999999999999997,
+        "beta_mean": 0.9,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.9,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.95,
+        "tier": "T5"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A71:BASE",
+      "rule_hash": "sha256:b030b41e88c3d1771dda2cded532eae87e14d748bb1cf5474a4ee923251634a6",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_id": "A72",
+      "formal_support_upgrade": false,
+      "freeze_id": "M3_RESPONSE_SCENARIO_V1_FREEZE",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "parameters": {
+        "alpha": 10.2,
+        "beta": 1.8000000000000003,
+        "beta_mean": 0.85,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.1,
+        "mean_intensity": 0.85,
+        "parameter_basis": "TRANSPARENT_TIERED_SCENARIO_V1",
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "response_provenance": "PURE_SCENARIO",
+        "sensitivity_level": "BASE",
+        "success_probability": 0.9,
+        "tier": "T6"
+      },
+      "provenance": [
+        "M3_RESPONSE_SCENARIO_V1",
+        "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+        "PURE_SCENARIO"
+      ],
+      "response_rule_id": "M3_RESPONSE_SCENARIO_V1:A72:BASE",
+      "rule_hash": "sha256:d5277b2fdd611b828600986f65b995383d546268de2b8cb7b3f27572cf2c93b0",
+      "source_type": "PURE_SCENARIO",
+      "support_state": "SCENARIO_ASSUMPTION"
+    }
+  ],
+  "schema_version": "AIR_SLOT_EXP2_M3_SCENARIO_BUNDLE_V1",
+  "sensitivity_level": "BASE"
+}

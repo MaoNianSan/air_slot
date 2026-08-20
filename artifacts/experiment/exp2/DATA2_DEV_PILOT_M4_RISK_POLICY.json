@@ -1,0 +1,33 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "PAPER_FULL_RUN": false,
+  "artifact_hash": "sha256:7436ea696c3f1f3da2a1dff04eeeb164a8fe3c1508b69550367383eee4c486db",
+  "m4_execution_status": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
+  "manuscript_experiment_interpretation_note": "Exp2 remains a constructed internal paired-sensitivity lane until a complete seven-component monetary mapping is independently frozen.",
+  "monetary_mapping_reference": "registries/m4_v2_monetary_mapping_design.json",
+  "monetary_mapping_status": "MONETARY_MAPPING_BLOCKED",
+  "policy": {
+    "alpha": 0.9,
+    "cvar_coefficient": 0.25,
+    "expected_loss_coefficient": 0.75,
+    "freeze_id": "EXP2_DATA2_DEVELOPMENT_PILOT_M4_POLICY_V1",
+    "policy_hash": "sha256:158a09bb47d4b715e0a97a1da74d6b64b2dd4ab5c99eb1cba1f00475f016a2dc",
+    "policy_status": "FROZEN",
+    "provenance": [
+      "configs/scientific/foundation.yaml:m4_lambda=0.25",
+      "configs/scientific/foundation.yaml:m4_alpha=0.90",
+      "CURRENT_MANUSCRIPT_PRINCIPAL_EMPIRICAL_SPECIFICATION"
+    ],
+    "risk_metric_version": "M4_RESIDUAL_RISK_V2",
+    "tail_reference": [
+      "configs/scientific/foundation.yaml:m1_v2_positive_tail_policy",
+      "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+    ],
+    "tail_support_state": "UNRESOLVED"
+  },
+  "policy_id": "EXP2_DATA2_DEVELOPMENT_RESIDUAL_RISK_POLICY_V1",
+  "policy_version": "M4_RESIDUAL_RISK_V2",
+  "schema_version": "AIR_SLOT_EXP2_M4_POLICY_BINDING_V1",
+  "source_reference": "configs/scientific/foundation.yaml:manuscript_principal_empirical_specification",
+  "status": "FROZEN_POLICY_TAIL_EXECUTION_BLOCKED"
+}
