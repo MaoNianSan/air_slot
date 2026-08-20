@@ -10,6 +10,14 @@ from .artifact_schema import (
     Exp2ResponseSource,
     Exp2RiskPolicyBundle,
 )
+from .action_manifest import (
+    ActionFreezeResult,
+    ActionFreezeStatus,
+    ActionManifestPreparer,
+    ActionSupportRecord,
+    ActionSupportStatus,
+    ScientificActionManifest,
+)
 from .validator import (
     Exp2ExecutionGate,
     Exp2ExecutionGateResult,
@@ -19,6 +27,11 @@ from .validator import (
 __all__ = [
     "EXP2_ARTIFACT_SCHEMA_VERSION",
     "ArtifactSupportStatus",
+    "ActionFreezeResult",
+    "ActionFreezeStatus",
+    "ActionManifestPreparer",
+    "ActionSupportRecord",
+    "ActionSupportStatus",
     "Exp2ActionManifest",
     "Exp2ExecutionGate",
     "Exp2ExecutionGateResult",
@@ -28,4 +41,5 @@ __all__ = [
     "Exp2ResponseSource",
     "Exp2ResponseSupport",
     "Exp2RiskPolicyBundle",
+    "ScientificActionManifest",
 ]

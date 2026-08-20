@@ -1,0 +1,74 @@
+schema_version: AIR_SLOT_EXP2_SCIENTIFIC_MANIFEST_V1
+execution_intent: ARTIFACT_FREEZE_PREPARATION_ONLY
+scientific_run: false
+paper_result: false
+
+# This declaration binds known registry identities only. Every REQUIRED_* value
+# remains a human scientific freeze gate; it is not an executable fallback.
+dataset:
+  # DATA2 is the Exp2 binding identity.  ``source_dataset_id`` names the
+  # registered source instance; a frozen data version is still deliberately
+  # absent and must not be inferred from local raw files.
+  dataset_id: DATA2
+  source_dataset_id: data2_2019
+  version: DATA2_VERSION_PENDING
+  data_source_identifier: data2/manifests/data2_bts_2019_sha256.csv
+  split: REQUIRED_FROZEN_SPLIT
+  episode_selector: REQUIRED_FROZEN_DATA2_EPISODE_SELECTOR
+  schema_version: "1.0.0"
+  capabilities_registry: registries/dataset_capabilities.yaml
+  capabilities_registry_hash: sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b
+  required_capabilities:
+    - {scientific_object: realized_events, decision_time_role: EVAL_OUTCOME}
+    - {scientific_object: weather, decision_time_role: INFERENCE_EVIDENCE}
+
+M1:
+  dataset_id: DATA2
+  artifact_id: REQUIRED_FROZEN_M1_SCENARIO_ARTIFACT_ID
+  checkpoint: REQUIRED_FROZEN_M1_CHECKPOINT
+  schema_version: REQUIRED_FROZEN_M1_SCENARIO_SCHEMA_VERSION
+  hash: REQUIRED_FROZEN_M1_ARTIFACT_SHA256
+  lineage_registry_hash: sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b
+
+M2:
+  dataset_id: DATA2
+  artifact_id: REQUIRED_FROZEN_M2_SEVEN_COMPONENT_ARTIFACT_ID
+  cu_registry:
+    path: registries/m2_data2_formal_cu_v1.json
+    source_sha256: sha256:edaa8bc1787dfd01e3de73d41daae86ee2afe7f71ca3447c7d1225e3288fc25a
+    registry_hash: sha256:c257debc032bff2553b7ffdc4eb4305261f7183c45c1a43ad9164d865af2b029
+  component_schema:
+    schema_id: M2_SEVEN_COMPONENT_CONSEQUENCE_V1
+    component_ids: [F_continuity, F_execution, F_propagation, P_time, P_itinerary, P_service, R_operating]
+    hash: sha256:5a869a7dbb7b602ac7d94c2f3c9a8d8414c60b81ee9e101ac5736718f7fc8899
+  hash: REQUIRED_FROZEN_M2_ARTIFACT_SHA256
+  lineage_m1_artifact_id: REQUIRED_FROZEN_M1_SCENARIO_ARTIFACT_ID
+
+M3:
+  dataset_id: DATA2
+  action_manifest:
+    path: registries/action_templates.yaml
+    source_sha256: sha256:b1b4a508ddd02008b685d38bf514164d9ec0e59b2dfd230664aa06ba7308ce55
+    registry_hash: sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716
+  response_bundle:
+    path: registries/m3_response_scenarios.yaml
+    source_sha256: sha256:38df6e070932aab041c779478bec91da71601ee28413f4e3af7c64926328280a
+    registry_hash: sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0
+  artifact_id: REQUIRED_TYPED_M3_ACTION_RESPONSE_BUNDLE_ID
+  hash: REQUIRED_FROZEN_M3_ACTION_RESPONSE_BUNDLE_SHA256
+  status: BLOCKED_UNTIL_TYPED_NON_A00_RESPONSE_BUNDLE_EXISTS
+
+M4:
+  dataset_id: DATA2
+  mapping_registry:
+    path: registries/m4_v2_monetary_mapping_design.json
+    source_sha256: sha256:8959b0efd3740587deadad44ad233948c447525ca998941b4e8de547d85d0ea9
+  risk_policy: REQUIRED_FROZEN_RESIDUAL_RISK_POLICY_ARTIFACT
+  artifact_id: REQUIRED_FROZEN_M4_MAPPING_AND_POLICY_ARTIFACT_ID
+  hash: REQUIRED_FROZEN_M4_MAPPING_AND_POLICY_SHA256
+  mapping_status: NOT_FROZEN
+  risk_policy_status: NOT_FROZEN
+  support_status: ABSTAIN
+  mapping_resolved: false
+  mapping_provenance: []
+  risk_policy_provenance: []

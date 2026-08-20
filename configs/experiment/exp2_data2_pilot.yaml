@@ -1,0 +1,30 @@
+schema_version: AIR_SLOT_EXP2_DATA2_PILOT_V1
+experiment_id: EXP2_DATA2_PILOT
+execution_intent: PILOT_PREPARATION_ONLY
+scientific_run: false
+paper_result: false
+
+# This is a non-executable pilot declaration.  It names no raw row and no
+# episode ID: an approved, content-addressed Data2 episode registry must be
+# supplied to Data2EpisodeSelector before any pilot may be constructed.
+dataset:
+  dataset_id: DATA2
+  source_dataset_id: data2_2019
+  dataset_version: DATA2_VERSION_PENDING
+  episode_selection_interface: exp.exp2.execution.data2_selector.Data2EpisodeSelector
+  frozen_episode_registry: REQUIRED_FROZEN_DATA2_EPISODE_REGISTRY
+  frozen_episode_ids: REQUIRED_FROZEN_PILOT_EPISODE_IDS
+  maximum_episode_count: 5
+  no_fallback: true
+
+variants:
+  exp2a: [JOINT, MARGINAL, COLLAPSED]
+  exp2b: [COMPONENT, CHANNEL, SCALAR]
+
+artifact_manifest: configs/experiment/exp2_scientific_manifest.yaml
+execution_gate:
+  status: BLOCKED_UNTIL_DATA2_VERSION_EPISODES_AND_SCIENTIFIC_ARTIFACTS_ARE_FROZEN
+  pilot_only: true
+  variant_ranking: FORBIDDEN
+  paper_tables: FORBIDDEN
+  parameter_selection: FORBIDDEN
