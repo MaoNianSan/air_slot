@@ -11,9 +11,12 @@ from model.M2.contracts import (
 )
 from model.common.cu_normalization import CUNormalizationStatus
 from model.common.monetary_system import (
+    MonetaryMappingFunction,
+    MonetaryMappingParameter,
     MonetaryMappingRegistry,
     MonetaryMappingRule,
     MonetaryMappingStatus,
+    MonetarySourceType,
     MonetarySystem,
 )
 from model.M3.contracts import (
@@ -261,24 +264,36 @@ def monetary_fixture(
     weights = weights or {component: 1.0 for component in CONSEQUENCE_COMPONENTS}
     if frozen:
         rules = {
-            component: MonetaryMappingRule(
+            component: MonetaryMappingRule.create(
+                monetary_system_id=MonetarySystem.RMB.value,
                 component_id=component,
+                mapping_function=MonetaryMappingFunction.LINEAR_SCALE,
+                parameter_version="1.0.0",
+                source_type=MonetarySourceType.TEST_ONLY,
+                reference=("TEST_FIXTURE",),
+                freeze_id="TEST-RMB-FREEZE",
+                parameters=(
+                    MonetaryMappingParameter(
+                        parameter_name="money_per_cu",
+                        value=float(weight),
+                        unit="TEST_MONEY/CU",
+                        provenance=("TEST_FIXTURE",),
+                    ),
+                ),
+                provenance=("TEST_FIXTURE",),
                 rule_id=f"{component}_RMB_LINEAR",
-                version="1.0.0",
-                weight=float(weight),
-                parameter_provenance=("TEST_FIXTURE",),
             )
             for component, weight in weights.items()
         }
         return MonetaryMappingRegistry(
             monetary_system_id=MonetarySystem.RMB.value,
             registry_id=registry_id,
-            mapping_form="LINEAR",
-            freeze_status=MonetaryMappingStatus.FROZEN,
+            registry_version="TEST-1.0.0",
+            freeze_status=MonetaryMappingStatus.TEST_ONLY,
             freeze_id="TEST-RMB-FREEZE",
             reference_period="TEST",
-            component_weights=rules,
-            parameter_provenance=("TEST_FIXTURE",),
+            component_mappings=rules,
+            provenance=("TEST_FIXTURE",),
         )
     return MonetaryMappingRegistry.not_frozen(
         monetary_system_id=MonetarySystem.RMB.value,

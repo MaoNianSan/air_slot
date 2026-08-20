@@ -1,3 +1,5 @@
+"""Legacy risk helpers; M4 V2 validated functions live in residual_risk.py."""
+
 def weighted_mean(values,weights):return sum(v*w for v,w in zip(values,weights))/sum(weights)
 
 def weighted_var_cvar(values,weights,alpha):

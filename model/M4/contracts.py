@@ -1,3 +1,5 @@
+"""Legacy pre-V2 request contract; excluded from the public M4 V2 API."""
+
 from __future__ import annotations
 
 from pydantic import Field, model_validator

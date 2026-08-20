@@ -1,3 +1,9 @@
+"""Legacy pre-V2 evaluator; retained for compatibility tests only.
+
+M4 V2 uses `residual_risk.evaluate_residual_risk` and never reconstructs an
+M3 response or consumes PRE/M1/M2 operational objects.
+"""
+
 from __future__ import annotations
 
 from model.M3.contracts import ResponseParameterStatus, ResponseProvenance

@@ -1,3 +1,5 @@
+"""Legacy CandidateAction ranking; excluded from the public M4 V2 API."""
+
 from __future__ import annotations
 
 from model.common.errors import ContractError
