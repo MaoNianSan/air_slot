@@ -80,6 +80,18 @@ Decision and risk metrics remain `NOT_RUN` when common supported M4 values are u
 
 Results are `exp.common.result_schema.ExperimentResult` with `experiment_id="EXP2"`, variant, dataset, seed, scenario hash, metrics, support status, provenance, and model/artifact versions. The user-facing singular `artifact_version` input is stored in the common schema's canonical `artifact_versions["EXP2_SOURCE_ARTIFACT"]` map.
 
+## Execution preparation
+
+The pre-execution binding layer is implemented under `exp/exp2/execution/`:
+
+- `execution_manifest.py` defines `Exp2ExecutionManifest`, exact M1-M4 artifact references, the three readiness statuses, and cross-variant fixed-identity validation;
+- `artifact_loader.py` loads versioned JSON envelopes, checks canonical payload hashes, validates M1 cutoff provenance, validates the M1 scenario and M2 seven-component contracts, retains CU lineage, and blocks missing, invalid, test-only, or unfrozen M4 artifacts without fallback;
+- `downstream_binding.py` defines `Exp2DownstreamExecutor`, which binds one supplied M3 callable and one supplied M4 callable to the frozen artifact set for every variant.
+
+The loader recognizes only `READY`, `BLOCKED_MISSING_ARTIFACT`, and `BLOCKED_UNSUPPORTED_MAPPING`. `READY` means that the supplied artifacts satisfy the adapter's structural and frozen-status checks; it is not scientific approval and does not authorize a run.
+
+The binding layer does not load the current M3 scenario-design registry as formal support, construct a monetary mapping, create a risk policy, choose a sensitivity level, select actions, or execute Exp2. The repository's current M4 design registry still declares `production_mapping_enabled=false`; a future authoritative artifact must come through the human scientific gate.
+
 ## Future execution entry
 
 Create a concrete `Exp2DownstreamInterface` backed by the frozen current M3 action-response registry and M4 monetary/risk artifacts, then construct `Exp2RunContext` and call:
