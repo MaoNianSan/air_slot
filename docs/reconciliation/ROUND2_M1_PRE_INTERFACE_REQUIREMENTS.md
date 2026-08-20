@@ -11,39 +11,44 @@
 `M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE`。
 
 每项字段结构：
-- `support_state`：M1 侧支持状态（当前全部 `UPSTREAM_PRE_INTERFACE_REQUIRED`）；
-- `pre_status`：PRE 发布状态分类；
-- `provenance_reference_id` / `freeze_id`：PRE 发布后填充。
+- `value` / `unit` / `support_state`；
+- `pre_status` / `publication_status` / `model_feature_status`；
+- `provenance` / `reference_id` / `provenance_reference_id` / `freeze_id` /
+  `fallback_level`。
 
-## 2. 字段清单与 PRE 状态
+## 2. 字段清单与 PRE 状态（Tranche 3 已发布）
 
-| 字段 | pre_status | 依据 |
-|---|---|---|
-| `route_context` | NEEDS_PRE_REFERENCE_BINDING | 无稳定 Data2 canonical registry 条目；需 PRE 绑定 route/segment 参考对象 |
-| `carrier_context` | NEEDS_PRE_REFERENCE_BINDING | 同上 |
-| `aircraft_identity` | AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 | `segment_reference`（DEVELOPMENT_FROZEN，DOMAIN_PROXY，aircraft type unverified）已存在但仅 M2/M3 consumer |
-| `schedule_reference_context` | AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 | `schedule_reference` 已 FROZEN（data2 EMPIRICAL_REFERENCE）；但 M1 只消费其 DYNAMIC countdown，schedule identity/reference context 未作为 typed static 发布 |
-| `turnaround_reference` | AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 | PRE `reference/turnaround.py` 参考对象已存在；只进入 label/scenario provenance，未发布为 M1 encoder 输入 |
-| `taxi_reference` | AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 | PRE `reference/taxi.py` 参考对象已存在；只进入 label/scenario provenance，未发布为 M1 encoder 输入 |
+| 字段 | publication_status | model_feature_status | provenance |
+|---|---|---|---|
+| `route_context` | PUBLISHED / MODEL_FEATURE_PENDING | MODEL_FEATURE_PENDING | schedule_reference |
+| `carrier_context` | PUBLISHED / MODEL_FEATURE_PENDING | MODEL_FEATURE_PENDING | schedule_reference (FlightRecord.carrier_id) |
+| `aircraft_identity` | PUBLISHED / RETAINED_IDENTITY | RETAINED_IDENTITY | schedule_reference (REGISTRATION) |
+| `schedule_reference` | PUBLISHED / RETAINED_IDENTITY | RETAINED_IDENTITY | schedule_reference |
+| `turnaround_reference` | PUBLISHED / MODEL_FEATURE | MODEL_FEATURE | 冻结参考 reference_id + freeze_id |
+| `taxi_reference` | PUBLISHED / MODEL_FEATURE | MODEL_FEATURE | 冻结参考 reference_id + freeze_id |
 
-注意：AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 绝不误记为 UNSUPPORTED。
+注意：AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 已被 Tranche 3 PRE publication 取代；
+无 schedule / 无冻结 cell 时 PRE 发布 ABSTAIN（reason_code），绝不伪造值。
 `UNSUPPORTED` 仅用于 PRE 确认无 canonical 路径的字段（当前无）。
 
-## 3. 下一 tranche（PRE FACTUAL + STATIC/REFERENCE PUBLICATION）必须发布
+## 3. Tranche 3 已发布（2026-08-19）
 
-1. decision-time factual replay（Data2 factual availability rule）；
+1. decision-time factual replay（`Data2FactualReplayAvailabilityPolicy`，UNRESOLVED 默认）；
 2. route / carrier / aircraft retained identity/context；
 3. schedule reference context；
 4. turnaround reference publication；
 5. taxi reference publication。
 
-## 4. M1 侧接线前置条件
+详见 `ROUND2_PRE_FACTUAL_REPLAY_CONTRACT.md` 与 `ROUND2_PRE_STATIC_REFERENCE_PUBLICATION.md`。
 
-- PRE 发布后：每项字段通过 typed reference object 进入 M1
-  （`M1StaticReferenceContext` 对应项的 `support_state -> SUPPORTED`、
-  `provenance_reference_id` / `freeze_id` 填充），然后 M1 才允许设计 deterministic encoding
-  contract 并将其作为 MODEL_FEATURE 参与
-  `state = concat(GRU(history), projection(r_fast), projection(static_repr if supported))`。
+## 4. M1 侧接线（Tranche 3 已完成）
+
+- `PREState.static_reference_publication`（plain dict，PRE 不 import M1）->
+  `static_reference_context_from_pre` 重建 typed `M1StaticReferenceContext`
+  （`support_state -> SUPPORTED`、`provenance_reference_id` / `freeze_id` 填充）。
+- 只有 PRE 发布 + MODEL_FEATURE + 合法 reference/freeze provenance 的字段进入
+  `c_static`；STATE_AWARE `chi = concat(GRU(history), projection(r_fast), projection(c_static))`，
+  FAST `concat(r_fast, c_static)`。
 - M1 不得绕过 PRE 直接读取 BTS/raw/reference 文件。
-- RETAINED_IDENTITY（episode identity / provenance / lineage / routing lookup）不需要
-  numeric embedding；只有 PRE 发布后的 MODEL_FEATURE 才进入 estimator。
+- RETAINED_IDENTITY（episode identity / provenance / lineage / routing lookup）不进入
+  numeric embedding；无 ordinal encoding 被发明（MODEL_FEATURE_PENDING 保持 typed）。

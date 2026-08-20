@@ -33,7 +33,7 @@ def _object_scenarios(pipeline, history, *, episode, node, stage, decision_time_
 
 def test_batched_warning_matches_object_reference_categories_and_probability():
     pipeline = M1Pipeline.smoke(input_size=4)
-    pipeline.temperatures = {"T_IB_REMAINING_HAZARD": 1.3, "D_OB": 0.8, "D_TX": 1.1}
+    pipeline.temperatures = {"T_IB_REMAINING_HAZARD": 1.3, "D_OB_ZERO": 0.8, "D_TX_ZERO": 1.1}
     values = torch.tensor([
         [[0.1, 0.2, 0.3, 0.4]],
         [[0.4, 0.3, 0.2, 0.1]],

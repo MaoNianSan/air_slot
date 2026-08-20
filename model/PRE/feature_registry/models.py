@@ -42,6 +42,10 @@ class ScientificVariableDefinition(FrozenModel):
     upstream_variables: tuple[str, ...] = ()
     dataset_support: dict[str, DatasetSupport]
     notes: str = ""
+    # Tranche 3: realized outcomes may also act as FACTUAL_REPLAY_EVIDENCE in
+    # a subsequent rolling state, but only under the Data2 factual-replay
+    # availability policy gate (HUMAN_GATE / CONDITIONAL / SUPPORTED).
+    factual_replay_support: str = "HUMAN_GATE"
 
     @model_validator(mode="after")
     def enforce_support_ceiling(self):

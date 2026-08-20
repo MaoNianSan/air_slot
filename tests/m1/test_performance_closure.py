@@ -124,9 +124,9 @@ def test_microbatch_gradient_and_batched_inference_match_fullbatch():
     for left, right in zip(full.model.parameters(), micro.model.parameters()):
         assert torch.allclose(left, right, rtol=1e-5, atol=1e-6)
 
-    full_logits, full_labels, full_active = full_lifecycle.batched_logits(
+    full_logits, full_labels, full_active, full_zero = full_lifecycle.batched_logits(
         examples, batch_size=None)
-    batched_logits, batched_labels, batched_active = full_lifecycle.batched_logits(
+    batched_logits, batched_labels, batched_active, batched_zero = full_lifecycle.batched_logits(
         examples, batch_size=3)
     for name in LOGIT_KEYS:
         assert torch.allclose(full_logits[name], batched_logits[name], rtol=1e-5, atol=1e-6)

@@ -166,7 +166,10 @@ def test_c_zero_probability_transformed_exactly_once():
     lengths = torch.tensor([2])
     dist = pipe.predict_distributions(values, lengths)
     history = pipe.model.encode_history(values, lengths)
-    state = pipe.model.state_representation(history)
+    # Production closure: predict_distributions auto-derives r_fast; the
+    # manual computation must use the same information state.
+    fast = fast_features_from_sequence(values, lengths)
+    state = pipe.model.state_representation(history, fast)
     hazard = pipe.contracts[M1_V2_HAZARD_COORDINATE]
     with torch.no_grad():
         pmf = hazard_pmf(pipe.model.hazard_logits(state), hazard)
@@ -307,7 +310,7 @@ def test_f_current_ar_block_reaches_common_heads():
 def test_g_static_reference_pending_pre_and_not_fabricated():
     ctx = M1StaticReferenceContext()
     for field in ("route_context", "carrier_context", "aircraft_identity",
-                  "schedule_reference_context", "turnaround_reference",
+                  "schedule_reference", "turnaround_reference",
                   "taxi_reference"):
         assert ctx.support(field) == "UPSTREAM_PRE_INTERFACE_REQUIRED"
         assert ctx.pre_status(field) in (

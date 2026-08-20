@@ -102,11 +102,14 @@ def test_a_schedule_countdown_not_duplicated_as_static():
     assert "schedule.signed_minutes_to_crs_departure" not in         M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE
     ctx = M1StaticReferenceContext()
     assert ctx.static_context_status == "STATIC_REFERENCE_CONTEXT_PENDING_PRE"
-    # The recurrent model has no static branch at all.
+    # The recurrent model has no fused static branch until PRE publishes
+    # MODEL_FEATURE fields (Tranche 3): the static encoder exists but is
+    # None and contributes no block to the state width.
     pipe = M1Pipeline.smoke(input_size=4)
     model = pipe.model
-    assert not hasattr(model, "static_encoder")
-    assert not hasattr(model, "static_input_size")
+    assert model.static_encoder is None
+    assert model.static_input_size == 0
+    assert model.state_width == model.hidden_size * 2
     # r_fast is the last causal row (the countdown enters exactly once, as a
     # dynamic row feature inside the current/AR block).
     values = torch.arange(8, dtype=torch.float32).reshape(1, 2, 4)
@@ -202,10 +205,10 @@ def test_f_available_but_not_published_marked_upstream_required():
     ctx = M1StaticReferenceContext()
     assert set(M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE) == {
         "route_context", "carrier_context", "aircraft_identity",
-        "schedule_reference_context", "turnaround_reference", "taxi_reference",
+        "schedule_reference", "turnaround_reference", "taxi_reference",
     }
     # PRE already carries reference objects but has not published them to M1.
-    for field in ("aircraft_identity", "schedule_reference_context",
+    for field in ("aircraft_identity", "schedule_reference",
                   "turnaround_reference", "taxi_reference"):
         assert ctx.pre_status(field) == "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1"
         assert ctx.support(field) == "UPSTREAM_PRE_INTERFACE_REQUIRED"

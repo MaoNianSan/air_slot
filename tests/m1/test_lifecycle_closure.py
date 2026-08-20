@@ -5,6 +5,11 @@ from pathlib import Path
 
 import torch
 
+from model.M1.contracts import (
+    M1_TEMPERATURE_D_OB_ZERO,
+    M1_TEMPERATURE_D_TX_ZERO,
+    M1_TEMPERATURE_HAZARD,
+)
 from model.M1.lifecycle import M1Lifecycle, M1TrainingExample, chronological_split
 from model.M1.pipeline import M1Pipeline
 from model.PRE.foundation import PREBuildRequest, build_pre_state
@@ -36,7 +41,8 @@ def test_chronological_episode_safe_lifecycle_train_calibrate_load_infer(tmp_pat
     lifecycle = M1Lifecycle(M1Pipeline.smoke(4))
     history = lifecycle.train(split["train"], epochs=2, learning_rate=.01)
     temperatures = lifecycle.calibrate(split["calibration"])
-    assert history and set(temperatures) == set(V2_TARGETS)
+    assert history and set(temperatures) == {
+        M1_TEMPERATURE_HAZARD, M1_TEMPERATURE_D_OB_ZERO, M1_TEMPERATURE_D_TX_ZERO}
     artifact = tmp_path / "m1.pt"
     lifecycle.save(artifact)
     loaded = M1Lifecycle.load(artifact)

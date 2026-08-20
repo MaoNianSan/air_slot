@@ -59,7 +59,11 @@ class M1Service:
             model_path = M1ModelPath.FAST
             fallback = "EXPLICIT_FAST_QUERY"
         elif mode == "state":
-            distributions = self.pipeline.predict_distributions(values, lengths)
+            # Tranche 3 execution closure: production forecast consumes the
+            # same PRE information state as scenario generation
+            # (h + r_fast + c_static via predict_from_pre).
+            distributions = self.pipeline.predict_from_pre(
+                pre_state, values, lengths)
             model_path = M1ModelPath.STATE_AWARE
             fallback = "NONE"
         else:
@@ -88,4 +92,10 @@ class M1Service:
         )
 
     def generate_scenarios(self, pre_state, values, lengths, **kwargs):
-        return self.pipeline.sample_from_pre(pre_state, values, lengths, **kwargs)
+        from .factual_state import factual_observed_state
+        observed = factual_observed_state(pre_state)
+        supplied = kwargs.pop("observed", None)
+        if supplied is not None and supplied != observed:
+            raise ContractError("M1_CALLER_OBSERVED_STATE_FORBIDDEN")
+        return self.pipeline.sample_from_pre(
+            pre_state, values, lengths, observed=observed, **kwargs)

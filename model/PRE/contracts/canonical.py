@@ -30,6 +30,7 @@ class CanonicalSourceRecord(FrozenModel):
         if self.availability_basis in {
             AvailabilityBasis.OBSERVED_AVAILABILITY,
             AvailabilityBasis.REPLAY_EVENT_TIME,
+            AvailabilityBasis.FACTUAL_REPLAY_RULE,
         } and self.availability_time is None:
             raise ValueError("admissible basis requires availability_time")
         if self.provenance.dataset_instance_id != self.dataset_instance_id:
@@ -46,6 +47,7 @@ class FlightRecord(CanonicalSourceRecord):
     source_flight_id: str | None = None
     aircraft_id: str | None = None
     aircraft_id_namespace: str | None = None
+    carrier_id: str | None = None
     origin_airport_id: str | None = None
     destination_airport_id: str | None = None
     event_start_time: datetime

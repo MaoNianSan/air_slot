@@ -52,8 +52,18 @@ from .contracts import (
     HurdleQuantileContract,
     M1_V2_HAZARD_COORDINATE,
 )
-from .data import fast_features_from_sequence
+from .data import STATIC_FEATURE_COUNT, fast_features_from_sequence
+from .calibration import (
+    common_calibration_policy,
+    fit_hazard_temperature,
+    fit_zero_mass_temperature,
+    require_calibration_split,
+    require_no_final_test,
+    quantile_coverage_diagnostic,
+)
+from .contracts import M1_TEMPERATURE_D_OB_ZERO, M1_TEMPERATURE_D_TX_ZERO, M1_TEMPERATURE_HAZARD
 from .pipeline import conditional_head_summary
+from .loss import monotone_positive_quantiles
 from .scenarios import ancestral_sample_v2
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 
@@ -189,6 +199,16 @@ class LightGBMDistributionalPredictor:
     ):
         self.contracts = dict(contracts)
         self.models = dict(models or {})
+        self.calibration_temperatures: dict[str, float] = {
+            M1_TEMPERATURE_HAZARD: 1.0,
+            M1_TEMPERATURE_D_OB_ZERO: 1.0,
+            M1_TEMPERATURE_D_TX_ZERO: 1.0,
+        }
+        self.calibration_diagnostics: dict[str, object] = {}
+        # Tranche 3 static parity: when fitted with PRE-published MODEL_FEATURE
+        # fields, the ARX-LightGBM models are fitted on ``concat(r_fast,
+        # c_static)`` and inference requires the same static block.
+        self._static_input_size: int = 0
         missing = set(self._model_spec_keys()) - set(self.models)
         self.status = (
             M1FastPathStatus.DEVELOPMENT_ONLY
@@ -213,10 +233,15 @@ class LightGBMDistributionalPredictor:
         seed: int = 0,
         n_estimators: int = 32,
         allow_test_only_surrogate: bool = False,
+        static_features: np.ndarray | None = None,
     ) -> "LightGBMDistributionalPredictor":
         """Fit the ARX-LightGBM architecture on one bundle (no paper fitting).
 
-        ``X`` is the ``r_fast`` feature matrix (B, F).  ``targets`` keys are
+        ``X`` is the ``r_fast`` feature matrix (B, F).  ``static_features``
+        (optional) is the PRE-published ``c_static`` block (B, S): when
+        supplied the models are fitted on ``concat(r_fast, c_static)`` so the
+        FAST path shares the manuscript ``[r_fast, c_static]`` representation
+        (never an ordinal encoding of retained identities).  ``targets`` keys are
         the V2 INTERNAL training-target names:
         - ``T_IB_REMAINING_HAZARD``: remaining minutes (or NaN for inactive);
         - ``D_OB`` / ``D_TX``: nonnegative minutes (or NaN).
@@ -236,6 +261,16 @@ class LightGBMDistributionalPredictor:
         d_ob: HurdleQuantileContract = self.contracts["D_OB"]
         d_tx: HurdleQuantileContract = self.contracts["D_TX"]
         features = np.asarray(X, dtype=float)
+        if static_features is not None:
+            static = np.asarray(static_features, dtype=float)
+            if static.shape[0] != features.shape[0]:
+                raise ContractError("M1_FAST_STATIC_ROWS_MISMATCH")
+            if static.ndim != 2 or static.shape[1] < 1:
+                raise ContractError("M1_FAST_STATIC_COLUMNS_INVALID")
+            features = np.concatenate([features, static], axis=-1)
+            self._static_input_size = int(static.shape[1])
+        else:
+            self._static_input_size = 0
         ib_target = np.asarray(targets.get(M1_V2_HAZARD_COORDINATE_TARGET), dtype=float)
         d_ob_target = np.asarray(targets.get("D_OB"), dtype=float)
         d_tx_target = np.asarray(targets.get("D_TX"), dtype=float)
@@ -367,9 +402,21 @@ class LightGBMDistributionalPredictor:
         ]
 
     def state_representation(self, features: torch.Tensor,
-                             fast_features=None) -> torch.Tensor:
-        """FAST consumes ``r_fast`` directly (identity adapter; no GRU)."""
-        return features
+                             fast_features=None,
+                             static_features: torch.Tensor | None = None) -> torch.Tensor:
+        """FAST state = concat(r_fast, c_static) (no GRU recurrent hidden).
+
+        ``features`` is the deterministic current/AR block ``r_fast``; when
+        PRE-published static MODEL_FEATURE fields are supplied they are
+        appended directly (deterministic, no projection).  Without static
+        features the state is exactly ``r_fast``.
+        """
+        if static_features is None:
+            return features
+        static = torch.as_tensor(static_features, dtype=torch.float32)
+        if static.shape[0] != features.shape[0]:
+            static = static.expand(features.shape[0], -1)
+        return torch.cat([features, static], dim=-1)
 
     def _ib_representatives(self, ib_index, batch: int) -> np.ndarray:
         hazard: HazardBinContract = self.contracts[M1_V2_HAZARD_COORDINATE]
@@ -431,13 +478,25 @@ class LightGBMDistributionalPredictor:
             _quantile_logits_from_values(quantiles), dtype=torch.float32)
         return zero, quantile_logits
 
-    def _predict_heads(self, values: torch.Tensor, lengths=None):
+    def _predict_heads(self, values: torch.Tensor, lengths=None,
+                       static_features: torch.Tensor | None = None):
         features = self._fast_features(values, lengths)
         state = torch.tensor(features, dtype=torch.float32)
-        return conditional_head_summary(self, state, self.contracts)
+        if static_features is not None:
+            if self._static_input_size == 0:
+                raise ContractError("M1_FAST_STATIC_NOT_FITTED")
+            state = self.state_representation(state, None, static_features)
+        elif self._static_input_size > 0:
+            # The fitted architecture consumes ``concat(r_fast, c_static)``;
+            # a missing static block is a width-contract violation (never a
+            # silent zero substitution).
+            raise ContractError("M1_FAST_STATIC_FEATURES_REQUIRED")
+        return conditional_head_summary(self, state, self.contracts,
+                                        temperatures=self.calibration_temperatures)
 
     def predict_development(
-        self, values: torch.Tensor, lengths: torch.Tensor | None = None
+        self, values: torch.Tensor, lengths: torch.Tensor | None = None,
+        static_features: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor | dict[str, torch.Tensor]]:
         """Execute the fitted architecture for synthetic/unit smoke only.
 
@@ -447,7 +506,133 @@ class LightGBMDistributionalPredictor:
         """
         if self.status is M1FastPathStatus.ABSTAIN:
             raise ContractError("M1_FAST_PATH_ABSTAIN_NO_FITTED_MODELS")
-        return self._predict_heads(values, lengths)
+        return self._predict_heads(values, lengths, static_features)
+
+    def predict_from_pre(
+        self, pre_state, values: torch.Tensor,
+        lengths: torch.Tensor | None = None,
+    ) -> dict[str, torch.Tensor | dict[str, torch.Tensor]]:
+        """FAST production forecast over a PRE state (same PRE interface).
+
+        Mirrors the STATE_AWARE path: the PRE-published static context
+        (``static_reference_publication``) is rebuilt into the typed M1
+        context and only MODEL_FEATURE fields with legal frozen-reference
+        provenance enter ``c_static``.
+        """
+        from .contracts import static_reference_context_from_pre
+        from .data import static_reference_features_from_pre
+        publication = getattr(pre_state, "static_reference_publication", None)
+        context = (static_reference_context_from_pre(publication)
+                   if publication else None)
+        static_features, _ = static_reference_features_from_pre(
+            pre_state, context)
+        return self.predict_development(values, lengths, static_features)
+
+    def calibration_policy(self):
+        """Same scientific calibration policy as STATE_AWARE."""
+        return common_calibration_policy()
+
+    def calibrate_development(
+        self,
+        X: np.ndarray,
+        *,
+        ib_target: np.ndarray,
+        d_ob_target: np.ndarray,
+        d_tx_target: np.ndarray,
+        active: dict[str, np.ndarray] | None = None,
+        split: str = "calibration",
+    ) -> dict[str, float]:
+        """Fit per-estimator calibration temperatures (development path).
+
+        Same scientific procedure as STATE_AWARE (``M1CalibrationContract``);
+        the numeric temperatures are fitted from THIS estimator's calibration
+        predictions — same procedure != same numeric temperature.  Hazard uses
+        event-time NLL; D_OB/D_TX zero-mass use binary CE on the hurdle zero
+        logits; positive quantiles stay ``QUANTILE_CALIBRATION_NOT_APPLIED``.
+        """
+        require_calibration_split(split)
+        require_no_final_test(0)
+        if self.status is M1FastPathStatus.ABSTAIN:
+            raise ContractError("M1_FAST_PATH_ABSTAIN_NO_FITTED_MODELS")
+        hazard: HazardBinContract = self.contracts[M1_V2_HAZARD_COORDINATE]
+        ib = np.asarray(ib_target, dtype=float)
+        if active is None:
+            act_ib = ~np.isnan(ib)
+            act_ob = ~np.isnan(np.asarray(d_ob_target, dtype=float))
+            act_tx = ~np.isnan(np.asarray(d_tx_target, dtype=float))
+        else:
+            act_ib = np.asarray(active.get(M1_V2_HAZARD_COORDINATE_TARGET, np.zeros(len(ib))), dtype=bool)
+            act_ob = np.asarray(active.get("D_OB", np.zeros(len(ib))), dtype=bool)
+            act_tx = np.asarray(active.get("D_TX", np.zeros(len(ib))), dtype=bool)
+        features = torch.tensor(np.asarray(X, dtype=float), dtype=torch.float32)
+        temperatures = {
+            M1_TEMPERATURE_HAZARD: 1.0,
+            M1_TEMPERATURE_D_OB_ZERO: 1.0,
+            M1_TEMPERATURE_D_TX_ZERO: 1.0,
+        }
+        coverage: dict[str, dict[str, float | None]] = {}
+        if bool(act_ib.any()):
+            labels = np.full(ib.shape, -1, dtype=np.int64)
+            for index in np.nonzero(act_ib)[0]:
+                labels[index] = hazard.encode(float(ib[index]))
+            temperatures[M1_TEMPERATURE_HAZARD] = fit_hazard_temperature(
+                self.hazard_logits(features),
+                torch.tensor(labels, dtype=torch.long),
+                torch.tensor(act_ib, dtype=torch.bool),
+                hazard,
+                split=split,
+            )
+        for name, key, targets, act in (
+            ("D_OB", M1_TEMPERATURE_D_OB_ZERO,
+             np.asarray(d_ob_target, dtype=float), act_ob),
+            ("D_TX", M1_TEMPERATURE_D_TX_ZERO,
+             np.asarray(d_tx_target, dtype=float), act_tx),
+        ):
+            if not bool(act.any()):
+                continue
+            parent_ib = np.asarray([hazard.encode(float(ib[i]))
+                                    for i in np.nonzero(act)[0]], dtype=np.int64)
+            rows = features[np.nonzero(act)[0]]
+            if name == "D_OB":
+                zero_logit, quantile_logit = self.d_ob_heads(
+                    rows, torch.tensor(parent_ib))
+            else:
+                # D_TX conditions on the FORMAL D_OB parent (its own D_TX
+                # minute value is never a proxy): encode each active row's
+                # ``d_ob_target``.  A missing D_OB parent under an active
+                # D_TX calibration row is a contract violation.
+                active_indices = np.nonzero(act)[0]
+                parent_ob = np.empty(len(active_indices), dtype=np.int64)
+                for row_position, index in enumerate(active_indices):
+                    parent_minutes = float(d_ob_target[index])
+                    if np.isnan(parent_minutes) or parent_minutes < 0:
+                        raise ContractError("M1_FAST_D_TX_CALIBRATION_PARENT_MISSING")
+                    parent_ob[row_position] = self.contracts["D_OB"].encode(
+                        parent_minutes)
+                zero_logit, quantile_logit = self.d_tx_heads(
+                    rows, torch.tensor(parent_ib), torch.tensor(parent_ob))
+            zero_label = np.asarray([float(targets[i]) == 0.0
+                                     for i in np.nonzero(act)[0]], dtype=float)
+            temperatures[key] = fit_zero_mass_temperature(
+                zero_logit, torch.tensor(zero_label, dtype=torch.float32),
+                torch.ones(len(zero_label), dtype=torch.bool), split=split,
+            )
+            actual = torch.tensor(targets[np.nonzero(act)[0]], dtype=torch.float32)
+            positive_active = torch.isfinite(actual) & (actual > 0)
+            coverage[name] = quantile_coverage_diagnostic(
+                monotone_positive_quantiles(quantile_logit), actual,
+                tuple(self.contracts[name].quantile_levels), positive_active,
+                split=split,
+            )
+        self.calibration_temperatures = temperatures
+        policy = common_calibration_policy()
+        self.calibration_diagnostics = {
+            "positive_quantile_status": policy.positive_quantile_calibration,
+            "positive_quantile_coverage": coverage,
+            "split": policy.split,
+            "policy_version": policy.version,
+        }
+        return dict(temperatures)
 
     def predict_distributions(
         self, values: torch.Tensor, lengths: torch.Tensor | None = None

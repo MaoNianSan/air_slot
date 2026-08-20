@@ -5,6 +5,14 @@ parameters:
     freeze_state: FROZEN
     value: 5
     provenance: {selection_state: DEVELOPMENT_FROZEN, scope: data2_2019, decision: "D2-6 replay-lag new decision 2026-08-16 (user approved): data2 NOAA-ISD weather availability lag 5 min; data1 replay_lag_minutes unchanged at 0"}
+  data2_factual_replay_availability:
+    freeze_state: HUMAN_DECISION_REQUIRED
+    value: UNRESOLVED
+    provenance:
+      selection_state: NOT_FROZEN
+      human_gate: DATA2_FACTUAL_REPLAY_AVAILABILITY_DECISION_REQUIRED
+      note: "Data2 archive has no real airline-system message-arrival timestamps, so event time is never claimed to be production availability time. Architecture supports UNRESOLVED (no formal factual replay) and DECLARED_RULE (event_time + declared lag -> availability_time -> cutoff legality). formal factual replay stays disabled until this human decision."
+      final_test_access_count: 0
   replay_lag_sensitivity_minutes: {freeze_state: FROZEN, value: [0, 5, 10]}
   weather_max_age_minutes: {freeze_state: FROZEN, value: 60}
   cloud_encoding: {freeze_state: FROZEN, value: both}
@@ -134,8 +142,8 @@ parameters:
       selection_state: DEVELOPMENT_FROZEN_POLICY
       role: ROUND2_MANUSCRIPT_IMPLEMENTATION
       implementation_choice: ROUND2_2_DETERMINISTIC_CURRENT_AR_BLOCK_NO_SEARCH
-      static_context_status: STATIC_REFERENCE_CONTEXT_PENDING_PRE
-      note: "state-aware = concat(GRU(history), projection(r_fast)); FAST consumes r_fast directly (no GRU). schedule.signed_minutes_to_crs_departure is a DYNAMIC countdown and is NOT duplicated as a static branch (Tranche 2.1 static closure SUPERSEDED_PARTIALLY)."
+      static_context_status: PRE_PUBLISHED_TYPED
+      note: "state-aware = concat(GRU(history), projection(r_fast), projection(c_static)); FAST = concat(r_fast, c_static). PRE publishes typed route/carrier/aircraft/schedule/turnaround/taxi context; only train-frozen turnaround/taxi are numeric MODEL_FEATURES, while retained identities are never ordinal encoded. schedule.signed_minutes_to_crs_departure remains DYNAMIC and is not duplicated in c_static."
       final_test_access_count: 0
   m1_v2_calibration_contract:
     freeze_state: FROZEN

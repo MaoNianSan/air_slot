@@ -7,6 +7,9 @@ from .contracts import (
     AlignedScenario,
     HazardBinContract,
     HurdleQuantileContract,
+    M1_TEMPERATURE_D_OB_ZERO,
+    M1_TEMPERATURE_D_TX_ZERO,
+    M1_TEMPERATURE_HAZARD,
     M1V2Scenario,
     M1_V2_HAZARD_COORDINATE,
     STOCHASTIC_TARGETS,
@@ -273,6 +276,7 @@ def ancestral_sample_v2(
     taxi_reference_support_state: str | None = None,
     temperatures: dict[str, float] | None = None,
     fast_features: torch.Tensor | None = None,
+    static_features: torch.Tensor | None = None,
 ) -> tuple[M1V2Scenario, ...]:
     """Ancestral V2 draws in the formal order T_IB_A00 -> D_OB -> D_TX.
 
@@ -298,7 +302,10 @@ def ancestral_sample_v2(
     if not required <= set(observed):
         raise ContractError("M1_STAGE_OBSERVATION_MISSING")
     # Fused state representation shared by every head call in this bundle.
-    state = model.state_representation(history, fast_features)
+    # Tranche 3: ``chi = concat(GRU(history), projection(r_fast),
+    # projection(c_static))``; static features enter only from PRE-published
+    # MODEL_FEATURE fields (``static_reference_features_from_pre``).
+    state = model.state_representation(history, fast_features, static_features)
     rows = []
     for scenario_id in range(count):
         keys = [
@@ -352,10 +359,15 @@ def ancestral_sample_v2(
             supports["D_OB"] = "ABSTAIN"
         else:
             zero_logit, quantile_logits = model.d_ob_heads(state, ib_bin)
-            temperature = 1.0 if temperatures is None else float(temperatures.get("D_OB", 1.0))
+            # Tranche 3 calibration discipline: the zero-mass temperature
+            # scales ONLY the hurdle Bernoulli zero logit; positive quantile
+            # values/logits are never scaled by it.
+            zero_temperature = 1.0 if temperatures is None else float(
+                temperatures.get(M1_TEMPERATURE_D_OB_ZERO, 1.0))
             uniform, _ = _uniform_v2(seed, episode_id, scenario_id, "D_OB")
             d_ob_minutes, d_ob_bin, overflow_d_ob = _sample_hurdle_quantile(
-                zero_logit, quantile_logits / temperature, d_ob_contract, uniform
+                zero_logit / zero_temperature, quantile_logits,
+                d_ob_contract, uniform,
             )
 
         # --- D_TX (hurdle + conditional quantile, parents T_IB_A00, D_OB) ---
@@ -373,10 +385,12 @@ def ancestral_sample_v2(
             supports["D_TX"] = "ABSTAIN"
         else:
             zero_logit, quantile_logits = model.d_tx_heads(state, ib_bin, d_ob_bin)
-            temperature = 1.0 if temperatures is None else float(temperatures.get("D_TX", 1.0))
+            zero_temperature = 1.0 if temperatures is None else float(
+                temperatures.get(M1_TEMPERATURE_D_TX_ZERO, 1.0))
             uniform, _ = _uniform_v2(seed, episode_id, scenario_id, "D_TX")
             d_tx_minutes, d_tx_bin, overflow_d_tx = _sample_hurdle_quantile(
-                zero_logit, quantile_logits / temperature, d_tx_contract, uniform
+                zero_logit / zero_temperature, quantile_logits,
+                d_tx_contract, uniform,
             )
 
         rows.append(M1V2Scenario(

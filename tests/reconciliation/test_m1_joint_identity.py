@@ -75,7 +75,7 @@ def test_b_all_successor_delays_are_nonnegative():
 def test_batched_warning_path_uses_the_formal_identity():
     """The vectorized warning path must derive D_TO = D_OB + D_TX per draw."""
     pipeline = M1Pipeline.smoke(input_size=4)
-    pipeline.temperatures = {"T_IB_REMAINING_HAZARD": 1.3, "D_OB": 0.8, "D_TX": 1.1}
+    pipeline.temperatures = {"T_IB_REMAINING_HAZARD": 1.3, "D_OB_ZERO": 0.8, "D_TX_ZERO": 1.1}
     values = torch.tensor([[[0.1, 0.2, 0.3, 0.4]]])
     lengths = torch.ones(1, dtype=torch.long)
     with torch.no_grad():

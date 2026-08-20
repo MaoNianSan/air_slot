@@ -45,6 +45,9 @@ def _canonical_value(record: CanonicalSourceRecord, variable: str) -> Any:
             "scheduled_arrival_utc":getattr(record, "scheduled_arrival_utc"),
             "origin_airport_id":getattr(record, "origin_airport_id"),
             "destination_airport_id":getattr(record, "destination_airport_id"),
+            "carrier_id":getattr(record, "carrier_id"),
+            "aircraft_id":getattr(record, "aircraft_id"),
+            "aircraft_id_namespace":getattr(record, "aircraft_id_namespace"),
             "schedule_semantics":getattr(record, "schedule_semantics")}
     if variable in {"passenger_reference", "segment_reference"}:
         return {"reference_name":getattr(record, "reference_name"),

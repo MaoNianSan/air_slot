@@ -14,15 +14,14 @@ Round 2.1 scientific closure (kept):
   genuine marginal summaries come from aligned scenarios via
   ``scenario_marginal_summary`` (see ``model.M1.summaries``).
 
-Round 2.2 contract correction:
+Round 2.2/Tranche 3 representation contract:
 - The state-aware representation is
   ``state = concat(GRU(history), projection(r_fast))`` where ``r_fast`` is
   the deterministic current/local-change/short-term AR block (last causal
   row); the Tranche 2.1 schedule-countdown static duplicate is removed.
-- Manuscript static/reference context is retained separately and typed
-  (``M1StaticReferenceContext``); every field is
-  ``UPSTREAM_PRE_INTERFACE_REQUIRED`` until PRE publishes it
-  (``STATIC_REFERENCE_CONTEXT_PENDING_PRE``) — no static block is fused yet.
+- PRE publishes typed static/reference context. Train-frozen numeric
+  turnaround/taxi references enter ``c_static``; route/carrier/aircraft and
+  schedule identity/context retain typed lineage without ordinal encoding.
 
 The V1 signed estimator (R_IB -> DELTA_OB -> T_TX categorical) is
 LEGACY_V1/HISTORICAL_ONLY: ``M1Pipeline.load`` can still deserialize frozen V1
@@ -37,14 +36,24 @@ import torch
 from .contracts import (
     HazardBinContract,
     HurdleQuantileContract,
+    M1_TEMPERATURE_D_OB_ZERO,
+    M1_TEMPERATURE_D_TX_ZERO,
+    M1_TEMPERATURE_HAZARD,
     M1_V2_HAZARD_COORDINATE,
     TargetBinContract,
 )
-from .data import M1NormalizationArtifact, fast_features_from_sequence
+from .contracts import M1StaticReferenceContext, static_reference_context_from_pre
+from .data import (
+    M1NormalizationArtifact,
+    STATIC_FEATURE_COUNT,
+    fast_features_from_sequence,
+    static_reference_features_from_pre,
+)
 from .network import M1V2GRU, OrderedEventGRU
 from .scenarios import ancestral_sample_v2
 from .loss import hazard_pmf, monotone_positive_quantiles
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
+from .calibration import M1CalibrationContract, common_calibration_policy
 
 V1_TO_V2_SUPPORT = {"R_IB": "T_IB_A00", "DELTA_OB": "D_OB", "T_TX": "D_TX"}
 
@@ -81,7 +90,7 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
     device = state.device
     with torch.no_grad():
         hazard_logits = model.hazard_logits(state) / float(
-            temps.get(M1_V2_HAZARD_COORDINATE, 1.0))
+            temps.get(M1_TEMPERATURE_HAZARD, 1.0))
         pmf = hazard_pmf(hazard_logits, hazard)  # (B, K)
         k = hazard.class_count
         d_ob_zero = torch.zeros(batch, device=device)
@@ -92,8 +101,12 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
             weight = pmf[:, b]  # (B,)
             ib = torch.full((batch,), b, dtype=torch.long, device=device)
             zero_ob, quant_ob = model.d_ob_heads(state, ib)
-            z_ob = torch.sigmoid(zero_ob.squeeze(-1) / float(temps.get("D_OB", 1.0)))
-            q_ob = monotone_positive_quantiles(quant_ob / float(temps.get("D_OB", 1.0)))
+            # Zero-mass calibration temperature scales ONLY the hurdle
+            # Bernoulli zero logit; positive quantile values/logits are never
+            # temperature-scaled by it (QUANTILE_CALIBRATION_NOT_APPLIED).
+            z_ob = torch.sigmoid(zero_ob.squeeze(-1) / float(
+                temps.get(M1_TEMPERATURE_D_OB_ZERO, 1.0)))
+            q_ob = monotone_positive_quantiles(quant_ob)
             d_ob_zero = d_ob_zero + weight * z_ob
             d_ob_quant = d_ob_quant + weight[:, None] * q_ob
             expected_d_ob = (1.0 - z_ob) * q_ob.mean(dim=-1)
@@ -102,8 +115,9 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
                 0, d_ob.overflow_index,
             )
             zero_tx, quant_tx = model.d_tx_heads(state, ib, expected_bin)
-            z_tx = torch.sigmoid(zero_tx.squeeze(-1) / float(temps.get("D_TX", 1.0)))
-            q_tx = monotone_positive_quantiles(quant_tx / float(temps.get("D_TX", 1.0)))
+            z_tx = torch.sigmoid(zero_tx.squeeze(-1) / float(
+                temps.get(M1_TEMPERATURE_D_TX_ZERO, 1.0)))
+            q_tx = monotone_positive_quantiles(quant_tx)
             d_tx_zero = d_tx_zero + weight * z_tx
             d_tx_quant = d_tx_quant + weight[:, None] * q_tx
         norm = pmf.sum(dim=-1).clamp_min(1e-12)
@@ -128,11 +142,34 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
 class M1Pipeline:
     """V2 principal pipeline (hazard + hurdle-quantile heads)."""
 
-    def __init__(self, model, contracts, temperatures=None, normalization=None):
+    def __init__(self, model, contracts, temperatures=None, normalization=None,
+                 static_context=None, calibration_contract=None,
+                 calibration_diagnostics=None):
         self.model = model
         self.contracts = contracts
-        self.temperatures = temperatures or {name: 1.0 for name in contracts}
+        self.static_context = static_context or M1StaticReferenceContext()
+        # Temperature registry (Tranche 3): the hazard temperature applies to
+        # hazard logits; D_OB_ZERO / D_TX_ZERO apply ONLY to the hurdle zero
+        # logits.  Positive quantiles are never scaled by zero-mass
+        # temperatures.  Legacy ``D_OB`` / ``D_TX`` keys are migrated to the
+        # split registry below when only the old names are present.
+        if temperatures is None:
+            temperatures = {
+                M1_TEMPERATURE_HAZARD: 1.0,
+                M1_TEMPERATURE_D_OB_ZERO: 1.0,
+                M1_TEMPERATURE_D_TX_ZERO: 1.0,
+            }
+        else:
+            temperatures = dict(temperatures)
+            if "D_OB" in temperatures and M1_TEMPERATURE_D_OB_ZERO not in temperatures:
+                temperatures[M1_TEMPERATURE_D_OB_ZERO] = temperatures.pop("D_OB")
+            if "D_TX" in temperatures and M1_TEMPERATURE_D_TX_ZERO not in temperatures:
+                temperatures[M1_TEMPERATURE_D_TX_ZERO] = temperatures.pop("D_TX")
+        self.temperatures = temperatures
         self.normalization = normalization
+        self.calibration_contract = (
+            calibration_contract or common_calibration_policy())
+        self.calibration_diagnostics = dict(calibration_diagnostics or {})
 
     @property
     def bins(self):
@@ -166,7 +203,7 @@ class M1Pipeline:
 
     @classmethod
     def from_scientific_config(cls, scientific, *, input_size, normalization,
-                               hidden_size=None):
+                               hidden_size=None, static_input_size=0):
         if not isinstance(normalization, M1NormalizationArtifact) \
                 or normalization.fitted_split != "train":
             raise ValueError("M1_FORMAL_TRAIN_NORMALIZATION_REQUIRED")
@@ -202,10 +239,42 @@ class M1Pipeline:
         }
         return cls(M1V2GRU(input_size, hidden, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                            contracts["D_OB"], contracts["D_TX"],
-                           fast_input_size=input_size),
+                           fast_input_size=input_size,
+                           static_input_size=static_input_size),
                    contracts, normalization=normalization)
 
-    def predict_distributions(self, values, lengths, fast_features=None):
+    def _information_state(self, values, lengths, fast_features=None,
+                           static_features=None, pre_state=None):
+        """Shared ``h + r_fast (+ c_static)`` information state.
+
+        Tranche 3 execution closure: production forecast
+        (``predict_distributions`` / ``predict_from_pre``) and scenario
+        generation (``sample_from_pre``) must consume the exact same
+        information state.  When ``fast_features`` is not explicitly provided
+        it is auto-derived from the sequence
+        (``fast_features_from_sequence``) so production never silently falls
+        back to a zero fast block.  Static features are derived from the PRE
+        state when available (only PRE-published MODEL_FEATURE fields).
+        """
+        if fast_features is None:
+            fast_features = fast_features_from_sequence(values, lengths)
+        if static_features is None and pre_state is not None:
+            # Tranche 3 typed wiring: PRE writes plain per-field metadata
+            # (``static_reference_publication``); M1 rebuilds its typed
+            # ``M1StaticReferenceContext`` from it.  Only MODEL_FEATURE
+            # fields with legal frozen-reference provenance enter ``c_static``.
+            publication = getattr(pre_state, "static_reference_publication", None)
+            context = (static_reference_context_from_pre(publication)
+                       if publication else self.static_context)
+            static_features, _ = static_reference_features_from_pre(
+                pre_state, context)
+        history = self.model.encode_history(values, lengths)
+        state = self.model.state_representation(history, fast_features,
+                                                static_features)
+        return history, fast_features, static_features, state
+
+    def predict_distributions(self, values, lengths, fast_features=None,
+                              static_features=None):
         """Conditional head summary (V2 schema); alias of the module function.
 
         Returns clearly CONDITIONAL head summaries keyed by the public
@@ -216,9 +285,25 @@ class M1Pipeline:
         structure; positive quantile rows are CONDITIONAL mixtures and are
         labeled as such (never ``marginal``).  Scenario-derived marginal
         summaries live in ``model.M1.summaries.scenario_marginal_summary``.
+
+        Tranche 3 execution closure: when ``fast_features`` is None the
+        production path auto-derives ``r_fast`` from the sequence (never a
+        zero fast block unless the model has no fast encoder at all).
         """
-        history = self.model.encode_history(values, lengths)
-        state = self.model.state_representation(history, fast_features)
+        _, _, _, state = self._information_state(
+            values, lengths, fast_features, static_features)
+        return conditional_head_summary(self.model, state, self.contracts,
+                                        temperatures=self.temperatures)
+
+    def predict_from_pre(self, pre_state, values, lengths):
+        """Production forecast over a PRE state (identical information state).
+
+        Consumes the same ``h + r_fast + c_static`` as scenario generation:
+        ``predict_now`` and ``sample_from_pre`` share the PRE-published static
+        context through ``static_reference_features_from_pre``.
+        """
+        _, _, _, state = self._information_state(
+            values, lengths, pre_state=pre_state)
         return conditional_head_summary(self.model, state, self.contracts,
                                         temperatures=self.temperatures)
 
@@ -239,7 +324,8 @@ class M1Pipeline:
         decision_time_utc = pre_state.decision_node.decision_time.isoformat()
         self.model.eval()
         with torch.no_grad():
-            history = self.model.encode_history(values, lengths)
+            history, fast_features, static_features, _ = self._information_state(
+                values, lengths, fast_features=None, pre_state=pre_state)
         schedule = pre_state.successor_state.get("schedule_reference")
         schedule_value = None if schedule is None else schedule.value
         scheduled_ob_utc = None
@@ -248,17 +334,30 @@ class M1Pipeline:
             scheduled = schedule_value.get("scheduled_departure_utc")
             scheduled_ob_utc = None if scheduled is None else scheduled.isoformat()
             origin_airport_id = schedule_value.get("origin_airport_id")
-        # r_fast: deterministic current/local-change/short-term AR block from
-        # the last causal row of the encoded sequence.  Manuscript
-        # static/reference context is NOT fused (UPSTREAM_PRE_INTERFACE_REQUIRED,
-        # ``M1StaticReferenceContext``); nothing is fabricated.
-        fast_features = fast_features_from_sequence(values, lengths)
+        # r_fast is derived by ``_information_state`` above; production
+        # forecast and scenario generation share the identical
+        # ``h + r_fast`` information state (Tranche 3 closure).  Manuscript
+        # static/reference context is fused only from PRE-published fields
+        # (``static_reference_features_from_pre``); nothing is fabricated.
         reference_context = {
             "taxi_reference_id": None,
             "taxi_reference_hash": None,
             "taxi_reference_fallback_level": None,
             "taxi_reference_support_state": None,
         }
+        published_taxi = pre_state.successor_state.get("taxi_reference")
+        published_payload = (
+            published_taxi.value
+            if published_taxi is not None and isinstance(published_taxi.value, dict)
+            else None
+        )
+        if published_payload is not None:
+            reference_context = {
+                "taxi_reference_id": published_payload.get("reference_id"),
+                "taxi_reference_hash": published_payload.get("freeze_id"),
+                "taxi_reference_fallback_level": published_payload.get("fallback_level"),
+                "taxi_reference_support_state": published_payload.get("support_state"),
+            }
         if taxi_reference is not None:
             if getattr(taxi_reference, "dataset_instance_id", None) != "data2_2019" \
                     or getattr(taxi_reference, "rule_id", None) != "DATA2_TAXI_REFERENCE":
@@ -268,12 +367,18 @@ class M1Pipeline:
             flags = set(getattr(lookup, "quality_flags", ()))
             fallback = next((flag.removeprefix("REFERENCE_LEVEL_") for flag in flags
                              if flag.startswith("REFERENCE_LEVEL_")), None)
-            reference_context = {
+            supplied_context = {
                 "taxi_reference_id": taxi_reference.reference_id,
                 "taxi_reference_hash": getattr(taxi_reference, "manifest_freeze_id", None),
                 "taxi_reference_fallback_level": fallback,
                 "taxi_reference_support_state": state,
             }
+            if published_payload is not None and (
+                supplied_context["taxi_reference_id"] != published_payload.get("reference_id")
+                or supplied_context["taxi_reference_hash"] != published_payload.get("freeze_id")
+            ):
+                raise ValueError("M1_TAXI_REFERENCE_LINEAGE_MISMATCH")
+            reference_context = supplied_context
         return ancestral_sample_v2(
             self.model, history, self.contracts,
             episode_id=pre_state.decision_node.episode_id,
@@ -282,13 +387,13 @@ class M1Pipeline:
             target_support=support, decision_time_utc=decision_time_utc,
             scheduled_ob_utc=scheduled_ob_utc,
             temperatures=self.temperatures,
-            fast_features=fast_features, **reference_context,
+            fast_features=fast_features, static_features=static_features,
+            **reference_context,
         )
 
     def calibration_policy(self):
         """Single scientific calibration policy shared with the FAST path."""
-        from .calibration import common_calibration_policy
-        return common_calibration_policy()
+        return self.calibration_contract
 
     def summarize(self, scenarios, **kwargs):
         from .summaries import horizon_summaries
@@ -308,8 +413,12 @@ class M1Pipeline:
             "contracts": {
                 name: contract.model_dump() for name, contract in self.contracts.items()
             },
-            "contract_version": "M1_STATE_ESTIMATOR_V2_2",
+            "contract_version": "M1_STATE_ESTIMATOR_V2_3",
             "temperatures": self.temperatures,
+            "calibration_contract": self.calibration_contract.model_dump(mode="json"),
+            "calibration_diagnostics": self.calibration_diagnostics,
+            "static_input_size": getattr(self.model, "static_input_size", 0),
+            "static_context": self.static_context.model_dump(mode="json"),
             "normalization": None if self.normalization is None
                 else self.normalization.model_dump(mode="json"),
         }, path)
@@ -331,12 +440,27 @@ class M1Pipeline:
             for name, value in payload["contracts"].items()
         }
         fast_input_size = payload.get("fast_input_size", payload["input_size"])
+        static_input_size = payload.get("static_input_size", 0)
         model = M1V2GRU(payload["input_size"], payload["hidden_size"],
                         contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                         contracts["D_OB"], contracts["D_TX"],
-                        fast_input_size=fast_input_size)
+                        fast_input_size=fast_input_size,
+                        static_input_size=static_input_size)
         model.load_state_dict(payload["state"])
         normalization = payload.get("normalization")
         if normalization is not None:
             normalization = M1NormalizationArtifact.model_validate(normalization)
-        return cls(model, contracts, payload["temperatures"], normalization)
+        static_context = payload.get("static_context")
+        if static_context is not None:
+            if ("schedule_reference_context" in static_context
+                    and "schedule_reference" not in static_context):
+                static_context = dict(static_context)
+                static_context["schedule_reference"] = static_context.pop(
+                    "schedule_reference_context")
+            static_context = M1StaticReferenceContext.model_validate(static_context)
+        calibration_contract = M1CalibrationContract.model_validate(
+            payload.get("calibration_contract", common_calibration_policy().model_dump()))
+        return cls(model, contracts, payload["temperatures"], normalization,
+                   static_context=static_context,
+                   calibration_contract=calibration_contract,
+                   calibration_diagnostics=payload.get("calibration_diagnostics"))

@@ -109,6 +109,25 @@ class FastRepresentationEncoder(nn.Module):
         return self.projection(fast)
 
 
+class StaticRepresentationEncoder(nn.Module):
+    """Projection of the deterministic static/reference block ``c_static``.
+
+    Tranche 3: only PRE-published MODEL_FEATURE fields enter ``c_static``;
+    RETAINED_IDENTITY fields stay in the M1 input lineage and never become
+    ordinal numeric predictors.  Single linear projection to the shared hidden
+    dimension (frozen ``m1_hidden_size=32``; ``IMPLEMENTATION_CHOICE_NO_SEARCH``).
+    """
+
+    def __init__(self, input_size: int, hidden_size: int):
+        super().__init__()
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.projection = nn.Linear(input_size, hidden_size)
+
+    def forward(self, static: torch.Tensor) -> torch.Tensor:
+        return self.projection(static)
+
+
 class M1V2GRU(nn.Module):
     """V2 principal M1 state estimator.
 
@@ -127,10 +146,9 @@ class M1V2GRU(nn.Module):
     ``state = concat(GRU(history), projection(r_fast))`` with
     ``r_fast`` the deterministic current/AR feature block; manuscript
     static/reference context is retained separately via
-    ``M1StaticReferenceContext`` and stays
-    ``UPSTREAM_PRE_INTERFACE_REQUIRED`` (``STATIC_REFERENCE_CONTEXT_PENDING_PRE``)
-    until PRE publishes it — no static block is fabricated and the Tranche 2.1
-    schedule-countdown duplicate is removed.  The FAST path consumes ``r_fast``
+    ``M1StaticReferenceContext`` and enters only through PRE-published numeric
+    MODEL_FEATURE fields; retained identities never become ordinal features and
+    the Tranche 2.1 schedule-countdown duplicate is removed. The FAST path consumes ``r_fast``
     directly (no GRU recurrent hidden state) and shares the same target /
     output / calibration semantics.
 
@@ -149,6 +167,7 @@ class M1V2GRU(nn.Module):
         d_tx: HurdleQuantileContract,
         *,
         fast_input_size: int = 0,
+        static_input_size: int = 0,
     ):
         super().__init__()
         self.input_size = input_size
@@ -157,16 +176,25 @@ class M1V2GRU(nn.Module):
         self.d_ob_contract = d_ob
         self.d_tx_contract = d_tx
         self.fast_input_size = int(fast_input_size)
-        # state_repr = concat(recurrent_repr, projection(r_fast)): the
-        # recurrent hidden block plus the projected current/AR block (zero
-        # block when fast features are absent).  Manuscript static/reference
-        # context is NOT fused yet (UPSTREAM_PRE_INTERFACE_REQUIRED).
+        self.static_input_size = int(static_input_size)
+        # chi = concat(GRU(history), projection(r_fast), projection(c_static)):
+        # recurrent hidden block + projected current/AR block + projected
+        # static/reference block (zero block when a branch is absent).
+        # Static/reference context enters only from PRE-published MODEL_FEATURE
+        # fields (Tranche 3); RETAINED_IDENTITY fields never become ordinal
+        # numeric predictors.
         self.state_width = (
             hidden_size * 2 if self.fast_input_size > 0 else hidden_size
         )
+        if self.static_input_size > 0:
+            self.state_width += hidden_size
         self.fast_encoder = (
             FastRepresentationEncoder(self.fast_input_size, hidden_size)
             if self.fast_input_size > 0 else None
+        )
+        self.static_encoder = (
+            StaticRepresentationEncoder(self.static_input_size, hidden_size)
+            if self.static_input_size > 0 else None
         )
         self.gru = nn.GRU(
             input_size, hidden_size, num_layers=1, batch_first=True, bidirectional=False
@@ -190,22 +218,32 @@ class M1V2GRU(nn.Module):
         self,
         history: torch.Tensor,
         fast_features: torch.Tensor | None = None,
+        static_features: torch.Tensor | None = None,
     ) -> torch.Tensor:
-        """Fused state fed to every common head.
+        """Fused state ``chi`` fed to every common head.
 
-        ``state = concat(recurrent_repr, projection(r_fast))``.  The current/AR
-        block is projected by the fast encoder; when no fast features are
-        available the fast block is an explicit zero representation (nothing is
-        fabricated).  Static/reference context is not fused until PRE
-        publishes it (``M1StaticReferenceContext``, pending-PRE).
+        ``chi = concat(recurrent_repr, projection(r_fast),
+        projection(c_static))``.  Each absent branch is an explicit zero block
+        (nothing is fabricated); the static block appears only when PRE
+        published MODEL_FEATURE fields are supplied (``static_input_size``).
         """
         if fast_features is not None and self.fast_encoder is None:
             raise ValueError("M1_FAST_PROJECTION_UNAVAILABLE")
-        if fast_features is None or self.fast_encoder is None:
-            fast = torch.zeros_like(history)
-        else:
-            fast = self.fast_encoder(fast_features)
-        return torch.cat([history, fast], dim=-1)
+        if static_features is not None and self.static_encoder is None:
+            raise ValueError("M1_STATIC_PROJECTION_UNAVAILABLE")
+        # A declared branch (encoder present) with absent features becomes an
+        # explicit zero block (nothing fabricated); an undeclared branch
+        # (encoder is None) contributes no block at all, matching state_width.
+        blocks = [history]
+        if self.fast_encoder is not None:
+            blocks.append(self.fast_encoder(fast_features)
+                          if fast_features is not None
+                          else torch.zeros_like(history))
+        if self.static_encoder is not None:
+            blocks.append(self.static_encoder(static_features)
+                          if static_features is not None
+                          else torch.zeros_like(history))
+        return torch.cat(blocks, dim=-1)
 
     def _as_index(self, index, device, batch_size: int) -> torch.Tensor:
         tensor = torch.as_tensor(index, dtype=torch.long, device=device).reshape(-1)

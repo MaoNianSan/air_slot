@@ -88,10 +88,17 @@ def fit_hazard_temperature(
     require_calibration_split(split)
     labels = torch.as_tensor(labels, dtype=torch.long)
     active = torch.as_tensor(active, dtype=torch.bool)
-    lower = torch.empty(logits.shape[0], dtype=torch.float32)
-    upper = torch.empty(logits.shape[0], dtype=torch.float32)
-    for index in range(logits.shape[0]):
+    # Inactive rows (label == -1) are NEVER converted to bin intervals: they
+    # must not influence the calibration objective and must not trigger
+    # invalid bin access (``contract.bin_start(-1)``).  ``hazard_interval_nll``
+    # skips inactive rows entirely; the conversion below only touches active
+    # rows.
+    lower = torch.full((logits.shape[0],), -1.0, dtype=torch.float32)
+    upper = torch.full((logits.shape[0],), -1.0, dtype=torch.float32)
+    for index in active.nonzero(as_tuple=False).reshape(-1).tolist():
         bin_index = int(labels[index])
+        if bin_index < 0:
+            raise ContractError("M1_HAZARD_ACTIVE_LABEL_INVALID")
         lower[index] = contract.bin_start(bin_index)
         upper[index] = contract.bin_end(bin_index)
     log_temperature = torch.zeros((), requires_grad=True)

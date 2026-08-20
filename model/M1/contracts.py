@@ -338,6 +338,29 @@ V2_TARGETS: tuple[V2TargetName, ...] = (
 )
 M1_V2_HAZARD_COORDINATE = M1_V2_HAZARD_COORDINATE_TARGET
 
+# ---------------------------------------------------------------------------
+# Calibration temperature registry keys (Tranche 3).
+#
+# - ``M1_TEMPERATURE_HAZARD``      scales the hazard logits only (event-time
+#   NLL temperature, ``T_IB_REMAINING_HAZARD``).
+# - ``M1_TEMPERATURE_D_OB_ZERO``   scales ONLY the D_OB hurdle Bernoulli zero
+#   logit (binary-CE temperature).  It NEVER scales the positive quantile
+#   values/logits.
+# - ``M1_TEMPERATURE_D_TX_ZERO``   same discipline for the D_TX hurdle zero
+#   logit.
+# Positive quantile values/logits are never temperature-scaled by a
+# zero-mass calibration temperature (``QUANTILE_CALIBRATION_NOT_APPLIED``;
+# calibration-split coverage diagnostic only).
+# ---------------------------------------------------------------------------
+M1_TEMPERATURE_HAZARD: str = M1_V2_HAZARD_COORDINATE_TARGET
+M1_TEMPERATURE_D_OB_ZERO: str = "D_OB_ZERO"
+M1_TEMPERATURE_D_TX_ZERO: str = "D_TX_ZERO"
+M1_CALIBRATION_TEMPERATURE_KEYS: tuple[str, ...] = (
+    M1_TEMPERATURE_HAZARD,
+    M1_TEMPERATURE_D_OB_ZERO,
+    M1_TEMPERATURE_D_TX_ZERO,
+)
+
 
 class HazardBinContract(FrozenModel):
     """Discrete-hazard support for the internal remaining-time coordinate.
@@ -544,16 +567,36 @@ class M1StaticReferenceField(FrozenModel):
     - ``SUPPORTED``: PRE published and the field may enter the estimator as a
       typed MODEL_FEATURE;
     - ``SUPPORT_ABSTAIN``: retained for identity/provenance only.
-    ``pre_status`` follows the tranche-required classification:
+    ``pre_status`` follows the Tranche 2.2 classification:
     AVAILABLE_ALREADY / AVAILABLE_BUT_NOT_PUBLISHED_TO_M1 /
     NEEDS_PRE_REFERENCE_BINDING / UNSUPPORTED.
+    ``publication_status`` is the Tranche 3 per-field publication state after
+    PRE publishes the typed object:
+    - ``PUBLISHED``: PRE publishes a typed path (provenance/freeze ids set);
+    - ``RETAINED_IDENTITY``: kept for episode identity / provenance / lineage
+      only, never a numeric MODEL_FEATURE (e.g. aircraft registration);
+    - ``MODEL_FEATURE``: may enter ``c_static`` via a deterministic encoding
+      contract (``static_reference_features_from_pre``);
+    - ``MODEL_FEATURE_PENDING``: published identity/context, numeric encoding
+      contract not frozen yet;
+    - ``HUMAN_GATE``: publication requires an explicit human decision.
+    ``model_feature_status`` mirrors the spec distinction
+    RETAINED_IDENTITY / MODEL_FEATURE / MODEL_FEATURE_PENDING / HUMAN_GATE.
     """
 
     field: str
     support_state: str = "UPSTREAM_PRE_INTERFACE_REQUIRED"
     pre_status: str = "NEEDS_PRE_REFERENCE_BINDING"
+    publication_status: str = "PUBLISHED"
+    model_feature_status: str = "RETAINED_IDENTITY"
     provenance_reference_id: str | None = None
     freeze_id: str | None = None
+    reference_id: str | None = None
+    value: object | None = None
+    unit: str | None = None
+    provenance: dict | None = None
+    fallback_level: str | None = None
+    published: bool = False
 
 
 # Tranche 2.2 typed M1 input contract.  Every manuscript static/reference
@@ -566,7 +609,7 @@ M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE: dict[str, str] = {
     "route_context": "NEEDS_PRE_REFERENCE_BINDING",
     "carrier_context": "NEEDS_PRE_REFERENCE_BINDING",
     "aircraft_identity": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
-    "schedule_reference_context": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
+    "schedule_reference": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
     "turnaround_reference": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
     "taxi_reference": "AVAILABLE_BUT_NOT_PUBLISHED_TO_M1",
 }
@@ -590,11 +633,10 @@ class M1StaticReferenceContext(FrozenModel):
     A field becomes a numeric predictor only after PRE publishes a canonical
     typed path (then a deterministic encoding contract may be designed).
 
-    Round 2.2: PRE has not published any field to M1, so every field is
-    ``UPSTREAM_PRE_INTERFACE_REQUIRED`` and the STATE_AWARE principal path
-    stays recurrent + current-AR only
-    (``STATIC_REFERENCE_CONTEXT_PENDING_PRE``).  No static block is
-    fabricated, and the Tranche 2.1 schedule-countdown duplicate is removed.
+    A default instance represents the typed missing state before a PRE object
+    is supplied. ``static_reference_context_from_pre`` replaces it with the
+    self-contained PRE publication; only MODEL_FEATURE fields may enter the
+    numeric branch. The Tranche 2.1 schedule-countdown duplicate is removed.
     """
 
     route_context: M1StaticReferenceField = Field(
@@ -603,8 +645,8 @@ class M1StaticReferenceContext(FrozenModel):
         default_factory=lambda: _static_reference_field("carrier_context"))
     aircraft_identity: M1StaticReferenceField = Field(
         default_factory=lambda: _static_reference_field("aircraft_identity"))
-    schedule_reference_context: M1StaticReferenceField = Field(
-        default_factory=lambda: _static_reference_field("schedule_reference_context"))
+    schedule_reference: M1StaticReferenceField = Field(
+        default_factory=lambda: _static_reference_field("schedule_reference"))
     turnaround_reference: M1StaticReferenceField = Field(
         default_factory=lambda: _static_reference_field("turnaround_reference"))
     taxi_reference: M1StaticReferenceField = Field(
@@ -615,7 +657,14 @@ class M1StaticReferenceContext(FrozenModel):
         "ROUND2_2_DETERMINISTIC_CURRENT_AR_BLOCK_NO_SEARCH"
     )
 
+    @property
+    def schedule_reference_context(self) -> M1StaticReferenceField:
+        """Read-only compatibility alias for pre-Tranche3 artifact readers."""
+        return self.schedule_reference
+
     def support(self, field: str) -> str:
+        if field == "schedule_reference_context":
+            field = "schedule_reference"
         if field in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
             return getattr(self, field).support_state
         if field in (
@@ -626,9 +675,94 @@ class M1StaticReferenceContext(FrozenModel):
         raise ValueError(f"M1_STATIC_CONTEXT_UNKNOWN:{field}")
 
     def pre_status(self, field: str) -> str:
+        if field == "schedule_reference_context":
+            field = "schedule_reference"
         if field not in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
             raise ValueError(f"M1_STATIC_CONTEXT_UNKNOWN:{field}")
         return getattr(self, field).pre_status
+
+    def published_fields(self) -> tuple[str, ...]:
+        """Fields PRE has published (``published=True``), in canonical order."""
+        return tuple(
+            field for field in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE
+            if getattr(self, field).published
+        )
+
+    def model_feature_fields(self) -> tuple[str, ...]:
+        """Published fields whose deterministic encoding is a MODEL_FEATURE.
+
+        RETAINED_IDENTITY fields never enter ``c_static``; they stay in the
+        M1 input lineage only.
+        """
+        return tuple(
+            field for field in self.published_fields()
+            if getattr(self, field).model_feature_status == "MODEL_FEATURE"
+        )
+
+    def with_published_field(
+        self, field: str, *, publication_status: str = "PUBLISHED",
+        model_feature_status: str, provenance_reference_id: str | None = None,
+        freeze_id: str | None = None, reference_id: str | None = None,
+        value=None, unit: str | None = None, provenance: dict | None = None,
+        fallback_level: str | None = None, support_state: str = "SUPPORTED",
+    ) -> "M1StaticReferenceContext":
+        """Return a copy with one field published (typed PRE interface)."""
+        if field == "schedule_reference_context":
+            field = "schedule_reference"
+        if field not in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
+            raise ValueError(f"M1_STATIC_CONTEXT_UNKNOWN:{field}")
+        current = getattr(self, field)
+        updated = current.model_copy(update={
+            "support_state": support_state,
+            "pre_status": "AVAILABLE_ALREADY",
+            "publication_status": publication_status,
+            "model_feature_status": model_feature_status,
+            "provenance_reference_id": provenance_reference_id,
+            "freeze_id": freeze_id,
+            "reference_id": reference_id or provenance_reference_id,
+            "value": value,
+            "unit": unit,
+            "provenance": provenance,
+            "fallback_level": fallback_level,
+            "published": True,
+        })
+        return self.model_copy(update={field: updated,
+                                       "static_context_status": "PRE_PUBLISHED"})
+
+
+def static_reference_context_from_pre(
+    publication: dict | None,
+) -> "M1StaticReferenceContext":
+    """Rebuild the typed M1 context from PRE's plain publication metadata.
+
+    PRE never imports M1; it writes ``PREState.static_reference_publication``
+    as a plain per-field dict ``{publication_status, model_feature_status,
+    provenance_reference_id, freeze_id}``.  This helper rebuilds the typed
+    ``M1StaticReferenceContext`` at the M1 boundary so every PRE-published
+    field is marked ``published=True`` (support_state SUPPORTED) and only
+    MODEL_FEATURE fields may enter ``c_static``.
+    """
+    context = M1StaticReferenceContext()
+    for field, meta in (publication or {}).items():
+        if field == "schedule_reference_context":
+            field = "schedule_reference"
+        if field not in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
+            continue
+        context = context.with_published_field(
+            field,
+            publication_status=meta.get("publication_status", "PUBLISHED"),
+            model_feature_status=meta.get(
+                "model_feature_status", "MODEL_FEATURE_PENDING"),
+            provenance_reference_id=meta.get("provenance_reference_id"),
+            freeze_id=meta.get("freeze_id"),
+            reference_id=meta.get("reference_id"),
+            value=meta.get("value"),
+            unit=meta.get("unit"),
+            provenance=meta.get("provenance"),
+            fallback_level=meta.get("fallback_level"),
+            support_state=meta.get("support_state", "SUPPORTED"),
+        )
+    return context
 
 
 class M1V2TargetLabel(TargetLabel):

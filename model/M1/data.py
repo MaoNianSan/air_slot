@@ -100,12 +100,10 @@ NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", 
 #   DATA1_SUPPORTED   predecessor_motion trajectory fields (NOT part of the V2
 #                     shared principal encoder; Data2 never requires them).
 #   UNSUPPORTED       crew / gate / slot / standby aircraft (no raw path).
-#   SUPPORT_ABSTAIN   route/carrier/aircraft static identity/context and
-#                     turnaround / taxi reference features: no M1 canonical
-#                     encoder path yet (Round 2.2 typed ``M1StaticReferenceContext``
-#                     marks each as UPSTREAM_PRE_INTERFACE_REQUIRED until PRE
-#                     publishes them; taxi reference enters only at label
-#                     construction and scenario provenance).
+#   STATIC/REFERENCE route/carrier/aircraft/schedule typed identity/context is
+#                     published by PRE and retained without ordinal encoding;
+#                     train-frozen turnaround/taxi reference values enter the
+#                     separate numeric ``c_static`` branch with full lineage.
 #                     The dynamic ``schedule.signed_minutes_to_crs_departure``
 #                     countdown is a CURRENT-AR (DYNAMIC) variable and stays in
 #                     the recurrent sequence only — it is never duplicated as a
@@ -172,6 +170,81 @@ NORMALIZED_NAMES_V2 = tuple(
 
 
 V2_FAST_FEATURE_COUNT = len(FEATURE_NAMES_V2)
+
+# ---------------------------------------------------------------------------
+# Tranche 3 static/reference MODEL_FEATURE block (``c_static``).
+#
+# Only PRE-published MODEL_FEATURE fields enter the numeric static block.
+# RETAINED_IDENTITY fields (route / carrier / aircraft / schedule-reference)
+# never become ordinal numeric predictors without a frozen deterministic
+# encoding contract (MODEL_FEATURE_PENDING); they stay in the M1 input
+# lineage.  The numeric turnaround/taxi references are train-frozen empirical
+# artifacts (minutes) and enter directly (deterministic, no search).
+# ---------------------------------------------------------------------------
+STATIC_FEATURE_NAMES: tuple[str, ...] = (
+    "turnaround_reference_minutes",
+    "taxi_reference_minutes",
+)
+STATIC_FEATURE_COUNT: int = len(STATIC_FEATURE_NAMES)
+
+_PUBLISHED_STATIC_REFERENCE_FIELDS = (
+    "route_context",
+    "carrier_context",
+    "aircraft_identity",
+    "schedule_reference",
+    "turnaround_reference",
+    "taxi_reference",
+)
+
+
+def _published_static_value(pre: PREState, field: str):
+    value = _find(pre, "successor_state", field)
+    if value.support_state is SupportState.ABSTAIN or not isinstance(value.value, dict):
+        return None
+    return value.value
+
+
+def static_reference_features_from_pre(
+    pre_state: PREState,
+    static_context=None,
+) -> tuple[torch.Tensor | None, dict[str, object]]:
+    """Build ``c_static`` + retained-identity lineage from PRE publication.
+
+    Only MODEL_FEATURE fields that PRE has published (``static_context`` marks
+    the field published with ``model_feature_status == MODEL_FEATURE``, the
+    published value is SUPPORTED, and the reference carries a legal
+    ``reference_id`` / ``freeze_id``) enter the numeric block.  RETAINED_IDENTITY
+    / MODEL_FEATURE_PENDING fields are returned in the lineage dict and never
+    fabricated as ordinal numeric inputs.
+    """
+    model_feature_fields: set[str] = set()
+    if static_context is not None:
+        model_feature_fields = set(static_context.model_feature_fields())
+    numeric: list[float | None] = []
+    for field, name in (("turnaround_reference", "turnaround_reference_minutes"),
+                        ("taxi_reference", "taxi_reference_minutes")):
+        if field not in model_feature_fields:
+            numeric.append(None)
+            continue
+        published = _published_static_value(pre_state, field)
+        if published is None:
+            numeric.append(None)
+            continue
+        if not published.get("reference_id") or not published.get("freeze_id"):
+            # Legal provenance is required for a numeric MODEL_FEATURE; a
+            # published-but-unfrozen reference stays MODEL_FEATURE_PENDING.
+            numeric.append(None)
+            continue
+        raw = published.get("value")
+        numeric.append(None if raw is None else float(raw))
+    lineage: dict[str, object] = {}
+    for field in _PUBLISHED_STATIC_REFERENCE_FIELDS:
+        published = _published_static_value(pre_state, field)
+        if published is not None:
+            lineage[field] = published
+    if any(item is None for item in numeric):
+        return None, lineage
+    return torch.tensor([numeric], dtype=torch.float32), lineage
 
 
 def fast_features_from_sequence(

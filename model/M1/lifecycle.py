@@ -11,13 +11,27 @@ from pathlib import Path
 
 import torch
 
-from .calibration import fit_hazard_temperature, require_no_final_test
+from .calibration import (
+    common_calibration_policy,
+    fit_hazard_temperature,
+    fit_zero_mass_temperature,
+    quantile_coverage_diagnostic,
+    require_no_final_test,
+)
 from .loss import (
     hazard_interval_nll,
     hurdle_quantile_loss,
+    monotone_positive_quantiles,
 )
 from .pipeline import M1Pipeline
-from .contracts import M1V2TargetLabel, M1_V2_HAZARD_COORDINATE, V2_TARGETS
+from .contracts import (
+    M1_TEMPERATURE_D_OB_ZERO,
+    M1_TEMPERATURE_D_TX_ZERO,
+    M1_TEMPERATURE_HAZARD,
+    M1V2TargetLabel,
+    M1_V2_HAZARD_COORDINATE,
+    V2_TARGETS,
+)
 from .data import fast_features_from_sequence
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 from model.PRE.contracts.pre_state import TargetSupportState
@@ -294,6 +308,8 @@ class M1Lifecycle:
         output = None
         all_labels = {name: torch.empty(len(examples), dtype=torch.long) for name in V2_TARGETS}
         all_active = {name: torch.empty(len(examples), dtype=torch.bool) for name in V2_TARGETS}
+        all_zero = {name: torch.empty(len(examples), dtype=torch.bool)
+                    for name in ("D_OB", "D_TX")}
         self.pipeline.model.eval()
         with torch.no_grad():
             for indices in self._batch_indices(examples, batch_size, bucketed=bucketed):
@@ -325,8 +341,16 @@ class M1Lifecycle:
                              "D_OB": "d_ob_bin", "D_TX": "d_tx_bin"}
                 for name in V2_TARGETS:
                     all_labels[name][target_indices] = encoded[label_map[name]].detach().cpu()
-                    all_active[name][target_indices] = encoded["active"][name].detach().cpu()
-        return output, all_labels, all_active
+                    # A label=-1 row is inactive for calibration even if a
+                    # malformed input set its support flag to true.
+                    all_active[name][target_indices] = (
+                        encoded["active"][name]
+                        & (encoded[label_map[name]] >= 0)
+                    ).detach().cpu()
+                for name in ("D_OB", "D_TX"):
+                    all_zero[name][target_indices] = encoded[
+                        {"D_OB": "d_ob_zero", "D_TX": "d_tx_zero"}[name]].detach().cpu()
+        return output, all_labels, all_active, all_zero
 
     def calibrate(self, examples, *, batch_size=None):
         if not examples:
@@ -337,19 +361,58 @@ class M1Lifecycle:
         # softmax CE); hurdle-quantile heads keep temperature 1.0 and positive
         # quantiles stay ``QUANTILE_CALIBRATION_NOT_APPLIED``.
         require_no_final_test(0)
-        logits, labels, active = self.batched_logits(
+        logits, labels, active, zero = self.batched_logits(
             examples, batch_size=batch_size, teacher_forcing=True)
-        temperatures = {name: 1.0 for name in V2_TARGETS}
+        # Temperature registry (Tranche 3): hazard temperature fits the
+        # predecessor by discrete-hazard EVENT-TIME NLL; D_OB_ZERO / D_TX_ZERO
+        # fit the hurdle Bernoulli zero logits by binary CE.  Positive
+        # quantiles stay QUANTILE_CALIBRATION_NOT_APPLIED and are never scaled
+        # by any zero-mass temperature.
+        temperatures = {
+            M1_TEMPERATURE_HAZARD: 1.0,
+            M1_TEMPERATURE_D_OB_ZERO: 1.0,
+            M1_TEMPERATURE_D_TX_ZERO: 1.0,
+        }
         hazard = self.pipeline.contracts[M1_V2_HAZARD_COORDINATE]
-        encoded_active = active[M1_V2_HAZARD_COORDINATE]
-        if encoded_active.any():
-            temperatures[M1_V2_HAZARD_COORDINATE] = fit_hazard_temperature(
+        hazard_active = active[M1_V2_HAZARD_COORDINATE]
+        if hazard_active.any():
+            temperatures[M1_TEMPERATURE_HAZARD] = fit_hazard_temperature(
                 logits[M1_V2_HAZARD_COORDINATE],
                 labels[M1_V2_HAZARD_COORDINATE],
-                encoded_active,
+                hazard_active,
                 hazard,
             )
+        for name, key in (("D_OB", M1_TEMPERATURE_D_OB_ZERO),
+                          ("D_TX", M1_TEMPERATURE_D_TX_ZERO)):
+            target_active = active[name]
+            if target_active.any():
+                temperatures[key] = fit_zero_mass_temperature(
+                    logits[f"{name}_zero"],
+                    zero[name].float(),
+                    target_active,
+                )
         self.pipeline.temperatures = temperatures
+        coverage = {}
+        for name in ("D_OB", "D_TX"):
+            actual = torch.tensor([
+                float(row.targets[name])
+                if row.targets.get(name) is not None else float("nan")
+                for row in examples
+            ], dtype=torch.float32)
+            positive_active = active[name] & ~zero[name] & torch.isfinite(actual)
+            predicted = monotone_positive_quantiles(logits[f"{name}_quantile"])
+            coverage[name] = quantile_coverage_diagnostic(
+                predicted, actual,
+                tuple(self.pipeline.contracts[name].quantile_levels),
+                positive_active,
+            )
+        self.pipeline.calibration_contract = common_calibration_policy()
+        self.pipeline.calibration_diagnostics = {
+            "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+            "positive_quantile_coverage": coverage,
+            "split": self.pipeline.calibration_contract.split,
+            "policy_version": self.pipeline.calibration_contract.version,
+        }
         return dict(self.pipeline.temperatures)
 
     def infer(self, values, lengths):

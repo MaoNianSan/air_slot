@@ -63,6 +63,8 @@ def canonicalize_ontime_row(
         "aircraft_id": None if missing(row.get("Tail_Number"))
         else str(row["Tail_Number"]).strip(),
         "aircraft_id_namespace": "REGISTRATION",
+        "carrier_id": None if missing(row.get("Reporting_Airline"))
+        else str(row["Reporting_Airline"]).strip(),
         "origin_airport_id": origin,
         "destination_airport_id": dest,
         "scheduled_departure_utc": schedule_dep,

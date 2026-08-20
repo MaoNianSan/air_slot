@@ -169,3 +169,7 @@ class PREState(FrozenModel):
     variable_lineage: tuple[VariableLineageEntry, ...] = ()
     reference_state: ReferenceState = ReferenceState()
     target_support: tuple[TargetSupportState, ...] = ()
+    # Tranche 3: plain per-field publication metadata written by PRE (never an
+    # M1 type — PRE does not import downstream).  M1 rebuilds its typed
+    # ``M1StaticReferenceContext`` from this dict.
+    static_reference_publication: dict[str, Any] | None = None
