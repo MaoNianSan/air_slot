@@ -6,33 +6,33 @@ Scientific contract: determine how much information structure is sufficient whil
 
 | Variant | Reusable current capability | Gap | Status |
 | --- | --- | --- | --- |
-| `JOINT` | immutable source hash and q=0 identity behavior | no typed V2 transform/artifact contract | `REUSE_WITH_ADAPTATION` |
-| `COLLAPSED` | `point_collapse` selects one coherent weighted joint medoid | operates on legacy `r_ib_minutes/r_ob_minutes/t_tx_minutes`; does not accept `M1V2Scenario` | `REUSE_WITH_ADAPTATION` |
-| `MARGINAL` | `corrupt_scenario_lineage(q=1)` preserves target marginals while breaking within-scenario association | legacy field set, partial-shuffle protocol, and old variant name do not define the new marginal representation | `REUSE_WITH_ADAPTATION` |
+| `JOINT` | `ScenarioRepresentationAdapter` preserves the typed V2 source hash, identity, weights, joint values, and lineage | scientific downstream artifacts remain blocked | `CODE_READY` |
+| `COLLAPSED` | adapter returns one weighted expected `D_OB`/`D_TX`/`D_TO` state with complete source lineage | scientific downstream artifacts remain blocked | `CODE_READY` |
+| `MARGINAL` | adapter preserves every weighted marginal and records field-source identity while breaking association | nontrivial exact permutation requires equal-weight strata | `CODE_READY` |
 
-The current algorithmic pieces can support the new contrast, but only after they are converted to the current M1 V2 scenario schema and wrapped by an immutable source-artifact contract. All three variants must carry the same source M1 artifact hash, node set, scenario weights, scenario count, and M1 model/calibration identity. The variant transform must not train or load a different model.
+The V2 experiment-layer conversion and immutable source-artifact guard are now implemented in `exp/exp2/representation.py`. All three variants carry the same source M1 artifact hash and model/artifact identity. `JOINT` and `MARGINAL` preserve scenario count and weights; `COLLAPSED` intentionally reduces the distribution to one weight-one summary. No transform trains or loads a different model.
 
-The existing `Exp2Runner` only names P-F/P-C/D-F/D-C/LINEAGE_CORRUPTION and consumes precomputed metrics; it does not run any transformation. It is therefore a rewrite target.
+`Exp2Runner.execute` now uses the typed `Exp2Protocol`. The old arbitrary precomputed-metric route is rejected outside smoke mode.
 
 ## Exp2B: `SCALAR`, `CHANNEL`, `COMPONENT`
 
 | Resolution | Current capability | Status |
 | --- | --- | --- |
-| `COMPONENT` | `ScenarioConsequence.component_vector.rows` exposes seven typed component values/support/lineage | `ALIGNED` interface |
-| `CHANNEL` | component rows carry aspect labels `Flight`, `Passenger`, `Resource` | `PARTIAL`; no channel aggregation adapter or support rule |
-| `SCALAR` | `FormalEstimandValue` and M2 summaries provide an all-included-component aggregate when formally available | `BLOCKED` for current V2 seven-component formal aggregate |
+| `COMPONENT` | seven typed component values/support/lineage are preserved | `CODE_READY` |
+| `CHANNEL` | fixed `Flight`/`Passenger`/`Resource` aggregation with complete-support propagation | `CODE_READY`; scientific downstream blocked |
+| `SCALAR` | experiment-layer all-component aggregate with complete-support propagation | `CODE_READY_AS_REPRESENTATION`; not a new formal M2 estimand |
 
-Experiment code must aggregate M2 output; it must not reproduce `model/M2/drivers.py` or CU normalization arithmetic. Each resolution must retain scenario identity and weights. A channel/scalar value is unavailable if its declared required components are unsupported; missing components cannot be treated as zero.
+The implementation aggregates only M2-emitted CU output; it does not reproduce `model/M2/drivers.py` or CU normalization arithmetic. Each resolution retains scenario identity and weights. A channel/scalar value is unavailable if any required component is unsupported; missing components are never treated as zero.
 
 ## Downstream decision comparison
 
-The existing distortion metrics are reusable only after the action-value mapping is supplied by the current chain:
+The typed common evaluator is implemented but produces supported decision/risk metrics only after the action-value mapping is supplied by the current chain:
 
 - M2 supplies baseline `C0_CU`;
 - M3 supplies action-conditioned `Ca_CU`;
 - M4 supplies supported or conditional risk values and ranking authority.
 
-The old Exp234 executor instead computes five-component raw-CU action maps with legacy M3 response code. Those values cannot be used as the reference evaluator for the new Exp2.
+`Exp2Protocol` requires current typed M3 and M4 envelopes and rejects M4 bypass, action-set changes, response-rule changes, and mapping/policy changes. The old Exp234 five-component raw-CU action maps remain invalid for this Exp2.
 
 ## Tests required
 
@@ -45,5 +45,4 @@ The old Exp234 executor instead computes five-component raw-CU action maps with 
 - no dictionary compatibility M2 API, manual CU arithmetic, legacy M3 response, or raw-CU ranking is imported;
 - decision/risk metrics abstain when M3/M4 are blocked.
 
-`EXP2_STATUS = PARTIAL_INFRASTRUCTURE_BLOCKED_BY_TYPED_MIGRATION_AND_SCIENTIFIC_GATES`
-
+`EXP2_STATUS = CODE_READY_SCIENTIFIC_EXECUTION_BLOCKED_BY_M3_M4_FREEZES`

@@ -9,7 +9,10 @@ from exp.promotion import promote
 
 def test_variants_bootstrap_and_llm_absence_are_explicit(tmp_path:Path):
     assert set(Exp1Runner().variants)=={"empirical","current","fixed_history","adaptive_history","independent_heads","leakage_diagnostic"}
-    assert len(Exp2Runner().variants)==5
+    assert set(Exp2Runner().variants)=={
+        "EXP2A_COLLAPSED", "EXP2A_MARGINAL", "EXP2A_JOINT",
+        "EXP2B_SCALAR", "EXP2B_CHANNEL", "EXP2B_COMPONENT",
+    }
     result=episode_bootstrap([{"episode_id":"a","value":1},{"episode_id":"b","value":3}],"value",replicates=20,seed=1)
     assert result.replicates==20
     audit=audit_cases([{"case_id":"c"}],provider=None); assert audit[0]["status"]=="NOT_RUN"
