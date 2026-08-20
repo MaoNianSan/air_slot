@@ -1,7 +1,12 @@
 import pytest
 from pydantic import ValidationError
 
-from model.M2.contracts import COMPONENTS, NativeQuantity, SourceType
+from model.M2.contracts import (
+    COMPONENTS,
+    ExposureConfidence,
+    NativeQuantity,
+    SourceType,
+)
 from model.common.enums import EvidenceClass, SupportState
 
 
@@ -19,23 +24,31 @@ def test_fixed_ontology_and_abstain_is_null():
         NativeQuantity(
             component_id="P_itinerary",
             scenario_id=0,
+            scenario_weight=1.0,
             native_quantity=0,
             native_unit="events",
             driver="x",
             evidence_class=EvidenceClass.UNSUPPORTED,
             support_state=SupportState.ABSTAIN,
             source_type=SourceType.DATA,
+            reference_source="test",
+            reference_lineage=("test-ref",),
+            confidence=ExposureConfidence.NONE,
             reason_code="NO_ITINERARY",
         )
     valid = NativeQuantity(
         component_id="P_itinerary",
         scenario_id=0,
+        scenario_weight=1.0,
         native_quantity=None,
         native_unit="events",
         driver="x",
         evidence_class=EvidenceClass.UNSUPPORTED,
         support_state=SupportState.ABSTAIN,
         source_type=SourceType.DATA,
+        reference_source="test",
+        reference_lineage=("test-ref",),
+        confidence=ExposureConfidence.NONE,
         reason_code="NO_ITINERARY",
     )
     assert valid.native_quantity is None

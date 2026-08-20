@@ -1,7 +1,7 @@
 # Round 2 M2 V2 Scientific Design
 
 Design baseline: `c4670266b4947da13952e8c951f1c97ce1379322`  
-Design registry: `registries/m2_v2_design.json` (`M2_OPERATIONAL_CONSEQUENCE_V2@2.0.0`)
+Design registry: `registries/m2_v2_design.json` (`M2_OPERATIONAL_CONSEQUENCE_V2@2.0.0`, interface `2.1.0`)
 
 ## Scientific role and boundary
 
@@ -57,13 +57,13 @@ Current-workspace inspection found seven local DB1B files under the configured D
 
 ## CU, uncertainty, and action separation
 
-Native quantities and CU remain distinct fields. `M2CUNormalizationAdapter` applies only `q_k / c_k^CU` from a typed frozen registry and records the rule/version/registry lineage. Changing an RMB or other monetary mapping cannot change M2 output because monetary mappings are not M2 inputs.
+Native quantities and CU are distinct typed objects. `M2CUNormalizationAdapter` applies only `q_k / c_k^CU` from a typed frozen registry and records registry digest, rule/version, normalization parameter, scale freeze ID, and reference period in a version-sensitive CU artifact identity. Changing an RMB or other monetary mapping cannot change M2 output because monetary mappings are not M2 inputs.
 
 The seven-component ontology and all-seven aggregation rule are frozen by `build_m2_v2_scope()`. The scope is intentionally `FORMAL_AGGREGATE_UNRESOLVED`: no V2 CU scale values were invented, and two native components abstain. The immutable historical `M2_DATA2_FORMAL_CU_V1` five-component registry remains untouched.
 
-M2 returns one `ScenarioConsequence` per M1 scenario and does not collapse the distribution. `summarize_formal_consequence` can compute weighted mean, variance, upper-tail CVaR, and threshold-tail probability only when every scenario has an available formal consequence.
+M2 returns one `ScenarioConsequence` per M1 scenario and does not collapse the distribution. `ScenarioConsequenceDistribution` packages all scenario IDs, weights, and consequence artifact identities for a node; no top-k or point-only interface exists in the formal path. `summarize_formal_consequence` can compute weighted mean, variance, upper-tail CVaR, and threshold-tail probability only when every scenario has an available formal consequence.
 
-All mapper outputs are baseline `C^{0,CU}` with `action_id=None` and `action_adjustments_applied=False`. M3 may later provide an action and downstream logic may construct `C^{a,CU}` through an explicit action-response layer. Action effects are not native consequences and cannot enter this M2 V2 mapper.
+All mapper outputs are baseline `C^{0,CU}` with `action_id=None` and `action_adjustments_applied=False`. The contract-only `model/M3/m2_action_interface.py` accepts that immutable baseline and defines the future `C^{a,CU}` result shape. It contains no action logic and rejects native-quantity fields in action-conditioned CU records. Action effects are not native consequences and cannot enter this M2 V2 mapper.
 
 ## Human decisions still required
 
@@ -83,6 +83,9 @@ These gates do not block the typed M2 V2 design or baseline mapping, but they bl
 - baseline mapper: `model/M2/mapper.py`
 - native-to-CU adapter: `model/M2/valuation.py`
 - mean/variance/CVaR/tail interface: `model/M2/summary.py`
-- A-L tests: `tests/m2/test_v2_design_alignment.py`
+- M3 contract-only boundary: `model/M3/m2_action_interface.py`
+- design tests: `tests/m2/test_v2_design_alignment.py`, `tests/m2/test_interface_closure.py`
+- M3 boundary tests: `tests/m3/test_m2_action_interface.py`
+- integration tests: `tests/integration/test_m1_m2_interface_closure.py`
 
-No M1, PRE, M3, M4, Exp1-4, paper experiment, or TeX file was changed.
+No M1, PRE, M4, Exp1-4, paper experiment, or TeX file was changed. M3 changed only by adding and exporting the contract-only M2/action boundary; no catalog, response, instantiation, or action logic changed.

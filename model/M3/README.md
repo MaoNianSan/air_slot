@@ -13,3 +13,7 @@ The registry loader exposes a stable `registry_hash` over `registry_id`, schema 
 23 templates, plus the raw YAML `source_sha256`. A00 is `NOT_REQUIRED`; the other 22 templates
 remain `NOT_FROZEN` until a scientific response-parameter freeze is approved. `python -m model.M3.cli`
 can validate the registry or write an atomic manifest under `artifacts/diagnostics/overnight`.
+
+`model.M3.m2_action_interface` is the contract-only bridge from immutable M2
+baseline `C^{0,CU}(s)` to a future action-conditioned `C^{a,CU}(s)` result.
+It implements no action response and cannot modify M2 native consequence.

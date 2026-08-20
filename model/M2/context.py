@@ -185,6 +185,13 @@ def _reference_value(
         provenance=provenance,
         source_type=SourceType.DATA,
         reference_source=reference.reference_id,
+        reference_id=reference.reference_id,
+        reference_version=f"{reference.rule_id}@{reference.rule_version}",
+        confidence=(
+            ExposureConfidence.NONE
+            if supported.support_state is SupportState.ABSTAIN
+            else ExposureConfidence.LOW
+        ),
     )
 
 
@@ -268,6 +275,11 @@ def build_node_exposure_references(
         source_type=SourceType.DATA,
         support_level=ExposureSupportLevel.GLOBAL_REFERENCE,
         reference_source=bundle.downstream_exposure.reference_id,
+        reference_id=bundle.downstream_exposure.reference_id,
+        reference_version=(
+            f"{bundle.downstream_exposure.rule_id}@"
+            f"{bundle.downstream_exposure.rule_version}"
+        ),
         confidence=ExposureConfidence.LOW,
     )
     return NodeExposureReferences(

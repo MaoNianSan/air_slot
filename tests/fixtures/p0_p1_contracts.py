@@ -1,8 +1,11 @@
 from model.M2.contracts import (
     AvailableComponentSumDiagnostic,
+    CUQuantity,
     ComponentVector,
     ConsequenceRow,
+    ExposureConfidence,
     FormalEstimandValue,
+    NativeQuantity,
     ScenarioConsequence,
     SourceType,
 )
@@ -113,6 +116,7 @@ def coverage_contract(*, resource_required=False, p_service_nonmaterial=False):
 def consequence(
     *,
     scenario_id=0,
+    scenario_weight=1.0,
     scope=None,
     missing=(),
     values=None,
@@ -123,10 +127,52 @@ def consequence(
     for component in CONSEQUENCE_COMPONENTS:
         absent = component in missing
         value = float(values.get(component, 0.0))
+        native = NativeQuantity(
+            component_id=component,
+            scenario_id=scenario_id,
+            scenario_weight=scenario_weight,
+            native_quantity=None if absent else value,
+            native_unit="unit",
+            driver="test",
+            evidence_class=(
+                EvidenceClass.UNSUPPORTED if absent else EvidenceClass.DERIVED
+            ),
+            support_state=(
+                SupportState.ABSTAIN if absent else SupportState.SUPPORTED
+            ),
+            source_type=(
+                SourceType.DATA if absent else SourceType.SCENARIO_ASSUMPTION
+            ),
+            reference_source="TEST_FIXTURE",
+            reference_lineage=("TEST_REFERENCE",),
+            confidence=(
+                ExposureConfidence.NONE if absent else ExposureConfidence.HIGH
+            ),
+            reason_code="NO_EVIDENCE" if absent else None,
+        )
+        cu_quantity = (
+            CUQuantity.unavailable(
+                native=native,
+                status=CUNormalizationStatus.CU_UNSUPPORTED,
+            )
+            if absent
+            else CUQuantity.frozen(
+                native=native,
+                value_cu=value,
+                registry_id="TEST-CU-NORMALIZATION-V1",
+                registry_hash=f"sha256:{'1' * 64}",
+                rule_id=f"TEST-{component}",
+                rule_version="1.0.0",
+                normalization_parameter=1.0,
+                scale_freeze_id="TEST-SCALE-FREEZE",
+                reference_period="TEST",
+            )
+        )
         rows.append(
             ConsequenceRow(
                 component_id=component,
                 scenario_id=scenario_id,
+                scenario_weight=scenario_weight,
                 aspect=(
                     "Flight"
                     if component.startswith("F_")
@@ -147,6 +193,13 @@ def consequence(
                 source_type=(
                     SourceType.DATA if absent else SourceType.SCENARIO_ASSUMPTION
                 ),
+                reference_source="TEST_FIXTURE",
+                reference_lineage=("TEST_REFERENCE",),
+                confidence=(
+                    ExposureConfidence.NONE if absent else ExposureConfidence.HIGH
+                ),
+                native_artifact_id=native.artifact_id,
+                cu_quantity=cu_quantity,
                 cu_status=(
                     CUNormalizationStatus.CU_UNSUPPORTED
                     if absent
@@ -183,7 +236,7 @@ def consequence(
     return ScenarioConsequence(
         decision_node_id="node",
         scenario_id=scenario_id,
-        scenario_weight=1.0,
+        scenario_weight=scenario_weight,
         consequence_scope=scope,
         component_vector=ComponentVector(rows=tuple(rows)),
         available_component_sum_diagnostic=AvailableComponentSumDiagnostic(

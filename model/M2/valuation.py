@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from model.M2.contracts import ConsequenceRow, NativeQuantity
+from model.M2.contracts import CUQuantity, ConsequenceRow, NativeQuantity
 from model.common.cu_normalization import (
     CUNormalizationRegistry,
     CUNormalizationRule,
@@ -60,6 +60,7 @@ class M2CUNormalizationAdapter:
         base = {
             "component_id": native.component_id,
             "scenario_id": native.scenario_id,
+            "scenario_weight": native.scenario_weight,
             "aspect": aspect,
             "native_quantity": native.native_quantity,
             "native_unit": native.native_unit,
@@ -67,36 +68,65 @@ class M2CUNormalizationAdapter:
             "support_state": native.support_state,
             "evidence_class": native.evidence_class,
             "source_type": native.source_type,
+            "reference_source": native.reference_source,
+            "reference_lineage": native.reference_lineage,
+            "confidence": native.confidence,
+            "native_artifact_id": native.artifact_id,
             "reason_code": native.reason_code,
             "provenance": native.provenance,
         }
         if native.support_state is SupportState.ABSTAIN:
+            cu_quantity = CUQuantity.unavailable(
+                native=native,
+                status=CUNormalizationStatus.CU_UNSUPPORTED,
+                registry_id=(
+                    self.registry.registry_id if self.registry is not None else None
+                ),
+            )
             return ConsequenceRow(
                 **base,
                 constructed_value_cu=None,
                 cu_status=CUNormalizationStatus.CU_UNSUPPORTED,
+                cu_quantity=cu_quantity,
             )
         if self.development_only or self.registry is None:
             base["reason_code"] = "CU_NORMALIZATION_NOT_FROZEN"
+            cu_quantity = CUQuantity.unavailable(
+                native=native,
+                status=CUNormalizationStatus.CU_NOT_FROZEN,
+                registry_id=self.registry_id,
+            )
             return ConsequenceRow(
                 **base,
                 constructed_value_cu=None,
                 cu_status=CUNormalizationStatus.CU_NOT_FROZEN,
                 cu_normalization_registry_id=self.registry_id,
+                cu_quantity=cu_quantity,
             )
         try:
             rule = self.registry.rule(native.component_id)
         except ValueError:
             base["reason_code"] = "CU_NORMALIZATION_NOT_FROZEN"
+            cu_quantity = CUQuantity.unavailable(
+                native=native,
+                status=CUNormalizationStatus.CU_NOT_FROZEN,
+                registry_id=self.registry_id,
+            )
             return ConsequenceRow(
                 **base,
                 constructed_value_cu=None,
                 cu_status=CUNormalizationStatus.CU_NOT_FROZEN,
                 cu_normalization_registry_id=self.registry_id,
+                cu_quantity=cu_quantity,
             )
         constructed = self.registry.to_cu(native.component_id, native.native_quantity)
         if constructed is None:
             base["reason_code"] = "CU_NORMALIZATION_UNAVAILABLE"
+            cu_quantity = CUQuantity.unavailable(
+                native=native,
+                status=CUNormalizationStatus.CU_NOT_FROZEN,
+                registry_id=self.registry_id,
+            )
             return ConsequenceRow(
                 **base,
                 constructed_value_cu=None,
@@ -104,7 +134,19 @@ class M2CUNormalizationAdapter:
                 cu_normalization_registry_id=self.registry_id,
                 cu_normalization_rule_id=rule.rule_id,
                 cu_normalization_parameter_version=rule.version,
+                cu_quantity=cu_quantity,
             )
+        cu_quantity = CUQuantity.frozen(
+            native=native,
+            value_cu=constructed,
+            registry_id=self.registry_id,
+            registry_hash=self.registry.digest(),
+            rule_id=rule.rule_id,
+            rule_version=rule.version,
+            normalization_parameter=rule.normalization_parameter,
+            scale_freeze_id=rule.freeze_id,
+            reference_period=rule.reference_period,
+        )
         return ConsequenceRow(
             **base,
             constructed_value_cu=constructed,
@@ -112,6 +154,7 @@ class M2CUNormalizationAdapter:
             cu_normalization_registry_id=self.registry_id,
             cu_normalization_rule_id=rule.rule_id,
             cu_normalization_parameter_version=rule.version,
+            cu_quantity=cu_quantity,
         )
 
 

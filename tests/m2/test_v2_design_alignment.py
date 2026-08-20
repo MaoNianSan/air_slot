@@ -251,11 +251,13 @@ def test_k_action_effect_is_not_mixed_into_native_consequence():
     assert output.action_id is None
     assert output.action_adjustments_applied is False
     with pytest.raises(ValidationError, match="BASELINE_CANNOT_CONTAIN_ACTION_EFFECT"):
-        output.model_copy(
-            update={"action_id": "A11", "action_adjustments_applied": True}
-        ).model_validate(output.model_copy(
-            update={"action_id": "A11", "action_adjustments_applied": True}
-        ).model_dump())
+        output.model_validate(
+            {
+                **output.model_dump(exclude_computed_fields=True),
+                "action_id": "A11",
+                "action_adjustments_applied": True,
+            }
+        )
 
 
 def test_l_train_frozen_normalization_is_reproducible():
@@ -267,12 +269,12 @@ def test_l_train_frozen_normalization_is_reproducible():
 
 
 def test_preserved_scenarios_support_mean_variance_cvar_and_tail():
-    low = consequence(scenario_id=0, values={"F_execution": 10.0}).model_copy(
-        update={"episode_id": "episode", "scenario_weight": 0.5}
-    )
-    high = consequence(scenario_id=1, values={"F_execution": 30.0}).model_copy(
-        update={"episode_id": "episode", "scenario_weight": 0.5}
-    )
+    low = consequence(
+        scenario_id=0, scenario_weight=0.5, values={"F_execution": 10.0}
+    ).model_copy(update={"episode_id": "episode"})
+    high = consequence(
+        scenario_id=1, scenario_weight=0.5, values={"F_execution": 30.0}
+    ).model_copy(update={"episode_id": "episode"})
     summary = summarize_formal_consequence(
         (low, high), cvar_alpha=0.5, tail_threshold_cu=20.0
     )

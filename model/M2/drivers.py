@@ -4,6 +4,7 @@ from model.common.enums import EvidenceClass, SupportState
 from model.M2.contracts import (
     COMPONENTS,
     ComponentInputContract,
+    ExposureConfidence,
     M2ScenarioInput,
     M2ScientificContext,
     NativeQuantity,
@@ -108,22 +109,30 @@ def _context_value(
 def _abstain(
     component: str,
     scenario_id: int,
+    scenario_weight: float,
     unit: str,
     driver: str,
     reasons,
     *,
     source_type: SourceType,
+    reference_source: str,
+    reference_lineage: tuple[str, ...],
+    confidence: ExposureConfidence,
     provenance: tuple[str, ...],
 ):
     return NativeQuantity(
         component_id=component,
         scenario_id=scenario_id,
+        scenario_weight=scenario_weight,
         native_quantity=None,
         native_unit=unit,
         driver=driver,
         evidence_class=EvidenceClass.UNSUPPORTED,
         support_state=SupportState.ABSTAIN,
         source_type=source_type,
+        reference_source=reference_source,
+        reference_lineage=reference_lineage,
+        confidence=confidence,
         reason_code=";".join(sorted(reasons)),
         provenance=provenance,
     )
@@ -143,6 +152,16 @@ def native_quantities(
         scenario.scenario_id
         if isinstance(scenario, M2ScenarioInput)
         else scenario["scenario_id"]
+    )
+    scenario_weight = float(
+        scenario.scenario_weight
+        if isinstance(scenario, M2ScenarioInput)
+        else scenario["scenario_weight"]
+    )
+    scenario_reference_lineage = (
+        scenario.reference_lineage
+        if isinstance(scenario, M2ScenarioInput)
+        else ("LEGACY_M2_V1_REFERENCE_LINEAGE_UNAVAILABLE",)
     )
     scenario_provenance = (
         (
@@ -177,6 +196,9 @@ def native_quantities(
         missing = []
         support_states = []
         provenance = list(scenario_provenance)
+        reference_sources = []
+        reference_lineage = list(scenario_reference_lineage)
+        confidences = []
         for name, parent_value, parent_support in parents:
             support_states.append(parent_support)
             if parent_value is None or parent_support is SupportState.ABSTAIN:
@@ -185,16 +207,50 @@ def native_quantities(
             item = ctx(name)
             support_states.append(item.support_state)
             provenance.extend(item.provenance)
+            reference_sources.append(item.reference_source or item.object_id)
+            reference_lineage.extend(
+                (
+                    item.reference_id or item.object_id,
+                    item.lineage_hash,
+                )
+            )
+            confidences.append(
+                item.confidence
+                or (
+                    ExposureConfidence.NONE
+                    if item.support_state is SupportState.ABSTAIN
+                    else ExposureConfidence.LOW
+                )
+            )
             if item.value is None or item.support_state is SupportState.ABSTAIN:
                 missing.append(f"{name}_ABSTAIN")
+        reference_source = (
+            "|".join(reference_sources) if reference_sources else "M1_SCENARIO"
+        )
+        confidence_rank = {
+            ExposureConfidence.NONE: 0,
+            ExposureConfidence.LOW: 1,
+            ExposureConfidence.MEDIUM: 2,
+            ExposureConfidence.HIGH: 3,
+        }
+        confidence = (
+            min(confidences, key=confidence_rank.get)
+            if confidences
+            else ExposureConfidence.HIGH
+        )
+        typed_reference_lineage = tuple(sorted(set(reference_lineage)))
         if missing:
             return _abstain(
                 component,
                 sid,
+                scenario_weight,
                 unit,
                 driver,
                 missing,
                 source_type=source_type,
+                reference_source=reference_source,
+                reference_lineage=typed_reference_lineage,
+                confidence=confidence,
                 provenance=tuple(sorted(set(provenance))),
             )
         state = (
@@ -205,12 +261,16 @@ def native_quantities(
         return NativeQuantity(
             component_id=component,
             scenario_id=sid,
+            scenario_weight=scenario_weight,
             native_quantity=float(value()),
             native_unit=unit,
             driver=driver,
             evidence_class=evidence,
             support_state=state,
             source_type=source_type,
+            reference_source=reference_source,
+            reference_lineage=typed_reference_lineage,
+            confidence=confidence,
             reason_code="DEGRADED_PARENT_INPUT" if state is SupportState.DEGRADED else None,
             provenance=tuple(sorted(set(provenance))),
         )

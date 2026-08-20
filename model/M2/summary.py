@@ -6,7 +6,11 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from model.M2.contracts import ConsequenceState, ScenarioConsequence
+from model.M2.contracts import (
+    ConsequenceState,
+    ScenarioConsequence,
+    ScenarioConsequenceDistribution,
+)
 from model.common.estimand import FormalEstimandStatus
 from model.common.value_objects import FrozenModel
 
@@ -15,6 +19,7 @@ class ConsequenceDistributionSummary(FrozenModel):
     episode_id: str
     decision_node_id: str
     scenario_ids: tuple[int, ...]
+    scenario_weights: tuple[float, ...]
     consequence_state: ConsequenceState = ConsequenceState.BASELINE
     status: Literal["AVAILABLE", "UNAVAILABLE"]
     mean_cu: float | None
@@ -43,7 +48,7 @@ class ConsequenceDistributionSummary(FrozenModel):
 
 
 def summarize_formal_consequence(
-    consequences: tuple[ScenarioConsequence, ...],
+    consequences: tuple[ScenarioConsequence, ...] | ScenarioConsequenceDistribution,
     *,
     cvar_alpha: float = 0.95,
     tail_threshold_cu: float = 0.0,
@@ -51,23 +56,30 @@ def summarize_formal_consequence(
     """Summarize a single node's preserved scenario distribution."""
     if not 0.0 < cvar_alpha < 1.0:
         raise ValueError("M2_CVAR_ALPHA_OUT_OF_RANGE")
-    if not consequences:
+    items = (
+        consequences.consequences
+        if isinstance(consequences, ScenarioConsequenceDistribution)
+        else consequences
+    )
+    if not items:
         raise ValueError("M2_DISTRIBUTION_REQUIRES_SCENARIOS")
-    identities = {(item.episode_id, item.decision_node_id) for item in consequences}
+    identities = {(item.episode_id, item.decision_node_id) for item in items}
     if len(identities) != 1:
         raise ValueError("M2_DISTRIBUTION_MIXED_DECISION_NODES")
     episode_id, decision_node_id = next(iter(identities))
-    scenario_ids = tuple(item.scenario_id for item in consequences)
+    scenario_ids = tuple(item.scenario_id for item in items)
+    scenario_weights = tuple(item.scenario_weight for item in items)
     if len(set(scenario_ids)) != len(scenario_ids):
         raise ValueError("M2_DISTRIBUTION_DUPLICATE_SCENARIO_ID")
     if any(
         item.formal_estimand_value.status is not FormalEstimandStatus.FORMAL_AVAILABLE
-        for item in consequences
+        for item in items
     ):
         return ConsequenceDistributionSummary(
             episode_id=episode_id,
             decision_node_id=decision_node_id,
             scenario_ids=scenario_ids,
+            scenario_weights=scenario_weights,
             status="UNAVAILABLE",
             mean_cu=None,
             variance_cu2=None,
@@ -78,12 +90,12 @@ def summarize_formal_consequence(
             reason_code="FORMAL_SCENARIO_CONSEQUENCE_UNAVAILABLE",
         )
 
-    total_weight = sum(item.scenario_weight for item in consequences)
+    total_weight = sum(item.scenario_weight for item in items)
     if abs(total_weight - 1.0) > 1e-6:
         raise ValueError("M2_DISTRIBUTION_WEIGHTS_MUST_SUM_TO_ONE")
     weighted = tuple(
         (float(item.formal_estimand_value.value_cu), item.scenario_weight)
-        for item in consequences
+        for item in items
     )
     mean = sum(value * weight for value, weight in weighted)
     variance = sum(weight * (value - mean) ** 2 for value, weight in weighted)
@@ -103,6 +115,7 @@ def summarize_formal_consequence(
         episode_id=episode_id,
         decision_node_id=decision_node_id,
         scenario_ids=scenario_ids,
+        scenario_weights=scenario_weights,
         status="AVAILABLE",
         mean_cu=mean,
         variance_cu2=variance,

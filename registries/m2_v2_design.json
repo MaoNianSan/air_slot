@@ -1,6 +1,7 @@
 {
   "design_id": "M2_OPERATIONAL_CONSEQUENCE_V2",
   "version": "2.0.0",
+  "interface_version": "2.1.0",
   "design_status": "FROZEN",
   "formal_aggregate_status": "FORMAL_AGGREGATE_UNRESOLVED",
   "component_order": [
@@ -74,6 +75,23 @@
     "GLOBAL_REFERENCE"
   ],
   "action_contract": "M2_OUTPUT_IS_BASELINE_C0_CU;ACTION_EFFECT_IS_NOT_NATIVE_CONSEQUENCE",
+  "output_contract": {
+    "component_row_fields": [
+      "scenario_id",
+      "scenario_weight",
+      "component_id",
+      "native_quantity",
+      "cu_quantity",
+      "support_state",
+      "reference_source",
+      "reference_lineage",
+      "confidence"
+    ],
+    "cu_artifact_identity": "NATIVE_ARTIFACT_PLUS_REGISTRY_HASH_PLUS_RULE_VERSION_PLUS_SCALE_FREEZE_PLUS_REFERENCE_PERIOD",
+    "scenario_distribution": "ALL_SCENARIOS_WITH_IDS_AND_WEIGHTS;NO_TOP_K_OR_POINT_COLLAPSE",
+    "formal_aggregate_owner": "DOWNSTREAM_ACTION_OR_M4_LAYER",
+    "m3_contract_module": "model.M3.m2_action_interface"
+  },
   "final_test_access_count": 0,
   "paper_full_run": false
 }

@@ -1,6 +1,11 @@
 """M2 scenario-preserving consequence mapping."""
 
-from .contracts import M2ScenarioInput, ScenarioConsequence
+from .contracts import (
+    CUQuantity,
+    M2ScenarioInput,
+    ScenarioConsequence,
+    ScenarioConsequenceDistribution,
+)
 from .mapper import M2Mapper
 from .summary import ConsequenceDistributionSummary, summarize_formal_consequence
 
@@ -18,9 +23,11 @@ def map_m1_scenario_consequence(scenarios, context, *, registry, consequence_sco
 
 __all__ = [
     "ConsequenceDistributionSummary",
+    "CUQuantity",
     "M2Mapper",
     "M2ScenarioInput",
     "ScenarioConsequence",
+    "ScenarioConsequenceDistribution",
     "map_m1_scenario_consequence",
     "map_pre_action_consequence",
     "summarize_formal_consequence",

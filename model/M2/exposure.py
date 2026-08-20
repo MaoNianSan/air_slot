@@ -14,6 +14,7 @@ from model.M2.contracts import (
 )
 from model.PRE.transformation import ConstructionType
 from model.common.enums import EvidenceClass, SupportState
+from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 
 
@@ -140,6 +141,10 @@ def resolve_node_specific_exposure(
             source_type=SourceType.DATA,
             support_level=ExposureSupportLevel.SAME_AIRCRAFT_SUCCESSOR_CHAIN,
             reference_source="DECISION_VISIBLE_SCHEDULE_SNAPSHOT",
+            reference_id=content_id(
+                {"schedule_reference_ids": reference_ids}
+            ),
+            reference_version="M2_NODE_SCHEDULE_EXPOSURE_V1",
             confidence=ExposureConfidence.HIGH,
         )
 

@@ -6,6 +6,7 @@ from model.M2.contracts import (
     FormalEstimandValue,
     M2ScenarioInput,
     M2ScientificContext,
+    ScenarioConsequenceDistribution,
     ScenarioConsequence,
 )
 from model.M2.drivers import native_quantities
@@ -43,6 +44,16 @@ class M2Mapper:
         if any(abs(total - 1.0) > 1e-6 for total in by_node.values()):
             raise ValueError("M2_SCENARIO_WEIGHTS_MUST_SUM_TO_ONE_PER_NODE")
         return self._map_scenarios(scenarios, context)
+
+    def map_m1_distribution(
+        self,
+        scenarios: tuple[M2ScenarioInput, ...],
+        context: M2ScientificContext,
+    ) -> ScenarioConsequenceDistribution:
+        """Return the immutable, unfiltered scenario distribution for one node."""
+        return ScenarioConsequenceDistribution(
+            consequences=self.map_m1_scenarios(scenarios, context)
+        )
 
     def map_scenarios(self, scenarios, context: M2ScientificContext):
         """Historical dictionary compatibility path.
