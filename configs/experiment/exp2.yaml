@@ -1,0 +1,53 @@
+schema_version: AIR_SLOT_EXP2_PIPELINE_CONFIG_V1
+experiment_id: EXP2
+
+# This file freezes the configuration shape only. Scientific execution remains
+# blocked until approved, content-addressed references replace every REQUIRED.
+dataset:
+  dataset_id: REQUIRED
+  split: REQUIRED
+  seed: REQUIRED
+
+variants:
+  exp2a:
+    reference: EXP2A_JOINT
+    comparisons: [EXP2A_MARGINAL, EXP2A_COLLAPSED]
+  exp2b:
+    reference: EXP2B_COMPONENT
+    comparisons: [EXP2B_CHANNEL, EXP2B_SCALAR]
+
+artifact_references:
+  M1:
+    path: REQUIRED
+    artifact_version: REQUIRED
+    artifact_hash: REQUIRED_SHA256
+  M2:
+    path: REQUIRED
+    artifact_version: REQUIRED
+    artifact_hash: REQUIRED_SHA256
+  M3:
+    path: REQUIRED
+    artifact_version: REQUIRED
+    artifact_hash: REQUIRED_SHA256
+  M4:
+    path: REQUIRED
+    artifact_version: REQUIRED
+    artifact_hash: REQUIRED_SHA256
+
+evaluation_settings:
+  fixed_downstream_binding: true
+  metrics:
+    - STATE_REPRESENTATION_LINEAGE_PRESERVED
+    - STATE_CRPS
+    - DECISION_ACTION_DISAGREEMENT
+    - DECISION_RANKING_CHANGE
+    - DECISION_RISK_DIFFERENCE
+    - DECISION_CVAR_DIFFERENCE
+  state_crps_status: NOT_RUN_WITHOUT_FROZEN_OBSERVATION_PROTOCOL
+  difference_direction: variant_minus_reference
+  scientific_scope: REPRESENTATION_SENSITIVITY_UNDER_FIXED_DOWNSTREAM_SYSTEM
+
+execution_gate:
+  status: BLOCKED_UNTIL_APPROVED_ARTIFACT_REFERENCES_AND_M3_M4_PARAMETERS_EXIST
+  parameter_selection: FORBIDDEN_IN_EXP2_PIPELINE_CONFIG
+  paper_result: false

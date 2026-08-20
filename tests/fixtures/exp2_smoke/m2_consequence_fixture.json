@@ -1,0 +1,56 @@
+{
+  "schema_version": "AIR_SLOT_EXP2_EXECUTION_ARTIFACT_V1",
+  "artifact_kind": "M2",
+  "artifact_version": "TEST_ONLY_SMOKE_M2_V1",
+  "artifact_hash": "sha256:49ed78490aa17612098859091b339dc55d8bacaed87f587da07e1b65d876ec26",
+  "artifact_scope": "TEST_ONLY_SMOKE",
+  "payload": {
+    "consequences": [
+      {
+        "scenario_id": 0,
+        "scenario_weight": 0.3333333333333333,
+        "components": [
+          {"component_id": "F_continuity", "aspect": "Flight", "constructed_value_cu": 1.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:0:F_continuity"]},
+          {"component_id": "F_execution", "aspect": "Flight", "constructed_value_cu": 2.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:0:F_execution"]},
+          {"component_id": "F_propagation", "aspect": "Flight", "constructed_value_cu": 3.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:0:F_propagation"]},
+          {"component_id": "P_time", "aspect": "Passenger", "constructed_value_cu": 4.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:0:P_time"]},
+          {"component_id": "P_itinerary", "aspect": "Passenger", "constructed_value_cu": 5.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:0:P_itinerary"]},
+          {"component_id": "P_service", "aspect": "Passenger", "constructed_value_cu": 6.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:0:P_service"]},
+          {"component_id": "R_operating", "aspect": "Resource", "constructed_value_cu": 7.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:0:R_operating"]}
+        ]
+      },
+      {
+        "scenario_id": 1,
+        "scenario_weight": 0.3333333333333333,
+        "components": [
+          {"component_id": "F_continuity", "aspect": "Flight", "constructed_value_cu": 2.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:1:F_continuity"]},
+          {"component_id": "F_execution", "aspect": "Flight", "constructed_value_cu": 3.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:1:F_execution"]},
+          {"component_id": "F_propagation", "aspect": "Flight", "constructed_value_cu": 4.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:1:F_propagation"]},
+          {"component_id": "P_time", "aspect": "Passenger", "constructed_value_cu": 5.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:1:P_time"]},
+          {"component_id": "P_itinerary", "aspect": "Passenger", "constructed_value_cu": 6.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:1:P_itinerary"]},
+          {"component_id": "P_service", "aspect": "Passenger", "constructed_value_cu": 7.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:1:P_service"]},
+          {"component_id": "R_operating", "aspect": "Resource", "constructed_value_cu": 8.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:1:R_operating"]}
+        ]
+      },
+      {
+        "scenario_id": 2,
+        "scenario_weight": 0.3333333333333333,
+        "components": [
+          {"component_id": "F_continuity", "aspect": "Flight", "constructed_value_cu": 3.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:2:F_continuity"]},
+          {"component_id": "F_execution", "aspect": "Flight", "constructed_value_cu": 4.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:2:F_execution"]},
+          {"component_id": "F_propagation", "aspect": "Flight", "constructed_value_cu": 5.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:2:F_propagation"]},
+          {"component_id": "P_time", "aspect": "Passenger", "constructed_value_cu": 6.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:2:P_time"]},
+          {"component_id": "P_itinerary", "aspect": "Passenger", "constructed_value_cu": 7.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:2:P_itinerary"]},
+          {"component_id": "P_service", "aspect": "Passenger", "constructed_value_cu": 8.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:2:P_service"]},
+          {"component_id": "R_operating", "aspect": "Resource", "constructed_value_cu": 9.0, "support_state": "SUPPORTED", "reference_lineage": ["TEST_ONLY_SMOKE:M2:2:R_operating"]}
+        ]
+      }
+    ],
+    "cu_lineage": {
+      "registry_id": "TEST_ONLY_SMOKE_M2_CU",
+      "registry_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "freeze_id": "TEST_ONLY_SMOKE_NOT_SCIENTIFIC_FREEZE",
+      "reference_period": "TEST_ONLY_SMOKE"
+    }
+  }
+}

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import combinations
-from typing import Any
+from typing import Any, Mapping
 
 from exp.common.evaluator import EvaluationSuite, MetricDefinition
 from exp.common.result_schema import MetricLevel, MetricObservation, SupportStatus
@@ -19,6 +19,8 @@ class Exp2EvaluationPayload:
     variant_id: str
     reference_m4: tuple[RiskEvaluationEnvelope, ...]
     variant_m4: tuple[RiskEvaluationEnvelope, ...]
+    artifact_lineage: Mapping[str, Any] = field(default_factory=dict)
+    representation_lineage_preserved: bool = False
     state_metric_reason: str = "NO_FROZEN_STATE_UNCERTAINTY_METRIC_OR_OBSERVATIONS"
 
     def validate(self) -> None:
@@ -62,16 +64,19 @@ def _maps(payload: Exp2EvaluationPayload, attribute: str):
 
 
 def _metadata(payload: Exp2EvaluationPayload) -> dict[str, Any]:
+    shared = {
+        "reference_variant_id": payload.reference_variant_id,
+        "comparison_variant_id": payload.variant_id,
+        "artifact_lineage": dict(payload.artifact_lineage),
+    }
     if not payload.reference_m4:
         return {
-            "reference_variant_id": payload.reference_variant_id,
-            "comparison_variant_id": payload.variant_id,
+            **shared,
             "reason": "M3_M4_OUTPUT_NOT_AVAILABLE",
         }
     first = payload.reference_m4[0]
     return {
-        "reference_variant_id": payload.reference_variant_id,
-        "comparison_variant_id": payload.variant_id,
+        **shared,
         "monetary_mapping_registry_hash": first.monetary_mapping_registry_hash,
         "risk_policy_hash": first.risk_policy_hash,
         "alpha": first.alpha,
@@ -111,6 +116,24 @@ def _state_crps(payload: Exp2EvaluationPayload) -> MetricObservation:
         "minutes",
         payload.state_metric_reason,
         payload,
+    )
+
+
+def _representation_lineage(payload: Exp2EvaluationPayload) -> MetricObservation:
+    return MetricObservation(
+        metric_id="STATE_REPRESENTATION_LINEAGE_PRESERVED",
+        level=MetricLevel.STATE,
+        value=payload.representation_lineage_preserved,
+        unit="boolean",
+        support_status=(
+            SupportStatus.SUPPORTED
+            if payload.representation_lineage_preserved
+            else SupportStatus.BLOCKED
+        ),
+        metadata={
+            **_metadata(payload),
+            "claim_scope": "ARTIFACT_AND_REPRESENTATION_CONTRACT_DIAGNOSTIC_ONLY",
+        },
     )
 
 
@@ -184,6 +207,16 @@ def _mean_difference(
 def build_exp2_evaluation_suite() -> EvaluationSuite:
     suite = EvaluationSuite()
     entries = (
+        (
+            MetricDefinition(
+                metric_id="STATE_REPRESENTATION_LINEAGE_PRESERVED",
+                level=MetricLevel.STATE,
+                description="Whether both representations retain the same frozen M1/M2 source identities.",
+                unit="boolean",
+                claim_scope="ARTIFACT_AND_REPRESENTATION_CONTRACT_DIAGNOSTIC_ONLY",
+            ),
+            _representation_lineage,
+        ),
         (
             MetricDefinition(
                 metric_id="STATE_CRPS",

@@ -15,7 +15,7 @@ The current model boundary still blocks a scientific end-to-end comparison: non-
 | `exp/exp2/variants.py` | Frozen six-variant registry and claim scopes |
 | `exp/exp2/representation.py` | Immutable M1 scenario and M2 consequence representation adapters |
 | `exp/exp2/protocol.py` | Common prepare/run/evaluate/report lifecycle and mandatory M3 then M4 interface |
-| `exp/exp2/runner.py` | Typed execution entry; legacy scalar-row execution is limited to smoke mode |
+| `exp/exp2/runner.py` | Typed in-memory and content-addressed manifest execution entries; legacy scalar-row execution is limited to smoke mode |
 | `exp/exp2/evaluator.py` | Common evaluator metrics over paired M4 envelopes |
 | `exp/exp2/reporting.py` | `exp/common/result_schema.py` result construction and common reporters |
 
@@ -70,13 +70,14 @@ The reference representation is `EXP2A_JOINT` for Exp2A and `EXP2B_COMPONENT` fo
 
 Implemented common-evaluator outputs are:
 
+- `STATE_REPRESENTATION_LINEAGE_PRESERVED`: an engineering diagnostic that checks both compared representations retain the same frozen M1 and M2 source identities; it is not a calibration or accuracy claim;
 - `STATE_CRPS`: explicitly `NOT_RUN` until observations and a frozen state-uncertainty protocol exist;
 - `DECISION_ACTION_DISAGREEMENT`;
 - `DECISION_RANKING_CHANGE` as pairwise M4 ranking reversal rate;
 - `DECISION_RISK_DIFFERENCE` as paired variant-minus-reference M4 residual-risk difference;
 - `DECISION_CVAR_DIFFERENCE` when supported by M4.
 
-Decision and risk metrics remain `NOT_RUN` when common supported M4 values are unavailable. Their metadata preserves monetary-mapping hash, risk-policy hash, alpha, and ranking authority.
+Decision and risk metrics remain `NOT_RUN` when common supported M4 values are unavailable. Every metric records its own `support_status` and nested `artifact_lineage`, including M1/M2 source identities, reference/comparison representation hashes, and the M3/M4 envelope hashes produced for that comparison. Where M4 outputs exist, metadata also preserves monetary-mapping hash, risk-policy hash, alpha, and ranking authority.
 
 Results are `exp.common.result_schema.ExperimentResult` with `experiment_id="EXP2"`, variant, dataset, seed, scenario hash, metrics, support status, provenance, and model/artifact versions. The user-facing singular `artifact_version` input is stored in the common schema's canonical `artifact_versions["EXP2_SOURCE_ARTIFACT"]` map.
 
@@ -92,16 +93,42 @@ The loader recognizes only `READY`, `BLOCKED_MISSING_ARTIFACT`, and `BLOCKED_UNS
 
 The binding layer does not load the current M3 scenario-design registry as formal support, construct a monetary mapping, create a risk policy, choose a sensitivity level, select actions, or execute Exp2. The repository's current M4 design registry still declares `production_mapping_enabled=false`; a future authoritative artifact must come through the human scientific gate.
 
-## Future execution entry
+## Executable pipeline and variant flow
 
-Create a concrete `Exp2DownstreamInterface` backed by the frozen current M3 action-response registry and M4 monetary/risk artifacts, then construct `Exp2RunContext` and call:
+`Exp2Runner.execute_manifest(...)` is the executable binding path for one explicitly declared variant:
+
+1. validate and load the exact content-addressed M1, M2, M3, and M4 artifacts from `Exp2ExecutionManifest`;
+2. construct the requested M1 or M2 representation while keeping the other family at its reference representation;
+3. bind the caller-supplied M3 executor and M4 evaluator to the artifact action set, response registry, monetary mapping, and risk policy;
+4. evaluate both the family reference and requested comparison through that same binding;
+5. evaluate supported metrics and return `exp.common.result_schema.ExperimentResult`.
+
+The M2 pipeline boundary consumes the frozen seven-component M2 artifact. It does not rerun M2, reconstruct consequences, or recalculate CU. Likewise, the runner requires the M3 and M4 callables and explicit model versions; it does not discover implementations or select scientific parameters.
+
+For an explicitly supplied compatible set, `execute_manifests(...)` first verifies identical dataset, split, seed, artifact identities, and config hash, then runs every manifest through one `Exp2DownstreamExecutor` instance. Variant switching therefore changes only `JOINT/MARGINAL/COLLAPSED` or `COMPONENT/CHANNEL/SCALAR`; it cannot change the downstream binding.
+
+The configuration shape is frozen in `configs/experiment/exp2.yaml`. Its artifact and dataset entries intentionally remain `REQUIRED`; it is not a runnable scientific configuration and contains no tuning values.
+
+A future authorized caller supplies approved artifacts and already-bound M3/M4 scientific objects, then calls:
 
 ```python
-result = Exp2Runner().execute(context)
+result = Exp2Runner().execute_manifest(
+    manifest,
+    artifact_root=artifact_root,
+    m3_executor=frozen_m3_executor,
+    m4_evaluator=frozen_m4_evaluator,
+    model_versions=approved_model_versions,
+)
 ```
 
-This is a future gated entry only. It does not authorize a Development, Final Test, `paper_full`, or paper experiment run.
+This implementation does not authorize a Development, Final Test, `paper_full`, or paper experiment run. Missing/invalid artifacts block before downstream execution; unsupported/unfrozen M4 mapping or policy uses the existing explicit blocked status and no fallback.
+
+## Scientific claim boundary
+
+The implemented claim is limited to **representation sensitivity under a fixed downstream system**: whether changing only the information representation changes downstream recovery evaluation outcomes. It does not compare trained models, establish an optimal policy, identify causal action effectiveness, validate non-A00 response parameters, or make real-world monetary claims. Those stronger claims remain blocked by their respective M3/M4 scientific gates; the pipeline records the mismatch and does not resolve it.
+
+The current manuscript evaluation draft is aligned with that narrow non-causal/non-optimal claim boundary and explicitly blocks authoritative Exp2 ranking while M4 is unfrozen. It is not protocol-identical to this pipeline, however: the draft reports the historical Development point-collapse/lineage-corruption design and temporary outputs, whereas this implementation freezes the six `EXP2A_*`/`EXP2B_*` representation variants and has produced no results. Historical Development outputs therefore cannot be cited as evidence from this pipeline. This protocol/result mismatch is recorded here only; no manuscript claim or result was changed by this implementation task.
 
 ## Verification
 
-The focused tests under `tests/experiment/test_exp2/` cover registry metadata, representation transformations, source lineage, support propagation, the identical M3-to-M4 interface, and common result-schema compatibility. They are engineering checks and do not test scientific superiority.
+The focused tests under `tests/experiment/test_exp2/`, `tests/experiment/test_exp2_execution/`, and `tests/experiment/test_exp2_pipeline/` cover registry metadata, representation transformations, source lineage, artifact blocking, variant switching, the identical M3-to-M4 binding, metric lineage, and common result-schema compatibility. They use test fixtures only; they are engineering checks and do not test scientific superiority.

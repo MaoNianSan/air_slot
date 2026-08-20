@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from enum import Enum
 import json
 from pathlib import Path
 from typing import Any
@@ -31,6 +32,11 @@ from .execution_manifest import (
 ARTIFACT_SCHEMA_VERSION = "AIR_SLOT_EXP2_EXECUTION_ARTIFACT_V1"
 
 
+class ArtifactScope(str, Enum):
+    SCIENTIFIC = "SCIENTIFIC"
+    TEST_ONLY_SMOKE = "TEST_ONLY_SMOKE"
+
+
 class Exp2ExecutionBlocked(RuntimeError):
     """A non-recovering readiness failure with an explicit allowed status."""
 
@@ -56,6 +62,7 @@ class ArtifactEnvelope(BaseModel):
     artifact_kind: ArtifactKind
     artifact_version: str = Field(min_length=1)
     artifact_hash: str = Field(pattern=SHA256_PATTERN)
+    artifact_scope: ArtifactScope = ArtifactScope.SCIENTIFIC
     payload: dict[str, Any]
 
     @model_validator(mode="after")
@@ -203,8 +210,14 @@ class Exp2LoadedArtifacts(BaseModel):
 class Exp2ArtifactLoader:
     """Load only identity-matching artifacts; never synthesize a default."""
 
-    def __init__(self, *, artifact_root: Path):
+    def __init__(
+        self,
+        *,
+        artifact_root: Path,
+        execution_scope: ArtifactScope = ArtifactScope.SCIENTIFIC,
+    ):
         self.artifact_root = Path(artifact_root).resolve()
+        self.execution_scope = ArtifactScope(execution_scope)
 
     def _path(self, reference: ArtifactReference) -> Path:
         path = Path(reference.path)
@@ -227,6 +240,29 @@ class Exp2ArtifactLoader:
             self._missing(reference, "ARTIFACT_VERSION_MISMATCH")
         if envelope.artifact_hash != reference.artifact_hash:
             self._missing(reference, "ARTIFACT_HASH_MISMATCH")
+        if (
+            self.execution_scope is ArtifactScope.SCIENTIFIC
+            and envelope.artifact_scope is ArtifactScope.TEST_ONLY_SMOKE
+        ):
+            status = (
+                ExecutionReadinessStatus.BLOCKED_UNSUPPORTED_MAPPING
+                if reference.artifact_kind is ArtifactKind.M4
+                else ExecutionReadinessStatus.BLOCKED_MISSING_ARTIFACT
+            )
+            raise Exp2ExecutionBlocked(
+                status,
+                artifact_kind=reference.artifact_kind,
+                reason="TEST_ONLY_SMOKE_ARTIFACT_REJECTED_BY_PRODUCTION",
+            )
+        if (
+            self.execution_scope is ArtifactScope.TEST_ONLY_SMOKE
+            and envelope.artifact_scope is not ArtifactScope.TEST_ONLY_SMOKE
+        ):
+            raise Exp2ExecutionBlocked(
+                ExecutionReadinessStatus.BLOCKED_MISSING_ARTIFACT,
+                artifact_kind=reference.artifact_kind,
+                reason="SMOKE_REQUIRES_TEST_ONLY_SMOKE_ARTIFACT",
+            )
         return envelope
 
     @staticmethod
@@ -287,15 +323,26 @@ class Exp2ArtifactLoader:
             payload = M4ArtifactPayload.model_validate(envelope.payload)
         except ValueError as exc:
             self._missing(reference, f"M4_CONTRACT_INVALID:{type(exc).__name__}")
+        required_mapping_status = (
+            MonetaryMappingStatus.TEST_ONLY
+            if self.execution_scope is ArtifactScope.TEST_ONLY_SMOKE
+            else MonetaryMappingStatus.FROZEN
+        )
+        required_policy_status = (
+            RiskPolicyStatus.TEST_ONLY
+            if self.execution_scope is ArtifactScope.TEST_ONLY_SMOKE
+            else RiskPolicyStatus.FROZEN
+        )
         if (
-            payload.monetary_mapping_status is not MonetaryMappingStatus.FROZEN
-            or payload.risk_policy_status is not RiskPolicyStatus.FROZEN
+            payload.monetary_mapping_status is not required_mapping_status
+            or payload.risk_policy_status is not required_policy_status
         ):
             raise Exp2ExecutionBlocked(
                 ExecutionReadinessStatus.BLOCKED_UNSUPPORTED_MAPPING,
                 artifact_kind=ArtifactKind.M4,
                 reason=(
-                    "SCIENTIFIC_M4_MAPPING_OR_POLICY_NOT_FROZEN:"
+                    "M4_MAPPING_OR_POLICY_STATUS_INVALID_FOR_EXECUTION_SCOPE:"
+                    f"{self.execution_scope.value}:"
                     f"{payload.monetary_mapping_status.value}:"
                     f"{payload.risk_policy_status.value}"
                 ),
@@ -316,6 +363,7 @@ class Exp2ArtifactLoader:
 
 __all__ = [
     "ARTIFACT_SCHEMA_VERSION",
+    "ArtifactScope",
     "ArtifactEnvelope",
     "CULineage",
     "CutoffProvenance",

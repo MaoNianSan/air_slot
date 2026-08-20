@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from exp.common.protocol import ExperimentProtocol
@@ -65,6 +65,7 @@ class Exp2RunContext:
     scenario_hash: str | None = None
     config_hash: str | None = None
     state_metric_reason: str = "NO_FROZEN_STATE_UNCERTAINTY_METRIC_OR_OBSERVATIONS"
+    artifact_lineage: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -197,11 +198,45 @@ class Exp2Protocol(ExperimentProtocol):
         if not isinstance(execution, Exp2Execution):
             raise TypeError("EXP2_EXECUTION_REQUIRED")
         prepared = execution.prepared
+        lineage_preserved = (
+            prepared.reference_scenarios.source_scenario_hash
+            == prepared.variant_scenarios.source_scenario_hash
+            and prepared.reference_consequences.source_artifact_hash
+            == prepared.variant_consequences.source_artifact_hash
+        )
+        representation = (
+            prepared.variant_scenarios
+            if prepared.context.variant_id in EXP2A_VARIANTS
+            else prepared.variant_consequences
+        )
         metrics = self.evaluator.evaluate(Exp2EvaluationPayload(
             reference_variant_id=prepared.reference_variant_id,
             variant_id=prepared.context.variant_id,
             reference_m4=execution.reference_m4,
             variant_m4=execution.variant_m4,
+            representation_lineage_preserved=lineage_preserved,
+            artifact_lineage={
+                **prepared.context.artifact_lineage,
+                "m1_artifact_version": prepared.context.m1_artifact_version,
+                "m1_scenario_hash": prepared.reference_scenarios.source_scenario_hash,
+                "m2_artifact_version": prepared.context.m2_artifact_version,
+                "m2_consequence_hash": prepared.reference_consequences.source_artifact_hash,
+                "reference_scenario_representation_hash": prepared.reference_scenarios.representation_hash,
+                "reference_consequence_representation_hash": prepared.reference_consequences.representation_hash,
+                "comparison_representation_hash": representation.representation_hash,
+                "reference_m3_envelope_hashes": tuple(
+                    item.envelope_hash for item in execution.reference_m3
+                ),
+                "comparison_m3_envelope_hashes": tuple(
+                    item.envelope_hash for item in execution.variant_m3
+                ),
+                "reference_m4_envelope_hashes": tuple(
+                    item.risk_envelope_hash for item in execution.reference_m4
+                ),
+                "comparison_m4_envelope_hashes": tuple(
+                    item.risk_envelope_hash for item in execution.variant_m4
+                ),
+            },
             state_metric_reason=prepared.context.state_metric_reason,
         ))
         return Exp2Evaluation(execution=execution, metrics=metrics)

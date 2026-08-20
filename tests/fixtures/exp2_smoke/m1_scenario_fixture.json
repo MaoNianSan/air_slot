@@ -1,0 +1,42 @@
+{
+  "schema_version": "AIR_SLOT_EXP2_EXECUTION_ARTIFACT_V1",
+  "artifact_kind": "M1",
+  "artifact_version": "TEST_ONLY_SMOKE_M1_V1",
+  "artifact_hash": "sha256:b7b619826a8c6f50cebc56f176db2e954d46daf9732c24b197438b6ddc9214e3",
+  "artifact_scope": "TEST_ONLY_SMOKE",
+  "payload": {
+    "scenarios": [
+      {
+        "scenario_id": 0,
+        "scenario_weight": 0.3333333333333333,
+        "D_OB": 2.0,
+        "D_TX": 1.0,
+        "D_TO": 3.0,
+        "lineage": ["TEST_ONLY_SMOKE:M1:SCENARIO_0"]
+      },
+      {
+        "scenario_id": 1,
+        "scenario_weight": 0.3333333333333333,
+        "D_OB": 4.0,
+        "D_TX": 3.0,
+        "D_TO": 7.0,
+        "lineage": ["TEST_ONLY_SMOKE:M1:SCENARIO_1"]
+      },
+      {
+        "scenario_id": 2,
+        "scenario_weight": 0.3333333333333333,
+        "D_OB": 8.0,
+        "D_TX": 5.0,
+        "D_TO": 13.0,
+        "lineage": ["TEST_ONLY_SMOKE:M1:SCENARIO_2"]
+      }
+    ],
+    "cutoff_provenance": {
+      "decision_node_id": "TEST_ONLY_SMOKE_NODE",
+      "decision_time_utc": "2026-08-20T08:00:00+00:00",
+      "information_cutoff_utc": "2026-08-20T08:00:00+00:00",
+      "availability_rule": "TEST_ONLY_SMOKE_NO_FUTURE_INFORMATION",
+      "source_manifest_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  }
+}
