@@ -13,13 +13,13 @@ def instantiate_candidates(pre_state:dict,registry,*,response_registry=None,sens
         episode_id=pre_state["episode_id"];decision_node_id=pre_state["decision_node_id"]
     candidates=[]
     for action_index,template in enumerate(registry.templates):
-        # P(a): structural feasibility from current facts only.
+        # I(a): factual eligibility from current state only.
         structural_states=[facts.get(name) for name in template.required_facts]
         precondition=("FALSE" if any(value is False for value in structural_states)
                       else "UNKNOWN" if any(value is None for value in structural_states)
                       else "TRUE")
         if precondition=="FALSE":continue
-        # I(a): required target/parameters must be instantiable from current info.
+        # I(a) also requires named action parameters to be instantiable.
         parameter_values={name:episode_parameters.get(name) for name in template.required_parameters}
         if any(value is None for value in parameter_values.values()):
             continue  # I(a)=0: not in A_{i,t}; never silently fabricated.

@@ -1,4 +1,7 @@
-"""M3 scenario response engine (M3_RESPONSE_SCENARIO_V1).
+"""Legacy V1 aggregate scenario response engine (M3_RESPONSE_SCENARIO_V1).
+
+This module is retained for compatibility. It is not the M3 V2 component-wise
+`C^{a,CU}` interface and is not activated by that interface.
 
 Implements exactly:
 

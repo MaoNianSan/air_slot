@@ -673,6 +673,28 @@ class ScenarioConsequence(FrozenModel):
             "cu_artifact_ids": tuple(
                 row.cu_artifact_id for row in self.component_vector.rows
             ),
+            "component_quantities": tuple(
+                {
+                    "component_id": row.component_id,
+                    "scenario_id": row.scenario_id,
+                    "scenario_weight": row.scenario_weight,
+                    "value_cu": row.constructed_value_cu,
+                    "native_support_state": row.support_state.value,
+                    "support_state": (
+                        SupportState.SUPPORTED.value
+                        if row.constructed_value_cu is not None
+                        else SupportState.ABSTAIN.value
+                    ),
+                    "cu_artifact_id": row.cu_artifact_id,
+                    "reference_lineage_hash": row.reference_lineage_hash,
+                    "reason_code": (
+                        row.reason_code
+                        if row.constructed_value_cu is not None
+                        else row.reason_code or row.cu_status.value
+                    ),
+                }
+                for row in self.component_vector.rows
+            ),
             "reference_lineage": self.reference_lineage,
             "consequence_state": "BASELINE",
             "action_id": None,

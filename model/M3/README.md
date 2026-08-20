@@ -10,10 +10,14 @@ response provenance, not automatically a real-world treatment effect. A00 is the
 time framework baseline; this does not claim that no historical intervention ever occurred.
 
 The registry loader exposes a stable `registry_hash` over `registry_id`, schema version, and all
-23 templates, plus the raw YAML `source_sha256`. A00 is `NOT_REQUIRED`; the other 22 templates
-remain `NOT_FROZEN` until a scientific response-parameter freeze is approved. `python -m model.M3.cli`
-can validate the registry or write an atomic manifest under `artifacts/diagnostics/overnight`.
+23 templates, plus the raw YAML `source_sha256`. A00 is `NOT_REQUIRED`. The separate legacy
+response registry freezes the other 22 as reproducible `PURE_SCENARIO` specifications with
+`formal_support_upgrade=false`; this is not empirical-effectiveness support. `python -m model.M3.cli`
+can validate the structural registry or write an atomic manifest under `artifacts/diagnostics/overnight`.
 
 `model.M3.m2_action_interface` is the contract-only bridge from immutable M2
-baseline `C^{0,CU}(s)` to a future action-conditioned `C^{a,CU}(s)` result.
-It implements no action response and cannot modify M2 native consequence.
+baseline `C^{0,CU}(s)` to an action-conditioned `C^{a,CU}(s)` result. The V2
+contracts in `model.M3.action_response` separate eligibility `I(a)` from the
+response mechanism `P(a)`, preserve all scenario weights, require provenance,
+and expose a no-money `ActionEvaluationEnvelope` for M4. Only the A00 identity
+is executable in V2; non-A00 component response mappings remain gated.
