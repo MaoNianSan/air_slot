@@ -72,3 +72,26 @@ class BaseRunner:
             rows.append({**row, "variant_metrics": variant_metrics,
                          "formal_artifact_hash": formal_hash})
         return self.run(rows, dataset=dataset, smoke=False, formal_output_hash=formal_hash, **manifest_kwargs)
+
+
+class ExperimentRunner:
+    """Sequence a concrete common protocol without adding scientific logic.
+
+    ``BaseRunner`` above is retained unchanged for historical experiment
+    compatibility. New Exp1-Exp4 implementations must opt in to this runner
+    and the V1 common result schema explicitly.
+    """
+
+    def execute(self, protocol, context=None):
+        from .protocol import ExperimentProtocol
+        from .result_schema import ExperimentResult as CommonExperimentResult
+
+        if not isinstance(protocol, ExperimentProtocol):
+            raise TypeError("EXPERIMENT_PROTOCOL_TYPE_REQUIRED")
+        prepared = protocol.prepare(context)
+        execution = protocol.run(prepared)
+        evaluation = protocol.evaluate(execution)
+        result = protocol.report(evaluation)
+        if not isinstance(result, CommonExperimentResult):
+            raise TypeError("EXPERIMENT_PROTOCOL_REPORT_RESULT_INVALID")
+        return result
