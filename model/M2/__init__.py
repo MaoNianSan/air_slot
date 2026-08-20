@@ -1,11 +1,27 @@
 """M2 scenario-preserving consequence mapping."""
 
-from .contracts import ScenarioConsequence
+from .contracts import M2ScenarioInput, ScenarioConsequence
 from .mapper import M2Mapper
+from .summary import ConsequenceDistributionSummary, summarize_formal_consequence
 
 
 def map_pre_action_consequence(scenarios, context, *, registry, consequence_scope):
     return M2Mapper(registry, consequence_scope).map_scenarios(scenarios, context)
 
 
-__all__ = ["M2Mapper", "ScenarioConsequence", "map_pre_action_consequence"]
+def map_m1_scenario_consequence(scenarios, context, *, registry, consequence_scope):
+    """Strict V2 M1 -> baseline M2 consequence boundary."""
+    return M2Mapper(registry, consequence_scope).map_m1_scenarios(
+        tuple(scenarios), context
+    )
+
+
+__all__ = [
+    "ConsequenceDistributionSummary",
+    "M2Mapper",
+    "M2ScenarioInput",
+    "ScenarioConsequence",
+    "map_m1_scenario_consequence",
+    "map_pre_action_consequence",
+    "summarize_formal_consequence",
+]

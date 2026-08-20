@@ -66,6 +66,7 @@ class M2CUNormalizationAdapter:
             "driver": native.driver,
             "support_state": native.support_state,
             "evidence_class": native.evidence_class,
+            "source_type": native.source_type,
             "reason_code": native.reason_code,
             "provenance": native.provenance,
         }

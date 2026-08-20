@@ -7,7 +7,15 @@ from typing import Any, Mapping
 
 from pydantic import Field
 
-from model.M2.contracts import COMPONENTS, M2ScientificContext, ScientificContextValue
+from model.M2.contracts import (
+    COMPONENTS,
+    ExposureConfidence,
+    ExposureSupportLevel,
+    M2ScientificContext,
+    ScientificContextValue,
+    SourceType,
+)
+from model.M2.exposure import NodeExposureReferences
 from model.PRE.reference.exposure_data2 import (
     Data2ExposureReference,
     data2_downstream_exposure_from_payload,
@@ -129,7 +137,13 @@ def load_data2_reference_bundle(
     )
 
 
-def _abstain(object_id: str, unit: str, reason: str) -> ScientificContextValue:
+def _abstain(
+    object_id: str,
+    unit: str,
+    reason: str,
+    *,
+    source_type: SourceType = SourceType.DATA,
+) -> ScientificContextValue:
     return ScientificContextValue(
         object_id=object_id,
         value=None,
@@ -138,6 +152,7 @@ def _abstain(object_id: str, unit: str, reason: str) -> ScientificContextValue:
         evidence_class=EvidenceClass.UNSUPPORTED,
         construction_type=ConstructionType.UNSUPPORTED,
         reason_code=reason,
+        source_type=source_type,
     )
 
 
@@ -168,6 +183,8 @@ def _reference_value(
         freeze_id=reference.manifest_freeze_id,
         reason_code=supported.reason_code,
         provenance=provenance,
+        source_type=SourceType.DATA,
+        reference_source=reference.reference_id,
     )
 
 
@@ -183,7 +200,10 @@ def build_m2_context(
             bundle.turnaround,
         ),
         turnaround_floor=_abstain(
-            "turnaround_floor", "minutes", "NO_TURNAROUND_FLOOR_FROZEN"
+            "turnaround_floor",
+            "minutes",
+            "NO_TURNAROUND_FLOOR_FROZEN",
+            source_type=SourceType.OPERATIONAL_RULE,
         ),
         expected_downstream_exposure=_reference_value(
             "DATA2_DOWNSTREAM_EXPOSURE@1.0.0",
@@ -209,12 +229,79 @@ def build_m2_context(
             "service_policy_reference",
             "minutes",
             "NO_SERVICE_POLICY_FROZEN",
+            source_type=SourceType.OPERATIONAL_RULE,
         ),
         taxi_reference=_reference_value(
             "DATA2_TAXI_REFERENCE@1.0.0",
             bundle.taxi.lookup(airport_keys.connection_airport_id),
             bundle.taxi,
         ),
+    )
+
+
+def build_node_exposure_references(
+    bundle: M2ReferenceBundle,
+    airport_keys: AirportReferenceKeys,
+    *,
+    same_route: ScientificContextValue | None = None,
+) -> NodeExposureReferences:
+    """Expose the old train reference only as explicit V2 fallbacks."""
+    airport = _reference_value(
+        "DATA2_DOWNSTREAM_EXPOSURE@1.0.0:AIRPORT",
+        bundle.downstream_exposure.lookup(airport_keys.connection_airport_id),
+        bundle.downstream_exposure,
+    )
+    global_reference = ScientificContextValue(
+        object_id="DATA2_DOWNSTREAM_EXPOSURE@1.0.0:GLOBAL",
+        value=float(bundle.downstream_exposure.global_value_legs),
+        unit="legs",
+        support_state=SupportState.SUPPORTED,
+        evidence_class=EvidenceClass.DERIVED,
+        construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
+        reference_period=bundle.downstream_exposure.fit_period,
+        freeze_id=bundle.downstream_exposure.manifest_freeze_id,
+        provenance=(
+            f"reference_id={bundle.downstream_exposure.reference_id}",
+            f"global_n={bundle.downstream_exposure.global_sample_count}",
+            "fallback_level=GLOBAL_REFERENCE",
+        ),
+        source_type=SourceType.DATA,
+        support_level=ExposureSupportLevel.GLOBAL_REFERENCE,
+        reference_source=bundle.downstream_exposure.reference_id,
+        confidence=ExposureConfidence.LOW,
+    )
+    return NodeExposureReferences(
+        same_route=same_route,
+        airport=airport,
+        global_reference=global_reference,
+    )
+
+
+def build_m2_v2_context(
+    bundle: M2ReferenceBundle,
+    airport_keys: AirportReferenceKeys,
+    *,
+    node_specific_exposure: ScientificContextValue,
+) -> M2ScientificContext:
+    """Build the V2 context; node-specific exposure is mandatory and explicit."""
+    if node_specific_exposure.support_level is None:
+        raise ContractError("M2_V2_EXPOSURE_SUPPORT_LEVEL_REQUIRED")
+    if node_specific_exposure.reference_source is None:
+        raise ContractError("M2_V2_EXPOSURE_REFERENCE_SOURCE_REQUIRED")
+    if node_specific_exposure.confidence is None:
+        raise ContractError("M2_V2_EXPOSURE_CONFIDENCE_REQUIRED")
+    legacy = build_m2_context(bundle, airport_keys)
+    passenger = legacy.passenger_exposure.model_copy(
+        update={
+            "source_type": SourceType.DATA,
+            "assumption_scope": "ROUTE_AGGREGATE_PASSENGER_EXPOSURE_FOR_P_TIME_ONLY",
+        }
+    )
+    return legacy.model_copy(
+        update={
+            "expected_downstream_exposure": node_specific_exposure,
+            "passenger_exposure": passenger,
+        }
     )
 
 
@@ -250,6 +337,24 @@ def build_m2_frozen_scope(
         cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V1",
         material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V1",
         scope_status=ScopeStatus.FORMAL_READY,
+    )
+
+
+def build_m2_v2_scope() -> ConsequenceScope:
+    """Frozen seven-component ontology with an unresolved aggregate gate.
+
+    The ontology and aggregation rule are fixed, but the aggregate cannot be
+    declared formal-ready while P_itinerary/P_service and the V2 CU scale
+    registry remain unfrozen.
+    """
+    return ConsequenceScope.create(
+        estimand_id="M2_DATA2_FORMAL_CU",
+        estimand_version="V2.0",
+        included_components=tuple(COMPONENTS),
+        aggregation_rule_id="SUM_OVER_SEVEN_ONLY_IF_ALL_NATIVE_AND_CU_FROZEN",
+        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V2_PENDING",
+        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V2_PENDING",
+        scope_status=ScopeStatus.FORMAL_AGGREGATE_UNRESOLVED,
     )
 
 

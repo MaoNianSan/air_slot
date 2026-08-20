@@ -40,6 +40,36 @@ class ValuationStatus(str, Enum):
     VALUATION_UNSUPPORTED = "CU_UNSUPPORTED"
 
 
+class SourceType(str, Enum):
+    """Auditable origin of an M2 consequence input or native quantity."""
+
+    DATA = "DATA"
+    LITERATURE = "LITERATURE"
+    OPERATIONAL_RULE = "OPERATIONAL_RULE"
+    SCENARIO_ASSUMPTION = "SCENARIO_ASSUMPTION"
+    HYBRID = "HYBRID"
+
+
+class ConsequenceState(str, Enum):
+    BASELINE = "BASELINE"
+    ACTION_ADJUSTABLE = "ACTION_ADJUSTABLE"
+
+
+class ExposureSupportLevel(str, Enum):
+    SAME_AIRCRAFT_SUCCESSOR_CHAIN = "SAME_AIRCRAFT_SUCCESSOR_CHAIN"
+    SAME_ROUTE_PROPAGATION = "SAME_ROUTE_PROPAGATION"
+    AIRPORT_REFERENCE = "AIRPORT_REFERENCE"
+    GLOBAL_REFERENCE = "GLOBAL_REFERENCE"
+    UNSUPPORTED = "UNSUPPORTED"
+
+
+class ExposureConfidence(str, Enum):
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+    NONE = "NONE"
+
+
 class ScientificContextValue(FrozenModel):
     object_id: str = Field(min_length=1)
     value: Any | None
@@ -52,6 +82,11 @@ class ScientificContextValue(FrozenModel):
     freeze_id: str | None = None
     reason_code: str | None = None
     provenance: tuple[str, ...] = ()
+    source_type: SourceType = SourceType.DATA
+    support_level: ExposureSupportLevel | None = None
+    reference_source: str | None = None
+    confidence: ExposureConfidence | None = None
+    assumption_scope: str | None = None
 
     @model_validator(mode="after")
     def explicit_support(self):
@@ -69,6 +104,88 @@ class ScientificContextValue(FrozenModel):
                 not self.reference_period or not self.freeze_id
             ):
                 raise ValueError("TRAIN_FROZEN_REFERENCE_LINEAGE_REQUIRED")
+        return self
+
+
+class M2ScenarioInput(FrozenModel):
+    """Strict, scenario-preserving M1 -> M2 boundary.
+
+    Values are copied from one ``M1V2Scenario``. M2 validates identities but
+    never reconstructs operational state or reads future observations.
+    """
+
+    episode_id: str = Field(min_length=1)
+    decision_node_id: str = Field(min_length=1)
+    scenario_id: int = Field(ge=0)
+    scenario_weight: float = Field(gt=0, le=1)
+    t_ib_a00_utc: str | None
+    r_ib_minutes: float | None = Field(default=None, ge=0)
+    d_ob_minutes: float | None = Field(default=None, ge=0)
+    d_tx_minutes: float | None = Field(default=None, ge=0)
+    d_to_minutes: float | None = Field(default=None, ge=0)
+    r_ib_support: SupportState
+    d_ob_support: SupportState
+    d_tx_support: SupportState
+    d_to_support: SupportState
+    pre_lineage: tuple[str, ...] = Field(min_length=1)
+    reference_lineage: tuple[str, ...] = Field(min_length=1)
+    m1_scenario_seed_key: str = Field(min_length=1)
+
+    @classmethod
+    def from_m1(
+        cls,
+        scenario: Any,
+        *,
+        pre_lineage: tuple[str, ...],
+        reference_lineage: tuple[str, ...],
+    ) -> "M2ScenarioInput":
+        """Copy the public M1 V2 scenario contract without deriving values."""
+        from model.M1.contracts import M1V2Scenario
+
+        if not isinstance(scenario, M1V2Scenario):
+            raise TypeError("M2_INPUT_MUST_BE_M1_V2_SCENARIO")
+        references = tuple(reference_lineage)
+        if getattr(scenario, "taxi_reference_id", None):
+            references = tuple(
+                dict.fromkeys((*references, str(scenario.taxi_reference_id)))
+            )
+        return cls(
+            episode_id=scenario.episode_id,
+            decision_node_id=scenario.decision_node_id,
+            scenario_id=scenario.scenario_id,
+            scenario_weight=scenario.scenario_weight,
+            t_ib_a00_utc=scenario.t_ib_a00_utc,
+            r_ib_minutes=scenario.r_ib_minutes,
+            d_ob_minutes=scenario.d_ob_minutes,
+            d_tx_minutes=scenario.d_tx_minutes,
+            d_to_minutes=scenario.d_to_minutes,
+            r_ib_support=SupportState(scenario.t_ib_support),
+            d_ob_support=SupportState(scenario.d_ob_support),
+            d_tx_support=SupportState(scenario.d_tx_support),
+            d_to_support=SupportState(scenario.d_to_support),
+            pre_lineage=tuple(pre_lineage),
+            reference_lineage=references,
+            m1_scenario_seed_key=scenario.scenario_seed_key,
+        )
+
+    @model_validator(mode="after")
+    def preserve_m1_identities(self):
+        values = {
+            "R_IB": (self.r_ib_minutes, self.r_ib_support),
+            "D_OB": (self.d_ob_minutes, self.d_ob_support),
+            "D_TX": (self.d_tx_minutes, self.d_tx_support),
+            "D_TO": (self.d_to_minutes, self.d_to_support),
+        }
+        for name, (value, support) in values.items():
+            if support is SupportState.ABSTAIN and value is not None:
+                raise ValueError(f"M2_{name}_ABSTAIN_MUST_BE_NULL")
+            if support is not SupportState.ABSTAIN and value is None:
+                raise ValueError(f"M2_{name}_SUPPORTED_REQUIRES_VALUE")
+        if self.d_to_minutes is not None:
+            if self.d_ob_minutes is None or self.d_tx_minutes is None:
+                raise ValueError("M2_D_TO_IDENTITY_INPUTS_REQUIRED")
+            if abs(self.d_to_minutes - self.d_ob_minutes - self.d_tx_minutes) > 1e-6:
+                raise ValueError("M2_D_TO_IDENTITY_VIOLATION")
         return self
 
 
@@ -108,6 +225,7 @@ class NativeQuantity(FrozenModel):
     driver: str
     evidence_class: EvidenceClass
     support_state: SupportState
+    source_type: SourceType
     reason_code: str | None = None
     provenance: tuple[str, ...] = ()
 
@@ -136,6 +254,7 @@ class ConsequenceRow(FrozenModel):
     constructed_value_cu: float | None
     support_state: SupportState
     evidence_class: EvidenceClass
+    source_type: SourceType
     cu_status: CUNormalizationStatus = CUNormalizationStatus.CU_UNSUPPORTED
     cu_normalization_registry_id: str | None = None
     cu_normalization_rule_id: str | None = None
@@ -213,6 +332,7 @@ class FormalEstimandValue(FrozenModel):
 
 
 class ScenarioConsequence(FrozenModel):
+    episode_id: str = "LEGACY_UNSPECIFIED"
     decision_node_id: str
     scenario_id: int
     scenario_weight: float
@@ -220,9 +340,19 @@ class ScenarioConsequence(FrozenModel):
     component_vector: ComponentVector
     available_component_sum_diagnostic: AvailableComponentSumDiagnostic
     formal_estimand_value: FormalEstimandValue
+    pre_lineage: tuple[str, ...] = ()
+    reference_lineage: tuple[str, ...] = ()
+    m1_scenario_seed_key: str | None = None
+    consequence_state: ConsequenceState = ConsequenceState.BASELINE
+    action_id: str | None = None
+    action_adjustments_applied: bool = False
 
     @model_validator(mode="after")
     def aligned_scenario_and_scope(self):
+        if self.consequence_state is ConsequenceState.BASELINE and (
+            self.action_id is not None or self.action_adjustments_applied
+        ):
+            raise ValueError("M2_BASELINE_CANNOT_CONTAIN_ACTION_EFFECT")
         if any(
             row.scenario_id != self.scenario_id for row in self.component_vector.rows
         ):

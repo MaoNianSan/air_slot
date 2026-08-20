@@ -4,9 +4,11 @@ from model.common.enums import EvidenceClass, SupportState
 from model.M2.contracts import (
     COMPONENTS,
     ComponentInputContract,
+    M2ScenarioInput,
     M2ScientificContext,
     NativeQuantity,
     ScientificContextValue,
+    SourceType,
 )
 
 
@@ -74,7 +76,7 @@ COMPONENT_INPUT_CONTRACTS = {
     )
 }
 
-_FORMAL_FIELD_SUPPORT = {
+_LEGACY_FIELD_SUPPORT = {
     "r_ib_minutes": "ib_support",
     "d_ob_minutes": "d_ob_support",
     "d_tx_minutes": "d_tx_support",
@@ -82,10 +84,16 @@ _FORMAL_FIELD_SUPPORT = {
 }
 
 
-def _scenario_value(scenario: dict, name: str) -> tuple[float | None, SupportState]:
-    value = scenario.get(name)
-    support_name = _FORMAL_FIELD_SUPPORT[name]
-    support = SupportState(scenario.get(support_name, "SUPPORTED"))
+def _scenario_value(
+    scenario: dict | M2ScenarioInput, name: str
+) -> tuple[float | None, SupportState]:
+    if isinstance(scenario, M2ScenarioInput):
+        value = getattr(scenario, name)
+        support = getattr(scenario, f"{name.removesuffix('_minutes')}_support")
+    else:
+        value = scenario.get(name)
+        support_name = _LEGACY_FIELD_SUPPORT[name]
+        support = SupportState(scenario.get(support_name, "SUPPORTED"))
     if value is None or support is SupportState.ABSTAIN:
         return None, SupportState.ABSTAIN
     return float(value), support
@@ -97,7 +105,16 @@ def _context_value(
     return getattr(context, name)
 
 
-def _abstain(component: str, scenario_id: int, unit: str, driver: str, reasons):
+def _abstain(
+    component: str,
+    scenario_id: int,
+    unit: str,
+    driver: str,
+    reasons,
+    *,
+    source_type: SourceType,
+    provenance: tuple[str, ...],
+):
     return NativeQuantity(
         component_id=component,
         scenario_id=scenario_id,
@@ -106,13 +123,14 @@ def _abstain(component: str, scenario_id: int, unit: str, driver: str, reasons):
         driver=driver,
         evidence_class=EvidenceClass.UNSUPPORTED,
         support_state=SupportState.ABSTAIN,
+        source_type=source_type,
         reason_code=";".join(sorted(reasons)),
-        provenance=(),
+        provenance=provenance,
     )
 
 
 def native_quantities(
-    scenario: dict, context: M2ScientificContext
+    scenario: dict | M2ScenarioInput, context: M2ScientificContext
 ) -> tuple[NativeQuantity, ...]:
     """Consume the formal M1 scenario contract (D_OB/D_TX/D_TO).
 
@@ -121,7 +139,23 @@ def native_quantities(
     """
     if not isinstance(context, M2ScientificContext):
         context = M2ScientificContext.model_validate(context)
-    sid = int(scenario["scenario_id"])
+    sid = int(
+        scenario.scenario_id
+        if isinstance(scenario, M2ScenarioInput)
+        else scenario["scenario_id"]
+    )
+    scenario_provenance = (
+        (
+            f"episode_id={scenario.episode_id}",
+            f"decision_node_id={scenario.decision_node_id}",
+            f"m1_scenario_id={scenario.scenario_id}",
+            f"m1_scenario_seed_key={scenario.m1_scenario_seed_key}",
+            *(f"pre_lineage={item}" for item in scenario.pre_lineage),
+            *(f"reference_lineage={item}" for item in scenario.reference_lineage),
+        )
+        if isinstance(scenario, M2ScenarioInput)
+        else ()
+    )
     rib, rib_support = _scenario_value(scenario, "r_ib_minutes")
     d_ob, d_ob_support = _scenario_value(scenario, "d_ob_minutes")
     d_tx, d_tx_support = _scenario_value(scenario, "d_tx_minutes")
@@ -138,10 +172,11 @@ def native_quantities(
         parents,
         context_names=(),
         evidence=EvidenceClass.DERIVED,
+        source_type=SourceType.SCENARIO_ASSUMPTION,
     ):
         missing = []
         support_states = []
-        provenance = []
+        provenance = list(scenario_provenance)
         for name, parent_value, parent_support in parents:
             support_states.append(parent_support)
             if parent_value is None or parent_support is SupportState.ABSTAIN:
@@ -153,7 +188,15 @@ def native_quantities(
             if item.value is None or item.support_state is SupportState.ABSTAIN:
                 missing.append(f"{name}_ABSTAIN")
         if missing:
-            return _abstain(component, sid, unit, driver, missing)
+            return _abstain(
+                component,
+                sid,
+                unit,
+                driver,
+                missing,
+                source_type=source_type,
+                provenance=tuple(sorted(set(provenance))),
+            )
         state = (
             SupportState.DEGRADED
             if any(item is SupportState.DEGRADED for item in support_states)
@@ -167,6 +210,7 @@ def native_quantities(
             driver=driver,
             evidence_class=evidence,
             support_state=state,
+            source_type=source_type,
             reason_code="DEGRADED_PARENT_INPUT" if state is SupportState.DEGRADED else None,
             provenance=tuple(sorted(set(provenance))),
         )
@@ -179,6 +223,7 @@ def native_quantities(
             "turnaround_compression",
             (("r_ib_minutes", rib, rib_support),),
             ("turnaround_reference",),
+            source_type=SourceType.HYBRID,
         ),
         publish(
             "F_execution",
@@ -194,6 +239,7 @@ def native_quantities(
             "takeoff_delay_x_expected_downstream_exposure",
             (("d_to_minutes", d_to, d_to_support),),
             ("expected_downstream_exposure",),
+            source_type=SourceType.HYBRID,
         ),
         publish(
             "P_time",
@@ -203,6 +249,7 @@ def native_quantities(
             (("d_to_minutes", d_to, d_to_support),),
             ("passenger_exposure",),
             EvidenceClass.DOMAIN_PROXY,
+            SourceType.HYBRID,
         ),
         publish(
             "P_itinerary",
@@ -211,6 +258,7 @@ def native_quantities(
             "supported_itinerary_disruption_events",
             (),
             ("itinerary_disruption_events",),
+            source_type=ctx("itinerary_disruption_events").source_type,
         ),
         publish(
             "P_service",
@@ -225,6 +273,12 @@ def native_quantities(
             if ctx("service_policy_reference").evidence_class
             is EvidenceClass.SCENARIO_PARAMETER
             else EvidenceClass.DERIVED,
+            (
+                SourceType.HYBRID
+                if ctx("service_policy_reference").support_state
+                is not SupportState.ABSTAIN
+                else ctx("service_policy_reference").source_type
+            ),
         ),
         publish(
             "R_operating",

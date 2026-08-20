@@ -4,6 +4,7 @@ from model.M2.contracts import (
     AvailableComponentSumDiagnostic,
     ComponentVector,
     FormalEstimandValue,
+    M2ScenarioInput,
     M2ScientificContext,
     ScenarioConsequence,
 )
@@ -20,7 +21,38 @@ class M2Mapper:
         if registry.registry_id != consequence_scope.cu_normalization_registry_id:
             raise ValueError("M2_SCOPE_CU_NORMALIZATION_REGISTRY_MISMATCH")
 
+    def map_m1_scenarios(
+        self,
+        scenarios: tuple[M2ScenarioInput, ...],
+        context: M2ScientificContext,
+    ) -> tuple[ScenarioConsequence, ...]:
+        """Principal V2 path over strict M1 scenario envelopes."""
+        if not scenarios:
+            return ()
+        if any(not isinstance(item, M2ScenarioInput) for item in scenarios):
+            raise TypeError("M2_V2_REQUIRES_TYPED_M1_SCENARIO_INPUT")
+        identities = {(item.decision_node_id, item.scenario_id) for item in scenarios}
+        if len(identities) != len(scenarios):
+            raise ValueError("M2_DUPLICATE_SCENARIO_ID_WITHIN_NODE")
+        by_node: dict[tuple[str, str], float] = {}
+        for item in scenarios:
+            node_key = (item.episode_id, item.decision_node_id)
+            by_node[node_key] = (
+                by_node.get(node_key, 0.0) + item.scenario_weight
+            )
+        if any(abs(total - 1.0) > 1e-6 for total in by_node.values()):
+            raise ValueError("M2_SCENARIO_WEIGHTS_MUST_SUM_TO_ONE_PER_NODE")
+        return self._map_scenarios(scenarios, context)
+
     def map_scenarios(self, scenarios, context: M2ScientificContext):
+        """Historical dictionary compatibility path.
+
+        New scientific code must call :meth:`map_m1_scenarios`; this path is
+        retained so historical V1 consumers remain reproducible.
+        """
+        return self._map_scenarios(scenarios, context)
+
+    def _map_scenarios(self, scenarios, context: M2ScientificContext):
         outputs = []
         included = self.consequence_scope.included_components
         for scenario in scenarios:
@@ -70,13 +102,45 @@ class M2Mapper:
             )
             outputs.append(
                 ScenarioConsequence(
-                    decision_node_id=scenario["decision_node_id"],
-                    scenario_id=scenario["scenario_id"],
-                    scenario_weight=scenario["scenario_weight"],
+                    episode_id=(
+                        scenario.episode_id
+                        if isinstance(scenario, M2ScenarioInput)
+                        else scenario.get("episode_id", "LEGACY_UNSPECIFIED")
+                    ),
+                    decision_node_id=(
+                        scenario.decision_node_id
+                        if isinstance(scenario, M2ScenarioInput)
+                        else scenario["decision_node_id"]
+                    ),
+                    scenario_id=(
+                        scenario.scenario_id
+                        if isinstance(scenario, M2ScenarioInput)
+                        else scenario["scenario_id"]
+                    ),
+                    scenario_weight=(
+                        scenario.scenario_weight
+                        if isinstance(scenario, M2ScenarioInput)
+                        else scenario["scenario_weight"]
+                    ),
                     consequence_scope=self.consequence_scope,
                     component_vector=vector,
                     available_component_sum_diagnostic=diagnostic,
                     formal_estimand_value=formal,
+                    pre_lineage=(
+                        scenario.pre_lineage
+                        if isinstance(scenario, M2ScenarioInput)
+                        else ()
+                    ),
+                    reference_lineage=(
+                        scenario.reference_lineage
+                        if isinstance(scenario, M2ScenarioInput)
+                        else ()
+                    ),
+                    m1_scenario_seed_key=(
+                        scenario.m1_scenario_seed_key
+                        if isinstance(scenario, M2ScenarioInput)
+                        else None
+                    ),
                 )
             )
         return tuple(outputs)

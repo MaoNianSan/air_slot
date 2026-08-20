@@ -4,6 +4,7 @@ from model.M2.contracts import (
     ConsequenceRow,
     FormalEstimandValue,
     ScenarioConsequence,
+    SourceType,
 )
 from model.common.cu_normalization import CUNormalizationStatus
 from model.common.monetary_system import (
@@ -142,6 +143,9 @@ def consequence(
                 ),
                 evidence_class=(
                     EvidenceClass.UNSUPPORTED if absent else EvidenceClass.DERIVED
+                ),
+                source_type=(
+                    SourceType.DATA if absent else SourceType.SCENARIO_ASSUMPTION
                 ),
                 cu_status=(
                     CUNormalizationStatus.CU_UNSUPPORTED
