@@ -1,0 +1,180 @@
+{
+  "basis": "TRAIN_CURRENT_ROWS_ONLY_NO_LABELS",
+  "deterministic_complements": [
+    {
+      "classification": "DETERMINISTIC_COMPLEMENT",
+      "left": "current_weather.evidence.DIRECT",
+      "right": "current_weather.evidence.UNSUPPORTED"
+    },
+    {
+      "classification": "DETERMINISTIC_COMPLEMENT",
+      "left": "current_weather.evidence.DIRECT",
+      "right": "current_weather.support.ABSTAIN"
+    },
+    {
+      "classification": "DETERMINISTIC_COMPLEMENT",
+      "left": "current_weather.evidence.UNSUPPORTED",
+      "right": "current_weather.support.SUPPORTED"
+    },
+    {
+      "classification": "DETERMINISTIC_COMPLEMENT",
+      "left": "current_weather.support.SUPPORTED",
+      "right": "current_weather.support.ABSTAIN"
+    }
+  ],
+  "exact_duplicate_groups": [
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": false,
+      "features": [
+        "ar.weather.temperature_c.derived_missing_mask",
+        "ar.weather.dewpoint_c.derived_missing_mask",
+        "ar.weather.wind_speed_mps.derived_missing_mask",
+        "ar.weather.visibility_m.derived_missing_mask"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": false,
+      "features": [
+        "current_weather.evidence.DIRECT",
+        "current_weather.support.SUPPORTED"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": false,
+      "features": [
+        "current_weather.evidence.UNSUPPORTED",
+        "current_weather.support.ABSTAIN"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": false,
+      "features": [
+        "delta.weather.temperature_c.derived_missing_mask",
+        "delta.weather.dewpoint_c.derived_missing_mask",
+        "delta.weather.wind_speed_mps.derived_missing_mask",
+        "delta.weather.visibility_m.derived_missing_mask"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": true,
+      "features": [
+        "schedule_reference.evidence.EMPIRICAL_REFERENCE",
+        "current_state.evidence.DIRECT",
+        "schedule_reference.support.SUPPORTED",
+        "current_state.support.SUPPORTED"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": true,
+      "features": [
+        "state.to_realized",
+        "weather.temperature_c.stale_mask",
+        "weather.temperature_c.fallback_mask",
+        "weather.dewpoint_c.stale_mask",
+        "weather.dewpoint_c.fallback_mask",
+        "weather.wind_direction_deg.stale_mask",
+        "weather.wind_direction_deg.fallback_mask",
+        "weather.wind_speed_mps.stale_mask",
+        "weather.wind_speed_mps.fallback_mask",
+        "weather.qnh_hpa.stale_mask",
+        "weather.qnh_hpa.fallback_mask",
+        "weather.visibility_m.stale_mask",
+        "weather.visibility_m.fallback_mask",
+        "weather.ceiling_base_m.stale_mask",
+        "weather.ceiling_base_m.fallback_mask",
+        "schedule.signed_minutes_to_crs_departure.missing_mask",
+        "schedule.signed_minutes_to_crs_departure.stale_mask",
+        "schedule.signed_minutes_to_crs_departure.fallback_mask",
+        "state.ib_realized.missing_mask",
+        "state.ib_realized.stale_mask",
+        "state.ib_realized.fallback_mask",
+        "state.ob_realized.missing_mask",
+        "state.ob_realized.stale_mask",
+        "state.ob_realized.fallback_mask",
+        "state.to_realized.missing_mask",
+        "state.to_realized.stale_mask",
+        "state.to_realized.fallback_mask",
+        "current_weather.evidence.DERIVED",
+        "current_weather.evidence.DOMAIN_PROXY",
+        "current_weather.evidence.EMPIRICAL_REFERENCE",
+        "current_weather.evidence.EXTERNAL_STANDARD",
+        "current_weather.evidence.SCENARIO_PARAMETER",
+        "schedule_reference.evidence.DIRECT",
+        "schedule_reference.evidence.DERIVED",
+        "schedule_reference.evidence.DOMAIN_PROXY",
+        "schedule_reference.evidence.EXTERNAL_STANDARD",
+        "schedule_reference.evidence.SCENARIO_PARAMETER",
+        "schedule_reference.evidence.UNSUPPORTED",
+        "current_state.evidence.DERIVED",
+        "current_state.evidence.DOMAIN_PROXY",
+        "current_state.evidence.EMPIRICAL_REFERENCE",
+        "current_state.evidence.EXTERNAL_STANDARD",
+        "current_state.evidence.SCENARIO_PARAMETER",
+        "current_state.evidence.UNSUPPORTED",
+        "current_weather.support.DEGRADED",
+        "schedule_reference.support.DEGRADED",
+        "schedule_reference.support.ABSTAIN",
+        "current_state.support.DEGRADED",
+        "current_state.support.ABSTAIN"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": false,
+      "features": [
+        "weather.temperature_c.missing_mask",
+        "weather.dewpoint_c.missing_mask",
+        "weather.wind_speed_mps.missing_mask",
+        "weather.visibility_m.missing_mask"
+      ]
+    }
+  ],
+  "feature_count": 105,
+  "near_linear_action": "REPORT_ONLY",
+  "near_linear_pairs": [
+    {
+      "automatic_removal": false,
+      "classification": "NEAR_LINEAR_REDUNDANCY",
+      "left": "delta.schedule.signed_minutes_to_crs_departure",
+      "pearson_correlation": 1.0,
+      "right": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask"
+    }
+  ],
+  "row_count": 1880,
+  "weather_object_level_masks": {
+    "fallback": {
+      "all_train_rows_exactly_equal": true,
+      "classification": "DETERMINISTIC_DUPLICATE_OBJECT_LEVEL_MASK",
+      "features": [
+        "weather.temperature_c.fallback_mask",
+        "weather.dewpoint_c.fallback_mask",
+        "weather.wind_direction_deg.fallback_mask",
+        "weather.wind_speed_mps.fallback_mask",
+        "weather.qnh_hpa.fallback_mask",
+        "weather.visibility_m.fallback_mask",
+        "weather.ceiling_base_m.fallback_mask"
+      ],
+      "recommendation": "COLLAPSE_OBJECT_LEVEL"
+    },
+    "stale": {
+      "all_train_rows_exactly_equal": true,
+      "classification": "DETERMINISTIC_DUPLICATE_OBJECT_LEVEL_MASK",
+      "features": [
+        "weather.temperature_c.stale_mask",
+        "weather.dewpoint_c.stale_mask",
+        "weather.wind_direction_deg.stale_mask",
+        "weather.wind_speed_mps.stale_mask",
+        "weather.qnh_hpa.stale_mask",
+        "weather.visibility_m.stale_mask",
+        "weather.ceiling_base_m.stale_mask"
+      ],
+      "recommendation": "COLLAPSE_OBJECT_LEVEL"
+    }
+  }
+}

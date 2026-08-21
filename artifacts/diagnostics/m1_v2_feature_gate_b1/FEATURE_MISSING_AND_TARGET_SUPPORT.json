@@ -1,0 +1,559 @@
+{
+  "missing_encoding": {
+    "all_checked_encodings_exact": false,
+    "checks": [
+      {
+        "mask": "schedule.signed_minutes_to_crs_departure.missing_mask",
+        "missing_rows": 0,
+        "numeric": "schedule.signed_minutes_to_crs_departure",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.temperature_c.missing_mask",
+        "missing_rows": 2831,
+        "numeric": "weather.temperature_c",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.dewpoint_c.missing_mask",
+        "missing_rows": 2831,
+        "numeric": "weather.dewpoint_c",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.wind_speed_mps.missing_mask",
+        "missing_rows": 2831,
+        "numeric": "weather.wind_speed_mps",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.qnh_hpa.missing_mask",
+        "missing_rows": 3297,
+        "numeric": "weather.qnh_hpa",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.visibility_m.missing_mask",
+        "missing_rows": 2831,
+        "numeric": "weather.visibility_m",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.ceiling_base_m.missing_mask",
+        "missing_rows": 277,
+        "numeric": "weather.ceiling_base_m",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.wind_direction_deg.missing_mask",
+        "missing_rows": 3087,
+        "numeric": "weather.wind_direction_deg.sin",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "weather.wind_direction_deg.missing_mask",
+        "missing_rows": 3087,
+        "numeric": "weather.wind_direction_deg.cos",
+        "violations": 3087,
+        "violations_by_split": {
+          "calibration": 771,
+          "development": 1095,
+          "train": 1221
+        }
+      },
+      {
+        "mask": "weather.ceiling_base_m.unlimited_mask",
+        "missing_rows": 910,
+        "numeric": "weather.ceiling_base_m",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "delta.weather.temperature_c.derived_missing_mask",
+        "missing_rows": 2957,
+        "numeric": "delta.weather.temperature_c",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "delta.weather.dewpoint_c.derived_missing_mask",
+        "missing_rows": 2957,
+        "numeric": "delta.weather.dewpoint_c",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "delta.weather.wind_speed_mps.derived_missing_mask",
+        "missing_rows": 2957,
+        "numeric": "delta.weather.wind_speed_mps",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "delta.weather.qnh_hpa.derived_missing_mask",
+        "missing_rows": 3433,
+        "numeric": "delta.weather.qnh_hpa",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "delta.weather.visibility_m.derived_missing_mask",
+        "missing_rows": 2957,
+        "numeric": "delta.weather.visibility_m",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "delta.weather.ceiling_base_m.derived_missing_mask",
+        "missing_rows": 4062,
+        "numeric": "delta.weather.ceiling_base_m",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask",
+        "missing_rows": 320,
+        "numeric": "delta.schedule.signed_minutes_to_crs_departure",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "ar.weather.temperature_c.derived_missing_mask",
+        "missing_rows": 2928,
+        "numeric": "ar.weather.temperature_c",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "ar.weather.dewpoint_c.derived_missing_mask",
+        "missing_rows": 2928,
+        "numeric": "ar.weather.dewpoint_c",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "ar.weather.wind_speed_mps.derived_missing_mask",
+        "missing_rows": 2928,
+        "numeric": "ar.weather.wind_speed_mps",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "ar.weather.qnh_hpa.derived_missing_mask",
+        "missing_rows": 3718,
+        "numeric": "ar.weather.qnh_hpa",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "ar.weather.visibility_m.derived_missing_mask",
+        "missing_rows": 2928,
+        "numeric": "ar.weather.visibility_m",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      },
+      {
+        "mask": "ar.weather.ceiling_base_m.derived_missing_mask",
+        "missing_rows": 4273,
+        "numeric": "ar.weather.ceiling_base_m",
+        "violations": 0,
+        "violations_by_split": {
+          "calibration": 0,
+          "development": 0,
+          "train": 0
+        }
+      }
+    ],
+    "observation_age_contract_note": "Missing age is zero-filled by the encoder without a dedicated age mask; current_weather.support.ABSTAIN is the only object-level proxy.",
+    "violation_counts": {
+      "DERIVED_INVALID_NUMERIC_NOT_ZERO": 0,
+      "MISSING_NUMERIC_NOT_ZERO": 3087,
+      "UNLIMITED_CEILING_NUMERIC_NOT_ZERO": 0
+    },
+    "violations": [
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 11,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 12,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 13,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 14,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 15,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 16,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 17,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 18,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 19,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 20,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 36,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 37,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 38,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 39,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 40,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 41,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 42,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 43,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 44,
+        "split": "train"
+      },
+      {
+        "feature": "weather.wind_direction_deg.cos",
+        "kind": "MISSING_NUMERIC_NOT_ZERO",
+        "row": 45,
+        "split": "train"
+      }
+    ]
+  },
+  "static_contract_violations": [
+    {
+      "cached": [
+        0.0,
+        0.0
+      ],
+      "decision_node_id": "sha256:e0be2872b2815f0918c6aee460b63ebb69d519a975db875fb4ee124969632849",
+      "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+      "kind": "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK",
+      "lineage_expected": [
+        57.0,
+        null
+      ],
+      "sample_index": 3428,
+      "split": "development"
+    },
+    {
+      "cached": [
+        0.0,
+        0.0
+      ],
+      "decision_node_id": "sha256:b0f415e19a37bc2ffa766f45525e51ff604f4194b575a11dbea6c9b73eddf56c",
+      "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+      "kind": "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK",
+      "lineage_expected": [
+        57.0,
+        null
+      ],
+      "sample_index": 3429,
+      "split": "development"
+    },
+    {
+      "cached": [
+        0.0,
+        0.0
+      ],
+      "decision_node_id": "sha256:90d7c6ee499efee79567f9c338e370d4c26df0c92c036a3830bd0343141a9433",
+      "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+      "kind": "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK",
+      "lineage_expected": [
+        57.0,
+        null
+      ],
+      "sample_index": 3430,
+      "split": "development"
+    },
+    {
+      "cached": [
+        0.0,
+        0.0
+      ],
+      "decision_node_id": "sha256:43d4c10a7a4d0968947c30c062ea78ba24d4db4aa73d592dea0e790654da0688",
+      "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+      "kind": "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK",
+      "lineage_expected": [
+        57.0,
+        null
+      ],
+      "sample_index": 3431,
+      "split": "development"
+    }
+  ],
+  "target_support": {
+    "TARGET_SUPPORT_REVIEW_REQUIRED": "YES",
+    "contract_action": "DEFER_UNTIL_AFTER_FEATURE_FREEZE_BEFORE_TUNING",
+    "overflow_count_all_nonfinal_splits": 90,
+    "source": "A2 downstream.labels.new",
+    "splits": {
+      "calibration": {
+        "D_OB": {
+          "abstain_count": 0,
+          "abstention_reasons": {
+            "TARGET_OBSERVED_AT_STAGE": 54
+          },
+          "active_count": 1006,
+          "inactive_count": 54,
+          "overflow_count": 26,
+          "positive_count": 461,
+          "zero_count": 545
+        },
+        "D_TX": {
+          "abstain_count": 0,
+          "abstention_reasons": {},
+          "active_count": 1060,
+          "inactive_count": 0,
+          "overflow_count": 0,
+          "positive_count": 400,
+          "zero_count": 660
+        },
+        "T_IB_REMAINING_HAZARD": {
+          "abstain_count": 0,
+          "abstention_reasons": {
+            "TARGET_OBSERVED_AT_STAGE": 857
+          },
+          "active_count": 203,
+          "inactive_count": 857,
+          "overflow_count": 0,
+          "positive_count": 203,
+          "zero_count": 0
+        }
+      },
+      "development": {
+        "D_OB": {
+          "abstain_count": 0,
+          "abstention_reasons": {
+            "TARGET_OBSERVED_AT_STAGE": 98
+          },
+          "active_count": 1671,
+          "inactive_count": 98,
+          "overflow_count": 0,
+          "positive_count": 639,
+          "zero_count": 1032
+        },
+        "D_TX": {
+          "abstain_count": 4,
+          "abstention_reasons": {
+            "TAXI_REFERENCE_UNAVAILABLE": 4
+          },
+          "active_count": 1765,
+          "inactive_count": 4,
+          "overflow_count": 28,
+          "positive_count": 895,
+          "zero_count": 870
+        },
+        "T_IB_REMAINING_HAZARD": {
+          "abstain_count": 0,
+          "abstention_reasons": {
+            "TARGET_OBSERVED_AT_STAGE": 1552
+          },
+          "active_count": 217,
+          "inactive_count": 1552,
+          "overflow_count": 0,
+          "positive_count": 217,
+          "zero_count": 0
+        }
+      },
+      "train": {
+        "D_OB": {
+          "abstain_count": 0,
+          "abstention_reasons": {
+            "TARGET_OBSERVED_AT_STAGE": 87
+          },
+          "active_count": 1793,
+          "inactive_count": 87,
+          "overflow_count": 34,
+          "positive_count": 669,
+          "zero_count": 1124
+        },
+        "D_TX": {
+          "abstain_count": 0,
+          "abstention_reasons": {},
+          "active_count": 1880,
+          "inactive_count": 0,
+          "overflow_count": 0,
+          "positive_count": 664,
+          "zero_count": 1216
+        },
+        "T_IB_REMAINING_HAZARD": {
+          "abstain_count": 0,
+          "abstention_reasons": {
+            "TARGET_OBSERVED_AT_STAGE": 1538
+          },
+          "active_count": 342,
+          "inactive_count": 1538,
+          "overflow_count": 2,
+          "positive_count": 342,
+          "zero_count": 0
+        }
+      }
+    }
+  }
+}
