@@ -1,0 +1,58 @@
+{
+  "EXP_LOGIC_OUTSIDE_EXP": 0,
+  "MODEL_LOGIC_OUTSIDE_MODEL": 0,
+  "PRE_DATA_CONSTRUCTION_OUTSIDE_PRE": 0,
+  "PRE_OWNERSHIP_GATE": "PASS",
+  "STATIC_VOLUME_GATE": "PASS",
+  "final_test_access_count": 0,
+  "findings": [],
+  "review_volume_files": [
+    {
+      "logical_lines": 502,
+      "path": "exp/exp1/development/signed_refreeze.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 666,
+      "path": "exp/exp1/development/warning_operating_point.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 571,
+      "path": "exp/exp234/llm_audit_v2_contract.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 657,
+      "path": "exp/exp234/scenario_artifact.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 612,
+      "path": "model/M1/contracts.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 612,
+      "path": "model/M1/development_training.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 646,
+      "path": "model/M2/contracts.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 691,
+      "path": "model/PRE/streaming/data2.py",
+      "status": "REVIEW"
+    },
+    {
+      "logical_lines": 675,
+      "path": "model/PRE/transform/rules.py",
+      "status": "REVIEW"
+    }
+  ],
+  "schema_version": "AIR_SLOT_PRE_OWNERSHIP_GATE_V2",
+  "volume_failures": []
+}

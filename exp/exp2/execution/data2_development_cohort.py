@@ -14,16 +14,13 @@ import tempfile
 from typing import Iterable
 
 from model.common.identity import content_id
-from model.PRE.cohort import split_for_date
-from model.PRE.episode.builder import build_data2_episode_records
-from model.PRE.episode.containment import episode_containment_from_rows
-from model.PRE.episode.node_builder import build_rolling_decision_nodes
+from model.PRE.development import (
+    build_development_episode_nodes,
+    eligible_development_episodes_from_rows,
+)
 from model.PRE.streaming.data2 import (
-    config_hash as pre_config_hash,
     iter_lightweight_flights,
-    load_selected_typed_records,
     load_timezones,
-    registry_hash as pre_registry_hash,
 )
 
 
@@ -211,45 +208,12 @@ def _eligible_episodes(connection: sqlite3.Connection):
         row = _row_from_stage(values)
         key = (row["dataset_instance_id"], row["aircraft_id_namespace"], row["aircraft_id"])
         if current_key is not None and key != current_key:
-            yield from _eligible_from_group(group)
+            yield from eligible_development_episodes_from_rows(group)
             group.clear()
         current_key = key
         group.append(row)
     if group:
-        yield from _eligible_from_group(group)
-
-
-def _eligible_from_group(rows: list[dict]):
-    by_id = {row["flight_id"]: row for row in rows}
-    for episode in build_data2_episode_records(rows):
-        successor_date = date.fromisoformat(by_id[episode.successor_flight_id]["service_date"])
-        if split_for_date(successor_date) != "development":
-            continue
-        containment = episode_containment_from_rows(episode, by_id)
-        if not containment.allowed or containment.split != "development":
-            continue
-        yield episode, by_id
-
-
-def _pilot_nodes(root: Path, episodes: tuple[object, ...], paths: tuple[Path, ...], zones: dict[str, str]):
-    schedules, outcomes = load_selected_typed_records(episodes, paths, zones)
-    config_hash = pre_config_hash(root)
-    registry_hash = pre_registry_hash(root)
-    nodes = []
-    for episode in episodes:
-        episode_nodes = build_rolling_decision_nodes(
-            episode=episode,
-            predecessor_outcome=outcomes[episode.predecessor_flight_id],
-            successor_outcome=outcomes[episode.successor_flight_id],
-            config_hash=config_hash,
-            registry_hash=registry_hash,
-            legal_record_ids=episode.source_record_ids,
-        )
-        for node in episode_nodes:
-            if split_for_date(node.decision_time.date()) != "development":
-                raise RuntimeError("EXP2_DEVELOPMENT_NODE_SPLIT_VIOLATION")
-        nodes.extend(episode_nodes)
-    return tuple(nodes), config_hash, registry_hash
+        yield from eligible_development_episodes_from_rows(group)
 
 
 def materialize_development_pilot_cohort(
@@ -281,7 +245,9 @@ def materialize_development_pilot_cohort(
 
     if len(selected) != episode_count:
         raise RuntimeError("EXP2_DEVELOPMENT_PILOT_INSUFFICIENT_ELIGIBLE_EPISODES")
-    nodes, config_hash, registry_hash = _pilot_nodes(root, selected, paths, zones)
+    nodes, config_hash, registry_hash = build_development_episode_nodes(
+        root, selected, paths, zones,
+    )
     if not nodes:
         raise RuntimeError("EXP2_DEVELOPMENT_PILOT_NO_DECISION_NODES")
 

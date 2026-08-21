@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from hashlib import sha256
 import json
 from pathlib import Path
@@ -28,6 +28,36 @@ REQUIRED_CONTRACT_HASHES = (
     "roll_contract_hash",
     "normalization_contract_hash",
 )
+
+
+def _lineage_json_default(value):
+    if isinstance(value, datetime):
+        return {"__m1_lineage_type__": "datetime", "value": value.isoformat()}
+    if isinstance(value, date):
+        return {"__m1_lineage_type__": "date", "value": value.isoformat()}
+    raise TypeError(f"M1_CACHE_LINEAGE_JSON_UNSUPPORTED:{type(value).__name__}")
+
+
+def _lineage_json_object_hook(value):
+    kind = value.get("__m1_lineage_type__")
+    if kind == "datetime":
+        return datetime.fromisoformat(value["value"])
+    if kind == "date":
+        return date.fromisoformat(value["value"])
+    return value
+
+
+def _lineage_dumps(value) -> str:
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=_lineage_json_default,
+    )
+
+
+def _lineage_loads(value: str):
+    return json.loads(value, object_hook=_lineage_json_object_hook)
 
 
 def _update_hash(hasher, value) -> None:
@@ -68,9 +98,7 @@ def _stable_store_hash(store: "M1CanonicalRaggedStore") -> str:
     for lineage in store.static_context_lineages:
         _update_hash(
             hasher,
-            "" if lineage is None else json.dumps(
-                lineage, sort_keys=True, separators=(",", ":")
-            ),
+            "" if lineage is None else _lineage_dumps(lineage),
         )
     return f"sha256:{hasher.hexdigest()}"
 
@@ -322,7 +350,7 @@ class M1DevelopmentBaseCache:
             "sample_episode_dates": np.asarray(self.store.sample_episode_dates, dtype=np.str_),
             "sample_splits": np.asarray(self.store.sample_splits, dtype=np.str_),
             "static_context_lineages": np.asarray(
-                [json.dumps(lineage, sort_keys=True, separators=(",", ":"))
+                [_lineage_dumps(lineage)
                  for lineage in self.store.static_context_lineages],
                 dtype=np.str_,
             ),
@@ -380,7 +408,8 @@ class M1DevelopmentBaseCache:
                     else tensor("static_values").to(dtype=torch.float32)
                 ),
                 static_context_lineages=tuple(
-                    json.loads(str(value)) for value in arrays["static_context_lineages"]
+                    _lineage_loads(str(value))
+                    for value in arrays["static_context_lineages"]
                 ),
                 labels={name: tensor(f"labels_{name}").to(dtype=torch.float32)
                         for name in TARGET_NAMES},

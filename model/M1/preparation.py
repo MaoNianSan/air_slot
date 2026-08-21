@@ -11,7 +11,11 @@ from collections import Counter
 
 from model.M1.coverage import active_node_prefixes
 from model.M1.contracts import static_reference_context_from_pre
-from model.M1.data import encode_pre_sequence, static_reference_features_from_pre
+from model.M1.data import (
+    V2_WEATHER_FIELDS,
+    encode_pre_sequence,
+    static_reference_features_from_pre,
+)
 from model.M1.history import adaptive_history
 from model.M1.lifecycle import M1TrainingExample
 
@@ -106,6 +110,14 @@ def normalization_rows(prefixes):
             )
             if weather_lineage and weather_lineage.age_seconds is not None:
                 row["weather.observation_age_minutes"] = weather_lineage.age_seconds / 60
+            weather = state.current_state.get("current_weather")
+            if weather and isinstance(weather.value, dict):
+                for field in V2_WEATHER_FIELDS:
+                    if field == "wind_direction_deg":
+                        continue
+                    value = weather.value.get(field)
+                    if value is not None:
+                        row[f"weather.{field}"] = float(value)
             row["node.spacing_minutes"] = (
                 0.0
                 if previous is None

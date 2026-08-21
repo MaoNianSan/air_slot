@@ -9,6 +9,7 @@ from time import perf_counter
 from exp.common.context import ExecutionTier, ExperimentContext
 from exp.common.replay import (
     EpisodeReplaySelector,
+    ReplayAvailabilitySemantics,
     ReplayDecisionRecord,
     ReplayEpisodeRecord,
     ReplayEpisodeRegistry,
@@ -57,9 +58,12 @@ def replay_registry(context: ExperimentContext) -> ReplayEpisodeRegistry:
                 decision_time=datetime.fromisoformat(str(node["decision_time"]).replace("Z", "+00:00")),
                 information_cutoff=cutoff,
                 legal_record_ids=tuple(str(value) for value in node["legal_record_ids"]),
-                # The frozen PRE cohort has already established legality at the
-                # cutoff. This replay helper never reads a later current state.
-                legal_record_availability_times=tuple(cutoff for _ in node["legal_record_ids"]),
+                availability_time_semantics=(
+                    ReplayAvailabilitySemantics.PREVALIDATED_LEGAL_AT_CUTOFF
+                ),
+                # PRE already proved these record identities legal at cutoff.
+                # No observed airline-message arrival time exists in Data2.
+                legal_record_availability_times=(),
             ))
         episodes.append(ReplayEpisodeRecord(
             episode_id=episode_id,

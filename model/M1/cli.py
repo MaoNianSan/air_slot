@@ -3,6 +3,7 @@ from pathlib import Path
 import torch
 from .pipeline import M1Pipeline
 from .lifecycle import M1Lifecycle
+from .development_training import run_data2_development_fast
 
 
 def main(argv=None):
@@ -10,13 +11,33 @@ def main(argv=None):
     sub = p.add_subparsers(dest="command", required=True)
     train = sub.add_parser("train-smoke")
     train.add_argument("--output", type=Path, required=True)
+    train_data2_fast = sub.add_parser("train-data2-fast")
+    train_data2_fast.add_argument(
+        "--root", type=Path, default=Path(__file__).resolve().parents[2],
+    )
+    train_data2_fast.add_argument("--output", type=Path)
     infer = sub.add_parser("infer-smoke")
     infer.add_argument("--artifact", type=Path, required=True)
     inspect = sub.add_parser("inspect-artifact")
     inspect.add_argument("--artifact", type=Path, required=True)
     sub.add_parser("validate")
     args = p.parse_args(argv)
-    if args.command == "train-smoke":
+    if args.command == "train-data2-fast":
+        try:
+            result = run_data2_development_fast(
+                root=args.root,
+                output_root=args.output,
+            )
+        except Exception as exc:
+            result = {
+                "status": "M1_V2_REAL_TRAINING_BLOCKED",
+                "reason": f"{type(exc).__name__}:{exc}",
+                "FINAL_TEST_ACCESS_COUNT": 0,
+                "PAPER_FULL_RUN": False,
+            }
+            print(json.dumps(result, sort_keys=True))
+            return 2
+    elif args.command == "train-smoke":
         pipe = M1Pipeline.smoke(4)
         optimizer = torch.optim.Adam(pipe.model.parameters(), lr=.01)
         values = torch.randn(8, 3, 4)

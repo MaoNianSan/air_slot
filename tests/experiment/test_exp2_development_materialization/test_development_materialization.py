@@ -13,6 +13,7 @@ from exp.exp2.artifacts.m3_scenario_bundle import (
 from exp.exp2.artifacts.m4_policy_binding import materialize_m4_policy
 from exp.exp2.execution import data2_development_cohort as cohort
 from exp.exp2.execution.development_materialization import inspect_m1_v2_artifact_gate
+from model.PRE import development as pre_development
 from model.M4.residual_risk import ResidualRiskPolicy
 
 
@@ -79,10 +80,16 @@ def test_eligible_episode_requires_successor_development_split_and_full_containm
     ]
     allowed = SimpleNamespace(allowed=True, split="development")
 
-    monkeypatch.setattr(cohort, "build_data2_episode_records", lambda _: (development, final_test))
-    monkeypatch.setattr(cohort, "episode_containment_from_rows", lambda *_: allowed)
+    monkeypatch.setattr(
+        pre_development,
+        "build_data2_episode_records",
+        lambda _: (development, final_test),
+    )
+    monkeypatch.setattr(
+        pre_development, "episode_containment_from_rows", lambda *_: allowed,
+    )
 
-    eligible = tuple(cohort._eligible_from_group(rows))
+    eligible = tuple(pre_development.eligible_development_episodes_from_rows(rows))
 
     assert tuple(item[0].episode_id for item in eligible) == ("episode-development",)
 

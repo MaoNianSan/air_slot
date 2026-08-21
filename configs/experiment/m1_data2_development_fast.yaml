@@ -1,0 +1,30 @@
+schema_version: AIR_SLOT_M1_DATA2_DEVELOPMENT_FAST_CONFIG_V1
+artifact_scope: DEVELOPMENT_FAST_ONLY
+dataset_id: DATA2
+source_dataset_id: data2_2019
+partitions:
+  train: {start: 2019-01-01, end: 2019-06-30}
+  calibration: {start: 2019-07-01, end: 2019-07-31}
+  development: {start: 2019-08-01, end: 2019-09-30}
+base_cohort:
+  selection_rule: SEEDED_RESERVOIR_OVER_SPLIT_CONTAINED_EPISODES
+  selection_pre_outcome: true
+  seed: 20260813
+  episode_counts: {train: 128, calibration: 64, development: 128, test: 0}
+pilot_cohort:
+  path: artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json
+  selection_rule: FIRST_N_ELIGIBLE_BY_STABLE_EPISODE_ID
+  selection_pre_outcome: true
+training:
+  seed: 20260821
+  epochs: 2
+  batch_size: 64
+  learning_rate: 0.001
+  device: auto
+  torch_threads: 8
+baselines:
+  lightgbm_estimators: 8
+scenario_attempt:
+  count_per_node: 1000
+final_test_access_count: 0
+paper_full_run: false

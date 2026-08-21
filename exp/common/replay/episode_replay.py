@@ -14,12 +14,19 @@ from typing import ClassVar
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
-REPLAY_SCHEMA_VERSION = "AIR_SLOT_COMMON_REPLAY_V1"
+REPLAY_SCHEMA_VERSION = "AIR_SLOT_COMMON_REPLAY_V2"
 
 
 class ReplaySelectionStatus(str, Enum):
     READY = "READY"
     BLOCKED = "BLOCKED"
+
+
+class ReplayAvailabilitySemantics(str, Enum):
+    """Meaning of the optional record-availability timestamps."""
+
+    OBSERVED_OR_DECLARED_AVAILABILITY = "OBSERVED_OR_DECLARED_AVAILABILITY"
+    PREVALIDATED_LEGAL_AT_CUTOFF = "PREVALIDATED_LEGAL_AT_CUTOFF"
 
 
 class ReplayDecisionRecord(BaseModel):
@@ -32,7 +39,10 @@ class ReplayDecisionRecord(BaseModel):
     decision_time: datetime
     information_cutoff: datetime
     legal_record_ids: tuple[str, ...] = Field(min_length=1)
-    legal_record_availability_times: tuple[datetime, ...] = Field(min_length=1)
+    availability_time_semantics: ReplayAvailabilitySemantics = (
+        ReplayAvailabilitySemantics.OBSERVED_OR_DECLARED_AVAILABILITY
+    )
+    legal_record_availability_times: tuple[datetime, ...] = ()
 
     def reason_code(self, suffix: str) -> str:
         return f"{type(self).ERROR_NAMESPACE}_{suffix}"
@@ -43,6 +53,10 @@ class ReplayDecisionRecord(BaseModel):
             raise ValueError(self.reason_code("DECISION_TIMESTAMPS_MUST_BE_TIMEZONE_AWARE"))
         if self.information_cutoff > self.decision_time:
             raise ValueError(self.reason_code("INFORMATION_CUTOFF_EXCEEDS_DECISION_TIME"))
+        if self.availability_time_semantics is ReplayAvailabilitySemantics.PREVALIDATED_LEGAL_AT_CUTOFF:
+            if self.legal_record_availability_times:
+                raise ValueError(self.reason_code("PREVALIDATED_RECORDS_MUST_NOT_CARRY_SYNTHETIC_AVAILABILITY"))
+            return self
         if len(self.legal_record_ids) != len(self.legal_record_availability_times):
             raise ValueError(self.reason_code("LEGAL_RECORD_AVAILABILITY_CARDINALITY_MISMATCH"))
         for availability_time in self.legal_record_availability_times:
@@ -258,6 +272,7 @@ def construct_replay_scenario(
 __all__ = [
     "REPLAY_SCHEMA_VERSION",
     "EpisodeReplaySelector",
+    "ReplayAvailabilitySemantics",
     "ReplayDecisionRecord",
     "ReplayEpisodeRecord",
     "ReplayEpisodeRegistry",

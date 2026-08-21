@@ -96,8 +96,18 @@ def test_cache_roundtrip_and_history_views(tmp_path: Path):
 
 def test_cache_roundtrip_preserves_static_context(tmp_path: Path):
     lineages = (
-        {"context_id": "static-a", "source_hash": "sha256:aaa"},
-        {"context_id": "static-b", "source_hash": "sha256:bbb"},
+        {
+            "context_id": "static-a",
+            "source_hash": "sha256:aaa",
+            "service_date": date(2019, 6, 1),
+        },
+        {
+            "context_id": "static-b",
+            "source_hash": "sha256:bbb",
+            "scheduled_departure_utc": datetime(
+                2019, 6, 2, 12, 30, tzinfo=timezone.utc
+            ),
+        },
     )
     examples = tuple(
         _example(

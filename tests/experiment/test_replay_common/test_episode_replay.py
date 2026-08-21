@@ -6,6 +6,7 @@ import pytest
 
 from exp.common.replay import (
     EpisodeReplaySelector,
+    ReplayAvailabilitySemantics,
     ReplayDecisionRecord,
     ReplayEpisodeRecord,
     ReplayEpisodeRegistry,
@@ -79,6 +80,37 @@ def test_cutoff_validation_rejects_future_information():
             information_cutoff=decision_time,
             legal_record_ids=("future-weather",),
             legal_record_availability_times=(decision_time + timedelta(seconds=1),),
+        )
+
+
+def test_prevalidated_cutoff_legality_does_not_require_synthetic_availability():
+    decision_time = datetime(2019, 8, 15, 12, tzinfo=UTC)
+    record = ReplayDecisionRecord(
+        decision_node_id="node-prevalidated",
+        decision_time=decision_time,
+        information_cutoff=decision_time,
+        legal_record_ids=("flight:001",),
+        availability_time_semantics=ReplayAvailabilitySemantics.PREVALIDATED_LEGAL_AT_CUTOFF,
+    )
+    assert record.legal_record_availability_times == ()
+    assert record.availability_time_semantics.value == "PREVALIDATED_LEGAL_AT_CUTOFF"
+
+
+def test_prevalidated_cutoff_legality_rejects_synthetic_timestamp():
+    decision_time = datetime(2019, 8, 15, 12, tzinfo=UTC)
+    with pytest.raises(
+        ValueError,
+        match="REPLAY_PREVALIDATED_RECORDS_MUST_NOT_CARRY_SYNTHETIC_AVAILABILITY",
+    ):
+        ReplayDecisionRecord(
+            decision_node_id="node-prevalidated",
+            decision_time=decision_time,
+            information_cutoff=decision_time,
+            legal_record_ids=("flight:001",),
+            availability_time_semantics=(
+                ReplayAvailabilitySemantics.PREVALIDATED_LEGAL_AT_CUTOFF
+            ),
+            legal_record_availability_times=(decision_time,),
         )
 
 

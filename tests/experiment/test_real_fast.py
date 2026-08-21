@@ -3,7 +3,7 @@
 import pytest
 
 from exp.common.context import real_fast_context
-from exp.common.real_fast import state_vintage_bindings
+from exp.common.real_fast import replay_registry, state_vintage_bindings
 from exp.common.result_schema import MetricLevel, MetricObservation, SupportStatus
 from exp.exp1.runner import Exp1Runner
 from exp.exp2.protocol import Exp2RunContext
@@ -126,6 +126,17 @@ def test_exp3_lag_uses_only_prior_vintage_state():
     assert results["EXP3B_STATE_LAG_5"].metrics["STATE_VINTAGE_COVERAGE"].metadata[
         "current_state_read"
     ] is False
+
+
+def test_real_fast_replay_uses_prevalidated_legality_without_availability_proxy():
+    registry = replay_registry(real_fast_context())
+    records = tuple(
+        record for episode in registry.episodes for record in episode.decision_records
+    )
+    assert {record.availability_time_semantics.value for record in records} == {
+        "PREVALIDATED_LEGAL_AT_CUTOFF"
+    }
+    assert all(record.legal_record_availability_times == () for record in records)
 
 
 def test_exp4_real_fast_reports_all_latency_percentiles_and_budgets():

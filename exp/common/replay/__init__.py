@@ -3,6 +3,7 @@
 from .episode_replay import (
     REPLAY_SCHEMA_VERSION,
     EpisodeReplaySelector,
+    ReplayAvailabilitySemantics,
     ReplayDecisionRecord,
     ReplayEpisodeRecord,
     ReplayEpisodeRegistry,
@@ -21,6 +22,7 @@ from .lineage_validation import (
 __all__ = [
     "REPLAY_SCHEMA_VERSION",
     "EpisodeReplaySelector",
+    "ReplayAvailabilitySemantics",
     "ReplayConsequenceBinding",
     "ReplayDecisionRecord",
     "ReplayEpisodeRecord",
