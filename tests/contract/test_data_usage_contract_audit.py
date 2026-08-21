@@ -11,13 +11,13 @@ def _raw(result, adapter_id, column):
     )
 
 
-def test_audit_is_non_authoritative_deterministic_and_keeps_scientific_gates_closed(tmp_path: Path):
+def test_audit_is_deterministic_and_keeps_scientific_gates_closed(tmp_path: Path):
     first = run(tmp_path / "first")
     second = run(tmp_path / "second")
 
     assert first["artifact_hash"] == second["artifact_hash"]
-    assert first["authority"] == "NON_AUTHORITATIVE_DIAGNOSTIC_DRAFT"
-    assert first["status"] == "DATA_USAGE_CONTRACT_HUMAN_REVIEW_REMAINS"
+    assert first["authority"] == "CONTRACT_VALIDATION_AFTER_HUMAN_DECISIONS"
+    assert first["status"] == "DATA_USAGE_CONTRACT_AUDIT_PASS"
     assert first["safety"] == {
         "M1_TRAINING_RUNS": 0,
         "TUNING_RUNS": 0,
@@ -29,18 +29,25 @@ def test_audit_is_non_authoritative_deterministic_and_keeps_scientific_gates_clo
     assert (tmp_path / "first" / "AIR_SLOT_DATA_USAGE_MAPPING_DRAFT.yaml").is_file()
 
 
-def test_audit_exposes_mapping_gaps_conflicts_and_complete_m1_lineage(tmp_path: Path):
+def test_audit_closes_active_gaps_and_preserves_nonfailure_classifications(tmp_path: Path):
     result = run(tmp_path)
 
-    assert _raw(result, "D2-ONTIME", "Reporting_Airline")["status"] == "MISSING"
-    assert _raw(result, "D2-ONTIME", "Tail_Number")["status"] == "SEMANTIC_CONFLICT"
-    assert _raw(result, "D2-T100", "CLASS")["status"] == "SEMANTIC_CONFLICT"
-    assert {item["rule_id"] for item in result["missing_runtime_rule_registrations"]} == {
-        "D2-BTS-FACTUAL-REPLAY"
-    }
-    assert {(item["raw_column"], item["path"]) for item in result["pre_bypass_findings"]} == {
-        ("iata", "model/M2/freeze.py"),
-        ("timezone", "model/M2/freeze.py"),
-    }
+    assert _raw(result, "D2-ONTIME", "Reporting_Airline")["status"] == "COVERED_ACTIVE"
+    assert _raw(result, "D2-ONTIME", "Tail_Number")["status"] == "COVERED_ACTIVE"
+    assert _raw(result, "D2-T100", "CLASS")["status"] == "REFERENCE_BUILD_ONLY"
+    assert _raw(result, "D1-METAR", "mslp")["status"] == "EXPLICITLY_UNUSED"
+    assert _raw(result, "D1-EUROSTAT", "id")["status"] == "SOURCE_SCHEMA_METADATA"
+    assert _raw(result, "D2-ISD", "REPORT_TYPE")["status"] == "DIAGNOSTIC_ONLY"
+    assert result["missing_runtime_rule_registrations"] == []
+    assert result["pre_bypass_findings"] == []
+    for key in (
+        "PRE_BYPASS",
+        "RUNTIME_USED_NO_CONTRACT",
+        "AMBIGUOUS_ACTIVE_COLUMN",
+        "ACTIVE_SEMANTIC_CONFLICT",
+        "ACTIVE_REGISTRY_CONFLICT",
+        "ACTIVE_PRE_OUTPUT_CONFLICT",
+    ):
+        assert result["counts"][key] == 0
     assert len(result["m1_feature_audit"]) == len(FEATURE_NAMES_V2) + len(STATIC_FEATURE_NAMES)
-    assert {row["status"] for row in result["m1_feature_audit"]} == {"COVERED"}
+    assert {row["status"] for row in result["m1_feature_audit"]} == {"COVERED_ACTIVE"}

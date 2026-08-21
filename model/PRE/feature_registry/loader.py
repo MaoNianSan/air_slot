@@ -60,10 +60,12 @@ def load_registry_bundle(root: Path, *, validate_published: bool = True) -> Regi
             if missing: raise RegistryError(f"missing canonical inputs: {sorted(missing)}")
         for priority in priorities:
             if set(priority.rule_ids) - rule_ids: raise RegistryError("priority references unknown rule")
-        consumers = {"PRE", "M1", "M2", "M3", "EVALUATION_ONLY"}
+        consumers = {"PRE", "M1", "M2", "M3", "EXP3", "EVALUATION_ONLY"}
         for rule in rules:
             if not set(rule.downstream_consumers) <= consumers:
                 raise RegistryError("raw-to-consumer boundary violation")
+            if rule.source_rule_id and rule.source_rule_id not in rule_ids:
+                raise RegistryError("projection references unknown source rule")
         # A variable may depend only on previously declared variables, preventing cycles.
         declared: set[str] = set()
         for variable in variables:

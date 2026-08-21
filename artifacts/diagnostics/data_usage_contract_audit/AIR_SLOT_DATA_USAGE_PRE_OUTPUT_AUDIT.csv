@@ -1,14 +1,14 @@
 scientific_variable,pre_family,canonical_inputs,publication_path,consumers,status,findings
-predecessor_motion,predecessor_state,"[""predecessor_motion""]",REGISTRY_PRE_MAPPER,"[""M1""]",COVERED,[]
-current_weather,current_state,"[""current_weather""]",REGISTRY_PRE_MAPPER,"[""M1""]",COVERED,[]
-schedule_reference,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1"", ""M2""]",COVERED,[]
-passenger_reference,reference_state,"[""passenger_reference""]",REGISTRY_PRE_MAPPER,"[""M2"", ""EVALUATION_ONLY""]",SEMANTIC_CONFLICT,"[""UPSTREAM_RULE_CONFLICT:passenger_reference""]"
-airport_reference,reference_state,"[""airport_reference""]",REGISTRY_PRE_MAPPER,"[""PRE"", ""M1"", ""M2"", ""M3""]",COVERED,[]
-realized_operational_event,realized_outcome,"[""realized_operational_event"", ""derived_operational_event""]",POSTHOC_OUTCOME_WITH_SEPARATE_FACTUAL_REPLAY_PROJECTION,"[""EVALUATION_ONLY"", ""M1""]",COVERED,[]
-route_context,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1""]",COVERED,[]
-carrier_context,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1""]",COVERED,[]
-aircraft_identity,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1""]",COVERED,[]
-turnaround_reference,successor_state,"[""turnaround_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1"", ""M2""]",SEMANTIC_CONFLICT,"[""UPSTREAM_RULE_CONFLICT:turnaround_reference""]"
-taxi_reference,successor_state,"[""taxi_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1"", ""M2""]",SEMANTIC_CONFLICT,"[""UPSTREAM_RULE_CONFLICT:taxi_reference""]"
-segment_reference,reference_state,"[""segment_reference""]",REGISTRY_PRE_MAPPER,"[""M2"", ""M3"", ""EVALUATION_ONLY""]",SEMANTIC_CONFLICT,"[""UPSTREAM_RULE_CONFLICT:segment_reference""]"
-airport_timezone,reference_state,"[""airport_timezone""]",REGISTRY_PRE_MAPPER,"[""PRE""]",COVERED,[]
+predecessor_motion,predecessor_state,"[""predecessor_motion""]",REGISTRY_PRE_MAPPER,"[""M1""]",COVERED_ACTIVE,[]
+current_weather,current_state,"[""current_weather""]",REGISTRY_PRE_MAPPER,"[""M1""]",COVERED_ACTIVE,[]
+schedule_reference,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1"", ""M2""]",COVERED_ACTIVE,[]
+passenger_reference,reference_state,"[""passenger_reference""]",REGISTRY_PRE_MAPPER,"[""M2"", ""EVALUATION_ONLY""]",COVERED_ACTIVE,[]
+airport_reference,reference_state,"[""airport_reference""]",REGISTRY_PRE_MAPPER,"[""PRE"", ""M1"", ""M2"", ""M3""]",COVERED_ACTIVE,[]
+realized_operational_event,realized_outcome,"[""realized_operational_event"", ""derived_operational_event""]",POSTHOC_OUTCOME_WITH_SEPARATE_FACTUAL_REPLAY_PROJECTION,"[""EVALUATION_ONLY""]",COVERED_ACTIVE,[]
+route_context,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1""]",COVERED_ACTIVE,[]
+carrier_context,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1""]",COVERED_ACTIVE,[]
+aircraft_identity,successor_state,"[""schedule_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1""]",COVERED_ACTIVE,[]
+turnaround_reference,successor_state,"[""turnaround_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1"", ""M2""]",COVERED_ACTIVE,[]
+taxi_reference,successor_state,"[""taxi_reference""]",PRE_STATIC_REFERENCE_PUBLICATION,"[""M1"", ""M2""]",COVERED_ACTIVE,[]
+segment_reference,reference_state,"[""segment_reference""]",REGISTRY_PRE_MAPPER,"[""M2"", ""M3"", ""EVALUATION_ONLY""]",COVERED_ACTIVE,[]
+airport_timezone,reference_state,"[""airport_timezone""]",REGISTRY_PRE_MAPPER,"[""PRE""]",COVERED_ACTIVE,[]

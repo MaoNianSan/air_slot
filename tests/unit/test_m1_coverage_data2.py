@@ -19,6 +19,10 @@ from model.M1.data import FEATURE_NAMES_V2, fit_train_normalization
 from model.M1.pipeline import M1Pipeline
 from model.PRE.contracts.canonical import FlightRecord, OperationalEventRecord
 from model.PRE.contracts.pre_state import PREState, TargetSupportState
+from model.PRE.contracts.training_artifacts import (
+    DerivedM1TrainingCoverageArtifact,
+    build_m1_training_coverage_row,
+)
 from model.PRE.episode.builder import build_data2_episode_chain
 from model.PRE.episode.node_builder import build_rolling_decision_nodes
 from model.PRE.feature_registry.loader import load_registry_bundle
@@ -128,8 +132,34 @@ def test_coverage_data_usage_rule_entry_frozen():
     assert rule.availability_rule == "posthoc_only"
     assert "M1" in rule.downstream_consumers
     assert rule.transformation_rule == "all_nodes_stage_gated_node_equal_weight"
+    assert rule.source_kind == "DERIVED_ARTIFACT"
+    assert rule.raw_columns == ()
+    assert rule.derived_artifact_schema == "DERIVED_M1_TRAINING_COVERAGE_ARTIFACT_V1"
     assert "D2-LABEL-R-IB" in rule.external_evidence_rule_ids
     assert "D2-LABEL-T-TX" in rule.external_evidence_rule_ids
+
+
+def test_coverage_artifact_uses_pre_node_metadata_not_bts_columns():
+    t = datetime(2019, 1, 1, 12, 0, tzinfo=UTC)
+    episode, nodes, states, *_ = _scenario(
+        pred_actual_arr=t + timedelta(minutes=100),
+        succ_crs_dep=t + timedelta(minutes=180),
+        succ_crs_arr=t + timedelta(minutes=240),
+        succ_actual_dep=t + timedelta(minutes=195),
+        succ_wheels_off=t + timedelta(minutes=202),
+        taxi_out=12.0,
+    )
+    row = build_m1_training_coverage_row(
+        episode_id=episode.episode_id,
+        node=nodes[0],
+        target_support=states[0].target_support,
+        split="train",
+    )
+    artifact = DerivedM1TrainingCoverageArtifact(rows=(row,))
+    assert artifact.source_schema == "PRE_DECISION_NODE"
+    assert row["decision_node_id"] == nodes[0].decision_node_id
+    assert row["operational_stage"] == nodes[0].operational_stage.value
+    assert row["lineage"][0] == "PRE_DECISION_NODE"
 
 
 def test_data1_and_prior_d2_rules_untouched():

@@ -27,6 +27,10 @@ from typing import Any, Mapping
 from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.PRE.canonical.normalization import canonicalize_ontime_row
+from model.PRE.contracts.training_artifacts import (
+    Data2M2CanonicalTrainRow,
+    Data2M2TrainPreparationArtifact,
+)
 from model.PRE.episode.builder import build_data2_episode_records
 from model.PRE.reference.exposure_data2 import (
     Data2ExposureReference,
@@ -45,6 +49,7 @@ from model.PRE.reference.turnaround_data2 import (
     Data2TurnaroundReference,
     build_data2_turnaround_reference,
 )
+from model.PRE.streaming.data2 import load_timezones
 
 
 def ontime_paths(root: Path, months: tuple[int, ...]) -> tuple[Path, ...]:
@@ -58,7 +63,9 @@ def ontime_paths(root: Path, months: tuple[int, ...]) -> tuple[Path, ...]:
     return tuple(paths)
 
 
-def iter_train_rows(paths: tuple[Path, ...], timezones: dict[str, str]):
+def iter_train_rows(
+    paths: tuple[Path, ...], timezones: dict[str, str]
+):
     """Stream compact canonical train row dicts (schedule + outcome fields)."""
     for path in paths:
         with path.open(encoding="utf-8-sig", newline="", errors="replace") as handle:
@@ -88,14 +95,36 @@ def iter_train_rows(paths: tuple[Path, ...], timezones: dict[str, str]):
                 }
 
 
-def collect_train_rows(paths, timezones) -> list[dict[str, Any]]:
+def collect_train_rows(
+    paths: tuple[Path, ...], timezones: dict[str, str]
+) -> list[Data2M2CanonicalTrainRow]:
     return list(iter_train_rows(paths, timezones))
+
+
+def build_data2_m2_train_preparation(
+    *,
+    root: Path,
+    months: tuple[int, ...] = tuple(range(1, 7)),
+    fit_period: str = "2019-H1",
+) -> Data2M2TrainPreparationArtifact:
+    """Read and canonicalize the frozen M2 Train partition inside PRE."""
+    paths = ontime_paths(root, months)
+    timezones = load_timezones(
+        root / "data2" / "refs" / "us_airport_timezones.csv"
+    )
+    return Data2M2TrainPreparationArtifact(
+        rows=collect_train_rows(paths, timezones),
+        source_paths=paths,
+        months=months,
+        fit_period=fit_period,
+    )
 
 
 
 
 __all__ = [
     "ONTIME_PROJECTED_FIELDS",
+    "build_data2_m2_train_preparation",
     "collect_train_rows",
     "compute_train_scales",
     "fit_train_references",

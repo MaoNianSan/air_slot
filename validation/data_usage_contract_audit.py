@@ -22,12 +22,16 @@ import yaml
 from model.M1.data import FEATURE_NAMES_V2, STATIC_FEATURE_NAMES
 from model.PRE.adapters.registry import SourceAdapterDefinition, SourceAdapterRegistry
 from model.PRE.feature_registry.loader import RegistryBundle, load_registry_bundle
+from validation.data_usage_classification import (
+    ALL_STATUSES,
+    classify_source_column,
+    zero_failure_counts,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "diagnostics" / "data_usage_contract_audit"
-SCHEMA_VERSION = "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V1"
-_STATUS_ORDER = {"COVERED": 0, "MISSING": 1, "SEMANTIC_CONFLICT": 2, "PRE_BYPASS": 3}
+SCHEMA_VERSION = "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V2"
 _CANONICALIZERS = {
     "D1-FLIGHTLIST": (("model/PRE/canonical/normalization_flights.py", "canonicalize_flightlist_row"),),
     "D1-STATE": (("model/PRE/canonical/normalization_flights.py", "canonicalize_state_vector_row"),),
@@ -146,7 +150,7 @@ def _rule_index(bundle: RegistryBundle):
     by_column: dict[tuple[str, str, str], list[Any]] = defaultdict(list)
     for rule in bundle.data_usage_rules:
         by_source[(rule.dataset_id, rule.logical_source)].append(rule)
-        for column in rule.raw_columns:
+        for column in rule.raw_columns + rule.projected_columns:
             by_column[(rule.dataset_id, rule.logical_source, column)].append(rule)
     return by_source, by_column
 
@@ -166,17 +170,41 @@ def _rule_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinition, 
     for rule in bundle.data_usage_rules:
         source = source_index.get((rule.dataset_id, rule.logical_source))
         schema = set() if source is None else set(_source_columns(source))
-        missing_source_columns = sorted(set(rule.raw_columns) - schema)
+        declared_columns = set(rule.raw_columns) | set(rule.projected_columns)
+        missing_source_columns = sorted(declared_columns - schema)
         mapped = definitions.get(rule.canonical_variable, [])
-        conflicts = []
-        if source is None:
-            conflicts.append("SOURCE_ADAPTER_MISSING")
+        registry_conflicts = []
+        semantic_conflicts = []
+        if rule.source_kind != "DERIVED_ARTIFACT" and source is None:
+            registry_conflicts.append("SOURCE_ADAPTER_MISSING")
         if missing_source_columns:
-            conflicts.append("RULE_RAW_COLUMN_NOT_IN_SOURCE_SCHEMA")
-        if not mapped and rule.decision_time_role.value not in _ALLOWED_UNPUBLISHED_ROLES:
-            conflicts.append("CANONICAL_VARIABLE_NOT_IN_SCIENTIFIC_REGISTRY")
+            registry_conflicts.append("RULE_COLUMN_NOT_IN_SOURCE_SCHEMA")
+        if (
+            not mapped
+            and rule.decision_time_role.value not in _ALLOWED_UNPUBLISHED_ROLES
+            and rule.source_kind == "RAW_SOURCE"
+        ):
+            registry_conflicts.append("CANONICAL_VARIABLE_NOT_IN_SCIENTIFIC_REGISTRY")
         if mapped and any(item.pre_family != rule.pre_family for item in mapped):
-            conflicts.append("PRE_FAMILY_MISMATCH")
+            semantic_conflicts.append("PRE_FAMILY_MISMATCH")
+        if rule.rule_id == "D2-BTS-FACTUAL-REPLAY":
+            expected = {
+                "source_kind": "PROJECTION",
+                "source_rule_id": "D2-BTS-ACTUAL",
+                "projection_role": "DECLARED_RETROSPECTIVE_FACTUAL_REPLAY",
+                "declared_lag_minutes": 0,
+                "observed_message_arrival_claim": False,
+                "production_availability_claim": False,
+                "source_outcome_role_preserved": True,
+            }
+            for field, value in expected.items():
+                if getattr(rule, field) != value:
+                    semantic_conflicts.append(f"FACTUAL_REPLAY_{field.upper()}_MISMATCH")
+        status = (
+            "ACTIVE_REGISTRY_CONFLICT" if registry_conflicts
+            else "ACTIVE_SEMANTIC_CONFLICT" if semantic_conflicts
+            else "COVERED_ACTIVE"
+        )
         rows.append({
             "rule_id": rule.rule_id,
             "dataset_instance_id": rule.dataset_id,
@@ -184,8 +212,9 @@ def _rule_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinition, 
             "canonical_variable": rule.canonical_variable,
             "scientific_variables": sorted(item.scientific_variable for item in mapped),
             "missing_source_columns": missing_source_columns,
-            "status": "SEMANTIC_CONFLICT" if conflicts else "COVERED",
-            "findings": conflicts,
+            "source_kind": rule.source_kind,
+            "status": status,
+            "findings": registry_conflicts + semantic_conflicts,
         })
     return rows
 
@@ -205,17 +234,15 @@ def _raw_column_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefini
         primary_rules = set(source.rule_ids)
         for column in _source_columns(source):
             matches = by_column[(source.dataset_instance_id, source.source_family, column)]
-            findings = []
-            status = "COVERED"
-            if not matches:
-                findings.append("REGISTRY_MAPPING_MISSING")
-                status = "MISSING"
-            elif column in used and not ({item.rule_id for item in matches} & primary_rules):
-                findings.append("PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN")
-                status = "SEMANTIC_CONFLICT"
-            if bypass_by_column[column]:
-                findings.append("RAW_COLUMN_ACCESSED_DOWNSTREAM_OF_PRE")
-                status = "PRE_BYPASS"
+            matched_ids = {item.rule_id for item in matches}
+            declared_role = source.column_roles.get(column)
+            status, findings = classify_source_column(
+                declared_role=declared_role,
+                canonicalizer_accessed=column in used,
+                matched_rule_ids=matched_ids,
+                primary_rule_ids=primary_rules,
+                pre_bypass=bool(bypass_by_column[column]),
+            )
             rows.append({
                 "dataset_instance_id": source.dataset_instance_id,
                 "adapter_id": source.adapter_id,
@@ -224,8 +251,9 @@ def _raw_column_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefini
                 "required": column in required,
                 "projected": column in projected,
                 "canonicalizer_accessed": column in used,
-                "rule_ids": sorted(item.rule_id for item in matches),
-                "primary_rule_ids": sorted(primary_rules & {item.rule_id for item in matches}),
+                "declared_role": declared_role,
+                "rule_ids": sorted(matched_ids),
+                "primary_rule_ids": sorted(primary_rules & matched_ids),
                 "status": status,
                 "findings": findings,
                 "pre_bypass_locations": bypass_by_column[column],
@@ -238,7 +266,8 @@ def _raw_column_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefini
                       if (item.dataset_instance_id, item.source_family) == key)
         schema = set(_source_columns(source))
         used = _canonicalizer_columns(source)
-        for column in sorted(set(rule.raw_columns) - schema):
+        declared_columns = set(rule.raw_columns) | set(rule.projected_columns)
+        for column in sorted(declared_columns - schema):
             rows.append({
                 "dataset_instance_id": rule.dataset_id,
                 "adapter_id": source.adapter_id,
@@ -249,7 +278,8 @@ def _raw_column_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefini
                 "canonicalizer_accessed": column in used,
                 "rule_ids": [rule.rule_id],
                 "primary_rule_ids": [],
-                "status": "SEMANTIC_CONFLICT",
+                "declared_role": None,
+                "status": "ACTIVE_REGISTRY_CONFLICT",
                 "findings": ["REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER"],
                 "pre_bypass_locations": bypass_by_column[column],
             })
@@ -297,7 +327,7 @@ def _mapping_draft(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinitio
 def _pre_output_audit(bundle: RegistryBundle, rule_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     conflict_variables = {
         row["canonical_variable"] for row in rule_rows
-        if row["status"] == "SEMANTIC_CONFLICT"
+        if row["status"] in {"ACTIVE_SEMANTIC_CONFLICT", "ACTIVE_REGISTRY_CONFLICT"}
     }
     rows = []
     for definition in bundle.scientific_variables:
@@ -315,7 +345,7 @@ def _pre_output_audit(bundle: RegistryBundle, rule_rows: list[dict[str, Any]]) -
             "canonical_inputs": list(definition.canonical_inputs),
             "publication_path": publication,
             "consumers": list(definition.consumers),
-            "status": "SEMANTIC_CONFLICT" if conflicts else "COVERED",
+            "status": "ACTIVE_PRE_OUTPUT_CONFLICT" if conflicts else "COVERED_ACTIVE",
             "findings": [] if not conflicts else ["UPSTREAM_RULE_CONFLICT:" + ",".join(conflicts)],
         })
     return rows
@@ -349,7 +379,7 @@ def _m1_feature_audit() -> list[dict[str, Any]]:
                 "branch": branch,
                 "upstream_pre_variable": upstream,
                 "consumption_path": path,
-                "status": "COVERED" if upstream else "MISSING",
+                "status": "COVERED_ACTIVE" if upstream else "RUNTIME_USED_NO_CONTRACT",
                 "findings": [] if upstream else ["M1_FEATURE_UPSTREAM_UNRESOLVED"],
             })
     return rows
@@ -377,7 +407,7 @@ def _write_yaml(path: Path, payload: dict[str, Any]) -> None:
 
 
 def _counts(rows: list[dict[str, Any]]) -> dict[str, int]:
-    counts = {status: 0 for status in _STATUS_ORDER}
+    counts = {status: 0 for status in ALL_STATUSES}
     for row in rows:
         counts[row["status"]] += 1
     return counts
@@ -408,18 +438,28 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     source_files = (
         "registries/source_adapter_registry.yaml", "registries/data_usage_rules.yaml",
         "registries/scientific_variables.yaml", "registries/dataset_capabilities.yaml",
+        "configs/scientific/foundation.yaml", "model/M2/freeze.py",
+        "model/PRE/adapters/registry.py",
         "model/PRE/canonical/normalization_flights.py",
         "model/PRE/canonical/normalization_weather.py",
-        "model/PRE/canonical/normalization_references.py", "model/PRE/mapping.py",
+        "model/PRE/canonical/normalization_references.py",
+        "model/PRE/contracts/training_artifacts.py",
+        "model/PRE/feature_registry/models.py", "model/PRE/mapping.py",
         "model/PRE/publication/static_reference.py", "model/M1/data.py",
+        "model/PRE/reference/data2_m2_train_fit.py",
         "docs/reconciliation/AIR_SLOT_DATA_USAGE_CONTRACT_V1.md",
-        "validation/data_usage_contract_audit.py",
+        "validation/data_usage_classification.py", "validation/data_usage_contract_audit.py",
     )
-    all_statuses = [row["status"] for rows in (raw_rows, rule_rows, pre_rows, m1_rows) for row in rows]
+    all_rows = [row for rows in (raw_rows, rule_rows, pre_rows, m1_rows) for row in rows]
+    failure_counts = zero_failure_counts()
+    for row in all_rows:
+        if row["status"] in failure_counts:
+            failure_counts[row["status"]] += 1
+    failure_counts["RUNTIME_USED_NO_CONTRACT"] += len(missing_runtime_rules)
     status = (
-        "DATA_USAGE_CONTRACT_HUMAN_REVIEW_REMAINS"
-        if any(item != "COVERED" for item in all_statuses) or missing_runtime_rules
-        else "DATA_USAGE_CONTRACT_AUDIT_PASS"
+        "DATA_USAGE_CONTRACT_AUDIT_PASS"
+        if all(count == 0 for count in failure_counts.values())
+        else "DATA_USAGE_CONTRACT_REVIEW_REMAINS"
     )
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = {
@@ -434,8 +474,8 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     _write_yaml(paths["mapping_draft_yaml"], {
         "schema_version": "AIR_SLOT_DATA_USAGE_MAPPING_DRAFT_V1",
         "authoritative": False,
-        "status": "HUMAN_REVIEW_REQUIRED",
-        "generated_from": "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V1",
+        "status": "PASS" if status == "DATA_USAGE_CONTRACT_AUDIT_PASS" else "REVIEW_REQUIRED",
+        "generated_from": SCHEMA_VERSION,
         "mappings": mapping_rows,
     })
     _write_csv(paths["raw_column_audit"], raw_rows)
@@ -443,7 +483,7 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     _write_csv(paths["m1_feature_audit"], m1_rows)
     payload = {
         "schema_version": SCHEMA_VERSION,
-        "authority": "NON_AUTHORITATIVE_DIAGNOSTIC_DRAFT",
+        "authority": "CONTRACT_VALIDATION_AFTER_HUMAN_DECISIONS",
         "repository_head": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
@@ -460,6 +500,7 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             "m1_feature_status": _counts(m1_rows),
             "mapping_draft_rows": len(mapping_rows),
             "runtime_rule_references_missing_from_registry": len(missing_runtime_rules),
+            **failure_counts,
         },
         "raw_column_audit": raw_rows,
         "rule_audit": rule_rows,

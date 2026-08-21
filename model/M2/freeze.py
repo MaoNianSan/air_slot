@@ -26,10 +26,9 @@ from model.M2.valuation import (
 )
 from model.common.cu_normalization import CUNormalizationRegistry
 from model.PRE.reference.data2_m2_train_fit import (
-    collect_train_rows,
+    build_data2_m2_train_preparation,
     compute_train_scales,
     fit_train_references,
-    ontime_paths,
     M2_FORMAL_SCOPE,
     M2_NATIVE_DEFINITIONS,
 )
@@ -114,16 +113,6 @@ class M2Data2FormalCuRegistry(FrozenModel):
         if not value > 0:
             raise ContractError(f"M2_TRAIN_SCALE_NOT_POSITIVE:{component}")
         return value
-
-
-def load_timezones(root: Path) -> dict[str, str]:
-    path = root / "data2" / "refs" / "us_airport_timezones.csv"
-    with path.open(encoding="utf-8-sig", newline="") as handle:
-        import csv
-
-        return {
-            row["iata"]: row["timezone"] for row in csv.DictReader(handle)
-        }
 
 
 def _write_json_atomic(path: Path, payload: dict) -> None:
@@ -277,9 +266,12 @@ def build_m2_data2_formal_registry(
     fit_period: str = "2019-H1",
 ) -> tuple[M2Data2FormalCuRegistry, dict[str, Path]]:
     """Fit references + scales and write all M2 freeze artifacts."""
-    timezones = load_timezones(root)
-    paths = ontime_paths(root, tuple(range(1, 7)))
-    rows = collect_train_rows(paths, timezones)
+    preparation = build_data2_m2_train_preparation(
+        root=root,
+        months=tuple(range(1, 7)),
+        fit_period=fit_period,
+    )
+    rows = preparation.rows
     references = fit_train_references(rows, root=root, fit_period=fit_period)
     turnaround_ref = data2_turnaround_reference_from_payload(references["turnaround"])
     taxi_ref = data2_taxi_reference_from_payload(references["taxi"])

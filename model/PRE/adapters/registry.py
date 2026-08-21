@@ -5,6 +5,7 @@ from pydantic import Field, model_validator
 
 from model.common.errors import ContractError
 from model.common.value_objects import FrozenModel
+from model.PRE.feature_registry.models import ColumnRole
 
 
 class SourceAdapterDefinition(FrozenModel):
@@ -18,6 +19,8 @@ class SourceAdapterDefinition(FrozenModel):
     canonical_objects: tuple[str, ...] = ()
     required_columns: tuple[str, ...]
     projected_columns: tuple[str, ...]
+    optional_projected_columns: tuple[str, ...] = ()
+    column_roles: dict[str, ColumnRole] = {}
     rule_ids: tuple[str, ...]
     decision_time_role: str
     availability_basis: str
@@ -26,6 +29,11 @@ class SourceAdapterDefinition(FrozenModel):
     def canonical_types_include_primary(self):
         if self.canonical_objects and self.canonical_object not in self.canonical_objects:
             raise ValueError("primary canonical object missing from canonical_objects")
+        if not set(self.optional_projected_columns) <= set(self.projected_columns):
+            raise ValueError("optional projected column is not projected")
+        declared = set(self.required_columns) | set(self.projected_columns)
+        if not set(self.column_roles) <= declared:
+            raise ValueError("column role references undeclared source column")
         return self
 
 

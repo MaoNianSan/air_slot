@@ -52,6 +52,10 @@ from validation.m1_v2_data_gate_statistics import (
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_data_gate_a1"
+DATA_USAGE_AUDIT = (
+    ROOT / "artifacts" / "diagnostics" / "data_usage_contract_audit"
+    / "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json"
+)
 PREPARATION_ROOT = ROOT / "artifacts" / "diagnostics" / "v5_development_freeze"
 
 
@@ -121,7 +125,10 @@ def _bts_consistency(cohorts) -> dict:
                 "max_abs_difference_minutes": max(differences) if differences else None,
                 "date_offset_disagreement_count": date_offset,
                 "cross_midnight_disagreement_count": cross_midnight,
-                "precedence": "DIRECT_CLOCK_PRIMARY_DERIVED_CHECK_AND_MISSING_FALLBACK",
+                "precedence": (
+                    "DIRECT_CLOCK_PRIMARY_EXCEPT_MULTIDAY_DELAY_DATE_OFFSET;"
+                    "DERIVED_CHECK_AND_MISSING_FALLBACK"
+                ),
                 "deterministic_disagreement_cases": cases,
             }
     return output
@@ -326,6 +333,9 @@ def _write_lineage(rows: list[dict]) -> Path:
 
 def run() -> dict:
     started = time.perf_counter()
+    data_usage_audit = json.loads(DATA_USAGE_AUDIT.read_text(encoding="utf-8"))
+    if data_usage_audit.get("status") != "DATA_USAGE_CONTRACT_AUDIT_PASS":
+        raise RuntimeError("DATA_GATE_A1_DATA_USAGE_CONTRACT_NOT_PASS")
     partitions, selection_audit = _load_frozen_partitions()
     taxi, turnaround, reference_ids = _load_references()
     scientific = load_config_layers(ROOT / "configs").scientific
@@ -392,6 +402,21 @@ def run() -> dict:
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
         "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+        "data_usage_contract": {
+            "status": data_usage_audit["status"],
+            "artifact_hash": data_usage_audit["artifact_hash"],
+            "failure_counts": {
+                key: data_usage_audit["counts"][key]
+                for key in (
+                    "PRE_BYPASS",
+                    "RUNTIME_USED_NO_CONTRACT",
+                    "AMBIGUOUS_ACTIVE_COLUMN",
+                    "ACTIVE_SEMANTIC_CONFLICT",
+                    "ACTIVE_REGISTRY_CONFLICT",
+                    "ACTIVE_PRE_OUTPUT_CONFLICT",
+                )
+            },
+        },
         "counts": {
             "raw_candidate_source_column_pairs": 28,
             "pre_published_expanded_fields": len({row["PRE_OUTPUT"] for row in lineage}),
@@ -424,7 +449,9 @@ def run() -> dict:
             "VIS_SCALING": "FIXED_EXACT_999999_MISSING_CODE",
             "TMP_SCALING": "PASS",
             "DEW_SCALING": "PASS",
-            "BTS_DIRECT_CLOCK_PRECEDENCE": "FIXED",
+            "BTS_DIRECT_CLOCK_PRECEDENCE": (
+                "DIRECT_PRIMARY_EXCEPT_MULTIDAY_DELAY_DATE_OFFSET"
+            ),
             "BTS_DELAY_TAXI_DERIVATION": "CONSISTENCY_CHECK_AND_FALLBACK_ONLY",
         },
         "raw_preprocessing_statistics": raw_preprocessing_statistics(rows),

@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,7 @@ from model.M2.freeze import (
     write_m2_registry,
 )
 from model.M2.mapper import M2Mapper
+from model.PRE.reference.data2_m2_train_fit import build_data2_m2_train_preparation
 from model.common.errors import ContractError
 from model.common.estimand import FormalEstimandStatus
 from tests.fixtures.p0_p1_contracts import scope_fixture
@@ -173,6 +175,42 @@ def test_fit_train_references_keys_match_registry_contract(monkeypatch):
     )
     result = fit.fit_train_references([], root=Path("."), fit_period="2019-H1")
     assert set(result) == {"turnaround", "downstream_exposure", "passenger", "taxi"}
+
+
+def test_m2_train_preparation_is_pre_owned_typed_canonical_artifact(tmp_path):
+    timezone_path = tmp_path / "data2" / "refs" / "us_airport_timezones.csv"
+    timezone_path.parent.mkdir(parents=True)
+    timezone_path.write_text(
+        "iata,ident,timezone\nJFK,KJFK,America/New_York\nLAX,KLAX,America/Los_Angeles\n",
+        encoding="utf-8",
+    )
+    ontime = tmp_path / "data2" / "raw" / "bts" / "ontime" / "2019" / "month=01" / "rows.csv"
+    ontime.parent.mkdir(parents=True)
+    fields = [
+        "FlightDate", "Reporting_Airline", "Tail_Number",
+        "Flight_Number_Reporting_Airline", "Origin", "Dest", "CRSDepTime",
+        "CRSArrTime", "DepTime", "ArrTime", "WheelsOff", "WheelsOn",
+        "TaxiOut", "TaxiIn", "DepDelayMinutes", "ArrDelayMinutes",
+        "Cancelled", "Diverted",
+    ]
+    with ontime.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerow({
+            "FlightDate":"2019-01-02", "Reporting_Airline":"AA", "Tail_Number":"N1",
+            "Flight_Number_Reporting_Airline":"10", "Origin":"JFK", "Dest":"LAX",
+            "CRSDepTime":"0800", "CRSArrTime":"1100", "DepTime":"0810",
+            "ArrTime":"1110", "WheelsOff":"0820", "WheelsOn":"1100",
+            "TaxiOut":"10", "TaxiIn":"10", "DepDelayMinutes":"10",
+            "ArrDelayMinutes":"10", "Cancelled":"0", "Diverted":"0",
+        })
+    artifact = build_data2_m2_train_preparation(root=tmp_path, months=(1,))
+    assert artifact.schema_version == "DATA2_M2_TRAIN_PREPARATION_V1"
+    assert artifact.final_test_access_count == 0
+    assert artifact.months == (1,)
+    assert len(artifact.rows) == 1
+    assert artifact.rows[0]["aircraft_id"] == "N1"
+    assert artifact.rows[0]["split"] == "train"
 
 
 def test_frozen_valuation_abstains_when_passenger_route_missing():

@@ -60,8 +60,6 @@ def canonicalize_timezone_row(row: dict[str, Any]) -> AirportReference:
         "icao_code": ident or None,
         "iata_code": iata,
         "timezone": row["timezone"],
-        "latitude_deg": number(row.get("lat")),
-        "longitude_deg": number(row.get("lon")),
         "event_time": None,
         "availability_time": None,
         "availability_basis": "REFERENCE_PERIOD",

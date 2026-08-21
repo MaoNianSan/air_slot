@@ -88,18 +88,42 @@ def canonicalize_ontime_row(
         derived["DepTime"] = schedule_dep + timedelta(minutes=dep_delay)
     if arr_delay is not None:
         derived["ArrTime"] = schedule_arr + timedelta(minutes=arr_delay)
-    departure_for_taxi = direct["DepTime"] or derived["DepTime"]
-    arrival_for_taxi = direct["ArrTime"] or derived["ArrTime"]
+    dep_requires_date_offset = dep_delay is not None and abs(dep_delay) >= 24 * 60
+    arr_requires_date_offset = arr_delay is not None and abs(arr_delay) >= 24 * 60
+    departure_for_taxi = (
+        derived["DepTime"]
+        if dep_requires_date_offset
+        else direct["DepTime"] or derived["DepTime"]
+    )
+    arrival_for_taxi = (
+        derived["ArrTime"]
+        if arr_requires_date_offset
+        else direct["ArrTime"] or derived["ArrTime"]
+    )
     if departure_for_taxi is not None and taxi_out is not None:
         derived["WheelsOff"] = departure_for_taxi + timedelta(minutes=taxi_out)
     if arrival_for_taxi is not None and taxi_in is not None:
         derived["WheelsOn"] = arrival_for_taxi - timedelta(minutes=taxi_in)
     actual = {
-        key: direct[key] if direct[key] is not None else derived[key]
-        for key in direct
+        "DepTime": derived["DepTime"] if dep_requires_date_offset else (
+            direct["DepTime"] or derived["DepTime"]
+        ),
+        "ArrTime": derived["ArrTime"] if arr_requires_date_offset else (
+            direct["ArrTime"] or derived["ArrTime"]
+        ),
+        "WheelsOff": derived["WheelsOff"] if dep_requires_date_offset else (
+            direct["WheelsOff"] or derived["WheelsOff"]
+        ),
+        "WheelsOn": derived["WheelsOn"] if arr_requires_date_offset else (
+            direct["WheelsOn"] or derived["WheelsOn"]
+        ),
     }
     actual_times = [value for value in actual.values() if value is not None]
     consistency_flags = {"BTS_DIRECT_CLOCK_PRIMARY"}
+    if dep_requires_date_offset:
+        consistency_flags.add("BTS_DELAY_DATE_OFFSET_PRIMARY_DEPARTURE")
+    if arr_requires_date_offset:
+        consistency_flags.add("BTS_DELAY_DATE_OFFSET_PRIMARY_ARRIVAL")
     for key in direct:
         direct_value, derived_value = direct[key], derived[key]
         label = key.upper()

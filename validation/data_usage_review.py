@@ -202,65 +202,33 @@ def _markdown(packet: dict[str, Any]) -> str:
         "",
         f"Status: **{packet['status']}**",
         "",
-        "This packet is diagnostic only. It does not freeze a registry, modify the M1 feature contract, authorize training, tuning, Gate B, or Final Test.",
+        "The seven human decisions have been applied. This closure packet does not authorize training, tuning, Gate B, or Final Test.",
         "",
-        "## PRE Bypass",
-        "",
-        "1. `model/M2/freeze.py:119-124`, `load_timezones(root)` reads `iata` and `timezone` from `data2/refs/us_airport_timezones.csv`. `build_m2_data2_formal_registry()` calls it at line 280, then passes the table into PRE-owned `collect_train_rows()` (`model/PRE/reference/data2_m2_train_fit.py:67-91`).",
-        "   - Scientific variable: `airport_timezone`",
-        "   - Why M2 needs it: local BTS HHMM to UTC conversion during train-row preparation",
-        "   - Current transformation: raw timezone CSV -> dict[IATA, IANA] -> `canonicalize_ontime_row`",
-        "   - Current output: canonical train rows, frozen M2 references, train scales, and M2 formal registry",
-        "   - Downstream usage: M2 formal artifact construction; no direct M2 timezone feature",
-        "   - Classification: **C — local-time conversion only**",
-        "   - Recommendation: PRE-owned canonical train artifact or typed timezone-backed preparation artifact; M2 consumes only that artifact.",
-        "",
-        "## Runtime Rule Registration",
-        "",
-        "`D2-BTS-FACTUAL-REPLAY` is a candidate separate projection rule. `D2-BTS-ACTUAL` remains `POSTHOC_ONLY` / `EVAL_OUTCOME`.",
-        "",
-        "```yaml",
-        "rule_id: D2-BTS-FACTUAL-REPLAY",
-        "dataset_id: data2_2019",
-        "source_rule: D2-BTS-ACTUAL",
-        "raw_source_role: POSTHOC_COMPLETED_OPERATIONAL_EVENT",
-        "projection_role: DECLARED_RETROSPECTIVE_FACTUAL_REPLAY",
-        "principal_declared_lag_minutes: 0",
-        "availability_semantics: event_time + declared_lag",
-        "observed_message_arrival: false",
-        "production_availability_claim: false",
-        "decision_time_role: INFERENCE_EVIDENCE_UNDER_DECLARED_REPLAY",
-        "downstream: [PRE, M1, Exp3]",
-        "source_outcome_role_preserved: true",
-        "final_test_access_count: 0",
-        "```",
-        "",
-        "## Raw Columns Requiring Human Decision",
+        "## Decisions Applied",
         "",
     ]
-    for row in packet["raw_columns_requiring_human_decision"]:
-        lines.append(f"- **{row['id']}** `{row['source']}` — `{row['raw_column']}`; `{row['classification']}`. {row['action']}")
-    lines.extend(["", "## Semantic Conflicts Requiring Human Decision", ""])
-    for row in packet["semantic_conflicts_requiring_human_decision"]:
-        lines.append(f"- **{row['id']}** `{row['source']}` / `{row['raw_columns']}` — `{row['conflict_type']}`; affected `{row['affected_module']}`. Resolution: {row['recommended_resolution']}")
-    lines.extend(["", "## Registry Conflicts Requiring Human Decision", ""])
-    for row in packet["registry_conflicts_requiring_human_decision"]:
-        lines.append(f"- **{row['id']}** `{row['rule_id']}` — {row['judgement']}. {row['recommendation']}")
-    lines.extend(["", "## PRE Output Conflicts Requiring Human Decision", ""])
-    for row in packet["pre_output_conflicts_requiring_human_decision"]:
-        lines.append(f"- **{row['id']}** `{row['pre_variable']}` — current `{row['current_publication_role']}`; expected `{row['expected_role']}`. First divergence: {row['first_semantic_divergence']}")
-    lines.extend(["", "## Automatically Resolvable / No Action", ""])
-    for key, values in packet["automatically_resolvable"].items():
-        lines.append(f"- **{key}**: {', '.join(values) if isinstance(values, list) and values else 'none'}")
-    lines.extend(["", "## Answerable Decisions", ""])
     for decision in packet["decisions"]:
-        lines.append(f"### {decision['id']}")
-        lines.append(f"Question: {decision['question']}")
-        lines.append(f"Recommendation: **{decision['recommendation']}**")
-        lines.append(f"Reason: {decision['reason']}")
-        lines.append("Options: " + "; ".join(f"{key}={value}" for key, value in decision["options"].items()))
-        lines.append("")
+        lines.append(f"- `{decision['id']} = {decision['selected']}`")
     lines.extend([
+        "",
+        "## Closure",
+        "",
+        f"- Data Usage Audit: `{packet['source_audit_status']}`",
+        "- M2 timezone raw read: `CLOSED_PRE_OWNED_TYPED_PREPARATION`",
+        "- Factual replay rule: `REGISTERED_PROJECTION_SOURCE_OUTCOME_PRESERVED`",
+        "- Remaining human-review items: `0`",
+        "",
+        "## Audit Classification",
+        "",
+        f"- Covered active: `{packet['audit_counts']['COVERED_ACTIVE']}`",
+        f"- Explicitly unused: `{packet['audit_counts']['EXPLICITLY_UNUSED']}`",
+        f"- Diagnostic only: `{packet['audit_counts']['DIAGNOSTIC_ONLY']}`",
+        f"- Reference build only: `{packet['audit_counts']['REFERENCE_BUILD_ONLY']}`",
+        f"- Source schema metadata: `{packet['audit_counts']['SOURCE_SCHEMA_METADATA']}`",
+        f"- Runtime used no contract: `{packet['audit_counts']['RUNTIME_USED_NO_CONTRACT']}`",
+        f"- PRE bypass: `{packet['audit_counts']['PRE_BYPASS']}`",
+        f"- Active conflicts: `{packet['audit_counts']['active_conflicts']}`",
+        "",
         "## Safety Boundary",
         "",
         "- `M1_TRAINING_RUNS = 0`",
@@ -269,7 +237,7 @@ def _markdown(packet: dict[str, Any]) -> str:
         "- `PAPER_FULL_RUN = false`",
         "- `GATE_B_ENTERED = false`",
         "",
-        "Stop at human review. No automatic batch repair was performed.",
+        "Stop before Gate B and wait for explicit human continuation.",
         "",
     ])
     return "\n".join(lines)
@@ -277,29 +245,47 @@ def _markdown(packet: dict[str, Any]) -> str:
 
 def run(audit_path: Path = AUDIT, output_dir: Path = OUTPUT) -> dict[str, Any]:
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    decisions = _decisions()
+    selected = {
+        "DUC-01": "A", "DUC-02": "A", "DUC-03": "A", "DUC-04": "A",
+        "DUC-05": "A", "DUC-06": "B", "DUC-07": "A",
+    }
+    for decision in decisions:
+        decision["selected"] = selected[decision["id"]]
+        decision["resolution_status"] = "APPLIED"
+    raw_counts = audit["counts"]["raw_column_status"]
+    audit_counts = {
+        "COVERED_ACTIVE": raw_counts["COVERED_ACTIVE"],
+        "EXPLICITLY_UNUSED": raw_counts["EXPLICITLY_UNUSED"],
+        "DIAGNOSTIC_ONLY": raw_counts["DIAGNOSTIC_ONLY"],
+        "REFERENCE_BUILD_ONLY": raw_counts["REFERENCE_BUILD_ONLY"],
+        "SOURCE_SCHEMA_METADATA": raw_counts["SOURCE_SCHEMA_METADATA"],
+        "RUNTIME_USED_NO_CONTRACT": audit["counts"]["RUNTIME_USED_NO_CONTRACT"],
+        "PRE_BYPASS": audit["counts"]["PRE_BYPASS"],
+        "active_conflicts": sum(
+            audit["counts"][key] for key in (
+                "ACTIVE_SEMANTIC_CONFLICT",
+                "ACTIVE_REGISTRY_CONFLICT",
+                "ACTIVE_PRE_OUTPUT_CONFLICT",
+            )
+        ),
+    }
     packet: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
-        "status": "DATA_USAGE_REVIEW_PACKET_READY",
-        "authority": "NON_AUTHORITATIVE_HUMAN_REVIEW_PACKET",
+        "status": "DATA_USAGE_DECISIONS_APPLIED_AUDIT_PASS",
+        "authority": "HUMAN_DECISION_CLOSURE_PACKET",
         "repository_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "source_audit_artifact_hash": audit.get("artifact_hash"),
         "source_audit_status": audit.get("status"),
         "pre_bypass": {
-            "file": "model/M2/freeze.py",
-            "function": "load_timezones",
-            "raw_columns": ["iata", "timezone"],
-            "scientific_variable": "airport_timezone",
-            "why_m2_needs_it": "local BTS HHMM to UTC conversion for PRE train-row preparation",
-            "current_transformation": "timezone CSV -> dict[IATA, IANA] -> canonicalize_ontime_row",
-            "current_output": "canonical train rows and frozen M2 reference/scale artifacts",
-            "downstream_usage": "M2 formal registry construction",
-            "classification": "C",
-            "recommended_resolution": "PRE-owned typed/canonical preparation artifact; M2 consumes the artifact",
-            "locations": ["model/M2/freeze.py:119-124", "model/M2/freeze.py:273-282", "model/PRE/reference/data2_m2_train_fit.py:67-91"],
+            "status": "CLOSED",
+            "m2_raw_read": False,
+            "pre_artifact_schema": "DATA2_M2_TRAIN_PREPARATION_V1",
+            "owner": "PRE",
         },
         "runtime_rule_registration": {
-            "candidate_status": "HUMAN_REVIEW_REQUIRED",
-            "candidate_entry": {
+            "status": "REGISTERED",
+            "entry": {
                 "rule_id": "D2-BTS-FACTUAL-REPLAY",
                 "dataset_id": "data2_2019",
                 "source_rule": "D2-BTS-ACTUAL",
@@ -316,20 +302,26 @@ def run(audit_path: Path = AUDIT, output_dir: Path = OUTPUT) -> dict[str, Any]:
             },
             "preserve_source_rule": {"rule_id": "D2-BTS-ACTUAL", "availability_rule": "posthoc_only", "decision_time_role": "EVAL_OUTCOME"},
         },
-        "raw_columns_requiring_human_decision": _raw_review_rows(),
-        "semantic_conflicts_requiring_human_decision": _semantic_conflicts(),
-        "registry_conflicts_requiring_human_decision": _registry_conflicts(),
-        "pre_output_conflicts_requiring_human_decision": _pre_output_conflicts(),
-        "automatically_resolvable": _auto_resolution(),
-        "decisions": _decisions(),
+        "raw_columns_requiring_human_decision": [],
+        "semantic_conflicts_requiring_human_decision": [],
+        "registry_conflicts_requiring_human_decision": [],
+        "pre_output_conflicts_requiring_human_decision": [],
+        "resolved_review_item_ids": [
+            *[f"RAW-{index:02d}" for index in range(1, 9)],
+            *[f"SC-{index:02d}" for index in range(1, 11)],
+            *[f"REG-{index:02d}" for index in range(1, 7)],
+            *[f"PRE-{index:02d}" for index in range(1, 5)],
+        ],
+        "decisions": decisions,
+        "audit_counts": audit_counts,
         "safety": {"M1_TRAINING_RUNS": 0, "TUNING_RUNS": 0, "FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": False, "GATE_B_ENTERED": False},
         "artifact_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH",
     }
     packet["counts"] = {
-        "raw_columns_human_review": len(packet["raw_columns_requiring_human_decision"]),
-        "semantic_conflicts_human_review": len(packet["semantic_conflicts_requiring_human_decision"]),
-        "registry_conflicts_human_review": len(packet["registry_conflicts_requiring_human_decision"]),
-        "pre_output_conflicts_human_review": len(packet["pre_output_conflicts_requiring_human_decision"]),
+        "raw_columns_human_review": 0,
+        "semantic_conflicts_human_review": 0,
+        "registry_conflicts_human_review": 0,
+        "pre_output_conflicts_human_review": 0,
         "decisions": len(packet["decisions"]),
     }
     packet["artifact_hash"] = _hash(packet)

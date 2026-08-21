@@ -1,10 +1,10 @@
 schema_version: AIR_SLOT_DATA_USAGE_MAPPING_DRAFT_V1
 authoritative: false
-status: HUMAN_REVIEW_REQUIRED
-generated_from: AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V1
+status: PASS
+generated_from: AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V2
 mappings:
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-EUROSTAT
   source: eurostat
@@ -25,7 +25,7 @@ mappings:
   provenance: D1-EUROSTAT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-EUROSTAT
   source: eurostat
@@ -46,12 +46,12 @@ mappings:
   provenance: D1-EUROSTAT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
+  draft_status: SOURCE_SCHEMA_METADATA
   dataset_instance_id: data1_2019
   adapter_id: D1-EUROSTAT
   source: eurostat
   raw_column: id
-  source_schema_declared: false
+  source_schema_declared: true
   canonicalizer_accessed: true
   candidate_rule_ids: ''
   rule_id: D1-EUROSTAT
@@ -65,14 +65,14 @@ mappings:
   missing_rule: explicit
   downstream_module: PRE;M2;EVALUATION_ONLY
   provenance: D1-EUROSTAT@1.0.0
-  findings: REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER
+  findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
+  draft_status: SOURCE_SCHEMA_METADATA
   dataset_instance_id: data1_2019
   adapter_id: D1-EUROSTAT
   source: eurostat
   raw_column: size
-  source_schema_declared: false
+  source_schema_declared: true
   canonicalizer_accessed: true
   candidate_rule_ids: ''
   rule_id: D1-EUROSTAT
@@ -86,9 +86,9 @@ mappings:
   missing_rule: explicit
   downstream_module: PRE;M2;EVALUATION_ONLY
   provenance: D1-EUROSTAT@1.0.0
-  findings: REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-EUROSTAT
   source: eurostat
@@ -109,49 +109,91 @@ mappings:
   provenance: D1-EUROSTAT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
   raw_column: callsign
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-OPENSKY-FLIGHT;D1-OPENSKY-FLIGHT-EVENT
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-FLIGHT
+  canonical_variable: episode_identity
   owner: PRE
-  role: ''
+  role: EPISODE_CONSTRUCTION
   raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  unit: UTC
+  availability_rule: archive_rule_required
+  transformation: offline_episode_identity
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D1-OPENSKY-FLIGHT@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data1_2019
+  adapter_id: D1-FLIGHTLIST
+  source: opensky_flightlist
+  raw_column: callsign
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-FLIGHT-EVENT
+  canonical_variable: derived_operational_event
+  owner: PRE
+  role: EVAL_OUTCOME
+  raw_unit: ''
+  unit: UTC
+  availability_rule: posthoc_only
+  transformation: interval_event_proxy
+  missing_rule: explicit
+  downstream_module: EVALUATION_ONLY
+  provenance: D1-OPENSKY-FLIGHT-EVENT@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
   raw_column: day
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-OPENSKY-FLIGHT;D1-OPENSKY-FLIGHT-EVENT
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-FLIGHT
+  canonical_variable: episode_identity
   owner: PRE
-  role: ''
+  role: EPISODE_CONSTRUCTION
   raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  unit: UTC
+  availability_rule: archive_rule_required
+  transformation: offline_episode_identity
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D1-OPENSKY-FLIGHT@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data1_2019
+  adapter_id: D1-FLIGHTLIST
+  source: opensky_flightlist
+  raw_column: day
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-FLIGHT-EVENT
+  canonical_variable: derived_operational_event
+  owner: PRE
+  role: EVAL_OUTCOME
+  raw_unit: ''
+  unit: UTC
+  availability_rule: posthoc_only
+  transformation: interval_event_proxy
+  missing_rule: explicit
+  downstream_module: EVALUATION_ONLY
+  provenance: D1-OPENSKY-FLIGHT-EVENT@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -172,7 +214,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -193,7 +235,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -214,7 +256,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -235,7 +277,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -256,7 +298,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -277,7 +319,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -298,7 +340,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -319,7 +361,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -338,9 +380,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -361,7 +403,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -382,7 +424,7 @@ mappings:
   provenance: D1-OPENSKY-FLIGHT-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -401,9 +443,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data1_2019
   adapter_id: D1-FLIGHTLIST
   source: opensky_flightlist
@@ -422,72 +464,72 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: drct
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: dwpf
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: gust
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
@@ -508,28 +550,28 @@ mappings:
   provenance: D1-METAR@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: mslp
   source_schema_declared: true
   canonicalizer_accessed: false
-  candidate_rule_ids: ''
-  rule_id: D1-METAR
-  canonical_variable: current_weather
+  candidate_rule_ids: D1-METAR
+  rule_id: ''
+  canonical_variable: ''
   owner: PRE
-  role: INFERENCE_EVIDENCE
-  raw_unit: mixed
-  unit: canonical
-  availability_rule: replay_lag_and_max_age_60
-  transformation: weather_units_qnh_not_mslp_cloud_both
-  missing_rule: explicit
-  downstream_module: PRE;M1
-  provenance: D1-METAR@1.0.0
+  role: ''
+  raw_unit: ''
+  unit: ''
+  availability_rule: ''
+  transformation: ''
+  missing_rule: ''
+  downstream_module: ''
+  provenance: ''
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
@@ -550,154 +592,154 @@ mappings:
   provenance: D1-METAR@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: skyc1
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: skyc2
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: skyc3
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: skyl1
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: skyl2
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: skyl3
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: station
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
@@ -718,7 +760,7 @@ mappings:
   provenance: D1-METAR@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
@@ -739,70 +781,70 @@ mappings:
   provenance: D1-METAR@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: vsby
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-METAR
   source: iem_metar
   raw_column: wxcodes
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-METAR
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-METAR
+  canonical_variable: current_weather
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_and_max_age_60
+  transformation: weather_units_qnh_not_mslp_cloud_both
+  missing_rule: explicit
+  downstream_module: PRE;M1
+  provenance: D1-METAR@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data1_2019
   adapter_id: D1-OURAIRPORTS
   source: ourairports
   raw_column: elevation_ft
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-OURAIRPORTS
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-OURAIRPORTS
+  canonical_variable: airport_reference
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: FROZEN_REFERENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: static_snapshot
+  transformation: namespace_mapping
+  missing_rule: preserve_namespace
+  downstream_module: PRE;M1;M2;M3
+  provenance: D1-OURAIRPORTS@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-OURAIRPORTS
   source: ourairports
@@ -823,7 +865,7 @@ mappings:
   provenance: D1-OURAIRPORTS@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-OURAIRPORTS
   source: ourairports
@@ -844,7 +886,7 @@ mappings:
   provenance: D1-OURAIRPORTS@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-OURAIRPORTS
   source: ourairports
@@ -865,7 +907,7 @@ mappings:
   provenance: D1-OURAIRPORTS@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-OURAIRPORTS
   source: ourairports
@@ -886,28 +928,49 @@ mappings:
   provenance: D1-OURAIRPORTS@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data1_2019
   adapter_id: D1-OURAIRPORTS
   source: ourairports
   raw_column: type
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-OURAIRPORTS
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-OURAIRPORTS
+  canonical_variable: airport_reference
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: FROZEN_REFERENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: static_snapshot
+  transformation: namespace_mapping
+  missing_rule: preserve_namespace
+  downstream_module: PRE;M1;M2;M3
+  provenance: D1-OURAIRPORTS@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data1_2019
+  adapter_id: D1-STATE
+  source: opensky_state_vectors
+  raw_column: baroaltitude
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-STATE
+  canonical_variable: predecessor_motion
+  owner: PRE
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_required
+  transformation: normalize_motion
+  missing_rule: explicit_mask
+  downstream_module: PRE;M1
+  provenance: D1-OPENSKY-STATE@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -926,9 +989,9 @@ mappings:
   missing_rule: explicit
   downstream_module: EVALUATION_ONLY
   provenance: D1-TRAJECTORY-EVENT@1.0.0
-  findings: PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -947,9 +1010,30 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data1_2019
+  adapter_id: D1-STATE
+  source: opensky_state_vectors
+  raw_column: geoaltitude
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-STATE
+  canonical_variable: predecessor_motion
+  owner: PRE
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_required
+  transformation: normalize_motion
+  missing_rule: explicit_mask
+  downstream_module: PRE;M1
+  provenance: D1-OPENSKY-STATE@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -968,30 +1052,30 @@ mappings:
   missing_rule: explicit
   downstream_module: EVALUATION_ONLY
   provenance: D1-TRAJECTORY-EVENT@1.0.0
-  findings: PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
   raw_column: heading
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-OPENSKY-STATE
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-STATE
+  canonical_variable: predecessor_motion
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_required
+  transformation: normalize_motion
+  missing_rule: explicit_mask
+  downstream_module: PRE;M1
+  provenance: D1-OPENSKY-STATE@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1012,7 +1096,7 @@ mappings:
   provenance: D1-OPENSKY-STATE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1033,49 +1117,49 @@ mappings:
   provenance: D1-TRAJECTORY-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
   raw_column: lastcontact
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-OPENSKY-STATE
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-STATE
+  canonical_variable: predecessor_motion
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_required
+  transformation: normalize_motion
+  missing_rule: explicit_mask
+  downstream_module: PRE;M1
+  provenance: D1-OPENSKY-STATE@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
   raw_column: lastposupdate
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D1-OPENSKY-STATE
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-STATE
+  canonical_variable: predecessor_motion
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_required
+  transformation: normalize_motion
+  missing_rule: explicit_mask
+  downstream_module: PRE;M1
+  provenance: D1-OPENSKY-STATE@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1096,7 +1180,7 @@ mappings:
   provenance: D1-OPENSKY-STATE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1117,7 +1201,7 @@ mappings:
   provenance: D1-TRAJECTORY-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1138,7 +1222,7 @@ mappings:
   provenance: D1-OPENSKY-STATE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1159,7 +1243,7 @@ mappings:
   provenance: D1-TRAJECTORY-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1180,7 +1264,7 @@ mappings:
   provenance: D1-OPENSKY-STATE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1201,7 +1285,7 @@ mappings:
   provenance: D1-TRAJECTORY-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1222,7 +1306,7 @@ mappings:
   provenance: D1-OPENSKY-STATE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1243,7 +1327,7 @@ mappings:
   provenance: D1-TRAJECTORY-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1264,7 +1348,7 @@ mappings:
   provenance: D1-OPENSKY-STATE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1285,7 +1369,28 @@ mappings:
   provenance: D1-TRAJECTORY-EVENT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data1_2019
+  adapter_id: D1-STATE
+  source: opensky_state_vectors
+  raw_column: vertrate
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D1-OPENSKY-STATE
+  canonical_variable: predecessor_motion
+  owner: PRE
+  role: INFERENCE_EVIDENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: replay_lag_required
+  transformation: normalize_motion
+  missing_rule: explicit_mask
+  downstream_module: PRE;M1
+  provenance: D1-OPENSKY-STATE@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data1_2019
   adapter_id: D1-STATE
   source: opensky_state_vectors
@@ -1304,9 +1409,9 @@ mappings:
   missing_rule: explicit
   downstream_module: EVALUATION_ONLY
   provenance: D1-TRAJECTORY-EVENT@1.0.0
-  findings: PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-AIRPORT-REFERENCE
   source: airport_reference
@@ -1325,9 +1430,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-AIRPORT-REFERENCE
   source: airport_reference
@@ -1348,7 +1453,7 @@ mappings:
   provenance: D2-AIRPORT-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-AIRPORT-REFERENCE
   source: airport_reference
@@ -1369,7 +1474,7 @@ mappings:
   provenance: D2-AIRPORT-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-AIRPORT-REFERENCE
   source: airport_reference
@@ -1390,7 +1495,7 @@ mappings:
   provenance: D2-AIRPORT-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-AIRPORT-REFERENCE
   source: airport_reference
@@ -1411,7 +1516,7 @@ mappings:
   provenance: D2-AIRPORT-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-AIRPORT-REFERENCE
   source: airport_reference
@@ -1430,9 +1535,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1453,7 +1558,7 @@ mappings:
   provenance: D2-DB1B@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1474,7 +1579,7 @@ mappings:
   provenance: D2-PASSENGER-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1495,7 +1600,7 @@ mappings:
   provenance: D2-PASSENGER-REFERENCE-H1@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1516,7 +1621,7 @@ mappings:
   provenance: D2-DB1B@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1535,9 +1640,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1558,7 +1663,7 @@ mappings:
   provenance: D2-DB1B@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1579,7 +1684,7 @@ mappings:
   provenance: D2-DB1B@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1600,7 +1705,7 @@ mappings:
   provenance: D2-PASSENGER-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1621,7 +1726,7 @@ mappings:
   provenance: D2-PASSENGER-REFERENCE-H1@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1642,7 +1747,7 @@ mappings:
   provenance: D2-DB1B@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1663,7 +1768,7 @@ mappings:
   provenance: D2-PASSENGER-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-DB1B
   source: bts_db1b
@@ -1684,7 +1789,7 @@ mappings:
   provenance: D2-PASSENGER-REFERENCE-H1@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1703,9 +1808,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1726,7 +1831,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1747,7 +1852,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1768,7 +1873,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1789,7 +1894,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: DIAGNOSTIC_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1808,9 +1913,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: EXPLICITLY_UNUSED
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1829,9 +1934,9 @@ mappings:
   missing_rule: ''
   downstream_module: ''
   provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1852,7 +1957,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1873,7 +1978,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1894,7 +1999,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ISD
   source: noaa_isd
@@ -1915,7 +2020,7 @@ mappings:
   provenance: D2-NOAA-ISD@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -1936,7 +2041,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -1957,7 +2062,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -1978,7 +2083,7 @@ mappings:
   provenance: D2-CHAIN-GATE-GAP@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -1999,7 +2104,7 @@ mappings:
   provenance: D2-LABEL-R-IB@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2020,7 +2125,7 @@ mappings:
   provenance: D2-TURNAROUND-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2041,7 +2146,7 @@ mappings:
   provenance: D2-BTS-SCHEDULE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2062,28 +2167,7 @@ mappings:
   provenance: D2-CHAIN-GATE-GAP@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: CRSArrTime
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: ''
-  rule_id: D2-DOWNSTREAM-EXPOSURE
-  canonical_variable: expected_downstream_exposure
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: legs
-  unit: legs
-  availability_rule: schedule_reference_assumption
-  transformation: schedule_count_within_horizon_median_train_frozen
-  missing_rule: explicit
-  downstream_module: PRE;M1;M2
-  provenance: D2-DOWNSTREAM-EXPOSURE@1.0.0
-  findings: ''
-- authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2104,7 +2188,7 @@ mappings:
   provenance: D2-BTS-SCHEDULE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2125,28 +2209,7 @@ mappings:
   provenance: D2-CHAIN-GATE-GAP@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: CRSDepTime
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: ''
-  rule_id: D2-DOWNSTREAM-EXPOSURE
-  canonical_variable: expected_downstream_exposure
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: legs
-  unit: legs
-  availability_rule: schedule_reference_assumption
-  transformation: schedule_count_within_horizon_median_train_frozen
-  missing_rule: explicit
-  downstream_module: PRE;M1;M2
-  provenance: D2-DOWNSTREAM-EXPOSURE@1.0.0
-  findings: ''
-- authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2167,28 +2230,28 @@ mappings:
   provenance: D2-LABEL-DELTA-OB@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
   raw_column: Cancelled
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-BTS-SCHEDULE;D2-BTS-ACTUAL
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-ACTUAL
+  canonical_variable: realized_operational_event
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: EVAL_OUTCOME
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: posthoc_only
+  transformation: local_actual_to_utc_with_delay_date_offset
+  missing_rule: explicit_cancelled
+  downstream_module: EVALUATION_ONLY
+  provenance: D2-BTS-ACTUAL@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2209,7 +2272,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2230,7 +2293,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2251,7 +2314,7 @@ mappings:
   provenance: D2-CHAIN-GATE-GAP@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2272,7 +2335,7 @@ mappings:
   provenance: D2-LABEL-DELTA-OB@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2293,7 +2356,7 @@ mappings:
   provenance: D2-LABEL-R-IB@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2314,7 +2377,28 @@ mappings:
   provenance: D2-TURNAROUND-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data2_2019
+  adapter_id: D2-ONTIME
+  source: bts_ontime
+  raw_column: Dest
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-FLIGHT-IDENTITY
+  canonical_variable: flight_identity
+  owner: PRE
+  role: EPISODE_CONSTRUCTION
+  raw_unit: ''
+  unit: canonical
+  availability_rule: archive_episode_construction
+  transformation: retain_identity_without_numeric_encoding
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D2-BTS-FLIGHT-IDENTITY@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2335,7 +2419,7 @@ mappings:
   provenance: D2-BTS-SCHEDULE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2356,49 +2440,49 @@ mappings:
   provenance: D2-CHAIN-GATE-GAP@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: Dest
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: ''
-  rule_id: D2-DOWNSTREAM-EXPOSURE
-  canonical_variable: expected_downstream_exposure
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: legs
-  unit: legs
-  availability_rule: schedule_reference_assumption
-  transformation: schedule_count_within_horizon_median_train_frozen
-  missing_rule: explicit
-  downstream_module: PRE;M1;M2
-  provenance: D2-DOWNSTREAM-EXPOSURE@1.0.0
-  findings: ''
-- authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
   raw_column: Diverted
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-BTS-SCHEDULE;D2-BTS-ACTUAL
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-ACTUAL
+  canonical_variable: realized_operational_event
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: EVAL_OUTCOME
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: posthoc_only
+  transformation: local_actual_to_utc_with_delay_date_offset
+  missing_rule: explicit_cancelled
+  downstream_module: EVALUATION_ONLY
+  provenance: D2-BTS-ACTUAL@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data2_2019
+  adapter_id: D2-ONTIME
+  source: bts_ontime
+  raw_column: FlightDate
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-FLIGHT-IDENTITY
+  canonical_variable: flight_identity
+  owner: PRE
+  role: EPISODE_CONSTRUCTION
+  raw_unit: ''
+  unit: canonical
+  availability_rule: archive_episode_construction
+  transformation: retain_identity_without_numeric_encoding
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D2-BTS-FLIGHT-IDENTITY@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2419,7 +2503,7 @@ mappings:
   provenance: D2-BTS-SCHEDULE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2440,7 +2524,7 @@ mappings:
   provenance: D2-CHAIN-GATE-GAP@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2461,28 +2545,49 @@ mappings:
   provenance: D2-TEMPORAL-SPLIT@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
   raw_column: Flight_Number_Reporting_Airline
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-BTS-SCHEDULE;D2-BTS-ACTUAL
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-FLIGHT-IDENTITY
+  canonical_variable: flight_identity
   owner: PRE
-  role: ''
+  role: EPISODE_CONSTRUCTION
   raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  unit: canonical
+  availability_rule: archive_episode_construction
+  transformation: retain_identity_without_numeric_encoding
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D2-BTS-FLIGHT-IDENTITY@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data2_2019
+  adapter_id: D2-ONTIME
+  source: bts_ontime
+  raw_column: Origin
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-FLIGHT-IDENTITY
+  canonical_variable: flight_identity
+  owner: PRE
+  role: EPISODE_CONSTRUCTION
+  raw_unit: ''
+  unit: canonical
+  availability_rule: archive_episode_construction
+  transformation: retain_identity_without_numeric_encoding
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D2-BTS-FLIGHT-IDENTITY@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2503,7 +2608,7 @@ mappings:
   provenance: D2-BTS-SCHEDULE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2524,49 +2629,49 @@ mappings:
   provenance: D2-CHAIN-GATE-GAP@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: Origin
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: ''
-  rule_id: D2-DOWNSTREAM-EXPOSURE
-  canonical_variable: expected_downstream_exposure
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: legs
-  unit: legs
-  availability_rule: schedule_reference_assumption
-  transformation: schedule_count_within_horizon_median_train_frozen
-  missing_rule: explicit
-  downstream_module: PRE;M1;M2
-  provenance: D2-DOWNSTREAM-EXPOSURE@1.0.0
-  findings: ''
-- authoritative: false
-  draft_status: MISSING
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
   raw_column: Reporting_Airline
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-BTS-SCHEDULE;D2-BTS-ACTUAL
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-FLIGHT-IDENTITY
+  canonical_variable: flight_identity
   owner: PRE
-  role: ''
+  role: EPISODE_CONSTRUCTION
   raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  unit: canonical
+  availability_rule: archive_episode_construction
+  transformation: retain_identity_without_numeric_encoding
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D2-BTS-FLIGHT-IDENTITY@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data2_2019
+  adapter_id: D2-ONTIME
+  source: bts_ontime
+  raw_column: Tail_Number
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-FLIGHT-IDENTITY
+  canonical_variable: flight_identity
+  owner: PRE
+  role: EPISODE_CONSTRUCTION
+  raw_unit: ''
+  unit: canonical
+  availability_rule: archive_episode_construction
+  transformation: retain_identity_without_numeric_encoding
+  missing_rule: explicit
+  downstream_module: PRE
+  provenance: D2-BTS-FLIGHT-IDENTITY@1.0.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2585,30 +2690,9 @@ mappings:
   missing_rule: explicit_cancelled
   downstream_module: PRE;M1;M2
   provenance: D2-CHAIN-GATE-GAP@1.0.0
-  findings: PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN
+  findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: Tail_Number
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: ''
-  rule_id: D2-DOWNSTREAM-EXPOSURE
-  canonical_variable: expected_downstream_exposure
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: legs
-  unit: legs
-  availability_rule: schedule_reference_assumption
-  transformation: schedule_count_within_horizon_median_train_frozen
-  missing_rule: explicit
-  downstream_module: PRE;M1;M2
-  provenance: D2-DOWNSTREAM-EXPOSURE@1.0.0
-  findings: PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN
-- authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2629,7 +2713,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2650,7 +2734,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2671,7 +2755,7 @@ mappings:
   provenance: D2-LABEL-T-TX@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2692,7 +2776,7 @@ mappings:
   provenance: D2-TAXI-REFERENCE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2713,7 +2797,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
@@ -2734,70 +2818,7 @@ mappings:
   provenance: D2-BTS-ACTUAL@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: SEMANTIC_CONFLICT
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: decision_time
-  source_schema_declared: false
-  canonicalizer_accessed: false
-  candidate_rule_ids: ''
-  rule_id: D2-M1-TRAINING-COVERAGE
-  canonical_variable: m1_training_coverage
-  owner: PRE
-  role: TRAIN_LABEL
-  raw_unit: ''
-  unit: sample
-  availability_rule: posthoc_only
-  transformation: all_nodes_stage_gated_node_equal_weight
-  missing_rule: explicit
-  downstream_module: M1
-  provenance: D2-M1-TRAINING-COVERAGE@1.0.0
-  findings: REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER
-- authoritative: false
-  draft_status: SEMANTIC_CONFLICT
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: node_index
-  source_schema_declared: false
-  canonicalizer_accessed: false
-  candidate_rule_ids: ''
-  rule_id: D2-M1-TRAINING-COVERAGE
-  canonical_variable: m1_training_coverage
-  owner: PRE
-  role: TRAIN_LABEL
-  raw_unit: ''
-  unit: sample
-  availability_rule: posthoc_only
-  transformation: all_nodes_stage_gated_node_equal_weight
-  missing_rule: explicit
-  downstream_module: M1
-  provenance: D2-M1-TRAINING-COVERAGE@1.0.0
-  findings: REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER
-- authoritative: false
-  draft_status: SEMANTIC_CONFLICT
-  dataset_instance_id: data2_2019
-  adapter_id: D2-ONTIME
-  source: bts_ontime
-  raw_column: operational_stage
-  source_schema_declared: false
-  canonicalizer_accessed: false
-  candidate_rule_ids: ''
-  rule_id: D2-M1-TRAINING-COVERAGE
-  canonical_variable: m1_training_coverage
-  owner: PRE
-  role: TRAIN_LABEL
-  raw_unit: ''
-  unit: sample
-  availability_rule: posthoc_only
-  transformation: all_nodes_stage_gated_node_equal_weight
-  missing_rule: explicit
-  downstream_module: M1
-  provenance: D2-M1-TRAINING-COVERAGE@1.0.0
-  findings: REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER
-- authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
@@ -2818,112 +2839,91 @@ mappings:
   provenance: D2-T100@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
-  dataset_instance_id: data2_2019
-  adapter_id: D2-T100
-  source: bts_t100
-  raw_column: AIRCRAFT_TYPE
-  source_schema_declared: true
-  canonicalizer_accessed: false
-  candidate_rule_ids: ''
-  rule_id: D2-T100-CLASS
-  canonical_variable: segment_reference
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: mixed
-  unit: canonical
-  availability_rule: publication_period
-  transformation: preserve_month_grain_with_service_class
-  missing_rule: explicit
-  downstream_module: M2;M3;EVALUATION_ONLY
-  provenance: D2-T100-CLASS@1.0.0
-  findings: ''
-- authoritative: false
-  draft_status: SEMANTIC_CONFLICT
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
   raw_column: CLASS
-  source_schema_declared: false
+  source_schema_declared: true
   canonicalizer_accessed: true
   candidate_rule_ids: ''
   rule_id: D2-T100-CLASS
   canonical_variable: segment_reference
   owner: PRE
   role: FROZEN_REFERENCE
-  raw_unit: mixed
+  raw_unit: category
   unit: canonical
   availability_rule: publication_period
-  transformation: preserve_month_grain_with_service_class
-  missing_rule: explicit
+  transformation: preserve_optional_service_class_without_imputation
+  missing_rule: preserve_none
   downstream_module: M2;M3;EVALUATION_ONLY
   provenance: D2-T100-CLASS@1.0.0
-  findings: REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
   raw_column: DEST
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-T100
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-T100
+  canonical_variable: segment_reference
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: FROZEN_REFERENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: publication_period
+  transformation: preserve_month_grain_aircraft_unverified
+  missing_rule: explicit
+  downstream_module: PRE;M2;M3;EVALUATION_ONLY
+  provenance: D2-T100@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
   raw_column: MONTH
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-T100
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-T100
+  canonical_variable: segment_reference
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: FROZEN_REFERENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: publication_period
+  transformation: preserve_month_grain_aircraft_unverified
+  missing_rule: explicit
+  downstream_module: PRE;M2;M3;EVALUATION_ONLY
+  provenance: D2-T100@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
   raw_column: ORIGIN
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-T100
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-T100
+  canonical_variable: segment_reference
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: FROZEN_REFERENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: publication_period
+  transformation: preserve_month_grain_aircraft_unverified
+  missing_rule: explicit
+  downstream_module: PRE;M2;M3;EVALUATION_ONLY
+  provenance: D2-T100@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
@@ -2944,28 +2944,7 @@ mappings:
   provenance: D2-T100@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
-  dataset_instance_id: data2_2019
-  adapter_id: D2-T100
-  source: bts_t100
-  raw_column: PASSENGERS
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: ''
-  rule_id: D2-T100-CLASS
-  canonical_variable: segment_reference
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: mixed
-  unit: canonical
-  availability_rule: publication_period
-  transformation: preserve_month_grain_with_service_class
-  missing_rule: explicit
-  downstream_module: M2;M3;EVALUATION_ONLY
-  provenance: D2-T100-CLASS@1.0.0
-  findings: ''
-- authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
@@ -2986,49 +2965,28 @@ mappings:
   provenance: D2-T100@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: COVERED
-  dataset_instance_id: data2_2019
-  adapter_id: D2-T100
-  source: bts_t100
-  raw_column: SEATS
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: ''
-  rule_id: D2-T100-CLASS
-  canonical_variable: segment_reference
-  owner: PRE
-  role: FROZEN_REFERENCE
-  raw_unit: mixed
-  unit: canonical
-  availability_rule: publication_period
-  transformation: preserve_month_grain_with_service_class
-  missing_rule: explicit
-  downstream_module: M2;M3;EVALUATION_ONLY
-  provenance: D2-T100-CLASS@1.0.0
-  findings: ''
-- authoritative: false
-  draft_status: MISSING
+  draft_status: REFERENCE_BUILD_ONLY
   dataset_instance_id: data2_2019
   adapter_id: D2-T100
   source: bts_t100
   raw_column: YEAR
   source_schema_declared: true
   canonicalizer_accessed: true
-  candidate_rule_ids: D2-T100
-  rule_id: ''
-  canonical_variable: ''
+  candidate_rule_ids: ''
+  rule_id: D2-T100
+  canonical_variable: segment_reference
   owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
+  role: FROZEN_REFERENCE
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: publication_period
+  transformation: preserve_month_grain_aircraft_unverified
+  missing_rule: explicit
+  downstream_module: PRE;M2;M3;EVALUATION_ONLY
+  provenance: D2-T100@1.0.0
+  findings: ''
 - authoritative: false
-  draft_status: PRE_BYPASS
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-TIMEZONE
   source: timezone_reference
@@ -3047,9 +3005,9 @@ mappings:
   missing_rule: reject_unknown
   downstream_module: PRE
   provenance: D2-TIMEZONE@1.0.0
-  findings: RAW_COLUMN_ACCESSED_DOWNSTREAM_OF_PRE
+  findings: ''
 - authoritative: false
-  draft_status: COVERED
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-TIMEZONE
   source: timezone_reference
@@ -3070,49 +3028,7 @@ mappings:
   provenance: D2-TIMEZONE@1.0.0
   findings: ''
 - authoritative: false
-  draft_status: MISSING
-  dataset_instance_id: data2_2019
-  adapter_id: D2-TIMEZONE
-  source: timezone_reference
-  raw_column: lat
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: D2-TIMEZONE
-  rule_id: ''
-  canonical_variable: ''
-  owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
-- authoritative: false
-  draft_status: MISSING
-  dataset_instance_id: data2_2019
-  adapter_id: D2-TIMEZONE
-  source: timezone_reference
-  raw_column: lon
-  source_schema_declared: true
-  canonicalizer_accessed: true
-  candidate_rule_ids: D2-TIMEZONE
-  rule_id: ''
-  canonical_variable: ''
-  owner: PRE
-  role: ''
-  raw_unit: ''
-  unit: ''
-  availability_rule: ''
-  transformation: ''
-  missing_rule: ''
-  downstream_module: ''
-  provenance: ''
-  findings: REGISTRY_MAPPING_MISSING
-- authoritative: false
-  draft_status: PRE_BYPASS
+  draft_status: COVERED_ACTIVE
   dataset_instance_id: data2_2019
   adapter_id: D2-TIMEZONE
   source: timezone_reference
@@ -3131,4 +3047,4 @@ mappings:
   missing_rule: reject_unknown
   downstream_module: PRE
   provenance: D2-TIMEZONE@1.0.0
-  findings: RAW_COLUMN_ACCESSED_DOWNSTREAM_OF_PRE
+  findings: ''

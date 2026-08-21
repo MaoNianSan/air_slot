@@ -28,3 +28,27 @@ def test_registry_rejects_support_upgrade():
         "confidence":"HIGH", "external_evidence_rule_ids":[]}
     with pytest.raises(ValidationError, match="support ceiling"):
         DataUsageRule.model_validate(payload)
+
+
+def test_projection_and_derived_artifact_ownership_are_explicit():
+    base = {"rule_id":"r", "rule_version":"1.0.0", "freeze_state":"FROZEN",
+        "dataset_id":"data2_2019", "logical_source":"source", "raw_columns":[],
+        "raw_semantics":"derived", "raw_unit":None, "canonical_object":"Artifact",
+        "canonical_variable":"value", "canonical_unit":"canonical", "transformation_rule":"build",
+        "event_time_source":None, "availability_rule":"frozen", "decision_time_role":"FROZEN_REFERENCE",
+        "evidence_class":"DERIVED", "support_ceiling":"DERIVED", "missing_rule":"explicit",
+        "stale_rule":"not_applicable", "fallback_rule":"none", "pre_family":"artifact",
+        "downstream_consumers":["M2"], "scientific_purpose":"artifact", "semantic_status":"DOCUMENTED",
+        "confidence":"HIGH", "external_evidence_rule_ids":[]}
+    with pytest.raises(ValidationError, match="projection requires"):
+        DataUsageRule.model_validate({**base, "source_kind":"PROJECTION"})
+    with pytest.raises(ValidationError, match="requires a schema"):
+        DataUsageRule.model_validate({**base, "source_kind":"DERIVED_ARTIFACT"})
+    rule = DataUsageRule.model_validate({
+        **base,
+        "source_kind":"DERIVED_ARTIFACT",
+        "source_rule_id":"D2-BTS-SCHEDULE",
+        "derived_artifact_schema":"DATA2_REFERENCE_V1",
+    })
+    assert rule.raw_columns == ()
+    assert rule.derived_artifact_schema == "DATA2_REFERENCE_V1"

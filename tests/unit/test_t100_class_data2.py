@@ -2,6 +2,7 @@ from pathlib import Path
 
 from model.PRE.canonical.normalization import canonicalize_aggregate_row
 from model.PRE.feature_registry.loader import load_registry_bundle
+from model.PRE.adapters.registry import SourceAdapterRegistry
 from model.common.enums import DecisionTimeRole
 
 D1_RULE_IDS = {
@@ -70,9 +71,12 @@ def test_registry_d1_entries_unchanged_and_d2_class_rule_registered():
     d1_ids = {rule.rule_id for rule in rules if rule.dataset_id == "data1_2019"}
     assert d1_ids == D1_RULE_IDS
     d2_ids = [rule.rule_id for rule in rules if rule.dataset_id == "data2_2019"]
-    assert len(d2_ids) == 19
+    assert len(d2_ids) == 21
     class_rule = next(rule for rule in rules if rule.rule_id == "D2-T100-CLASS")
-    assert "CLASS" in class_rule.raw_columns
+    assert class_rule.raw_columns == ()
+    assert class_rule.projected_columns == ("CLASS",)
+    assert class_rule.source_kind == "PROJECTION"
+    assert class_rule.projection_role == "OPTIONAL_PROJECTED_METADATA"
     assert "M2" in class_rule.downstream_consumers
     assert "M3" in class_rule.downstream_consumers
     assert "EVALUATION_ONLY" in class_rule.downstream_consumers
@@ -83,5 +87,12 @@ def test_registry_d1_entries_unchanged_and_d2_class_rule_registered():
     assert class_rule.semantic_status == "DOCUMENTED"
     t100 = next(rule for rule in rules if rule.rule_id == "D2-T100")
     assert "CLASS" not in t100.raw_columns
+    assert {"ORIGIN", "DEST", "YEAR", "MONTH"} <= set(t100.raw_columns)
     assert t100.semantic_status == "AIRCRAFT_TYPE_UNVERIFIED"
     assert t100.freeze_state.value == "DEVELOPMENT_FROZEN"
+    adapter = SourceAdapterRegistry.load(Path("registries/source_adapter_registry.yaml")).get(
+        "data2_2019", "bts_t100"
+    )
+    assert "CLASS" not in adapter.required_columns
+    assert "CLASS" in adapter.projected_columns
+    assert adapter.optional_projected_columns == ("CLASS",)

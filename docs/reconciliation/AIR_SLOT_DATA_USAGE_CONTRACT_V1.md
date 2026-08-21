@@ -1,7 +1,7 @@
 # AIR_SLOT_DATA_USAGE_CONTRACT_V1
 
-Status: implementation-linked contract draft, generated from the Data Gate A1
-semantic repair. It is a boundary document, not scientific evidence and not a
+Status: `DATA_USAGE_DECISIONS_APPLIED_AUDIT_PASS` on August 21, 2026. This is
+an implementation-linked boundary document, not scientific evidence and not a
 replacement for the versioned registries.
 
 ## 1. Processing Boundary
@@ -47,6 +47,12 @@ automatically a model feature.
 | `FlightDate`, `CRSDepTime`, `CRSArrTime` | UTC schedule reference | `schedule.signed_minutes_to_crs_departure` is dynamic M1 input |
 | `DepTime`, `ArrTime`, `WheelsOff`, `WheelsOn` | direct operational clocks | `EVAL_OUTCOME`/labels; inference only through declared replay |
 | `DepDelayMinutes`, `ArrDelayMinutes`, `TaxiOut`, `TaxiIn` | derived checks, labels, frozen references | never a current feature merely because the archive contains it |
+| `Cancelled`, `Diverted` | completed operational outcome status | `D2-BTS-ACTUAL`; never schedule evidence |
+
+Flight identity and aircraft continuity are registered separately as
+`D2-BTS-FLIGHT-IDENTITY`. `FlightDate`, carrier, flight number, route, and
+`Tail_Number` are retained identity/provenance fields; they are not ordinal or
+continuous M1 features.
 
 ### Direct/derived precedence
 
@@ -66,6 +72,9 @@ rule_id = D2-BTS-FACTUAL-REPLAY
 policy = DECLARED_EVENT_TIME_REPLAY
 declared_lag_minutes = 0
 availability_time = operational_event_time
+downstream = PRE, M1, EXP3
+observed_message_arrival_claim = false
+production_availability_claim = false
 ```
 
 This is a retrospective event-time assumption. It does not claim observed
@@ -94,7 +103,44 @@ principal schema. Wind gust may remain in the PRE canonical schema, but absent
 an authoritative Data2 mapping it is removed from principal M1, including its
 derived features and dedicated masks.
 
-## 6. Derived-Value Rule
+## 6. Data1 Source Mapping
+
+- `D1-OPENSKY-FLIGHT` declares `callsign` and `day` for episode/flight identity.
+- `D1-OPENSKY-STATE` declares altitude, heading, vertical-rate, position-update,
+  and contact fields consumed by canonicalization; source `callsign` is
+  explicitly unused.
+- `D1-METAR` declares the station, temperature/dewpoint, wind, visibility,
+  cloud-layer, present-weather, and METAR-text fields actually consumed. Source
+  `mslp` is explicitly unused; QNH comes from the METAR text contract.
+- OurAirports `elevation_ft` and `type` are reference-build-only metadata.
+- Eurostat `id` and `size` are JSON-stat source-schema metadata, not passenger
+  scientific variables.
+
+## 7. Reference and Artifact Boundaries
+
+- T-100 `ORIGIN`, `DEST`, `YEAR`, and `MONTH` are reference-build-only join and
+  period fields. `CLASS` is optional projected metadata and remains `None` when
+  absent.
+- The timezone adapter publishes only airport identity to IANA timezone;
+  latitude/longitude belong to the airport reference contract.
+- `turnaround_reference` and `taxi_reference` are static, train-frozen,
+  lineage-complete `successor_state` publications.
+- `expected_downstream_exposure` is only an M2 frozen reference derived from
+  canonical PRE schedule rows. It is not a PRE/M1 principal state variable.
+- M1 coverage metadata uses
+  `DERIVED_M1_TRAINING_COVERAGE_ARTIFACT_V1`; `decision_time`, `node_index`,
+  and `operational_stage` are PRE decision-node fields, not BTS columns.
+- `passenger_reference` and `segment_reference` remain aggregate domain proxies,
+  never flight-level direct truth.
+
+## 8. M2 PRE Ownership
+
+M2 calls `build_data2_m2_train_preparation(...)` and consumes
+`DATA2_M2_TRAIN_PREPARATION_V1`. Timezone lookup, BTS CSV reading, HHMM-to-UTC
+conversion, and canonical row construction remain inside PRE. M2 does not open
+the timezone CSV or interpret its raw schema.
+
+## 9. Derived-Value Rule
 
 Every delta/AR variable declares source columns, formula, availability, unit,
 and missing behavior. A delta is valid only when current and previous source
@@ -103,7 +149,7 @@ met. Otherwise the encoded value is neutral and a derived-missing mask is 1;
 missing values are never silently replaced by zero before differencing or
 averaging.
 
-## 7. M1 Principal Classification
+## 10. M1 Principal Classification
 
 - Dynamic: weather values, typed ceiling masks, schedule countdown, state flags,
   legal deltas/AR, observation-age and evidence/support masks.
@@ -114,7 +160,7 @@ averaging.
 - Removed principal duplicates: wind-gust features, wind-direction delta/AR,
   stage one-hot, and fixed-grid `node.spacing_minutes`.
 
-## 8. Forbidden Practices
+## 11. Forbidden Practices
 
 1. Raw columns directly into a model.
 2. Fuzzy production mapping such as `if "delay" in column`.
@@ -123,7 +169,7 @@ averaging.
 5. Tail/carrier/airport identities ordinal-encoded as numeric distance.
 6. Data1 weather or post-hoc Data2 outcomes silently overlaid into another role.
 
-## 9. Registry and Freeze Requirements
+## 12. Registry and Freeze Requirements
 
 Each mapping entry must expose:
 
@@ -134,11 +180,11 @@ availability_rule, transformation, missing_rule, downstream_module, provenance
 
 Before M1 training, freeze and hash `DATA_MAPPING_VERSION`,
 `FEATURE_SCHEMA_VERSION`, `NORMALIZATION_VERSION`, `LABEL_VERSION`, and
-`REPLAY_POLICY_VERSION`. The generated mapping draft and audit are diagnostic
-artifacts; they require human review before promotion into authoritative
-registries or any Gate B/training workflow.
+`REPLAY_POLICY_VERSION`. The seven DUC decisions are applied to the current
+registries. This closure does not authorize Gate B, M1 training, tuning, Final
+Test, FULL, or paper runs.
 
-## 10. Upstream Debugging Rule
+## 13. Upstream Debugging Rule
 
 When a downstream experiment fails, trace:
 
@@ -149,18 +195,17 @@ experiment -> model -> feature encoder -> PRE variable -> raw source
 Fix the first semantic mismatch at its owning layer; do not patch the model to
 hide an upstream data-contract error.
 
-## 11. Repeatable Contract Audit
+## 14. Repeatable Contract Audit
 
 Run the read-only diagnostic audit with:
 
 ```text
-python validation/data_usage_contract_audit.py
+python -m validation.data_usage_contract_audit
 ```
 
 It reads the current source-adapter registry, data-usage/scientific registries,
 PRE canonicalizers/publication paths, and M1 feature schema. It does not open a
-raw-data root or modify an authoritative registry. The generated mapping is a
-non-authoritative draft for human review:
+raw-data root. The generated mapping remains a trace artifact:
 
 ```text
 artifacts/diagnostics/data_usage_contract_audit/
@@ -172,6 +217,11 @@ artifacts/diagnostics/data_usage_contract_audit/
   AIR_SLOT_DATA_USAGE_M1_FEATURE_AUDIT.csv
 ```
 
-The audit classifies each boundary as `COVERED`, `MISSING`,
-`SEMANTIC_CONFLICT`, or `PRE_BYPASS`. A generated result does not freeze a
-mapping, resolve Gate A1 human review, authorize M1 training, or enter Gate B.
+PASS classifications are `COVERED_ACTIVE`, `EXPLICITLY_UNUSED`,
+`DIAGNOSTIC_ONLY`, `REFERENCE_BUILD_ONLY`, and `SOURCE_SCHEMA_METADATA`.
+Failures are `PRE_BYPASS`, `RUNTIME_USED_NO_CONTRACT`,
+`AMBIGUOUS_ACTIVE_COLUMN`, `ACTIVE_SEMANTIC_CONFLICT`,
+`ACTIVE_REGISTRY_CONFLICT`, and `ACTIVE_PRE_OUTPUT_CONFLICT`.
+
+The current closure requires every failure count to be zero. A PASS still does
+not authorize M1 training or entry into Gate B.

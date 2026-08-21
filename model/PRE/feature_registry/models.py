@@ -4,7 +4,17 @@ from model.common.enums import DecisionTimeRole, EvidenceClass, FreezeState, wea
 from model.common.value_objects import FrozenModel
 
 
-Consumer = Literal["PRE", "M1", "M2", "M3", "EVALUATION_ONLY"]
+Consumer = Literal["PRE", "M1", "M2", "M3", "EXP3", "EVALUATION_ONLY"]
+SourceKind = Literal["RAW_SOURCE", "PROJECTION", "DERIVED_ARTIFACT"]
+ColumnRole = Literal[
+    "COVERED_ACTIVE",
+    "RETAINED_IDENTITY",
+    "OPTIONAL_PROJECTED_METADATA",
+    "EXPLICITLY_UNUSED",
+    "DIAGNOSTIC_ONLY",
+    "REFERENCE_BUILD_ONLY",
+    "SOURCE_SCHEMA_METADATA",
+]
 
 
 class DataUsageRule(FrozenModel):
@@ -18,11 +28,39 @@ class DataUsageRule(FrozenModel):
     downstream_consumers: tuple[Consumer, ...]; scientific_purpose: str
     semantic_status: str; confidence: Literal["HIGH", "MEDIUM", "LOW"]
     external_evidence_rule_ids: tuple[str, ...] = ()
+    source_kind: SourceKind = "RAW_SOURCE"
+    source_rule_id: str | None = None
+    projected_columns: tuple[str, ...] = ()
+    raw_column_roles: dict[str, ColumnRole] = {}
+    projected_column_roles: dict[str, ColumnRole] = {}
+    projection_role: str | None = None
+    declared_lag_minutes: int | None = Field(default=None, ge=0)
+    observed_message_arrival_claim: bool | None = None
+    production_availability_claim: bool | None = None
+    source_outcome_role_preserved: bool | None = None
+    derived_artifact_schema: str | None = None
 
     @model_validator(mode="after")
     def enforce_support_ceiling(self):
         if not weaker_or_equal(self.evidence_class, self.support_ceiling):
             raise ValueError("registry evidence exceeds support ceiling")
+        if not set(self.raw_column_roles) <= set(self.raw_columns):
+            raise ValueError("raw column role references undeclared column")
+        if not set(self.projected_column_roles) <= set(self.projected_columns):
+            raise ValueError("projected column role references undeclared column")
+        if self.source_kind == "RAW_SOURCE":
+            if self.source_rule_id or self.derived_artifact_schema:
+                raise ValueError("raw source cannot declare projection/artifact ownership")
+        elif self.source_kind == "PROJECTION":
+            if not self.source_rule_id or not self.projection_role:
+                raise ValueError("projection requires source_rule_id and projection_role")
+            if self.raw_columns:
+                raise ValueError("projection cannot own raw columns")
+        elif self.source_kind == "DERIVED_ARTIFACT":
+            if self.raw_columns or self.projected_columns:
+                raise ValueError("derived artifact cannot own source columns")
+            if not self.derived_artifact_schema:
+                raise ValueError("derived artifact requires a schema id")
         return self
 
 
