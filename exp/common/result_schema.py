@@ -33,7 +33,7 @@ class SupportStatus(str, Enum):
 class MetricObservation(BaseModel):
     """One scalar metric value with its scientific support label."""
 
-    model_config = ConfigDict(frozen=True, extra="forbid")
+    model_config = ConfigDict(frozen=True, extra="forbid", populate_by_name=True)
 
     metric_id: str = Field(min_length=1)
     level: MetricLevel
@@ -57,20 +57,31 @@ class ExperimentResult(BaseModel):
     variant, decide support, or promote a result to a paper claim.
     """
 
-    model_config = ConfigDict(frozen=True, extra="forbid")
+    model_config = ConfigDict(frozen=True, extra="forbid", populate_by_name=True)
 
     schema_version: str = "AIR_SLOT_EXPERIMENT_RESULT_V1"
     experiment_id: str = Field(min_length=1)
     variant_id: str = Field(min_length=1)
     dataset_id: str = Field(min_length=1)
+    split: str = "DEVELOPMENT"
+    tier: str = "FAST"
+    episode_count: int = Field(default=0, ge=0)
+    node_count: int = Field(default=0, ge=0)
     seed: int
     timestamp: datetime
     model_versions: dict[str, str] = Field(min_length=1)
+    model_hashes: dict[str, str] = Field(default_factory=dict)
+    registry_hashes: dict[str, str] = Field(default_factory=dict)
     artifact_versions: dict[str, str] = Field(min_length=1)
     scenario_hash: str = Field(pattern=SHA256_PATTERN)
     config_hash: str = Field(pattern=SHA256_PATTERN)
     metrics: dict[str, MetricObservation] = Field(default_factory=dict)
     support_status: SupportStatus
+    lineage: dict[str, Any] = Field(default_factory=dict)
+    runtime: dict[str, Any] = Field(default_factory=dict)
+    final_test_access_count: int = Field(
+        default=0, ge=0, alias="FINAL_TEST_ACCESS_COUNT",
+    )
     provenance: dict[str, Any] = Field(min_length=1)
 
     @field_validator("timestamp")
@@ -96,6 +107,8 @@ class ExperimentResult(BaseModel):
         ]
         if mismatches:
             raise ValueError("EXPERIMENT_RESULT_METRIC_KEY_MISMATCH")
+        if self.final_test_access_count != 0:
+            raise ValueError("EXPERIMENT_RESULT_FINAL_TEST_ACCESS_MUST_BE_ZERO")
         return self
 
     @property
@@ -113,4 +126,3 @@ __all__ = [
     "MetricObservation",
     "SupportStatus",
 ]
-

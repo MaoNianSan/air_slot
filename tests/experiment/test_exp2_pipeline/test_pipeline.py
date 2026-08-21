@@ -17,7 +17,7 @@ def test_pipeline_config_freezes_shape_without_scientific_values():
 
     assert config["experiment_id"] == "EXP2"
     assert config["variants"]["exp2a"]["reference"] == "EXP2A_JOINT"
-    assert config["variants"]["exp2b"]["reference"] == "EXP2B_COMPONENT"
+    assert config["variants"]["exp2b"]["reference"] == "EXP2B_7COMP"
     assert all(
         reference["path"] == "REQUIRED"
         for reference in config["artifact_references"].values()
@@ -65,9 +65,9 @@ def test_variant_switching_uses_one_fixed_binding(execution_fixture, recording_e
 
     assert tuple(result.variant_id for result in results) == ("EXP2A_MARGINAL", "EXP2B_SCALAR")
     assert [(row[1], row[2], row[3]) for row in calls if row[0] == "M3"] == [
-        ("EXP2A_JOINT", "EXP2A_JOINT", "EXP2B_COMPONENT"),
-        ("EXP2A_MARGINAL", "EXP2A_MARGINAL", "EXP2B_COMPONENT"),
-        ("EXP2B_COMPONENT", "EXP2A_JOINT", "EXP2B_COMPONENT"),
+        ("EXP2A_JOINT", "EXP2A_JOINT", "EXP2B_7COMP"),
+        ("EXP2A_MARGINAL", "EXP2A_MARGINAL", "EXP2B_7COMP"),
+        ("EXP2B_7COMP", "EXP2A_JOINT", "EXP2B_7COMP"),
         ("EXP2B_SCALAR", "EXP2A_JOINT", "EXP2B_SCALAR"),
     ]
 
@@ -94,7 +94,7 @@ def test_lineage_and_fixed_binding_reject_variant_specific_artifacts(
     _, m3_executor, m4_evaluator = recording_executors
     anchor = execution_fixture["manifest"]
     changed = anchor.model_copy(update={
-        "variant_id": "EXP2B_CHANNEL",
+        "variant_id": "EXP2B_3CHANNEL",
         "config_hash": "sha256:" + "8" * 64,
     })
 

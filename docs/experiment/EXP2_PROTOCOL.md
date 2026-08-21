@@ -1,104 +1,42 @@
-# Exp2 Information-Sufficiency Protocol
+# Exp2 Protocol
 
-## Scientific question
+## Question
 
-How much information structure is required for downstream recovery decision evaluation?
+How much and what structure of information should be retained so that the
+recovery state is sufficient without being needlessly expanded?
 
-The experiment compares representations, not models. M1 produces one frozen joint scenario artifact. Exp2 applies controlled representation degradation without retraining M1. No variant is a model candidate or a claim of superiority.
+## Active Variants
 
-## Frozen comparisons
-
-### Exp2A: scenario information structure
-
-Reference: `EXP2A_JOINT`.
-
-| Variant | Retained | Removed |
+| Subexperiment | Variants | Only Changed Factor |
 | --- | --- | --- |
-| `EXP2A_JOINT` | Scenario identity, weights, and joint samples | Nothing |
-| `EXP2A_MARGINAL` | Each weighted `D_OB`, `D_TX`, and `D_TO` marginal plus field-level source lineage | Cross-variable within-scenario association |
-| `EXP2A_COLLAPSED` | Weighted expected consequence state and all source lineage | Distribution and scenario-specific variation |
+| Exp2A | EXP2A_POINT, EXP2A_MARGINAL, EXP2A_JOINT | Uncertainty/dependence representation of one frozen M1 artifact |
+| Exp2B | EXP2B_SCALAR, EXP2B_3CHANNEL, EXP2B_7COMP | Consequence resolution of one frozen seven-component M2 artifact |
 
-The same frozen M1 artifact hash, M1 artifact version, model/calibration identity, scenario cohort, and seed are used for all three.
+Exp2 preserves full/adaptive source state, direct-information permissions,
+episodes/nodes, action availability, action library, support/provenance gate,
+and random seed. It never changes history length, state vintage, refresh
+cadence, action membership, or M1/M2/M3/M4 scientific semantics.
 
-### Exp2B: consequence resolution
+POINT is a coherent weighted joint scenario, not a component-wise mean.
+MARGINAL preserves primitive marginals and recomputes D_TO samplewise as
+D_OB + D_TX. Coarse consequence response contracts must be fit on Train only
+and cannot read hidden seven-component values at the coarse decision boundary.
 
-Reference: `EXP2B_COMPONENT`.
+## Metric Hierarchy
 
-| Variant | Representation |
-| --- | --- |
-| `EXP2B_COMPONENT` | Seven M2-emitted consequence components |
-| `EXP2B_CHANNEL` | Flight, Passenger, and Resource aggregates |
-| `EXP2B_SCALAR` | One all-component aggregate |
+Exp2A: CRPS, Brier/calibration/coverage where observations exist, Variogram
+Score for dependence, and Top-1/action-family sensitivity.
 
-Aggregation uses only values already emitted by M2. An unsupported required component makes its aggregate unavailable. The protocol does not recompute M2, infer missing values, normalize CU, treat null as zero, or interpret CU as money.
+Exp2B: Top-1 agreement/disagreement with the seven-component representation,
+action-family composition, and matched mechanism cases. Complete-reference
+model-implied J is an internal consistency diagnostic only, not independent
+action-effect evidence.
 
-## Fixed-factor contract
+## Gates
 
-For every comparison, the following remain fixed:
+FAST validates transform identity, marginal parity, Train-only coarsening,
+split/lineage, and result schema. M4-dependent decision/risk quantities remain
+NOT_RUN while response/mapping/tail gates are unresolved.
 
-- dataset and cohort;
-- random seed;
-- M1 model, calibration, and frozen scenario artifact;
-- M2 frozen consequence artifact;
-- M3 candidate action set and response registry;
-- M4 monetary mapping and risk policy;
-- evaluation definitions and reference representation.
-
-Any difference outside the declared representation factor invalidates the comparison.
-
-## Execution sequence
-
-```text
-frozen M1 + frozen M2
-        |
-        v
-Exp2 representation adapter
-        |
-        v
-same M3 action-response interface
-        |
-        v
-same M4 residual-risk interface
-        |
-        v
-paired common evaluator -> common result schema
-```
-
-The protocol validates current typed M3 and M4 envelopes at each boundary. It rejects action-set changes, response-rule changes, monetary-mapping changes, risk-policy changes, and M4 bypass.
-
-## Metrics
-
-State level records a frozen uncertainty metric only when both observations and its protocol are available. At present `STATE_CRPS` is recorded as `NOT_RUN`; no substitute proxy is created.
-
-Decision level records top-action disagreement and pairwise ranking change from supported M4 residual-risk values. Risk level records residual-risk difference and CVaR difference using M4 outputs; the common V1 schema classifies these as decision-level observations because it currently exposes `STATE`, `DECISION`, and `SYSTEM` levels only.
-
-All numeric differences use `variant - reference`. Missing, abstained, or non-ranked M4 values do not become zeros. Support and ranking authority remain in metric metadata.
-
-## Support and stopping rules
-
-An Exp2 result is `SUPPORTED` only if the four downstream comparison metrics are authoritative and supported under one frozen M4 mapping and policy. Conditional M4 values produce `PARTIAL`; unavailable metrics produce `BLOCKED`, with the individual metrics marked `NOT_RUN`.
-
-Current scientific execution stops before results because:
-
-- current V2 M3 supports only the A00 identity path, not a frozen multi-action response comparison;
-- a production M4 monetary mapping is not frozen;
-- the required M4 risk-policy decisions are not frozen;
-- no frozen state-uncertainty observation protocol was supplied.
-
-These are scientific input gates, not permission to alter `model/`, PRE, M1, M2, M3, or M4.
-
-## Explicit exclusions
-
-This protocol does not authorize:
-
-- Exp1, Exp3, or Exp4 implementation;
-- M1 retraining or separate models per representation;
-- M2 recomputation or manual consequence construction;
-- action-set, response-registry, monetary-mapping, or risk-policy modification;
-- raw-CU ranking or bypassing M4;
-- parameter tuning or best-variant selection;
-- Final Test, `paper_full`, scientific conclusions, or paper-result generation.
-
-## Future gated run
-
-After the M3/M4 scientific artifacts are frozen, implement a concrete `Exp2DownstreamInterface`, supply the same object to an `Exp2RunContext`, and execute each registered variant through `Exp2Runner.execute`. Before any run, record the dataset/cohort, seed, source artifact versions and hashes, M3 response-registry identity, M4 mapping hash, and risk-policy hash. Run authorization remains a separate human gate.
+FINAL_TEST_ACCESS_COUNT = 0
+PAPER_FULL_RUN = FALSE

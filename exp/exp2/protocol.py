@@ -22,7 +22,7 @@ from .representation import (
 from .variants import (
     EXP2A_JOINT,
     EXP2A_VARIANTS,
-    EXP2B_COMPONENT,
+    EXP2B_7COMP,
     EXP2B_VARIANTS,
     EXP2_VARIANT_REGISTRY,
 )
@@ -113,13 +113,13 @@ class Exp2Protocol(ExperimentProtocol):
             artifact_version=context.m2_artifact_version,
         )
         joint = scenario_adapter.transform(EXP2A_JOINT)
-        component = consequence_adapter.transform(EXP2B_COMPONENT)
+        component = consequence_adapter.transform(EXP2B_7COMP)
         if context.variant_id in EXP2A_VARIANTS:
             reference_id = EXP2A_JOINT
             variant_scenarios = scenario_adapter.transform(context.variant_id)
             variant_consequences = component
         elif context.variant_id in EXP2B_VARIANTS:
-            reference_id = EXP2B_COMPONENT
+            reference_id = EXP2B_7COMP
             variant_scenarios = joint
             variant_consequences = consequence_adapter.transform(context.variant_id)
         else:  # registry validation above makes this defensive only.

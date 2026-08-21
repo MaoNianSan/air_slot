@@ -19,7 +19,7 @@ from ..representation import (
     ConsequenceRepresentationAdapter,
     ScenarioRepresentationAdapter,
 )
-from ..variants import EXP2A_JOINT, EXP2B_COMPONENT
+from ..variants import EXP2A_JOINT, EXP2B_7COMP
 from .execution_manifest import (
     ArtifactKind,
     ArtifactReference,
@@ -299,7 +299,7 @@ class Exp2ArtifactLoader:
                 payload.consequences,
                 artifact_version=reference.artifact_version,
             )
-            component = adapter.transform(EXP2B_COMPONENT)
+            component = adapter.transform(EXP2B_7COMP)
         except (ContractError, TypeError, ValueError) as exc:
             self._missing(reference, f"M2_CONTRACT_INVALID:{type(exc).__name__}")
         return LoadedM2Artifact(

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import math
 
+from exp.common.metrics_v2 import percentile
+
 
 def top1_agreement(reference_rankings, sensitivity_rankings) -> float | None:
     pairs = [(left, right) for left, right in zip(reference_rankings, sensitivity_rankings)
@@ -34,3 +36,32 @@ def deployment_gate(rows) -> dict:
     stats = latency_percentiles(rows, "E2E_latency")
     return {**stats, "gate_seconds": 300,
             "scientific_runtime_gate": "PASS" if stats["p95"] is not None and stats["p95"] < 300 else "FAIL"}
+
+
+def predictive_metrics(predictions, targets, distributions=()):
+    errors = [abs(float(left) - float(right)) for left, right in zip(predictions, targets)]
+    return {
+        "MAE_MINUTES": sum(errors) / len(errors) if errors else None,
+        "CRPS": None if not distributions else sum(
+            abs(float(sample) - float(target))
+            for sample, target in zip(distributions, targets)
+        ) / len(targets),
+    }
+
+
+def decision_validity_rates(rows):
+    values = tuple(rows)
+    if not values:
+        return {key: None for key in (
+            "FORMAL_RECOMMENDATION_AVAILABILITY", "EXECUTION_FEASIBLE_RATE",
+            "STRUCTURAL_FEASIBLE_RATE", "FACTUAL_CONSISTENCY_RATE",
+            "EVIDENCE_SUPPORTED_RATE", "DECISION_TIME_LEAKAGE_RATE",
+        )}
+    return {
+        "FORMAL_RECOMMENDATION_AVAILABILITY": sum(bool(row.get("formal_available")) for row in values) / len(values),
+        "EXECUTION_FEASIBLE_RATE": sum(bool(row.get("execution_feasible")) for row in values) / len(values),
+        "STRUCTURAL_FEASIBLE_RATE": sum(bool(row.get("structural_feasible")) for row in values) / len(values),
+        "FACTUAL_CONSISTENCY_RATE": sum(bool(row.get("factual_consistent")) for row in values) / len(values),
+        "EVIDENCE_SUPPORTED_RATE": sum(bool(row.get("evidence_supported")) for row in values) / len(values),
+        "DECISION_TIME_LEAKAGE_RATE": sum(bool(row.get("leakage")) for row in values) / len(values),
+    }

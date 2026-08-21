@@ -37,7 +37,7 @@ class ExperimentReporter:
         if not isinstance(result, ExperimentResult):
             raise TypeError("EXPERIMENT_REPORT_RESULT_TYPE_REQUIRED")
         self._require_writable(path)
-        path.write_text(result.model_dump_json(indent=2) + "\n", encoding="utf-8")
+        path.write_text(result.model_dump_json(indent=2, by_alias=True) + "\n", encoding="utf-8")
         return path
 
     def metric_rows(self, results: Iterable[ExperimentResult]) -> tuple[dict, ...]:
@@ -49,13 +49,22 @@ class ExperimentReporter:
                 "experiment_id": result.experiment_id,
                 "variant_id": result.variant_id,
                 "dataset_id": result.dataset_id,
+                "split": result.split,
+                "tier": result.tier,
+                "episode_count": result.episode_count,
+                "node_count": result.node_count,
                 "seed": result.seed,
                 "timestamp": result.timestamp.isoformat(),
                 "scenario_hash": result.scenario_hash,
                 "config_hash": result.config_hash,
                 "support_status": result.support_status.value,
                 "model_versions": self._json(result.model_versions),
+                "model_hashes": self._json(result.model_hashes),
+                "registry_hashes": self._json(result.registry_hashes),
                 "artifact_lineage": self._lineage(result),
+                "lineage": self._json(result.lineage),
+                "runtime": self._json(result.runtime),
+                "FINAL_TEST_ACCESS_COUNT": result.final_test_access_count,
                 "provenance": self._json(result.provenance),
                 "result_hash": result.result_hash,
             }
@@ -87,9 +96,11 @@ class ExperimentReporter:
         rows = self.metric_rows(results)
         self._require_writable(path)
         fieldnames = (
-            "experiment_id", "variant_id", "dataset_id", "seed", "timestamp",
-            "scenario_hash", "config_hash", "support_status", "model_versions",
-            "artifact_lineage", "provenance", "result_hash", "metric_id",
+            "experiment_id", "variant_id", "dataset_id", "split", "tier",
+            "episode_count", "node_count", "seed", "timestamp", "scenario_hash",
+            "config_hash", "support_status", "model_versions", "model_hashes",
+            "registry_hashes", "artifact_lineage", "lineage", "runtime",
+            "FINAL_TEST_ACCESS_COUNT", "provenance", "result_hash", "metric_id",
             "metric_level", "metric_value", "metric_unit",
             "metric_support_status", "metric_metadata",
         )

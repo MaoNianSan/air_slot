@@ -10,17 +10,37 @@ from __future__ import annotations
 from collections import Counter
 
 from model.M1.coverage import active_node_prefixes
-from model.M1.data import encode_pre_sequence
+from model.M1.contracts import static_reference_context_from_pre
+from model.M1.data import encode_pre_sequence, static_reference_features_from_pre
 from model.M1.history import adaptive_history
 from model.M1.lifecycle import M1TrainingExample
 
 
-def active_rows(partition, *, taxi_reference_minutes=None, taxi_reference_id=None,
-                taxi_reference_hash=None) -> tuple[tuple, dict[str, int]]:
+def active_rows(partition, *, taxi_reference=None, taxi_reference_minutes=None,
+                taxi_reference_id=None, taxi_reference_hash=None) -> tuple[tuple, dict[str, int]]:
     """Construct legal adaptive M1 V2 histories and labels from PRE episodes."""
     output = []
     stages = Counter()
     for prepared in partition:
+        reference_minutes = taxi_reference_minutes
+        reference_id = taxi_reference_id
+        reference_hash = taxi_reference_hash
+        if taxi_reference is not None:
+            lookup = taxi_reference.lookup(prepared.episode.connection_airport_id)
+            reference_minutes = (
+                float(lookup.value)
+                if getattr(lookup, "value", None) is not None
+                and getattr(getattr(lookup, "support_state", None), "value", None) == "SUPPORTED"
+                else None
+            )
+            reference_id = (
+                getattr(taxi_reference, "reference_id", None)
+                if reference_minutes is not None else None
+            )
+            reference_hash = (
+                getattr(taxi_reference, "manifest_freeze_id", None)
+                if reference_minutes is not None else None
+            )
         for _, prefix, labels in active_node_prefixes(
             episode=prepared.episode,
             nodes=prepared.nodes,
@@ -28,9 +48,9 @@ def active_rows(partition, *, taxi_reference_minutes=None, taxi_reference_id=Non
             successor_schedule=prepared.successor_schedule,
             predecessor_outcome=prepared.predecessor_outcome,
             successor_outcome=prepared.successor_outcome,
-            taxi_reference_minutes=taxi_reference_minutes,
-            taxi_reference_id=taxi_reference_id,
-            taxi_reference_hash=taxi_reference_hash,
+            taxi_reference_minutes=reference_minutes,
+            taxi_reference_id=reference_id,
+            taxi_reference_hash=reference_hash,
         ):
             history = adaptive_history(prefix)
             output.append((prepared.episode, history, labels))
@@ -42,10 +62,24 @@ def build_training_examples(rows, normalization, bins):
     """Encode legal M1 V2 histories into model-owned training examples."""
     return tuple(
         M1TrainingExample.from_v2_target_labels(
-            values=encode_pre_sequence(prefix, normalization), labels=labels
+            values=encode_pre_sequence(prefix, normalization), labels=labels,
+            static_values=_static_values(prefix),
+            static_context_lineage=_static_lineage(prefix),
         )
         for _, prefix, labels in rows
     )
+
+
+def _static_values(prefix):
+    context = static_reference_context_from_pre(prefix[-1].static_reference_publication)
+    values, _ = static_reference_features_from_pre(prefix[-1], context)
+    return None if values is None else values.reshape(-1)
+
+
+def _static_lineage(prefix):
+    context = static_reference_context_from_pre(prefix[-1].static_reference_publication)
+    _, lineage = static_reference_features_from_pre(prefix[-1], context)
+    return lineage
 
 
 def normalization_rows(prefixes):

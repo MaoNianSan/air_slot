@@ -21,7 +21,7 @@ def test_one_binding_locks_same_m3_and_m4_for_all_variants(execution_fixture):
         m4_evaluator=_must_not_execute,
     )
     marginal = manifest.model_copy(update={"variant_id": "EXP2A_MARGINAL"})
-    component = manifest.model_copy(update={"variant_id": "EXP2B_COMPONENT"})
+    component = manifest.model_copy(update={"variant_id": "EXP2B_7COMP"})
 
     binding.assert_variant_manifests((manifest, marginal, component))
     assert binding.status is ExecutionReadinessStatus.READY

@@ -74,11 +74,11 @@ def test_all_six_variants_execute_through_one_smoke_binding(
     m4_calls = [item for item in calls if item["stage"] == "M4"]
     assert len(m3_calls) == len(m4_calls)
     expected_representations = {
-        "EXP2A_JOINT": ("EXP2A_JOINT", "EXP2B_COMPONENT"),
-        "EXP2A_MARGINAL": ("EXP2A_MARGINAL", "EXP2B_COMPONENT"),
-        "EXP2A_COLLAPSED": ("EXP2A_COLLAPSED", "EXP2B_COMPONENT"),
-        "EXP2B_COMPONENT": ("EXP2A_JOINT", "EXP2B_COMPONENT"),
-        "EXP2B_CHANNEL": ("EXP2A_JOINT", "EXP2B_CHANNEL"),
+        "EXP2A_JOINT": ("EXP2A_JOINT", "EXP2B_7COMP"),
+        "EXP2A_MARGINAL": ("EXP2A_MARGINAL", "EXP2B_7COMP"),
+        "EXP2A_POINT": ("EXP2A_POINT", "EXP2B_7COMP"),
+        "EXP2B_7COMP": ("EXP2A_JOINT", "EXP2B_7COMP"),
+        "EXP2B_3CHANNEL": ("EXP2A_JOINT", "EXP2B_3CHANNEL"),
         "EXP2B_SCALAR": ("EXP2A_JOINT", "EXP2B_SCALAR"),
     }
     for variant_id, expected in expected_representations.items():

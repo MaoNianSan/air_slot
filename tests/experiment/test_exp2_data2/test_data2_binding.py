@@ -77,8 +77,8 @@ def test_data2_manifest_and_pilot_config_are_loading_and_explicitly_blocked():
     assert pilot["dataset"]["dataset_id"] == "DATA2"
     assert pilot["dataset"]["maximum_episode_count"] == 5
     assert pilot["variants"] == {
-        "exp2a": ["JOINT", "MARGINAL", "COLLAPSED"],
-        "exp2b": ["COMPONENT", "CHANNEL", "SCALAR"],
+        "exp2a": ["EXP2A_JOINT", "EXP2A_MARGINAL", "EXP2A_POINT"],
+        "exp2b": ["EXP2B_7COMP", "EXP2B_3CHANNEL", "EXP2B_SCALAR"],
     }
     assert pilot["scientific_run"] is False
 

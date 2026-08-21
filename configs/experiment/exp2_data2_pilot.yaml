@@ -31,8 +31,8 @@ dataset:
   PAPER_FULL_RUN: false
 
 variants:
-  exp2a: [JOINT, MARGINAL, COLLAPSED]
-  exp2b: [COMPONENT, CHANNEL, SCALAR]
+  exp2a: [EXP2A_JOINT, EXP2A_MARGINAL, EXP2A_POINT]
+  exp2b: [EXP2B_7COMP, EXP2B_3CHANNEL, EXP2B_SCALAR]
 
 artifact_manifest: configs/experiment/exp2_scientific_manifest.yaml
 materialized_artifacts:

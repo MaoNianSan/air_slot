@@ -19,12 +19,12 @@ from model.common.errors import ContractError
 from model.common.identity import content_id
 
 from .variants import (
-    EXP2A_COLLAPSED,
+    EXP2A_POINT,
     EXP2A_JOINT,
     EXP2A_MARGINAL,
     EXP2A_VARIANTS,
-    EXP2B_CHANNEL,
-    EXP2B_COMPONENT,
+    EXP2B_3CHANNEL,
+    EXP2B_7COMP,
     EXP2B_SCALAR,
     EXP2B_VARIANTS,
 )
@@ -76,7 +76,7 @@ class ScenarioRepresentation(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     variant_id: Literal[
-        "EXP2A_COLLAPSED", "EXP2A_MARGINAL", "EXP2A_JOINT"
+        "EXP2A_POINT", "EXP2A_MARGINAL", "EXP2A_JOINT"
     ]
     artifact_version: str = Field(min_length=1)
     source_scenario_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
@@ -92,9 +92,9 @@ class ScenarioRepresentation(BaseModel):
         ids = tuple(item.scenario_id for item in self.samples)
         if len(ids) != len(set(ids)):
             raise ValueError("EXP2_SCENARIO_ID_DUPLICATE")
-        if self.variant_id == EXP2A_COLLAPSED and len(self.samples) != 1:
-            raise ValueError("EXP2_COLLAPSED_REQUIRES_ONE_SUMMARY")
-        if self.variant_id != EXP2A_COLLAPSED and len(self.samples) != self.source_sample_count:
+        if self.variant_id == EXP2A_POINT and len(self.samples) != 1:
+            raise ValueError("EXP2_POINT_REQUIRES_ONE_SCENARIO")
+        if self.variant_id != EXP2A_POINT and len(self.samples) != self.source_sample_count:
             raise ValueError("EXP2_SCENARIO_COUNT_NOT_PRESERVED")
         return self
 
@@ -104,7 +104,7 @@ class ScenarioRepresentation(BaseModel):
 
 
 class ScenarioRepresentationAdapter:
-    """Build COLLAPSED/MARGINAL/JOINT views of one immutable M1 artifact."""
+    """Build POINT/MARGINAL/JOINT views of one immutable M1 artifact."""
 
     def __init__(
         self,
@@ -185,12 +185,12 @@ class ScenarioRepresentationAdapter:
             samples, metadata = self._marginal_samples()
             rule = "DETERMINISTIC_WITHIN_WEIGHT_STRATUM_INDEPENDENT_FIELD_PERMUTATION"
         else:
-            samples = (self._collapsed_sample(),)
-            rule = "WEIGHTED_EXPECTED_CONSEQUENCE_STATE"
+            samples = (self._point_sample(),)
+            rule = "WEIGHTED_JOINT_SCENARIO_MEDOID"
             metadata = {
                 "joint_dependency_preserved": False,
                 "marginals_preserved": False,
-                "deterministic_summary": True,
+                "coherent_joint_scenario": True,
             }
         if content_id(tuple(item.model_dump(mode="json") for item in self._rows)) != before:
             raise ContractError("EXP2_MUTATED_M1_ARTIFACT")
@@ -204,29 +204,28 @@ class ScenarioRepresentationAdapter:
             transform_metadata=metadata,
         )
 
-    def _collapsed_sample(self) -> ScenarioSample:
-        def expectation(field: str) -> float | None:
-            values = tuple(getattr(item, field) for item in self._rows)
-            if any(value is None for value in values):
-                return None
-            return sum(
-                float(value) * item.scenario_weight
-                for value, item in zip(values, self._rows, strict=True)
-            )
+    def _point_sample(self) -> ScenarioSample:
+        """Select a real weighted joint medoid instead of component-wise means."""
+        def distance(candidate: ScenarioSample) -> float:
+            total = 0.0
+            for row in self._rows:
+                squared = 0.0
+                for field in SCENARIO_FIELDS:
+                    left, right = getattr(candidate, field), getattr(row, field)
+                    if left is not None and right is not None:
+                        squared += (float(left) - float(right)) ** 2
+                total += row.scenario_weight * squared
+            return total
 
-        lineage = tuple(dict.fromkeys(
-            entry for item in self._rows for entry in item.lineage
-        ))
+        selected = min(enumerate(self._rows), key=lambda item: (distance(item[1]), item[0]))[1]
         return ScenarioSample(
-            scenario_id="COLLAPSED_EXPECTATION",
+            scenario_id=f"POINT:{selected.scenario_id}",
             scenario_weight=1.0,
-            D_OB=expectation("D_OB"),
-            D_TX=expectation("D_TX"),
-            D_TO=expectation("D_TO"),
-            lineage=lineage,
-            field_source_scenario_ids={
-                field: "COLLAPSED_EXPECTATION" for field in SCENARIO_FIELDS
-            },
+            D_OB=selected.D_OB,
+            D_TX=selected.D_TX,
+            D_TO=selected.D_TO,
+            lineage=selected.lineage,
+            field_source_scenario_ids={field: selected.scenario_id for field in SCENARIO_FIELDS},
         )
 
     def _marginal_samples(self) -> tuple[tuple[ScenarioSample, ...], dict[str, Any]]:
@@ -236,9 +235,9 @@ class ScenarioRepresentationAdapter:
         if all(len(indices) == 1 for indices in groups.values()) and len(self._rows) > 1:
             raise ContractError("EXP2_MARGINAL_WEIGHTED_PERMUTATION_UNAVAILABLE")
 
-        sources = {field: list(range(len(self._rows))) for field in SCENARIO_FIELDS}
-        offsets = {"D_OB": 0, "D_TX": 1, "D_TO": 2}
-        for field in SCENARIO_FIELDS:
+        sources = {field: list(range(len(self._rows))) for field in ("D_OB", "D_TX")}
+        offsets = {"D_OB": 0, "D_TX": 1}
+        for field in ("D_OB", "D_TX"):
             for indices in groups.values():
                 if len(indices) <= 1:
                     continue
@@ -249,21 +248,25 @@ class ScenarioRepresentationAdapter:
 
         output = []
         for target, original in enumerate(self._rows):
-            source_rows = {field: self._rows[sources[field][target]] for field in SCENARIO_FIELDS}
+            source_rows = {field: self._rows[sources[field][target]] for field in ("D_OB", "D_TX")}
             lineage = tuple(dict.fromkeys(
                 entry
-                for field in SCENARIO_FIELDS
+                for field in ("D_OB", "D_TX")
                 for entry in source_rows[field].lineage
             ))
+            d_ob = source_rows["D_OB"].D_OB
+            d_tx = source_rows["D_TX"].D_TX
             output.append(ScenarioSample(
                 scenario_id=original.scenario_id,
                 scenario_weight=original.scenario_weight,
-                D_OB=source_rows["D_OB"].D_OB,
-                D_TX=source_rows["D_TX"].D_TX,
-                D_TO=source_rows["D_TO"].D_TO,
+                D_OB=d_ob,
+                D_TX=d_tx,
+                D_TO=None if d_ob is None or d_tx is None else d_ob + d_tx,
                 lineage=lineage,
                 field_source_scenario_ids={
-                    field: source_rows[field].scenario_id for field in SCENARIO_FIELDS
+                    "D_OB": source_rows["D_OB"].scenario_id,
+                    "D_TX": source_rows["D_TX"].scenario_id,
+                    "D_TO": "DERIVED_FROM_D_OB_PLUS_D_TX",
                 },
             ))
 
@@ -275,7 +278,7 @@ class ScenarioRepresentationAdapter:
 
         preserved = all(
             weighted_marginal(self._rows, field) == weighted_marginal(output, field)
-            for field in SCENARIO_FIELDS
+            for field in ("D_OB", "D_TX")
         )
         if not preserved:
             raise ContractError("EXP2_MARGINAL_DISTRIBUTION_NOT_PRESERVED")
@@ -286,6 +289,7 @@ class ScenarioRepresentationAdapter:
                 field: tuple(self._rows[index].scenario_id for index in indices)
                 for field, indices in sources.items()
             },
+            "D_TO": "RECOMPUTED_SAMPLEWISE_FROM_D_OB_PLUS_D_TX",
         }
 
 
@@ -311,7 +315,7 @@ class ScenarioConsequenceRepresentation(BaseModel):
 class ConsequenceRepresentation(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    variant_id: Literal["EXP2B_SCALAR", "EXP2B_CHANNEL", "EXP2B_COMPONENT"]
+    variant_id: Literal["EXP2B_SCALAR", "EXP2B_3CHANNEL", "EXP2B_7COMP"]
     artifact_version: str = Field(min_length=1)
     source_artifact_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     scenarios: tuple[ScenarioConsequenceRepresentation, ...] = Field(min_length=1)
@@ -388,7 +392,7 @@ class ConsequenceRepresentationAdapter:
         before = self.source_artifact_hash
         scenarios = []
         for scenario_id, weight, components in deepcopy(self._rows):
-            if variant_id == EXP2B_COMPONENT:
+            if variant_id == EXP2B_7COMP:
                 values = tuple(
                     ConsequenceValue(
                         value_id=item["component_id"],
@@ -401,7 +405,7 @@ class ConsequenceRepresentationAdapter:
                     for item in components
                 )
                 rule = "IDENTITY_PRESERVE_SEVEN_M2_COMPONENTS"
-            elif variant_id == EXP2B_CHANNEL:
+            elif variant_id == EXP2B_3CHANNEL:
                 values = tuple(
                     self._aggregate(
                         value_id=channel,

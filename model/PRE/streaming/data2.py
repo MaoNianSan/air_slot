@@ -617,6 +617,8 @@ def publish_episode_states(
     weather_max_age_minutes: int,
     *,
     publisher: ProductionPREPublisher,
+    taxi_reference=None,
+    turnaround_reference=None,
 ):
     episode, successor_schedule, predecessor_outcome, successor_outcome = item
     nodes = build_rolling_decision_nodes(
@@ -655,6 +657,8 @@ def publish_episode_states(
                     operational_stage=node.operational_stage,
                     node_index=node.node_index,
                     roll_minutes=node.roll_minutes,
+                    taxi_reference=taxi_reference,
+                    turnaround_reference=turnaround_reference,
                 )
             ).pre_state
         )

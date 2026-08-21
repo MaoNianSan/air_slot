@@ -318,6 +318,7 @@ class M1V2GRU(nn.Module):
         lengths: torch.Tensor,
         teacher: dict[str, torch.Tensor] | None = None,
         fast_features: torch.Tensor | None = None,
+        static_features: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor]:
         """Teacher-forced forward pass.
 
@@ -328,7 +329,7 @@ class M1V2GRU(nn.Module):
         feeds the static encoder when supported static context is available.
         """
         history = self.encode_history(values, lengths)
-        state = self.state_representation(history, fast_features)
+        state = self.state_representation(history, fast_features, static_features)
         active = {} if teacher is None else teacher.get("_active", {})
         hazard = self.hazard_head(state)
         ib_index = None if teacher is None else teacher.get(M1_V2_HAZARD_COORDINATE)

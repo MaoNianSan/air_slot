@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from exp.common.context import ExperimentContext, build_context_result, fast_context
+from exp.common.result_schema import MetricLevel, MetricObservation, SupportStatus
 from exp.common.runner import BaseRunner, ExperimentRunner
 from model.common.errors import ContractError
 
@@ -19,15 +21,13 @@ from .variants import EXP2_VARIANT_IDS
 
 
 class Exp2Runner(BaseRunner):
-    experiment = "exp2"
+    experiment = "EXP2"
     variants = EXP2_VARIANT_IDS
     protocol_variants = EXP2_VARIANT_IDS
-    reference_evaluator = "M4_RESIDUAL_RISK_FIXED_MAPPING_AND_POLICY"
+    reference_evaluator = "COMPLETE_REFERENCE_MODEL_CONSISTENCY_DIAGNOSTIC_ONLY"
     headline_metrics = (
-        "DECISION_ACTION_DISAGREEMENT",
-        "DECISION_RANKING_CHANGE",
-        "DECISION_RISK_DIFFERENCE",
-        "DECISION_CVAR_DIFFERENCE",
+        "CRPS", "BRIER", "CALIBRATION", "COVERAGE", "VARIOGRAM_SCORE",
+        "TOP1_ACTION_DISAGREEMENT", "ACTION_FAMILY_COMPOSITION",
     )
 
     def run(self, rows, *, smoke=False, **kwargs):
@@ -35,10 +35,49 @@ class Exp2Runner(BaseRunner):
             raise ContractError("EXP2_TYPED_PROTOCOL_EXECUTION_REQUIRED")
         return super().run(rows, smoke=True, **kwargs)
 
-    def execute(self, context: Exp2RunContext):
-        """Execute one frozen representation contrast through M3 then M4."""
+    def execute_fast(self, *, dataset: str = "data2_2019", split: str = "DEVELOPMENT", seed: int = 0):
+        context = fast_context(dataset_id=dataset, split=split, seed=seed, experiment_id=self.experiment)
+        return tuple(self._execute_context(context, variant) for variant in self.variants)
 
+    def execute(self, context: Exp2RunContext | ExperimentContext):
+        """Execute one frozen representation contrast through M3 then M4."""
+        if isinstance(context, ExperimentContext):
+            raise TypeError("EXP2_CONTEXT_EXECUTION_REQUIRES_VARIANT_ID")
         return ExperimentRunner().execute(Exp2Protocol(), context=context)
+
+    @staticmethod
+    def _execute_context(context: ExperimentContext, variant_id: str):
+        metrics = {
+            "VARIANT_CONTRACT": MetricObservation(
+                metric_id="VARIANT_CONTRACT", level=MetricLevel.STATE, value=True,
+                unit="boolean", support_status=SupportStatus.SUPPORTED,
+                metadata={"variant_id": variant_id, "representation_only": True},
+            ),
+            "VARIOGRAM_SCORE": MetricObservation(
+                metric_id="VARIOGRAM_SCORE", level=MetricLevel.STATE, value=None,
+                unit="squared_delay_difference", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": "FAST_CONTRACT_RUN_NO_FROZEN_OBSERVATIONS"},
+            ),
+            "TOP1_ACTION_DISAGREEMENT": MetricObservation(
+                metric_id="TOP1_ACTION_DISAGREEMENT", level=MetricLevel.DECISION, value=None,
+                unit="rate", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": "NOT_RUN_SHARED_M4_GATE"},
+            ),
+            "COMPLETE_REFERENCE_J_DIAGNOSTIC": MetricObservation(
+                metric_id="COMPLETE_REFERENCE_J_DIAGNOSTIC", level=MetricLevel.DECISION, value=None,
+                unit="RMB", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": "INTERNAL_DIAGNOSTIC_NOT_INDEPENDENT_ACTION_EFFECT_EVIDENCE"},
+            ),
+        }
+        return build_context_result(
+            context=context, experiment_id="EXP2", variant_id=variant_id,
+            metrics=metrics, support_status=SupportStatus.NOT_RUN,
+            provenance={
+                "scientific_question": "HOW_MUCH_AND_WHAT_INFORMATION_STRUCTURE_IS_SUFFICIENT",
+                "representation_only": True,
+                "complete_reference_j_status": "INTERNAL_NOT_INDEPENDENT_ACTION_EFFECT_EVIDENCE",
+            },
+        )
 
     def execute_manifest(
         self,

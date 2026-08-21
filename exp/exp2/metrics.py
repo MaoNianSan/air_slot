@@ -1,4 +1,60 @@
+"""Exp2 metric contracts.
+
+Current M4 risk differences remain internal diagnostics. The headline surface
+is standard predictive/dependence quality plus representation-induced
+decision sensitivity.
+"""
+
 from __future__ import annotations
+
+from exp.common.metrics_v2 import (
+    action_family_share,
+    brier_score,
+    crps_from_samples,
+    paired_top1_disagreement,
+    variogram_score,
+)
+
+
+EXP2_HEADLINE_METRICS = (
+    "CRPS",
+    "BRIER",
+    "CALIBRATION",
+    "COVERAGE",
+    "VARIOGRAM_SCORE",
+    "TOP1_ACTION_DISAGREEMENT",
+    "ACTION_FAMILY_COMPOSITION",
+)
+
+
+def representation_metrics(*, samples, observation, probabilities=(), events=(),
+                           reference_actions=None, comparison_actions=None):
+    """Evaluate standard Exp2A quantities without ranking-authority upgrades."""
+    rows = tuple(samples)
+    scalar_samples = tuple(
+        float(item.get("D_TO", item.get("d_to_minutes")))
+        for item in rows
+        if item.get("D_TO", item.get("d_to_minutes")) is not None
+    )
+    observation_delay = observation.get("D_TO", observation.get("d_to_minutes"))
+    return {
+        "CRPS": None if observation_delay is None else crps_from_samples(scalar_samples, observation_delay),
+        "BRIER": brier_score(probabilities, events),
+        "VARIOGRAM_SCORE": variogram_score(rows, observation) if rows and observation else None,
+        "TOP1_ACTION_DISAGREEMENT": (
+            paired_top1_disagreement(reference_actions or {}, comparison_actions or {})
+        ),
+    }
+
+
+def consequence_metrics(*, reference_actions, comparison_actions, action_families):
+    return {
+        "TOP1_ACTION_DISAGREEMENT": paired_top1_disagreement(reference_actions, comparison_actions),
+        "ACTION_FAMILY_COMPOSITION": action_family_share(comparison_actions.values(), action_families),
+        "COMPLETE_REFERENCE_J_DIAGNOSTIC_STATUS": (
+            "INTERNAL_NOT_INDEPENDENT_ACTION_EFFECT_EVIDENCE"
+        ),
+    }
 
 from itertools import combinations
 

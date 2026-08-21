@@ -4,6 +4,53 @@ from collections import defaultdict
 from math import isnan
 from statistics import median
 
+from exp.common.metrics_v2 import brier_score, crps_from_samples, paired_top1_disagreement
+
+
+EXP1_HEADLINE_METRICS = (
+    "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK",
+    "SELECTED_TOP1_ACTION",
+    "TOP1_ACTION_DISAGREEMENT",
+    "CRPS_PRIMITIVE_TARGET",
+    "BRIER_PRINCIPAL_DELAY_EVENT",
+    "CALIBRATION",
+)
+
+
+def exp1a_metrics(*, reference_actions, comparison_actions, reference_risk=None, comparison_risk=None):
+    """Evaluate Exp1A without treating replay as a causal action outcome."""
+    keys = tuple(sorted(set(reference_actions) & set(comparison_actions)))
+    disagreement = paired_top1_disagreement(reference_actions, comparison_actions)
+    risk_difference = None
+    if reference_risk is not None and comparison_risk is not None and keys:
+        risk_difference = sum(
+            float(comparison_risk[key]) - float(reference_risk[key])
+            for key in keys
+        ) / len(keys)
+    return {
+        "TOP1_ACTION_DISAGREEMENT": disagreement,
+        "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK": risk_difference,
+        "replay_interpretation": "EX_POST_MODEL_IMPLIED_RESIDUAL_RISK_UNDER_FROZEN_ACTION_RESPONSE",
+    }
+
+
+def exp1b_metrics(*, predictive_samples=None, observations=None, probabilities=None, events=None):
+    """Return standard prediction metrics for the history-only contrast."""
+    samples = predictive_samples or ()
+    observations = observations or ()
+    scores = tuple(
+        score for score in (
+            crps_from_samples(sample, observation)
+            for sample, observation in zip(samples, observations)
+        )
+        if score is not None
+    )
+    return {
+        "CRPS_PRIMITIVE_TARGET": sum(scores) / len(scores) if scores else None,
+        "BRIER_PRINCIPAL_DELAY_EVENT": brier_score(probabilities or (), events or ()),
+        "CALIBRATION": "AVAILABLE_FROM_RELIABILITY_TABLE" if probabilities and events else None,
+    }
+
 
 def scenario_grid_probability(value: float, scenario_count: int) -> float:
     if scenario_count <= 0:

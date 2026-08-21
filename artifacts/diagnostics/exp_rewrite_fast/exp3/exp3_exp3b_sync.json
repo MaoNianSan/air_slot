@@ -1,0 +1,115 @@
+{
+  "schema_version": "AIR_SLOT_EXPERIMENT_RESULT_V1",
+  "experiment_id": "EXP3",
+  "variant_id": "EXP3B_SYNC",
+  "dataset_id": "data2_2019",
+  "split": "DEVELOPMENT",
+  "tier": "FAST",
+  "episode_count": 0,
+  "node_count": 0,
+  "seed": 0,
+  "timestamp": "2026-08-21T06:38:08.918068Z",
+  "model_versions": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "model_hashes": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "registry_hashes": {
+    "registry_manifest": "UNBOUND_FAST"
+  },
+  "artifact_versions": {
+    "PRE_BINDING": "sha256:0ad334184d28e17069a6a2c259c6adb3f53fcca0207c16d782a54f6942b46575",
+    "M1_ARTIFACT": "UNBOUND",
+    "M2_ARTIFACT": "UNBOUND",
+    "M3_BUNDLE": "UNBOUND",
+    "M4_POLICY": "UNBOUND"
+  },
+  "scenario_hash": "sha256:f09ec1237a435269902ec8b10e64b1ed889c07351353c41d77c67b4656b9b978",
+  "config_hash": "sha256:4f2c424f6368f4456a0688bc2e3f69ee19658fd274def0761e2dfe23fbdc57d9",
+  "metrics": {
+    "VARIANT_CONTRACT": {
+      "metric_id": "VARIANT_CONTRACT",
+      "level": "SYSTEM",
+      "value": true,
+      "unit": "boolean",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "variant_id": "EXP3B_SYNC",
+        "subexperiment": "Exp3B",
+        "changed_factor": "state_vintage_current",
+        "fixed_factor": [
+          "current_direct_information",
+          "action_set",
+          "M1",
+          "M2",
+          "M3",
+          "M4"
+        ],
+        "claim_scope": "TEMPORAL_PROCESS_ONLY"
+      }
+    },
+    "RECOMMENDATION_EXECUTABLE_RATE": {
+      "metric_id": "RECOMMENDATION_EXECUTABLE_RATE",
+      "level": "DECISION",
+      "value": null,
+      "unit": "rate",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "FAST_CONTRACT_RUN_NO_FORMAL_MULTI_ACTION_COHORT"
+      }
+    },
+    "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK": {
+      "metric_id": "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK",
+      "level": "DECISION",
+      "value": null,
+      "unit": "RMB",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "NOT_RUN_SHARED_M4_MAPPING_AND_REPLAY_GATE"
+      }
+    },
+    "TOP1_ACTION_AGREEMENT": {
+      "metric_id": "TOP1_ACTION_AGREEMENT",
+      "level": "DECISION",
+      "value": null,
+      "unit": "rate",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "NOT_RUN_SHARED_M4_GATE"
+      }
+    }
+  },
+  "support_status": "NOT_RUN",
+  "lineage": {
+    "execution_scope": "FAST_CONTRACT_FIXTURE_ONLY",
+    "experiment_id": "EXP3",
+    "realized_outcomes_entered_inference": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "context_hash": "sha256:93991c11560f7856182fd999da4fa1e8733ca60b165bb8c16a4b42de3d587fed",
+    "shared_gates": {
+      "M1_POSITIVE_TAIL": "BLOCKED_UNFROZEN",
+      "M4_MONETARY_MAPPING": "BLOCKED_UNFROZEN"
+    }
+  },
+  "runtime": {},
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "provenance": {
+    "paper_result": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "scientific_question": "HOW_RETAINED_INFORMATION_EVOLVES_IN_ROLLING_PROCESS",
+    "decision_process_only": true,
+    "rolling_novelty_claim": false,
+    "one_shot_anchor_rule": "FIRST_NODE_WITH_TWO_COMPARABLE_ACTIONS_AND_ONE_NON_A00"
+  }
+}

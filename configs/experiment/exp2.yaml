@@ -11,10 +11,10 @@ dataset:
 variants:
   exp2a:
     reference: EXP2A_JOINT
-    comparisons: [EXP2A_MARGINAL, EXP2A_COLLAPSED]
+    comparisons: [EXP2A_MARGINAL, EXP2A_POINT]
   exp2b:
-    reference: EXP2B_COMPONENT
-    comparisons: [EXP2B_CHANNEL, EXP2B_SCALAR]
+    reference: EXP2B_7COMP
+    comparisons: [EXP2B_3CHANNEL, EXP2B_SCALAR]
 
 artifact_references:
   M1:

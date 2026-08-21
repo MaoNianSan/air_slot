@@ -8,10 +8,13 @@ from exp.exp3.llm_audit import audit_cases
 from exp.promotion import promote
 
 def test_variants_bootstrap_and_llm_absence_are_explicit(tmp_path:Path):
-    assert set(Exp1Runner().variants)=={"empirical","current","fixed_history","adaptive_history","independent_heads","leakage_diagnostic"}
+    assert set(Exp1Runner().variants)=={
+        "EXP1A_NO_DIRECT_REUSE", "EXP1A_FULL",
+        "EXP1B_CURRENT", "EXP1B_FIXED_HISTORY_30", "EXP1B_ADAPTIVE_HISTORY",
+    }
     assert set(Exp2Runner().variants)=={
-        "EXP2A_COLLAPSED", "EXP2A_MARGINAL", "EXP2A_JOINT",
-        "EXP2B_SCALAR", "EXP2B_CHANNEL", "EXP2B_COMPONENT",
+        "EXP2A_POINT", "EXP2A_MARGINAL", "EXP2A_JOINT",
+        "EXP2B_SCALAR", "EXP2B_3CHANNEL", "EXP2B_7COMP",
     }
     result=episode_bootstrap([{"episode_id":"a","value":1},{"episode_id":"b","value":3}],"value",replicates=20,seed=1)
     assert result.replicates==20
@@ -20,8 +23,8 @@ def test_variants_bootstrap_and_llm_absence_are_explicit(tmp_path:Path):
 
 
 def test_non_smoke_evaluation_is_not_automatically_a_paper_result():
-    result=Exp1Runner().run([{"episode_id":"e1","variant_metrics":{variant:1.0 for variant in Exp1Runner().variants}}],smoke=False)
-    assert result.manifest.paper_result is False
+    with pytest.raises(RuntimeError, match="EXP1_TYPED_CONTEXT_EXECUTION_REQUIRED"):
+        Exp1Runner().run(smoke=False)
 
 
 def test_main_text_promotion_rejects_appendix_dataset(tmp_path:Path):

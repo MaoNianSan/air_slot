@@ -60,6 +60,8 @@ class M1TrainingExample:
     targets: dict[str, float | None]
     active: dict[str, bool]
     decision_node_id: str | None = None
+    static_values: torch.Tensor | None = None
+    static_context_lineage: dict[str, object] | None = None
 
     @classmethod
     def from_pre_support(cls, *, episode_id, episode_date, values, targets,
@@ -74,7 +76,9 @@ class M1TrainingExample:
 
     @classmethod
     def from_v2_target_labels(cls, *, values: torch.Tensor,
-                              labels: tuple[M1V2TargetLabel, ...]):
+                              labels: tuple[M1V2TargetLabel, ...],
+                              static_values: torch.Tensor | None = None,
+                              static_context_lineage: dict[str, object] | None = None):
         if {item.target_name for item in labels} != set(V2_TARGETS):
             raise ValueError("M1_TYPED_TARGET_SET_INCOMPLETE")
         episodes = {item.episode_id for item in labels}
@@ -91,7 +95,9 @@ class M1TrainingExample:
             targets[item.target_name] = item.exact_minutes if item.active else None
         return cls(episode_id=next(iter(episodes)), episode_date=next(iter(dates)),
                    values=values, targets=targets, active=active,
-                   decision_node_id=next(iter(node_ids)))
+                   decision_node_id=next(iter(node_ids)),
+                   static_values=static_values,
+                   static_context_lineage=static_context_lineage)
 
 
 def chronological_split(examples):
@@ -172,7 +178,20 @@ class M1Lifecycle:
         values = torch.nn.utils.rnn.pad_sequence(
             [row.values for row in examples], batch_first=True).to(target)
         encoded = M1Lifecycle._encode(examples, contracts, target)
-        return values, lengths, encoded
+        static_values = None
+        declared_width = next(
+            (int(row.static_values.numel()) for row in examples
+             if row.static_values is not None),
+            0,
+        )
+        if declared_width:
+            static_values = torch.stack([
+                (row.static_values.reshape(-1)
+                 if row.static_values is not None
+                 else torch.zeros(declared_width, dtype=torch.float32))
+                for row in examples
+            ]).to(target)
+        return values, lengths, encoded, static_values
 
     @staticmethod
     def _batch_indices(examples, batch_size, *, bucketed):
@@ -269,8 +288,8 @@ class M1Lifecycle:
             total = torch.zeros((), dtype=torch.float32)
             for indices in batches:
                 batch = [examples[index] for index in indices]
-                values, lengths, encoded = self._batch(batch, self.pipeline.contracts,
-                                                       device=self.device)
+                values, lengths, encoded, static_values = self._batch(
+                    batch, self.pipeline.contracts, device=self.device)
                 teacher = None
                 if teacher_forcing:
                     teacher = {
@@ -285,7 +304,8 @@ class M1Lifecycle:
                     }
                 logits = self.pipeline.model(
                     values, lengths, teacher=teacher,
-                    fast_features=fast_features_from_sequence(values, lengths))
+                    fast_features=fast_features_from_sequence(values, lengths),
+                    static_features=static_values)
                 loss = self._loss(logits, encoded, self.pipeline.contracts, counts)
                 total = total + loss.detach()
                 loss.backward()
@@ -314,8 +334,8 @@ class M1Lifecycle:
         with torch.no_grad():
             for indices in self._batch_indices(examples, batch_size, bucketed=bucketed):
                 batch = [examples[index] for index in indices]
-                values, lengths, encoded = self._batch(batch, self.pipeline.contracts,
-                                                       device=self.device)
+                values, lengths, encoded, static_values = self._batch(
+                    batch, self.pipeline.contracts, device=self.device)
                 teacher = None if not teacher_forcing else {
                     M1_V2_HAZARD_COORDINATE: encoded["ib_bin"],
                     "D_OB": encoded["d_ob_bin"],
@@ -328,7 +348,8 @@ class M1Lifecycle:
                 }
                 logits = self.pipeline.model(
                     values, lengths, teacher=teacher,
-                    fast_features=fast_features_from_sequence(values, lengths))
+                    fast_features=fast_features_from_sequence(values, lengths),
+                    static_features=static_values)
                 target_indices = torch.tensor(indices, dtype=torch.long)
                 if output is None:
                     output = {name: torch.empty(

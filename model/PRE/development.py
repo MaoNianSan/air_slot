@@ -45,6 +45,8 @@ def _publish_partition(
     weather,
     weather_max_age_minutes: int,
     publisher: ProductionPREPublisher,
+    taxi_reference=None,
+    turnaround_reference=None,
 ):
     output = []
     stages = Counter()
@@ -57,6 +59,8 @@ def _publish_partition(
             weather,
             weather_max_age_minutes,
             publisher=publisher,
+            taxi_reference=taxi_reference,
+            turnaround_reference=turnaround_reference,
         )
         stages.update(node.operational_stage.value for node in nodes)
         output.append(
@@ -82,6 +86,8 @@ def build_sampled_pre_cohorts(
     preparation_manifest: Path,
     resume: bool = True,
     heartbeat=None,
+    taxi_reference=None,
+    turnaround_reference=None,
 ) -> PREDevelopmentCohorts:
     """Build Development-safe typed PRE states without invoking M1."""
     paths = ontime_paths(root)
@@ -139,6 +145,8 @@ def build_sampled_pre_cohorts(
             weather=weather,
             weather_max_age_minutes=max_age,
             publisher=publisher,
+            taxi_reference=taxi_reference,
+            turnaround_reference=turnaround_reference,
         )
     audit = {
         "cohort_seed": cohort_seed,
