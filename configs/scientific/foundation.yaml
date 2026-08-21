@@ -6,12 +6,16 @@ parameters:
     value: 5
     provenance: {selection_state: DEVELOPMENT_FROZEN, scope: data2_2019, decision: "D2-6 replay-lag new decision 2026-08-16 (user approved): data2 NOAA-ISD weather availability lag 5 min; data1 replay_lag_minutes unchanged at 0"}
   data2_factual_replay_availability:
-    freeze_state: HUMAN_DECISION_REQUIRED
-    value: UNRESOLVED
+    freeze_state: FROZEN
+    value: DECLARED_EVENT_TIME_REPLAY
     provenance:
-      selection_state: NOT_FROZEN
-      human_gate: DATA2_FACTUAL_REPLAY_AVAILABILITY_DECISION_REQUIRED
-      note: "Data2 archive has no real airline-system message-arrival timestamps, so event time is never claimed to be production availability time. Architecture supports UNRESOLVED (no formal factual replay) and DECLARED_RULE (event_time + declared lag -> availability_time -> cutoff legality). formal factual replay stays disabled until this human decision."
+      selection_state: HUMAN_APPROVED
+      decision_id: DATA2_FACTUAL_REPLAY_POLICY_A1
+      decision_date: "2026-08-21"
+      principal_lag_minutes: 0
+      observed_availability_claim: false
+      production_availability_claim: false
+      note: "Retrospective event-time replay assumption only; Data2 has no observed message-arrival or production-availability timestamps."
       final_test_access_count: 0
   replay_lag_sensitivity_minutes: {freeze_state: FROZEN, value: [0, 5, 10]}
   weather_max_age_minutes: {freeze_state: FROZEN, value: 60}

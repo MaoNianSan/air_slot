@@ -50,7 +50,7 @@ class ProductionPRERequest(FrozenModel):
     operational_stage: OperationalStage = OperationalStage.PRE_IB
     node_index: int = 0
     roll_minutes: int = 5
-    factual_availability_policy: str = "UNRESOLVED"
+    factual_availability_policy: str | None = None
     factual_replay_declared_lag_minutes: float | None = None
     taxi_reference: object | None = None
     turnaround_reference: object | None = None
@@ -60,10 +60,12 @@ class ProductionPREPublisher:
     """Reuse immutable registry/config state across a preparation run."""
 
     def __init__(self, bundle: RegistryBundle, *, weather_max_age_minutes: int,
-                 factual_availability_policy: str = "UNRESOLVED"):
+                 factual_availability_policy: str = "UNRESOLVED",
+                 factual_replay_declared_lag_minutes: float | None = None):
         self.bundle = bundle
         self.weather_max_age_minutes = weather_max_age_minutes
         self.factual_availability_policy = factual_availability_policy
+        self.factual_replay_declared_lag_minutes = factual_replay_declared_lag_minutes
         self.mapper = RegistryPREMapper(bundle)
         self._target_support_cache: dict[str, tuple[TargetSupportState, ...]] = {}
 
@@ -74,7 +76,8 @@ class ProductionPREPublisher:
         policy = scientific.parameters["data2_factual_replay_availability"].value
         return cls(bundle, weather_max_age_minutes=int(
             scientific.parameters["weather_max_age_minutes"].value),
-            factual_availability_policy=policy or "UNRESOLVED")
+            factual_availability_policy=policy or "UNRESOLVED",
+            factual_replay_declared_lag_minutes=0.0 if policy else None)
 
     def target_support(self, dataset_instance_id: str) -> tuple[TargetSupportState, ...]:
         support = self._target_support_cache.get(dataset_instance_id)
@@ -132,7 +135,11 @@ class ProductionPREPublisher:
             request.records, predecessor_id=request.predecessor_id,
             successor_id=request.successor_id, policy=policy,
             information_cutoff=request.information_cutoff,
-            declared_lag_minutes=request.factual_replay_declared_lag_minutes)
+            declared_lag_minutes=(
+                request.factual_replay_declared_lag_minutes
+                if request.factual_replay_declared_lag_minutes is not None
+                else self.factual_replay_declared_lag_minutes
+            ))
         if predecessor_fact is not None:
             current_state["predecessor_operational_fact"] = predecessor_fact
         if successor_fact is not None:

@@ -39,13 +39,13 @@ def canonicalize_metar_row(row: dict[str, Any], *,
         if code in ceiling_codes and not missing(base)
     ]
     if not cloud_layers:
-        ceiling_base_m, cloud_flag = None, "CLOUD_LAYERS_MISSING"
+        ceiling_base_m, ceiling_status, cloud_flag = None, "MISSING", "CLOUD_LAYERS_MISSING"
     elif ceiling_layers and len(ceiling_bases) != len(ceiling_layers):
-        ceiling_base_m, cloud_flag = None, "CEILING_BASE_MISSING_MASKED"
+        ceiling_base_m, ceiling_status, cloud_flag = None, "MISSING", "CEILING_BASE_MISSING_MASKED"
     elif ceiling_bases:
-        ceiling_base_m, cloud_flag = min(ceiling_bases), "CEILING_DERIVED_MIN_BKN_OVC"
+        ceiling_base_m, ceiling_status, cloud_flag = min(ceiling_bases), "FINITE", "CEILING_DERIVED_MIN_BKN_OVC"
     else:
-        ceiling_base_m, cloud_flag = None, "CEILING_UNLIMITED"
+        ceiling_base_m, ceiling_status, cloud_flag = None, "UNLIMITED", "CEILING_UNLIMITED"
     converted = {
         "canonical_object_type": "WeatherObservation",
         "dataset_instance_id": "data1_2019",
@@ -72,6 +72,7 @@ def canonicalize_metar_row(row: dict[str, Any], *,
         "cloud_cover_codes": cloud_cover_codes,
         "cloud_base_m": cloud_base_m,
         "ceiling_base_m": ceiling_base_m,
+        "ceiling_status": ceiling_status,
         "present_weather_codes": None if missing(row.get("wxcodes"))
         else str(row["wxcodes"]),
         "quality_flags": tuple(sorted(
@@ -148,22 +149,22 @@ def _isd_visibility_m(value: object) -> float | None:
         meters = int(raw)
     except ValueError:
         return None
-    return None if meters >= 99999 else float(meters)
+    return None if meters == 999999 else float(meters)
 
 
-def _isd_ceiling_m(value: object) -> tuple[float | None, str]:
+def _isd_ceiling_m(value: object) -> tuple[float | None, str, str]:
     raw = _isd_component(value, 0)
     if missing(raw):
-        return None, "CEILING_MISSING"
+        return None, "MISSING", "CEILING_MISSING"
     try:
         coded = int(raw)
     except ValueError:
-        return None, "CEILING_MISSING"
+        return None, "MISSING", "CEILING_MISSING"
     if coded == 22000:
-        return None, "CEILING_UNLIMITED"
+        return None, "UNLIMITED", "CEILING_UNLIMITED"
     if coded >= 99999:
-        return None, "CEILING_MISSING"
-    return coded / 10.0, "CEILING_FROM_ISD_CIG"
+        return None, "MISSING", "CEILING_MISSING"
+    return float(coded), "FINITE", "CEILING_FROM_ISD_CIG"
 
 
 _SKY_GROUP = re.compile(r"(?:^|\s)(FEW|SCT|BKN|OVC|VV)(\d{3})(CB|TCU)?(?=\s|$)")
@@ -175,7 +176,7 @@ _WX_TOKEN = re.compile(
 )
 
 
-def _metar_sky_groups(metar_text: str) -> tuple[list[str], list[float], float | None, str]:
+def _metar_sky_groups(metar_text: str) -> tuple[list[str], list[float], float | None, str, str]:
     layers = [(code, int(base)) for code, base, _tcu in _SKY_GROUP.findall(metar_text)]
     cover_codes = tuple(code for code, _base in layers)
     base_m = tuple(hundreds_feet_to_m(float(base)) for _code, base in layers)
@@ -185,10 +186,10 @@ def _metar_sky_groups(metar_text: str) -> tuple[list[str], list[float], float | 
         if code in {"BKN", "OVC", "VV"}
     ]
     if ceiling_bases:
-        ceiling, flag = min(ceiling_bases), "CEILING_FROM_METAR_TEXT"
+        ceiling, status, flag = min(ceiling_bases), "FINITE", "CEILING_FROM_METAR_TEXT"
     else:
-        ceiling, flag = None, "CEILING_UNLIMITED_OR_METAR_ABSENT"
-    return cover_codes, base_m, ceiling, flag
+        ceiling, status, flag = None, "UNLIMITED", "CEILING_UNLIMITED_OR_METAR_ABSENT"
+    return cover_codes, base_m, ceiling, status, flag
 
 
 def canonicalize_isd_row(row: dict[str, Any], *, station_map: dict[str, str],
@@ -207,7 +208,7 @@ def canonicalize_isd_row(row: dict[str, Any], *, station_map: dict[str, str],
     dewpoint_c = _isd_signed_tenths(row.get("DEW"))
     wind_direction_deg, wind_speed_mps = _isd_wind(row.get("WND"))
     visibility_m = _isd_visibility_m(row.get("VIS"))
-    ceiling_m, ceiling_flag = _isd_ceiling_m(row.get("CIG"))
+    ceiling_m, ceiling_status, ceiling_flag = _isd_ceiling_m(row.get("CIG"))
 
     metar_text = "" if missing(row.get("REM")) else str(row["REM"])
     qnh_match = _ALTIMETER.search(metar_text)
@@ -216,9 +217,9 @@ def canonicalize_isd_row(row: dict[str, Any], *, station_map: dict[str, str],
         qnh_flag = "QNH_DERIVED_FROM_METAR"
     else:
         qnh_hpa, qnh_flag = None, "QNH_ABSENT"
-    cover_codes, cloud_base_m, metar_ceiling, metar_flag = _metar_sky_groups(metar_text)
-    if metar_text and ceiling_m is None and metar_ceiling is not None:
-        ceiling_m, ceiling_flag = metar_ceiling, "CEILING_FROM_METAR_TEXT"
+    cover_codes, cloud_base_m, metar_ceiling, metar_status, metar_flag = _metar_sky_groups(metar_text)
+    if metar_text and ceiling_status != "FINITE" and metar_ceiling is not None:
+        ceiling_m, ceiling_status, ceiling_flag = metar_ceiling, metar_status, "CEILING_FROM_METAR_TEXT"
     if not metar_text:
         cover_codes, cloud_base_m = (), ()
         metar_flag = "METAR_TEXT_ABSENT"
@@ -260,6 +261,7 @@ def canonicalize_isd_row(row: dict[str, Any], *, station_map: dict[str, str],
         "cloud_cover_codes": cover_codes,
         "cloud_base_m": cloud_base_m,
         "ceiling_base_m": ceiling_m,
+        "ceiling_status": ceiling_status,
         "present_weather_codes": present_weather_codes,
         "quality_flags": flags,
     }

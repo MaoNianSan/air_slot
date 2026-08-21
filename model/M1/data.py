@@ -96,7 +96,8 @@ NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", 
 #   SHARED            current operational/factual state, schedule timing,
 #                     NOAA weather (incl. ceiling-base ceiling_base_m), Delta X,
 #                     short-term AR summaries, Delta t, missing/stale/fallback
-#                     masks, evidence/support quality.
+#                     masks (including typed ceiling status and derived-validity),
+#                     evidence/support quality.
 #   DATA1_SUPPORTED   predecessor_motion trajectory fields (NOT part of the V2
 #                     shared principal encoder; Data2 never requires them).
 #   UNSUPPORTED       crew / gate / slot / standby aircraft (no raw path).
@@ -112,7 +113,7 @@ NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", 
 # ---------------------------------------------------------------------------
 V2_WEATHER_FIELDS = (
     "temperature_c", "dewpoint_c", "wind_direction_deg", "wind_speed_mps",
-    "wind_gust_mps", "qnh_hpa", "visibility_m", "ceiling_base_m",
+    "qnh_hpa", "visibility_m", "ceiling_base_m",
 )
 V2_STATE_FIELDS = ("ib_realized", "ob_realized", "to_realized")
 V2_OBJECTS = ("current_weather", "schedule_reference", "current_state")
@@ -121,11 +122,18 @@ V2_STATE_REALIZED_BY_STAGE = {
     "ob_realized": frozenset({"POST_OB_PRE_TO", "COMPLETED"}),
     "to_realized": frozenset({"COMPLETED"}),
 }
-V2_DELTA_X_FIELDS = tuple(f"delta.weather.{name}" for name in V2_WEATHER_FIELDS) + (
+V2_DELTA_X_FIELDS = tuple(
+    f"delta.weather.{name}" for name in V2_WEATHER_FIELDS
+    if name != "wind_direction_deg"
+) + (
     "delta.schedule.signed_minutes_to_crs_departure",
 )
-V2_AR_FIELDS = tuple(f"ar.weather.{name}" for name in V2_WEATHER_FIELDS)
-V2_DELTA_T_FIELDS = ("weather.observation_age_minutes", "node.spacing_minutes")
+V2_AR_FIELDS = tuple(
+    f"ar.weather.{name}" for name in V2_WEATHER_FIELDS
+    if name != "wind_direction_deg"
+)
+V2_DELTA_T_FIELDS = ("weather.observation_age_minutes",)
+V2_DERIVED_FIELDS = V2_DELTA_X_FIELDS + V2_AR_FIELDS
 
 
 def _v2_x_names() -> tuple[str, ...]:
@@ -145,14 +153,18 @@ X_NAMES_V2 = _v2_x_names()
 MASK_FIELDS_V2 = tuple(f"weather.{name}" for name in V2_WEATHER_FIELDS) + (
     "schedule.signed_minutes_to_crs_departure",
 ) + tuple(f"state.{name}" for name in V2_STATE_FIELDS)
-M_NAMES_V2 = tuple(f"{name}.{kind}_mask" for name in MASK_FIELDS_V2
-                   for kind in ("missing", "stale", "fallback"))
+M_NAMES_V2 = (
+    tuple(f"{name}.{kind}_mask" for name in MASK_FIELDS_V2
+          for kind in ("missing", "stale", "fallback"))
+    + ("weather.ceiling_base_m.unlimited_mask",)
+    + tuple(f"{name}.derived_missing_mask" for name in V2_DERIVED_FIELDS)
+)
 DELTA_NAMES_V2 = V2_DELTA_T_FIELDS
 E_NAMES_V2 = tuple(f"{obj}.evidence.{level}" for obj in V2_OBJECTS
                    for level in EVIDENCE_LEVELS) + tuple(
                    f"{obj}.support.{level}" for obj in V2_OBJECTS
                    for level in SUPPORT_LEVELS)
-S_NAMES_V2 = tuple(f"stage.{name}" for name in STAGE_LEVELS)
+S_NAMES_V2 = ()
 FEATURE_NAMES_V2 = X_NAMES_V2 + M_NAMES_V2 + DELTA_NAMES_V2 + E_NAMES_V2 + S_NAMES_V2
 GROUP_SLICES_V2 = {
     "X": slice(0, len(X_NAMES_V2)),
@@ -255,7 +267,7 @@ def fast_features_from_sequence(
     ``r_fast(i, t)`` is the decision-node (last causal row) of the full V2
     feature vector: current state + current weather + decision-node schedule
     countdown + Delta X (declared local changes) + short-term AR summaries +
-    missing/stale/fallback masks + evidence/support + stage.  This is a
+    missing/stale/fallback masks + evidence/support quality.  This is a
     deterministic feature block (Round 2.2 ``IMPLEMENTATION_CHOICE_NO_SEARCH``),
     NOT a second flattening of the full sequence and NOT a LightGBM prediction.
     It is consumed by the FAST path directly and by the STATE_AWARE path via
@@ -384,70 +396,104 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
     """
     validate_history_sequence(states, require_episode_start=require_episode_start)
     rows = []
-    previous_time = None
-    previous_x: dict[str, float] | None = None
-    previous_raw: dict[str, float] | None = None
-    ar_accum = {name: 0.0 for name in V2_WEATHER_FIELDS}
+    previous_schedule: float | None = None
+    previous_observed: dict[str, bool] = {}
+    previous_values: dict[str, float] = {}
+    ar_sum = {field: 0.0 for field in V2_WEATHER_FIELDS if field != "wind_direction_deg"}
+    ar_count = {field: 0 for field in V2_WEATHER_FIELDS if field != "wind_direction_deg"}
     for row_index, pre in enumerate(states):
         weather = _find(pre, "current_state", "current_weather")
         schedule = _find(pre, "successor_state", "schedule_reference")
         stage = pre.decision_node.operational_stage.value
-        x = []
-        for name in V2_STATE_FIELDS:
-            x.append(float(stage in V2_STATE_REALIZED_BY_STAGE[name]))
+        x: list[float] = [
+            float(stage in V2_STATE_REALIZED_BY_STAGE[name])
+            for name in V2_STATE_FIELDS
+        ]
         schedule_time = _field(schedule, "scheduled_departure_utc")
-        schedule_minutes = None if schedule_time is None else             (schedule_time - pre.decision_node.decision_time).total_seconds() / 60.0
-        schedule_scaled = _scaled(normalization,
-            "schedule.signed_minutes_to_crs_departure", schedule_minutes)             if schedule_minutes is not None else 0.0
+        schedule_minutes = (
+            None
+            if schedule_time is None
+            else (schedule_time - pre.decision_node.decision_time).total_seconds() / 60.0
+        )
+        schedule_scaled = (
+            _scaled(normalization, "schedule.signed_minutes_to_crs_departure", schedule_minutes)
+            if schedule_minutes is not None else 0.0
+        )
         x.append(schedule_scaled)
-        weather_values: dict[str, float] = {}
-        weather_raw: dict[str, float] = {}
+        current_values: dict[str, float] = {}
+        current_observed: dict[str, bool] = {}
+        ceiling_status = _field(weather, "ceiling_status")
         for field in V2_WEATHER_FIELDS:
             raw = _field(weather, field)
+            observed = raw is not None
+            if field == "ceiling_base_m":
+                observed = ceiling_status == "FINITE" and raw is not None
+            current_observed[field] = observed
             if field == "wind_direction_deg":
-                angle = radians(float(raw)) if raw is not None else 0.0
-                x.extend((sin(angle) if raw is not None else 0.0,
-                          cos(angle) if raw is not None else 0.0))
-                weather_raw[field] = float(raw) if raw is not None else 0.0
-            else:
-                name = f"weather.{field}"
-                value = _scaled(normalization, name, raw) if raw is not None else 0.0
-                weather_values[field] = value
-                x.append(value)
-                weather_raw[field] = float(raw) if raw is not None else 0.0
+                angle = radians(float(raw)) if observed else 0.0
+                x.extend((sin(angle), cos(angle)))
+                if observed:
+                    current_values[field] = float(raw)
+                continue
+            value = _scaled(normalization, f"weather.{field}", raw) if observed else 0.0
+            x.append(value)
+            if observed:
+                current_values[field] = value
         for field in V2_WEATHER_FIELDS:
             if field == "wind_direction_deg":
-                raw = weather_raw.get(field)
-                prev = 0.0 if previous_raw is None else previous_raw.get(field, 0.0)
-                x.append((raw - prev) if previous_raw is not None else 0.0)
+                continue
+            valid = current_observed[field] and previous_observed.get(field, False)
+            if valid:
+                x.append(current_values[field] - previous_values[field])
             else:
-                value = weather_values.get(field, 0.0)
-                prev = 0.0 if previous_x is None else previous_x.get(field, 0.0)
-                x.append(value - prev)
-        schedule_delta = 0.0 if previous_x is None else schedule_scaled - previous_x.get("_schedule", 0.0)
-        x.append(schedule_delta)
+                x.append(0.0)
+        schedule_delta_valid = schedule_minutes is not None and previous_schedule is not None
+        x.append(schedule_scaled - previous_schedule if schedule_delta_valid else 0.0)
         for field in V2_WEATHER_FIELDS:
-            ar_accum[field] = (ar_accum[field] * row_index + weather_raw.get(field, 0.0)) / (row_index + 1)
-            x.append(ar_accum[field])
+            if field == "wind_direction_deg":
+                continue
+            if current_observed[field]:
+                ar_sum[field] += current_values[field]
+                ar_count[field] += 1
+            ar_valid = ar_count[field] == row_index + 1
+            x.append(ar_sum[field] / ar_count[field] if ar_valid else 0.0)
         weather_lineage = _lineage(pre, "current_weather")
         schedule_lineage = _lineage(pre, "schedule_reference")
         stale_w, fallback_w = _quality_masks(weather, weather_lineage)
         stale_s, fallback_s = _quality_masks(schedule, schedule_lineage)
-        masks = []
+        masks: list[float] = []
         for field in V2_WEATHER_FIELDS:
             raw = _field(weather, field)
-            masks.extend((float(raw is None), stale_w, fallback_w))
+            missing_mask = (
+                ceiling_status == "MISSING"
+                if field == "ceiling_base_m"
+                else not current_observed[field]
+            )
+            masks.extend((float(missing_mask), stale_w, fallback_w))
         masks.extend((float(schedule_minutes is None), stale_s, fallback_s))
         for _ in V2_STATE_FIELDS:
             masks.extend((0.0, 0.0, 0.0))
-        delta = []
-        age = None if weather_lineage is None or weather_lineage.age_seconds is None             else weather_lineage.age_seconds / 60.0
-        delta.append(_scaled(normalization,
-            "weather.observation_age_minutes", age) if age is not None else 0.0)
-        spacing = 0.0 if previous_time is None else             (pre.decision_node.decision_time - previous_time).total_seconds() / 60.0
-        delta.append(_scaled(normalization, "node.spacing_minutes", spacing))
-        previous_time = pre.decision_node.decision_time
-        evidence = []
+        masks.append(float(ceiling_status == "UNLIMITED"))
+        for field in V2_DERIVED_FIELDS:
+            if field.startswith("delta.weather."):
+                source = field.removeprefix("delta.weather.")
+                valid = current_observed.get(source, False) and previous_observed.get(source, False)
+            elif field.startswith("ar.weather."):
+                source = field.removeprefix("ar.weather.")
+                valid = ar_count.get(source, 0) == row_index + 1
+            else:
+                valid = schedule_delta_valid
+            masks.append(float(not valid))
+        age = (
+            None
+            if weather_lineage is None or weather_lineage.age_seconds is None
+            else weather_lineage.age_seconds / 60.0
+        )
+        delta = [
+            _scaled(normalization, "weather.observation_age_minutes", age)
+            if age is not None else 0.0
+        ]
+        evidence: list[float] = []
         objects = {"current_weather": weather, "schedule_reference": schedule,
                    "current_state": _state_support_value()}
         for name in V2_OBJECTS:
@@ -456,9 +502,13 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
         for name in V2_OBJECTS:
             value = objects[name]
             evidence.extend(float(value.support_state.value == level) for level in SUPPORT_LEVELS)
-        stages = [float(stage == name) for name in STAGE_LEVELS]
-        rows.append(x + masks + delta + evidence + stages)
-        previous_x = dict(weather_values)
-        previous_x["_schedule"] = schedule_scaled
-        previous_raw = dict(weather_raw)
-    return torch.tensor(rows, dtype=torch.float32)
+        rows.append(x + masks + delta + evidence)
+        previous_schedule = schedule_scaled if schedule_minutes is not None else None
+        previous_observed = current_observed
+        previous_values = current_values
+    result = torch.tensor(rows, dtype=torch.float32)
+    if result.shape[1] != len(FEATURE_NAMES_V2):
+        raise ContractError(
+            f"M1_FEATURE_SCHEMA_ENCODER_MISMATCH:{result.shape[1]}:{len(FEATURE_NAMES_V2)}"
+        )
+    return result

@@ -46,7 +46,9 @@ def build_rolling_decision_nodes(*, episode: "EpisodeRecord",
                                  predecessor_outcome: "OperationalEventRecord",
                                  successor_outcome: "OperationalEventRecord",
                                  config_hash: str, registry_hash: str,
-                                 legal_record_ids: tuple[str, ...] = ()) -> tuple[DecisionNodeRecord, ...]:
+                                 legal_record_ids: tuple[str, ...] = (),
+                                 factual_availability_policy: str = "DECLARED_EVENT_TIME_REPLAY",
+                                 factual_replay_declared_lag_minutes: float | None = 0.0) -> tuple[DecisionNodeRecord, ...]:
     """Build the frozen t_n=t_0+5n grid without rewriting prior nodes."""
     from model.PRE.contracts.canonical import OperationalEventRecord
     from model.PRE.contracts.pre_state import EpisodeRecord
@@ -57,14 +59,40 @@ def build_rolling_decision_nodes(*, episode: "EpisodeRecord",
     if predecessor_outcome.flight_id != episode.predecessor_flight_id \
             or successor_outcome.flight_id != episode.successor_flight_id:
         raise NodeInvalidationError("ROLLING_OUTCOME_EPISODE_IDENTITY_MISMATCH")
+    from model.PRE.factual.availability import (
+        Data2FactualReplayAvailabilityPolicy,
+        factual_availability_time,
+    )
+
+    policy = Data2FactualReplayAvailabilityPolicy(factual_availability_policy)
+
+    def admissible(event_time: datetime | None, cutoff: datetime) -> datetime | None:
+        if event_time is None:
+            return None
+        if policy.value == "UNRESOLVED":
+            return None
+        available = factual_availability_time(
+            event_time, policy,
+            declared_lag_minutes=factual_replay_declared_lag_minutes,
+        )
+        return available if available is not None and available <= cutoff else None
+
     nodes = []
     decision_time = episode.episode_start_time
     index = 0
     while decision_time <= episode.episode_end_time:
-        stage = stage_at(decision_time,
-            predecessor_in_block=predecessor_outcome.actual_arrival_utc,
-            successor_off_block=successor_outcome.actual_departure_utc,
-            successor_takeoff=successor_outcome.wheels_off_utc)
+        stage = stage_at(
+            decision_time,
+            predecessor_in_block=admissible(
+                predecessor_outcome.actual_arrival_utc, decision_time
+            ),
+            successor_off_block=admissible(
+                successor_outcome.actual_departure_utc, decision_time
+            ),
+            successor_takeoff=admissible(
+                successor_outcome.wheels_off_utc, decision_time
+            ),
+        )
         nodes.append(build_decision_node(episode_id=episode.episode_id,
             predecessor_id=episode.predecessor_flight_id,
             successor_id=episode.successor_flight_id, decision_time=decision_time,

@@ -34,7 +34,7 @@ def canonicalize_ontime_row(
             "Dest",
         )
     }
-    actual = {}
+    direct = {}
     for key, airport, reference in (
         ("DepTime", origin, schedule_dep),
         ("WheelsOff", origin, schedule_dep),
@@ -44,7 +44,7 @@ def canonicalize_ontime_row(
         value = local_hhmm_to_utc(day, row.get(key), timezones[airport])
         if value and reference:
             value = infer_rollover(reference, value)
-        actual[key] = value
+        direct[key] = value
     if schedule_dep is None or schedule_arr is None:
         raise ContractError("SCHEDULE_REFERENCE_MISSING")
     raw_id = deterministic_id(
@@ -83,15 +83,36 @@ def canonicalize_ontime_row(
     arr_delay = number(row.get("ArrDelayMinutes"))
     taxi_out = number(row.get("TaxiOut"))
     taxi_in = number(row.get("TaxiIn"))
+    derived = {"DepTime": None, "ArrTime": None, "WheelsOff": None, "WheelsOn": None}
     if dep_delay is not None:
-        actual["DepTime"] = schedule_dep + timedelta(minutes=dep_delay)
+        derived["DepTime"] = schedule_dep + timedelta(minutes=dep_delay)
     if arr_delay is not None:
-        actual["ArrTime"] = schedule_arr + timedelta(minutes=arr_delay)
-    if actual["DepTime"] is not None and taxi_out is not None:
-        actual["WheelsOff"] = actual["DepTime"] + timedelta(minutes=taxi_out)
-    if actual["ArrTime"] is not None and taxi_in is not None:
-        actual["WheelsOn"] = actual["ArrTime"] - timedelta(minutes=taxi_in)
+        derived["ArrTime"] = schedule_arr + timedelta(minutes=arr_delay)
+    departure_for_taxi = direct["DepTime"] or derived["DepTime"]
+    arrival_for_taxi = direct["ArrTime"] or derived["ArrTime"]
+    if departure_for_taxi is not None and taxi_out is not None:
+        derived["WheelsOff"] = departure_for_taxi + timedelta(minutes=taxi_out)
+    if arrival_for_taxi is not None and taxi_in is not None:
+        derived["WheelsOn"] = arrival_for_taxi - timedelta(minutes=taxi_in)
+    actual = {
+        key: direct[key] if direct[key] is not None else derived[key]
+        for key in direct
+    }
     actual_times = [value for value in actual.values() if value is not None]
+    consistency_flags = {"BTS_DIRECT_CLOCK_PRIMARY"}
+    for key in direct:
+        direct_value, derived_value = direct[key], derived[key]
+        label = key.upper()
+        if direct_value is None and derived_value is not None:
+            consistency_flags.add(f"BTS_DIRECT_MISSING_FALLBACK_{label}")
+        if direct_value is not None and derived_value is not None:
+            difference = abs((direct_value - derived_value).total_seconds()) / 60.0
+            if difference > 0:
+                consistency_flags.add(f"BTS_DIRECT_DERIVED_{label}_DISAGREEMENT")
+            if direct_value.date() != derived_value.date():
+                consistency_flags.add(f"BTS_DATE_OFFSET_DISAGREEMENT_{label}")
+            if difference > 5:
+                consistency_flags.add(f"BTS_DIRECT_DERIVED_{label}_GT5MIN")
     outcome = OperationalEventRecord.model_validate({
         "canonical_object_type": "OperationalEventRecord",
         "dataset_instance_id": "data2_2019",
@@ -105,9 +126,17 @@ def canonicalize_ontime_row(
         "event_time_lower": min(actual_times) if actual_times else None,
         "event_time_upper": max(actual_times) if actual_times else None,
         "actual_departure_utc": actual["DepTime"],
+        "actual_departure_direct_utc": direct["DepTime"],
+        "actual_departure_derived_utc": derived["DepTime"],
         "wheels_off_utc": actual["WheelsOff"],
+        "wheels_off_direct_utc": direct["WheelsOff"],
+        "wheels_off_derived_utc": derived["WheelsOff"],
         "wheels_on_utc": actual["WheelsOn"],
+        "wheels_on_direct_utc": direct["WheelsOn"],
+        "wheels_on_derived_utc": derived["WheelsOn"],
         "actual_arrival_utc": actual["ArrTime"],
+        "actual_arrival_direct_utc": direct["ArrTime"],
+        "actual_arrival_derived_utc": derived["ArrTime"],
         "taxi_out_minutes": taxi_out,
         "taxi_in_minutes": taxi_in,
         "cancelled": bool(number(row.get("Cancelled")) or 0),
@@ -116,12 +145,7 @@ def canonicalize_ontime_row(
         "decision_time_role": "EVAL_OUTCOME",
         "availability_basis": "POSTHOC_ONLY",
         "provenance_rule_id": "D2-BTS-ACTUAL",
-        "quality_flags": tuple(sorted(
-            flag for flag, condition in (
-                ("ACTUAL_DEPARTURE_DATE_OFFSET_FROM_DELAY_MINUTES", dep_delay is not None),
-                ("ACTUAL_ARRIVAL_DATE_OFFSET_FROM_DELAY_MINUTES", arr_delay is not None),
-            ) if condition
-        )),
+        "quality_flags": tuple(sorted(consistency_flags)),
         "provenance": provenance("data2_2019", "bts_ontime", raw_id, "D2-BTS-ACTUAL"),
     })
     return schedule, outcome

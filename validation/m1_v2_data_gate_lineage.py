@@ -12,7 +12,6 @@ NOAA_RAW = {
     "dewpoint_c": "DEW",
     "wind_direction_deg": "WND",
     "wind_speed_mps": "WND",
-    "wind_gust_mps": "NOT_PUBLISHED_BY_ISD_ADAPTER",
     "qnh_hpa": "REM",
     "visibility_m": "VIS",
     "ceiling_base_m": "CIG",
@@ -23,16 +22,16 @@ def lineage_rows(train_stats: list[dict]) -> list[dict]:
     stats = {row["feature"]: row for row in train_stats}
     records = []
     for name in FEATURE_NAMES_V2:
-        if name.startswith(("state.", "stage.")):
+        if name.startswith("state."):
             source = "bts_ontime"
             raw = "ArrTime;DepTime;WheelsOff"
             canonical = "realized_operational_event"
             pre_output = "decision_node.operational_stage"
             unit = "binary"
-            transform = "posthoc_actual_times_to_stage_one_hot"
-            availability = "POSTHOC_ONLY"
-            risk = "CRITICAL"
-            decision = "REMOVE_LEAKAGE"
+            transform = "declared_replay_event_to_realized_state_flag"
+            availability = "DECLARED_EVENT_TIME_REPLAY_CUTOFF_GATED"
+            risk = "LOW"
+            decision = "KEEP_MODEL_FEATURE"
             fit = False
         elif "weather." in name:
             field = next(
@@ -49,12 +48,12 @@ def lineage_rows(train_stats: list[dict]) -> list[dict]:
             fit = name.startswith("weather.") and not name.endswith(
                 (".sin", ".cos", "_mask")
             )
-            if field == "wind_gust_mps":
-                risk, decision = "HIGH", "REMOVE_NO_INFORMATION"
-            elif field == "wind_direction_deg" and name.startswith(
-                ("delta.", "ar.")
-            ):
-                risk, decision = "HIGH", "REMOVE_UNSTABLE"
+            if field == "wind_direction_deg" and name.startswith(("delta.", "ar.")):
+                risk, decision = "HIGH", "REMOVE_CIRCULAR_LINEAR_FEATURE"
+            elif name.endswith("unlimited_mask"):
+                risk, decision = "LOW", "KEEP_MODEL_FEATURE"
+            elif name.endswith("derived_missing_mask"):
+                risk, decision = "LOW", "KEEP_MODEL_FEATURE"
             else:
                 risk, decision = "MEDIUM", "KEEP_MODEL_FEATURE"
         elif "schedule." in name:

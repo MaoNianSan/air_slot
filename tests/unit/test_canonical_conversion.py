@@ -42,6 +42,22 @@ def test_ontime_actuals_are_posthoc_not_formal_input():
     assert outcome.availability_basis.value == "POSTHOC_ONLY"
 
 
+def test_ontime_direct_clock_is_primary_and_derived_values_are_retained():
+    row = {"FlightDate":"2019-01-01", "Reporting_Airline":"AA", "Tail_Number":"N1",
+           "Flight_Number_Reporting_Airline":"11", "Origin":"JFK", "Dest":"LAX",
+           "CRSDepTime":"0800", "CRSArrTime":"1100", "DepTime":"0810", "ArrTime":"1120",
+           "WheelsOff":"0825", "WheelsOn":"1105", "TaxiOut":"15", "TaxiIn":"15",
+           "DepDelayMinutes":"30", "ArrDelayMinutes":"40",
+           "Cancelled":"0", "Diverted":"0"}
+    _, outcome = canonicalize_ontime_row(
+        row, {"JFK":"America/New_York", "LAX":"America/Los_Angeles"}
+    )
+    assert outcome.actual_departure_utc == outcome.actual_departure_direct_utc
+    assert outcome.actual_departure_derived_utc != outcome.actual_departure_direct_utc
+    assert "BTS_DIRECT_DERIVED_DEPTIME_DISAGREEMENT" in outcome.quality_flags
+    assert outcome.wheels_off_utc == outcome.wheels_off_direct_utc
+
+
 def test_flightlist_iso_timestamp_produces_dual_typed_objects_with_shared_lineage():
     row = {"callsign":"ABC1", "day":"2019-01-01", "origin":"LSZH", "destination":"EGLL",
            "icao24":"abc123", "firstseen":"2018-12-31 00:43:16+00:00",

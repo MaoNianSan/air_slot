@@ -38,6 +38,7 @@ class Data2FactualReplayAvailabilityPolicy(str, Enum):
     UNRESOLVED = "UNRESOLVED"
     DECLARED_RULE = "DECLARED_RULE"
     DECLARED_RETROSPECTIVE_RULE = "DECLARED_RETROSPECTIVE_RULE"
+    DECLARED_EVENT_TIME_REPLAY = "DECLARED_EVENT_TIME_REPLAY"
 
 
 def factual_availability_time(
@@ -62,6 +63,7 @@ def factual_availability_time(
     declared_rules = {
         Data2FactualReplayAvailabilityPolicy.DECLARED_RULE.value,
         Data2FactualReplayAvailabilityPolicy.DECLARED_RETROSPECTIVE_RULE.value,
+        Data2FactualReplayAvailabilityPolicy.DECLARED_EVENT_TIME_REPLAY.value,
     }
     if resolved not in declared_rules:
         raise ContractError(f"M1_FACTUAL_AVAILABILITY_POLICY_UNKNOWN:{resolved}")

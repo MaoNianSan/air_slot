@@ -90,7 +90,6 @@ def normalization_rows(prefixes):
     """Extract V2 normalization inputs from legal PRE-state sequences."""
     rows = []
     for states in prefixes:
-        previous = None
         for state in states:
             row = {}
             schedule = state.successor_state.get("schedule_reference")
@@ -118,14 +117,5 @@ def normalization_rows(prefixes):
                     value = weather.value.get(field)
                     if value is not None:
                         row[f"weather.{field}"] = float(value)
-            row["node.spacing_minutes"] = (
-                0.0
-                if previous is None
-                else (
-                    state.decision_node.decision_time - previous
-                ).total_seconds()
-                / 60
-            )
-            previous = state.decision_node.decision_time
             rows.append(row)
     return rows

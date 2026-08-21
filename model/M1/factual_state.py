@@ -41,6 +41,16 @@ def _fact(pre: PREState, family: str, variable: str) -> dict | None:
     return payload
 
 
+def _field_legal(payload: dict, field: str, cutoff: datetime) -> bool:
+    by_field = payload.get("declared_availability_by_field") or {}
+    availability = by_field.get(field, payload.get("availability_time"))
+    if availability is None:
+        return False
+    if isinstance(availability, str):
+        availability = datetime.fromisoformat(availability)
+    return availability <= cutoff
+
+
 def _schedule_departure(pre: PREState):
     schedule = pre.successor_state.get("schedule_reference")
     if schedule is None or not isinstance(schedule.value, dict):
@@ -61,7 +71,11 @@ def factual_observed_state(
     """
     observed: dict[str, object] = {}
     predecessor = _fact(pre_state, "current_state", "predecessor_operational_fact")
-    if predecessor is not None and predecessor.get("actual_arrival_utc") is not None:
+    if (
+        predecessor is not None
+        and predecessor.get("actual_arrival_utc") is not None
+        and _field_legal(predecessor, "actual_arrival_utc", pre_state.decision_node.information_cutoff)
+    ):
         arrival = predecessor["actual_arrival_utc"]
         observed["T_IB_A00"] = (
             arrival.isoformat() if isinstance(arrival, datetime) else str(arrival)
@@ -78,7 +92,11 @@ def factual_observed_state(
     if successor is not None and not successor.get("cancelled")             and not successor.get("diverted"):
         departure = successor.get("actual_departure_utc")
         scheduled = _schedule_departure(pre_state)
-        if departure is not None and scheduled is not None:
+        if (
+            departure is not None
+            and scheduled is not None
+            and _field_legal(successor, "actual_departure_utc", pre_state.decision_node.information_cutoff)
+        ):
             if isinstance(departure, str):
                 departure = datetime.fromisoformat(departure)
             if isinstance(scheduled, str):
@@ -86,6 +104,10 @@ def factual_observed_state(
             d_ob = max(0.0, (departure - scheduled).total_seconds() / 60.0)
             observed["D_OB"] = d_ob
         taxi_out = successor.get("taxi_out_minutes")
-        if taxi_out is not None and taxi_reference_minutes is not None:
+        if (
+            taxi_out is not None
+            and taxi_reference_minutes is not None
+            and _field_legal(successor, "wheels_off_utc", pre_state.decision_node.information_cutoff)
+        ):
             observed["D_TX"] = max(0.0, float(taxi_out) - float(taxi_reference_minutes))
     return observed

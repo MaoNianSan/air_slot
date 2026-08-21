@@ -200,32 +200,40 @@ def iter_lightweight_flights(
                     number(value("Diverted")) or 0
                 ):
                     raise ValueError
-                actual_departure = local_hhmm_to_utc(day, value("DepTime"), zones[origin])
-                actual_arrival = local_hhmm_to_utc(
+                direct_departure = local_hhmm_to_utc(day, value("DepTime"), zones[origin])
+                direct_arrival = local_hhmm_to_utc(
                     day, value("ArrTime"), zones[destination]
                 )
-                if actual_departure is not None:
-                    actual_departure = infer_rollover(
-                        scheduled_departure, actual_departure
+                direct_wheels_off = local_hhmm_to_utc(day, value("WheelsOff"), zones[origin])
+                if direct_departure is not None:
+                    direct_departure = infer_rollover(
+                        scheduled_departure, direct_departure
                     )
-                if actual_arrival is not None:
-                    actual_arrival = infer_rollover(scheduled_arrival, actual_arrival)
+                if direct_arrival is not None:
+                    direct_arrival = infer_rollover(scheduled_arrival, direct_arrival)
+                if direct_wheels_off is not None:
+                    direct_wheels_off = infer_rollover(scheduled_departure, direct_wheels_off)
                 departure_delay = number(value("DepDelayMinutes"))
                 arrival_delay = number(value("ArrDelayMinutes"))
                 taxi_out = number(value("TaxiOut"))
-                if departure_delay is not None:
-                    actual_departure = scheduled_departure + timedelta(
-                        minutes=departure_delay
-                    )
-                if arrival_delay is not None:
-                    actual_arrival = scheduled_arrival + timedelta(minutes=arrival_delay)
+                derived_departure = (
+                    scheduled_departure + timedelta(minutes=departure_delay)
+                    if departure_delay is not None else None
+                )
+                derived_arrival = (
+                    scheduled_arrival + timedelta(minutes=arrival_delay)
+                    if arrival_delay is not None else None
+                )
+                actual_departure = direct_departure or derived_departure
+                actual_arrival = direct_arrival or derived_arrival
                 if actual_departure is None or actual_arrival is None:
                     raise ValueError
-                wheels_off = (
+                derived_wheels_off = (
                     None
                     if taxi_out is None
                     else actual_departure + timedelta(minutes=taxi_out)
                 )
+                wheels_off = direct_wheels_off or derived_wheels_off
                 flight_parts = {
                     name: value(name)
                     for name in (
@@ -627,6 +635,8 @@ def publish_episode_states(
         successor_outcome=successor_outcome,
         config_hash=config_hash_value,
         registry_hash=registry_hash_value,
+        factual_availability_policy=publisher.factual_availability_policy,
+        factual_replay_declared_lag_minutes=publisher.factual_replay_declared_lag_minutes,
     )
     states = []
     for node in nodes:
@@ -636,11 +646,9 @@ def publish_episode_states(
             node.information_cutoff,
             weather_max_age_minutes,
         )
-        records = (
-            (successor_schedule,)
-            if observation is None
-            else (successor_schedule, observation)
-        )
+        records = (successor_schedule, predecessor_outcome, successor_outcome)
+        if observation is not None:
+            records = records + (observation,)
         states.append(
             publisher.publish(
                 ProductionPRERequest(
@@ -657,6 +665,8 @@ def publish_episode_states(
                     operational_stage=node.operational_stage,
                     node_index=node.node_index,
                     roll_minutes=node.roll_minutes,
+                    factual_availability_policy=publisher.factual_availability_policy,
+                    factual_replay_declared_lag_minutes=publisher.factual_replay_declared_lag_minutes,
                     taxi_reference=taxi_reference,
                     turnaround_reference=turnaround_reference,
                 )

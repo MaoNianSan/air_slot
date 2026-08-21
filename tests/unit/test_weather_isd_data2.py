@@ -87,13 +87,18 @@ def test_qnh_from_metar_text_is_true_hpa():
 
 def test_ceiling_from_isd_cig_field():
     obs = build(CIG="00457,5,9,N")
-    assert obs.ceiling_base_m == 45.7
+    assert obs.ceiling_base_m == 457.0
+    assert obs.ceiling_status == "FINITE"
     assert "CEILING_FROM_ISD_CIG" in obs.quality_flags
+    assert build(CIG="00610,5,9,N").ceiling_base_m == 610.0
+    assert build(CIG="09144,5,9,N").ceiling_base_m == 9144.0
     unlimited = build(CIG="22000,5,9,N")
     assert unlimited.ceiling_base_m is None
+    assert unlimited.ceiling_status == "UNLIMITED"
     assert "CEILING_UNLIMITED" in unlimited.quality_flags
     missing_cig = build(CIG="99999,9,9,N")
     assert missing_cig.ceiling_base_m is None
+    assert missing_cig.ceiling_status == "MISSING"
     assert "CEILING_MISSING" in missing_cig.quality_flags
 
 
@@ -133,6 +138,11 @@ def test_wind_calm_and_missing():
 def test_missing_temperature_is_none():
     obs = build(TMP="+9999,9")
     assert obs.temperature_c is None
+
+
+def test_visibility_uses_meter_scale_and_exact_missing_code():
+    assert build(VIS="160000,5,N,5").visibility_m == 160000.0
+    assert build(VIS="999999,9,N,9").visibility_m is None
 
 
 def test_station_unmapped_rejected():

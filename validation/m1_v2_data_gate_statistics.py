@@ -280,7 +280,7 @@ def history_diagnostics(rows: dict[str, tuple], normalization) -> dict:
         "selected_episode_ids": sorted(selected_ids),
         "records": records,
         "causal_ledger_violations": dict(violations),
-        "posthoc_stage_construction": "BLOCKED_DATA_SEMANTICS",
+        "posthoc_stage_construction": "CLOSED_BY_DECLARED_REPLAY_CUTOFF_GATE",
     }
 
 
@@ -359,7 +359,7 @@ def time_diagnostics(cohorts) -> dict:
         "cross_midnight": (
             "PASS" if not counts["negative_schedule_duration"] else "FAIL"
         ),
-        "planned_actual_time": "BLOCKED_POSTHOC_STAGE_FEATURE",
+        "planned_actual_time": "DIRECT_PRIMARY_WITH_DECLARED_REPLAY_FOR_STAGE",
         "rolling_time": (
             "PASS" if not counts["rolling_spacing_not_five"] else "FAIL"
         ),

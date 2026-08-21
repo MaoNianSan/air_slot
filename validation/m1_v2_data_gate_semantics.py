@@ -46,6 +46,9 @@ def _stage_source_summary(cohorts) -> tuple[list[dict], list[dict]]:
                     "ArrTime": predecessor.actual_arrival_utc,
                     "DepTime": successor.actual_departure_utc,
                     "WheelsOff": successor.wheels_off_utc,
+                    "predecessor_availability": predecessor.actual_arrival_utc,
+                    "successor_departure_availability": successor.actual_departure_utc,
+                    "successor_wheels_off_availability": successor.wheels_off_utc,
                 }
             )
             if len(samples) < 5:
@@ -99,11 +102,11 @@ def unresolved_column_queue(cohorts) -> list[dict]:
             "Candidate fields": stage_candidates,
             "Sample values": stage_samples,
             "Current inference": (
-                "PRE stage_at uses posthoc ArrTime, DepTime, and WheelsOff; "
-                "formal factual replay availability remains UNRESOLVED."
+                "PRE stage_at consumes only cutoff-legal declared event-time replay; "
+                "the canonical BTS outcome remains POSTHOC_ONLY."
             ),
-            "Confidence": "HIGH_ON_LINEAGE_LOW_ON_ADMISSIBILITY",
-            "Human decision required": "YES",
+            "Confidence": "HIGH_ON_LINEAGE_AND_ADMISSIBILITY",
+            "Human decision required": "NO",
         },
         {
             "Scientific variable": "wind direction change and AR summary",
@@ -116,11 +119,11 @@ def unresolved_column_queue(cohorts) -> list[dict]:
             ],
             "Sample values": direction["sample_values"],
             "Current inference": (
-                "Current value uses sin/cos, but delta and cumulative mean use "
-                "linear degrees and do not resolve 0/360 wraparound."
+                "Principal retains sin/cos only; linear direction delta and AR "
+                "features are removed."
             ),
-            "Confidence": "HIGH_ON_BUG_LOW_ON_REPLACEMENT_POLICY",
-            "Human decision required": "YES",
+            "Confidence": "HIGH",
+            "Human decision required": "NO",
         },
         {
             "Scientific variable": "ceiling base versus unlimited sky",
@@ -133,11 +136,11 @@ def unresolved_column_queue(cohorts) -> list[dict]:
             ],
             "Sample values": ceiling["sample_values"],
             "Current inference": (
-                "Canonical numeric ceiling is retained when present; the current "
-                "published value does not freeze a distinct unlimited-sky state."
+                "Canonical CIG uses meter units with explicit FINITE, UNLIMITED, "
+                "and MISSING status."
             ),
-            "Confidence": "MEDIUM",
-            "Human decision required": "YES",
+            "Confidence": "HIGH",
+            "Human decision required": "NO",
         },
         {
             "Scientific variable": "wind gust speed",
@@ -150,11 +153,11 @@ def unresolved_column_queue(cohorts) -> list[dict]:
             ],
             "Sample values": gust["sample_values"],
             "Current inference": (
-                "The current NOAA ISD adapter publishes no gust values; deleting "
-                "the feature or adding an explicit source mapping requires a decision."
+                "NOAA ISD gust is not mapped; the field and its derived principal "
+                "features are removed while PRE canonical remains permissive."
             ),
-            "Confidence": "HIGH_ON_ALL_MISSING_LOW_ON_SOURCE_MAPPING",
-            "Human decision required": "YES",
+            "Confidence": "HIGH",
+            "Human decision required": "NO",
         },
     ]
 
@@ -164,7 +167,7 @@ def upstream_trace_cases(cohorts, normalization) -> list[dict]:
     traced_features = tuple(
         name
         for name in FEATURE_NAMES_V2
-        if name.startswith(("state.", "stage."))
+        if name.startswith("state.")
     )
     traces = []
     for split in SPLITS:
@@ -209,6 +212,11 @@ def upstream_trace_cases(cohorts, normalization) -> list[dict]:
                         "predecessor": predecessor.availability_basis.value,
                         "successor": successor.availability_basis.value,
                     },
+                    "declared_availability_checks": {
+                        "predecessor_ib": predecessor.actual_arrival_utc <= state.decision_node.information_cutoff,
+                        "successor_ob": successor.actual_departure_utc <= state.decision_node.information_cutoff,
+                        "successor_to": successor.wheels_off_utc <= state.decision_node.information_cutoff,
+                    },
                 },
                 "model encoded value": {
                     name: float(encoded[feature_index[name]])
@@ -218,8 +226,8 @@ def upstream_trace_cases(cohorts, normalization) -> list[dict]:
                     "M1 V2 recurrent state consumed by downstream M2/Exp paths"
                 ),
                 "first semantic deviation": (
-                    "PRE rolling-node stage construction consumes POSTHOC_ONLY "
-                    "outcomes before factual replay admissibility is frozen."
+                    "PRE rolling-node stage construction uses declared event-time "
+                    "replay projection; source outcome remains posthoc."
                 ),
             }
         )
@@ -236,7 +244,7 @@ def potential_downstream_error_sources(time_checks: dict, static: dict) -> list[
         },
         {
             "variable_or_step": "operational stage / factual replay availability",
-            "current_status": "BLOCKED_DATA_SEMANTICS",
+            "current_status": "DECLARED_EVENT_TIME_REPLAY_CUTOFF_GATED",
             "possible_affected_modules": ["PRE", "M1", "M2", "Exp1-Exp4"],
             "risk": "CRITICAL",
         },
@@ -248,25 +256,25 @@ def potential_downstream_error_sources(time_checks: dict, static: dict) -> list[
         },
         {
             "variable_or_step": "derived weather missing sentinel",
-            "current_status": "REVIEW_REQUIRED",
+            "current_status": "FIXED_DERIVED_MISSING_PROPAGATION",
             "possible_affected_modules": ["M1", "M2", "Exp1-Exp4"],
             "risk": "HIGH",
         },
         {
             "variable_or_step": "wind direction delta / AR semantics",
-            "current_status": "HUMAN_DECISION_REQUIRED",
+            "current_status": "REMOVED_FROM_PRINCIPAL",
             "possible_affected_modules": ["M1", "M2"],
             "risk": "HIGH",
         },
         {
             "variable_or_step": "ceiling unlimited versus missing",
-            "current_status": "HUMAN_DECISION_REQUIRED",
+            "current_status": "FIXED_TYPED_STATUS_AND_MASKS",
             "possible_affected_modules": ["PRE", "M1", "M2"],
             "risk": "HIGH",
         },
         {
             "variable_or_step": "wind gust source mapping",
-            "current_status": "HUMAN_DECISION_REQUIRED",
+            "current_status": "REMOVED_FROM_PRINCIPAL_NO_AUTHORITATIVE_MAPPING",
             "possible_affected_modules": ["PRE", "M1"],
             "risk": "HIGH",
         },

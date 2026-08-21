@@ -159,18 +159,18 @@ def test_11_archive_outcome_does_not_imply_inference_availability():
 
 def test_12_factual_replay_requires_availability_leq_cutoff():
     records, pred_id, succ_id = _records()
-    # Predecessor arrival 12:40 + 30 min lag = 13:10 > 13:00 cutoff => blocked.
+    # Predecessor arrival 12:55 + 30 min lag = 13:25 > 13:00 cutoff => blocked.
     before = _publish(records, pred_id, succ_id, decision_time=datetime(2019, 1, 1, 13, tzinfo=UTC),
                       cutoff=datetime(2019, 1, 1, 13, tzinfo=UTC), stage="POST_IB_PRE_OB",
                       lag_minutes=30.0)
     assert "predecessor_operational_fact" not in before.current_state
-    # Same archive record, later cutoff 13:15 >= 13:10 => legal replay.
-    after = _publish(records, pred_id, succ_id, decision_time=datetime(2019, 1, 1, 13, 15, tzinfo=UTC),
-                     cutoff=datetime(2019, 1, 1, 13, 15, tzinfo=UTC), stage="POST_OB_PRE_TO",
+    # Same archive record, later cutoff 13:30 >= 13:25 => legal replay.
+    after = _publish(records, pred_id, succ_id, decision_time=datetime(2019, 1, 1, 13, 30, tzinfo=UTC),
+                     cutoff=datetime(2019, 1, 1, 13, 30, tzinfo=UTC), stage="POST_OB_PRE_TO",
                      lag_minutes=30.0)
     fact = after.current_state["predecessor_operational_fact"].value
     assert fact["decision_time_role"] == "FACTUAL_REPLAY_EVIDENCE"
-    assert fact["availability_time"] == datetime(2019, 1, 1, 13, 5, tzinfo=UTC)
+    assert fact["availability_time"] == datetime(2019, 1, 1, 13, 25, tzinfo=UTC)
 
 
 # ---------------------------------------------------------------------------

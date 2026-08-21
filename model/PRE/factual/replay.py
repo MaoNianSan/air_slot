@@ -30,7 +30,23 @@ _REALIZED_ROLES = {DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME}
 _OUTCOME_EVENT_TYPE = "COMPLETED_OPERATIONAL_OUTCOME"
 
 
-def _outcome_value(record: OperationalEventRecord, *, availability_time: datetime):
+def _outcome_value(record: OperationalEventRecord, *, replay_event_time: datetime,
+                   availability_time: datetime,
+                   policy: Data2FactualReplayAvailabilityPolicy,
+                   declared_lag_minutes: float):
+    field_times = {
+        "actual_departure_utc": record.actual_departure_utc,
+        "wheels_off_utc": record.wheels_off_utc,
+        "wheels_on_utc": record.wheels_on_utc,
+        "actual_arrival_utc": record.actual_arrival_utc,
+    }
+    field_availability = {
+        name: factual_availability_time(
+            timestamp, policy, declared_lag_minutes=declared_lag_minutes
+        )
+        for name, timestamp in field_times.items()
+        if timestamp is not None
+    }
     return {
         "flight_id": record.flight_id,
         "event_type": record.event_type,
@@ -42,8 +58,14 @@ def _outcome_value(record: OperationalEventRecord, *, availability_time: datetim
         "taxi_in_minutes": record.taxi_in_minutes,
         "cancelled": record.cancelled,
         "diverted": record.diverted,
-        "event_time": record.event_time,
+        "event_time": replay_event_time,
+        "canonical_event_time": record.event_time,
         "availability_time": availability_time,
+        "declared_availability_time": availability_time,
+        "declared_replay_rule_id": "D2-BTS-FACTUAL-REPLAY",
+        "declared_replay_policy": policy.value,
+        "declared_lag_minutes": float(declared_lag_minutes),
+        "declared_availability_by_field": field_availability,
         "availability_basis": AvailabilityBasis.FACTUAL_REPLAY_RULE.value,
         "decision_time_role": DecisionTimeRole.FACTUAL_REPLAY_EVIDENCE.value,
         "source_record_id": record.canonical_record_id,
@@ -76,25 +98,33 @@ def publish_factual_replay(
     ]
     facts: dict[str, SupportedValue] = {}
     for record in candidates:
+        role = None
+        if record.flight_id == predecessor_id:
+            role = "predecessor"
+            candidate_time = record.actual_arrival_utc
+        elif record.flight_id == successor_id:
+            role = "successor"
+            candidate_time = record.actual_departure_utc
+        if role is None or candidate_time is None:
+            continue
         availability_time = factual_availability_time(
-            record.event_time, policy,
+            candidate_time, policy,
             declared_lag_minutes=declared_lag_minutes)
         if not factual_replay_legal(
-            event_time=record.event_time,
+            event_time=candidate_time,
             availability_time=availability_time,
             information_cutoff=information_cutoff,
             policy=policy,
         ):
             continue
-        role = None
-        if record.flight_id == predecessor_id:
-            role = "predecessor"
-        elif record.flight_id == successor_id:
-            role = "successor"
-        if role is None:
-            continue
         facts[role] = SupportedValue(
-            value=_outcome_value(record, availability_time=availability_time),
+            value=_outcome_value(
+                record,
+                replay_event_time=candidate_time,
+                availability_time=availability_time,
+                policy=Data2FactualReplayAvailabilityPolicy(policy),
+                declared_lag_minutes=float(declared_lag_minutes or 0.0),
+            ),
             unit="canonical",
             evidence_class=EvidenceClass.DIRECT,
             support_ceiling=EvidenceClass.DIRECT,

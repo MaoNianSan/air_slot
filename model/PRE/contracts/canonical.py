@@ -75,9 +75,17 @@ class OperationalEventRecord(CanonicalSourceRecord):
     flight_id: str | None = None
     aircraft_id: str | None = None
     actual_departure_utc: datetime | None = None
+    actual_departure_direct_utc: datetime | None = None
+    actual_departure_derived_utc: datetime | None = None
     wheels_off_utc: datetime | None = None
+    wheels_off_direct_utc: datetime | None = None
+    wheels_off_derived_utc: datetime | None = None
     wheels_on_utc: datetime | None = None
+    wheels_on_direct_utc: datetime | None = None
+    wheels_on_derived_utc: datetime | None = None
     actual_arrival_utc: datetime | None = None
+    actual_arrival_direct_utc: datetime | None = None
+    actual_arrival_derived_utc: datetime | None = None
     taxi_out_minutes: float | None = None
     taxi_in_minutes: float | None = None
     cancelled: bool | None = None
@@ -114,6 +122,7 @@ class WeatherObservation(CanonicalSourceRecord):
     cloud_cover_codes: tuple[str, ...] = ()
     cloud_base_m: tuple[float | None, ...] = ()
     ceiling_base_m: float | None = None
+    ceiling_status: Literal["FINITE", "UNLIMITED", "MISSING"] = "MISSING"
     present_weather_codes: str | None = None
 
 

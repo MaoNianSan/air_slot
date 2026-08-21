@@ -90,9 +90,10 @@ def test_data_gate_lineage_marks_known_semantic_risks_without_guessing():
     ]
     rows = {row["M1_FIELD"]: row for row in lineage_rows(train_stats)}
 
-    assert rows["state.ib_realized"]["FEATURE_DECISION"] == "REMOVE_LEAKAGE"
-    assert rows["delta.weather.wind_direction_deg"]["FEATURE_DECISION"] == "REMOVE_UNSTABLE"
-    assert rows["weather.wind_gust_mps"]["FEATURE_DECISION"] == "REMOVE_NO_INFORMATION"
+    assert rows["state.ib_realized"]["FEATURE_DECISION"] == "KEEP_MODEL_FEATURE"
+    assert "delta.weather.wind_direction_deg" not in rows
+    assert "ar.weather.wind_direction_deg" not in rows
+    assert not any("wind_gust_mps" in name for name in rows)
 
 
 def test_data_gate_hash_payload_matches_json_roundtrip():
