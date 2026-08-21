@@ -26,6 +26,7 @@ def _row(**updates):
         "Flight_Number_Reporting_Airline":"10", "Origin":"JFK", "Dest":"LAX",
         "CRSDepTime":"0800", "CRSArrTime":"1100", "DepTime":"0905", "ArrTime":"1230",
         "WheelsOff":"0920", "WheelsOn":"1215", "TaxiOut":"15", "TaxiIn":"15",
+        "DepDelay":"65", "ArrDelay":"90",
         "DepDelayMinutes":"65", "ArrDelayMinutes":"90", "Cancelled":"0", "Diverted":"0"}
     row.update(updates)
     return row
@@ -38,7 +39,8 @@ def _normalization():
 
 
 def test_multiday_data2_actual_timestamp_uses_posthoc_date_offset():
-    schedule, outcome = canonicalize_ontime_row(_row(DepTime="0905", ArrTime="1038",
+    schedule, outcome = canonicalize_ontime_row(_row(DepTime="0905", ArrTime="1218",
+        DepDelay="1505", ArrDelay="1518",
         DepDelayMinutes="1505", ArrDelayMinutes="1518"), ZONES)
     assert outcome.actual_departure_utc == schedule.scheduled_departure_utc + timedelta(minutes=1505)
     assert outcome.actual_arrival_utc == schedule.scheduled_arrival_utc + timedelta(minutes=1518)

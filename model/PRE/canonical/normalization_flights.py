@@ -9,6 +9,7 @@ from model.PRE.contracts.canonical import (
 )
 from model.PRE.episode.event_detection import TrajectoryEventRecord
 
+from .data2_timestamps import resolve_bts_actual_timestamp, resolve_bts_event_clock
 from .normalization_common import deterministic_id, missing, number, parse_utc, provenance
 from .timezone import infer_rollover, local_hhmm_to_utc
 
@@ -34,17 +35,6 @@ def canonicalize_ontime_row(
             "Dest",
         )
     }
-    direct = {}
-    for key, airport, reference in (
-        ("DepTime", origin, schedule_dep),
-        ("WheelsOff", origin, schedule_dep),
-        ("WheelsOn", dest, schedule_arr),
-        ("ArrTime", dest, schedule_arr),
-    ):
-        value = local_hhmm_to_utc(day, row.get(key), timezones[airport])
-        if value and reference:
-            value = infer_rollover(reference, value)
-        direct[key] = value
     if schedule_dep is None or schedule_arr is None:
         raise ContractError("SCHEDULE_REFERENCE_MISSING")
     raw_id = deterministic_id(
@@ -79,64 +69,60 @@ def canonicalize_ontime_row(
         "provenance_rule_id": "D2-BTS-SCHEDULE",
         "provenance": provenance("data2_2019", "bts_ontime", raw_id, "D2-BTS-SCHEDULE"),
     })
-    dep_delay = number(row.get("DepDelayMinutes"))
-    arr_delay = number(row.get("ArrDelayMinutes"))
+    departure = resolve_bts_actual_timestamp(
+        service_day=day,
+        schedule_utc=schedule_dep,
+        direct_hhmm=row.get("DepTime"),
+        timezone_name=timezones[origin],
+        signed_delay_value=row.get("DepDelay"),
+        reporting_delay_minutes_value=row.get("DepDelayMinutes"),
+        label="DEPARTURE",
+    )
+    arrival = resolve_bts_actual_timestamp(
+        service_day=day,
+        schedule_utc=schedule_arr,
+        direct_hhmm=row.get("ArrTime"),
+        timezone_name=timezones[dest],
+        signed_delay_value=row.get("ArrDelay"),
+        reporting_delay_minutes_value=row.get("ArrDelayMinutes"),
+        label="ARRIVAL",
+    )
     taxi_out = number(row.get("TaxiOut"))
     taxi_in = number(row.get("TaxiIn"))
-    derived = {"DepTime": None, "ArrTime": None, "WheelsOff": None, "WheelsOn": None}
-    if dep_delay is not None:
-        derived["DepTime"] = schedule_dep + timedelta(minutes=dep_delay)
-    if arr_delay is not None:
-        derived["ArrTime"] = schedule_arr + timedelta(minutes=arr_delay)
-    dep_requires_date_offset = dep_delay is not None and abs(dep_delay) >= 24 * 60
-    arr_requires_date_offset = arr_delay is not None and abs(arr_delay) >= 24 * 60
-    departure_for_taxi = (
-        derived["DepTime"]
-        if dep_requires_date_offset
-        else direct["DepTime"] or derived["DepTime"]
+    wheels_off_direct = resolve_bts_event_clock(
+        service_day=day,
+        reference_utc=departure.canonical_utc or schedule_dep,
+        direct_hhmm=row.get("WheelsOff"),
+        timezone_name=timezones[origin],
     )
-    arrival_for_taxi = (
-        derived["ArrTime"]
-        if arr_requires_date_offset
-        else direct["ArrTime"] or derived["ArrTime"]
+    wheels_on_direct = resolve_bts_event_clock(
+        service_day=day,
+        reference_utc=arrival.canonical_utc or schedule_arr,
+        direct_hhmm=row.get("WheelsOn"),
+        timezone_name=timezones[dest],
     )
-    if departure_for_taxi is not None and taxi_out is not None:
-        derived["WheelsOff"] = departure_for_taxi + timedelta(minutes=taxi_out)
-    if arrival_for_taxi is not None and taxi_in is not None:
-        derived["WheelsOn"] = arrival_for_taxi - timedelta(minutes=taxi_in)
+    wheels_off_derived = (
+        None
+        if departure.canonical_utc is None or taxi_out is None
+        else departure.canonical_utc + timedelta(minutes=taxi_out)
+    )
+    wheels_on_derived = (
+        None
+        if arrival.canonical_utc is None or taxi_in is None
+        else arrival.canonical_utc - timedelta(minutes=taxi_in)
+    )
     actual = {
-        "DepTime": derived["DepTime"] if dep_requires_date_offset else (
-            direct["DepTime"] or derived["DepTime"]
-        ),
-        "ArrTime": derived["ArrTime"] if arr_requires_date_offset else (
-            direct["ArrTime"] or derived["ArrTime"]
-        ),
-        "WheelsOff": derived["WheelsOff"] if dep_requires_date_offset else (
-            direct["WheelsOff"] or derived["WheelsOff"]
-        ),
-        "WheelsOn": derived["WheelsOn"] if arr_requires_date_offset else (
-            direct["WheelsOn"] or derived["WheelsOn"]
-        ),
+        "DepTime": departure.canonical_utc,
+        "ArrTime": arrival.canonical_utc,
+        "WheelsOff": wheels_off_direct or wheels_off_derived,
+        "WheelsOn": wheels_on_direct or wheels_on_derived,
     }
     actual_times = [value for value in actual.values() if value is not None]
-    consistency_flags = {"BTS_DIRECT_CLOCK_PRIMARY"}
-    if dep_requires_date_offset:
-        consistency_flags.add("BTS_DELAY_DATE_OFFSET_PRIMARY_DEPARTURE")
-    if arr_requires_date_offset:
-        consistency_flags.add("BTS_DELAY_DATE_OFFSET_PRIMARY_ARRIVAL")
-    for key in direct:
-        direct_value, derived_value = direct[key], derived[key]
-        label = key.upper()
-        if direct_value is None and derived_value is not None:
-            consistency_flags.add(f"BTS_DIRECT_MISSING_FALLBACK_{label}")
-        if direct_value is not None and derived_value is not None:
-            difference = abs((direct_value - derived_value).total_seconds()) / 60.0
-            if difference > 0:
-                consistency_flags.add(f"BTS_DIRECT_DERIVED_{label}_DISAGREEMENT")
-            if direct_value.date() != derived_value.date():
-                consistency_flags.add(f"BTS_DATE_OFFSET_DISAGREEMENT_{label}")
-            if difference > 5:
-                consistency_flags.add(f"BTS_DIRECT_DERIVED_{label}_GT5MIN")
+    consistency_flags = set(departure.flags) | set(arrival.flags)
+    if wheels_off_direct is None and wheels_off_derived is not None:
+        consistency_flags.add("DIRECT_WHEELSOFF_MISSING_TAXI_FALLBACK")
+    if wheels_on_direct is None and wheels_on_derived is not None:
+        consistency_flags.add("DIRECT_WHEELSON_MISSING_TAXI_FALLBACK")
     outcome = OperationalEventRecord.model_validate({
         "canonical_object_type": "OperationalEventRecord",
         "dataset_instance_id": "data2_2019",
@@ -150,22 +136,22 @@ def canonicalize_ontime_row(
         "event_time_lower": min(actual_times) if actual_times else None,
         "event_time_upper": max(actual_times) if actual_times else None,
         "actual_departure_utc": actual["DepTime"],
-        "actual_departure_direct_utc": direct["DepTime"],
-        "actual_departure_derived_utc": derived["DepTime"],
+        "actual_departure_direct_utc": departure.direct_utc,
+        "actual_departure_derived_utc": departure.signed_target_utc,
         "wheels_off_utc": actual["WheelsOff"],
-        "wheels_off_direct_utc": direct["WheelsOff"],
-        "wheels_off_derived_utc": derived["WheelsOff"],
+        "wheels_off_direct_utc": wheels_off_direct,
+        "wheels_off_derived_utc": wheels_off_derived,
         "wheels_on_utc": actual["WheelsOn"],
-        "wheels_on_direct_utc": direct["WheelsOn"],
-        "wheels_on_derived_utc": derived["WheelsOn"],
+        "wheels_on_direct_utc": wheels_on_direct,
+        "wheels_on_derived_utc": wheels_on_derived,
         "actual_arrival_utc": actual["ArrTime"],
-        "actual_arrival_direct_utc": direct["ArrTime"],
-        "actual_arrival_derived_utc": derived["ArrTime"],
+        "actual_arrival_direct_utc": arrival.direct_utc,
+        "actual_arrival_derived_utc": arrival.signed_target_utc,
         "taxi_out_minutes": taxi_out,
         "taxi_in_minutes": taxi_in,
         "cancelled": bool(number(row.get("Cancelled")) or 0),
         "diverted": bool(number(row.get("Diverted")) or 0),
-        "reconstruction_rule_id": "local_actual_to_utc",
+        "reconstruction_rule_id": "DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION",
         "decision_time_role": "EVAL_OUTCOME",
         "availability_basis": "POSTHOC_ONLY",
         "provenance_rule_id": "D2-BTS-ACTUAL",

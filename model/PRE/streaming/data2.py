@@ -17,6 +17,10 @@ import torch
 from model.common.identity import content_id
 from model.PRE.adapters.data2 import Data2Adapter, _normalize_isd_station_id
 from model.PRE.adapters.registry import RawReadRequest
+from model.PRE.canonical.data2_timestamps import (
+    resolve_bts_actual_timestamp,
+    resolve_bts_event_clock,
+)
 from model.PRE.canonical.normalization import canonicalize_isd_row, canonicalize_ontime_row
 from model.PRE.canonical.normalization_common import deterministic_id, missing, number
 from model.PRE.canonical.timezone import infer_rollover, local_hhmm_to_utc
@@ -43,6 +47,8 @@ PROJECTED_ONTIME_COLUMNS = (
     "WheelsOn",
     "TaxiOut",
     "TaxiIn",
+    "DepDelay",
+    "ArrDelay",
     "DepDelayMinutes",
     "ArrDelayMinutes",
     "Cancelled",
@@ -200,34 +206,35 @@ def iter_lightweight_flights(
                     number(value("Diverted")) or 0
                 ):
                     raise ValueError
-                direct_departure = local_hhmm_to_utc(day, value("DepTime"), zones[origin])
-                direct_arrival = local_hhmm_to_utc(
-                    day, value("ArrTime"), zones[destination]
+                departure = resolve_bts_actual_timestamp(
+                    service_day=day,
+                    schedule_utc=scheduled_departure,
+                    direct_hhmm=value("DepTime"),
+                    timezone_name=zones[origin],
+                    signed_delay_value=value("DepDelay"),
+                    reporting_delay_minutes_value=value("DepDelayMinutes"),
+                    label="DEPARTURE",
                 )
-                direct_wheels_off = local_hhmm_to_utc(day, value("WheelsOff"), zones[origin])
-                if direct_departure is not None:
-                    direct_departure = infer_rollover(
-                        scheduled_departure, direct_departure
-                    )
-                if direct_arrival is not None:
-                    direct_arrival = infer_rollover(scheduled_arrival, direct_arrival)
-                if direct_wheels_off is not None:
-                    direct_wheels_off = infer_rollover(scheduled_departure, direct_wheels_off)
-                departure_delay = number(value("DepDelayMinutes"))
-                arrival_delay = number(value("ArrDelayMinutes"))
+                arrival = resolve_bts_actual_timestamp(
+                    service_day=day,
+                    schedule_utc=scheduled_arrival,
+                    direct_hhmm=value("ArrTime"),
+                    timezone_name=zones[destination],
+                    signed_delay_value=value("ArrDelay"),
+                    reporting_delay_minutes_value=value("ArrDelayMinutes"),
+                    label="ARRIVAL",
+                )
                 taxi_out = number(value("TaxiOut"))
-                derived_departure = (
-                    scheduled_departure + timedelta(minutes=departure_delay)
-                    if departure_delay is not None else None
-                )
-                derived_arrival = (
-                    scheduled_arrival + timedelta(minutes=arrival_delay)
-                    if arrival_delay is not None else None
-                )
-                actual_departure = direct_departure or derived_departure
-                actual_arrival = direct_arrival or derived_arrival
+                actual_departure = departure.canonical_utc
+                actual_arrival = arrival.canonical_utc
                 if actual_departure is None or actual_arrival is None:
                     raise ValueError
+                direct_wheels_off = resolve_bts_event_clock(
+                    service_day=day,
+                    reference_utc=actual_departure,
+                    direct_hhmm=value("WheelsOff"),
+                    timezone_name=zones[origin],
+                )
                 derived_wheels_off = (
                     None
                     if taxi_out is None
@@ -322,19 +329,27 @@ def episode_records_from_lightweight_flights(rows: Iterable[dict]):
     return build_data2_episode_records(rows)
 
 
-def preparation_state_key(root: Path, paths: tuple[Path, ...], counts: dict, seed: int) -> str:
-    return content_id(
-        {
-            "sources": {
-                str(path.relative_to(root)): [path.stat().st_size, path.stat().st_mtime_ns]
-                for path in paths
-            },
-            "cohort_counts": counts,
-            "cohort_seed": seed,
-            "carry_rule": "LAST_ACTUAL_DEPARTURE_ROW_PER_AIRCRAFT",
-            "split_containment_rule": "V5_FULL_EPISODE_SUPPORT_V1",
-        }
-    )
+def preparation_state_key(
+    root: Path,
+    paths: tuple[Path, ...],
+    counts: dict,
+    seed: int,
+    *,
+    semantic_token: str | None = None,
+) -> str:
+    payload = {
+        "sources": {
+            str(path.relative_to(root)): [path.stat().st_size, path.stat().st_mtime_ns]
+            for path in paths
+        },
+        "cohort_counts": counts,
+        "cohort_seed": seed,
+        "carry_rule": "LAST_ACTUAL_DEPARTURE_ROW_PER_AIRCRAFT",
+        "split_containment_rule": "V5_FULL_EPISODE_SUPPORT_V1",
+    }
+    if semantic_token is not None:
+        payload["semantic_token"] = semantic_token
+    return content_id(payload)
 
 
 def save_preparation_state(
@@ -395,6 +410,10 @@ def episode_reservoirs(
     manifest_path: Path,
     resume: bool = True,
     heartbeat: Heartbeat | None = None,
+    semantic_token: str | None = None,
+    include_warning_fields: bool = False,
+    flight_observer: Callable[[str, list[dict]], None] | None = None,
+    episode_observer: Callable[[str, object, dict[str, dict]], None] | None = None,
 ):
     reservoirs = {name: [] for name in cohort_counts}
     pool_sizes = {name: 0 for name in cohort_counts}
@@ -403,7 +422,13 @@ def episode_reservoirs(
     per_month: dict[str, int] = {}
     skipped_total = total_episodes = 0
     start_month = 1
-    state_key = preparation_state_key(root, paths, cohort_counts, cohort_seed)
+    state_key = preparation_state_key(
+        root,
+        paths,
+        cohort_counts,
+        cohort_seed,
+        semantic_token=semantic_token,
+    )
     if resume and state_path.is_file():
         payload = torch.load(state_path, map_location="cpu", weights_only=False)
         if payload.get("state_key") == state_key:
@@ -419,9 +444,17 @@ def episode_reservoirs(
         if month < start_month:
             continue
         month_started = time.perf_counter()
-        current_rows, skipped = lightweight_flights(path, zones, heartbeat=heartbeat)
+        current_rows, skipped = lightweight_flights(
+            path,
+            zones,
+            heartbeat=heartbeat,
+            include_warning_fields=include_warning_fields,
+        )
         skipped_total += skipped
         per_month[f"{month:02d}"] = len(current_rows)
+        if flight_observer is not None:
+            current_split = split_for_date(date(2019, month, 1))
+            flight_observer(current_split, current_rows)
         chunk = list(previous_rows) + current_rows
         by_id = {row["flight_id"]: row for row in chunk}
         month_key = f"2019-{month:02d}"
@@ -432,10 +465,12 @@ def episode_reservoirs(
             service_date = by_id[episode.successor_flight_id].get("service_date")
             if not service_date or service_date[:7] != month_key:
                 continue
+            split = split_for_date(date.fromisoformat(service_date))
+            if episode_observer is not None:
+                episode_observer(split, episode, by_id)
             containment = episode_containment_from_rows(episode, by_id)
             if not containment.allowed:
                 continue
-            split = split_for_date(date.fromisoformat(service_date))
             if split == "test":
                 raise RuntimeError("FINAL_TEST_EPISODE_MATERIALIZED")
             pool_sizes[split] += 1

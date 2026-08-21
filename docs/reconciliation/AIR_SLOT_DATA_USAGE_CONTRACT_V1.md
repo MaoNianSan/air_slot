@@ -46,7 +46,9 @@ automatically a model feature.
 | `Origin`, `Dest` | airport identity and joins | weather/reference lookup; typed context |
 | `FlightDate`, `CRSDepTime`, `CRSArrTime` | UTC schedule reference | `schedule.signed_minutes_to_crs_departure` is dynamic M1 input |
 | `DepTime`, `ArrTime`, `WheelsOff`, `WheelsOn` | direct operational clocks | `EVAL_OUTCOME`/labels; inference only through declared replay |
-| `DepDelayMinutes`, `ArrDelayMinutes`, `TaxiOut`, `TaxiIn` | derived checks, labels, frozen references | never a current feature merely because the archive contains it |
+| `DepDelay`, `ArrDelay` | signed schedule-to-actual offsets | direct-clock date disambiguation and missing-direct fallback; never a current feature |
+| `DepDelayMinutes`, `ArrDelayMinutes` | nonnegative delay reporting only | diagnostics/classification; never timestamp reconstruction |
+| `TaxiOut`, `TaxiIn` | operational durations | wheels fallback, labels, and frozen references; never a current feature merely because the archive contains it |
 | `Cancelled`, `Diverted` | completed operational outcome status | `D2-BTS-ACTUAL`; never schedule evidence |
 
 Flight identity and aircraft continuity are registered separately as
@@ -56,9 +58,11 @@ continuous M1 features.
 
 ### Direct/derived precedence
 
-Direct clock values are primary. Delay/taxi reconstructions are retained for
-date-offset resolution, consistency diagnostics, and fallback only when the
-direct clock is missing. BTS actual outcomes remain:
+Direct clock values are primary. Signed `DepDelay`/`ArrDelay` resolve their
+calendar date and supply a fallback only when the direct clock is missing.
+`DepDelayMinutes`/`ArrDelayMinutes` are clipped reporting fields and never
+reconstruct timestamps. Taxi durations remain wheel-clock diagnostics/fallbacks.
+BTS actual outcomes remain:
 
 ```text
 decision_time_role = EVAL_OUTCOME

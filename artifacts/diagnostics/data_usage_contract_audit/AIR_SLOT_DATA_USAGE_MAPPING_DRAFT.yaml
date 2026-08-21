@@ -2024,6 +2024,27 @@ mappings:
   dataset_instance_id: data2_2019
   adapter_id: D2-ONTIME
   source: bts_ontime
+  raw_column: ArrDelay
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-ACTUAL
+  canonical_variable: realized_operational_event
+  owner: PRE
+  role: EVAL_OUTCOME
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: posthoc_only
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
+  missing_rule: explicit_cancelled
+  downstream_module: EVALUATION_ONLY
+  provenance: D2-BTS-ACTUAL@1.1.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data2_2019
+  adapter_id: D2-ONTIME
+  source: bts_ontime
   raw_column: ArrDelayMinutes
   source_schema_declared: true
   canonicalizer_accessed: true
@@ -2035,10 +2056,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2056,10 +2077,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2245,10 +2266,31 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
+  findings: ''
+- authoritative: false
+  draft_status: COVERED_ACTIVE
+  dataset_instance_id: data2_2019
+  adapter_id: D2-ONTIME
+  source: bts_ontime
+  raw_column: DepDelay
+  source_schema_declared: true
+  canonicalizer_accessed: true
+  candidate_rule_ids: ''
+  rule_id: D2-BTS-ACTUAL
+  canonical_variable: realized_operational_event
+  owner: PRE
+  role: EVAL_OUTCOME
+  raw_unit: mixed
+  unit: canonical
+  availability_rule: posthoc_only
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
+  missing_rule: explicit_cancelled
+  downstream_module: EVALUATION_ONLY
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2266,10 +2308,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2287,10 +2329,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2455,10 +2497,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2707,10 +2749,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2728,10 +2770,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2791,10 +2833,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE
@@ -2812,10 +2854,10 @@ mappings:
   raw_unit: mixed
   unit: canonical
   availability_rule: posthoc_only
-  transformation: local_actual_to_utc_with_delay_date_offset
+  transformation: direct_local_clock_with_signed_delay_date_disambiguation_and_missing_direct_fallback
   missing_rule: explicit_cancelled
   downstream_module: EVALUATION_ONLY
-  provenance: D2-BTS-ACTUAL@1.0.0
+  provenance: D2-BTS-ACTUAL@1.1.0
   findings: ''
 - authoritative: false
   draft_status: COVERED_ACTIVE

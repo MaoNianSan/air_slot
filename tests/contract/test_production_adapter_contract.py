@@ -13,6 +13,11 @@ def test_source_registry_loads_audited_layouts():
         "ourairports", "bts_ontime", "bts_db1b", "bts_t100", "timezone_reference",
         "airport_reference"}
     assert all(item.version and item.rule_ids for item in registry.sources)
+    ontime = registry.get("data2_2019", "bts_ontime")
+    assert ontime.column_roles["DepDelay"] == "SIGNED_TIME_OFFSET"
+    assert ontime.column_roles["ArrDelay"] == "SIGNED_TIME_OFFSET"
+    assert ontime.column_roles["DepDelayMinutes"] == "NONNEGATIVE_DELAY_REPORTING_ONLY"
+    assert ontime.column_roles["ArrDelayMinutes"] == "NONNEGATIVE_DELAY_REPORTING_ONLY"
 
 
 def test_raw_read_request_rejects_escape_and_output_inside_raw(tmp_path: Path):

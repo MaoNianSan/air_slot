@@ -1,5 +1,5 @@
 {
-  "artifact_hash": "sha256:b2c57c42ebb6f41b2c6c17d5b181624a7c8c0c09c059dbb26faf004dd8b56e04",
+  "artifact_hash": "sha256:91f003780aa19c2fe1fa9c74c0125cb8dbea131270663a803f41f28aa5e691eb",
   "artifact_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH",
   "artifacts": {
     "audit": "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json",
@@ -31,7 +31,7 @@
       "RUNTIME_USED_NO_CONTRACT": 0,
       "SOURCE_SCHEMA_METADATA": 0
     },
-    "mapping_draft_rows": 145,
+    "mapping_draft_rows": 147,
     "pre_output_status": {
       "ACTIVE_PRE_OUTPUT_CONFLICT": 0,
       "ACTIVE_REGISTRY_CONFLICT": 0,
@@ -45,13 +45,13 @@
       "RUNTIME_USED_NO_CONTRACT": 0,
       "SOURCE_SCHEMA_METADATA": 0
     },
-    "raw_column_rows": 103,
+    "raw_column_rows": 105,
     "raw_column_status": {
       "ACTIVE_PRE_OUTPUT_CONFLICT": 0,
       "ACTIVE_REGISTRY_CONFLICT": 0,
       "ACTIVE_SEMANTIC_CONFLICT": 0,
       "AMBIGUOUS_ACTIVE_COLUMN": 0,
-      "COVERED_ACTIVE": 83,
+      "COVERED_ACTIVE": 85,
       "DIAGNOSTIC_ONLY": 1,
       "EXPLICITLY_UNUSED": 8,
       "PRE_BYPASS": 0,
@@ -2496,7 +2496,26 @@
       "adapter_id": "D2-ONTIME",
       "canonicalizer_accessed": true,
       "dataset_instance_id": "data2_2019",
-      "declared_role": null,
+      "declared_role": "SIGNED_TIME_OFFSET",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "ArrDelay",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "NONNEGATIVE_DELAY_REPORTING_ONLY",
       "findings": [],
       "pre_bypass_locations": [],
       "primary_rule_ids": [
@@ -2597,7 +2616,26 @@
       "adapter_id": "D2-ONTIME",
       "canonicalizer_accessed": true,
       "dataset_instance_id": "data2_2019",
-      "declared_role": null,
+      "declared_role": "SIGNED_TIME_OFFSET",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "DepDelay",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "NONNEGATIVE_DELAY_REPORTING_ONLY",
       "findings": [],
       "pre_bypass_locations": [],
       "primary_rule_ids": [
@@ -3067,7 +3105,7 @@
       "status": "COVERED_ACTIVE"
     }
   ],
-  "repository_head": "8276b0b21870b734443d633204288ab75f57f35e",
+  "repository_head": "92406b8c7d9c9aecff7ed732bdbdf632bc6e93e4",
   "rule_audit": [
     {
       "canonical_variable": "predecessor_motion",
@@ -3437,31 +3475,31 @@
       "rule_id": "D1-METAR"
     },
     {
-      "line": 217,
+      "line": 203,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-OPENSKY-FLIGHT"
     },
     {
-      "line": 237,
+      "line": 223,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-OPENSKY-FLIGHT-EVENT"
     },
     {
-      "line": 268,
+      "line": 254,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-OPENSKY-STATE"
     },
     {
-      "line": 322,
+      "line": 308,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-TRAJECTORY-EVENT"
     },
     {
-      "line": 171,
+      "line": 157,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D2-BTS-ACTUAL"
@@ -3473,7 +3511,7 @@
       "rule_id": "D2-BTS-FACTUAL-REPLAY"
     },
     {
-      "line": 79,
+      "line": 69,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D2-BTS-SCHEDULE"
@@ -3502,24 +3540,25 @@
   "scope": "READ_ONLY_REGISTRY_PRE_M1_STATIC_AUDIT",
   "source_hashes": {
     "configs/scientific/foundation.yaml": "sha256:c3b55efaf86e448091d96a368e3680a2bc507a4b43806fa5fddf8bec773cfa93",
-    "docs/reconciliation/AIR_SLOT_DATA_USAGE_CONTRACT_V1.md": "sha256:c4fddcfa9a39dc38e7119cfff3c088cf9cc57bcf017a392a0b8952bf06d4647d",
+    "docs/reconciliation/AIR_SLOT_DATA_USAGE_CONTRACT_V1.md": "sha256:bc28019f9dbfefd557bfc76f1f5cfbe860a3268a1000f552e3d51b34a9525f4d",
     "model/M1/data.py": "sha256:dff5d586926e54b9880c6aa917dcda5aa28573ac110ad0dd13d24f9a45cb8527",
     "model/M2/freeze.py": "sha256:0831e6867b16630796a6189377e7428416e48ba6fdcd43cd45fe3a86b92ccafc",
     "model/PRE/adapters/registry.py": "sha256:23a6e23821efb4c8a94ff583606aed9aed036e5a14ba25005303d331f164ac28",
-    "model/PRE/canonical/normalization_flights.py": "sha256:da275b6900513598eaec764a06285c3178e4281a34ec1949bae7af3c02a4843c",
+    "model/PRE/canonical/data2_timestamps.py": "sha256:25e12935d89d5d25c946949f39cadbf7522a041118dd8eb85251b2053e3d4168",
+    "model/PRE/canonical/normalization_flights.py": "sha256:4f3f5fa5493f434f48ea324d7f53cfedb25a403d10d0bbe0e437e1a9fd73aa29",
     "model/PRE/canonical/normalization_references.py": "sha256:256cd176591546c937a9a1665cf0c2b81797cfe8ae20fec1b9502dc0cb183f56",
     "model/PRE/canonical/normalization_weather.py": "sha256:122206b098487a9d74c8b1e7167c4345b77a6011118b5e14256607a7e9a5ab17",
     "model/PRE/contracts/training_artifacts.py": "sha256:f31adbbcd449ad395b476dcc09d9e58b8ed3ed1ffd1d87e9964dce6ff5cab327",
-    "model/PRE/feature_registry/models.py": "sha256:c6c25d29e40fdf3d88627cf4baf934aaaea46ea7621fdf29b231afa6a1821195",
+    "model/PRE/feature_registry/models.py": "sha256:24a2f1b4b4bfd75c1bc257994aa3e83e36ab035fa44d15e271d5120db4d7177e",
     "model/PRE/mapping.py": "sha256:f367f10c0aae40b72b2c25d8b13d237a633566c6087a02a1e467af1c9a4542a5",
     "model/PRE/publication/static_reference.py": "sha256:bad3d2f2cdb4bff8dbb0d848a597317841a246d24396f762980a788f3e662ed7",
-    "model/PRE/reference/data2_m2_train_fit.py": "sha256:8520c64802005bc0b6a952d9c6b925a994c1540aeffd72c215e0250a9a8959db",
-    "registries/data_usage_rules.yaml": "sha256:c3d33830ab9a440884edc3fab1c2b5e3e5fe52f56f64e94cdf7b00d4cf2b640b",
+    "model/PRE/reference/data2_m2_train_fit.py": "sha256:b741d0bb85a0ba5efcb835c8f44e75dbb007f8598e9a1a80a28f3ae14aeea4a8",
+    "registries/data_usage_rules.yaml": "sha256:ea962838805730851ef70967f6b08791408a4c1a4aec406e5926dbdb78a08a9b",
     "registries/dataset_capabilities.yaml": "sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b",
     "registries/scientific_variables.yaml": "sha256:b48f20879001775e40ea2f35b2bb868fb26553a254b8308857560895b1c3c5b0",
-    "registries/source_adapter_registry.yaml": "sha256:25b6b9fde964efbb6d5823e95ef565a4c979a791af88ae9e9f1685eddae5da5a",
-    "validation/data_usage_classification.py": "sha256:a3777a0e7cce5091866437a49980d1ef7502eaab00beadc61069d722190809c0",
-    "validation/data_usage_contract_audit.py": "sha256:30b0bf8937daa87f4ab51c308f1750e9e4802c9bbd32d9da8b0cec68bbb60793"
+    "registries/source_adapter_registry.yaml": "sha256:83f288e0123ea04ed2e49152efd73e003c5548b37696dad4d186c3733ab96c70",
+    "validation/data_usage_classification.py": "sha256:2ef6fa04bb1501d15001f1bbcea6ae194ec8c1f05451e9aa9646d088aa1929fb",
+    "validation/data_usage_contract_audit.py": "sha256:16087977c9a55ab857863f7616a711e5a8c4c6d90088e646260073965868e9fe"
   },
   "status": "DATA_USAGE_CONTRACT_AUDIT_PASS"
 }

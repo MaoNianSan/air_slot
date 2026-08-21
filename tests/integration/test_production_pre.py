@@ -19,6 +19,7 @@ def _ontime_row(**updates):
         "Flight_Number_Reporting_Airline":"10", "Origin":"JFK", "Dest":"LAX",
         "CRSDepTime":"0800", "CRSArrTime":"1100", "DepTime":"0810", "ArrTime":"1120",
         "WheelsOff":"0825", "WheelsOn":"1105", "TaxiOut":"15", "TaxiIn":"15",
+        "DepDelay":"10", "ArrDelay":"20",
         "DepDelayMinutes":"10", "ArrDelayMinutes":"20",
         "Cancelled":"0", "Diverted":"0"}
     row.update(updates)

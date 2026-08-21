@@ -101,9 +101,10 @@ required columns per file (`RAW_SCHEMA_MISMATCH` on drift) and project only regi
 | `Flight_Number_Reporting_Airline` | yes | flight identity composite |
 | `Origin`, `Dest` | yes | airports; episode continuity; timezone lookup |
 | `CRSDepTime`, `CRSArrTime` | yes | scheduled reference (local HHMM), not SOBT; episode turnaround-window anchors |
-| `DepTime`, `ArrTime`, `WheelsOff`, `WheelsOn` | projected | realized events (post-hoc); date offset restored from delay minutes |
+| `DepTime`, `ArrTime`, `WheelsOff`, `WheelsOn` | projected | direct realized local clocks (post-hoc); departure/arrival date offset is disambiguated with signed delay |
 | `TaxiOut`, `TaxiIn` | projected | taxi durations; wheels reconstruction; `T_TX` label; taxi reference |
-| `DepDelayMinutes`, `ArrDelayMinutes` | projected | date-offset restoration of actual times (evaluation-only semantics) |
+| `DepDelay`, `ArrDelay` | projected | signed schedule-to-actual offsets; date disambiguation and missing-direct fallback only |
+| `DepDelayMinutes`, `ArrDelayMinutes` | projected | nonnegative reporting delays (`max(signed delay, 0)` within source rounding); diagnostics/reporting only |
 | `Cancelled`, `Diverted` | projected | completeness flags of realized outcomes |
 
 ### BTS DB1B coupon (`bts_db1b`)
@@ -142,15 +143,16 @@ conversion and airport identity, respectively.
   for episode eligibility; `DepTime`/`ArrTime` anchor the direct gate gap
   (`D2-CHAIN-GATE-GAP`, `D2-TURNAROUND-REFERENCE`).
 - `FlightDate` of the successor drives the temporal split (`D2-TEMPORAL-SPLIT`).
-- BTS delay minutes are used only to restore the calendar-date offset of typed actual
-  timestamps (`ACTUAL_*_DATE_OFFSET_FROM_DELAY_MINUTES` quality flags); they are evaluation-only.
+- BTS signed `DepDelay`/`ArrDelay` determine the calendar-date offset of direct actual clocks and
+  supply a timestamp only when the matching direct clock is missing. `*DelayMinutes` fields are
+  nonnegative reporting values and never reconstruct an event timestamp.
 
 ## 7. Derived variables and lineage
 
 | published variable | parent/raw columns | transformation | time rule | missing / fallback | support / evidence | consumers |
 |---|---|---|---|---|---|---|
 | `schedule_reference` (FlightRecord) | `CRSDepTime`, `CRSArrTime` + timezone | `local_hhmm_to_utc`, rollover inference | `SCHEDULE_REFERENCE_ASSUMPTION`; semantics = CRS departure, **not** SOBT | explicit missing; no fallback | EMPIRICAL_REFERENCE / ceiling EMPIRICAL_REFERENCE; `D2-BTS-SCHEDULE` | PRE, M1, M2 |
-| `realized_operational_event` (OperationalEventRecord) | `DepTime/ArrTime/WheelsOff/WheelsOn/TaxiOut/TaxiIn/DepDelayMinutes/ArrDelayMinutes/Cancelled/Diverted` | local actual -> UTC with delay-minute date offset; wheels from taxi | `POSTHOC_ONLY`; never inference evidence | explicit cancelled; no fallback | DIRECT / DIRECT; `D2-BTS-ACTUAL` | EVALUATION_ONLY |
+| `realized_operational_event` (OperationalEventRecord) | `DepTime/ArrTime/WheelsOff/WheelsOn/TaxiOut/TaxiIn/DepDelay/ArrDelay/DepDelayMinutes/ArrDelayMinutes/Cancelled/Diverted` | direct local clock -> UTC with signed-delay date disambiguation; signed fallback if direct missing; wheels direct then taxi fallback; delay minutes diagnostic only | `POSTHOC_ONLY`; never inference evidence | explicit cancelled; signed fallback only for missing direct clock | DIRECT / DIRECT; `D2-BTS-ACTUAL` | EVALUATION_ONLY |
 | `R_IB` label | `ArrTime` (pred), decision time | `max(0, pred.actual_arrival - decision_time)`, cap 360 | post-hoc | explicit | DIRECT; `D2-LABEL-R-IB` | M1 |
 | `DELTA_OB` label | `DepTime`, `CRSDepTime` (succ) | `succ.actual_departure - succ.CRS_departure`, signed bins -180..+180 plus tails | post-hoc | explicit | DIRECT; `D2-LABEL-DELTA-OB` | M1 |
 | `T_TX` label | `TaxiOut` (succ) | preserved minutes, cap 60 | post-hoc | explicit | DIRECT; `D2-LABEL-T-TX` | M1 |
@@ -189,8 +191,9 @@ conversion and airport identity, respectively.
   candidate is more than 12 hours before its reference (`infer_rollover`), DST handled by IANA
   zones (`ZoneInfo`).
 - BTS `*Time` fields are local airport time (origin timezone for departure-side fields, dest
-  timezone for arrival-side fields); the calendar-date offset of `DepTime`/`ArrTime` is restored
-  from `DepDelayMinutes`/`ArrDelayMinutes`.
+  timezone for arrival-side fields). `DepDelay`/`ArrDelay` are signed schedule offsets used to
+  resolve the correct local date (including early and multi-day operation); `DepDelayMinutes`/
+  `ArrDelayMinutes` are clipped nonnegative reporting fields and cannot resolve timestamps.
 - Decision nodes are a fixed 5-minute rolling grid (`roll_minutes = 5`, FROZEN): decision times
   `t_n = t_0 + 5n` from episode start through episode end; `information_cutoff = decision_time`
   (`model/PRE/episode/node_builder.py`).

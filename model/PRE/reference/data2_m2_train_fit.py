@@ -136,8 +136,8 @@ __all__ = [
 ONTIME_PROJECTED_FIELDS = [
     "FlightDate", "Reporting_Airline", "Tail_Number", "Flight_Number_Reporting_Airline",
     "Origin", "Dest", "CRSDepTime", "CRSArrTime", "DepTime", "ArrTime",
-    "WheelsOff", "WheelsOn", "TaxiOut", "TaxiIn", "DepDelayMinutes",
-    "ArrDelayMinutes", "Cancelled", "Diverted",
+    "WheelsOff", "WheelsOn", "TaxiOut", "TaxiIn", "DepDelay", "ArrDelay",
+    "DepDelayMinutes", "ArrDelayMinutes", "Cancelled", "Diverted",
 ]
 
 M2_FORMAL_SCOPE = (

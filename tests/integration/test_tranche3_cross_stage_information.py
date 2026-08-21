@@ -38,7 +38,8 @@ def _pred_row():
         "Tail_Number": "N1", "Flight_Number_Reporting_Airline": "9",
         "Origin": "LAX", "Dest": "JFK", "CRSDepTime": "0435", "CRSArrTime": "0755",
         "DepTime": "0435", "ArrTime": "0755", "WheelsOff": "0450", "WheelsOn": "0745",
-        "TaxiOut": "15", "TaxiIn": "10", "DepDelayMinutes": "0", "ArrDelayMinutes": "0",
+        "TaxiOut": "15", "TaxiIn": "10", "DepDelay": "0", "ArrDelay": "0",
+        "DepDelayMinutes": "0", "ArrDelayMinutes": "0",
         "Cancelled": "0", "Diverted": "0"}
 
 
@@ -49,7 +50,8 @@ def _succ_row():
         "Tail_Number": "N1", "Flight_Number_Reporting_Airline": "10",
         "Origin": "JFK", "Dest": "LAX", "CRSDepTime": "0800", "CRSArrTime": "1100",
         "DepTime": "0810", "ArrTime": "1120", "WheelsOff": "0825", "WheelsOn": "1105",
-        "TaxiOut": "15", "TaxiIn": "15", "DepDelayMinutes": "10", "ArrDelayMinutes": "20",
+        "TaxiOut": "15", "TaxiIn": "15", "DepDelay": "10", "ArrDelay": "20",
+        "DepDelayMinutes": "10", "ArrDelayMinutes": "20",
         "Cancelled": "0", "Diverted": "0"}
 
 

@@ -64,12 +64,12 @@ def _stage_source_summary(cohorts) -> tuple[list[dict], list[dict]]:
     candidates = []
     for name, canonical, source_key in (
         (
-            "ArrTime / ArrDelayMinutes",
+            "ArrTime / ArrDelay (signed date disambiguation)",
             "predecessor_outcome.actual_arrival_utc",
             "ArrTime",
         ),
         (
-            "DepTime / DepDelayMinutes",
+            "DepTime / DepDelay (signed date disambiguation)",
             "successor_outcome.actual_departure_utc",
             "DepTime",
         ),

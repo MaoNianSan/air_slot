@@ -168,8 +168,8 @@ def lineage_rows(train_stats: list[dict]) -> list[dict]:
             }
         )
     for name, raw in (
-        ("T_IB_A00", "ArrTime;ArrDelayMinutes"),
-        ("D_OB", "DepTime;DepDelayMinutes;CRSDepTime"),
+        ("T_IB_A00", "ArrTime;ArrDelay;ArrDelayMinutes(reporting_only)"),
+        ("D_OB", "DepTime;DepDelay;DepDelayMinutes(reporting_only);CRSDepTime"),
         ("D_TX", "TaxiOut"),
     ):
         records.append(

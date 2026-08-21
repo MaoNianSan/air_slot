@@ -1,0 +1,2669 @@
+{
+  "delay_reporting_relationship": {
+    "calibration": {
+      "arrival": {
+        "both_available": 643781,
+        "deterministic_violation_samples": [],
+        "exact_relation_rate": 1.0,
+        "negative_signed_count": 401934,
+        "violation_count": 0,
+        "within_1min_relation_rate": 1.0
+      },
+      "departure": {
+        "both_available": 646815,
+        "deterministic_violation_samples": [],
+        "exact_relation_rate": 1.0,
+        "negative_signed_count": 372376,
+        "violation_count": 0,
+        "within_1min_relation_rate": 1.0
+      }
+    },
+    "development": {
+      "arrival": {
+        "both_available": 1240067,
+        "deterministic_violation_samples": [],
+        "exact_relation_rate": 1.0,
+        "negative_signed_count": 826140,
+        "violation_count": 0,
+        "within_1min_relation_rate": 1.0
+      },
+      "departure": {
+        "both_available": 1243977,
+        "deterministic_violation_samples": [],
+        "exact_relation_rate": 1.0,
+        "negative_signed_count": 784602,
+        "violation_count": 0,
+        "within_1min_relation_rate": 1.0
+      }
+    },
+    "train": {
+      "arrival": {
+        "both_available": 3539028,
+        "deterministic_violation_samples": [],
+        "exact_relation_rate": 1.0,
+        "negative_signed_count": 2195717,
+        "violation_count": 0,
+        "within_1min_relation_rate": 1.0
+      },
+      "departure": {
+        "both_available": 3551556,
+        "deterministic_violation_samples": [],
+        "exact_relation_rate": 1.0,
+        "negative_signed_count": 2097344,
+        "violation_count": 0,
+        "within_1min_relation_rate": 1.0
+      }
+    }
+  },
+  "direct_signed_consistency": {
+    "calibration": {
+      "arrival": {
+        "both_available_count": 635790,
+        "date_offset_resolved_count": 615,
+        "deterministic_inconsistency_samples": [],
+        "exact_agreement_rate": 1.0,
+        "max_abs_difference_minutes": 0.0,
+        "median_abs_difference_minutes": 0.0,
+        "multi_day_offset_count": 10,
+        "p95_abs_difference_minutes": 0.0,
+        "p99_abs_difference_minutes": 0.0,
+        "stratification": {
+          "cross_midnight": {
+            "count": 15565,
+            "exact_agreement_rate": 1.0,
+            "group": "cross_midnight",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "lowest_within_1min_airports_min_n_100": [
+            {
+              "count": 34569,
+              "exact_agreement_rate": 1.0,
+              "group": "ATL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 29091,
+              "exact_agreement_rate": 1.0,
+              "group": "ORD",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 26377,
+              "exact_agreement_rate": 1.0,
+              "group": "DFW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 23261,
+              "exact_agreement_rate": 1.0,
+              "group": "DEN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19638,
+              "exact_agreement_rate": 1.0,
+              "group": "LAX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19217,
+              "exact_agreement_rate": 1.0,
+              "group": "CLT",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 15366,
+              "exact_agreement_rate": 1.0,
+              "group": "SFO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14964,
+              "exact_agreement_rate": 1.0,
+              "group": "IAH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14856,
+              "exact_agreement_rate": 1.0,
+              "group": "MSP",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14246,
+              "exact_agreement_rate": 1.0,
+              "group": "DTW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14227,
+              "exact_agreement_rate": 1.0,
+              "group": "PHX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14020,
+              "exact_agreement_rate": 1.0,
+              "group": "LAS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 13753,
+              "exact_agreement_rate": 1.0,
+              "group": "SEA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 13741,
+              "exact_agreement_rate": 1.0,
+              "group": "LGA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 12462,
+              "exact_agreement_rate": 1.0,
+              "group": "BOS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 11316,
+              "exact_agreement_rate": 1.0,
+              "group": "MCO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 11122,
+              "exact_agreement_rate": 1.0,
+              "group": "DCA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10624,
+              "exact_agreement_rate": 1.0,
+              "group": "EWR",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10258,
+              "exact_agreement_rate": 1.0,
+              "group": "JFK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10133,
+              "exact_agreement_rate": 1.0,
+              "group": "PHL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "lowest_within_1min_carriers_min_n_100": [
+            {
+              "count": 115993,
+              "exact_agreement_rate": 1.0,
+              "group": "WN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 89103,
+              "exact_agreement_rate": 1.0,
+              "group": "DL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 77829,
+              "exact_agreement_rate": 1.0,
+              "group": "AA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 72470,
+              "exact_agreement_rate": 1.0,
+              "group": "OO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 54361,
+              "exact_agreement_rate": 1.0,
+              "group": "UA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28168,
+              "exact_agreement_rate": 1.0,
+              "group": "MQ",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 26795,
+              "exact_agreement_rate": 1.0,
+              "group": "YX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 24388,
+              "exact_agreement_rate": 1.0,
+              "group": "AS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 24185,
+              "exact_agreement_rate": 1.0,
+              "group": "OH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 22579,
+              "exact_agreement_rate": 1.0,
+              "group": "B6",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 21504,
+              "exact_agreement_rate": 1.0,
+              "group": "9E",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19268,
+              "exact_agreement_rate": 1.0,
+              "group": "YV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 17660,
+              "exact_agreement_rate": 1.0,
+              "group": "NK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 12005,
+              "exact_agreement_rate": 1.0,
+              "group": "F9",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 11690,
+              "exact_agreement_rate": 1.0,
+              "group": "G4",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10497,
+              "exact_agreement_rate": 1.0,
+              "group": "EV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 7295,
+              "exact_agreement_rate": 1.0,
+              "group": "HA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "multi_day": {
+            "count": 10,
+            "exact_agreement_rate": 1.0,
+            "group": "multi_day",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "negative_delay": {
+            "count": 397263,
+            "exact_agreement_rate": 1.0,
+            "group": "negative_delay",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          }
+        },
+        "within_1min_rate": 1.0,
+        "within_5min_rate": 1.0
+      },
+      "departure": {
+        "both_available_count": 638796,
+        "date_offset_resolved_count": 634,
+        "deterministic_inconsistency_samples": [],
+        "exact_agreement_rate": 1.0,
+        "max_abs_difference_minutes": 0.0,
+        "median_abs_difference_minutes": 0.0,
+        "multi_day_offset_count": 12,
+        "p95_abs_difference_minutes": 0.0,
+        "p99_abs_difference_minutes": 0.0,
+        "stratification": {
+          "cross_midnight": {
+            "count": 4848,
+            "exact_agreement_rate": 1.0,
+            "group": "cross_midnight",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "lowest_within_1min_airports_min_n_100": [
+            {
+              "count": 34707,
+              "exact_agreement_rate": 1.0,
+              "group": "ATL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 29381,
+              "exact_agreement_rate": 1.0,
+              "group": "ORD",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 26573,
+              "exact_agreement_rate": 1.0,
+              "group": "DFW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 23480,
+              "exact_agreement_rate": 1.0,
+              "group": "DEN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19684,
+              "exact_agreement_rate": 1.0,
+              "group": "LAX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19405,
+              "exact_agreement_rate": 1.0,
+              "group": "CLT",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 15399,
+              "exact_agreement_rate": 1.0,
+              "group": "SFO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 15048,
+              "exact_agreement_rate": 1.0,
+              "group": "IAH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14928,
+              "exact_agreement_rate": 1.0,
+              "group": "MSP",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14322,
+              "exact_agreement_rate": 1.0,
+              "group": "DTW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14281,
+              "exact_agreement_rate": 1.0,
+              "group": "PHX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14049,
+              "exact_agreement_rate": 1.0,
+              "group": "LAS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 13976,
+              "exact_agreement_rate": 1.0,
+              "group": "LGA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 13785,
+              "exact_agreement_rate": 1.0,
+              "group": "SEA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 12493,
+              "exact_agreement_rate": 1.0,
+              "group": "BOS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 11427,
+              "exact_agreement_rate": 1.0,
+              "group": "MCO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 11203,
+              "exact_agreement_rate": 1.0,
+              "group": "DCA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10771,
+              "exact_agreement_rate": 1.0,
+              "group": "EWR",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10342,
+              "exact_agreement_rate": 1.0,
+              "group": "JFK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10193,
+              "exact_agreement_rate": 1.0,
+              "group": "PHL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "lowest_within_1min_carriers_min_n_100": [
+            {
+              "count": 116349,
+              "exact_agreement_rate": 1.0,
+              "group": "WN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 89460,
+              "exact_agreement_rate": 1.0,
+              "group": "DL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 78330,
+              "exact_agreement_rate": 1.0,
+              "group": "AA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 72782,
+              "exact_agreement_rate": 1.0,
+              "group": "OO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 54710,
+              "exact_agreement_rate": 1.0,
+              "group": "UA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28368,
+              "exact_agreement_rate": 1.0,
+              "group": "MQ",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 27000,
+              "exact_agreement_rate": 1.0,
+              "group": "YX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 24464,
+              "exact_agreement_rate": 1.0,
+              "group": "AS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 24327,
+              "exact_agreement_rate": 1.0,
+              "group": "OH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 22695,
+              "exact_agreement_rate": 1.0,
+              "group": "B6",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 21602,
+              "exact_agreement_rate": 1.0,
+              "group": "9E",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19348,
+              "exact_agreement_rate": 1.0,
+              "group": "YV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 17737,
+              "exact_agreement_rate": 1.0,
+              "group": "NK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 12052,
+              "exact_agreement_rate": 1.0,
+              "group": "F9",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 11718,
+              "exact_agreement_rate": 1.0,
+              "group": "G4",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 10552,
+              "exact_agreement_rate": 1.0,
+              "group": "EV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 7302,
+              "exact_agreement_rate": 1.0,
+              "group": "HA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "multi_day": {
+            "count": 12,
+            "exact_agreement_rate": 1.0,
+            "group": "multi_day",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "negative_delay": {
+            "count": 368212,
+            "exact_agreement_rate": 1.0,
+            "group": "negative_delay",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          }
+        },
+        "within_1min_rate": 1.0,
+        "within_5min_rate": 1.0
+      }
+    },
+    "development": {
+      "arrival": {
+        "both_available_count": 1227463,
+        "date_offset_resolved_count": 783,
+        "deterministic_inconsistency_samples": [],
+        "exact_agreement_rate": 1.0,
+        "max_abs_difference_minutes": 0.0,
+        "median_abs_difference_minutes": 0.0,
+        "multi_day_offset_count": 22,
+        "p95_abs_difference_minutes": 0.0,
+        "p99_abs_difference_minutes": 0.0,
+        "stratification": {
+          "cross_midnight": {
+            "count": 22267,
+            "exact_agreement_rate": 1.0,
+            "group": "cross_midnight",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "lowest_within_1min_airports_min_n_100": [
+            {
+              "count": 66084,
+              "exact_agreement_rate": 1.0,
+              "group": "ATL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 58211,
+              "exact_agreement_rate": 1.0,
+              "group": "ORD",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 52250,
+              "exact_agreement_rate": 1.0,
+              "group": "DFW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 44716,
+              "exact_agreement_rate": 1.0,
+              "group": "DEN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 38717,
+              "exact_agreement_rate": 1.0,
+              "group": "CLT",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 37177,
+              "exact_agreement_rate": 1.0,
+              "group": "LAX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 29245,
+              "exact_agreement_rate": 1.0,
+              "group": "SFO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28771,
+              "exact_agreement_rate": 1.0,
+              "group": "IAH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28306,
+              "exact_agreement_rate": 1.0,
+              "group": "MSP",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28166,
+              "exact_agreement_rate": 1.0,
+              "group": "LGA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 27991,
+              "exact_agreement_rate": 1.0,
+              "group": "LAS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 27924,
+              "exact_agreement_rate": 1.0,
+              "group": "DTW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 27517,
+              "exact_agreement_rate": 1.0,
+              "group": "PHX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 26199,
+              "exact_agreement_rate": 1.0,
+              "group": "SEA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 25161,
+              "exact_agreement_rate": 1.0,
+              "group": "BOS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 22619,
+              "exact_agreement_rate": 1.0,
+              "group": "DCA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 21433,
+              "exact_agreement_rate": 1.0,
+              "group": "EWR",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 20206,
+              "exact_agreement_rate": 1.0,
+              "group": "JFK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19982,
+              "exact_agreement_rate": 1.0,
+              "group": "PHL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19731,
+              "exact_agreement_rate": 1.0,
+              "group": "MCO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "lowest_within_1min_carriers_min_n_100": [
+            {
+              "count": 220313,
+              "exact_agreement_rate": 1.0,
+              "group": "WN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 170227,
+              "exact_agreement_rate": 1.0,
+              "group": "DL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 155345,
+              "exact_agreement_rate": 1.0,
+              "group": "AA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 140347,
+              "exact_agreement_rate": 1.0,
+              "group": "OO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 105632,
+              "exact_agreement_rate": 1.0,
+              "group": "UA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 55218,
+              "exact_agreement_rate": 1.0,
+              "group": "MQ",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 55110,
+              "exact_agreement_rate": 1.0,
+              "group": "YX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 47324,
+              "exact_agreement_rate": 1.0,
+              "group": "OH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 45982,
+              "exact_agreement_rate": 1.0,
+              "group": "AS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 44725,
+              "exact_agreement_rate": 1.0,
+              "group": "B6",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 43392,
+              "exact_agreement_rate": 1.0,
+              "group": "9E",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 37538,
+              "exact_agreement_rate": 1.0,
+              "group": "YV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 33085,
+              "exact_agreement_rate": 1.0,
+              "group": "NK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 23597,
+              "exact_agreement_rate": 1.0,
+              "group": "F9",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 21253,
+              "exact_agreement_rate": 1.0,
+              "group": "EV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14220,
+              "exact_agreement_rate": 1.0,
+              "group": "G4",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14155,
+              "exact_agreement_rate": 1.0,
+              "group": "HA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "multi_day": {
+            "count": 22,
+            "exact_agreement_rate": 1.0,
+            "group": "multi_day",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "negative_delay": {
+            "count": 818242,
+            "exact_agreement_rate": 1.0,
+            "group": "negative_delay",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          }
+        },
+        "within_1min_rate": 1.0,
+        "within_5min_rate": 1.0
+      },
+      "departure": {
+        "both_available_count": 1231326,
+        "date_offset_resolved_count": 816,
+        "deterministic_inconsistency_samples": [],
+        "exact_agreement_rate": 1.0,
+        "max_abs_difference_minutes": 0.0,
+        "median_abs_difference_minutes": 0.0,
+        "multi_day_offset_count": 23,
+        "p95_abs_difference_minutes": 0.0,
+        "p99_abs_difference_minutes": 0.0,
+        "stratification": {
+          "cross_midnight": {
+            "count": 5711,
+            "exact_agreement_rate": 1.0,
+            "group": "cross_midnight",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "lowest_within_1min_airports_min_n_100": [
+            {
+              "count": 66282,
+              "exact_agreement_rate": 1.0,
+              "group": "ATL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 58514,
+              "exact_agreement_rate": 1.0,
+              "group": "ORD",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 52528,
+              "exact_agreement_rate": 1.0,
+              "group": "DFW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 44868,
+              "exact_agreement_rate": 1.0,
+              "group": "DEN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 38992,
+              "exact_agreement_rate": 1.0,
+              "group": "CLT",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 37239,
+              "exact_agreement_rate": 1.0,
+              "group": "LAX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 29316,
+              "exact_agreement_rate": 1.0,
+              "group": "SFO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28965,
+              "exact_agreement_rate": 1.0,
+              "group": "IAH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28441,
+              "exact_agreement_rate": 1.0,
+              "group": "LGA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28375,
+              "exact_agreement_rate": 1.0,
+              "group": "MSP",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 28012,
+              "exact_agreement_rate": 1.0,
+              "group": "LAS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 27974,
+              "exact_agreement_rate": 1.0,
+              "group": "DTW",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 27671,
+              "exact_agreement_rate": 1.0,
+              "group": "PHX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 26259,
+              "exact_agreement_rate": 1.0,
+              "group": "SEA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 25195,
+              "exact_agreement_rate": 1.0,
+              "group": "BOS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 22763,
+              "exact_agreement_rate": 1.0,
+              "group": "DCA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 21590,
+              "exact_agreement_rate": 1.0,
+              "group": "EWR",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 20363,
+              "exact_agreement_rate": 1.0,
+              "group": "JFK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 20117,
+              "exact_agreement_rate": 1.0,
+              "group": "PHL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 19766,
+              "exact_agreement_rate": 1.0,
+              "group": "MCO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "lowest_within_1min_carriers_min_n_100": [
+            {
+              "count": 220786,
+              "exact_agreement_rate": 1.0,
+              "group": "WN",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 170635,
+              "exact_agreement_rate": 1.0,
+              "group": "DL",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 155870,
+              "exact_agreement_rate": 1.0,
+              "group": "AA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 140880,
+              "exact_agreement_rate": 1.0,
+              "group": "OO",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 106013,
+              "exact_agreement_rate": 1.0,
+              "group": "UA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 55482,
+              "exact_agreement_rate": 1.0,
+              "group": "MQ",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 55351,
+              "exact_agreement_rate": 1.0,
+              "group": "YX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 47558,
+              "exact_agreement_rate": 1.0,
+              "group": "OH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 46109,
+              "exact_agreement_rate": 1.0,
+              "group": "AS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 44882,
+              "exact_agreement_rate": 1.0,
+              "group": "B6",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 43538,
+              "exact_agreement_rate": 1.0,
+              "group": "9E",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 37674,
+              "exact_agreement_rate": 1.0,
+              "group": "YV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 33162,
+              "exact_agreement_rate": 1.0,
+              "group": "NK",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 23650,
+              "exact_agreement_rate": 1.0,
+              "group": "F9",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 21330,
+              "exact_agreement_rate": 1.0,
+              "group": "EV",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14239,
+              "exact_agreement_rate": 1.0,
+              "group": "G4",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 14167,
+              "exact_agreement_rate": 1.0,
+              "group": "HA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "multi_day": {
+            "count": 23,
+            "exact_agreement_rate": 1.0,
+            "group": "multi_day",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "negative_delay": {
+            "count": 777121,
+            "exact_agreement_rate": 1.0,
+            "group": "negative_delay",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          }
+        },
+        "within_1min_rate": 1.0,
+        "within_5min_rate": 1.0
+      }
+    },
+    "train": {
+      "arrival": {
+        "both_available_count": 3497660,
+        "date_offset_resolved_count": 2422,
+        "deterministic_inconsistency_samples": [
+          {
+            "CRS_time": "2157",
+            "Dest": "ASE",
+            "FlightDate": "2019-02-14",
+            "Origin": "IAH",
+            "Reporting_Airline": "OO",
+            "abs_difference_minutes": 38.0,
+            "direct_actual_clock": "2138",
+            "direct_date_resolved": "2019-02-14T21:38:00-07:00",
+            "reporting_delay_minutes": 19.0,
+            "signed_delay": 19.0,
+            "signed_target": "2019-02-14T22:16:00-07:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=02\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv",
+            "source_row_number": 290740
+          },
+          {
+            "CRS_time": "0002",
+            "Dest": "SMF",
+            "FlightDate": "2019-03-10",
+            "Origin": "DFW",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "2352",
+            "direct_date_resolved": "2019-03-10T23:52:00-07:00",
+            "reporting_delay_minutes": 0.0,
+            "signed_delay": -10.0,
+            "signed_target": "2019-03-11T00:52:00-07:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 75
+          },
+          {
+            "CRS_time": "0651",
+            "Dest": "PHL",
+            "FlightDate": "2019-03-09",
+            "Origin": "LAX",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0758",
+            "direct_date_resolved": "2019-03-10T07:58:00-04:00",
+            "reporting_delay_minutes": 67.0,
+            "signed_delay": 67.0,
+            "signed_target": "2019-03-10T08:58:00-04:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 1850
+          },
+          {
+            "CRS_time": "0153",
+            "Dest": "SEA",
+            "FlightDate": "2019-03-10",
+            "Origin": "PHX",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0142",
+            "direct_date_resolved": "2019-03-11T01:42:00-07:00",
+            "reporting_delay_minutes": 0.0,
+            "signed_delay": -11.0,
+            "signed_target": "2019-03-11T02:42:00-07:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 2249
+          },
+          {
+            "CRS_time": "0025",
+            "Dest": "DFW",
+            "FlightDate": "2019-03-10",
+            "Origin": "CLT",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0014",
+            "direct_date_resolved": "2019-03-11T00:14:00-05:00",
+            "reporting_delay_minutes": 0.0,
+            "signed_delay": -11.0,
+            "signed_target": "2019-03-11T01:14:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 2260
+          },
+          {
+            "CRS_time": "0614",
+            "Dest": "CLT",
+            "FlightDate": "2019-03-09",
+            "Origin": "LAS",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0544",
+            "direct_date_resolved": "2019-03-10T05:44:00-04:00",
+            "reporting_delay_minutes": 0.0,
+            "signed_delay": -30.0,
+            "signed_target": "2019-03-10T06:44:00-04:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 2352
+          },
+          {
+            "CRS_time": "0630",
+            "Dest": "PHL",
+            "FlightDate": "2019-03-09",
+            "Origin": "SEA",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0607",
+            "direct_date_resolved": "2019-03-10T06:07:00-04:00",
+            "reporting_delay_minutes": 0.0,
+            "signed_delay": -23.0,
+            "signed_target": "2019-03-10T07:07:00-04:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 3485
+          },
+          {
+            "CRS_time": "0531",
+            "Dest": "DFW",
+            "FlightDate": "2019-03-09",
+            "Origin": "SFO",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0710",
+            "direct_date_resolved": "2019-03-10T07:10:00-05:00",
+            "reporting_delay_minutes": 99.0,
+            "signed_delay": 99.0,
+            "signed_target": "2019-03-10T08:10:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 3560
+          },
+          {
+            "CRS_time": "0610",
+            "Dest": "DFW",
+            "FlightDate": "2019-03-09",
+            "Origin": "SMF",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0550",
+            "direct_date_resolved": "2019-03-10T05:50:00-05:00",
+            "reporting_delay_minutes": 0.0,
+            "signed_delay": -20.0,
+            "signed_target": "2019-03-10T06:50:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 3856
+          },
+          {
+            "CRS_time": "0601",
+            "Dest": "CLT",
+            "FlightDate": "2019-03-09",
+            "Origin": "SMF",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0538",
+            "direct_date_resolved": "2019-03-10T05:38:00-04:00",
+            "reporting_delay_minutes": 0.0,
+            "signed_delay": -23.0,
+            "signed_target": "2019-03-10T06:38:00-04:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 3865
+          }
+        ],
+        "exact_agreement_rate": 0.9997709897474312,
+        "max_abs_difference_minutes": 60.0,
+        "median_abs_difference_minutes": 0.0,
+        "multi_day_offset_count": 70,
+        "p95_abs_difference_minutes": 0.0,
+        "p99_abs_difference_minutes": 0.0,
+        "stratification": {
+          "cross_midnight": {
+            "count": 67853,
+            "exact_agreement_rate": 0.9994694412922052,
+            "group": "cross_midnight",
+            "max_abs_difference_minutes": 60.0,
+            "within_1min_rate": 0.9994694412922052,
+            "within_5min_rate": 0.9994694412922052
+          },
+          "lowest_within_1min_airports_min_n_100": [
+            {
+              "count": 292,
+              "exact_agreement_rate": 0.9965753424657534,
+              "group": "COD",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9965753424657534,
+              "within_5min_rate": 0.9965753424657534
+            },
+            {
+              "count": 434,
+              "exact_agreement_rate": 0.9976958525345622,
+              "group": "PUB",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9976958525345622,
+              "within_5min_rate": 0.9976958525345622
+            },
+            {
+              "count": 462,
+              "exact_agreement_rate": 0.9978354978354979,
+              "group": "IAG",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9978354978354979,
+              "within_5min_rate": 0.9978354978354979
+            },
+            {
+              "count": 480,
+              "exact_agreement_rate": 0.9979166666666667,
+              "group": "PLN",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9979166666666667,
+              "within_5min_rate": 0.9979166666666667
+            },
+            {
+              "count": 734,
+              "exact_agreement_rate": 0.9986376021798365,
+              "group": "PBG",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9986376021798365,
+              "within_5min_rate": 0.9986376021798365
+            },
+            {
+              "count": 2246,
+              "exact_agreement_rate": 0.9986642920747997,
+              "group": "FAI",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9986642920747997,
+              "within_5min_rate": 0.9986642920747997
+            },
+            {
+              "count": 1007,
+              "exact_agreement_rate": 0.9990069513406157,
+              "group": "MOT",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9990069513406157,
+              "within_5min_rate": 0.9990069513406157
+            },
+            {
+              "count": 1038,
+              "exact_agreement_rate": 0.9990366088631984,
+              "group": "BLI",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9990366088631984,
+              "within_5min_rate": 0.9990366088631984
+            },
+            {
+              "count": 1111,
+              "exact_agreement_rate": 0.9990999099909991,
+              "group": "FCA",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9990999099909991,
+              "within_5min_rate": 0.9990999099909991
+            },
+            {
+              "count": 3339,
+              "exact_agreement_rate": 0.9991015274034142,
+              "group": "ASE",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9991015274034142,
+              "within_5min_rate": 0.9991015274034142
+            },
+            {
+              "count": 1126,
+              "exact_agreement_rate": 0.9991119005328597,
+              "group": "STS",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9991119005328597,
+              "within_5min_rate": 0.9991119005328597
+            },
+            {
+              "count": 60328,
+              "exact_agreement_rate": 0.999237501657605,
+              "group": "JFK",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.999237501657605,
+              "within_5min_rate": 0.999237501657605
+            },
+            {
+              "count": 8549,
+              "exact_agreement_rate": 0.999298163527898,
+              "group": "PVD",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.999298163527898,
+              "within_5min_rate": 0.999298163527898
+            },
+            {
+              "count": 1499,
+              "exact_agreement_rate": 0.9993328885923949,
+              "group": "TVC",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9993328885923949,
+              "within_5min_rate": 0.9993328885923949
+            },
+            {
+              "count": 1579,
+              "exact_agreement_rate": 0.999366687777074,
+              "group": "FNT",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.999366687777074,
+              "within_5min_rate": 0.999366687777074
+            },
+            {
+              "count": 24012,
+              "exact_agreement_rate": 0.999375312343828,
+              "group": "CLE",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.999375312343828,
+              "within_5min_rate": 0.999375312343828
+            },
+            {
+              "count": 11804,
+              "exact_agreement_rate": 0.9994069806845137,
+              "group": "BUF",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9994069806845137,
+              "within_5min_rate": 0.9994069806845137
+            },
+            {
+              "count": 1689,
+              "exact_agreement_rate": 0.9994079336885732,
+              "group": "MFR",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9994079336885732,
+              "within_5min_rate": 0.9994079336885732
+            },
+            {
+              "count": 1743,
+              "exact_agreement_rate": 0.9994262765347103,
+              "group": "RDM",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9994262765347103,
+              "within_5min_rate": 0.9994262765347103
+            },
+            {
+              "count": 8741,
+              "exact_agreement_rate": 0.9994279830682988,
+              "group": "ANC",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9994279830682988,
+              "within_5min_rate": 0.9994279830682988
+            }
+          ],
+          "lowest_within_1min_carriers_min_n_100": [
+            {
+              "count": 132396,
+              "exact_agreement_rate": 0.9994184114323695,
+              "group": "B6",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9994184114323695,
+              "within_5min_rate": 0.9994184114323695
+            },
+            {
+              "count": 93374,
+              "exact_agreement_rate": 0.9996144537023154,
+              "group": "NK",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9996144537023154,
+              "within_5min_rate": 0.9996144537023154
+            },
+            {
+              "count": 297321,
+              "exact_agreement_rate": 0.9996266661285278,
+              "group": "UA",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9996266661285278,
+              "within_5min_rate": 0.9996266661285278
+            },
+            {
+              "count": 645968,
+              "exact_agreement_rate": 0.9996454932752087,
+              "group": "WN",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9996454932752087,
+              "within_5min_rate": 0.9996454932752087
+            },
+            {
+              "count": 126128,
+              "exact_agreement_rate": 0.9996511480400863,
+              "group": "AS",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9996511480400863,
+              "within_5min_rate": 0.9996511480400863
+            },
+            {
+              "count": 445815,
+              "exact_agreement_rate": 0.9996814822291757,
+              "group": "AA",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9996814822291757,
+              "within_5min_rate": 0.9996814822291757
+            },
+            {
+              "count": 58836,
+              "exact_agreement_rate": 0.9997450540485417,
+              "group": "F9",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9997620504453056,
+              "within_5min_rate": 0.9997620504453056
+            },
+            {
+              "count": 473197,
+              "exact_agreement_rate": 0.9998203707969409,
+              "group": "DL",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9998203707969409,
+              "within_5min_rate": 0.9998203707969409
+            },
+            {
+              "count": 394146,
+              "exact_agreement_rate": 0.9999162746799409,
+              "group": "OO",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999162746799409,
+              "within_5min_rate": 0.9999162746799409
+            },
+            {
+              "count": 40800,
+              "exact_agreement_rate": 0.9999264705882352,
+              "group": "HA",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999264705882352,
+              "within_5min_rate": 0.9999264705882352
+            },
+            {
+              "count": 151597,
+              "exact_agreement_rate": 0.9999472285071604,
+              "group": "MQ",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999472285071604,
+              "within_5min_rate": 0.9999472285071604
+            },
+            {
+              "count": 106753,
+              "exact_agreement_rate": 0.9999531629087707,
+              "group": "YV",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999531629087707,
+              "within_5min_rate": 0.9999531629087707
+            },
+            {
+              "count": 154875,
+              "exact_agreement_rate": 0.9999677158999193,
+              "group": "YX",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999677158999193,
+              "within_5min_rate": 0.9999677158999193
+            },
+            {
+              "count": 122255,
+              "exact_agreement_rate": 0.9999754611263343,
+              "group": "9E",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999754611263343,
+              "within_5min_rate": 0.9999754611263343
+            },
+            {
+              "count": 138085,
+              "exact_agreement_rate": 0.9999782742513669,
+              "group": "OH",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999782742513669,
+              "within_5min_rate": 0.9999782742513669
+            },
+            {
+              "count": 53008,
+              "exact_agreement_rate": 0.9999811349230305,
+              "group": "G4",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999811349230305,
+              "within_5min_rate": 0.9999811349230305
+            },
+            {
+              "count": 63106,
+              "exact_agreement_rate": 0.999984153646246,
+              "group": "EV",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.999984153646246,
+              "within_5min_rate": 0.999984153646246
+            }
+          ],
+          "multi_day": {
+            "count": 70,
+            "exact_agreement_rate": 1.0,
+            "group": "multi_day",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "negative_delay": {
+            "count": 2170300,
+            "exact_agreement_rate": 0.9998235267013776,
+            "group": "negative_delay",
+            "max_abs_difference_minutes": 60.0,
+            "within_1min_rate": 0.9998239874671704,
+            "within_5min_rate": 0.9998239874671704
+          }
+        },
+        "within_1min_rate": 0.999771275652865,
+        "within_5min_rate": 0.999771275652865
+      },
+      "departure": {
+        "both_available_count": 3510079,
+        "date_offset_resolved_count": 2578,
+        "deterministic_inconsistency_samples": [
+          {
+            "CRS_time": "2015",
+            "Dest": "SEA",
+            "FlightDate": "2019-03-09",
+            "Origin": "ORD",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0616",
+            "direct_date_resolved": "2019-03-10T06:16:00-05:00",
+            "reporting_delay_minutes": 601.0,
+            "signed_delay": 601.0,
+            "signed_target": "2019-03-10T07:16:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 10942
+          },
+          {
+            "CRS_time": "1437",
+            "Dest": "PHL",
+            "FlightDate": "2019-03-09",
+            "Origin": "AUS",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0946",
+            "direct_date_resolved": "2019-03-10T09:46:00-05:00",
+            "reporting_delay_minutes": 1149.0,
+            "signed_delay": 1149.0,
+            "signed_target": "2019-03-10T10:46:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 33503
+          },
+          {
+            "CRS_time": "1055",
+            "Dest": "JAC",
+            "FlightDate": "2019-03-09",
+            "Origin": "DFW",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0803",
+            "direct_date_resolved": "2019-03-10T08:03:00-05:00",
+            "reporting_delay_minutes": 1268.0,
+            "signed_delay": 1268.0,
+            "signed_target": "2019-03-10T09:03:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 39063
+          },
+          {
+            "CRS_time": "1338",
+            "Dest": "ORD",
+            "FlightDate": "2019-03-09",
+            "Origin": "JAC",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "1034",
+            "direct_date_resolved": "2019-03-10T10:34:00-06:00",
+            "reporting_delay_minutes": 1256.0,
+            "signed_delay": 1256.0,
+            "signed_target": "2019-03-10T11:34:00-06:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 40786
+          },
+          {
+            "CRS_time": "2315",
+            "Dest": "JFK",
+            "FlightDate": "2019-03-09",
+            "Origin": "SFO",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "1629",
+            "direct_date_resolved": "2019-03-10T16:29:00-07:00",
+            "reporting_delay_minutes": 1034.0,
+            "signed_delay": 1034.0,
+            "signed_target": "2019-03-10T17:29:00-07:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 50815
+          },
+          {
+            "CRS_time": "0131",
+            "Dest": "MIA",
+            "FlightDate": "2019-03-10",
+            "Origin": "DEN",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0358",
+            "direct_date_resolved": "2019-03-10T03:58:00-06:00",
+            "reporting_delay_minutes": 147.0,
+            "signed_delay": 147.0,
+            "signed_target": "2019-03-10T04:58:00-06:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 54210
+          },
+          {
+            "CRS_time": "2020",
+            "Dest": "IAH",
+            "FlightDate": "2019-03-09",
+            "Origin": "ORD",
+            "Reporting_Airline": "AA",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0600",
+            "direct_date_resolved": "2019-03-10T06:00:00-05:00",
+            "reporting_delay_minutes": 580.0,
+            "signed_delay": 580.0,
+            "signed_target": "2019-03-10T07:00:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 63072
+          },
+          {
+            "CRS_time": "2232",
+            "Dest": "AVL",
+            "FlightDate": "2019-03-09",
+            "Origin": "ATL",
+            "Reporting_Airline": "DL",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "0615",
+            "direct_date_resolved": "2019-03-10T06:15:00-04:00",
+            "reporting_delay_minutes": 463.0,
+            "signed_delay": 463.0,
+            "signed_target": "2019-03-10T07:15:00-04:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 173535
+          },
+          {
+            "CRS_time": "2025",
+            "Dest": "ORD",
+            "FlightDate": "2019-03-09",
+            "Origin": "DTW",
+            "Reporting_Airline": "OO",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "1307",
+            "direct_date_resolved": "2019-03-10T13:07:00-04:00",
+            "reporting_delay_minutes": 1002.0,
+            "signed_delay": 1002.0,
+            "signed_target": "2019-03-10T14:07:00-04:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 223750
+          },
+          {
+            "CRS_time": "2040",
+            "Dest": "FSD",
+            "FlightDate": "2019-03-09",
+            "Origin": "ORD",
+            "Reporting_Airline": "OO",
+            "abs_difference_minutes": 60.0,
+            "direct_actual_clock": "1254",
+            "direct_date_resolved": "2019-03-10T12:54:00-05:00",
+            "reporting_delay_minutes": 974.0,
+            "signed_delay": 974.0,
+            "signed_target": "2019-03-10T13:54:00-05:00",
+            "source_path": "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+            "source_row_number": 223920
+          }
+        ],
+        "exact_agreement_rate": 0.99999173807769,
+        "max_abs_difference_minutes": 265.0,
+        "median_abs_difference_minutes": 0.0,
+        "multi_day_offset_count": 63,
+        "p95_abs_difference_minutes": 0.0,
+        "p99_abs_difference_minutes": 0.0,
+        "stratification": {
+          "cross_midnight": {
+            "count": 15792,
+            "exact_agreement_rate": 0.998290273556231,
+            "group": "cross_midnight",
+            "max_abs_difference_minutes": 60.0,
+            "within_1min_rate": 0.998290273556231,
+            "within_5min_rate": 0.998290273556231
+          },
+          "lowest_within_1min_airports_min_n_100": [
+            {
+              "count": 2079,
+              "exact_agreement_rate": 0.9995189995189995,
+              "group": "JAC",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9995189995189995,
+              "within_5min_rate": 0.9995189995189995
+            },
+            {
+              "count": 2262,
+              "exact_agreement_rate": 0.9995579133510168,
+              "group": "PIA",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9995579133510168,
+              "within_5min_rate": 0.9995579133510168
+            },
+            {
+              "count": 4297,
+              "exact_agreement_rate": 0.9997672794973237,
+              "group": "AVL",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9997672794973237,
+              "within_5min_rate": 0.9997672794973237
+            },
+            {
+              "count": 12300,
+              "exact_agreement_rate": 0.9999186991869918,
+              "group": "MEM",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999186991869918,
+              "within_5min_rate": 0.9999186991869918
+            },
+            {
+              "count": 14003,
+              "exact_agreement_rate": 0.9999285867314147,
+              "group": "BDL",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999285867314147,
+              "within_5min_rate": 0.9999285867314147
+            },
+            {
+              "count": 16924,
+              "exact_agreement_rate": 0.9999409123138738,
+              "group": "JAX",
+              "max_abs_difference_minutes": 265.0,
+              "within_1min_rate": 0.9999409123138738,
+              "within_5min_rate": 0.9999409123138738
+            },
+            {
+              "count": 81255,
+              "exact_agreement_rate": 0.9999507722601686,
+              "group": "SFO",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999507722601686,
+              "within_5min_rate": 0.9999507722601686
+            },
+            {
+              "count": 115378,
+              "exact_agreement_rate": 0.9999566641820797,
+              "group": "DEN",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999566641820797,
+              "within_5min_rate": 0.9999566641820797
+            },
+            {
+              "count": 31655,
+              "exact_agreement_rate": 0.9999684094139947,
+              "group": "AUS",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999684094139947,
+              "within_5min_rate": 0.9999684094139947
+            },
+            {
+              "count": 32478,
+              "exact_agreement_rate": 0.9999692099267197,
+              "group": "IAD",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999692099267197,
+              "within_5min_rate": 0.9999692099267197
+            },
+            {
+              "count": 38438,
+              "exact_agreement_rate": 0.9999739840782559,
+              "group": "MDW",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999739840782559,
+              "within_5min_rate": 0.9999739840782559
+            },
+            {
+              "count": 76981,
+              "exact_agreement_rate": 0.9999740195632688,
+              "group": "DTW",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999740195632688,
+              "within_5min_rate": 0.9999740195632688
+            },
+            {
+              "count": 156935,
+              "exact_agreement_rate": 0.9999808838053972,
+              "group": "ORD",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999808838053972,
+              "within_5min_rate": 0.9999808838053972
+            },
+            {
+              "count": 140805,
+              "exact_agreement_rate": 0.9999857959589503,
+              "group": "DFW",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999857959589503,
+              "within_5min_rate": 0.9999857959589503
+            },
+            {
+              "count": 77132,
+              "exact_agreement_rate": 0.9999870352123632,
+              "group": "MSP",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999870352123632,
+              "within_5min_rate": 0.9999870352123632
+            },
+            {
+              "count": 86761,
+              "exact_agreement_rate": 0.9999884740839778,
+              "group": "IAH",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999884740839778,
+              "within_5min_rate": 0.9999884740839778
+            },
+            {
+              "count": 106273,
+              "exact_agreement_rate": 0.9999905902722235,
+              "group": "LAX",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999905902722235,
+              "within_5min_rate": 0.9999905902722235
+            },
+            {
+              "count": 191594,
+              "exact_agreement_rate": 0.9999947806298736,
+              "group": "ATL",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999947806298736,
+              "within_5min_rate": 0.9999947806298736
+            },
+            {
+              "count": 112563,
+              "exact_agreement_rate": 1.0,
+              "group": "CLT",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 87100,
+              "exact_agreement_rate": 1.0,
+              "group": "PHX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "lowest_within_1min_carriers_min_n_100": [
+            {
+              "count": 396294,
+              "exact_agreement_rate": 0.9999697194507108,
+              "group": "OO",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999697194507108,
+              "within_5min_rate": 0.9999697194507108
+            },
+            {
+              "count": 53180,
+              "exact_agreement_rate": 0.9999811959383227,
+              "group": "G4",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999811959383227,
+              "within_5min_rate": 0.9999811959383227
+            },
+            {
+              "count": 107193,
+              "exact_agreement_rate": 0.9999813420652468,
+              "group": "YV",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999813420652468,
+              "within_5min_rate": 0.9999813420652468
+            },
+            {
+              "count": 63411,
+              "exact_agreement_rate": 0.9999842298654807,
+              "group": "EV",
+              "max_abs_difference_minutes": 265.0,
+              "within_1min_rate": 0.9999842298654807,
+              "within_5min_rate": 0.9999842298654807
+            },
+            {
+              "count": 447440,
+              "exact_agreement_rate": 0.9999843554443054,
+              "group": "AA",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999843554443054,
+              "within_5min_rate": 0.9999843554443054
+            },
+            {
+              "count": 93611,
+              "exact_agreement_rate": 0.9999893174947388,
+              "group": "NK",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999893174947388,
+              "within_5min_rate": 0.9999893174947388
+            },
+            {
+              "count": 298369,
+              "exact_agreement_rate": 0.9999899453361442,
+              "group": "UA",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999899453361442,
+              "within_5min_rate": 0.9999899453361442
+            },
+            {
+              "count": 474269,
+              "exact_agreement_rate": 0.9999978914919592,
+              "group": "DL",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.9999978914919592,
+              "within_5min_rate": 0.9999978914919592
+            },
+            {
+              "count": 647647,
+              "exact_agreement_rate": 0.999998455948997,
+              "group": "WN",
+              "max_abs_difference_minutes": 60.0,
+              "within_1min_rate": 0.999998455948997,
+              "within_5min_rate": 0.999998455948997
+            },
+            {
+              "count": 155519,
+              "exact_agreement_rate": 1.0,
+              "group": "YX",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 152420,
+              "exact_agreement_rate": 1.0,
+              "group": "MQ",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 138714,
+              "exact_agreement_rate": 1.0,
+              "group": "OH",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 132906,
+              "exact_agreement_rate": 1.0,
+              "group": "B6",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 126640,
+              "exact_agreement_rate": 1.0,
+              "group": "AS",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 122641,
+              "exact_agreement_rate": 1.0,
+              "group": "9E",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 58986,
+              "exact_agreement_rate": 1.0,
+              "group": "F9",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            },
+            {
+              "count": 40839,
+              "exact_agreement_rate": 1.0,
+              "group": "HA",
+              "max_abs_difference_minutes": 0.0,
+              "within_1min_rate": 1.0,
+              "within_5min_rate": 1.0
+            }
+          ],
+          "multi_day": {
+            "count": 63,
+            "exact_agreement_rate": 1.0,
+            "group": "multi_day",
+            "max_abs_difference_minutes": 0.0,
+            "within_1min_rate": 1.0,
+            "within_5min_rate": 1.0
+          },
+          "negative_delay": {
+            "count": 2073568,
+            "exact_agreement_rate": 0.9999995177394713,
+            "group": "negative_delay",
+            "max_abs_difference_minutes": 265.0,
+            "within_1min_rate": 0.9999995177394713,
+            "within_5min_rate": 0.9999995177394713
+          }
+        },
+        "within_1min_rate": 0.99999173807769,
+        "within_5min_rate": 0.99999173807769
+      }
+    }
+  },
+  "early_operation_examples": {
+    "arrival": [
+      {
+        "CRS_time": "1510",
+        "Dest": "SFO",
+        "FlightDate": "2019-01-04",
+        "Origin": "SBP",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T14:44:00-08:00",
+        "direct_actual_clock": "1444",
+        "direct_date_resolved": "2019-01-04T14:44:00-08:00",
+        "new_derived_timestamp": "2019-01-04T14:44:00-08:00",
+        "old_derived_timestamp": "2019-01-04T15:10:00-08:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T15:10:00-08:00",
+        "signed_delay": -26.0,
+        "signed_target": "2019-01-04T14:44:00-08:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 2
+      },
+      {
+        "CRS_time": "0855",
+        "Dest": "IAH",
+        "FlightDate": "2019-01-04",
+        "Origin": "SGF",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T08:38:00-06:00",
+        "direct_actual_clock": "0838",
+        "direct_date_resolved": "2019-01-04T08:38:00-06:00",
+        "new_derived_timestamp": "2019-01-04T08:38:00-06:00",
+        "old_derived_timestamp": "2019-01-04T08:55:00-06:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T08:55:00-06:00",
+        "signed_delay": -17.0,
+        "signed_target": "2019-01-04T08:38:00-06:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 4
+      },
+      {
+        "CRS_time": "1433",
+        "Dest": "DEN",
+        "FlightDate": "2019-01-04",
+        "Origin": "ISN",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T14:04:00-07:00",
+        "direct_actual_clock": "1404",
+        "direct_date_resolved": "2019-01-04T14:04:00-07:00",
+        "new_derived_timestamp": "2019-01-04T14:04:00-07:00",
+        "old_derived_timestamp": "2019-01-04T14:33:00-07:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T14:33:00-07:00",
+        "signed_delay": -29.0,
+        "signed_target": "2019-01-04T14:04:00-07:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 5
+      },
+      {
+        "CRS_time": "1040",
+        "Dest": "DEN",
+        "FlightDate": "2019-01-04",
+        "Origin": "MKE",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T10:09:00-07:00",
+        "direct_actual_clock": "1009",
+        "direct_date_resolved": "2019-01-04T10:09:00-07:00",
+        "new_derived_timestamp": "2019-01-04T10:09:00-07:00",
+        "old_derived_timestamp": "2019-01-04T10:40:00-07:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T10:40:00-07:00",
+        "signed_delay": -31.0,
+        "signed_target": "2019-01-04T10:09:00-07:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 6
+      },
+      {
+        "CRS_time": "1826",
+        "Dest": "SFO",
+        "FlightDate": "2019-01-04",
+        "Origin": "SEA",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T18:14:00-08:00",
+        "direct_actual_clock": "1814",
+        "direct_date_resolved": "2019-01-04T18:14:00-08:00",
+        "new_derived_timestamp": "2019-01-04T18:14:00-08:00",
+        "old_derived_timestamp": "2019-01-04T18:26:00-08:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T18:26:00-08:00",
+        "signed_delay": -12.0,
+        "signed_target": "2019-01-04T18:14:00-08:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 7
+      }
+    ],
+    "departure": [
+      {
+        "CRS_time": "1400",
+        "Dest": "SFO",
+        "FlightDate": "2019-01-04",
+        "Origin": "SBP",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T13:53:00-08:00",
+        "direct_actual_clock": "1353",
+        "direct_date_resolved": "2019-01-04T13:53:00-08:00",
+        "new_derived_timestamp": "2019-01-04T13:53:00-08:00",
+        "old_derived_timestamp": "2019-01-04T14:00:00-08:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T14:00:00-08:00",
+        "signed_delay": -7.0,
+        "signed_target": "2019-01-04T13:53:00-08:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 2
+      },
+      {
+        "CRS_time": "0935",
+        "Dest": "XNA",
+        "FlightDate": "2019-01-04",
+        "Origin": "IAH",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T09:30:00-06:00",
+        "direct_actual_clock": "0930",
+        "direct_date_resolved": "2019-01-04T09:30:00-06:00",
+        "new_derived_timestamp": "2019-01-04T09:30:00-06:00",
+        "old_derived_timestamp": "2019-01-04T09:35:00-06:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T09:35:00-06:00",
+        "signed_delay": -5.0,
+        "signed_target": "2019-01-04T09:30:00-06:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 3
+      },
+      {
+        "CRS_time": "0643",
+        "Dest": "IAH",
+        "FlightDate": "2019-01-04",
+        "Origin": "SGF",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T06:37:00-06:00",
+        "direct_actual_clock": "0637",
+        "direct_date_resolved": "2019-01-04T06:37:00-06:00",
+        "new_derived_timestamp": "2019-01-04T06:37:00-06:00",
+        "old_derived_timestamp": "2019-01-04T06:43:00-06:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T06:43:00-06:00",
+        "signed_delay": -6.0,
+        "signed_target": "2019-01-04T06:37:00-06:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 4
+      },
+      {
+        "CRS_time": "1335",
+        "Dest": "DEN",
+        "FlightDate": "2019-01-04",
+        "Origin": "ISN",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T13:14:00-06:00",
+        "direct_actual_clock": "1314",
+        "direct_date_resolved": "2019-01-04T13:14:00-06:00",
+        "new_derived_timestamp": "2019-01-04T13:14:00-06:00",
+        "old_derived_timestamp": "2019-01-04T13:35:00-06:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T13:35:00-06:00",
+        "signed_delay": -21.0,
+        "signed_target": "2019-01-04T13:14:00-06:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 5
+      },
+      {
+        "CRS_time": "0836",
+        "Dest": "DEN",
+        "FlightDate": "2019-01-04",
+        "Origin": "MKE",
+        "Reporting_Airline": "OO",
+        "canonical_actual_timestamp": "2019-01-04T08:26:00-06:00",
+        "direct_actual_clock": "0826",
+        "direct_date_resolved": "2019-01-04T08:26:00-06:00",
+        "new_derived_timestamp": "2019-01-04T08:26:00-06:00",
+        "old_derived_timestamp": "2019-01-04T08:36:00-06:00",
+        "reporting_delay_minutes": 0.0,
+        "scheduled_timestamp": "2019-01-04T08:36:00-06:00",
+        "signed_delay": -10.0,
+        "signed_target": "2019-01-04T08:26:00-06:00",
+        "source_path": "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+        "source_row_number": 6
+      }
+    ]
+  },
+  "final_test_access_count": 0,
+  "gate_status": "PASS_STRONG",
+  "header_checks": {
+    "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=02\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=04\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=05\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=06\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=07\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_7.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=08\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_8.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    },
+    "data2\\raw\\bts\\ontime\\2019\\month=09\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_9.csv": {
+      "ArrDelay": true,
+      "ArrDelayMinutes": true,
+      "DepDelay": true,
+      "DepDelayMinutes": true
+    }
+  },
+  "row_counts": {
+    "calibration": 659029,
+    "development": 1264440,
+    "train": 3634338
+  },
+  "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+  "source_column_available": {
+    "ArrDelay": true,
+    "ArrDelayMinutes": true,
+    "DepDelay": true,
+    "DepDelayMinutes": true
+  },
+  "source_paths": [
+    "data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=02\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=04\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=05\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=06\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=07\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_7.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=08\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_8.csv",
+    "data2\\raw\\bts\\ontime\\2019\\month=09\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_9.csv"
+  ]
+}

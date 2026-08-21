@@ -44,6 +44,22 @@ def _utc(day: date, hhmm, zone: str):
                     tzinfo=ZoneInfo(zone)).timestamp() / 60
 
 
+def _actual_utc_minutes(day: date, schedule: float, direct_hhmm, signed_delay, zone: str):
+    """Mirror PRE direct-clock precedence with signed-delay date disambiguation."""
+    direct = _utc(day, direct_hhmm, zone)
+    delay = _number(signed_delay)
+    signed_target = None if delay is None else schedule + delay
+    if direct is not None and signed_target is not None:
+        day_offset = int(round((signed_target - direct) / (24 * 60)))
+        candidates = (direct + (day_offset + shift) * 24 * 60 for shift in (-1, 0, 1))
+        return min(candidates, key=lambda value: (abs(value - signed_target), value))
+    if direct is not None:
+        while direct < schedule - 12 * 60:
+            direct += 24 * 60
+        return direct
+    return signed_target
+
+
 def _zip(month: int) -> Path:
     return DATA / "_download" / "bts" / "ontime" / "2019" / (
         f"On_Time_Reporting_Carrier_On_Time_Performance_1987_present_2019_{month}.zip")
@@ -180,11 +196,14 @@ def main():
                     sarr = _utc(day, row.get("CRSArrTime"), zones[dest])
                     if sdep is None or sarr is None: continue
                     while sarr < sdep: sarr += 1440
-                    dep_delay, arr_delay = _number(row.get("DepDelayMinutes")), _number(row.get("ArrDelayMinutes"))
                     cancelled = (_number(row.get("Cancelled")) or 0) != 0
                     diverted = (_number(row.get("Diverted")) or 0) != 0
-                    adep = None if cancelled or diverted or dep_delay is None else sdep + dep_delay
-                    aarr = None if cancelled or diverted or arr_delay is None else sarr + arr_delay
+                    adep = None if cancelled or diverted else _actual_utc_minutes(
+                        day, sdep, row.get("DepTime"), row.get("DepDelay"), zones[origin]
+                    )
+                    aarr = None if cancelled or diverted else _actual_utc_minutes(
+                        day, sarr, row.get("ArrTime"), row.get("ArrDelay"), zones[dest]
+                    )
                     taxi = None if cancelled or diverted else _number(row.get("TaxiOut"))
                     batch.append((part, row.get("Reporting_Airline", ""), tail, origin, dest,
                                   sdep, sarr, adep, aarr, taxi))

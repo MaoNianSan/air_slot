@@ -1,0 +1,100 @@
+{
+  "array_dtypes": {
+    "active_D_OB": "bool",
+    "active_D_TX": "bool",
+    "active_T_IB_REMAINING_HAZARD": "bool",
+    "episode_ids": "<U71",
+    "episode_offsets": "int64",
+    "labels_D_OB": "float32",
+    "labels_D_TX": "float32",
+    "labels_T_IB_REMAINING_HAZARD": "float32",
+    "sample_decision_node_ids": "<U71",
+    "sample_end_offsets": "int32",
+    "sample_episode_dates": "<U10",
+    "sample_episode_ids": "<U71",
+    "sample_episode_indices": "int32",
+    "sample_splits": "<U11",
+    "sample_start_offsets": "int32",
+    "static_context_lineages": "<U1821",
+    "static_values": "float32",
+    "values_flat": "float32"
+  },
+  "audit": {
+    "final_test_access_count": 0,
+    "invalidation_reason": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+    "scope": "DATA_GATE_A2"
+  },
+  "cache_build_scope": [
+    "train",
+    "calibration",
+    "development"
+  ],
+  "cache_bytes": 745646,
+  "cache_hash": "sha256:7cb35178323aecdd288010b0b70daf15112695baf627b53d2bef03136393b082",
+  "cache_key": "sha256:0db250e7ba2d4f8847fdc2af43fe965af44af53ba9b72691a18dea48e7cc32e1",
+  "cache_schema_version": "M1_V2_DEVELOPMENT_BASE_CACHE_V3",
+  "calibration_episode_count": 64,
+  "canonical_node_count": 4709,
+  "contract_hashes": {
+    "PRE_contract_hash": "sha256:396523257f2868c5555d45a537e2c785e2d728fb2fb65b0a6da0f46f822934ef",
+    "episode_construction_hash": "sha256:13e802f577332392f59d68027838988982c2addf0b38264a71d2933618bcb3d1",
+    "episode_contract_hash": "sha256:505f5826e30d5f7d0c588bc9f1d4df3f369e7f8f958439c62091bf4d8bc1b1c6",
+    "feature_contract_hash": "sha256:43ac2fda9242947f32c394a8008984fcaeafcbde9cec3df36642dbeac37d6f7a",
+    "normalization_contract_hash": "sha256:5d5f065d1050948e75ae817149f4530f05faf036e44caf74e811dbffda5f005b",
+    "roll_contract_hash": "sha256:3ba671acbf327fc3088b549c465bab508d0238a89e271ca3639ecd9e049adc96",
+    "split_contract_hash": "sha256:ab4aadd6a02b19e6aadadf6177568671104acbb9e8bccb8389ef3bfbb9e4769c"
+  },
+  "development_episode_count": 128,
+  "episode_count": 320,
+  "expanded_prefix_node_count": 65240,
+  "feature_count": 103,
+  "final_test_access_count": 0,
+  "final_test_included": false,
+  "normalization": {
+    "fitted_split": "train",
+    "values": {
+      "schedule.signed_minutes_to_crs_departure": {
+        "mean": 139.7341647116928,
+        "std": 101.33927876445115
+      },
+      "weather.ceiling_base_m": {
+        "mean": 2145.737574552684,
+        "std": 2479.047286619699
+      },
+      "weather.dewpoint_c": {
+        "mean": 2.4076495879611146,
+        "std": 9.869123170102121
+      },
+      "weather.observation_age_minutes": {
+        "mean": 25.02699272296497,
+        "std": 17.331414571944144
+      },
+      "weather.qnh_hpa": {
+        "mean": 1018.4984115942024,
+        "std": 5.5707399996440845
+      },
+      "weather.temperature_c": {
+        "mean": 11.218299892510933,
+        "std": 12.367216603522817
+      },
+      "weather.visibility_m": {
+        "mean": 12381.229935506986,
+        "std": 6186.870358676836
+      },
+      "weather.wind_speed_mps": {
+        "mean": 3.641275528484016,
+        "std": 2.5710111925417074
+      }
+    }
+  },
+  "partition_counts": {
+    "calibration": 1060,
+    "development": 1769,
+    "train": 1880
+  },
+  "raw_input_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+  "sample_count": 4709,
+  "source_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+  "static_feature_count": 2,
+  "train_episode_count": 128
+}

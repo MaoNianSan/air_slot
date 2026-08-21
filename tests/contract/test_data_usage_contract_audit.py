@@ -34,6 +34,10 @@ def test_audit_closes_active_gaps_and_preserves_nonfailure_classifications(tmp_p
 
     assert _raw(result, "D2-ONTIME", "Reporting_Airline")["status"] == "COVERED_ACTIVE"
     assert _raw(result, "D2-ONTIME", "Tail_Number")["status"] == "COVERED_ACTIVE"
+    assert _raw(result, "D2-ONTIME", "DepDelay")["declared_role"] == "SIGNED_TIME_OFFSET"
+    assert _raw(result, "D2-ONTIME", "ArrDelay")["declared_role"] == "SIGNED_TIME_OFFSET"
+    assert _raw(result, "D2-ONTIME", "DepDelayMinutes")["declared_role"] == "NONNEGATIVE_DELAY_REPORTING_ONLY"
+    assert _raw(result, "D2-ONTIME", "ArrDelayMinutes")["declared_role"] == "NONNEGATIVE_DELAY_REPORTING_ONLY"
     assert _raw(result, "D2-T100", "CLASS")["status"] == "REFERENCE_BUILD_ONLY"
     assert _raw(result, "D1-METAR", "mslp")["status"] == "EXPLICITLY_UNUSED"
     assert _raw(result, "D1-EUROSTAT", "id")["status"] == "SOURCE_SCHEMA_METADATA"

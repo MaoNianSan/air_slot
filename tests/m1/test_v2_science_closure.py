@@ -35,7 +35,8 @@ def _row(**updates):
            "Origin": "JFK", "Dest": "LAX", "CRSDepTime": "0800",
            "CRSArrTime": "1100", "DepTime": "0905", "ArrTime": "1230",
            "WheelsOff": "0920", "WheelsOn": "1215", "TaxiOut": "15",
-           "TaxiIn": "15", "DepDelayMinutes": "65", "ArrDelayMinutes": "90",
+           "TaxiIn": "15", "DepDelay": "65", "ArrDelay": "90",
+           "DepDelayMinutes": "65", "ArrDelayMinutes": "90",
            "Cancelled": "0", "Diverted": "0"}
     row.update(updates)
     return row
