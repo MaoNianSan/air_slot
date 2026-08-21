@@ -1,0 +1,121 @@
+{
+  "schema_version": "AIR_SLOT_EXPERIMENT_RESULT_V1",
+  "experiment_id": "EXP4",
+  "variant_id": "EXP4D_RECOMPUTED_STATE",
+  "dataset_id": "data2_2019",
+  "split": "DEVELOPMENT",
+  "tier": "CONTRACT_FAST",
+  "episode_count": 0,
+  "node_count": 0,
+  "seed": 0,
+  "timestamp": "2026-08-21T07:55:24.800458Z",
+  "model_versions": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "model_hashes": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "registry_hashes": {
+    "registry_manifest": "UNBOUND_FAST"
+  },
+  "artifact_versions": {
+    "PRE_BINDING": "sha256:0ad334184d28e17069a6a2c259c6adb3f53fcca0207c16d782a54f6942b46575",
+    "M1_ARTIFACT": "UNBOUND",
+    "M2_ARTIFACT": "UNBOUND",
+    "M3_BUNDLE": "UNBOUND",
+    "M4_POLICY": "UNBOUND"
+  },
+  "scenario_hash": "sha256:b9f3dc5e0246a402a492aef7965d0e4ae64030f1cd42fdb1c303b99fa7251e2d",
+  "config_hash": "sha256:356837e3c67009c8dd863553d3ca7f207dcf3582150987814343e31db4c65fb6",
+  "metrics": {
+    "VARIANT_CONTRACT": {
+      "metric_id": "VARIANT_CONTRACT",
+      "level": "SYSTEM",
+      "value": true,
+      "unit": "boolean",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "variant_id": "EXP4D_RECOMPUTED_STATE",
+        "subexperiment": "Exp4D",
+        "changed_factor": "recomputed_state_appendix_diagnostic",
+        "fixed_factor": [
+          "scientific_inputs",
+          "outputs"
+        ],
+        "claim_scope": "SYSTEM_ADEQUACY_ONLY"
+      }
+    },
+    "MAE_MINUTES": {
+      "metric_id": "MAE_MINUTES",
+      "level": "STATE",
+      "value": null,
+      "unit": "minutes",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "FAST_CONTRACT_RUN_NO_OBSERVED_TARGET_ARTIFACT"
+      }
+    },
+    "CRPS": {
+      "metric_id": "CRPS",
+      "level": "STATE",
+      "value": null,
+      "unit": "minutes",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "FAST_CONTRACT_RUN_NO_FROZEN_PREDICTIVE_DISTRIBUTION"
+      }
+    },
+    "FORMAL_RECOMMENDATION_AVAILABILITY": {
+      "metric_id": "FORMAL_RECOMMENDATION_AVAILABILITY",
+      "level": "DECISION",
+      "value": null,
+      "unit": "rate",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "M4_MATERIAL_COVERAGE_UNFROZEN"
+      }
+    },
+    "E2E_P95_SECONDS": {
+      "metric_id": "E2E_P95_SECONDS",
+      "level": "SYSTEM",
+      "value": null,
+      "unit": "seconds",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "FAST_CONTRACT_RUN_NO_PIPELINE_TIMINGS"
+      }
+    }
+  },
+  "support_status": "NOT_RUN",
+  "lineage": {
+    "execution_scope": "CONTRACT_FAST_FIXTURE_ONLY",
+    "experiment_id": "EXP4",
+    "realized_outcomes_entered_inference": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "context_hash": "sha256:78febd22931db47bf9028c0993475f4e2acf4df45b2efd587ded7752bf777093",
+    "shared_gates": {
+      "M1_POSITIVE_TAIL": "BLOCKED_UNFROZEN",
+      "M4_MONETARY_MAPPING": "BLOCKED_UNFROZEN"
+    }
+  },
+  "runtime": {},
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "provenance": {
+    "paper_result": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "scientific_question": "DOES_THE_COMPLETE_CHAIN_WORK_ADEQUATELY",
+    "adequacy_not_novelty": true,
+    "data1_portability_role": "WITHIN_DATASET_FULL_MINUS_LIGHTGBM",
+    "llm_audit_role": "AUXILIARY_ONLY"
+  }
+}

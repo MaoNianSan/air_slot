@@ -16,7 +16,7 @@ from .data import M1NormalizationArtifact
 from .lifecycle import M1TrainingExample
 
 
-CACHE_SCHEMA_VERSION = "M1_V2_DEVELOPMENT_BASE_CACHE_V2"
+CACHE_SCHEMA_VERSION = "M1_V2_DEVELOPMENT_BASE_CACHE_V3"
 TARGET_NAMES = ("T_IB_REMAINING_HAZARD", "D_OB", "D_TX")
 ALLOWED_SPLITS = ("train", "calibration", "development")
 REQUIRED_CONTRACT_HASHES = (
@@ -55,6 +55,7 @@ def _stable_store_hash(store: "M1CanonicalRaggedStore") -> str:
         store.sample_decision_node_ids,
         store.sample_episode_dates,
         store.sample_splits,
+        store.static_values,
     ):
         if isinstance(value, tuple):
             for item in value:
@@ -64,6 +65,13 @@ def _stable_store_hash(store: "M1CanonicalRaggedStore") -> str:
     for name in TARGET_NAMES:
         _update_hash(hasher, store.labels[name])
         _update_hash(hasher, store.active[name])
+    for lineage in store.static_context_lineages:
+        _update_hash(
+            hasher,
+            "" if lineage is None else json.dumps(
+                lineage, sort_keys=True, separators=(",", ":")
+            ),
+        )
     return f"sha256:{hasher.hexdigest()}"
 
 
@@ -79,6 +87,8 @@ class M1CanonicalRaggedStore:
     sample_decision_node_ids: tuple[str, ...]
     sample_episode_dates: tuple[str, ...]
     sample_splits: tuple[str, ...]
+    static_values: torch.Tensor | None
+    static_context_lineages: tuple[dict[str, object] | None, ...]
     labels: Mapping[str, torch.Tensor]
     active: Mapping[str, torch.Tensor]
 
@@ -125,6 +135,25 @@ class M1CanonicalRaggedStore:
         active = {name: torch.tensor(
             [example.active[name] for _, example in samples], dtype=torch.bool)
             for name in TARGET_NAMES}
+        static_widths = {
+            int(example.static_values.numel())
+            for _, example in samples
+            if example.static_values is not None
+        }
+        if len(static_widths) > 1:
+            raise ValueError("M1_CACHE_STATIC_FEATURE_WIDTH_MISMATCH")
+        static_values = None
+        if static_widths:
+            width = static_widths.pop()
+            static_values = torch.stack([
+                (
+                    example.static_values.detach().cpu().reshape(-1)
+                    .to(dtype=torch.float32).contiguous()
+                    if example.static_values is not None
+                    else torch.zeros(width, dtype=torch.float32)
+                )
+                for _, example in samples
+            ])
         return cls(
             values_flat=values_flat,
             episode_offsets=torch.tensor(offsets, dtype=torch.int64),
@@ -138,6 +167,10 @@ class M1CanonicalRaggedStore:
             sample_episode_dates=tuple(
                 example.episode_date.isoformat() for _, example in samples),
             sample_splits=tuple(split for split, _ in samples),
+            static_values=static_values,
+            static_context_lineages=tuple(
+                example.static_context_lineage for _, example in samples
+            ),
             labels=labels,
             active=active,
         )
@@ -204,6 +237,11 @@ class M1RaggedDataset(Sequence[M1TrainingExample]):
             targets=targets,
             active={name: bool(self.store.active[name][sample_index]) for name in TARGET_NAMES},
             decision_node_id=self.store.sample_decision_node_ids[sample_index] or None,
+            static_values=(
+                None if self.store.static_values is None
+                else self.store.static_values[sample_index].clone()
+            ),
+            static_context_lineage=self.store.static_context_lineages[sample_index],
         )
 
     def __getitem__(self, index):
@@ -245,6 +283,10 @@ class M1DevelopmentBaseCache:
             "episode_count": len(store.episode_ids),
             "sample_count": len(store.sample_splits),
             "feature_count": int(store.values_flat.shape[1]),
+            "static_feature_count": (
+                0 if store.static_values is None
+                else int(store.static_values.shape[1])
+            ),
             "canonical_node_count": store.canonical_node_count,
             "expanded_prefix_node_count": store.expanded_prefix_node_count,
             "partition_counts": {
@@ -279,7 +321,14 @@ class M1DevelopmentBaseCache:
                 self.store.sample_decision_node_ids, dtype=np.str_),
             "sample_episode_dates": np.asarray(self.store.sample_episode_dates, dtype=np.str_),
             "sample_splits": np.asarray(self.store.sample_splits, dtype=np.str_),
+            "static_context_lineages": np.asarray(
+                [json.dumps(lineage, sort_keys=True, separators=(",", ":"))
+                 for lineage in self.store.static_context_lineages],
+                dtype=np.str_,
+            ),
         }
+        if self.store.static_values is not None:
+            arrays["static_values"] = self.store.static_values.numpy()
         arrays.update({f"labels_{name}": self.store.labels[name].numpy()
                        for name in TARGET_NAMES})
         arrays.update({f"active_{name}": self.store.active[name].numpy()
@@ -326,6 +375,13 @@ class M1DevelopmentBaseCache:
                     str(value) for value in arrays["sample_decision_node_ids"]),
                 sample_episode_dates=tuple(str(value) for value in arrays["sample_episode_dates"]),
                 sample_splits=tuple(str(value) for value in arrays["sample_splits"]),
+                static_values=(
+                    None if "static_values" not in arrays.files
+                    else tensor("static_values").to(dtype=torch.float32)
+                ),
+                static_context_lineages=tuple(
+                    json.loads(str(value)) for value in arrays["static_context_lineages"]
+                ),
                 labels={name: tensor(f"labels_{name}").to(dtype=torch.float32)
                         for name in TARGET_NAMES},
                 active={name: tensor(f"active_{name}").to(dtype=torch.bool)

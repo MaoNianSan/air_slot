@@ -23,7 +23,8 @@ LOGIT_KEYS = ("T_IB_REMAINING_HAZARD", "D_OB_zero", "D_OB_quantile",
               "D_TX_zero", "D_TX_quantile")
 
 
-def _example(episode, day, length, offset, *, node=None):
+def _example(episode, day, length, offset, *, node=None, static_values=None,
+             static_context_lineage=None):
     return M1TrainingExample(
         episode_id=episode,
         episode_date=day,
@@ -31,6 +32,8 @@ def _example(episode, day, length, offset, *, node=None):
         targets={name: (offset + index) % 6 for index, name in enumerate(TARGETS)},
         active={"T_IB_REMAINING_HAZARD": True, "D_OB": offset % 2 == 0, "D_TX": True},
         decision_node_id=node or f"{episode}-n{length}",
+        static_values=static_values,
+        static_context_lineage=static_context_lineage,
     )
 
 
@@ -89,6 +92,35 @@ def test_cache_roundtrip_and_history_views(tmp_path: Path):
     assert [row.decision_node_id for row in adaptive] == [row.decision_node_id for row in examples]
     assert manifest["final_test_included"] is False
     assert manifest["final_test_access_count"] == 0
+
+
+def test_cache_roundtrip_preserves_static_context(tmp_path: Path):
+    lineages = (
+        {"context_id": "static-a", "source_hash": "sha256:aaa"},
+        {"context_id": "static-b", "source_hash": "sha256:bbb"},
+    )
+    examples = tuple(
+        _example(
+            f"e{index}", date(2019, 6, index + 1), 3, index,
+            static_values=torch.tensor([index, index + 0.5], dtype=torch.float32),
+            static_context_lineage=lineage,
+        )
+        for index, lineage in enumerate(lineages, start=1)
+    )
+    cache = _cache({"train": examples, "calibration": (), "development": ()})
+    data_path = tmp_path / "cache.npz"
+    manifest_path = tmp_path / "manifest.json"
+    manifest = cache.save(data_path, manifest_path)
+    loaded = M1DevelopmentBaseCache.load(
+        data_path, manifest_path, expected_cache_key=manifest["cache_key"])
+
+    assert manifest["static_feature_count"] == 2
+    assert torch.equal(loaded.store.static_values, torch.tensor(
+        [[1.0, 1.5], [2.0, 2.5]], dtype=torch.float32))
+    assert loaded.store.static_context_lineages == lineages
+    restored = loaded.partition("train")
+    assert torch.equal(restored[0].static_values, examples[0].static_values)
+    assert restored[1].static_context_lineage == lineages[1]
 
 
 def test_cache_rejects_final_test_example():

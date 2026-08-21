@@ -1,36 +1,43 @@
 # Experiment Execution Status
 
-## Source Rewrite Status
+## Current Status
 
-AIR_SLOT_EXP1_4_SOURCE_REWRITE_FAST_COMPLETE
+AIR_SLOT_REAL_FAST_BINDING_SUPPLEMENT = REAL_FAST_PARTIAL_SHARED_GATES_REMAIN
 
-The active source protocols are:
+| Experiment | CONTRACT_FAST | REAL_DATA_FAST | Current executable evidence |
+| --- | --- | --- | --- |
+| Exp1 | PASS | PARTIAL | Shared real Data2 cohort binding; state and decision metrics await M1 V2/M4 artifacts |
+| Exp2 | PASS | PARTIAL | Canonical representation transforms and shared real cohort binding; representation metrics await M1/M2 artifacts |
+| Exp3 | PASS | PARTIAL | Real common replay and state-vintage selection execute on all frozen nodes; action anchor/ranking remains blocked |
+| Exp4 | PASS | PARTIAL | Real PRE/replay latency p50/p95/p99 and budgets execute; predictive baselines await frozen M1 V2 artifacts |
 
-| Experiment | Active Question | FAST Contract Status |
-| --- | --- | --- |
-| Exp1 | Why retain direct information roles and history? | FAST PASS |
-| Exp2 | How much and what representation structure is sufficient? | FAST PASS |
-| Exp3 | How should retained information evolve in time? | FAST PASS |
-| Exp4 | Does the complete chain work adequately? | FAST PASS |
+`CONTRACT_FAST` is source-free fixture coverage for schema, variants, and
+contracts. `REAL_DATA_FAST` uses the frozen Data2 Development pilot cohort:
+`COHORT_HASH = sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63`,
+five episodes, 69 five-minute decision nodes, selected pre-outcome by
+`FIRST_N_ELIGIBLE_BY_STABLE_EPISODE_ID`. All four runners receive the same
+`ExperimentContext`; no per-experiment cohort selection occurs.
 
 ## Shared Gates
 
 | Gate | Current Status | Effect |
 | --- | --- | --- |
-| Data2 factual replay availability | Unresolved scientific rule | No factual event is introduced into inference |
-| M1 positive-tail policy | Unfrozen | Tail/CVaR-dependent outputs remain blocked |
-| Non-A00 M3 V2 response | Not executable/formally supported | Formal multi-action outputs remain blocked |
-| M4 monetary mapping and risk policy | Unfrozen | Monetary residual-risk/ranking outputs remain NOT_RUN |
+| M1 V2 checkpoint/scenarios | `BLOCKED_M1_V2_ARTIFACT_NOT_FROZEN` | No real predictive/state scenario metrics or M2 materialization. Legacy V1 heads are not rebound as V2. |
+| M1 positive tail | `UNRESOLVED` | Tail extrapolation, CVaR, and full ancestral tail scenarios remain blocked; it does not invalidate otherwise legal predictive metrics once a V2 artifact exists. |
+| M2 seven components | `NOT_RUN_DEPENDS_ON_M1_V2_ARTIFACT` | No zero filling; Exp2B and M3/M4 inputs remain unavailable. |
+| M3 A00 | `READY_IDENTITY` | Baseline identity is preserved. |
+| M3 non-A00 | `SCENARIO_ASSUMPTION_CONDITIONAL` | May only be interpreted as conditional, non-causal, and non-authoritative. |
+| M4 formula | `READY` | Code is available. |
+| M4 risk policy | `FROZEN` | Policy is frozen separately from mapping. |
+| M4 tail/mapping/ranking | `UNRESOLVED` / `MONETARY_MAPPING_BLOCKED` / `NOT_RUN` | No authoritative residual-risk or monetary ranking; experiment outputs use `CONSTRUCTED_LOSS_UNIT`, never RMB. |
 
-The source rewrite does not alter PRE/M1/M2/M3/M4, Data1/Data2 definitions,
-split boundaries, targets, action library, or M4 risk definition.
-
-FAST evidence: `pytest -q tests/experiment` passed (82 tests) and
-`python -m exp.cli smoke-all --output artifacts\diagnostics\exp_rewrite_fast`
-completed with `status=PASS` for Exp1--Exp4. These are contract-only checks;
-they do not constitute scientific execution or paper evidence.
+Run commands: `python -m exp.cli smoke-all` remains fixture-only, while
+`python -m exp.cli real-fast-all` emits
+`REAL_FAST_PARTIAL_SHARED_GATES_REMAIN` until the named artifacts are frozen.
+Neither command accesses Final Test or enables paper-full execution.
 
 ## Safety
 
 FINAL_TEST_ACCESS_COUNT = 0
 PAPER_FULL_RUN = FALSE
+FULL = DEFERRED

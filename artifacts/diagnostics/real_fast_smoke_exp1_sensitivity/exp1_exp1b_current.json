@@ -1,0 +1,116 @@
+{
+  "schema_version": "AIR_SLOT_EXPERIMENT_RESULT_V1",
+  "experiment_id": "EXP1",
+  "variant_id": "EXP1B_CURRENT",
+  "dataset_id": "data2_2019",
+  "split": "DEVELOPMENT",
+  "tier": "CONTRACT_FAST",
+  "episode_count": 0,
+  "node_count": 0,
+  "seed": 0,
+  "timestamp": "2026-08-21T07:37:59.405885Z",
+  "model_versions": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "model_hashes": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "registry_hashes": {
+    "registry_manifest": "UNBOUND_FAST"
+  },
+  "artifact_versions": {
+    "PRE_BINDING": "sha256:0ad334184d28e17069a6a2c259c6adb3f53fcca0207c16d782a54f6942b46575",
+    "M1_ARTIFACT": "UNBOUND",
+    "M2_ARTIFACT": "UNBOUND",
+    "M3_BUNDLE": "UNBOUND",
+    "M4_POLICY": "UNBOUND"
+  },
+  "scenario_hash": "sha256:7d5d6d2091ee88123b618bc37d5e6f60cc330d64b30a1d99fdb7d333f5cf3cf8",
+  "config_hash": "sha256:1e0a9f9823d9ad1bad4131c7091f2043a10f7e65a9fba5f8fe27ea062a6a7522",
+  "metrics": {
+    "VARIANT_CONTRACT": {
+      "metric_id": "VARIANT_CONTRACT",
+      "level": "STATE",
+      "value": true,
+      "unit": "boolean",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "variant_id": "EXP1B_CURRENT",
+        "subexperiment": "Exp1B",
+        "changed_factor": "history_representation_current",
+        "fixed_factor": [
+          "M1_architecture",
+          "M1_heads",
+          "targets",
+          "calibration",
+          "M2",
+          "M3",
+          "M4"
+        ],
+        "claim_scope": "HISTORY_DEPENDENCE_ONLY"
+      }
+    },
+    "TOP1_ACTION_DISAGREEMENT": {
+      "metric_id": "TOP1_ACTION_DISAGREEMENT",
+      "level": "DECISION",
+      "value": null,
+      "unit": "rate",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "FAST_CONTRACT_RUN_NO_FROZEN_MULTI_ACTION_M4_OUTPUT"
+      }
+    },
+    "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK": {
+      "metric_id": "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK",
+      "level": "DECISION",
+      "value": null,
+      "unit": "CONSTRUCTED_LOSS_UNIT",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "NOT_RUN_SHARED_M4_MAPPING_AND_REPLAY_GATE"
+      }
+    },
+    "CRPS_PRIMITIVE_TARGET": {
+      "metric_id": "CRPS_PRIMITIVE_TARGET",
+      "level": "STATE",
+      "value": null,
+      "unit": "minutes",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "FAST_CONTRACT_RUN_NO_FROZEN_OBSERVATION_ARTIFACT"
+      }
+    }
+  },
+  "support_status": "NOT_RUN",
+  "lineage": {
+    "execution_scope": "CONTRACT_FAST_FIXTURE_ONLY",
+    "experiment_id": "EXP1",
+    "realized_outcomes_entered_inference": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "context_hash": "sha256:c42346caa36f33be7187a92289a81463260ed6e0e7d29769724fbdd648201deb",
+    "shared_gates": {
+      "M1_POSITIVE_TAIL": "BLOCKED_UNFROZEN",
+      "M4_MONETARY_MAPPING": "BLOCKED_UNFROZEN"
+    }
+  },
+  "runtime": {},
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "provenance": {
+    "paper_result": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "scientific_question": "WHY_CROSS_STAGE_INFORMATION_SHARING_AND_HISTORY_DEPENDENCE",
+    "subexperiment": "Exp1B",
+    "warning_metrics_headline": false,
+    "shared_state_efficiency_headline": false
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "schema_version": "AIR_SLOT_EXPERIMENT_RESULT_V1",
+  "experiment_id": "EXP2",
+  "variant_id": "EXP2B_3CHANNEL",
+  "dataset_id": "data2_2019",
+  "split": "DEVELOPMENT",
+  "tier": "CONTRACT_FAST",
+  "episode_count": 0,
+  "node_count": 0,
+  "seed": 0,
+  "timestamp": "2026-08-21T07:37:56.645508Z",
+  "model_versions": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "model_hashes": {
+    "PRE": "UNBOUND_FAST",
+    "M1": "UNBOUND_FAST",
+    "M2": "UNBOUND_FAST",
+    "M3": "UNBOUND_FAST",
+    "M4": "UNBOUND_FAST"
+  },
+  "registry_hashes": {
+    "registry_manifest": "UNBOUND_FAST"
+  },
+  "artifact_versions": {
+    "PRE_BINDING": "sha256:0ad334184d28e17069a6a2c259c6adb3f53fcca0207c16d782a54f6942b46575",
+    "M1_ARTIFACT": "UNBOUND",
+    "M2_ARTIFACT": "UNBOUND",
+    "M3_BUNDLE": "UNBOUND",
+    "M4_POLICY": "UNBOUND"
+  },
+  "scenario_hash": "sha256:450574c0f8c6047402b8bc91bbcc4c54141ed9f5fa37187ef675e273ed610cbe",
+  "config_hash": "sha256:f9aae4eae3c192f6f6687bb2a63362d2c07236ea110f4bbd05b7d121032e0505",
+  "metrics": {
+    "VARIANT_CONTRACT": {
+      "metric_id": "VARIANT_CONTRACT",
+      "level": "STATE",
+      "value": true,
+      "unit": "boolean",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "variant_id": "EXP2B_3CHANNEL",
+        "representation_only": true
+      }
+    },
+    "VARIOGRAM_SCORE": {
+      "metric_id": "VARIOGRAM_SCORE",
+      "level": "STATE",
+      "value": null,
+      "unit": "squared_delay_difference",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "FAST_CONTRACT_RUN_NO_FROZEN_OBSERVATIONS"
+      }
+    },
+    "TOP1_ACTION_DISAGREEMENT": {
+      "metric_id": "TOP1_ACTION_DISAGREEMENT",
+      "level": "DECISION",
+      "value": null,
+      "unit": "rate",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "NOT_RUN_SHARED_M4_GATE"
+      }
+    },
+    "COMPLETE_REFERENCE_J_DIAGNOSTIC": {
+      "metric_id": "COMPLETE_REFERENCE_J_DIAGNOSTIC",
+      "level": "DECISION",
+      "value": null,
+      "unit": "CONSTRUCTED_LOSS_UNIT",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "INTERNAL_DIAGNOSTIC_NOT_INDEPENDENT_ACTION_EFFECT_EVIDENCE"
+      }
+    }
+  },
+  "support_status": "NOT_RUN",
+  "lineage": {
+    "execution_scope": "CONTRACT_FAST_FIXTURE_ONLY",
+    "experiment_id": "EXP2",
+    "realized_outcomes_entered_inference": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "context_hash": "sha256:50a50039f185083dd0487cdc1397ff3de12bec094ad0bba24e503b436e584904",
+    "shared_gates": {
+      "M1_POSITIVE_TAIL": "BLOCKED_UNFROZEN",
+      "M4_MONETARY_MAPPING": "BLOCKED_UNFROZEN"
+    }
+  },
+  "runtime": {},
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "provenance": {
+    "paper_result": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "scientific_question": "HOW_MUCH_AND_WHAT_INFORMATION_STRUCTURE_IS_SUFFICIENT",
+    "representation_only": true,
+    "complete_reference_j_status": "INTERNAL_NOT_INDEPENDENT_ACTION_EFFECT_EVIDENCE"
+  }
+}

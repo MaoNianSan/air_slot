@@ -10,7 +10,7 @@ from exp.promotion import promote
 def test_variants_bootstrap_and_llm_absence_are_explicit(tmp_path:Path):
     assert set(Exp1Runner().variants)=={
         "EXP1A_NO_DIRECT_REUSE", "EXP1A_FULL",
-        "EXP1B_CURRENT", "EXP1B_FIXED_HISTORY_30", "EXP1B_ADAPTIVE_HISTORY",
+        "EXP1B_CURRENT", "EXP1B_ADAPTIVE_HISTORY",
     }
     assert set(Exp2Runner().variants)=={
         "EXP2A_POINT", "EXP2A_MARGINAL", "EXP2A_JOINT",

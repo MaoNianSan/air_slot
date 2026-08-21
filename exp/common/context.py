@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from enum import Enum
+import json
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -19,7 +21,10 @@ from .result_schema import ExperimentResult, MetricObservation, SupportStatus
 
 
 class ExecutionTier(str, Enum):
-    FAST = "FAST"
+    CONTRACT_FAST = "CONTRACT_FAST"
+    # Compatibility alias for callers that used the pre-real-fast enum name.
+    FAST = "CONTRACT_FAST"
+    REAL_DATA_FAST = "REAL_DATA_FAST"
     MIDDLE = "MIDDLE"
     FULL = "FULL"
 
@@ -78,7 +83,7 @@ class ExperimentContext(BaseModel):
 def fast_context(*, dataset_id: str, split: str, seed: int, experiment_id: str) -> ExperimentContext:
     """Return a source-free fixture context for a FAST contract run."""
     lineage = {
-        "execution_scope": "FAST_CONTRACT_FIXTURE_ONLY",
+        "execution_scope": "CONTRACT_FAST_FIXTURE_ONLY",
         "experiment_id": experiment_id,
         "realized_outcomes_entered_inference": False,
         "FINAL_TEST_ACCESS_COUNT": 0,
@@ -87,15 +92,114 @@ def fast_context(*, dataset_id: str, split: str, seed: int, experiment_id: str) 
     return ExperimentContext(
         dataset_id=dataset_id,
         split=split,
-        execution_tier=ExecutionTier.FAST,
+        execution_tier=ExecutionTier.CONTRACT_FAST,
         seed=seed,
         pre_binding={"binding_status": "FAST_NO_RAW_DATA_ACCESS"},
         model_hashes={name: "UNBOUND_FAST" for name in ("PRE", "M1", "M2", "M3", "M4")},
         registry_hashes={"registry_manifest": "UNBOUND_FAST"},
-        config_hash=content_id({"experiment": experiment_id, "tier": "FAST", "dataset": dataset_id, "split": split}),
+        config_hash=content_id({"experiment": experiment_id, "tier": "CONTRACT_FAST", "dataset": dataset_id, "split": split}),
         scenario_hash=content_id({"experiment": experiment_id, "fixture": "NO_SCENARIOS"}),
         lineage=lineage,
         shared_gates={"M1_POSITIVE_TAIL": "BLOCKED_UNFROZEN", "M4_MONETARY_MAPPING": "BLOCKED_UNFROZEN"},
+    )
+
+
+def _load_real_fast_artifact(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        raise FileNotFoundError(f"REAL_FAST_ARTIFACT_MISSING:{path.as_posix()}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentContext:
+    """Bind the frozen Data2 Development pilot without manufacturing model output.
+
+    This is deliberately the same ``ExperimentContext`` used for contract
+    fixtures. Missing scientific artifacts are named as blocked gates rather
+    than as ``UNBOUND_FAST`` placeholders.
+    """
+    repository_root = root or Path(__file__).resolve().parents[2]
+    artifact_root = repository_root / "artifacts" / "experiment" / "exp2"
+    cohort = _load_real_fast_artifact(artifact_root / "DATA2_DEVELOPMENT_PILOT_COHORT.json")
+    m3_bundle = _load_real_fast_artifact(artifact_root / "DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE.json")
+    m4_policy = _load_real_fast_artifact(artifact_root / "DATA2_DEV_PILOT_M4_RISK_POLICY.json")
+    readiness = _load_real_fast_artifact(artifact_root / "EXP2_PRE_M4_REAL_DATA_PILOT_AUDIT.json")
+    if (
+        cohort.get("dataset_id") != "DATA2"
+        or cohort.get("split") != "DEVELOPMENT"
+        or cohort.get("FINAL_TEST_ACCESS_COUNT") != 0
+        or cohort.get("PAPER_FULL_RUN") is not False
+    ):
+        raise ValueError("REAL_FAST_COHORT_BOUNDARY_INVALID")
+
+    nodes = tuple(dict(item) for item in cohort.get("decision_nodes", ()))
+    if not nodes:
+        raise ValueError("REAL_FAST_COHORT_NO_DECISION_NODES")
+    m1_status = str(readiness.get("M1", {}).get("status", "BLOCKED_M1_ARTIFACT_STATUS_MISSING"))
+    m2_status = str(readiness.get("M2", {}).get("status", "BLOCKED_M2_ARTIFACT_STATUS_MISSING"))
+    policy = dict(m4_policy.get("policy", {}))
+    mapping_status = str(m4_policy.get("monetary_mapping_status", "MONETARY_MAPPING_BLOCKED"))
+    scenario_status = "BLOCKED_M1_V2_SCENARIO_ARTIFACT_NOT_FROZEN"
+    scenario_hash = content_id({
+        "cohort_hash": cohort["cohort_hash"],
+        "scenario_status": scenario_status,
+        "m1_status": m1_status,
+    })
+    return ExperimentContext(
+        dataset_id="DATA2",
+        split="DEVELOPMENT",
+        execution_tier=ExecutionTier.REAL_DATA_FAST,
+        cohort=nodes,
+        seed=seed,
+        pre_binding={
+            "binding_status": "REAL_PRE_BOUND_FROM_FROZEN_DATA2_DEVELOPMENT_COHORT",
+            "cohort_id": cohort["artifact_hash"],
+            "cohort_hash": cohort["cohort_hash"],
+            "source_manifest_hash": cohort["source_manifest_hash"],
+            "selector_rule": cohort["selector_rule"],
+            "roll_minutes": str(cohort["rolling_interval_minutes"]),
+        },
+        m1_artifact=m1_status,
+        m2_artifact=m2_status,
+        m3_bundle=str(m3_bundle["bundle_hash"]),
+        m4_policy=str(policy.get("policy_hash", m4_policy.get("artifact_hash"))),
+        model_hashes={
+            "PRE": str(cohort["artifact_hash"]),
+            "M1": m1_status,
+            "M2": m2_status,
+            "M3": str(m3_bundle["bundle_hash"]),
+            "M4": str(m4_policy["artifact_hash"]),
+        },
+        registry_hashes={
+            "PRE_REGISTRY": str(cohort["registry_hash"]),
+            "M3_ACTION_REGISTRY": str(m3_bundle["action_registry_hash"]),
+            "M3_RESPONSE_REGISTRY": str(m3_bundle["response_registry_hash"]),
+            "M4_MAPPING_DESIGN": content_id(m4_policy.get("monetary_mapping_reference", {})),
+        },
+        config_hash=str(cohort["config_hash"]),
+        scenario_hash=scenario_hash,
+        lineage={
+            "execution_scope": "REAL_DATA_FAST",
+            "cohort_id": cohort["artifact_hash"],
+            "cohort_hash": cohort["cohort_hash"],
+            "selection_rule": cohort["selector_rule"],
+            "selection_pre_outcome": cohort["selector_pre_outcome"],
+            "scenario_status": scenario_status,
+            "M3_NON_A00_INTERPRETATION": "CONDITIONAL_NON_CAUSAL_NON_AUTHORITATIVE",
+            "FINAL_TEST_ACCESS_COUNT": 0,
+            "PAPER_FULL_RUN": False,
+        },
+        shared_gates={
+            "M1_CHECKPOINT": m1_status,
+            "M1_POSITIVE_TAIL": str(policy.get("tail_support_state", "UNRESOLVED")),
+            "M2_SEVEN_COMPONENT": m2_status,
+            "M3_A00": "READY_IDENTITY",
+            "M3_NON_A00": "SCENARIO_ASSUMPTION_CONDITIONAL",
+            "M4_FORMULA": "READY",
+            "M4_RISK_POLICY": str(policy.get("policy_status", "NOT_FROZEN")),
+            "M4_TAIL": str(policy.get("tail_support_state", "UNRESOLVED")),
+            "M4_MAPPING": mapping_status,
+            "M4_RANKING": "NOT_RUN_MAPPING_AND_TAIL_BLOCKED",
+        },
     )
 
 
@@ -132,4 +236,7 @@ def build_context_result(*, context: ExperimentContext, experiment_id: str, vari
     )
 
 
-__all__ = ["ExecutionTier", "ExperimentContext", "build_context_result", "fast_context"]
+__all__ = [
+    "ExecutionTier", "ExperimentContext", "build_context_result", "fast_context",
+    "real_fast_context",
+]

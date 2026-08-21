@@ -18,8 +18,10 @@ operational, portability, and computational performance?
 
 ## Metrics And Claims
 
-Exp4A uses MAE and CRPS across the frozen operational lead-time grid, with
-Historical, LightGBM FAST, Random Forest, and state-aware Full paths. Exp4B
+Exp4A uses MAE and CRPS across the frozen evaluation lead-time grid
+`0, 30, 60, 120, 180, 240, 300, 360, 420, 480`, with Historical, LightGBM
+FAST, Random Forest, and state-aware Full paths. These are distinct from the
+M1 model-horizon contract `0, 15, 60`. Exp4B
 audits formal availability, execution/structural feasibility, factual
 consistency, evidence support, and leakage. The LLM audit is auxiliary only.
 
@@ -31,5 +33,8 @@ appendix-only and requires output parity before runtime is interpretable.
 
 ## Gates
 
-FAST is contract-only. No Final Test, paper-full execution, parameter
+`CONTRACT_FAST` is fixture-only. `REAL_DATA_FAST` measures real Data2 PRE/replay
+binding latency and records p50/p95/p99 plus 60/120/300-second budgets; it does
+not mislabel this partial timing as complete-chain latency while predictive
+artifacts remain unavailable. No Final Test, paper-full execution, parameter
 selection, or scientific mapping is enabled by this protocol.

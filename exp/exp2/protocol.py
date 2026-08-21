@@ -7,7 +7,12 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from exp.common.protocol import ExperimentProtocol
-from exp.common.result_schema import ExperimentResult, SupportStatus
+from exp.common.result_schema import (
+    ExperimentResult,
+    MetricLevel,
+    MetricObservation,
+    SupportStatus,
+)
 from model.M3.action_response import ActionEvaluationEnvelope
 from model.M4.residual_risk import RiskEvaluationEnvelope
 
@@ -25,6 +30,17 @@ from .variants import (
     EXP2B_7COMP,
     EXP2B_VARIANTS,
     EXP2_VARIANT_REGISTRY,
+)
+
+
+POINT_REPRESENTATIVE_RULE = "WEIGHTED_JOINT_SCENARIO_MEDOID"
+MARGINAL_WEIGHT_POLICY = "EQUAL_WEIGHTS_ONLY_OR_BLOCKED_WEIGHTED_TRANSFORM_NOT_IMPLEMENTED"
+REPRESENTATION_METRIC_IDS = (
+    "STATE_CRPS",
+    "STATE_BRIER",
+    "STATE_CALIBRATION",
+    "STATE_COVERAGE",
+    "STATE_VARIOGRAM_SCORE",
 )
 
 
@@ -61,10 +77,11 @@ class Exp2RunContext:
     m1_artifact_version: str
     m2_artifact_version: str
     model_versions: dict[str, str]
-    downstream: Exp2DownstreamInterface
+    downstream: Exp2DownstreamInterface | None = None
     scenario_hash: str | None = None
     config_hash: str | None = None
     state_metric_reason: str = "NO_FROZEN_STATE_UNCERTAINTY_METRIC_OR_OBSERVATIONS"
+    representation_metrics: dict[str, MetricObservation] = field(default_factory=dict)
     artifact_lineage: dict[str, Any] = field(default_factory=dict)
 
 
@@ -81,10 +98,12 @@ class PreparedExp2Run:
 @dataclass(frozen=True)
 class Exp2Execution:
     prepared: PreparedExp2Run
-    reference_m3: tuple[ActionEvaluationEnvelope, ...]
-    reference_m4: tuple[RiskEvaluationEnvelope, ...]
-    variant_m3: tuple[ActionEvaluationEnvelope, ...]
-    variant_m4: tuple[RiskEvaluationEnvelope, ...]
+    reference_m3: tuple[ActionEvaluationEnvelope, ...] = ()
+    reference_m4: tuple[RiskEvaluationEnvelope, ...] = ()
+    variant_m3: tuple[ActionEvaluationEnvelope, ...] = ()
+    variant_m4: tuple[RiskEvaluationEnvelope, ...] = ()
+    downstream_status: str = "NOT_RUN"
+    downstream_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -101,8 +120,11 @@ class Exp2Protocol(ExperimentProtocol):
         if not isinstance(context, Exp2RunContext):
             raise TypeError("EXP2_RUN_CONTEXT_REQUIRED")
         EXP2_VARIANT_REGISTRY.get(context.variant_id)
-        if not isinstance(context.downstream, Exp2DownstreamInterface):
+        if context.downstream is not None and not isinstance(context.downstream, Exp2DownstreamInterface):
             raise TypeError("EXP2_DOWNSTREAM_INTERFACE_REQUIRED")
+        unknown_metrics = set(context.representation_metrics) - set(REPRESENTATION_METRIC_IDS)
+        if unknown_metrics:
+            raise ValueError(f"EXP2_REPRESENTATION_METRIC_UNKNOWN:{sorted(unknown_metrics)}")
         scenario_adapter = ScenarioRepresentationAdapter(
             context.m1_scenarios,
             artifact_version=context.m1_artifact_version,
@@ -167,20 +189,33 @@ class Exp2Protocol(ExperimentProtocol):
         if not isinstance(prepared, PreparedExp2Run):
             raise TypeError("EXP2_PREPARED_RUN_REQUIRED")
         downstream = prepared.context.downstream
-        reference_m3, reference_m4 = self._execute_downstream(
-            downstream,
-            variant_id=prepared.reference_variant_id,
-            scenarios=prepared.reference_scenarios,
-            consequences=prepared.reference_consequences,
-        )
-        if prepared.context.variant_id == prepared.reference_variant_id:
-            variant_m3, variant_m4 = reference_m3, reference_m4
-        else:
-            variant_m3, variant_m4 = self._execute_downstream(
+        if downstream is None:
+            return Exp2Execution(
+                prepared=prepared,
+                downstream_status="BLOCKED",
+                downstream_reason="M3_M4_DOWNSTREAM_BINDING_NOT_AVAILABLE",
+            )
+        try:
+            reference_m3, reference_m4 = self._execute_downstream(
                 downstream,
-                variant_id=prepared.context.variant_id,
-                scenarios=prepared.variant_scenarios,
-                consequences=prepared.variant_consequences,
+                variant_id=prepared.reference_variant_id,
+                scenarios=prepared.reference_scenarios,
+                consequences=prepared.reference_consequences,
+            )
+            if prepared.context.variant_id == prepared.reference_variant_id:
+                variant_m3, variant_m4 = reference_m3, reference_m4
+            else:
+                variant_m3, variant_m4 = self._execute_downstream(
+                    downstream,
+                    variant_id=prepared.context.variant_id,
+                    scenarios=prepared.variant_scenarios,
+                    consequences=prepared.variant_consequences,
+                )
+        except ContractError as exc:
+            return Exp2Execution(
+                prepared=prepared,
+                downstream_status="BLOCKED",
+                downstream_reason=str(exc),
             )
         reference_rules = {item.action_id: item.response_rule.rule_hash for item in reference_m3}
         variant_rules = {item.action_id: item.response_rule.rule_hash for item in variant_m3}
@@ -192,6 +227,7 @@ class Exp2Protocol(ExperimentProtocol):
             reference_m4=reference_m4,
             variant_m3=variant_m3,
             variant_m4=variant_m4,
+            downstream_status="PASS",
         )
 
     def evaluate(self, execution: Exp2Execution) -> Exp2Evaluation:
@@ -209,7 +245,22 @@ class Exp2Protocol(ExperimentProtocol):
             if prepared.context.variant_id in EXP2A_VARIANTS
             else prepared.variant_consequences
         )
-        metrics = self.evaluator.evaluate(Exp2EvaluationPayload(
+        representation_metrics = {
+            "STATE_REPRESENTATION_LINEAGE_PRESERVED": MetricObservation(
+                metric_id="STATE_REPRESENTATION_LINEAGE_PRESERVED",
+                level=MetricLevel.STATE,
+                value=lineage_preserved,
+                unit="boolean",
+                support_status=(SupportStatus.SUPPORTED if lineage_preserved else SupportStatus.BLOCKED),
+                metadata={
+                    "claim_scope": "ARTIFACT_AND_REPRESENTATION_CONTRACT_DIAGNOSTIC_ONLY",
+                    "point_representative_rule": POINT_REPRESENTATIVE_RULE,
+                    "marginal_weight_policy": MARGINAL_WEIGHT_POLICY,
+                },
+            ),
+            **prepared.context.representation_metrics,
+        }
+        downstream_metrics = self.evaluator.evaluate(Exp2EvaluationPayload(
             reference_variant_id=prepared.reference_variant_id,
             variant_id=prepared.context.variant_id,
             reference_m4=execution.reference_m4,
@@ -239,6 +290,39 @@ class Exp2Protocol(ExperimentProtocol):
             },
             state_metric_reason=prepared.context.state_metric_reason,
         ))
+        for metric_id in REPRESENTATION_METRIC_IDS:
+            if metric_id in representation_metrics:
+                downstream_metrics.pop("STATE_CRPS", None)
+                break
+        metrics = {**downstream_metrics, **representation_metrics}
+        metric_lineage = {
+            **prepared.context.artifact_lineage,
+            "m1_artifact_version": prepared.context.m1_artifact_version,
+            "m1_scenario_hash": prepared.reference_scenarios.source_scenario_hash,
+            "m2_artifact_version": prepared.context.m2_artifact_version,
+            "m2_consequence_hash": prepared.reference_consequences.source_artifact_hash,
+            "reference_scenario_representation_hash": prepared.reference_scenarios.representation_hash,
+            "reference_consequence_representation_hash": prepared.reference_consequences.representation_hash,
+            "comparison_representation_hash": representation.representation_hash,
+            "reference_m3_envelope_hashes": tuple(
+                item.envelope_hash for item in execution.reference_m3
+            ),
+            "comparison_m3_envelope_hashes": tuple(
+                item.envelope_hash for item in execution.variant_m3
+            ),
+            "reference_m4_envelope_hashes": tuple(
+                item.risk_envelope_hash for item in execution.reference_m4
+            ),
+            "comparison_m4_envelope_hashes": tuple(
+                item.risk_envelope_hash for item in execution.variant_m4
+            ),
+        }
+        metrics = {
+            metric_id: metric.model_copy(update={
+                "metadata": {**metric.metadata, "artifact_lineage": metric_lineage},
+            })
+            for metric_id, metric in metrics.items()
+        }
         return Exp2Evaluation(execution=execution, metrics=metrics)
 
     def report(self, evaluation: Exp2Evaluation) -> ExperimentResult:
@@ -257,15 +341,32 @@ class Exp2Protocol(ExperimentProtocol):
             metric_id: evaluation.metrics[metric_id].support_status
             for metric_id in required_downstream
         }
-        if all(status is SupportStatus.SUPPORTED for status in downstream_statuses.values()):
-            support = SupportStatus.SUPPORTED
-        elif all(
-            status in {SupportStatus.SUPPORTED, SupportStatus.PARTIAL}
-            for status in downstream_statuses.values()
-        ):
-            support = SupportStatus.PARTIAL
-        else:
-            support = SupportStatus.BLOCKED
+        represented = {
+            metric_id: evaluation.metrics[metric_id].support_status
+            for metric_id in REPRESENTATION_METRIC_IDS
+            if metric_id in evaluation.metrics
+        }
+        representation_status = (
+            SupportStatus.SUPPORTED
+            if represented and all(status is SupportStatus.SUPPORTED for status in represented.values())
+            else SupportStatus.PARTIAL
+            if any(status in {SupportStatus.SUPPORTED, SupportStatus.PARTIAL} for status in represented.values())
+            else SupportStatus.NOT_RUN
+        )
+        downstream_status = (
+            SupportStatus.SUPPORTED
+            if all(status is SupportStatus.SUPPORTED for status in downstream_statuses.values())
+            else SupportStatus.PARTIAL
+            if any(status in {SupportStatus.SUPPORTED, SupportStatus.PARTIAL} for status in downstream_statuses.values())
+            else SupportStatus.BLOCKED
+        )
+        support = (
+            SupportStatus.SUPPORTED
+            if representation_status is SupportStatus.SUPPORTED and downstream_status is SupportStatus.SUPPORTED
+            else SupportStatus.PARTIAL
+            if representation_status in {SupportStatus.SUPPORTED, SupportStatus.PARTIAL}
+            else SupportStatus.BLOCKED
+        )
         representation = (
             prepared.variant_scenarios
             if context.variant_id in EXP2A_VARIANTS
@@ -295,6 +396,12 @@ class Exp2Protocol(ExperimentProtocol):
                 "response_registry_modified": False,
                 "monetary_mapping_modified": False,
                 "m4_bypassed": False,
+                "representation_status": representation_status.value,
+                "downstream_status": downstream_status.value,
+                "downstream_execution_status": execution.downstream_status,
+                "downstream_blocker": execution.downstream_reason,
+                "point_representative_rule": POINT_REPRESENTATIVE_RULE,
+                "marginal_weight_policy": MARGINAL_WEIGHT_POLICY,
             },
         )
 
@@ -305,5 +412,8 @@ __all__ = [
     "Exp2Execution",
     "Exp2Protocol",
     "Exp2RunContext",
+    "MARGINAL_WEIGHT_POLICY",
+    "POINT_REPRESENTATIVE_RULE",
     "PreparedExp2Run",
+    "REPRESENTATION_METRIC_IDS",
 ]

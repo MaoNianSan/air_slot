@@ -229,11 +229,12 @@ class ScenarioRepresentationAdapter:
         )
 
     def _marginal_samples(self) -> tuple[tuple[ScenarioSample, ...], dict[str, Any]]:
+        weights = {item.scenario_weight for item in self._rows}
+        if len(weights) != 1:
+            raise ContractError("BLOCKED_WEIGHTED_TRANSFORM_NOT_IMPLEMENTED")
         groups: dict[float, list[int]] = defaultdict(list)
         for index, item in enumerate(self._rows):
             groups[item.scenario_weight].append(index)
-        if all(len(indices) == 1 for indices in groups.values()) and len(self._rows) > 1:
-            raise ContractError("EXP2_MARGINAL_WEIGHTED_PERMUTATION_UNAVAILABLE")
 
         sources = {field: list(range(len(self._rows))) for field in ("D_OB", "D_TX")}
         offsets = {"D_OB": 0, "D_TX": 1}

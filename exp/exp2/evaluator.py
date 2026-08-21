@@ -87,6 +87,15 @@ def _metadata(payload: Exp2EvaluationPayload) -> dict[str, Any]:
     }
 
 
+def _mapping_derived_unit(payload: Exp2EvaluationPayload) -> str:
+    """M4 diagnostics remain in the formal constructed-loss unit.
+
+    A real currency label requires a complete authoritative mapping and is not
+    inferred from a test or conditionally bound envelope.
+    """
+    return "CONSTRUCTED_LOSS_UNIT"
+
+
 def _numeric_support(payload: Exp2EvaluationPayload) -> SupportStatus:
     envelopes = payload.reference_m4 + payload.variant_m4
     if not envelopes:
@@ -186,7 +195,7 @@ def _mean_difference(
     reference, variant = _maps(payload, attribute)
     if not reference or set(reference) != set(variant):
         return _unsupported(
-            metric_id, MetricLevel.DECISION, "M4_MONETARY_UNIT",
+            metric_id, MetricLevel.DECISION, _mapping_derived_unit(payload),
             "SUPPORTED_COMMON_M4_VALUES_UNAVAILABLE", payload,
         )
     differences = tuple(variant[key] - reference[key] for key in sorted(reference))
@@ -194,7 +203,7 @@ def _mean_difference(
         metric_id=metric_id,
         level=MetricLevel.DECISION,
         value=sum(differences) / len(differences),
-        unit="M4_MONETARY_UNIT",
+        unit=_mapping_derived_unit(payload),
         support_status=_numeric_support(payload),
         metadata={
             **_metadata(payload),
@@ -252,7 +261,7 @@ def build_exp2_evaluation_suite() -> EvaluationSuite:
                 metric_id="DECISION_RISK_DIFFERENCE",
                 level=MetricLevel.DECISION,
                 description="Mean paired M4 residual-risk difference.",
-                unit="M4_MONETARY_UNIT",
+                unit="CONSTRUCTED_LOSS_UNIT",
                 claim_scope="PAIRED_REPRESENTATION_COMPARISON_ONLY",
             ),
             lambda payload: _mean_difference(
@@ -266,7 +275,7 @@ def build_exp2_evaluation_suite() -> EvaluationSuite:
                 metric_id="DECISION_CVAR_DIFFERENCE",
                 level=MetricLevel.DECISION,
                 description="Mean paired M4 CVaR difference when M4 supports CVaR.",
-                unit="M4_MONETARY_UNIT",
+                unit="CONSTRUCTED_LOSS_UNIT",
                 claim_scope="PAIRED_REPRESENTATION_COMPARISON_ONLY",
             ),
             lambda payload: _mean_difference(

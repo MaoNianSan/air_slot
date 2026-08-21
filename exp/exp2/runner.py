@@ -8,7 +8,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from exp.common.context import ExperimentContext, build_context_result, fast_context
+from exp.common.context import (
+    ExecutionTier,
+    ExperimentContext,
+    build_context_result,
+    fast_context,
+    real_fast_context,
+)
+from exp.common.real_fast import assert_real_fast_context, blocked_gate, m4_result_unit
 from exp.common.result_schema import MetricLevel, MetricObservation, SupportStatus
 from exp.common.runner import BaseRunner, ExperimentRunner
 from model.common.errors import ContractError
@@ -16,7 +23,12 @@ from model.common.errors import ContractError
 from .execution.artifact_loader import ArtifactScope, Exp2ArtifactLoader
 from .execution.downstream_binding import Exp2DownstreamExecutor, M3Executor, M4Evaluator
 from .execution.execution_manifest import Exp2ExecutionManifest
-from .protocol import Exp2Protocol, Exp2RunContext
+from .protocol import (
+    MARGINAL_WEIGHT_POLICY,
+    POINT_REPRESENTATIVE_RULE,
+    Exp2Protocol,
+    Exp2RunContext,
+)
 from .variants import EXP2_VARIANT_IDS
 
 
@@ -39,6 +51,11 @@ class Exp2Runner(BaseRunner):
         context = fast_context(dataset_id=dataset, split=split, seed=seed, experiment_id=self.experiment)
         return tuple(self._execute_context(context, variant) for variant in self.variants)
 
+    def execute_real_fast(self, *, context: ExperimentContext | None = None, seed: int = 0):
+        bound = context or real_fast_context(seed=seed)
+        assert_real_fast_context(bound)
+        return tuple(self._execute_context(bound, variant) for variant in self.variants)
+
     def execute(self, context: Exp2RunContext | ExperimentContext):
         """Execute one frozen representation contrast through M3 then M4."""
         if isinstance(context, ExperimentContext):
@@ -47,6 +64,8 @@ class Exp2Runner(BaseRunner):
 
     @staticmethod
     def _execute_context(context: ExperimentContext, variant_id: str):
+        if context.execution_tier is ExecutionTier.REAL_DATA_FAST:
+            return Exp2Runner._execute_real_context(context, variant_id)
         metrics = {
             "VARIANT_CONTRACT": MetricObservation(
                 metric_id="VARIANT_CONTRACT", level=MetricLevel.STATE, value=True,
@@ -65,7 +84,7 @@ class Exp2Runner(BaseRunner):
             ),
             "COMPLETE_REFERENCE_J_DIAGNOSTIC": MetricObservation(
                 metric_id="COMPLETE_REFERENCE_J_DIAGNOSTIC", level=MetricLevel.DECISION, value=None,
-                unit="RMB", support_status=SupportStatus.NOT_RUN,
+                unit="CONSTRUCTED_LOSS_UNIT", support_status=SupportStatus.NOT_RUN,
                 metadata={"reason": "INTERNAL_DIAGNOSTIC_NOT_INDEPENDENT_ACTION_EFFECT_EVIDENCE"},
             ),
         }
@@ -76,6 +95,98 @@ class Exp2Runner(BaseRunner):
                 "scientific_question": "HOW_MUCH_AND_WHAT_INFORMATION_STRUCTURE_IS_SUFFICIENT",
                 "representation_only": True,
                 "complete_reference_j_status": "INTERNAL_NOT_INDEPENDENT_ACTION_EFFECT_EVIDENCE",
+            },
+        )
+
+    @staticmethod
+    def _execute_real_context(context: ExperimentContext, variant_id: str):
+        assert_real_fast_context(context)
+        m1_blocker = blocked_gate(context, "M1_CHECKPOINT")
+        m2_blocker = blocked_gate(context, "M2_SEVEN_COMPONENT")
+        m4_blocker = blocked_gate(context, "M4_TAIL", "M4_MAPPING", "M4_RANKING")
+        representation_blocker = m1_blocker if variant_id.startswith("EXP2A_") else m2_blocker
+        metrics = {
+            "VARIANT_CONTRACT": MetricObservation(
+                metric_id="VARIANT_CONTRACT", level=MetricLevel.STATE, value=True,
+                unit="boolean", support_status=SupportStatus.SUPPORTED,
+                metadata={
+                    "variant_id": variant_id,
+                    "point_representative_rule": POINT_REPRESENTATIVE_RULE,
+                    "marginal_weight_policy": MARGINAL_WEIGHT_POLICY,
+                },
+            ),
+            "REAL_COHORT_BINDING": MetricObservation(
+                metric_id="REAL_COHORT_BINDING", level=MetricLevel.STATE, value=True,
+                unit="boolean", support_status=SupportStatus.SUPPORTED,
+                metadata={
+                    "cohort_hash": context.lineage["cohort_hash"],
+                    "selection_rule": context.lineage["selection_rule"],
+                    "episode_count": context.episode_count,
+                    "node_count": context.node_count,
+                },
+            ),
+            "CRPS": MetricObservation(
+                metric_id="CRPS", level=MetricLevel.STATE, value=None,
+                unit="minutes", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": representation_blocker or "FROZEN_M1_SCENARIOS_AND_OBSERVATIONS_REQUIRED"},
+            ),
+            "BRIER": MetricObservation(
+                metric_id="BRIER", level=MetricLevel.STATE, value=None,
+                unit="rate", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": representation_blocker or "FROZEN_M1_EVENT_PROBABILITIES_REQUIRED"},
+            ),
+            "CALIBRATION": MetricObservation(
+                metric_id="CALIBRATION", level=MetricLevel.STATE, value=None,
+                unit="rate", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": representation_blocker or "FROZEN_M1_PREDICTIONS_REQUIRED"},
+            ),
+            "COVERAGE": MetricObservation(
+                metric_id="COVERAGE", level=MetricLevel.STATE, value=None,
+                unit="rate", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": representation_blocker or "FROZEN_M1_PREDICTIONS_REQUIRED"},
+            ),
+            "VARIOGRAM_SCORE": MetricObservation(
+                metric_id="VARIOGRAM_SCORE", level=MetricLevel.STATE, value=None,
+                unit="squared_delay_difference", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": representation_blocker or "FROZEN_JOINT_SCENARIOS_AND_OBSERVATIONS_REQUIRED"},
+            ),
+            "MARGINAL_WEIGHT_CHECK": MetricObservation(
+                metric_id="MARGINAL_WEIGHT_CHECK", level=MetricLevel.STATE, value=None,
+                unit="boolean", support_status=SupportStatus.NOT_RUN,
+                metadata={
+                    "reason": (
+                        representation_blocker if variant_id == "EXP2A_MARGINAL"
+                        else "NOT_APPLICABLE_TO_VARIANT"
+                    ),
+                    "policy": MARGINAL_WEIGHT_POLICY,
+                },
+            ),
+            "TOP1_ACTION_DISAGREEMENT": MetricObservation(
+                metric_id="TOP1_ACTION_DISAGREEMENT", level=MetricLevel.DECISION, value=None,
+                unit="rate", support_status=SupportStatus.NOT_RUN,
+                metadata={"reason": m4_blocker or "M3_M4_DOWNSTREAM_OUTPUT_REQUIRED"},
+            ),
+            "COMPLETE_REFERENCE_J_DIAGNOSTIC": MetricObservation(
+                metric_id="COMPLETE_REFERENCE_J_DIAGNOSTIC", level=MetricLevel.DECISION, value=None,
+                unit=m4_result_unit(context), support_status=SupportStatus.NOT_RUN,
+                metadata={
+                    "reason": m4_blocker or "M3_M4_DOWNSTREAM_OUTPUT_REQUIRED",
+                    "mapping_id": context.registry_hashes["M4_MAPPING_DESIGN"],
+                    "mapping_hash": context.registry_hashes["M4_MAPPING_DESIGN"],
+                },
+            ),
+        }
+        return build_context_result(
+            context=context, experiment_id="EXP2", variant_id=variant_id,
+            metrics=metrics, support_status=SupportStatus.PARTIAL,
+            provenance={
+                "scientific_question": "HOW_MUCH_AND_WHAT_INFORMATION_STRUCTURE_IS_SUFFICIENT",
+                "representation_status": "BLOCKED_M1_OR_M2_ARTIFACT_NOT_MATERIALIZED",
+                "downstream_status": "BLOCKED_M4_MAPPING_OR_TAIL",
+                "M3_NON_A00_INTERPRETATION": "CONDITIONAL_NON_CAUSAL_NON_AUTHORITATIVE",
+                "point_representative_rule": POINT_REPRESENTATIVE_RULE,
+                "marginal_weight_policy": MARGINAL_WEIGHT_POLICY,
+                "m4_bypassed": False,
             },
         )
 

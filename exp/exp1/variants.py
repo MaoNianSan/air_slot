@@ -24,12 +24,15 @@ class Exp1Variant(str, Enum):
 
 
 EXP1A_VARIANTS = (Exp1Variant.EXP1A_NO_DIRECT_REUSE.value, Exp1Variant.EXP1A_FULL.value)
-EXP1B_VARIANTS = (
+EXP1B_PRINCIPAL_VARIANTS = (
     Exp1Variant.EXP1B_CURRENT.value,
-    Exp1Variant.EXP1B_FIXED_HISTORY_30.value,
     Exp1Variant.EXP1B_ADAPTIVE_HISTORY.value,
 )
-EXP1_VARIANTS = EXP1A_VARIANTS + EXP1B_VARIANTS
+EXP1B_SENSITIVITY_VARIANTS = (Exp1Variant.EXP1B_FIXED_HISTORY_30.value,)
+# ``EXP1B_VARIANTS`` remains the active principal alias for older callers.
+EXP1B_VARIANTS = EXP1B_PRINCIPAL_VARIANTS
+EXP1_VARIANTS = EXP1A_VARIANTS + EXP1B_PRINCIPAL_VARIANTS
+EXP1_VARIANTS_WITH_SENSITIVITY = EXP1_VARIANTS + EXP1B_SENSITIVITY_VARIANTS
 
 LEGACY_EXP1_VARIANTS = (
     "empirical", "current", "fixed_history", "adaptive_history",
@@ -130,5 +133,8 @@ def construct_exp1_variant(formal_artifact: dict, variant: str) -> dict:
     return transformed
 
 
-__all__ = ["EXP1A_VARIANTS", "EXP1B_VARIANTS", "EXP1_VARIANTS", "Exp1Variant",
-           "LEGACY_EXP1_VARIANTS", "construct_exp1_variant", "information_mask", "variant_definition"]
+__all__ = [
+    "EXP1A_VARIANTS", "EXP1B_PRINCIPAL_VARIANTS", "EXP1B_SENSITIVITY_VARIANTS",
+    "EXP1B_VARIANTS", "EXP1_VARIANTS", "EXP1_VARIANTS_WITH_SENSITIVITY", "Exp1Variant",
+    "LEGACY_EXP1_VARIANTS", "construct_exp1_variant", "information_mask", "variant_definition",
+]

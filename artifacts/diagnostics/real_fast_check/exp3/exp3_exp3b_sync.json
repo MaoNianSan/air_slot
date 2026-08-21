@@ -1,0 +1,195 @@
+{
+  "schema_version": "AIR_SLOT_EXPERIMENT_RESULT_V1",
+  "experiment_id": "EXP3",
+  "variant_id": "EXP3B_SYNC",
+  "dataset_id": "DATA2",
+  "split": "DEVELOPMENT",
+  "tier": "REAL_DATA_FAST",
+  "episode_count": 5,
+  "node_count": 69,
+  "seed": 0,
+  "timestamp": "2026-08-21T07:38:02.269342Z",
+  "model_versions": {
+    "PRE": "sha256:66d1a0bfcea84164713e1db476f98ccf47fe19c494509495080f3c559c10b43e",
+    "M1": "BLOCKED_M1_V2_ARTIFACT_NOT_FROZEN",
+    "M2": "NOT_RUN_DEPENDS_ON_M1_V2_ARTIFACT",
+    "M3": "sha256:e80c77261101231760be90cfbe603aec36e8f6c386badabb9d6acecf881baf02",
+    "M4": "sha256:7436ea696c3f1f3da2a1dff04eeeb164a8fe3c1508b69550367383eee4c486db"
+  },
+  "model_hashes": {
+    "PRE": "sha256:66d1a0bfcea84164713e1db476f98ccf47fe19c494509495080f3c559c10b43e",
+    "M1": "BLOCKED_M1_V2_ARTIFACT_NOT_FROZEN",
+    "M2": "NOT_RUN_DEPENDS_ON_M1_V2_ARTIFACT",
+    "M3": "sha256:e80c77261101231760be90cfbe603aec36e8f6c386badabb9d6acecf881baf02",
+    "M4": "sha256:7436ea696c3f1f3da2a1dff04eeeb164a8fe3c1508b69550367383eee4c486db"
+  },
+  "registry_hashes": {
+    "PRE_REGISTRY": "sha256:e8315fe8953d35dec58d33a13c9cc2631cb04c80ecbd8417b6e372a1aa1750e0",
+    "M3_ACTION_REGISTRY": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+    "M3_RESPONSE_REGISTRY": "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+    "M4_MAPPING_DESIGN": "sha256:e7f8123243a681731e61eb7258cf406dd0c5eb81cffe045a6b76709033aa0fe2"
+  },
+  "artifact_versions": {
+    "PRE_BINDING": "sha256:c3da08db9a619d5c1b2bc6544a6ca01024746f3a7495c9bf5d4790f2aa400aaa",
+    "M1_ARTIFACT": "BLOCKED_M1_V2_ARTIFACT_NOT_FROZEN",
+    "M2_ARTIFACT": "NOT_RUN_DEPENDS_ON_M1_V2_ARTIFACT",
+    "M3_BUNDLE": "sha256:e80c77261101231760be90cfbe603aec36e8f6c386badabb9d6acecf881baf02",
+    "M4_POLICY": "sha256:158a09bb47d4b715e0a97a1da74d6b64b2dd4ab5c99eb1cba1f00475f016a2dc"
+  },
+  "scenario_hash": "sha256:0c6c1bcaf7381482f2d54cba92d055b58e4be6a539db4dc0c24bbd346f215120",
+  "config_hash": "sha256:4c2617be8c80cf868416c015245150e2a7b833597c34c5298ba8cc2f089779a6",
+  "metrics": {
+    "VARIANT_CONTRACT": {
+      "metric_id": "VARIANT_CONTRACT",
+      "level": "SYSTEM",
+      "value": true,
+      "unit": "boolean",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "variant_id": "EXP3B_SYNC",
+        "subexperiment": "Exp3B",
+        "changed_factor": "state_vintage_current",
+        "fixed_factor": [
+          "current_direct_information",
+          "action_set",
+          "M1",
+          "M2",
+          "M3",
+          "M4"
+        ],
+        "claim_scope": "TEMPORAL_PROCESS_ONLY"
+      }
+    },
+    "REPLAY_SELECTION": {
+      "metric_id": "REPLAY_SELECTION",
+      "level": "SYSTEM",
+      "value": true,
+      "unit": "boolean",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "replay_episode_count": 5,
+        "replay_node_count": 69,
+        "selection_reason_codes": [
+          "REPLAY_SELECTION_PRESERVES_FROZEN_REGISTRY_ORDER"
+        ]
+      }
+    },
+    "ROLLING_STATE_NODE_COVERAGE": {
+      "metric_id": "ROLLING_STATE_NODE_COVERAGE",
+      "level": "STATE",
+      "value": 1.0,
+      "unit": "rate",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "roll_minutes": 5,
+        "cohort_hash": "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63"
+      }
+    },
+    "ONE_SHOT_ANCHOR": {
+      "metric_id": "ONE_SHOT_ANCHOR",
+      "level": "DECISION",
+      "value": null,
+      "unit": "decision_node",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "NOT_APPLICABLE_TO_VARIANT",
+        "rule": "FIRST_NODE_WITH_TWO_COMPARABLE_ACTIONS_AND_ONE_NON_A00"
+      }
+    },
+    "STATE_VINTAGE_COVERAGE": {
+      "metric_id": "STATE_VINTAGE_COVERAGE",
+      "level": "STATE",
+      "value": 1.0,
+      "unit": "rate",
+      "support_status": "SUPPORTED",
+      "metadata": {
+        "reason": null,
+        "lag_minutes": 0,
+        "current_state_read": true,
+        "state_vintage_only_changed_factor": true
+      }
+    },
+    "STATE_REPRESENTATION_DRIFT": {
+      "metric_id": "STATE_REPRESENTATION_DRIFT",
+      "level": "STATE",
+      "value": null,
+      "unit": "minutes",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "M1_CHECKPOINT:BLOCKED_M1_V2_ARTIFACT_NOT_FROZEN"
+      }
+    },
+    "RECOMMENDATION_EXECUTABLE_RATE": {
+      "metric_id": "RECOMMENDATION_EXECUTABLE_RATE",
+      "level": "DECISION",
+      "value": null,
+      "unit": "rate",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "BLOCKED_ANCHOR_ACTION_COVERAGE"
+      }
+    },
+    "TOP1_ACTION_AGREEMENT": {
+      "metric_id": "TOP1_ACTION_AGREEMENT",
+      "level": "DECISION",
+      "value": null,
+      "unit": "rate",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "M4_TAIL:UNRESOLVED"
+      }
+    },
+    "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK": {
+      "metric_id": "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK",
+      "level": "DECISION",
+      "value": null,
+      "unit": "CONSTRUCTED_LOSS_UNIT",
+      "support_status": "NOT_RUN",
+      "metadata": {
+        "reason": "M4_TAIL:UNRESOLVED",
+        "mapping_id": "sha256:e7f8123243a681731e61eb7258cf406dd0c5eb81cffe045a6b76709033aa0fe2",
+        "mapping_hash": "sha256:e7f8123243a681731e61eb7258cf406dd0c5eb81cffe045a6b76709033aa0fe2"
+      }
+    }
+  },
+  "support_status": "PARTIAL",
+  "lineage": {
+    "execution_scope": "REAL_DATA_FAST",
+    "cohort_id": "sha256:66d1a0bfcea84164713e1db476f98ccf47fe19c494509495080f3c559c10b43e",
+    "cohort_hash": "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63",
+    "selection_rule": "FIRST_N_ELIGIBLE_BY_STABLE_EPISODE_ID",
+    "selection_pre_outcome": true,
+    "scenario_status": "BLOCKED_M1_V2_SCENARIO_ARTIFACT_NOT_FROZEN",
+    "M3_NON_A00_INTERPRETATION": "CONDITIONAL_NON_CAUSAL_NON_AUTHORITATIVE",
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "context_hash": "sha256:f36665bd3428de4b74a0cc9fac2836176cf182b595a52fc10c2f954220fe718d",
+    "shared_gates": {
+      "M1_CHECKPOINT": "BLOCKED_M1_V2_ARTIFACT_NOT_FROZEN",
+      "M1_POSITIVE_TAIL": "UNRESOLVED",
+      "M2_SEVEN_COMPONENT": "NOT_RUN_DEPENDS_ON_M1_V2_ARTIFACT",
+      "M3_A00": "READY_IDENTITY",
+      "M3_NON_A00": "SCENARIO_ASSUMPTION_CONDITIONAL",
+      "M4_FORMULA": "READY",
+      "M4_RISK_POLICY": "FROZEN",
+      "M4_TAIL": "UNRESOLVED",
+      "M4_MAPPING": "MONETARY_MAPPING_BLOCKED",
+      "M4_RANKING": "NOT_RUN_MAPPING_AND_TAIL_BLOCKED"
+    }
+  },
+  "runtime": {},
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "provenance": {
+    "paper_result": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false,
+    "scientific_question": "HOW_RETAINED_INFORMATION_EVOLVES_IN_ROLLING_PROCESS",
+    "decision_process_only": true,
+    "rolling_novelty_claim": false,
+    "real_data_execution": true,
+    "replay_status": "PASS",
+    "one_shot_anchor_rule": "FIRST_NODE_WITH_TWO_COMPARABLE_ACTIONS_AND_ONE_NON_A00",
+    "one_shot_anchor_status": "BLOCKED_ANCHOR_ACTION_COVERAGE",
+    "decision_metrics_status": "BLOCKED_SHARED_M4_GATE"
+  }
+}
