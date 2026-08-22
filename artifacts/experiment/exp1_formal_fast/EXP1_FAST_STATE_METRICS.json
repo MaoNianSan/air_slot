@@ -1,0 +1,106 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "PAPER_FULL_RUN": false,
+  "metrics": {
+    "CURRENT_STATE_ONLY": {
+      "brier": 0.16477639747758158,
+      "brier_by_event": {
+        "D_OB_ZERO": 0.23475542164267812,
+        "D_TX_ZERO": 0.2593017489091032,
+        "T_IB_GT_30": 0.0002720218809634452
+      },
+      "calibration_absolute_gap": 0.057125229066996595,
+      "calibration_by_event": {
+        "D_OB_ZERO": 0.08696326802647303,
+        "D_TX_ZERO": 0.06798613211140037,
+        "T_IB_GT_30": 0.016426287063116395
+      },
+      "coverage": 0.42310863739435167,
+      "coverage_by_target": {
+        "D_OB": 0.4489795918367347,
+        "D_TX": 0.10606060606060606,
+        "T_IB_REMAINING_HAZARD": 0.7142857142857143
+      },
+      "crps_minutes": 3.628436860613649,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY",
+      "history_input_contract": "CURRENT_LEGAL_NODE_ONLY",
+      "mae_minutes": 3.4018404748361735,
+      "node_count": 128,
+      "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "support_aware": true
+    },
+    "HISTORY_CONDITIONED_GRU_H32": {
+      "brier": 0.16311848590153244,
+      "brier_by_event": {
+        "D_OB_ZERO": 0.22757275636687457,
+        "D_TX_ZERO": 0.26148174027462057,
+        "T_IB_GT_30": 0.000300961063102206
+      },
+      "calibration_absolute_gap": 0.052647658109370145,
+      "calibration_by_event": {
+        "D_OB_ZERO": 0.08805131604747174,
+        "D_TX_ZERO": 0.052682852605357766,
+        "T_IB_GT_30": 0.01720880567528093
+      },
+      "coverage": 0.42310863739435167,
+      "coverage_by_target": {
+        "D_OB": 0.4489795918367347,
+        "D_TX": 0.10606060606060606,
+        "T_IB_REMAINING_HAZARD": 0.7142857142857143
+      },
+      "crps_minutes": 3.6016601643918644,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY",
+      "history_input_contract": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+      "mae_minutes": 3.613988362927952,
+      "node_count": 128,
+      "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "support_aware": true
+    },
+    "NO_HISTORY": {
+      "brier": 0.16477639747758158,
+      "brier_by_event": {
+        "D_OB_ZERO": 0.23475542164267812,
+        "D_TX_ZERO": 0.2593017489091032,
+        "T_IB_GT_30": 0.0002720218809634452
+      },
+      "calibration_absolute_gap": 0.057125229066996595,
+      "calibration_by_event": {
+        "D_OB_ZERO": 0.08696326802647303,
+        "D_TX_ZERO": 0.06798613211140037,
+        "T_IB_GT_30": 0.016426287063116395
+      },
+      "coverage": 0.42310863739435167,
+      "coverage_by_target": {
+        "D_OB": 0.4489795918367347,
+        "D_TX": 0.10606060606060606,
+        "T_IB_REMAINING_HAZARD": 0.7142857142857143
+      },
+      "crps_minutes": 3.628436860613649,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY",
+      "history_input_contract": "NO_HISTORY_CURRENT_OBSERVATION",
+      "mae_minutes": 3.4018404748361735,
+      "node_count": 128,
+      "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "support_aware": true
+    }
+  },
+  "schema_version": "EXP1_FAST_STATE_METRICS_V1",
+  "status": "EXECUTED_FAST_DEVELOPMENT_ONLY",
+  "support_policy": {
+    "replay_interpretation": "EX_POST_MODEL_IMPLIED_RESIDUAL_RISK_UNDER_FROZEN_ACTION_RESPONSE",
+    "silent_renormalization": false,
+    "support_aware_denominators": true,
+    "unsupported_components": "ABSTAIN_OR_NOT_RUN",
+    "zero_fill": false
+  },
+  "target_coverage": {
+    "active_D_OB": 126,
+    "active_D_TX": 128,
+    "active_T_IB_REMAINING_HAZARD": 7,
+    "examples": 128,
+    "positive_D_OB": 49,
+    "positive_D_TX": 66,
+    "zero_D_OB": 77,
+    "zero_D_TX": 62
+  }
+}

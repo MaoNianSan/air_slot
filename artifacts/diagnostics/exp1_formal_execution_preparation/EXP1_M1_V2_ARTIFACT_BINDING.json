@@ -1,0 +1,43 @@
+{
+  "schema_version": "EXP1_M1_V2_ARTIFACT_BINDING_V1",
+  "status": "BOUND_FROZEN_M1_V2",
+  "m1_status": "FROZEN",
+  "model_id": "M1_V2_GRU_H32",
+  "hidden_size": 32,
+  "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+  "parameter_count": 20884,
+  "checkpoint": {
+    "path": "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt",
+    "sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "roundtrip": "PASS"
+  },
+  "freeze_manifest": {
+    "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
+    "sha256": "sha256:b5f6892fa096b96db55c4768a4fdd3ca8c0fce3c2e0bd83adda397108e1112e0"
+  },
+  "selection_report": {
+    "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_MODEL_SELECTION_REPORT.json",
+    "sha256": "sha256:72c529e042173f7c60a008bcc32dcd9afa9b51ad9892cb4ca201d3f5801ab5f7"
+  },
+  "frozen_contracts": {
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3",
+    "support": {"T_IB": 360, "D_OB": 210, "D_TX": 60, "bin_width_minutes": 5},
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "feature_count": 43
+  },
+  "data_boundary": {
+    "train": ["2019-01-01", "2019-06-30"],
+    "development": ["2019-08-01", "2019-09-30"],
+    "calibration": "NOT_USED_FOR_SELECTION",
+    "final_test": "LOCKED_NOT_ACCESSED"
+  },
+  "provenance": {
+    "fast_manifest": "artifacts/experiment/m1_v2_tuning_stage1_fast/M1_V2_FAST_TUNING_MANIFEST.json",
+    "fast_manifest_sha256": "sha256:ae1a2308a2b0eb63cc901d28baecbc723fa0f9d0340394d2693d302fbd12608a",
+    "fast_lineage": "artifacts/experiment/m1_v2_tuning_stage1_fast/M1_V2_FAST_TUNING_LINEAGE.json",
+    "fast_lineage_sha256": "sha256:7226f44e26cea30588e8a8e04d177d85106e7e3db3859462157fc453b8ec9f0a"
+  },
+  "safety": {"M1_MODIFICATION": false, "FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": false, "FULL": false}
+}

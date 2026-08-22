@@ -1,0 +1,34 @@
+{
+  "artifact_hash": "sha256:629df4386360a69d81f00da3924f4a68f0c7816f24517b2becbe5cb8cd511e7b",
+  "automatic_selection": false,
+  "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+  "dataset": "DATA2_2019",
+  "decision_relevance_status": "BLOCKED_M2_M3_M4_ARTIFACTS_UNAVAILABLE",
+  "development_node_count": 1769,
+  "execution_scope": "FULL_DEVELOPMENT_NOT_PAPER_FULL",
+  "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+  "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+  "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+  "m1_model_id": "M1_V2_GRU_H32",
+  "outputs": {
+    "decision_relevance": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\exp1_full_development\\EXP1_FULL_DEVELOPMENT_DECISION_RELEVANCE.json",
+    "lineage": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\exp1_full_development\\EXP1_FULL_DEVELOPMENT_ARTIFACT_LINEAGE.json",
+    "state_metrics": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\exp1_full_development\\EXP1_FULL_DEVELOPMENT_STATE_METRICS.json",
+    "variant_comparison": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\exp1_full_development\\EXP1_FULL_DEVELOPMENT_VARIANT_COMPARISON.json"
+  },
+  "safety": {
+    "EXP1_RUNS": 3,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "PAPER_FULL_RUN": false
+  },
+  "schema_version": "EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST_V1",
+  "split": "DEVELOPMENT",
+  "status": "EXP1_FULL_DEVELOPMENT_COMPLETE",
+  "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3",
+  "variants": [
+    "NO_HISTORY",
+    "CURRENT_STATE_ONLY",
+    "HISTORY_CONDITIONED_GRU_H32"
+  ]
+}

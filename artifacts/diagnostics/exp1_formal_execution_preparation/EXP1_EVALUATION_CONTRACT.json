@@ -1,0 +1,38 @@
+{
+  "schema_version": "EXP1_EVALUATION_CONTRACT_V1",
+  "status": "READY_FOR_DECLARED_EXECUTION",
+  "selection_split": "DEVELOPMENT",
+  "principal_question": "WHY_CROSS_STAGE_INFORMATION_SHARING_AND_HISTORY_DEPENDENCE",
+  "principal_metrics": [
+    "STATE_REPRESENTATION_DIFFERENCE",
+    "CRPS_PRIMITIVE_TARGET",
+    "BRIER_PRINCIPAL_DELAY_EVENT",
+    "CALIBRATION"
+  ],
+  "secondary_metrics": [
+    "TOP1_ACTION_DISAGREEMENT",
+    "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK"
+  ],
+  "support_policy": {
+    "unsupported_components": "ABSTAIN_OR_NOT_RUN",
+    "zero_fill": false,
+    "silent_renormalization": false,
+    "support_aware_denominators": true,
+    "replay_interpretation": "EX_POST_MODEL_IMPLIED_RESIDUAL_RISK_UNDER_FROZEN_ACTION_RESPONSE"
+  },
+  "variant_comparison": {
+    "paired_cohort": true,
+    "paired_decision_cutoff": true,
+    "paired_seed": true,
+    "m1_checkpoint_fixed": true,
+    "feature_schema_fixed": true,
+    "support_fixed": true,
+    "loss_fixed": true,
+    "automatic_model_selection": false
+  },
+  "horizon_contract": [0, 30, 60, 120, 180, 240, 300, 360, 420, 480],
+  "calibration": {"selection_use": false, "artifact_status": "INHERITED_ONLY_IF_DECLARED_AND_BOUND"},
+  "final_test": {"access": "FORBIDDEN", "count": 0},
+  "paper_full": false,
+  "exp1_execution_runs": 0
+}

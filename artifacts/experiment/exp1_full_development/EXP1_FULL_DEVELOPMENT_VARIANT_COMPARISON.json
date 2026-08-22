@@ -1,0 +1,95 @@
+{
+  "automatic_selection": false,
+  "cohort": "DATA2_2019_DEVELOPMENT_FULL",
+  "paired_state_delay_difference_minutes": {
+    "CURRENT_STATE_ONLY_vs_HISTORY_CONDITIONED_GRU_H32": 1.558531495818171,
+    "NO_HISTORY_vs_HISTORY_CONDITIONED_GRU_H32": 1.558531495818171
+  },
+  "paper_result": false,
+  "principal_state_metric": "CRPS_PRIMITIVE_TARGET",
+  "schema_version": "EXP1_FULL_DEVELOPMENT_VARIANT_COMPARISON_V1",
+  "status": "EXECUTED_FULL_DEVELOPMENT_ONLY",
+  "variants": {
+    "CURRENT_STATE_ONLY": {
+      "brier": 0.27386698315197416,
+      "brier_by_event": {
+        "D_OB_ZERO": 0.24568879986593092,
+        "D_TX_ZERO": 0.24999377256966768,
+        "T_IB_GT_30": 0.32591837702032384
+      },
+      "calibration_absolute_gap": 0.1582606240486489,
+      "calibration_by_event": {
+        "D_OB_ZERO": 0.10863505634699377,
+        "D_TX_ZERO": 0.04548146233342526,
+        "T_IB_GT_30": 0.3206653534655277
+      },
+      "coverage": 0.3096680320202386,
+      "coverage_by_target": {
+        "D_OB": 0.20657276995305165,
+        "D_TX": 0.3307262569832402,
+        "T_IB_REMAINING_HAZARD": 0.391705069124424
+      },
+      "crps_minutes": 21.25959173387089,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY",
+      "mae_minutes": 7.120332738540036,
+      "node_count": 1769,
+      "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "sample_count": 1769,
+      "sample_identity_hash": "sha256:953709d1e39e1f2b094eefcacebaa1c5f1185f64db2a99176e5ed3d9808bcf74"
+    },
+    "HISTORY_CONDITIONED_GRU_H32": {
+      "brier": 0.27291531237440575,
+      "brier_by_event": {
+        "D_OB_ZERO": 0.24481720685588151,
+        "D_TX_ZERO": 0.24863897049162578,
+        "T_IB_GT_30": 0.32528975977571
+      },
+      "calibration_absolute_gap": 0.15271809749275483,
+      "calibration_by_event": {
+        "D_OB_ZERO": 0.1127836880642521,
+        "D_TX_ZERO": 0.02558910422892474,
+        "T_IB_GT_30": 0.31978150018508766
+      },
+      "coverage": 0.31120413033053046,
+      "coverage_by_target": {
+        "D_OB": 0.20657276995305165,
+        "D_TX": 0.3307262569832402,
+        "T_IB_REMAINING_HAZARD": 0.39631336405529954
+      },
+      "crps_minutes": 21.120519270449368,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY",
+      "mae_minutes": 7.127691128234866,
+      "node_count": 1769,
+      "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "sample_count": 1769,
+      "sample_identity_hash": "sha256:953709d1e39e1f2b094eefcacebaa1c5f1185f64db2a99176e5ed3d9808bcf74"
+    },
+    "NO_HISTORY": {
+      "brier": 0.27386698315197416,
+      "brier_by_event": {
+        "D_OB_ZERO": 0.24568879986593092,
+        "D_TX_ZERO": 0.24999377256966768,
+        "T_IB_GT_30": 0.32591837702032384
+      },
+      "calibration_absolute_gap": 0.1582606240486489,
+      "calibration_by_event": {
+        "D_OB_ZERO": 0.10863505634699377,
+        "D_TX_ZERO": 0.04548146233342526,
+        "T_IB_GT_30": 0.3206653534655277
+      },
+      "coverage": 0.3096680320202386,
+      "coverage_by_target": {
+        "D_OB": 0.20657276995305165,
+        "D_TX": 0.3307262569832402,
+        "T_IB_REMAINING_HAZARD": 0.391705069124424
+      },
+      "crps_minutes": 21.25959173387089,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY",
+      "mae_minutes": 7.120332738540036,
+      "node_count": 1769,
+      "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "sample_count": 1769,
+      "sample_identity_hash": "sha256:953709d1e39e1f2b094eefcacebaa1c5f1185f64db2a99176e5ed3d9808bcf74"
+    }
+  }
+}
