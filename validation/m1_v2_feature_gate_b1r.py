@@ -375,6 +375,10 @@ def _write_packet(path: Path, report: dict) -> None:
 
 
 def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
+    if len(FEATURE_NAMES_V2) != 41:
+        raise RuntimeError(
+            "M1_B1R_HISTORICAL_CANDIDATE_ONLY_CURRENT_SCHEMA_IS_B2R"
+        )
     a2_cache, a2_manifest, a2_result, old_names = load_a2_baseline()
     schema = _candidate_schema(old_names)
     dynamic, dynamic_transform = _transform_dynamic(a2_cache.store.values_flat, old_names)

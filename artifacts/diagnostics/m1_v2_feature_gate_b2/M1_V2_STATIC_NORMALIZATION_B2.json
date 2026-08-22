@@ -1,0 +1,57 @@
+{
+  "artifact_id": "M1_V2_STATIC_NORMALIZATION_B2",
+  "content_hash": "sha256:26bc637b5c8f2d3342c2fa8699bf06b29eb5f5d470ec924a89ddf307d6428533",
+  "content_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_CONTENT_HASH",
+  "episode_count": 128,
+  "episode_ids_hash": "sha256:f74a348b9942a501bea392a565d348d7fa5f471143907378d07f45a5f65724ef",
+  "episode_level_fit": true,
+  "fitted_split": "train",
+  "fitting_unit": "UNIQUE_TRAIN_EPISODE_STATIC_CONTEXTS",
+  "freeze_gate": "B2",
+  "freeze_state": "FROZEN",
+  "missing_mask_feature_names": [
+    "turnaround_reference_minutes.missing_mask",
+    "taxi_reference_minutes.missing_mask"
+  ],
+  "normalization_rule": {
+    "calibration_fit": false,
+    "development_fit": false,
+    "final_test_fit": false,
+    "missing": "numeric=0; missing_mask=1",
+    "observed": "z=(value-train_mean)/train_std; missing_mask=0"
+  },
+  "numeric_feature_names": [
+    "turnaround_reference_minutes",
+    "taxi_reference_minutes"
+  ],
+  "ordered_feature_names": [
+    "turnaround_reference_minutes",
+    "taxi_reference_minutes",
+    "turnaround_reference_minutes.missing_mask",
+    "taxi_reference_minutes.missing_mask"
+  ],
+  "schema_version": "M1_V2_STATIC_NORMALIZATION_B2_V1",
+  "source_a2_cache_hash": "sha256:7cb35178323aecdd288010b0b70daf15112695baf627b53d2bef03136393b082",
+  "source_a2_reference_ids": {
+    "taxi": "sha256:be1a68b0c51c77da35f0ec631c2f846a79dd073d8b29ca49ee42b2d1de4e5c66",
+    "turnaround": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57"
+  },
+  "source_candidate_cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+  "source_candidate_static_normalization_hash": "sha256:6b9dc84ed55c5d486dbebaa103455bcc09d5efec589df44b3d7286e364271c8c",
+  "values": {
+    "taxi_reference_minutes": {
+      "count": 128,
+      "max": 24.0,
+      "mean": 15.328125,
+      "min": 10.0,
+      "std": 3.3145262081291498
+    },
+    "turnaround_reference_minutes": {
+      "count": 128,
+      "max": 81.0,
+      "mean": 58.60546875,
+      "min": 28.0,
+      "std": 9.65268994725167
+    }
+  }
+}

@@ -1,20 +1,29 @@
 {
-  "FEATURE_GATE_STATUS": "FEATURE_GATE_B2_CONTRACT_FAILURE",
-  "artifact_hash": "sha256:bb50c1ed6722e9cced806b29ee43a6f78779b85f54d5a56cb602bc8461a434dc",
+  "FEATURE_GATE_STATUS": "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT",
+  "artifact_hash": "sha256:1f3f5b42fd89539b80fae2853cc47ff1a67f66924fbd9b49f4170928297b4f14",
   "artifact_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH",
   "cache": {
-    "candidate": "sha256:57c668b687bf08b9aa0ebfbd60c0b6792d970a38e39e5a5d104294aa44f3153e",
+    "candidate": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
     "candidate_status": "NOT_TRAINING_FROZEN",
-    "frozen": null,
-    "frozen_cache_key": null,
-    "frozen_status": null,
+    "frozen": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "frozen_cache_key": "sha256:0ae9f89845c313b0e6dafadf88cbb467ce11afa5cc3ed0d5e7f853f94d3514e5",
+    "frozen_status": "FROZEN_B2",
     "schema_version": "M1_V2_DEVELOPMENT_BASE_CACHE_V4",
     "tensor_equivalence": {
-      "status": "NOT_CREATED"
+      "active_masks": true,
+      "decision_node_ids": true,
+      "dynamic_tensors": true,
+      "episode_ids": true,
+      "labels": true,
+      "lineage": true,
+      "sample_episode_ids": true,
+      "sample_splits": true,
+      "static_tensors": true,
+      "status": "PASS"
     }
   },
-  "candidate_cache_hash": "sha256:57c668b687bf08b9aa0ebfbd60c0b6792d970a38e39e5a5d104294aa44f3153e",
-  "candidate_schema_hash": "sha256:0fa54b2b5d2db31ed15b10c6a4f3eba8dd1b3e3e82300cc70f6417266057930b",
+  "candidate_cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+  "candidate_schema_hash": "sha256:6fb884124ff22d3665cbf5b89f84c4c242caeaee580f2bd51d6ee6c399a71bf1",
   "decisions": {
     "B1-D01": "REMOVE",
     "B1-D02": "COLLAPSE_OBJECT_LEVEL",
@@ -22,21 +31,24 @@
     "B1-D04": "REDUCE",
     "B1-D05": "REMOVE",
     "B1-D06": "TRAIN_STANDARDIZED",
-    "B1-D07": "PER_FEATURE_MASKED_BLOCK"
+    "B1-D07": "PER_FEATURE_MASKED_BLOCK",
+    "B2R-D01": "EMPIRICAL_EQUALITY_NOT_CONTRACT_REDUNDANCY",
+    "B2R-D02": "RETAIN_EMPIRICAL_DUPLICATES",
+    "B2R-D03": "REMOVE_FIXED_GRID_SCHEDULE_DELTA_PAIR"
   },
   "feature_counts": {
-    "dynamic": 41,
+    "dynamic": 39,
     "static": 4,
-    "total": 45
+    "total": 43
   },
-  "frozen_cache_key": null,
-  "frozen_schema_hash": null,
+  "frozen_cache_key": "sha256:0ae9f89845c313b0e6dafadf88cbb467ce11afa5cc3ed0d5e7f853f94d3514e5",
+  "frozen_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
   "gate_checks": {
     "a2_provenance": true,
     "candidate_ready": true,
+    "contract_exact_duplicates": true,
     "data_usage": true,
     "deterministic_complements": true,
-    "exact_duplicates": false,
     "feature_counts": true,
     "history_separation": true,
     "missing_invariants": true,
@@ -65,24 +77,210 @@
     "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK": 0
   },
   "redundancy": {
+    "contract_affine_redundancy": [],
+    "contract_exact_duplicate_count": 0,
+    "contract_exact_duplicate_groups": [],
+    "contract_structural_constant_count": 0,
     "contract_structural_constants": [],
     "deterministic_complement_count": 0,
     "deterministic_complements": [],
-    "exact_duplicate_count": 3,
-    "exact_duplicate_groups": [
+    "empirical_exact_duplicate_count": 2,
+    "empirical_exact_duplicate_groups": [
       {
-        "classification": "EXACT_DUPLICATE",
+        "calibration_equal": true,
+        "classification": "EMPIRICAL_EXACT_DUPLICATE",
         "constant_group": false,
+        "contract_keys": {
+          "delta.weather.dewpoint_c.derived_missing_mask": [
+            "delta.weather.dewpoint_c",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ],
+          "delta.weather.temperature_c.derived_missing_mask": [
+            "delta.weather.temperature_c",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ],
+          "delta.weather.visibility_m.derived_missing_mask": [
+            "delta.weather.visibility_m",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ],
+          "delta.weather.wind_speed_mps.derived_missing_mask": [
+            "delta.weather.wind_speed_mps",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ]
+        },
+        "development_equal": true,
         "features": [
           "delta.weather.temperature_c.derived_missing_mask",
           "delta.weather.dewpoint_c.derived_missing_mask",
           "delta.weather.wind_speed_mps.derived_missing_mask",
           "delta.weather.visibility_m.derived_missing_mask"
-        ]
+        ],
+        "train_equal": true
       },
       {
-        "classification": "EXACT_DUPLICATE",
+        "calibration_equal": true,
+        "classification": "EMPIRICAL_EXACT_DUPLICATE",
+        "constant_group": false,
+        "contract_keys": {
+          "weather.dewpoint_c.missing_mask": [
+            "weather.dewpoint_c",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "weather.temperature_c.missing_mask": [
+            "weather.temperature_c",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "weather.visibility_m.missing_mask": [
+            "weather.visibility_m",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "weather.wind_speed_mps.missing_mask": [
+            "weather.wind_speed_mps",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ]
+        },
+        "development_equal": true,
+        "features": [
+          "weather.temperature_c.missing_mask",
+          "weather.dewpoint_c.missing_mask",
+          "weather.wind_speed_mps.missing_mask",
+          "weather.visibility_m.missing_mask"
+        ],
+        "train_equal": true
+      }
+    ],
+    "exact_duplicate_count": 3,
+    "exact_duplicate_groups": [
+      {
+        "calibration_equal": true,
+        "classification": "EMPIRICAL_EXACT_DUPLICATE",
+        "constant_group": false,
+        "contract_keys": {
+          "delta.weather.dewpoint_c.derived_missing_mask": [
+            "delta.weather.dewpoint_c",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ],
+          "delta.weather.temperature_c.derived_missing_mask": [
+            "delta.weather.temperature_c",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ],
+          "delta.weather.visibility_m.derived_missing_mask": [
+            "delta.weather.visibility_m",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ],
+          "delta.weather.wind_speed_mps.derived_missing_mask": [
+            "delta.weather.wind_speed_mps",
+            "DERIVED_VALIDITY_NEGATION",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "PREVIOUS_NODE_LOCAL",
+            "DERIVED_FEATURE_VALIDITY"
+          ]
+        },
+        "development_equal": true,
+        "features": [
+          "delta.weather.temperature_c.derived_missing_mask",
+          "delta.weather.dewpoint_c.derived_missing_mask",
+          "delta.weather.wind_speed_mps.derived_missing_mask",
+          "delta.weather.visibility_m.derived_missing_mask"
+        ],
+        "train_equal": true
+      },
+      {
+        "calibration_equal": true,
+        "classification": "TRAIN_SUPPORT_CONSTANT",
         "constant_group": true,
+        "contract_keys": {
+          "current_weather.fallback_mask": [
+            "variable_lineage.current_weather",
+            "FALLBACK_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "current_weather.stale_mask": [
+            "variable_lineage.current_weather",
+            "STALE_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "schedule.signed_minutes_to_crs_departure.fallback_mask": [
+            "schedule.signed_minutes_to_crs_departure",
+            "FALLBACK_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "schedule.signed_minutes_to_crs_departure.missing_mask": [
+            "schedule.signed_minutes_to_crs_departure",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "schedule.signed_minutes_to_crs_departure.stale_mask": [
+            "schedule.signed_minutes_to_crs_departure",
+            "STALE_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "state.to_realized": [
+            "decision_node.operational_stage",
+            "FACTUAL_STAGE_CONTRACTION_TO_REALIZED_FLAG",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FACTUAL_OPERATIONAL_STATE"
+          ],
+          "taxi_reference_minutes.missing_mask": [
+            "successor_state.taxi_reference.value",
+            "PER_FEATURE_REFERENCE_MISSINGNESS",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "STATIC_REFERENCE",
+            "STATIC_REFERENCE_VALIDITY"
+          ],
+          "turnaround_reference_minutes.missing_mask": [
+            "successor_state.turnaround_reference.value",
+            "PER_FEATURE_REFERENCE_MISSINGNESS",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "STATIC_REFERENCE",
+            "STATIC_REFERENCE_VALIDITY"
+          ]
+        },
+        "development_equal": false,
         "features": [
           "state.to_realized",
           "current_weather.stale_mask",
@@ -92,33 +290,70 @@
           "schedule.signed_minutes_to_crs_departure.fallback_mask",
           "turnaround_reference_minutes.missing_mask",
           "taxi_reference_minutes.missing_mask"
-        ]
+        ],
+        "train_equal": true
       },
       {
-        "classification": "EXACT_DUPLICATE",
+        "calibration_equal": true,
+        "classification": "EMPIRICAL_EXACT_DUPLICATE",
         "constant_group": false,
+        "contract_keys": {
+          "weather.dewpoint_c.missing_mask": [
+            "weather.dewpoint_c",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "weather.temperature_c.missing_mask": [
+            "weather.temperature_c",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "weather.visibility_m.missing_mask": [
+            "weather.visibility_m",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ],
+          "weather.wind_speed_mps.missing_mask": [
+            "weather.wind_speed_mps",
+            "RAW_MISSING_MASK",
+            "ALWAYS_DEFINED_BY_ENCODER",
+            "CURRENT_ONLY",
+            "FIELD_OR_OBJECT_QUALITY_MASK"
+          ]
+        },
+        "development_equal": true,
         "features": [
           "weather.temperature_c.missing_mask",
           "weather.dewpoint_c.missing_mask",
           "weather.wind_speed_mps.missing_mask",
           "weather.visibility_m.missing_mask"
-        ]
+        ],
+        "train_equal": true
       }
     ],
-    "near_linear_pairs_report_only": [
-      {
-        "automatic_removal": false,
-        "classification": "NEAR_LINEAR_REDUNDANCY",
-        "left": "delta.schedule.signed_minutes_to_crs_departure",
-        "pearson_correlation": 1.0,
-        "right": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask"
-      }
+    "near_linear_pairs_report_only": [],
+    "train_support_constant_count": 8,
+    "train_support_constants": [
+      "state.to_realized",
+      "current_weather.stale_mask",
+      "current_weather.fallback_mask",
+      "schedule.signed_minutes_to_crs_departure.missing_mask",
+      "schedule.signed_minutes_to_crs_departure.stale_mask",
+      "schedule.signed_minutes_to_crs_departure.fallback_mask",
+      "turnaround_reference_minutes.missing_mask",
+      "taxi_reference_minutes.missing_mask"
     ]
   },
-  "repository_head": "7bb500d965f90920ca056c613ae33783b4000be4",
+  "repository_head": "312f609c8e231eea12ded58c8d07bd7725e42d5e",
   "safety": {
     "FINAL_TEST_ACCESS_COUNT": 0,
-    "GATE_B2_FEATURE_FREEZE": false,
+    "GATE_B2_FEATURE_FREEZE": true,
     "GATE_B_ENTERED": true,
     "HYPERPARAMETER_TUNING_AUTHORIZED": false,
     "M1_TARGET_SUPPORT_FROZEN": false,
@@ -128,7 +363,7 @@
   },
   "schema_version": "AIR_SLOT_M1_V2_FEATURE_GATE_B2_V1",
   "static_normalization": {
-    "artifact_hash": "sha256:7e1924cba9fd8e36b62016d4245fb5a8f0bf2fc0259160e5b4ee06d6487b4caa",
+    "artifact_hash": "sha256:26bc637b5c8f2d3342c2fa8699bf06b29eb5f5d470ec924a89ddf307d6428533",
     "artifact_id": "M1_V2_STATIC_NORMALIZATION_B2",
     "episode_count": 128,
     "fit_split": "train",
@@ -155,7 +390,7 @@
   "validation_gates": {
     "PRE_OWNERSHIP_GATE": "PASS",
     "STATIC_VOLUME_GATE": "PASS",
-    "data_usage_artifact_hash": "sha256:88968b4484ec93c8b11b317c84303e1b7a2e7ce09573852cb62c89a8a7abd793",
+    "data_usage_artifact_hash": "sha256:1a14c091eac8acd8cb7bee02d9134d497d80d49be62414bd12b661484ec15089",
     "data_usage_status": "DATA_USAGE_CONTRACT_AUDIT_PASS",
     "ownership_findings": []
   }

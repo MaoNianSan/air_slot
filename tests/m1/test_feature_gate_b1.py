@@ -1,8 +1,9 @@
-import pytest
+import json
+from pathlib import Path
 
 from model.M1.cache import M1DevelopmentBaseCache
 from model.M1.data import FEATURE_NAMES_V2, STATIC_FEATURE_NAMES
-from validation.m1_v2_feature_gate_b1r import load_a2_baseline, run
+from validation.m1_v2_feature_gate_b1r import DEFAULT_OUTPUT, load_a2_baseline
 from validation.m1_v2_feature_semantics import (
     encoder_static_scan,
     feature_inventory,
@@ -11,21 +12,24 @@ from validation.m1_v2_feature_semantics import (
 )
 
 
-@pytest.fixture(scope="module")
-def b1r_result(tmp_path_factory):
-    output = tmp_path_factory.mktemp("m1_v2_feature_gate_b1r")
-    return run(output), output
+def _read_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_b1r_inventory_is_generated_from_current_candidate_code():
+def test_current_inventory_is_the_b2r_frozen_source_schema():
     inventory = feature_inventory()
-    assert inventory["dynamic_count"] == len(FEATURE_NAMES_V2) == 41
+    assert inventory["dynamic_count"] == len(FEATURE_NAMES_V2) == 39
     assert inventory["static_count"] == len(STATIC_FEATURE_NAMES) == 4
-    assert inventory["total_count"] == 45
+    assert inventory["total_count"] == 43
     assert inventory["ordered_dynamic_features"] == list(FEATURE_NAMES_V2)
     assert inventory["ordered_static_features"] == list(STATIC_FEATURE_NAMES)
     assert not any(name.startswith("ar.weather.") for name in FEATURE_NAMES_V2)
     assert not any(".evidence." in name for name in FEATURE_NAMES_V2)
+    assert "delta.schedule.signed_minutes_to_crs_departure" not in FEATURE_NAMES_V2
+    assert (
+        "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask"
+        not in FEATURE_NAMES_V2
+    )
 
 
 def test_b1r_semantics_keep_local_delta_and_remove_full_prefix_history():
@@ -57,8 +61,8 @@ def test_b1r_loads_frozen_a2_only_through_explicit_legacy_path():
     assert len(old_names) == cache.store.values_flat.shape[1] == 103
 
 
-def test_b1r_repairs_wind_static_and_history_without_changing_targets(b1r_result):
-    report, _ = b1r_result
+def test_historical_b1r_artifact_remains_unchanged():
+    report = _read_json(DEFAULT_OUTPUT / "AIR_SLOT_M1_V2_FEATURE_GATE_B1R.json")
     assert report["FEATURE_GATE_STATUS"] == "FEATURE_GATE_B1R_PASS_CANDIDATE_READY_FOR_B2"
     assert report["wind_direction"]["missing_rows"] == 3087
     assert report["wind_direction"]["violations"] == 0
@@ -76,8 +80,9 @@ def test_b1r_repairs_wind_static_and_history_without_changing_targets(b1r_result
     assert report["target"]["overflow"] == 90
 
 
-def test_b1r_candidate_cache_roundtrip_and_stops_before_b2(b1r_result):
-    report, output = b1r_result
+def test_historical_b1r_candidate_cache_roundtrip_is_preserved():
+    output = DEFAULT_OUTPUT
+    report = _read_json(output / "AIR_SLOT_M1_V2_FEATURE_GATE_B1R.json")
     manifest_path = output / "M1_V2_FEATURE_GATE_B1R_CANDIDATE_CACHE_MANIFEST.json"
     data_path = output / "M1_V2_FEATURE_GATE_B1R_CANDIDATE_CACHE.npz"
     loaded = M1DevelopmentBaseCache.load(

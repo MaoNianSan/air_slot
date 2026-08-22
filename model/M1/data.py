@@ -129,8 +129,6 @@ V2_STATE_REALIZED_BY_STAGE = {
 V2_DELTA_X_FIELDS = tuple(
     f"delta.weather.{name}" for name in V2_WEATHER_FIELDS
     if name != "wind_direction_deg"
-) + (
-    "delta.schedule.signed_minutes_to_crs_departure",
 )
 V2_AR_FIELDS: tuple[str, ...] = ()
 V2_DELTA_T_FIELDS = ("weather.observation_age_minutes",)
@@ -139,8 +137,8 @@ V2_WEATHER_OBJECT_MASK_NAMES = (
     "current_weather.stale_mask",
     "current_weather.fallback_mask",
 )
-M1_V2_FEATURE_SCHEMA_ID = "M1_V2_FEATURE_SCHEMA_CANDIDATE_B1R"
-M1_V2_FEATURE_SCHEMA_STATUS = "CANDIDATE_NOT_FROZEN"
+M1_V2_FEATURE_SCHEMA_ID = "M1_V2_FEATURE_SCHEMA_FROZEN_B2"
+M1_V2_FEATURE_SCHEMA_STATUS = "FROZEN_AT_B2"
 
 
 def _v2_x_names() -> tuple[str, ...]:
@@ -324,7 +322,6 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
     """
     validate_history_sequence(states, require_episode_start=require_episode_start)
     rows = []
-    previous_schedule: float | None = None
     previous_observed: dict[str, bool] = {}
     previous_values: dict[str, float] = {}
     for pre in states:
@@ -375,8 +372,6 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
                 x.append(current_values[field] - previous_values[field])
             else:
                 x.append(0.0)
-        schedule_delta_valid = schedule_minutes is not None and previous_schedule is not None
-        x.append(schedule_scaled - previous_schedule if schedule_delta_valid else 0.0)
         weather_lineage = _lineage(pre, "current_weather")
         schedule_lineage = _lineage(pre, "schedule_reference")
         stale_w, fallback_w = _quality_masks(weather, weather_lineage)
@@ -393,11 +388,8 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
         masks.extend((float(schedule_minutes is None), stale_s, fallback_s))
         masks.append(float(ceiling_status == "UNLIMITED"))
         for field in V2_DERIVED_FIELDS:
-            if field.startswith("delta.weather."):
-                source = field.removeprefix("delta.weather.")
-                valid = current_observed.get(source, False) and previous_observed.get(source, False)
-            else:
-                valid = schedule_delta_valid
+            source = field.removeprefix("delta.weather.")
+            valid = current_observed.get(source, False) and previous_observed.get(source, False)
             masks.append(float(not valid))
         age = (
             None
@@ -410,7 +402,6 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
         ]
         support = [float(weather.support_state is SupportState.ABSTAIN)]
         rows.append(x + masks + delta + support)
-        previous_schedule = schedule_scaled if schedule_minutes is not None else None
         previous_observed = current_observed
         previous_values = current_values
     result = torch.tensor(rows, dtype=torch.float32)

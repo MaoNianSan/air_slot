@@ -1,13 +1,16 @@
 # M1 V2 Feature Gate B2 Freeze Packet
 
-- Status: `FEATURE_GATE_B2_CONTRACT_FAILURE`
-- Dynamic/static/total: 41 / 4 / 45
-- Candidate schema hash: `sha256:0fa54b2b5d2db31ed15b10c6a4f3eba8dd1b3e3e82300cc70f6417266057930b`
-- Exact duplicate groups: `3`
+- Status: `FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT`
+- Dynamic/static/total: 39 / 4 / 43
+- Candidate schema hash: `sha256:6fb884124ff22d3665cbf5b89f84c4c242caeaee580f2bd51d6ee6c399a71bf1`
+- Contract exact duplicates: `0`
+- Empirical exact duplicates: `2`
+- Train support constants: `8`
 - Deterministic complements: `0`
 
-- Frozen schema: `NOT_CREATED`
-- Frozen cache: `NOT_CREATED`
-- Freeze is blocked; no feature was added, removed, reordered, or redefined.
+- Frozen schema hash: `sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a`
+- Frozen cache key: `sha256:0ae9f89845c313b0e6dafadf88cbb467ce11afa5cc3ed0d5e7f853f94d3514e5`
+- Feature content equivalence: `PASS`
+- Target support remains the next gate: `M1_TARGET_SUPPORT_GATE_C0`
 
 Training, tuning, Final Test, FULL, paper_full, and C0 were not executed.

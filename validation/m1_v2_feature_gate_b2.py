@@ -1,4 +1,4 @@
-"""Feature Contract Freeze Gate B2 for the approved B1R candidate."""
+"""Feature Contract Freeze Gate B2 for the approved B2R candidate."""
 
 from __future__ import annotations
 
@@ -15,8 +15,10 @@ from validation.data_usage_contract_audit import run as run_data_usage_audit
 from validation.m1_v2_feature_gate_b1r import (
     A2_EXPECTED_CACHE_HASH,
     A2_ROOT,
-    B1_ROOT,
-    DEFAULT_OUTPUT as B1R_OUTPUT,
+)
+from validation.m1_v2_feature_gate_b2r import (
+    DECISIONS as B2R_DECISIONS,
+    DEFAULT_OUTPUT as B2R_OUTPUT,
 )
 from validation.m1_v2_feature_profile import missing_encoding_audit
 from validation.m1_v2_feature_redundancy import redundancy_audit
@@ -34,6 +36,7 @@ DECISIONS = {
     "B1-D05": "REMOVE",
     "B1-D06": "TRAIN_STANDARDIZED",
     "B1-D07": "PER_FEATURE_MASKED_BLOCK",
+    **B2R_DECISIONS,
 }
 SAFETY_BASE = {
     "M1_TRAINING_RUNS": 0,
@@ -60,23 +63,24 @@ def _head() -> str:
 
 
 def _load_candidate() -> tuple[M1DevelopmentBaseCache, dict, dict, dict]:
-    manifest_path = B1R_OUTPUT / "M1_V2_FEATURE_GATE_B1R_CANDIDATE_CACHE_MANIFEST.json"
-    data_path = B1R_OUTPUT / "M1_V2_FEATURE_GATE_B1R_CANDIDATE_CACHE.npz"
-    report_path = B1R_OUTPUT / "AIR_SLOT_M1_V2_FEATURE_GATE_B1R.json"
-    schema_path = B1R_OUTPUT / "M1_V2_FEATURE_SCHEMA_CANDIDATE_B1R.json"
+    manifest_path = B2R_OUTPUT / "M1_V2_FEATURE_GATE_B2R_CANDIDATE_CACHE_MANIFEST.json"
+    data_path = B2R_OUTPUT / "M1_V2_FEATURE_GATE_B2R_CANDIDATE_CACHE.npz"
+    report_path = B2R_OUTPUT / "AIR_SLOT_M1_V2_FEATURE_GATE_B2R.json"
+    schema_path = B2R_OUTPUT / "M1_V2_FEATURE_SCHEMA_CANDIDATE_B2R.json"
     manifest = _read_json(manifest_path)
     report = _read_json(report_path)
     schema = _read_json(schema_path)
     cache = M1DevelopmentBaseCache.load(
         data_path, manifest_path, expected_cache_key=manifest["cache_key"]
     )
-    if manifest["cache_hash"] != report["cache"]["candidate_cache_hash"]:
+    if manifest["cache_hash"] != report["cache"]["candidate_cache"]:
         raise ValueError("M1_B2_CANDIDATE_CACHE_REPORT_HASH_MISMATCH")
-    if manifest["cache_hash"] != "sha256:57c668b687bf08b9aa0ebfbd60c0b6792d970a38e39e5a5d104294aa44f3153e":
-        raise ValueError("M1_B2_CANDIDATE_CACHE_HASH_MISMATCH")
-    if report["FEATURE_GATE_STATUS"] != "FEATURE_GATE_B1R_PASS_CANDIDATE_READY_FOR_B2":
-        raise ValueError("M1_B2_B1R_NOT_READY")
-    if schema["schema_hash"] != report["feature_schema"]["schema_hash"]:
+    if report["FEATURE_GATE_STATUS"] not in {
+        "FEATURE_GATE_B2R_PASS_CANDIDATE_READY_FOR_B2",
+        "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT",
+    }:
+        raise ValueError("M1_B2_B2R_NOT_READY")
+    if schema["schema_hash"] != report["feature_schema"]["b2r_candidate_schema_hash"]:
         raise ValueError("M1_B2_CANDIDATE_SCHEMA_HASH_MISMATCH")
     if tuple(manifest["feature_names"]) != FEATURE_NAMES_V2:
         raise ValueError("M1_B2_DYNAMIC_ORDER_MISMATCH")
@@ -123,7 +127,7 @@ def _static_artifact(cache: M1DevelopmentBaseCache, report: dict) -> dict:
         ],
         "values": normalization.model_dump(mode="json")["values"],
         "source_a2_cache_hash": A2_EXPECTED_CACHE_HASH,
-        "source_candidate_cache_hash": report["cache"]["candidate_cache_hash"],
+        "source_candidate_cache_hash": report["cache"]["candidate_cache"],
         "source_a2_reference_ids": {
             "turnaround": references["turnaround"]["new_reference_id"],
             "taxi": references["taxi"]["new_reference_id"],
@@ -135,7 +139,9 @@ def _static_artifact(cache: M1DevelopmentBaseCache, report: dict) -> dict:
             "development_fit": False,
             "final_test_fit": False,
         },
-        "source_candidate_static_normalization_hash": report["static"]["normalization_artifact_hash"],
+        "source_candidate_static_normalization_hash": content_id(
+            normalization.model_dump(mode="json")
+        ),
     }
     payload["content_hash_basis"] = "JSON_SERIALIZED_PAYLOAD_WITHOUT_CONTENT_HASH"
     payload["content_hash"] = content_id(payload)
@@ -188,7 +194,9 @@ def _write_packet(path: Path, report: dict) -> None:
         f"- Dynamic/static/total: {report['feature_counts']['dynamic']} / "
         f"{report['feature_counts']['static']} / {report['feature_counts']['total']}",
         f"- Candidate schema hash: `{report['candidate_schema_hash']}`",
-        f"- Exact duplicate groups: `{report['redundancy']['exact_duplicate_count']}`",
+        f"- Contract exact duplicates: `{report['redundancy']['contract_exact_duplicate_count']}`",
+        f"- Empirical exact duplicates: `{report['redundancy']['empirical_exact_duplicate_count']}`",
+        f"- Train support constants: `{report['redundancy']['train_support_constant_count']}`",
         f"- Deterministic complements: `{report['redundancy']['deterministic_complement_count']}`",
         "",
     ]
@@ -223,11 +231,34 @@ def _clear_freeze_outputs(output_dir: Path) -> None:
         (output_dir / name).unlink(missing_ok=True)
 
 
+def _link_b2r_freeze(report: dict, output_dir: Path) -> None:
+    path = B2R_OUTPUT / "AIR_SLOT_M1_V2_FEATURE_GATE_B2R.json"
+    b2r = _read_json(path)
+    b2r["FEATURE_GATE_STATUS"] = "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT"
+    b2r["freeze"] = {
+        "status": report["FEATURE_GATE_STATUS"],
+        "frozen_schema_hash": report.get("frozen_schema_hash"),
+        "frozen_cache_hash": report["cache"].get("frozen"),
+        "frozen_cache_key": report.get("frozen_cache_key"),
+        "tensor_equivalence": report["cache"]["tensor_equivalence"],
+        "GATE_B2_FEATURE_FREEZE": report["safety"]["GATE_B2_FEATURE_FREEZE"],
+        "M1_TARGET_SUPPORT_FROZEN": report["safety"]["M1_TARGET_SUPPORT_FROZEN"],
+        "HYPERPARAMETER_TUNING_AUTHORIZED": report["safety"]["HYPERPARAMETER_TUNING_AUTHORIZED"],
+    }
+    b2r["safety"]["GATE_B2_FEATURE_FREEZE"] = True
+    b2r["artifact_hash_basis"] = "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH"
+    basis = json.dumps({key: value for key, value in b2r.items() if key != "artifact_hash"}, sort_keys=True, separators=(",", ":"))
+    b2r["artifact_hash"] = f"sha256:{sha256(basis.encode('utf-8')).hexdigest()}"
+    _write_json(path, b2r)
+    from validation.m1_v2_feature_gate_b2r import _write_packet as write_b2r_packet
+    write_b2r_packet(B2R_OUTPUT / "M1_V2_FEATURE_GATE_B2R_PACKET.md", b2r)
+
+
 def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     _clear_freeze_outputs(output_dir)
-    candidate, candidate_manifest, b1r, candidate_schema = _load_candidate()
-    static_artifact = _static_artifact(candidate, b1r)
+    candidate, candidate_manifest, b2r, candidate_schema = _load_candidate()
+    static_artifact = _static_artifact(candidate, b2r)
     redundancy = redundancy_audit(candidate)
     missing = missing_encoding_audit(candidate)
     history = history_semantics()
@@ -235,15 +266,18 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     ownership = build_gate_result(ROOT)
     exact_groups = redundancy["exact_duplicate_groups"]
     complement_groups = redundancy["deterministic_complements"]
-    structural_constants = b1r["diagnostics"]["contract_structural_constants"]
+    structural_constants = redundancy["contract_structural_constants"]
     feature_counts = {
         "dynamic": len(FEATURE_NAMES_V2),
         "static": len(STATIC_FEATURE_NAMES),
         "total": len(FEATURE_NAMES_V2) + len(STATIC_FEATURE_NAMES),
     }
     gate_checks = {
-        "feature_counts": feature_counts == {"dynamic": 41, "static": 4, "total": 45},
-        "candidate_ready": b1r["FEATURE_GATE_STATUS"] == "FEATURE_GATE_B1R_PASS_CANDIDATE_READY_FOR_B2",
+        "feature_counts": feature_counts == {"dynamic": 39, "static": 4, "total": 43},
+        "candidate_ready": b2r["FEATURE_GATE_STATUS"] in {
+            "FEATURE_GATE_B2R_PASS_CANDIDATE_READY_FOR_B2",
+            "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT",
+        },
         "missing_invariants": all(
             missing["violation_counts"].get(name, 0) == 0
             for name in (
@@ -257,9 +291,10 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             history["FULL_PREFIX_HISTORY_FEATURE_COUNT"] == 0
             and history["EXP1B_HISTORY_SEPARATION_STATUS"] == "CLEAN"
         ),
-        "structural_constants": len(structural_constants) == 0,
-        "exact_duplicates": len(exact_groups) == 0,
-        "deterministic_complements": len(complement_groups) == 0,
+        "structural_constants": redundancy["contract_structural_constant_count"] == 0,
+        "contract_exact_duplicates": redundancy["contract_exact_duplicate_count"] == 0,
+        "deterministic_complements": len(complement_groups) == 0
+        and len(redundancy["contract_affine_redundancy"]) == 0,
         "data_usage": data_usage["status"] == "DATA_USAGE_CONTRACT_AUDIT_PASS",
         "pre_ownership": ownership["PRE_OWNERSHIP_GATE"] == "PASS",
         "static_volume": ownership["STATIC_VOLUME_GATE"] == "PASS",
@@ -379,10 +414,18 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         },
         "redundancy": {
             "contract_structural_constants": structural_constants,
+            "contract_structural_constant_count": redundancy["contract_structural_constant_count"],
+            "contract_exact_duplicate_count": redundancy["contract_exact_duplicate_count"],
+            "contract_exact_duplicate_groups": redundancy["contract_exact_duplicate_groups"],
+            "empirical_exact_duplicate_count": redundancy["empirical_exact_duplicate_count"],
+            "empirical_exact_duplicate_groups": redundancy["empirical_exact_duplicate_groups"],
+            "train_support_constant_count": redundancy["train_support_constant_count"],
+            "train_support_constants": redundancy["train_support_constants"],
             "exact_duplicate_count": len(exact_groups),
             "exact_duplicate_groups": exact_groups,
             "deterministic_complement_count": len(complement_groups),
             "deterministic_complements": complement_groups,
+            "contract_affine_redundancy": redundancy["contract_affine_redundancy"],
             "near_linear_pairs_report_only": redundancy["near_linear_pairs"],
         },
         "missing_invariants": {
@@ -393,8 +436,8 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             "MISSING_MASK_VALUE_VIOLATIONS": missing["violation_counts"].get("MISSING_MASK_VALUE_VIOLATIONS", 0),
         },
         "labels": {
-            "unchanged": b1r["target"]["label_profile_unchanged"],
-            "overflow": b1r["target"]["overflow"],
+            "unchanged": b2r["labels"]["unchanged"],
+            "overflow": b2r["labels"]["overflow"],
             "TARGET_SUPPORT_REVIEW_REQUIRED": "YES",
         },
         "gate_checks": gate_checks,
@@ -416,6 +459,8 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     _write_json(output_dir / "AIR_SLOT_M1_V2_FEATURE_GATE_B2.json", report)
     _write_json(output_dir / "B2_GATE_CHECKS.json", gate_checks)
     _write_packet(output_dir / "M1_V2_FEATURE_GATE_B2_FREEZE_PACKET.md", report)
+    if freeze_complete:
+        _link_b2r_freeze(report, output_dir)
     return report
 
 
@@ -424,7 +469,8 @@ def main() -> None:
     print(json.dumps({
         "FEATURE_GATE_STATUS": report["FEATURE_GATE_STATUS"],
         "artifact_hash": report["artifact_hash"],
-        "exact_duplicate_count": report["redundancy"]["exact_duplicate_count"],
+        "contract_exact_duplicate_count": report["redundancy"]["contract_exact_duplicate_count"],
+        "empirical_exact_duplicate_count": report["redundancy"]["empirical_exact_duplicate_count"],
         "frozen_schema_hash": report.get("frozen_schema_hash"),
         "safety": report["safety"],
     }, indent=2, sort_keys=True))
