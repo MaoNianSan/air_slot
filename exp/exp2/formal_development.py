@@ -97,6 +97,7 @@ def _load_inputs(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
         "m1_cache_manifest": root / "artifacts/diagnostics/m1_v2_feature_gate_b2/M1_V2_DEVELOPMENT_BASE_CACHE_B2_MANIFEST.json",
         "exp1_full_manifest": root / "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
         "exp2_cohort": root / "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json",
+        "m1_semantic_reconciliation": root / "artifacts/diagnostics/m1_v2_development_inference_binding/M1_V2_DEVELOPMENT_INFERENCE_SEMANTIC_RECONCILIATION_V2.json",
         "m2_registry": root / "registries/m2_data2_formal_cu_v1.json",
         "m2_design": root / "registries/m2_v2_design.json",
         "m3_design": root / "registries/m3_v2_action_response_design.json",
@@ -116,6 +117,7 @@ def _validate_fixed_contract(root: Path, inputs: dict[str, tuple[Path, dict[str,
     cache_manifest = inputs["m1_cache_manifest"][1]
     exp1 = inputs["exp1_full_manifest"][1]
     cohort = inputs["exp2_cohort"][1]
+    semantic = inputs["m1_semantic_reconciliation"][1]
     foundation = yaml.safe_load(
         (root / "configs/scientific/foundation.yaml").read_text(encoding="utf-8")
     )
@@ -128,7 +130,16 @@ def _validate_fixed_contract(root: Path, inputs: dict[str, tuple[Path, dict[str,
     _require(exp1["split"] == "DEVELOPMENT", "EXP2_EXP1_SOURCE_NOT_DEVELOPMENT")
     _require(exp1["m1_model_id"] == "M1_V2_GRU_H32", "EXP2_EXP1_SOURCE_MODEL_MISMATCH")
     _require(cohort["dataset_id"] == "DATA2" and cohort["split"] == "DEVELOPMENT", "EXP2_COHORT_NOT_DEVELOPMENT")
-    for payload in (binding, exp1, cohort):
+    _require(
+        semantic["status"] == "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+        "EXP2_M1_SEMANTIC_RECONCILIATION_STATUS_INVALID",
+    )
+    comparison = semantic["semantic_comparison"]
+    _require(comparison["expected_node_count"] == len(cohort["node_ids"]), "EXP2_M1_SEMANTIC_EXPECTED_NODE_COUNT_MISMATCH")
+    _require(comparison["reconstructed_node_count"] == len(cohort["node_ids"]), "EXP2_M1_SEMANTIC_RECONSTRUCTED_NODE_COUNT_MISMATCH")
+    _require(comparison["core_identity_exact"] is True, "EXP2_M1_CORE_NODE_IDENTITY_NOT_RECONCILED")
+    _require(comparison["stage_mismatch_count"] > 0, "EXP2_M1_STAGE_DRIFT_NOT_RECORDED")
+    for payload in (binding, exp1, cohort, semantic):
         safety = payload.get("safety", payload)
         _require(safety.get("FINAL_TEST_ACCESS_COUNT", payload.get("FINAL_TEST_ACCESS_COUNT")) == 0, "EXP2_INPUT_FINAL_TEST_ACCESS_NONZERO")
         _require(safety.get("PAPER_FULL_RUN", payload.get("PAPER_FULL_RUN")) is False, "EXP2_INPUT_PAPER_FULL_TRUE")
@@ -154,6 +165,13 @@ def _validate_fixed_contract(root: Path, inputs: dict[str, tuple[Path, dict[str,
         "exp2_cohort_node_count": len(cohort_nodes),
         "m1_cache_exp2_cohort_intersection_count": len(cache_nodes & cohort_nodes),
         "m1_cache_exp2_cohort_missing_node_count": len(cohort_nodes - cache_nodes),
+        "m1_semantic_reconciliation_status": semantic["status"],
+        "m1_semantic_reconstructed_node_count": comparison["reconstructed_node_count"],
+        "m1_semantic_core_identity_exact": comparison["core_identity_exact"],
+        "m1_typed_legal_record_alias_count": comparison["typed_legal_record_alias_count"],
+        "m1_stage_exact_match_count": comparison["stage_exact_match_count"],
+        "m1_stage_mismatch_count": comparison["stage_mismatch_count"],
+        "m1_stage_mismatches": comparison["stage_mismatches"],
         "m1_positive_tail_policy": parameters["m1_v2_positive_tail_policy"]["value"],
     }
 
@@ -168,8 +186,17 @@ def _gates(inputs: dict[str, tuple[Path, dict[str, Any]]], fixed: dict[str, Any]
     missing = tuple(component for component in M2_COMPONENTS if component not in covered)
     return {
         "M1_COHORT_BINDING": {
-            "status": "BLOCKED_M1_INPUT_COHORT_NODE_IDENTITY_MISMATCH",
-            "reason": "FROZEN_M1_CACHE_HAS_NO_NODE_ID_OVERLAP_WITH_FROZEN_EXP2_DEVELOPMENT_COHORT",
+            "status": "BLOCKED_M1_STAGE_SEMANTIC_DRIFT",
+            "reason": "CURRENT_APPROVED_TYPED_PRE_CHANGES_OPERATIONAL_STAGE_FOR_THREE_FROZEN_COHORT_NODES_AND_STAGE_IS_AN_M1_FEATURE",
+            "semantic_reconciliation_status": fixed["m1_semantic_reconciliation_status"],
+            "core_identity_exact": fixed["m1_semantic_core_identity_exact"],
+            "typed_legal_record_alias_count": fixed["m1_typed_legal_record_alias_count"],
+            "stage_exact_match_count": fixed["m1_stage_exact_match_count"],
+            "stage_mismatch_count": fixed["m1_stage_mismatch_count"],
+            "stage_mismatches": fixed["m1_stage_mismatches"],
+            "human_decision_required": True,
+            "prohibited_automatic_resolution": True,
+            "historical_cache_comparison_role": "DIAGNOSTIC_ONLY_NOT_CURRENT_BINDING_DECISION",
             "cache_development_nodes": fixed["m1_cache_development_node_count"],
             "exp2_cohort_nodes": fixed["exp2_cohort_node_count"],
             "intersection_nodes": fixed["m1_cache_exp2_cohort_intersection_count"],

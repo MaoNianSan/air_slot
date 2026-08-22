@@ -1,0 +1,128 @@
+{
+  "artifact_hash": "sha256:250af805434be240bdb3f0b7f5e4fcdb8732fedc7a5a57beb9cf58e249921ba5",
+  "channels": {
+    "Flight": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation"
+    ],
+    "Passenger": [
+      "P_time",
+      "P_itinerary",
+      "P_service"
+    ],
+    "Resource": [
+      "R_operating"
+    ]
+  },
+  "component_order": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "existing_v1_registry": {
+    "formal_scope": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation",
+      "P_time",
+      "R_operating"
+    ],
+    "registry_hash": "sha256:c257debc032bff2553b7ffdc4eb4305261f7183c45c1a43ad9164d865af2b029",
+    "registry_id": "M2_DATA2_FORMAL_CU_V1",
+    "reuse_policy": "PROVENANCE_ONLY_NOT_V2_RELABELLED"
+  },
+  "fixed_contract": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "m2_design_id": "M2_OPERATIONAL_CONSEQUENCE_V2",
+    "m2_design_version": "2.0.0",
+    "support": {
+      "D_OB": 210,
+      "D_TX": 60,
+      "T_IB": 360,
+      "bin_width_minutes": 5
+    },
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "freeze_scope": "M2_V2_SEVEN_COMPONENT_INTERFACE_AND_LINEAGE_PREPARATION",
+  "inputs": {
+    "data2_usage": {
+      "path": "data2/DATA_USAGE.md",
+      "sha256": "sha256:82efb9fb78914c4912aed69dd5a8b19e73d32b0d7805ea6f1b648ab4b499d763"
+    },
+    "exp2_lineage": {
+      "path": "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+      "sha256": "sha256:6d479b2b122c9bd2209305e7b9772379818a378ac093d9c8367fc3888f74e71d"
+    },
+    "exp3_manifest": {
+      "path": "artifacts/diagnostics/exp3_formal_execution_preparation/EXP3_FORMAL_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:ba3b6aa870c1d584a319456c9dbc5218ac9096155707a22c62ac7f2d4a5bf003"
+    },
+    "m1_binding": {
+      "path": "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
+      "sha256": "sha256:5deb6684b757af4732a14a874d07f2d74a4ca4c1954deff43c849de7df0fc393"
+    },
+    "m1_checkpoint": {
+      "path": "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt",
+      "sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b"
+    },
+    "m1_freeze": {
+      "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
+      "sha256": "sha256:b5f6892fa096b96db55c4768a4fdd3ca8c0fce3c2e0bd83adda397108e1112e0"
+    },
+    "m2_design": {
+      "path": "registries/m2_v2_design.json",
+      "sha256": "sha256:931d13908975fafa627f633bd352876ae8f69872e8d994226b2ff3ea4695184c"
+    },
+    "m2_freeze_closure_v1": {
+      "path": "artifacts/diagnostics/v5_development_freeze/M2_FORMAL_FREEZE_CLOSURE.json",
+      "sha256": "sha256:b55f48c15736da03c885303d667afccc70b458094c0c842cb05e7e344a20c6a2"
+    },
+    "m2_registry_manifest_v1": {
+      "path": "artifacts/diagnostics/v5_development_freeze/M2_DATA2_FORMAL_CU_V1_MANIFEST.json",
+      "sha256": "sha256:6cbf9eeeac95e0029477400db2d70e850fcda42f5d7973632f19a632df814762"
+    },
+    "m2_registry_v1": {
+      "path": "registries/m2_data2_formal_cu_v1.json",
+      "sha256": "sha256:edaa8bc1787dfd01e3de73d41daae86ee2afe7f71ca3447c7d1225e3288fc25a"
+    },
+    "pre_ownership": {
+      "path": "artifacts/diagnostics/v5_development_freeze/PRE_OWNERSHIP_GATE_V2.json",
+      "sha256": "sha256:3ab86444e78996259778d7ad7fc5d78f0b5404e33cb1273af679be4fa9c8aa57"
+    }
+  },
+  "m1_binding": {
+    "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "model_id": "M1_V2_GRU_H32",
+    "modified": false
+  },
+  "outputs": {
+    "lineage_schema": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_LINEAGE_SCHEMA.json",
+    "readiness_report": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_READINESS_REPORT.json",
+    "typed_output_contract": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_TYPED_OUTPUT_ARTIFACT_CONTRACT.json",
+    "validation_report": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_FREEZE_VALIDATION_REPORT.json"
+  },
+  "provenance": {
+    "formula_source": "model/M2/drivers.py_and_registries/m2_v2_design.json",
+    "monetary_mapping_owner": "M4_ONLY",
+    "pre_ownership": "BOUND_EXISTING_PRE_OWNERSHIP_GATE_V2",
+    "source": "M2_V2_DESIGN_AND_CURRENT_TYPED_M2_IMPLEMENTATION"
+  },
+  "safety": {
+    "EXP2_RUNS_THIS_PREPARATION": 0,
+    "EXP3_RUNS_THIS_PREPARATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_PREPARATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_PREPARATION": 0
+  },
+  "schema_version": "M2_V2_ARTIFACT_FREEZE_MANIFEST_V1",
+  "status": "M2_V2_ARTIFACT_FREEZE_READY"
+}

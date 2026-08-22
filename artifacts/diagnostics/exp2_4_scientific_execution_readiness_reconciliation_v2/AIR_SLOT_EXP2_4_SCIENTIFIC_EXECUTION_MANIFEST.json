@@ -1,0 +1,95 @@
+{
+  "artifact_hash": "sha256:b1f3552e1d42f3222be6871c1fcb38db04d5e5c85de5b486a73cfc3956b5ccef",
+  "execution_scope": "RECONCILIATION_AND_MINIMUM_ARTIFACT_PLANNING_NON_EXECUTION",
+  "m1_binding": {
+    "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "core_identity_exact": true,
+    "development_inference_status": "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "human_decision_required": {
+      "options": [
+        {
+          "description": "retain the frozen cohort stage grid for the principal Development identity and run the current approved replay as a separately named sensitivity/reconciliation cohort",
+          "id": "HISTORICAL_STAGE_POLICY_SENSITIVITY"
+        },
+        {
+          "description": "materialize a new cohort/node grid under the current approved replay semantics and do not call it the existing frozen cohort",
+          "id": "REFREEZE_CURRENT_STAGE_POLICY"
+        }
+      ],
+      "prohibited_automatic_actions": [
+        "overwrite current stage with frozen stage",
+        "overwrite frozen stage with current stage",
+        "treat typed legal-record aliases as stage repair",
+        "reuse the existing cohort name after re-materialization",
+        "select positive-tail rule automatically"
+      ],
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    "model_id": "M1_V2_GRU_H32",
+    "stage_mismatch_count": 3,
+    "stage_mismatches": [
+      {
+        "current_operational_stage": "POST_OB_PRE_TO",
+        "current_pre_state_node_id": "sha256:0539f50febd899a0e1213e863c99c1f0adc144855aef361ce71950b7229d190c",
+        "decision_time": "2019-08-21T17:25:00+00:00",
+        "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+        "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+        "frozen_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+        "frozen_operational_stage": "POST_IB_PRE_OB",
+        "node_index": 21
+      },
+      {
+        "current_operational_stage": "POST_OB_PRE_TO",
+        "current_pre_state_node_id": "sha256:cd62dfad2ae06ef4692eb727f1cdd366f627b04fbd4a7bd04a3f85c1ccd63810",
+        "decision_time": "2019-09-10T17:12:00+00:00",
+        "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+        "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+        "frozen_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+        "frozen_operational_stage": "POST_IB_PRE_OB",
+        "node_index": 11
+      },
+      {
+        "current_operational_stage": "POST_OB_PRE_TO",
+        "current_pre_state_node_id": "sha256:4ea1c04c1b447942a557989cc1edbbc4fb1276729f88e64d67af8830f69f27d3",
+        "decision_time": "2019-09-18T02:26:00+00:00",
+        "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+        "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+        "frozen_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+        "frozen_operational_stage": "POST_IB_PRE_OB",
+        "node_index": 13
+      }
+    ],
+    "status": "BOUND_FROZEN_M1_V2",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3",
+    "typed_legal_record_alias_count": 69
+  },
+  "m2_preparation": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_MANIFEST.json",
+  "m3_binding": {
+    "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+    "non_a00_v2_execution_enabled": false,
+    "response_registry_hash": "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0"
+  },
+  "m4_binding": {
+    "mapping_status": "MONETARY_MAPPING_BLOCKED",
+    "policy_status": "FROZEN",
+    "tail_support_state": "UNRESOLVED"
+  },
+  "outputs": {
+    "lineage": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v2/AIR_SLOT_EXP2_4_RECONCILIATION_LINEAGE.json",
+    "readiness": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v2/AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_READINESS_REPORT.json",
+    "reconciliation": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v2/AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_RECONCILIATION.json"
+  },
+  "safety": {
+    "EXP2_RUNS_THIS_RECONCILIATION": 0,
+    "EXP3_RUNS_THIS_RECONCILIATION": 0,
+    "EXP4_RUNS_THIS_RECONCILIATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_RECONCILIATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_RECONCILIATION": 0
+  },
+  "schema_version": "AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_MANIFEST_V1",
+  "status": "AIR_SLOT_SCIENTIFIC_EXECUTION_READY"
+}

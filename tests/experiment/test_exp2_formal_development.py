@@ -29,6 +29,10 @@ def test_formal_development_records_all_variants_and_preserves_guards(tmp_path):
         for row in metrics["variants"].values()
     )
     assert lineage["gates"]["M1_COHORT_BINDING"]["intersection_nodes"] == 0
+    assert lineage["gates"]["M1_COHORT_BINDING"]["status"] == "BLOCKED_M1_STAGE_SEMANTIC_DRIFT"
+    assert lineage["gates"]["M1_COHORT_BINDING"]["core_identity_exact"] is True
+    assert lineage["gates"]["M1_COHORT_BINDING"]["stage_mismatch_count"] == 3
+    assert lineage["gates"]["M1_COHORT_BINDING"]["typed_legal_record_alias_count"] == 69
     assert lineage["gates"]["M1_POSITIVE_TAIL"]["policy"] == "UNRESOLVED"
     assert lineage["FINAL_TEST_ACCESS_COUNT"] == 0
     assert lineage["PAPER_FULL_RUN"] is False

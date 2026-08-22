@@ -1,0 +1,218 @@
+{
+  "action_effect_policy": "M2_OUTPUT_IS_BASELINE_C0_CU_ACTION_EFFECT_IS_NOT_NATIVE_CONSEQUENCE",
+  "artifact_hash": "sha256:71dd459d9b557bf5f671aeae48fec8bd3ea67048d1e0ce5b10cca39553a010dc",
+  "channel_contract": {
+    "Flight": {
+      "aggregation": "SUM_ONLY_OVER_COMPONENTS_WITH_EXPLICIT_SUPPORT",
+      "component_ids": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation"
+      ],
+      "missing_component_policy": "ABSTAIN_NO_DROP_RENORM_ZERO",
+      "value_status": "NOT_RUN_UNTIL_COMPONENT_ARTIFACT_IS_BOUND"
+    },
+    "Passenger": {
+      "aggregation": "SUM_ONLY_OVER_COMPONENTS_WITH_EXPLICIT_SUPPORT",
+      "component_ids": [
+        "P_time",
+        "P_itinerary",
+        "P_service"
+      ],
+      "missing_component_policy": "ABSTAIN_NO_DROP_RENORM_ZERO",
+      "value_status": "NOT_RUN_UNTIL_COMPONENT_ARTIFACT_IS_BOUND"
+    },
+    "Resource": {
+      "aggregation": "SUM_ONLY_OVER_COMPONENTS_WITH_EXPLICIT_SUPPORT",
+      "component_ids": [
+        "R_operating"
+      ],
+      "missing_component_policy": "ABSTAIN_NO_DROP_RENORM_ZERO",
+      "value_status": "NOT_RUN_UNTIL_COMPONENT_ARTIFACT_IS_BOUND"
+    }
+  },
+  "component_order": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "component_rows": [
+    {
+      "aspect": "Flight",
+      "component_id": "F_continuity",
+      "critical_inputs": [
+        "r_ib_minutes",
+        "turnaround_reference"
+      ],
+      "driver": "turnaround_compression",
+      "formula": "max(0, r_ib_minutes - turnaround_reference(connection_airport))",
+      "native_unit": "minutes",
+      "required_lineage": [
+        "source",
+        "formula",
+        "support",
+        "provenance",
+        "native_artifact_id",
+        "cu_artifact_id"
+      ],
+      "source_type": "HYBRID",
+      "support_contract": "BOUND_TO_TYPED_M2_V2_CONTEXT_AND_M1_SCENARIO",
+      "value_policy": "value_allowed_only_when_parent_support_and_reference_lineage_are_valid"
+    },
+    {
+      "aspect": "Flight",
+      "component_id": "F_execution",
+      "critical_inputs": [
+        "d_ob_minutes"
+      ],
+      "driver": "additional_off_block_wait",
+      "formula": "d_ob_minutes",
+      "native_unit": "minutes",
+      "required_lineage": [
+        "source",
+        "formula",
+        "support",
+        "provenance",
+        "native_artifact_id",
+        "cu_artifact_id"
+      ],
+      "source_type": "SCENARIO_ASSUMPTION",
+      "support_contract": "BOUND_TO_TYPED_M2_V2_CONTEXT_AND_M1_SCENARIO",
+      "value_policy": "value_allowed_only_when_parent_support_and_reference_lineage_are_valid"
+    },
+    {
+      "aspect": "Flight",
+      "component_id": "F_propagation",
+      "critical_inputs": [
+        "d_to_minutes",
+        "expected_downstream_exposure"
+      ],
+      "driver": "takeoff_delay_x_expected_downstream_exposure",
+      "formula": "d_to_minutes * expected_downstream_exposure(origin)",
+      "native_unit": "exposure_minutes",
+      "required_lineage": [
+        "source",
+        "formula",
+        "support",
+        "provenance",
+        "native_artifact_id",
+        "cu_artifact_id"
+      ],
+      "source_type": "HYBRID",
+      "support_contract": "BOUND_TO_TYPED_M2_V2_CONTEXT_AND_M1_SCENARIO",
+      "value_policy": "value_allowed_only_when_parent_support_and_reference_lineage_are_valid"
+    },
+    {
+      "aspect": "Passenger",
+      "component_id": "P_time",
+      "critical_inputs": [
+        "d_to_minutes",
+        "passenger_exposure"
+      ],
+      "driver": "passenger_exposure_x_delay",
+      "formula": "passenger_exposure(origin,destination) * d_to_minutes",
+      "native_unit": "passenger_minutes",
+      "required_lineage": [
+        "source",
+        "formula",
+        "support",
+        "provenance",
+        "native_artifact_id",
+        "cu_artifact_id"
+      ],
+      "source_type": "HYBRID",
+      "support_contract": "BOUND_TO_TYPED_M2_V2_CONTEXT_AND_M1_SCENARIO",
+      "value_policy": "value_allowed_only_when_parent_support_and_reference_lineage_are_valid"
+    },
+    {
+      "aspect": "Passenger",
+      "component_id": "P_itinerary",
+      "critical_inputs": [
+        "itinerary_disruption_events"
+      ],
+      "driver": "supported_itinerary_disruption_events",
+      "formula": "itinerary_disruption_events",
+      "native_unit": "events",
+      "required_lineage": [
+        "source",
+        "formula",
+        "support",
+        "provenance",
+        "native_artifact_id",
+        "cu_artifact_id"
+      ],
+      "source_type": "DATA",
+      "support_contract": "ABSTAIN_UNSUPPORTED_CURRENT_DATA2_CONTRACT",
+      "value_policy": "native_quantity=null;cu_quantity=null;reason_code_required"
+    },
+    {
+      "aspect": "Passenger",
+      "component_id": "P_service",
+      "critical_inputs": [
+        "d_ob_minutes",
+        "service_policy_reference"
+      ],
+      "driver": "service_policy_threshold_events",
+      "formula": "service_policy_threshold_events(d_ob_minutes)",
+      "native_unit": "threshold_events",
+      "required_lineage": [
+        "source",
+        "formula",
+        "support",
+        "provenance",
+        "native_artifact_id",
+        "cu_artifact_id"
+      ],
+      "source_type": "OPERATIONAL_RULE",
+      "support_contract": "ABSTAIN_UNSUPPORTED_CURRENT_DATA2_CONTRACT",
+      "value_policy": "native_quantity=null;cu_quantity=null;reason_code_required"
+    },
+    {
+      "aspect": "Resource",
+      "component_id": "R_operating",
+      "critical_inputs": [
+        "d_tx_minutes"
+      ],
+      "driver": "excess_taxi",
+      "formula": "max(0, d_tx_minutes - taxi_reference(origin))",
+      "native_unit": "excess_taxi_minutes",
+      "required_lineage": [
+        "source",
+        "formula",
+        "support",
+        "provenance",
+        "native_artifact_id",
+        "cu_artifact_id"
+      ],
+      "source_type": "SCENARIO_ASSUMPTION",
+      "support_contract": "BOUND_TO_TYPED_M2_V2_CONTEXT_AND_M1_SCENARIO",
+      "value_policy": "value_allowed_only_when_parent_support_and_reference_lineage_are_valid"
+    }
+  ],
+  "no_monetary_overclaim": true,
+  "no_synthetic_values": true,
+  "no_unsupported_cu_mapping": true,
+  "no_zero_fill": true,
+  "scalar_aggregation": {
+    "aggregation_rule": "SUM_OVER_SEVEN_ONLY_IF_ALL_NATIVE_AND_CU_FROZEN",
+    "component_ids": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation",
+      "P_time",
+      "P_itinerary",
+      "P_service",
+      "R_operating"
+    ],
+    "monetary_mapping": "M4_ONLY",
+    "sortable": false,
+    "status": "BLOCKED_M2_V2_FORMAL_AGGREGATE_UNRESOLVED",
+    "value": null
+  },
+  "schema_version": "M2_V2_TYPED_OUTPUT_ARTIFACT_CONTRACT_V1",
+  "status": "READY_SCHEMA_ONLY_NO_MATERIALIZED_VALUES"
+}

@@ -1,0 +1,39 @@
+{
+  "artifact_hash": "sha256:85e7e9a8697edc692608d5f830eebd58414102b1913b8945b50e74164e286fa1",
+  "execution_scope": "RECONCILIATION_AND_MINIMUM_ARTIFACT_PLANNING_NON_EXECUTION",
+  "m1_binding": {
+    "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "model_id": "M1_V2_GRU_H32",
+    "status": "BOUND_FROZEN_M1_V2",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "m2_preparation": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_MANIFEST.json",
+  "m3_binding": {
+    "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+    "non_a00_v2_execution_enabled": false,
+    "response_registry_hash": "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0"
+  },
+  "m4_binding": {
+    "mapping_status": "MONETARY_MAPPING_BLOCKED",
+    "policy_status": "FROZEN",
+    "tail_support_state": "UNRESOLVED"
+  },
+  "outputs": {
+    "lineage": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation/AIR_SLOT_EXP2_4_RECONCILIATION_LINEAGE.json",
+    "readiness": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation/AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_READINESS_REPORT.json",
+    "reconciliation": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation/AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_RECONCILIATION.json"
+  },
+  "safety": {
+    "EXP2_RUNS_THIS_RECONCILIATION": 0,
+    "EXP3_RUNS_THIS_RECONCILIATION": 0,
+    "EXP4_RUNS_THIS_RECONCILIATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_RECONCILIATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_RECONCILIATION": 0
+  },
+  "schema_version": "AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_MANIFEST_V1",
+  "status": "AIR_SLOT_SCIENTIFIC_EXECUTION_READY"
+}

@@ -2,7 +2,7 @@
   "FINAL_TEST_ACCESS_COUNT": 0,
   "FULL": false,
   "PAPER_FULL_RUN": false,
-  "artifact_hash": "sha256:d50fdf8ca17fa5c8a8cbcaed3fe44c2a0fc0e5c4c42c727b556bcc59de43c28e",
+  "artifact_hash": "sha256:53c9af0837b87ea5c5a76e1d941492e37a395f0f1aa600cfdefd7a173de499a4",
   "cohort": {
     "cohort_hash": "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63",
     "episode_count": 5,
@@ -19,6 +19,44 @@
     "m1_cache_exp2_cohort_missing_node_count": 69,
     "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
     "m1_positive_tail_policy": "UNRESOLVED",
+    "m1_semantic_core_identity_exact": true,
+    "m1_semantic_reconciliation_status": "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+    "m1_semantic_reconstructed_node_count": 69,
+    "m1_stage_exact_match_count": 66,
+    "m1_stage_mismatch_count": 3,
+    "m1_stage_mismatches": [
+      {
+        "current_operational_stage": "POST_OB_PRE_TO",
+        "current_pre_state_node_id": "sha256:0539f50febd899a0e1213e863c99c1f0adc144855aef361ce71950b7229d190c",
+        "decision_time": "2019-08-21T17:25:00+00:00",
+        "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+        "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+        "frozen_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+        "frozen_operational_stage": "POST_IB_PRE_OB",
+        "node_index": 21
+      },
+      {
+        "current_operational_stage": "POST_OB_PRE_TO",
+        "current_pre_state_node_id": "sha256:cd62dfad2ae06ef4692eb727f1cdd366f627b04fbd4a7bd04a3f85c1ccd63810",
+        "decision_time": "2019-09-10T17:12:00+00:00",
+        "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+        "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+        "frozen_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+        "frozen_operational_stage": "POST_IB_PRE_OB",
+        "node_index": 11
+      },
+      {
+        "current_operational_stage": "POST_OB_PRE_TO",
+        "current_pre_state_node_id": "sha256:4ea1c04c1b447942a557989cc1edbbc4fb1276729f88e64d67af8830f69f27d3",
+        "decision_time": "2019-09-18T02:26:00+00:00",
+        "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+        "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+        "frozen_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+        "frozen_operational_stage": "POST_IB_PRE_OB",
+        "node_index": 13
+      }
+    ],
+    "m1_typed_legal_record_alias_count": 69,
     "support": {
       "D_OB": 210,
       "D_TX": 60,
@@ -30,10 +68,50 @@
   "gates": {
     "M1_COHORT_BINDING": {
       "cache_development_nodes": 1769,
+      "core_identity_exact": true,
       "exp2_cohort_nodes": 69,
+      "historical_cache_comparison_role": "DIAGNOSTIC_ONLY_NOT_CURRENT_BINDING_DECISION",
+      "human_decision_required": true,
       "intersection_nodes": 0,
-      "reason": "FROZEN_M1_CACHE_HAS_NO_NODE_ID_OVERLAP_WITH_FROZEN_EXP2_DEVELOPMENT_COHORT",
-      "status": "BLOCKED_M1_INPUT_COHORT_NODE_IDENTITY_MISMATCH"
+      "prohibited_automatic_resolution": true,
+      "reason": "CURRENT_APPROVED_TYPED_PRE_CHANGES_OPERATIONAL_STAGE_FOR_THREE_FROZEN_COHORT_NODES_AND_STAGE_IS_AN_M1_FEATURE",
+      "semantic_reconciliation_status": "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+      "stage_exact_match_count": 66,
+      "stage_mismatch_count": 3,
+      "stage_mismatches": [
+        {
+          "current_operational_stage": "POST_OB_PRE_TO",
+          "current_pre_state_node_id": "sha256:0539f50febd899a0e1213e863c99c1f0adc144855aef361ce71950b7229d190c",
+          "decision_time": "2019-08-21T17:25:00+00:00",
+          "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+          "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+          "frozen_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+          "frozen_operational_stage": "POST_IB_PRE_OB",
+          "node_index": 21
+        },
+        {
+          "current_operational_stage": "POST_OB_PRE_TO",
+          "current_pre_state_node_id": "sha256:cd62dfad2ae06ef4692eb727f1cdd366f627b04fbd4a7bd04a3f85c1ccd63810",
+          "decision_time": "2019-09-10T17:12:00+00:00",
+          "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+          "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+          "frozen_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+          "frozen_operational_stage": "POST_IB_PRE_OB",
+          "node_index": 11
+        },
+        {
+          "current_operational_stage": "POST_OB_PRE_TO",
+          "current_pre_state_node_id": "sha256:4ea1c04c1b447942a557989cc1edbbc4fb1276729f88e64d67af8830f69f27d3",
+          "decision_time": "2019-09-18T02:26:00+00:00",
+          "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+          "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+          "frozen_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+          "frozen_operational_stage": "POST_IB_PRE_OB",
+          "node_index": 13
+        }
+      ],
+      "status": "BLOCKED_M1_STAGE_SEMANTIC_DRIFT",
+      "typed_legal_record_alias_count": 69
     },
     "M1_POSITIVE_TAIL": {
       "policy": "UNRESOLVED",
@@ -107,6 +185,10 @@
     "m1_freeze": {
       "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
       "sha256": "sha256:b5f6892fa096b96db55c4768a4fdd3ca8c0fce3c2e0bd83adda397108e1112e0"
+    },
+    "m1_semantic_reconciliation": {
+      "path": "artifacts/diagnostics/m1_v2_development_inference_binding/M1_V2_DEVELOPMENT_INFERENCE_SEMANTIC_RECONCILIATION_V2.json",
+      "sha256": "sha256:69d0eb2a710ac0f38c52c156be0596881763945c491eb6f8a0ccf2f1b097417c"
     },
     "m2_design": {
       "path": "registries/m2_v2_design.json",

@@ -1,0 +1,29 @@
+{
+  "artifact_hash": "sha256:4e569db3e7c9ecdc61987197563d3439cbb4974cf816ddc367141cc4cbbab895",
+  "artifact_status": "BLOCKED_M2_V2_FORMAL_VALUES_AND_AGGREGATE",
+  "execution_policy": "DO_NOT_RUN_EXP2_OR_EXP3_UNTIL_M2_V2_ARTIFACT_AND_CU_LINEAGE_ARE_BOUND",
+  "lineage_contract": "READY",
+  "preparation_status": "READY",
+  "safety": {
+    "EXP2_RUNS_THIS_PREPARATION": 0,
+    "EXP3_RUNS_THIS_PREPARATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_PREPARATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_PREPARATION": 0
+  },
+  "schema_version": "M2_V2_ARTIFACT_FREEZE_READINESS_V1",
+  "seven_component_representation": "READY",
+  "shared_upstream_blockers": [
+    "BLOCKED_M1_STAGE_SEMANTIC_DRIFT",
+    "BLOCKED_M1_POSITIVE_TAIL_UNRESOLVED",
+    "BLOCKED_M1_V2_SCENARIO_ARTIFACT_NOT_MATERIALIZED",
+    "BLOCKED_M2_SEVEN_COMPONENT_CU_ARTIFACT_NOT_MATERIALIZED",
+    "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE",
+    "BLOCKED_M4_MAPPING_NOT_FROZEN"
+  ],
+  "status": "M2_V2_ARTIFACT_FREEZE_READY",
+  "typed_output_contract": "READY_SCHEMA_ONLY",
+  "validation_contract": "READY_WITH_FORMAL_AGGREGATE_BLOCKED"
+}

@@ -1,0 +1,122 @@
+{
+  "artifact_hash": "sha256:26ef009476f82b3461b0a19ba3e638f20e70a24c898b5f0b0114d3375a40d872",
+  "derived_from": "sha256:a2e55f815b6aa358d51d97a421dbada7e713424e9bfe3c134b2e33c2ce223a69",
+  "inputs": {
+    "data1_usage": {
+      "path": "data1/DATA_USAGE.md",
+      "sha256": "sha256:97c723a9b24033e8cb15422c4b57345e647c2a383f27c050559184849200d152"
+    },
+    "data2_usage": {
+      "path": "data2/DATA_USAGE.md",
+      "sha256": "sha256:82efb9fb78914c4912aed69dd5a8b19e73d32b0d7805ea6f1b648ab4b499d763"
+    },
+    "exp1_manifest": {
+      "path": "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:18bd679447d9fd9953b79de62798b474cce180495947108f834733261f277854"
+    },
+    "exp2_lineage": {
+      "path": "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+      "sha256": "sha256:21495b84eaec8c59b728b93431bde30c07d684e753cbe39d02c0a36c14a9ab70"
+    },
+    "exp2_manifest": {
+      "path": "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:93825719b733e374155e1bf73d4e7022c4c908bc86ad8bec5c3aca80a7b8aee4"
+    },
+    "exp3_manifest": {
+      "path": "artifacts/diagnostics/exp3_formal_execution_preparation/EXP3_FORMAL_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:ba3b6aa870c1d584a319456c9dbc5218ac9096155707a22c62ac7f2d4a5bf003"
+    },
+    "exp3_readiness": {
+      "path": "artifacts/diagnostics/exp3_formal_execution_preparation/EXP3_FORMAL_EXECUTION_READINESS_REPORT.json",
+      "sha256": "sha256:d77dc79f294de5255a1fd49cb9c75fc0a87ae0f3801a5267286c5a584952f19e"
+    },
+    "exp4_manifest": {
+      "path": "artifacts/diagnostics/exp4_formal_execution_preparation/EXP4_FORMAL_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:19193178c90b47b221d9a300636bdb6129f1f3f5aaf1f916700cd009a2785ac8"
+    },
+    "exp4_readiness": {
+      "path": "artifacts/diagnostics/exp4_formal_execution_preparation/EXP4_FORMAL_EXECUTION_READINESS_REPORT.json",
+      "sha256": "sha256:7bfaa171c02a63726e129a3e86d3679d10c63412b1cf391001719f7c64553e9c"
+    },
+    "m1_binding": {
+      "path": "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
+      "sha256": "sha256:5deb6684b757af4732a14a874d07f2d74a4ca4c1954deff43c849de7df0fc393"
+    },
+    "m1_freeze": {
+      "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
+      "sha256": "sha256:b5f6892fa096b96db55c4768a4fdd3ca8c0fce3c2e0bd83adda397108e1112e0"
+    },
+    "m2_manifest": {
+      "path": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_MANIFEST.json",
+      "sha256": "sha256:98d2ad34d8444016fd217dd8c96b33f8f132f15fd2e590a70b424760543cdcb0"
+    },
+    "m2_readiness": {
+      "path": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_READINESS_REPORT.json",
+      "sha256": "sha256:dc339564e0c169fc3f3634ce5e1d755c3b96fc42757cc4dcbcff84bbb545a850"
+    },
+    "m2_validation": {
+      "path": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_FREEZE_VALIDATION_REPORT.json",
+      "sha256": "sha256:ce447ee2cf4c0b167837ab6fb685f64544f40f025e0d2ec5a0cd470755e6cd0d"
+    },
+    "m3_bundle": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE.json",
+      "sha256": "sha256:e739302f01c073ced4cdf8f7a0e6d3e0b1d8588dfdd0352a0d63976a85b86597"
+    },
+    "m3_design": {
+      "path": "registries/m3_v2_action_response_design.json",
+      "sha256": "sha256:8caf4872641fc06da08fb6ddbf37db3625a395588b279ad862d89874493425e7"
+    },
+    "m4_design": {
+      "path": "registries/m4_v2_monetary_mapping_design.json",
+      "sha256": "sha256:8959b0efd3740587deadad44ad233948c447525ca998941b4e8de547d85d0ea9"
+    },
+    "m4_policy": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json",
+      "sha256": "sha256:86cb4f54291abf7bf4b869a6420753e74a361b007d475a1f53bea6b5416e822e"
+    },
+    "manuscript_archive": {
+      "path": "codex_framework/Airline_Recovery_under_Delayed_Information__Residual_Risk_Control (22).zip",
+      "sha256": "sha256:a79e0ea9b4a18d613c455f9976b13a4c51050e0ff715ab9c793d6c906e12dcf9"
+    },
+    "manuscript_boundary_freeze": {
+      "path": "codex_framework/AIR_SLOT_EXP1-4_CROSS_BOUNDARY_AUDIT_SECTION5_FREEZE_20260819.md",
+      "sha256": "sha256:5cc197da9df32de4d980a44cfa57f7b3b50f98172f6dff802404a6540eacecfa"
+    },
+    "manuscript_exp2_v3": {
+      "path": "codex_framework/AIR_SLOT_EXP2_REDESIGN_INSTRUCTION_20260819_V3.md",
+      "sha256": "sha256:8522e8b9b2ecb4f29aee9ddf8314d9f3b5aeaaacb050b9c3627ed0c04cc41aa0"
+    },
+    "manuscript_exp3_v3": {
+      "path": "codex_framework/AIR_SLOT_EXP3_REDESIGN_INSTRUCTION_20260819_V3.md",
+      "sha256": "sha256:dda9dcc9e105391bb0cc8572e699a00954240591943b13c9a9d55730973d24ed"
+    },
+    "manuscript_exp4_v3": {
+      "path": "codex_framework/AIR_SLOT_EXP4_REDESIGN_INSTRUCTION_20260819_V3.md",
+      "sha256": "sha256:943974fcc5b0ce41511e03cc74685aa13874af076e99f706e08cb6e2e0f49161"
+    },
+    "manuscript_framework": {
+      "path": "codex_framework/AIR_SLOT_Information_Sufficiency_Experimental_Framework.md",
+      "sha256": "sha256:10cf1d0151e6909013f93e724bf949b7c56181d8cdafcdb0324ae38b49ab69aa"
+    },
+    "manuscript_protocol": {
+      "path": "codex_framework/AIR_SLOT_Exp1_4_Updated_Experimental_Protocol_Information_Sufficiency.md",
+      "sha256": "sha256:e18b90655ab8e52236d0238858a1dbc0a48dfb615438b2a12e3fcd5edc57b3b7"
+    },
+    "manuscript_repository_draft": {
+      "path": "docs/manuscript/EXPERIMENTAL_EVALUATION_V5_DRAFT_20260818.md",
+      "sha256": "sha256:209d26d75f678d8ca2c8b609a5e5d15b403ee9dae6ac5672900684f154de1cbf"
+    }
+  },
+  "safety": {
+    "EXP2_RUNS_THIS_RECONCILIATION": 0,
+    "EXP3_RUNS_THIS_RECONCILIATION": 0,
+    "EXP4_RUNS_THIS_RECONCILIATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_RECONCILIATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_RECONCILIATION": 0
+  },
+  "schema_version": "AIR_SLOT_EXP2_4_RECONCILIATION_LINEAGE_V1",
+  "status": "BOUND_CURRENT_CONTRACTS_NO_EXECUTION"
+}

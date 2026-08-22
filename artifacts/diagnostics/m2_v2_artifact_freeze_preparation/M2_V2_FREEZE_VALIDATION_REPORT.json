@@ -1,0 +1,180 @@
+{
+  "artifact_hash": "sha256:9cb0edb8b2f848ab5c085fe7a95ac9ce519dc13e716d347ba059e6b884a64e4b",
+  "checks": {
+    "EXP2_EXP3_EXECUTION": {
+      "detail": "preparation only",
+      "status": "NOT_RUN"
+    },
+    "M2_PRE_OWNERSHIP": {
+      "detail": "PRE_OWNERSHIP_GATE_V2=PASS",
+      "status": "PASS"
+    },
+    "M2_V2_CU_REGISTRY": {
+      "detail": "M2_DATA2_FORMAL_CU_V2_PENDING",
+      "status": "BLOCKED"
+    },
+    "M2_V2_FORMAL_AGGREGATE": {
+      "detail": "FORMAL_AGGREGATE_UNRESOLVED",
+      "status": "BLOCKED"
+    },
+    "NO_MISSING_LINEAGE": {
+      "detail": "required source/formula/support/provenance fields are mandatory",
+      "status": "PASS"
+    },
+    "NO_MONETARY_OVERCLAIM": {
+      "detail": "monetary_mapping_layer=M4_ONLY",
+      "status": "PASS"
+    },
+    "NO_UNSUPPORTED_CU_MAPPING": {
+      "detail": "V2 pending CU registry cannot emit values",
+      "status": "PASS"
+    },
+    "P_ITINERARY_P_SERVICE": {
+      "detail": "current contracts require explicit ABSTAIN; no zero fill",
+      "status": "BLOCKED"
+    },
+    "SEVEN_COMPONENT_ONTOLOGY": {
+      "detail": "exact component order is bound to current ontology",
+      "status": "PASS"
+    },
+    "TYPED_COMPONENT_CHANNEL_SCALAR_SCHEMA": {
+      "detail": "native, CU, channel and scalar fields are explicit",
+      "status": "PASS"
+    }
+  },
+  "fixed_contract": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "exp2_shared_gates": {
+      "M1_COHORT_BINDING": {
+        "cache_development_nodes": 1769,
+        "core_identity_exact": true,
+        "exp2_cohort_nodes": 69,
+        "historical_cache_comparison_role": "DIAGNOSTIC_ONLY_NOT_CURRENT_BINDING_DECISION",
+        "human_decision_required": true,
+        "intersection_nodes": 0,
+        "prohibited_automatic_resolution": true,
+        "reason": "CURRENT_APPROVED_TYPED_PRE_CHANGES_OPERATIONAL_STAGE_FOR_THREE_FROZEN_COHORT_NODES_AND_STAGE_IS_AN_M1_FEATURE",
+        "semantic_reconciliation_status": "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+        "stage_exact_match_count": 66,
+        "stage_mismatch_count": 3,
+        "stage_mismatches": [
+          {
+            "current_operational_stage": "POST_OB_PRE_TO",
+            "current_pre_state_node_id": "sha256:0539f50febd899a0e1213e863c99c1f0adc144855aef361ce71950b7229d190c",
+            "decision_time": "2019-08-21T17:25:00+00:00",
+            "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+            "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+            "frozen_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+            "frozen_operational_stage": "POST_IB_PRE_OB",
+            "node_index": 21
+          },
+          {
+            "current_operational_stage": "POST_OB_PRE_TO",
+            "current_pre_state_node_id": "sha256:cd62dfad2ae06ef4692eb727f1cdd366f627b04fbd4a7bd04a3f85c1ccd63810",
+            "decision_time": "2019-09-10T17:12:00+00:00",
+            "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+            "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+            "frozen_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+            "frozen_operational_stage": "POST_IB_PRE_OB",
+            "node_index": 11
+          },
+          {
+            "current_operational_stage": "POST_OB_PRE_TO",
+            "current_pre_state_node_id": "sha256:4ea1c04c1b447942a557989cc1edbbc4fb1276729f88e64d67af8830f69f27d3",
+            "decision_time": "2019-09-18T02:26:00+00:00",
+            "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+            "feature_semantic_impact": "stage_is_encoded_in_current_m1_feature_contract",
+            "frozen_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+            "frozen_operational_stage": "POST_IB_PRE_OB",
+            "node_index": 13
+          }
+        ],
+        "status": "BLOCKED_M1_STAGE_SEMANTIC_DRIFT",
+        "typed_legal_record_alias_count": 69
+      },
+      "M1_POSITIVE_TAIL": {
+        "policy": "UNRESOLVED",
+        "reason": "ANCESTRAL_SAMPLING_CANNOT_SILENTLY_CLAMP_OR_EXTRAPOLATE_ABOVE_THE_FROZEN_POSITIVE_QUANTILE_GRID",
+        "status": "BLOCKED_M1_POSITIVE_TAIL_UNRESOLVED"
+      },
+      "M1_SCENARIOS": {
+        "reason": "NO_CONTENT_ADDRESSED_JOINT_SCENARIO_ARTIFACT_FOR_THE_FROZEN_EXP2_COHORT",
+        "status": "BLOCKED_M1_V2_SCENARIO_ARTIFACT_NOT_MATERIALIZED"
+      },
+      "M2_SEVEN_COMPONENT": {
+        "formal_cu_components": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_time",
+          "R_operating"
+        ],
+        "required_components": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_time",
+          "P_itinerary",
+          "P_service",
+          "R_operating"
+        ],
+        "status": "BLOCKED_M2_SEVEN_COMPONENT_CU_ARTIFACT_NOT_MATERIALIZED",
+        "uncovered_components": [
+          "P_itinerary",
+          "P_service"
+        ],
+        "v2_formal_aggregate_status": "FORMAL_AGGREGATE_UNRESOLVED"
+      },
+      "M3_NON_A00": {
+        "non_a00_v2_execution_enabled": false,
+        "status": "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE"
+      },
+      "M4_MAPPING": {
+        "monetary_mapping_status": "MONETARY_MAPPING_BLOCKED",
+        "policy_status": "FROZEN_POLICY_TAIL_EXECUTION_BLOCKED",
+        "production_mapping_enabled": false,
+        "status": "BLOCKED_M4_MAPPING_NOT_FROZEN"
+      }
+    },
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "m1_model_id": "M1_V2_GRU_H32",
+    "m2_design_id": "M2_OPERATIONAL_CONSEQUENCE_V2",
+    "m2_design_version": "2.0.0",
+    "m2_v1_formal_scope": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation",
+      "P_time",
+      "R_operating"
+    ],
+    "m2_v1_registry_hash": "sha256:c257debc032bff2553b7ffdc4eb4305261f7183c45c1a43ad9164d865af2b029",
+    "m2_v1_registry_id": "M2_DATA2_FORMAL_CU_V1",
+    "m2_v2_cu_registry_id": "M2_DATA2_FORMAL_CU_V2_PENDING",
+    "m2_v2_scope_status": "FORMAL_AGGREGATE_UNRESOLVED",
+    "pre_ownership_gate": "PASS",
+    "support": {
+      "D_OB": 210,
+      "D_TX": 60,
+      "T_IB": 360,
+      "bin_width_minutes": 5
+    },
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "freeze_status": "BLOCKED_M2_V2_VALUES_NOT_MATERIALIZED",
+  "preparation_status": "READY",
+  "safety": {
+    "EXP2_RUNS_THIS_PREPARATION": 0,
+    "EXP3_RUNS_THIS_PREPARATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_PREPARATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_PREPARATION": 0
+  },
+  "schema_version": "M2_V2_FREEZE_VALIDATION_REPORT_V1",
+  "status": "READY_WITH_FORMAL_AGGREGATE_BLOCKED",
+  "typed_output_artifact_status": "READY_SCHEMA_ONLY_NO_MATERIALIZED_VALUES",
+  "unsupported_value_policy": "ABSTAIN_NULL_WITH_REASON_NO_ZERO_FILL_NO_SYNTHETIC_METRICS"
+}
