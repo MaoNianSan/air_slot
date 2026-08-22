@@ -1,0 +1,134 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "FULL": false,
+  "PAPER_FULL_RUN": false,
+  "artifact_hash": "sha256:d50fdf8ca17fa5c8a8cbcaed3fe44c2a0fc0e5c4c42c727b556bcc59de43c28e",
+  "cohort": {
+    "cohort_hash": "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63",
+    "episode_count": 5,
+    "node_count": 69,
+    "split": "DEVELOPMENT"
+  },
+  "fixed_contract": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "exp2_cohort_node_count": 69,
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "m1_cache_development_node_count": 1769,
+    "m1_cache_exp2_cohort_intersection_count": 0,
+    "m1_cache_exp2_cohort_missing_node_count": 69,
+    "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "m1_positive_tail_policy": "UNRESOLVED",
+    "support": {
+      "D_OB": 210,
+      "D_TX": 60,
+      "T_IB": 360,
+      "bin_width_minutes": 5
+    },
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "gates": {
+    "M1_COHORT_BINDING": {
+      "cache_development_nodes": 1769,
+      "exp2_cohort_nodes": 69,
+      "intersection_nodes": 0,
+      "reason": "FROZEN_M1_CACHE_HAS_NO_NODE_ID_OVERLAP_WITH_FROZEN_EXP2_DEVELOPMENT_COHORT",
+      "status": "BLOCKED_M1_INPUT_COHORT_NODE_IDENTITY_MISMATCH"
+    },
+    "M1_POSITIVE_TAIL": {
+      "policy": "UNRESOLVED",
+      "reason": "ANCESTRAL_SAMPLING_CANNOT_SILENTLY_CLAMP_OR_EXTRAPOLATE_ABOVE_THE_FROZEN_POSITIVE_QUANTILE_GRID",
+      "status": "BLOCKED_M1_POSITIVE_TAIL_UNRESOLVED"
+    },
+    "M1_SCENARIOS": {
+      "reason": "NO_CONTENT_ADDRESSED_JOINT_SCENARIO_ARTIFACT_FOR_THE_FROZEN_EXP2_COHORT",
+      "status": "BLOCKED_M1_V2_SCENARIO_ARTIFACT_NOT_MATERIALIZED"
+    },
+    "M2_SEVEN_COMPONENT": {
+      "formal_cu_components": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "P_time",
+        "R_operating"
+      ],
+      "required_components": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "P_time",
+        "P_itinerary",
+        "P_service",
+        "R_operating"
+      ],
+      "status": "BLOCKED_M2_SEVEN_COMPONENT_CU_ARTIFACT_NOT_MATERIALIZED",
+      "uncovered_components": [
+        "P_itinerary",
+        "P_service"
+      ],
+      "v2_formal_aggregate_status": "FORMAL_AGGREGATE_UNRESOLVED"
+    },
+    "M3_NON_A00": {
+      "non_a00_v2_execution_enabled": false,
+      "status": "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE"
+    },
+    "M4_MAPPING": {
+      "monetary_mapping_status": "MONETARY_MAPPING_BLOCKED",
+      "policy_status": "FROZEN_POLICY_TAIL_EXECUTION_BLOCKED",
+      "production_mapping_enabled": false,
+      "status": "BLOCKED_M4_MAPPING_NOT_FROZEN"
+    }
+  },
+  "inputs": {
+    "exp1_full_manifest": {
+      "path": "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:18bd679447d9fd9953b79de62798b474cce180495947108f834733261f277854"
+    },
+    "exp2_cohort": {
+      "path": "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json",
+      "sha256": "sha256:1554e50e14bb5beb51a3406d3b8c18151cd3812b9ec1a9a8a35260db17f4a02e"
+    },
+    "m1_binding": {
+      "path": "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
+      "sha256": "sha256:5deb6684b757af4732a14a874d07f2d74a4ca4c1954deff43c849de7df0fc393"
+    },
+    "m1_cache": {
+      "path": "artifacts/diagnostics/m1_v2_feature_gate_b2/M1_V2_DEVELOPMENT_BASE_CACHE_B2.npz",
+      "sha256": "sha256:cb55ab2d390fc104cde2e1cd7eaf2561b809e91c95eae0120a3490fd267b0e88"
+    },
+    "m1_cache_manifest": {
+      "path": "artifacts/diagnostics/m1_v2_feature_gate_b2/M1_V2_DEVELOPMENT_BASE_CACHE_B2_MANIFEST.json",
+      "sha256": "sha256:34080d750b4d1e25357ec107219b53b1d4d236735b75436c2cf042da7ba4451e"
+    },
+    "m1_checkpoint": {
+      "path": "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt",
+      "sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b"
+    },
+    "m1_freeze": {
+      "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
+      "sha256": "sha256:b5f6892fa096b96db55c4768a4fdd3ca8c0fce3c2e0bd83adda397108e1112e0"
+    },
+    "m2_design": {
+      "path": "registries/m2_v2_design.json",
+      "sha256": "sha256:931d13908975fafa627f633bd352876ae8f69872e8d994226b2ff3ea4695184c"
+    },
+    "m2_registry": {
+      "path": "registries/m2_data2_formal_cu_v1.json",
+      "sha256": "sha256:edaa8bc1787dfd01e3de73d41daae86ee2afe7f71ca3447c7d1225e3288fc25a"
+    },
+    "m3_design": {
+      "path": "registries/m3_v2_action_response_design.json",
+      "sha256": "sha256:8caf4872641fc06da08fb6ddbf37db3625a395588b279ad862d89874493425e7"
+    },
+    "m4_design": {
+      "path": "registries/m4_v2_monetary_mapping_design.json",
+      "sha256": "sha256:8959b0efd3740587deadad44ad233948c447525ca998941b4e8de547d85d0ea9"
+    },
+    "m4_policy": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json",
+      "sha256": "sha256:86cb4f54291abf7bf4b869a6420753e74a361b007d475a1f53bea6b5416e822e"
+    }
+  },
+  "schema_version": "EXP2_FORMAL_ARTIFACT_LINEAGE_V1",
+  "status": "BOUND_WITH_UNRESOLVED_UPSTREAM_GATES"
+}

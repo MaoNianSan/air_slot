@@ -1,0 +1,53 @@
+{
+  "artifact_hash": "sha256:1e2f29f59a4faf2fbeba16c5c5a538358b4c131e9513a332d820d2d5cacb072d",
+  "dataset": "DATA2",
+  "execution_scope": "DEVELOPMENT_COHORT_NON_FULL",
+  "exp1_modified": false,
+  "fixed_contract": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "exp2_cohort_node_count": 69,
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "m1_cache_development_node_count": 1769,
+    "m1_cache_exp2_cohort_intersection_count": 0,
+    "m1_cache_exp2_cohort_missing_node_count": 69,
+    "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "m1_positive_tail_policy": "UNRESOLVED",
+    "support": {
+      "D_OB": 210,
+      "D_TX": 60,
+      "T_IB": 360,
+      "bin_width_minutes": 5
+    },
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "gated_metric_count": 6,
+  "m1_binding": {
+    "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "model_id": "M1_V2_GRU_H32",
+    "model_modified": false
+  },
+  "metrics_status": "COMPLETE_WITH_GATED_NOT_RUN_RESULTS",
+  "outputs": {
+    "lineage": "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+    "variant_metrics": "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_VARIANT_METRICS.json"
+  },
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_EXECUTION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_EXECUTION": 0
+  },
+  "schema_version": "EXP2_FORMAL_EXECUTION_MANIFEST_V1",
+  "split": "DEVELOPMENT",
+  "status": "EXP2_FORMAL_EXECUTION_COMPLETE",
+  "variants": [
+    "EXP2A_POINT",
+    "EXP2A_MARGINAL",
+    "EXP2A_JOINT",
+    "EXP2B_SCALAR",
+    "EXP2B_3CHANNEL",
+    "EXP2B_7COMP"
+  ]
+}
