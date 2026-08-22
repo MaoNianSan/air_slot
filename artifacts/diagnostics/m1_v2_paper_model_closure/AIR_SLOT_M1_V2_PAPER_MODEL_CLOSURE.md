@@ -80,7 +80,8 @@ cache hash = sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6
 
 ```text
 H32 = DEVELOPMENT_CANDIDATE
-H candidates = {16, 32}
+H candidates = {8, 16, 32}
+H candidate update = AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE
 implicit H32 selection = forbidden
 quantile levels = DEVELOPMENT_CANDIDATE_UNCHANGED
 tuning authorized = false
@@ -99,7 +100,7 @@ git diff --check = PASS
 ## Next
 
 ```text
-M1_V2_TUNING_PREFLIGHT_READY = true
+M1_V2_TUNING_PREFLIGHT_H_READY = true
 ```
 
 ## Safety

@@ -40,13 +40,13 @@ def test_formal_m1_uses_development_frozen_hidden_size_selection():
         )
     with pytest.raises(ValueError, match="M1_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES"):
         M1.M1Pipeline.from_scientific_config(
-            scientific, input_size=4, normalization=normalization, hidden_size=8
+            scientific, input_size=4, normalization=normalization, hidden_size=4
         )
 
     selected = M1.M1Pipeline.from_scientific_config(
-        scientific, input_size=4, normalization=normalization, hidden_size=16
+        scientific, input_size=4, normalization=normalization, hidden_size=8
     )
-    assert selected.model.hidden_size == 16
+    assert selected.model.hidden_size == 8
 
 
 def test_signed_takeoff_delay_requires_the_train_frozen_taxi_reference():

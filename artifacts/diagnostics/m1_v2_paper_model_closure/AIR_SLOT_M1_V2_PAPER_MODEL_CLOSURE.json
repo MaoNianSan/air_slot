@@ -1,7 +1,7 @@
 {
   "schema_version": "AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE_V1",
   "status": "AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE",
-  "repository_head": "7127859c9be574d0209cd59ada757d46d7c7d897",
+  "repository_head": "21defcab32132b0176514557739697b2c4053951",
   "source_clock_audit": {
     "status": "CLOSED",
     "departure_inconsistency_count": 29,
@@ -88,7 +88,8 @@
   },
   "hyperparameter_status": {
     "H32": "DEVELOPMENT_CANDIDATE",
-    "H_candidates": [16, 32],
+    "H_candidates": [8, 16, 32],
+    "H_candidate_update_decision_id": "AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE",
     "implicit_H32_selection_allowed": false,
     "quantile_levels": {
       "value": [0.1, 0.3, 0.5, 0.7, 0.9],
@@ -97,7 +98,7 @@
     "positive_tail_closure": "LATER_REQUIRED_BEFORE_FULL_CHAIN_EXPERIMENTS"
   },
   "next": {
-    "M1_V2_TUNING_PREFLIGHT_READY": true,
+    "M1_V2_TUNING_PREFLIGHT_H_READY": true,
     "tuning_authorized": false
   },
   "safety": {

@@ -21,7 +21,7 @@ def test_cross_contract_is_v5_single_source_of_truth():
     contract = default_cross_contract()
     assert contract.principal_dataset == "data2_2019"
     assert contract.portability_dataset == "data1_2019"
-    assert contract.hidden_size_candidates == (16, 32)
+    assert contract.hidden_size_candidates == (8, 16, 32)
     assert contract.lead_times_minutes == (480, 420, 360, 300, 240, 180, 120, 60, 30, 15)
     assert contract.paper_full_scenarios == 1000
     assert set(contract.rng_streams) == {

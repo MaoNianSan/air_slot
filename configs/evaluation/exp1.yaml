@@ -6,7 +6,7 @@ same_target: true
 same_split: true
 same_calibration_policy: true
 fixed_history_windows_minutes: [30, 60, 120, 180]
-hidden_size_candidates: [16, 32]
+hidden_size_candidates: [8, 16, 32]
 target_fpr: 0.10
 secondary_target_fpr: [0.05, 0.20]
 sustained_warning_nodes: 2

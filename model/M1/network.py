@@ -93,7 +93,7 @@ class FastRepresentationEncoder(nn.Module):
 
     IMPLEMENTATION_CHOICE (Round 2.2): a single linear projection to the
     recurrent hidden dimension (``hidden_size``).  V2 restricts that dimension
-    to the approved Development candidates ``{16, 32}``.  ``r_fast``
+    to the approved Development candidates ``{8, 16, 32}``.  ``r_fast``
     is the decision-node current/local-change feature block
     (``fast_features_from_sequence``), never a LightGBM prediction or hidden
     state.
@@ -115,7 +115,7 @@ class StaticRepresentationEncoder(nn.Module):
     Tranche 3: only PRE-published MODEL_FEATURE fields enter ``c_static``;
     RETAINED_IDENTITY fields stay in the M1 input lineage and never become
     ordinal numeric predictors.  Single linear projection to the shared hidden
-    dimension, restricted to the V2 Development candidates ``{16, 32}``.
+    dimension, restricted to the V2 Development candidates ``{8, 16, 32}``.
     """
 
     def __init__(self, input_size: int, hidden_size: int):

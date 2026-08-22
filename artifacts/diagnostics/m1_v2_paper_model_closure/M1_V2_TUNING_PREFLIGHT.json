@@ -1,8 +1,15 @@
 {
   "schema_version": "M1_V2_TUNING_PREFLIGHT_V1",
-  "status": "M1_V2_TUNING_PREFLIGHT_READY",
-  "repository_head": "7127859c9be574d0209cd59ada757d46d7c7d897",
+  "status": "M1_V2_TUNING_PREFLIGHT_H_READY",
+  "repository_head": "21defcab32132b0176514557739697b2c4053951",
   "tuning_authorized": false,
+  "candidate_update": {
+    "decision_id": "AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE",
+    "decision_date": "2026-08-22",
+    "scope": "CANDIDATE_CONFIGURATION_ONLY",
+    "previous_hidden_size_candidates": [16, 32],
+    "current_hidden_size_candidates": [8, 16, 32]
+  },
   "final_feature_contract": {
     "dynamic": 39,
     "static": 4,
@@ -36,7 +43,7 @@
     }
   },
   "candidate_space": {
-    "hidden_size": [16, 32],
+    "hidden_size": [8, 16, 32],
     "learning_rate": [0.001, 0.003, 0.01],
     "weight_decay": [0.0, 0.0001],
     "optimization_duration_epochs": [4, 8],
@@ -53,11 +60,11 @@
   "bounded_protocol": {
     "search_form": "STAGED_ONE_FACTOR_PAIRED_COMPARISON_NO_CARTESIAN_GRID",
     "stage_1_hidden_size": {
-      "candidates": [16, 32],
+      "candidates": [8, 16, 32],
       "reference_learning_rate": 0.001,
       "reference_weight_decay": 0.0,
       "reference_epochs": 8,
-      "parsimony_rule": "prefer 16 when relative mean Development loss differs by at most 0.5%; select 32 only for meaningful paired Development improvement"
+      "parsimony_rule": "select the smallest H within 0.5% of the best paired mean Development loss; a larger H requires meaningful paired Development improvement"
     },
     "stage_2_learning_rate": {
       "selected_hidden_size_only": true,
@@ -69,7 +76,7 @@
       "epoch_candidates": [4, 8],
       "joint_grid_authorized": false
     },
-    "maximum_unique_candidate_configurations_per_seed": 6
+    "maximum_unique_candidate_configurations_per_seed": 7
   },
   "training_seed_policy": {
     "paired_training_seeds": [20260813, 20260814, 20260815, 20260816, 20260817],

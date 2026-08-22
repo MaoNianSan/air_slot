@@ -29,21 +29,25 @@ parameters:
     value: 32
     provenance:
       selection_state: DEVELOPMENT_CANDIDATE
-      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_id: AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE
       decision_date: "2026-08-22"
+      prior_decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      candidate_update_scope: ADD_H8_ONLY
       target_contract: [T_IB_REMAINING_HAZARD, D_OB, D_TX]
-      candidate_set: [16, 32]
+      candidate_set: [8, 16, 32]
       selection_metric: EPISODE_BALANCED_JOINT_VALIDATION_LOSS
-      parsimony_rule: "prefer 16 when Development results are practically equivalent; select 32 only for meaningful Development improvement"
+      parsimony_rule: "select the smallest H within the 0.5% Development practical-equivalence region; a larger H requires meaningful paired Development improvement"
       legacy_v1_provenance: "D3_SIGNED_M1_H_W_REFREEZE selected H=32 for [R_IB, DELTA_OB, T_TX]; historical evidence is not V2 selection evidence"
       final_test_access_count: 0
   m1_hidden_size_candidates:
     freeze_state: FROZEN
-    value: [16, 32]
+    value: [8, 16, 32]
     provenance:
       selection_state: HUMAN_APPROVED_CANDIDATE_SET
-      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_id: AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE
       decision_date: "2026-08-22"
+      prior_decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      candidate_update_scope: ADD_H8_ONLY
       architecture_search_expansion_authorized: false
       final_test_access_count: 0
   m1_fixed_history_window_minutes:
@@ -166,7 +170,7 @@ parameters:
       primitive_targets: [T_IB_A00, D_OB, D_TX]
       derived_targets: [R_IB, D_TO]
       dependency_chain: "T_IB_A00 -> D_OB -> D_TX"
-      state_aware: causal_GRU_H16_H32_DEVELOPMENT_CANDIDATE
+      state_aware: causal_GRU_H8_H16_H32_DEVELOPMENT_CANDIDATE
       predecessor_head: DISCRETE_HAZARD
       successor_heads: HURDLE_QUANTILE
       successor_conditioning: "D_TX | T_IB_A00, D_OB (formal D_OB only; never signed DELTA_OB)"

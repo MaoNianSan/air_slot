@@ -50,7 +50,7 @@ class ExperimentCrossContract(FrozenModel):
     development_scenarios: tuple[int, ...] = (250, 500)
     paper_full_scenarios: int = 1000
     numerical_reference_scenarios: int = 10000
-    hidden_size_candidates: tuple[int, ...] = (16, 32)
+    hidden_size_candidates: tuple[int, ...] = (8, 16, 32)
     fixed_history_windows_minutes: tuple[int, ...] = (30, 60, 120, 180)
     corruption_q: tuple[float, ...] = (0.0, 0.25, 0.50, 0.75, 1.0)
     full_shuffle_replicates: int = 20
@@ -75,7 +75,7 @@ class ExperimentCrossContract(FrozenModel):
             raise ValueError("CROSS_CONTRACT_TIME_GRID_INVALID")
         if self.paper_full_scenarios != 1000 or self.numerical_reference_scenarios != 10000:
             raise ValueError("V5_SCENARIO_SCALE_INVALID")
-        if tuple(sorted(self.hidden_size_candidates)) != (16, 32):
+        if tuple(sorted(self.hidden_size_candidates)) != (8, 16, 32):
             raise ValueError("V5_HIDDEN_SIZE_CANDIDATES_INVALID")
         if len(set(self.rng_streams)) != len(self.rng_streams):
             raise ValueError("RNG_STREAMS_MUST_BE_UNIQUE")

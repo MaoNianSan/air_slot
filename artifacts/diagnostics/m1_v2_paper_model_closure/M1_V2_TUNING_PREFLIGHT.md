@@ -1,6 +1,6 @@
 # M1_V2_TUNING_PREFLIGHT
 
-Status: `M1_V2_TUNING_PREFLIGHT_READY`
+Status: `M1_V2_TUNING_PREFLIGHT_H_READY`
 
 Authorization: `false`
 
@@ -31,17 +31,21 @@ post-selection probability calibration and diagnostic only.
 ## Narrow candidates
 
 ```text
-H = {16, 32}
+H = {8, 16, 32}
 learning rate = {0.001, 0.003, 0.01}
 Adam weight decay = {0.0, 0.0001}
 optimization duration epochs = {4, 8}
 ```
 
 The protocol is staged and one-factor-at-a-time, not a Cartesian grid. It
-allows at most six unique candidate configurations per paired seed. H is
-selected first at the reference optimizer setting. If H16 and H32 are within
-the existing 0.5% practical-equivalence rule, H16 is preferred; H32 requires a
+allows at most seven unique candidate configurations per paired seed. H is
+selected first at the reference optimizer setting. The smallest H within 0.5%
+of the best paired mean Development loss is preferred; a larger H requires a
 meaningful paired Development improvement.
+
+Candidate update provenance:
+`AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE` (`2026-08-22`), scoped
+to adding `H=8` only.
 
 ## Seed policy
 

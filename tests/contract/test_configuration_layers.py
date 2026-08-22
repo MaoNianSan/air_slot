@@ -36,7 +36,13 @@ def test_layers_load_separately():
     assert "historical evidence is not V2 selection evidence" in (
         hidden_size.provenance["legacy_v1_provenance"])
     assert hidden_size.provenance["final_test_access_count"] == 0
-    assert layers.scientific.parameters["m1_hidden_size_candidates"].value == [16,32]
+    candidates = layers.scientific.parameters["m1_hidden_size_candidates"]
+    assert candidates.value == [8, 16, 32]
+    assert candidates.provenance["decision_id"] == (
+        "AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE")
+    assert candidates.provenance["prior_decision_id"] == (
+        "AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE")
+    assert candidates.provenance["candidate_update_scope"] == "ADD_H8_ONLY"
     fixed_window = layers.scientific.parameters["m1_fixed_history_window_minutes"]
     assert fixed_window.freeze_state.value == "SENSITIVITY_ONLY"
     assert fixed_window.value == 30
