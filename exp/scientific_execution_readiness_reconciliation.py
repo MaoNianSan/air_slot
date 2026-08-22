@@ -85,6 +85,7 @@ def _inputs(root: Path) -> dict[str, Path]:
         "m1_binding": root / "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
         "m1_freeze": root / "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
         "m1_semantic_reconciliation": root / "artifacts/diagnostics/m1_v2_development_inference_binding/M1_V2_DEVELOPMENT_INFERENCE_SEMANTIC_RECONCILIATION_V2.json",
+        "m1_current_stage_refreeze": root / "artifacts/diagnostics/m1_v2_development_current_stage_refreeze/M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json",
         "exp1_manifest": root / "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
         "exp2_manifest": root / "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_EXECUTION_MANIFEST.json",
         "exp2_lineage": root / "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
@@ -253,8 +254,10 @@ def _minimum_artifacts(fixed: dict[str, Any]) -> dict[str, Any]:
             "artifact_id": "M1_V2_SCENARIO_ENVELOPE",
             "owner": "M1",
             "required_content": "Exact Data2 Development cohort scenarios with episode/node identity, weights, cutoff provenance, positive-tail policy, and frozen M1 lineage",
-            "current_status": fixed["M1"]["development_inference_status"],
-            "next_gate_after_stage_reconciliation": "BLOCKED_M1_POSITIVE_TAIL_UNRESOLVED",
+            "current_status": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
+            "current_cohort_status": fixed["M1"]["development_inference_status"],
+            "current_stage_cohort_hash": fixed["M1"]["current_stage_cohort_hash"],
+            "next_gate_after_positive_tail": "M2_V2_SEVEN_COMPONENT_CONSEQUENCE_ENVELOPE",
             "can_reuse_current": False,
         },
         {
@@ -322,6 +325,7 @@ def _minimum_artifacts(fixed: dict[str, Any]) -> dict[str, Any]:
 def _current_status(paths: dict[str, Path]) -> dict[str, Any]:
     m1 = _load(paths["m1_binding"])
     m1_semantic = _load(paths["m1_semantic_reconciliation"])
+    m1_refreeze = _load(paths["m1_current_stage_refreeze"])
     m2 = _load(paths["m2_readiness"])
     exp2 = _load(paths["exp2_lineage"])
     exp3 = _load(paths["exp3_readiness"])
@@ -332,16 +336,20 @@ def _current_status(paths: dict[str, Path]) -> dict[str, Any]:
     return {
         "M1": {
             "status": m1["status"],
-            "development_inference_status": m1_semantic["status"],
+            "historical_development_inference_status": m1_semantic["status"],
+            "development_inference_status": m1_refreeze["status"],
+            "current_stage_cohort_hash": m1_refreeze["new_cohort"]["cohort_hash"],
+            "current_stage_node_count": m1_refreeze["new_cohort"]["node_count"],
             "model_id": m1["model_id"],
             "checkpoint_sha256": m1["checkpoint"]["sha256"],
             "feature_schema_hash": m1["frozen_contracts"]["feature_schema_hash"],
             "support_hash": m1["frozen_contracts"]["support_hash"],
-            "core_identity_exact": m1_semantic["semantic_comparison"]["core_identity_exact"],
-            "typed_legal_record_alias_count": m1_semantic["semantic_comparison"]["typed_legal_record_alias_count"],
-            "stage_mismatch_count": m1_semantic["semantic_comparison"]["stage_mismatch_count"],
-            "stage_mismatches": m1_semantic["semantic_comparison"]["stage_mismatches"],
-            "human_decision_required": m1_semantic["required_human_decision"],
+            "historical_stage_mismatch_count": m1_semantic["semantic_comparison"]["stage_mismatch_count"],
+            "current_stage_changed_node_count": m1_refreeze["stage_audit"]["changed_node_count"],
+            "current_stage_distribution": m1_refreeze["stage_audit"],
+            "feature_compatibility": m1_refreeze["feature_compatibility"]["status"],
+            "m1_artifact_validity": m1_refreeze["m1_artifact_validity"]["status"],
+            "human_decision_required": {"status": "M1_POSITIVE_TAIL_DECISION_REQUIRED"},
         },
         "M2": {
             "status": m2["status"],
@@ -388,48 +396,41 @@ def _shortest_path() -> list[dict[str, Any]]:
     return [
         {
             "step": 1,
-            "action": "Resolve_M1_frozen_cohort_vs_current_PRE_operational_stage_semantics",
+            "action": "Freeze_M1_positive_tail_policy_and_materialize_current_stage_joint_scenarios",
             "owner": "M1",
-            "gate": "three stage mismatches are encoded M1 inputs; choose historical principal plus named sensitivity or refreeze a newly named current-policy cohort",
-            "unlocks": ["exact M1 Development input binding"],
+            "gate": "m1_v2_positive_tail_policy is UNRESOLVED and requires a human-approved q>q_max rule",
+            "unlocks": ["M1 scenarios", "M2 input", "Exp2 state representation", "Exp3 chain input"],
         },
         {
             "step": 2,
-            "action": "Freeze_M1_positive_tail_policy_then_materialize_exact_Development_scenario_envelope",
-            "owner": "M1",
-            "gate": "m1_v2_positive_tail_policy is UNRESOLVED and requires a human-approved q>q_max rule",
-            "unlocks": ["M2 input", "Exp2 state representation", "Exp3 chain input"],
-        },
-        {
-            "step": 3,
             "action": "Materialize_M2_V2_seven_component_native_and_CU_envelope_from_that_M1_lineage",
             "owner": "M2",
             "gate": "P_itinerary/P_service support decision + V2 CU scale registry",
             "unlocks": ["Exp2 SCALAR/3CHANNEL/7COMP", "Exp3 consequence lineage"],
         },
         {
-            "step": 4,
+            "step": 3,
             "action": "Freeze_minimal_supported_M3_action_set_with_A00_and_executable_non_A00_responses",
             "owner": "M3",
             "gate": "formal_support_upgrade=false and per-action provenance/support",
             "unlocks": ["Exp2 downstream comparison", "Exp3 module/chain variants"],
         },
         {
-            "step": 5,
+            "step": 4,
             "action": "Freeze_M4_internal_loss_mapping_material_coverage_and_tail_policy",
             "owner": "M4",
             "gate": "production mapping, complete seven-component coverage, ranking authority",
             "unlocks": ["Exp2 authoritative ranking", "Exp3 authoritative coverage/ranking", "Exp4 decision lanes"],
         },
         {
-            "step": 6,
+            "step": 5,
             "action": "Bind_Exp4_predictive_baseline_and_Data1_typed_evaluation_artifacts",
             "owner": "Exp4",
             "gate": "four baseline artifacts + non-pooled Data1 evaluation support",
             "unlocks": ["Exp4 Development baseline/generalization metrics"],
         },
         {
-            "step": 7,
+            "step": 6,
             "action": "Run_Development_only_Exp2_then_Exp3_then_Exp4_after_human_gate_authorization",
             "owner": "Experiments",
             "gate": "all upstream typed artifacts hash-match",
@@ -442,7 +443,7 @@ def reconcile(*, root: Path, output_root: Path | None = None) -> dict[str, Path]
     root = Path(root).resolve()
     output_root = (output_root or root / "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation").resolve()
     paths = _inputs(root)
-    for name in ("m1_binding", "m1_freeze", "m1_semantic_reconciliation", "exp1_manifest", "exp2_manifest", "exp2_lineage", "exp3_manifest", "exp3_readiness", "exp4_manifest", "exp4_readiness", "m2_manifest", "m2_readiness", "m2_validation", "m3_design", "m3_bundle", "m4_design", "m4_policy"):
+    for name in ("m1_binding", "m1_freeze", "m1_semantic_reconciliation", "m1_current_stage_refreeze", "exp1_manifest", "exp2_manifest", "exp2_lineage", "exp3_manifest", "exp3_readiness", "exp4_manifest", "exp4_readiness", "m2_manifest", "m2_readiness", "m2_validation", "m3_design", "m3_bundle", "m4_design", "m4_policy"):
         _safety(_load(paths[name]))
 
     current = _current_status(paths)
@@ -492,7 +493,7 @@ def reconcile(*, root: Path, output_root: Path | None = None) -> dict[str, Path]
         "exp2_status": "BLOCKED_BEFORE_METRIC_GENERATION",
         "exp3_status": "BLOCKED_CURRENT_FROZEN_ARTIFACT_GATES",
         "exp4_status": "BLOCKED_CURRENT_ARTIFACT_AND_BASELINE_GATES",
-        "first_human_gate": "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+        "first_human_gate": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
         "paper_claim_status": "DEVELOPMENT_ONLY_CLAIMS_MUST_REMAIN_SEPARATE_FROM_CURRENT_V2_EXECUTION",
         "manuscript_implementation_mismatch_count": len(claim_audit["implementation_alignment"]["mismatches"]),
         "next_action": "FOLLOW_SHORTEST_PATH_IN_RECONCILIATION_ARTIFACT_AND_STOP_AT_EACH_HUMAN_GATE",

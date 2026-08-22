@@ -58,6 +58,10 @@ def test_real_fast_reuses_one_frozen_data2_development_context():
     assert context.split == "DEVELOPMENT"
     assert context.episode_count == 5
     assert context.node_count == 69
+    assert context.lineage["cohort_hash"] == "sha256:81f9ee2dcfa81bb9d72e5a1518f386295a63829c179d25bd6cb84e333a35b7a8"
+    assert context.lineage["historical_parent_cohort_hash"] == "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63"
+    assert context.lineage["scenario_status"] == "BLOCKED_M1_POSITIVE_TAIL_DECISION_REQUIRED"
+    assert context.shared_gates["M1_POSITIVE_TAIL"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
     assert {result.lineage["cohort_hash"] for result in results} == {
         context.lineage["cohort_hash"],
     }

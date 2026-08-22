@@ -74,9 +74,9 @@ def replay_registry(context: ExperimentContext) -> ReplayEpisodeRegistry:
     return ReplayEpisodeRegistry(
         dataset_id=context.dataset_id,
         source_dataset_id="data2_2019",
-        dataset_version="DATA2_2019_DEVELOPMENT_AUG_SEP_V1",
+        dataset_version="DATA2_2019_DEVELOPMENT_AUG_SEP_CURRENT_STAGE_V2",
         source_manifest_hash=str(context.pre_binding["source_manifest_hash"]),
-        pre_schema_version="DATA2_DEVELOPMENT_PILOT_COHORT_V1",
+        pre_schema_version="AIR_SLOT_EXP2_DATA2_DEVELOPMENT_CURRENT_STAGE_COHORT_V2",
         episodes=tuple(episodes),
     )
 

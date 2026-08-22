@@ -1,9 +1,62 @@
 {
-  "artifact_hash": "sha256:85e7e9a8697edc692608d5f830eebd58414102b1913b8945b50e74164e286fa1",
+  "artifact_hash": "sha256:9b8c9328b64a6589416e96516878ad45251598a02b8d0e8ad295cb28a6f27f20",
   "execution_scope": "RECONCILIATION_AND_MINIMUM_ARTIFACT_PLANNING_NON_EXECUTION",
   "m1_binding": {
     "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "current_stage_changed_node_count": 3,
+    "current_stage_cohort_hash": "sha256:81f9ee2dcfa81bb9d72e5a1518f386295a63829c179d25bd6cb84e333a35b7a8",
+    "current_stage_distribution": {
+      "changed_node_count": 3,
+      "changes": [
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:fbbadbb1c0ac95473cded0455a8571ed9eb61a4da20d790ef770461a307fd258",
+          "decision_time": "2019-08-21T17:25:00+00:00",
+          "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+          "historical_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 21
+        },
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:9f0d9d406868c83c5fb0046827acd131c8196b0b35fb021b78a94811f8de3243",
+          "decision_time": "2019-09-10T17:12:00+00:00",
+          "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+          "historical_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 11
+        },
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:d86fadd6856a9795cdfd1b073520e6d7089f69c76c9615c151c074f346327a48",
+          "decision_time": "2019-09-18T02:26:00+00:00",
+          "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+          "historical_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 13
+        }
+      ],
+      "current": {
+        "POST_IB_PRE_OB": 58,
+        "POST_OB_PRE_TO": 6,
+        "PRE_IB": 5
+      },
+      "historical": {
+        "POST_IB_PRE_OB": 61,
+        "POST_OB_PRE_TO": 3,
+        "PRE_IB": 5
+      }
+    },
+    "current_stage_node_count": 69,
+    "development_inference_status": "NEW_DEVELOPMENT_COHORT_REFROZEN",
+    "feature_compatibility": "PASS_FROZEN_M1_FEATURE_TENSOR_COMPATIBILITY",
     "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "historical_development_inference_status": "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+    "historical_stage_mismatch_count": 3,
+    "human_decision_required": {
+      "status": "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+    },
+    "m1_artifact_validity": "PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS",
     "model_id": "M1_V2_GRU_H32",
     "status": "BOUND_FROZEN_M1_V2",
     "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"

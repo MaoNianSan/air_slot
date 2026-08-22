@@ -119,9 +119,19 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
     """
     repository_root = root or Path(__file__).resolve().parents[2]
     artifact_root = repository_root / "artifacts" / "experiment" / "exp2"
-    cohort = _load_real_fast_artifact(artifact_root / "DATA2_DEVELOPMENT_PILOT_COHORT.json")
+    diagnostics_root = repository_root / "artifacts" / "diagnostics"
+    cohort = _load_real_fast_artifact(artifact_root / "DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V2.json")
     m3_bundle = _load_real_fast_artifact(artifact_root / "DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE.json")
     m4_policy = _load_real_fast_artifact(artifact_root / "DATA2_DEV_PILOT_M4_RISK_POLICY.json")
+    refreeze = _load_real_fast_artifact(
+        diagnostics_root / "m1_v2_development_current_stage_refreeze" / "M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json"
+    )
+    positive_tail = _load_real_fast_artifact(
+        diagnostics_root / "m1_v2_positive_tail_decision" / "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_HUMAN_DECISION_PACKET.json"
+    )
+    # M2/M3/M4 statuses remain sourced from the historical pilot audit until
+    # their current-stage artifacts are materialized; cohort identity and M1
+    # binding below are current-stage only.
     readiness = _load_real_fast_artifact(artifact_root / "EXP2_PRE_M4_REAL_DATA_PILOT_AUDIT.json")
     if (
         cohort.get("dataset_id") != "DATA2"
@@ -130,15 +140,23 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
         or cohort.get("PAPER_FULL_RUN") is not False
     ):
         raise ValueError("REAL_FAST_COHORT_BOUNDARY_INVALID")
+    if (
+        refreeze.get("status") != "NEW_DEVELOPMENT_COHORT_REFROZEN"
+        or refreeze.get("next_gate") != "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+        or refreeze.get("new_cohort", {}).get("cohort_hash") != cohort.get("cohort_hash")
+        or positive_tail.get("status") != "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+        or positive_tail.get("cohort", {}).get("cohort_hash") != cohort.get("cohort_hash")
+    ):
+        raise ValueError("REAL_FAST_CURRENT_STAGE_BINDING_INVALID")
 
     nodes = tuple(dict(item) for item in cohort.get("decision_nodes", ()))
     if not nodes:
         raise ValueError("REAL_FAST_COHORT_NO_DECISION_NODES")
-    m1_status = str(readiness.get("M1", {}).get("status", "BLOCKED_M1_ARTIFACT_STATUS_MISSING"))
+    m1_status = str(refreeze["m1_artifact_validity"]["status"])
     m2_status = str(readiness.get("M2", {}).get("status", "BLOCKED_M2_ARTIFACT_STATUS_MISSING"))
     policy = dict(m4_policy.get("policy", {}))
     mapping_status = str(m4_policy.get("monetary_mapping_status", "MONETARY_MAPPING_BLOCKED"))
-    scenario_status = "BLOCKED_M1_V2_SCENARIO_ARTIFACT_NOT_FROZEN"
+    scenario_status = "BLOCKED_M1_POSITIVE_TAIL_DECISION_REQUIRED"
     scenario_hash = content_id({
         "cohort_hash": cohort["cohort_hash"],
         "scenario_status": scenario_status,
@@ -151,12 +169,16 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
         cohort=nodes,
         seed=seed,
         pre_binding={
-            "binding_status": "REAL_PRE_BOUND_FROM_FROZEN_DATA2_DEVELOPMENT_COHORT",
+            "binding_status": "REAL_PRE_BOUND_FROM_CURRENT_STAGE_REFROZEN_DATA2_DEVELOPMENT_COHORT",
             "cohort_id": cohort["artifact_hash"],
             "cohort_hash": cohort["cohort_hash"],
             "source_manifest_hash": cohort["source_manifest_hash"],
             "selector_rule": cohort["selector_rule"],
             "roll_minutes": str(cohort["rolling_interval_minutes"]),
+            "refreeze_manifest_hash": refreeze["artifact_hash"],
+            "positive_tail_packet_hash": positive_tail["artifact_hash"],
+            "historical_parent_cohort_hash": refreeze["historical_cohort"]["cohort_hash"],
+            "current_stage_changed_node_count": str(refreeze["stage_audit"]["changed_node_count"]),
         },
         m1_artifact=m1_status,
         m2_artifact=m2_status,
@@ -181,6 +203,11 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
             "execution_scope": "REAL_DATA_FAST",
             "cohort_id": cohort["artifact_hash"],
             "cohort_hash": cohort["cohort_hash"],
+            "refreeze_manifest_hash": refreeze["artifact_hash"],
+            "positive_tail_packet_hash": positive_tail["artifact_hash"],
+            "historical_parent_cohort_hash": refreeze["historical_cohort"]["cohort_hash"],
+            "current_stage_changed_node_count": refreeze["stage_audit"]["changed_node_count"],
+            "current_stage_distribution": refreeze["stage_audit"],
             "selection_rule": cohort["selector_rule"],
             "selection_pre_outcome": cohort["selector_pre_outcome"],
             "scenario_status": scenario_status,
@@ -190,7 +217,7 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
         },
         shared_gates={
             "M1_CHECKPOINT": m1_status,
-            "M1_POSITIVE_TAIL": str(policy.get("tail_support_state", "UNRESOLVED")),
+            "M1_POSITIVE_TAIL": str(positive_tail["status"]),
             "M2_SEVEN_COMPONENT": m2_status,
             "M3_A00": "READY_IDENTITY",
             "M3_NON_A00": "SCENARIO_ASSUMPTION_CONDITIONAL",

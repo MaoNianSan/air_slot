@@ -1,0 +1,2516 @@
+{
+  "EXP1_RUNS_THIS_REFREEZE": 0,
+  "EXP2_RUNS_THIS_REFREEZE": 0,
+  "EXP3_RUNS_THIS_REFREEZE": 0,
+  "EXP4_RUNS_THIS_REFREEZE": 0,
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "FULL": false,
+  "M1_TRAINING_RUNS_THIS_REFREEZE": 0,
+  "PAPER_FULL_RUN": false,
+  "TUNING_RUNS_THIS_REFREEZE": 0,
+  "artifact_hash": "sha256:0916ea99b75bd023ad30c0363ee429c1f3373b19d4445dfa59727e4c7f7f4842",
+  "cohort_hash": "sha256:81f9ee2dcfa81bb9d72e5a1518f386295a63829c179d25bd6cb84e333a35b7a8",
+  "cohort_scope": "CURRENT_APPROVED_TYPED_PRE_STAGE_POLICY_WITH_HISTORICAL_EPISODE_SELECTION",
+  "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+  "dataset_id": "DATA2",
+  "dataset_version": "DATA2_2019_DEVELOPMENT_AUG_SEP_CURRENT_STAGE_V2",
+  "decision_nodes": [
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:7e21080e937b920b7088beec9aeadd60490df10d4d90891cd8b2e22f0fbc7097",
+      "decision_time": "2019-08-21T15:40:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T15:40:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 0,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:391817466abf87e98ac27f970ae82bb181abb92541d6a5c1aa640b9ceef6df92",
+      "decision_time": "2019-08-21T15:45:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T15:45:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 1,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:7cfdc7abd9a6b0b0f87e6ba8e14abe968c6dff70e910aa5e6462375bab7f4b49",
+      "decision_time": "2019-08-21T15:50:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T15:50:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 2,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:f38d89cc92f2c9a21decdb1bb9470d87056bfae1db6210feec764132431f7f0f",
+      "decision_time": "2019-08-21T15:55:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T15:55:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 3,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:8f7812b5463ae24901e85d47b22baa5c9eaa2a35a38692b517fa9aee2428e7be",
+      "decision_time": "2019-08-21T16:00:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:00:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 4,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:05509912773c82266bbf1688f03c9bcae84665dad7764d32835b3ee3e3851b42",
+      "decision_time": "2019-08-21T16:05:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:05:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 5,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:ac6da0622a552ebe2d6d0b0e1a6c63146a2f42768e5b502c94fb9c4d9751d183",
+      "decision_time": "2019-08-21T16:10:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:10:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 6,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:f3f75518190cd1f2e2d4772602325b9863807fb10d09da702c25dc44810d0a44",
+      "decision_time": "2019-08-21T16:15:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:15:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 7,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:8699e97ae8f21c3815b139050cb75e8768817868b70dec37ed1d0b5b8a2898cc",
+      "decision_time": "2019-08-21T16:20:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:20:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 8,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:bbbea4b179e27dfcc13b75d45615913f06dd504efcbf41d4fd7b391d9b105929",
+      "decision_time": "2019-08-21T16:25:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:25:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 9,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:9fa5763f80cfe88a7d54e9bcb4b7711f75e3167a195ee1f9c361b65a47de3ee2",
+      "decision_time": "2019-08-21T16:30:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:30:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 10,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:d2a437e246f4771fca2fa8db3b7e0198024773c16c54573cb17dc545e57570a6",
+      "decision_time": "2019-08-21T16:35:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:35:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 11,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:fe46e167d7f3f2c97c9dc24435518914f73177179f349f4b38d0d02a31d4af14",
+      "decision_time": "2019-08-21T16:40:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:40:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 12,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:1dd03749a09eb35c79be2fa40b1f25992ff682663de53d096781af4c5ca1c531",
+      "decision_time": "2019-08-21T16:45:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:45:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 13,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:14f772935c3fafb00ddbb29b5347fae72b9ff909698f51fb746b60bf81d92683",
+      "decision_time": "2019-08-21T16:50:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:50:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 14,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:533e312b784657f266d5e9cb6bc792aea3c255ce73490c41fcd2eb0f8351adaf",
+      "decision_time": "2019-08-21T16:55:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T16:55:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 15,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:0ffe4e6270485e0315a6c4477f6f5a498ffdc10873b5829293c92e3d5c48e7ee",
+      "decision_time": "2019-08-21T17:00:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T17:00:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 16,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:f772b0d3bfa3752d829e40bc96b6381e1faccbdcffc35f8dbaa3939d89e875a5",
+      "decision_time": "2019-08-21T17:05:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T17:05:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 17,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:ab5c82547fab430937379b1ff81ecd38904276c531d5641571857e200f1290ab",
+      "decision_time": "2019-08-21T17:10:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T17:10:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 18,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:e5147fd3d1d0ebb6997ccb16827a254d68ed6faf15766d2310d6ca3da0ca87ef",
+      "decision_time": "2019-08-21T17:15:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T17:15:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 19,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:57c9c5fead7fb2ef0287b80a0682c8f5a122e4d0fa9bfd7ea976ce71d62be5c3",
+      "decision_time": "2019-08-21T17:20:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T17:20:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 20,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:fbbadbb1c0ac95473cded0455a8571ed9eb61a4da20d790ef770461a307fd258",
+      "decision_time": "2019-08-21T17:25:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T17:25:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 21,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_OB_PRE_TO",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:8030cb603f79d2000f9aa5cb1f9a2c54a5bc986e1642da7ef97d8731d795963e",
+      "decision_time": "2019-08-21T17:30:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-21T17:30:00Z",
+      "legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "node_index": 22,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_OB_PRE_TO",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:bb4fb4e7df0ae885f8d45f836978bedc65a6e136cce35a40a4e47b0e4383a3d6",
+      "decision_time": "2019-09-10T16:17:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:17:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 0,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:48c0bc00b70204db5a1890d95df2b282ec8f4e42e766b762a948a95026f6fbf2",
+      "decision_time": "2019-09-10T16:22:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:22:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 1,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:7cd51d80a10c7eb6272088aa3f8f5a86eeab03e2c3c4114248f7ad98a7a85acc",
+      "decision_time": "2019-09-10T16:27:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:27:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 2,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:b29f0a035e58addcfd4578d19f619a211c80e653bd70656f5873fe033401bf94",
+      "decision_time": "2019-09-10T16:32:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:32:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 3,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:cb0f2d1c662785ddd945c9736a496dce2b9a6af8ea0e027f6a40b48cba1904df",
+      "decision_time": "2019-09-10T16:37:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:37:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 4,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:18fed0e0c3e990682fff3c577b30be210c140ad090cb6d6a591fd0f076627c46",
+      "decision_time": "2019-09-10T16:42:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:42:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 5,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:b678116cdfbbf5776b833fd8f8620a4d7e4d7a027b1651bc549325e9211941c7",
+      "decision_time": "2019-09-10T16:47:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:47:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 6,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:e5bd7c98d965ff02eab80b837c18e2fe5867cdd2cf83fac925ff64f976b82974",
+      "decision_time": "2019-09-10T16:52:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:52:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "node_index": 7,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:ea846d7d71ec90afd6bb2d2c53a8b418af1500ad6a1af9efd619ab98dede2a33",
+      "decision_time": "2019-09-10T16:57:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T16:57:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "node_index": 8,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:760a263b7cfc925d364583d9c3d98cb4792b7d50bb9a0b0b84cda3bc5c05a5eb",
+      "decision_time": "2019-09-10T17:02:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T17:02:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "node_index": 9,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:53774c7323bd6a0988ddf4743f6f88fbe20631bf8b729a59d42aae80c587fac0",
+      "decision_time": "2019-09-10T17:07:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T17:07:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "node_index": 10,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:9f0d9d406868c83c5fb0046827acd131c8196b0b35fb021b78a94811f8de3243",
+      "decision_time": "2019-09-10T17:12:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T17:12:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "node_index": 11,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_OB_PRE_TO",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:0dd3417d29bab31547e9f3d3d4b0ad8affa9eee6ba18b30a71c937bd7d4f0e33",
+      "decision_time": "2019-09-10T17:17:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-10T17:17:00Z",
+      "legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "node_index": 12,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_OB_PRE_TO",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:ced1d69a84bff8f9303c63a442e9cec941d5fe007224119e42111301ff9992fa",
+      "decision_time": "2019-09-07T00:43:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T00:43:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:f0e396a7039fd211887f583d2b3c1ed60602761c90abcca9e112dcb04a814b81"
+      ],
+      "node_index": 0,
+      "node_invalidation_reason": null,
+      "operational_stage": "PRE_IB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:3904eb70631fce82895233ddce8e1bd0d4a888fbc3f290e0b53c15fc0d6837a0",
+      "decision_time": "2019-09-07T00:48:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T00:48:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:f0e396a7039fd211887f583d2b3c1ed60602761c90abcca9e112dcb04a814b81"
+      ],
+      "node_index": 1,
+      "node_invalidation_reason": null,
+      "operational_stage": "PRE_IB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:47d4bc4b9b358d01f7acf0c707d1796b310ca903b2cfa00727c7d12a4ebac5c4",
+      "decision_time": "2019-09-07T00:53:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T00:53:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:f0e396a7039fd211887f583d2b3c1ed60602761c90abcca9e112dcb04a814b81"
+      ],
+      "node_index": 2,
+      "node_invalidation_reason": null,
+      "operational_stage": "PRE_IB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:945f5c6537639b5869d11d707290ecdd5bedf5591b451552fa800e94147c1c48",
+      "decision_time": "2019-09-07T00:58:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T00:58:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "node_index": 3,
+      "node_invalidation_reason": null,
+      "operational_stage": "PRE_IB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:5b845798e43eca3f633d7eee5ba4ce70a0057624fdb9dfb85751224c163540d7",
+      "decision_time": "2019-09-07T01:03:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T01:03:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "node_index": 4,
+      "node_invalidation_reason": null,
+      "operational_stage": "PRE_IB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:12479352ddf5956ac9b9d3b70d60a16281348b35c873dc1c5e2e35ec1b3aa885",
+      "decision_time": "2019-09-07T01:08:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T01:08:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "node_index": 5,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:2948ef5a726f5e6112d9a9d54846f135f4c7d15023cccdeac9fd113e8b8aed68",
+      "decision_time": "2019-09-07T01:13:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T01:13:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "node_index": 6,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:96b23dacf7fa23055ce96646f97553a507474ec4cfc6812a125780dca5908a38",
+      "decision_time": "2019-09-07T01:18:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T01:18:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "node_index": 7,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:ab363d0b64d8d3b0868d2abfbf298da894bae2e800621e6339875308aa274243",
+      "decision_time": "2019-09-07T01:23:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T01:23:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "node_index": 8,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:7e88b667c7e9e26ecd29e1062df6709a018133e8ca2f1f6d3e4015887b3dc523",
+      "decision_time": "2019-09-07T01:28:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-07T01:28:00Z",
+      "legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "node_index": 9,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:78e911741ec82447d04bc36af173eee5d2fb5e12e4d8e0a873fed71b736e2662",
+      "decision_time": "2019-08-13T18:30:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T18:30:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 0,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:40d71848e332456cccb833579cbb48b66f320fec3b2975a172d9889e73c0623f",
+      "decision_time": "2019-08-13T18:35:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T18:35:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 1,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:883567fd2b9c3395e777d7cca42608e1c3b736f5aa8caf6b5de6aa8b576dd96a",
+      "decision_time": "2019-08-13T18:40:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T18:40:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 2,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:1819a42c09c2d860276b95f872d648ea9b5ce40bd20ead6b2349b07800cfb2d3",
+      "decision_time": "2019-08-13T18:45:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T18:45:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 3,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:ecd929ff013368710d932d882f8dbf8f042f03332158d668d002803e1ab6ba92",
+      "decision_time": "2019-08-13T18:50:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T18:50:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 4,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:be11a959587ffba1afa3aa3ce8ecf7cf7fcf3b007435814441d8edc11d142a4c",
+      "decision_time": "2019-08-13T18:55:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T18:55:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 5,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:218187a10a7bab97172bbe558af84ec31a597f9e4edf7fac88e544c15cafd34a",
+      "decision_time": "2019-08-13T19:00:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T19:00:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 6,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:bf5a2ae76111ac74108d3d4c2ca99f65976ed605200196e7ed386ee6db6d74eb",
+      "decision_time": "2019-08-13T19:05:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T19:05:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 7,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:6e1a1e02b7c7e164b5448c0718453ea6925cbd78312357c7f74d13839f47f306",
+      "decision_time": "2019-08-13T19:10:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "formal_eligible": true,
+      "information_cutoff": "2019-08-13T19:10:00Z",
+      "legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "node_index": 8,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_OB_PRE_TO",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:5ccb7ee4fd9c7e8859b9e861202f205256d6ec2ee1f5f8244d555af6ca040b66",
+      "decision_time": "2019-09-18T01:21:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:21:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 0,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:092a0a342bc9ff78f672724481c83659e0ffbc726e74d2df430f8d4a18de9d57",
+      "decision_time": "2019-09-18T01:26:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:26:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 1,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:120a612b6e49acff185abeedb1bc06520ce57ba5aff9924a4ceb8264a53a5f72",
+      "decision_time": "2019-09-18T01:31:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:31:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 2,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:5ccf96cd1eb2e2ec6e8d1518d16f943bf0631f6c52d248a283590332092aa55b",
+      "decision_time": "2019-09-18T01:36:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:36:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 3,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:e96a63b19d8c19ae84c7f974b23793866395824554a3e8ca923de14655202e44",
+      "decision_time": "2019-09-18T01:41:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:41:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 4,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:907bfb1fea16d1e66be9200dc5aa546b9f30dc503958c15de8ee23391d3a45e5",
+      "decision_time": "2019-09-18T01:46:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:46:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 5,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:3293f91a420b2e690ed9a65783be6728071b8c89e62c844d48ca67e17182d983",
+      "decision_time": "2019-09-18T01:51:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:51:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 6,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:3ec57ffa1d26018a213ad252656dfea1bb60758cf32c23b7fd0a72e366956728",
+      "decision_time": "2019-09-18T01:56:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T01:56:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "node_index": 7,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:7d00a04d15613113f573d86d2661ac1ebdbb06835b8b35b624581efcd1174a8b",
+      "decision_time": "2019-09-18T02:01:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T02:01:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "node_index": 8,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:ca6388c2ce2d8a21205d9ad82d17e5d89cfb0e15642fb3a3292c3801f4797fdd",
+      "decision_time": "2019-09-18T02:06:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T02:06:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "node_index": 9,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:480d6f41f109a94b2648209e2f80c9a864e21c42e7798bd3a2bf843381e0f6e4",
+      "decision_time": "2019-09-18T02:11:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T02:11:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "node_index": 10,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:206cf01cd532bbbd82124dc6cc6314c9c4b6a403797fd2ec779ae40a3c91ffbb",
+      "decision_time": "2019-09-18T02:16:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T02:16:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "node_index": 11,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:e2b12ece9bfda17973ca01e67ea7db090c43c8dbffd9537713120bf6c630e6f2",
+      "decision_time": "2019-09-18T02:21:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T02:21:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "node_index": 12,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_IB_PRE_OB",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    },
+    {
+      "config_hash": "sha256:e67087e4020008b13aa8b5123c9146529b84224ee43d5b72f6af4c348d827f8e",
+      "decision_node_id": "sha256:d86fadd6856a9795cdfd1b073520e6d7089f69c76c9615c151c074f346327a48",
+      "decision_time": "2019-09-18T02:26:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "formal_eligible": true,
+      "information_cutoff": "2019-09-18T02:26:00Z",
+      "legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "node_index": 13,
+      "node_invalidation_reason": null,
+      "operational_stage": "POST_OB_PRE_TO",
+      "registry_manifest_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+      "roll_minutes": 5,
+      "status": "CONSTRUCTED"
+    }
+  ],
+  "episode_ids": [
+    "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+    "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+    "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+    "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+    "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55"
+  ],
+  "episode_ids_hash": "sha256:9a98b0a5e8686186dc8354724dbb231fe320eed98669cede3dae07b610256165",
+  "episode_records": [
+    {
+      "aircraft_id": "N37408",
+      "aircraft_id_namespace": "REGISTRATION",
+      "chain_rule_id": "DATA2_SAME_AIRCRAFT_AIRPORT_GAP",
+      "chain_rule_parameters": [
+        "max_gap_minutes=360",
+        "gap_source=actual_gate_utc",
+        "episode_anchors=schedule_turnaround_window"
+      ],
+      "chain_rule_version": "1.0.0",
+      "connection_airport_id": "IAH",
+      "construction_provenance": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0",
+        "DATA2_SAME_AIRCRAFT_AIRPORT_GAP@1.0.0"
+      ],
+      "continuity_rule": "AIRPORT_CONTINUITY_AND_POSITIVE_BOUNDED_ACTUAL_GATE_GAP",
+      "dataset_instance_id": "data2_2019",
+      "episode_end_time": "2019-08-21T17:30:00Z",
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "episode_start_time": "2019-08-21T15:40:00Z",
+      "formal_eligible": true,
+      "join_keys": [
+        "dataset_instance_id",
+        "aircraft_id_namespace",
+        "aircraft_id",
+        "predecessor.destination_airport_id=successor.origin_airport_id"
+      ],
+      "lineage_support": "SUPPORTED",
+      "ordering_rule": "GROUP_BY(dataset_instance_id,aircraft_id_namespace,aircraft_id);ORDER_BY(actual_departure_utc,actual_arrival_utc,flight_id);WINDOW(ADJACENT_ROWS)",
+      "predecessor_flight_id": "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+      "quality_flags": [],
+      "relation_type": "SAME_AIRCRAFT_PREDECESSOR_SUCCESSOR",
+      "source_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "successor_flight_id": "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+    },
+    {
+      "aircraft_id": "N853AE",
+      "aircraft_id_namespace": "REGISTRATION",
+      "chain_rule_id": "DATA2_SAME_AIRCRAFT_AIRPORT_GAP",
+      "chain_rule_parameters": [
+        "max_gap_minutes=360",
+        "gap_source=actual_gate_utc",
+        "episode_anchors=schedule_turnaround_window"
+      ],
+      "chain_rule_version": "1.0.0",
+      "connection_airport_id": "CLE",
+      "construction_provenance": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278",
+        "DATA2_SAME_AIRCRAFT_AIRPORT_GAP@1.0.0"
+      ],
+      "continuity_rule": "AIRPORT_CONTINUITY_AND_POSITIVE_BOUNDED_ACTUAL_GATE_GAP",
+      "dataset_instance_id": "data2_2019",
+      "episode_end_time": "2019-09-10T17:17:00Z",
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "episode_start_time": "2019-09-10T16:17:00Z",
+      "formal_eligible": true,
+      "join_keys": [
+        "dataset_instance_id",
+        "aircraft_id_namespace",
+        "aircraft_id",
+        "predecessor.destination_airport_id=successor.origin_airport_id"
+      ],
+      "lineage_support": "SUPPORTED",
+      "ordering_rule": "GROUP_BY(dataset_instance_id,aircraft_id_namespace,aircraft_id);ORDER_BY(actual_departure_utc,actual_arrival_utc,flight_id);WINDOW(ADJACENT_ROWS)",
+      "predecessor_flight_id": "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+      "quality_flags": [],
+      "relation_type": "SAME_AIRCRAFT_PREDECESSOR_SUCCESSOR",
+      "source_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "successor_flight_id": "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+    },
+    {
+      "aircraft_id": "N635JB",
+      "aircraft_id_namespace": "REGISTRATION",
+      "chain_rule_id": "DATA2_SAME_AIRCRAFT_AIRPORT_GAP",
+      "chain_rule_parameters": [
+        "max_gap_minutes=360",
+        "gap_source=actual_gate_utc",
+        "episode_anchors=schedule_turnaround_window"
+      ],
+      "chain_rule_version": "1.0.0",
+      "connection_airport_id": "LGB",
+      "construction_provenance": [
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018",
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "DATA2_SAME_AIRCRAFT_AIRPORT_GAP@1.0.0"
+      ],
+      "continuity_rule": "AIRPORT_CONTINUITY_AND_POSITIVE_BOUNDED_ACTUAL_GATE_GAP",
+      "dataset_instance_id": "data2_2019",
+      "episode_end_time": "2019-09-07T01:28:00Z",
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "episode_start_time": "2019-09-07T00:43:00Z",
+      "formal_eligible": true,
+      "join_keys": [
+        "dataset_instance_id",
+        "aircraft_id_namespace",
+        "aircraft_id",
+        "predecessor.destination_airport_id=successor.origin_airport_id"
+      ],
+      "lineage_support": "SUPPORTED",
+      "ordering_rule": "GROUP_BY(dataset_instance_id,aircraft_id_namespace,aircraft_id);ORDER_BY(actual_departure_utc,actual_arrival_utc,flight_id);WINDOW(ADJACENT_ROWS)",
+      "predecessor_flight_id": "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018",
+      "quality_flags": [],
+      "relation_type": "SAME_AIRCRAFT_PREDECESSOR_SUCCESSOR",
+      "source_record_ids": [
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018",
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9"
+      ],
+      "successor_flight_id": "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9"
+    },
+    {
+      "aircraft_id": "N307DQ",
+      "aircraft_id_namespace": "REGISTRATION",
+      "chain_rule_id": "DATA2_SAME_AIRCRAFT_AIRPORT_GAP",
+      "chain_rule_parameters": [
+        "max_gap_minutes=360",
+        "gap_source=actual_gate_utc",
+        "episode_anchors=schedule_turnaround_window"
+      ],
+      "chain_rule_version": "1.0.0",
+      "connection_airport_id": "EYW",
+      "construction_provenance": [
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7",
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "DATA2_SAME_AIRCRAFT_AIRPORT_GAP@1.0.0"
+      ],
+      "continuity_rule": "AIRPORT_CONTINUITY_AND_POSITIVE_BOUNDED_ACTUAL_GATE_GAP",
+      "dataset_instance_id": "data2_2019",
+      "episode_end_time": "2019-08-13T19:10:00Z",
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "episode_start_time": "2019-08-13T18:30:00Z",
+      "formal_eligible": true,
+      "join_keys": [
+        "dataset_instance_id",
+        "aircraft_id_namespace",
+        "aircraft_id",
+        "predecessor.destination_airport_id=successor.origin_airport_id"
+      ],
+      "lineage_support": "SUPPORTED",
+      "ordering_rule": "GROUP_BY(dataset_instance_id,aircraft_id_namespace,aircraft_id);ORDER_BY(actual_departure_utc,actual_arrival_utc,flight_id);WINDOW(ADJACENT_ROWS)",
+      "predecessor_flight_id": "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7",
+      "quality_flags": [],
+      "relation_type": "SAME_AIRCRAFT_PREDECESSOR_SUCCESSOR",
+      "source_record_ids": [
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7",
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c"
+      ],
+      "successor_flight_id": "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c"
+    },
+    {
+      "aircraft_id": "N334NB",
+      "aircraft_id_namespace": "REGISTRATION",
+      "chain_rule_id": "DATA2_SAME_AIRCRAFT_AIRPORT_GAP",
+      "chain_rule_parameters": [
+        "max_gap_minutes=360",
+        "gap_source=actual_gate_utc",
+        "episode_anchors=schedule_turnaround_window"
+      ],
+      "chain_rule_version": "1.0.0",
+      "connection_airport_id": "DTW",
+      "construction_provenance": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3",
+        "DATA2_SAME_AIRCRAFT_AIRPORT_GAP@1.0.0"
+      ],
+      "continuity_rule": "AIRPORT_CONTINUITY_AND_POSITIVE_BOUNDED_ACTUAL_GATE_GAP",
+      "dataset_instance_id": "data2_2019",
+      "episode_end_time": "2019-09-18T02:27:00Z",
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "episode_start_time": "2019-09-18T01:21:00Z",
+      "formal_eligible": true,
+      "join_keys": [
+        "dataset_instance_id",
+        "aircraft_id_namespace",
+        "aircraft_id",
+        "predecessor.destination_airport_id=successor.origin_airport_id"
+      ],
+      "lineage_support": "SUPPORTED",
+      "ordering_rule": "GROUP_BY(dataset_instance_id,aircraft_id_namespace,aircraft_id);ORDER_BY(actual_departure_utc,actual_arrival_utc,flight_id);WINDOW(ADJACENT_ROWS)",
+      "predecessor_flight_id": "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+      "quality_flags": [],
+      "relation_type": "SAME_AIRCRAFT_PREDECESSOR_SUCCESSOR",
+      "source_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "successor_flight_id": "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+    }
+  ],
+  "factual_replay_declared_lag_minutes": 0.0,
+  "factual_replay_policy": "DECLARED_EVENT_TIME_REPLAY",
+  "factual_replay_status": "DECLARED_EVENT_TIME_REPLAY_HUMAN_APPROVED",
+  "git_sha": "803e64faa49f4fe44c86973d8e3b1cca3ebee0c6",
+  "historical_parent": {
+    "artifact_hash": "sha256:66d1a0bfcea84164713e1db476f98ccf47fe19c494509495080f3c559c10b43e",
+    "cohort_hash": "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63",
+    "path": "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json",
+    "role": "IMMUTABLE_HISTORICAL_PROVENANCE_AND_SENSITIVITY_REFERENCE",
+    "sha256": "sha256:1554e50e14bb5beb51a3406d3b8c18151cd3812b9ec1a9a8a35260db17f4a02e"
+  },
+  "node_ids": [
+    "sha256:7e21080e937b920b7088beec9aeadd60490df10d4d90891cd8b2e22f0fbc7097",
+    "sha256:391817466abf87e98ac27f970ae82bb181abb92541d6a5c1aa640b9ceef6df92",
+    "sha256:7cfdc7abd9a6b0b0f87e6ba8e14abe968c6dff70e910aa5e6462375bab7f4b49",
+    "sha256:f38d89cc92f2c9a21decdb1bb9470d87056bfae1db6210feec764132431f7f0f",
+    "sha256:8f7812b5463ae24901e85d47b22baa5c9eaa2a35a38692b517fa9aee2428e7be",
+    "sha256:05509912773c82266bbf1688f03c9bcae84665dad7764d32835b3ee3e3851b42",
+    "sha256:ac6da0622a552ebe2d6d0b0e1a6c63146a2f42768e5b502c94fb9c4d9751d183",
+    "sha256:f3f75518190cd1f2e2d4772602325b9863807fb10d09da702c25dc44810d0a44",
+    "sha256:8699e97ae8f21c3815b139050cb75e8768817868b70dec37ed1d0b5b8a2898cc",
+    "sha256:bbbea4b179e27dfcc13b75d45615913f06dd504efcbf41d4fd7b391d9b105929",
+    "sha256:9fa5763f80cfe88a7d54e9bcb4b7711f75e3167a195ee1f9c361b65a47de3ee2",
+    "sha256:d2a437e246f4771fca2fa8db3b7e0198024773c16c54573cb17dc545e57570a6",
+    "sha256:fe46e167d7f3f2c97c9dc24435518914f73177179f349f4b38d0d02a31d4af14",
+    "sha256:1dd03749a09eb35c79be2fa40b1f25992ff682663de53d096781af4c5ca1c531",
+    "sha256:14f772935c3fafb00ddbb29b5347fae72b9ff909698f51fb746b60bf81d92683",
+    "sha256:533e312b784657f266d5e9cb6bc792aea3c255ce73490c41fcd2eb0f8351adaf",
+    "sha256:0ffe4e6270485e0315a6c4477f6f5a498ffdc10873b5829293c92e3d5c48e7ee",
+    "sha256:f772b0d3bfa3752d829e40bc96b6381e1faccbdcffc35f8dbaa3939d89e875a5",
+    "sha256:ab5c82547fab430937379b1ff81ecd38904276c531d5641571857e200f1290ab",
+    "sha256:e5147fd3d1d0ebb6997ccb16827a254d68ed6faf15766d2310d6ca3da0ca87ef",
+    "sha256:57c9c5fead7fb2ef0287b80a0682c8f5a122e4d0fa9bfd7ea976ce71d62be5c3",
+    "sha256:fbbadbb1c0ac95473cded0455a8571ed9eb61a4da20d790ef770461a307fd258",
+    "sha256:8030cb603f79d2000f9aa5cb1f9a2c54a5bc986e1642da7ef97d8731d795963e",
+    "sha256:bb4fb4e7df0ae885f8d45f836978bedc65a6e136cce35a40a4e47b0e4383a3d6",
+    "sha256:48c0bc00b70204db5a1890d95df2b282ec8f4e42e766b762a948a95026f6fbf2",
+    "sha256:7cd51d80a10c7eb6272088aa3f8f5a86eeab03e2c3c4114248f7ad98a7a85acc",
+    "sha256:b29f0a035e58addcfd4578d19f619a211c80e653bd70656f5873fe033401bf94",
+    "sha256:cb0f2d1c662785ddd945c9736a496dce2b9a6af8ea0e027f6a40b48cba1904df",
+    "sha256:18fed0e0c3e990682fff3c577b30be210c140ad090cb6d6a591fd0f076627c46",
+    "sha256:b678116cdfbbf5776b833fd8f8620a4d7e4d7a027b1651bc549325e9211941c7",
+    "sha256:e5bd7c98d965ff02eab80b837c18e2fe5867cdd2cf83fac925ff64f976b82974",
+    "sha256:ea846d7d71ec90afd6bb2d2c53a8b418af1500ad6a1af9efd619ab98dede2a33",
+    "sha256:760a263b7cfc925d364583d9c3d98cb4792b7d50bb9a0b0b84cda3bc5c05a5eb",
+    "sha256:53774c7323bd6a0988ddf4743f6f88fbe20631bf8b729a59d42aae80c587fac0",
+    "sha256:9f0d9d406868c83c5fb0046827acd131c8196b0b35fb021b78a94811f8de3243",
+    "sha256:0dd3417d29bab31547e9f3d3d4b0ad8affa9eee6ba18b30a71c937bd7d4f0e33",
+    "sha256:ced1d69a84bff8f9303c63a442e9cec941d5fe007224119e42111301ff9992fa",
+    "sha256:3904eb70631fce82895233ddce8e1bd0d4a888fbc3f290e0b53c15fc0d6837a0",
+    "sha256:47d4bc4b9b358d01f7acf0c707d1796b310ca903b2cfa00727c7d12a4ebac5c4",
+    "sha256:945f5c6537639b5869d11d707290ecdd5bedf5591b451552fa800e94147c1c48",
+    "sha256:5b845798e43eca3f633d7eee5ba4ce70a0057624fdb9dfb85751224c163540d7",
+    "sha256:12479352ddf5956ac9b9d3b70d60a16281348b35c873dc1c5e2e35ec1b3aa885",
+    "sha256:2948ef5a726f5e6112d9a9d54846f135f4c7d15023cccdeac9fd113e8b8aed68",
+    "sha256:96b23dacf7fa23055ce96646f97553a507474ec4cfc6812a125780dca5908a38",
+    "sha256:ab363d0b64d8d3b0868d2abfbf298da894bae2e800621e6339875308aa274243",
+    "sha256:7e88b667c7e9e26ecd29e1062df6709a018133e8ca2f1f6d3e4015887b3dc523",
+    "sha256:78e911741ec82447d04bc36af173eee5d2fb5e12e4d8e0a873fed71b736e2662",
+    "sha256:40d71848e332456cccb833579cbb48b66f320fec3b2975a172d9889e73c0623f",
+    "sha256:883567fd2b9c3395e777d7cca42608e1c3b736f5aa8caf6b5de6aa8b576dd96a",
+    "sha256:1819a42c09c2d860276b95f872d648ea9b5ce40bd20ead6b2349b07800cfb2d3",
+    "sha256:ecd929ff013368710d932d882f8dbf8f042f03332158d668d002803e1ab6ba92",
+    "sha256:be11a959587ffba1afa3aa3ce8ecf7cf7fcf3b007435814441d8edc11d142a4c",
+    "sha256:218187a10a7bab97172bbe558af84ec31a597f9e4edf7fac88e544c15cafd34a",
+    "sha256:bf5a2ae76111ac74108d3d4c2ca99f65976ed605200196e7ed386ee6db6d74eb",
+    "sha256:6e1a1e02b7c7e164b5448c0718453ea6925cbd78312357c7f74d13839f47f306",
+    "sha256:5ccb7ee4fd9c7e8859b9e861202f205256d6ec2ee1f5f8244d555af6ca040b66",
+    "sha256:092a0a342bc9ff78f672724481c83659e0ffbc726e74d2df430f8d4a18de9d57",
+    "sha256:120a612b6e49acff185abeedb1bc06520ce57ba5aff9924a4ceb8264a53a5f72",
+    "sha256:5ccf96cd1eb2e2ec6e8d1518d16f943bf0631f6c52d248a283590332092aa55b",
+    "sha256:e96a63b19d8c19ae84c7f974b23793866395824554a3e8ca923de14655202e44",
+    "sha256:907bfb1fea16d1e66be9200dc5aa546b9f30dc503958c15de8ee23391d3a45e5",
+    "sha256:3293f91a420b2e690ed9a65783be6728071b8c89e62c844d48ca67e17182d983",
+    "sha256:3ec57ffa1d26018a213ad252656dfea1bb60758cf32c23b7fd0a72e366956728",
+    "sha256:7d00a04d15613113f573d86d2661ac1ebdbb06835b8b35b624581efcd1174a8b",
+    "sha256:ca6388c2ce2d8a21205d9ad82d17e5d89cfb0e15642fb3a3292c3801f4797fdd",
+    "sha256:480d6f41f109a94b2648209e2f80c9a864e21c42e7798bd3a2bf843381e0f6e4",
+    "sha256:206cf01cd532bbbd82124dc6cc6314c9c4b6a403797fd2ec779ae40a3c91ffbb",
+    "sha256:e2b12ece9bfda17973ca01e67ea7db090c43c8dbffd9537713120bf6c630e6f2",
+    "sha256:d86fadd6856a9795cdfd1b073520e6d7089f69c76c9615c151c074f346327a48"
+  ],
+  "node_ids_hash": "sha256:e8bb1b26d96668c4f0a6ed22f6287801084c47321ed5efe23a146ef15fec90a8",
+  "node_lineage": [
+    {
+      "current_stage_decision_node_id": "sha256:7e21080e937b920b7088beec9aeadd60490df10d4d90891cd8b2e22f0fbc7097",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:bb73d6d7a9b4ba0d130f067fddcc7ecc015cb368fed9d3956a99973aeb97c659",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 0
+    },
+    {
+      "current_stage_decision_node_id": "sha256:391817466abf87e98ac27f970ae82bb181abb92541d6a5c1aa640b9ceef6df92",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:396aec9a49524ad5d52f4b3b02f18788323182b876573393fb0eeafb484250df",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 1
+    },
+    {
+      "current_stage_decision_node_id": "sha256:7cfdc7abd9a6b0b0f87e6ba8e14abe968c6dff70e910aa5e6462375bab7f4b49",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:05d2115fdb8a4c4d9446370f6d1b4ac4bf4a7574a6d153c9c95d023e8d0250fd",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 2
+    },
+    {
+      "current_stage_decision_node_id": "sha256:f38d89cc92f2c9a21decdb1bb9470d87056bfae1db6210feec764132431f7f0f",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:919c4af7f23375dddf9e9d50983279d65e9d0554dcbc2ddf913f631541d4ec36",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 3
+    },
+    {
+      "current_stage_decision_node_id": "sha256:8f7812b5463ae24901e85d47b22baa5c9eaa2a35a38692b517fa9aee2428e7be",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:99a25174d450bb6042b5d4573f53b3efee96948dd826e850aabd29550a76cdec",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 4
+    },
+    {
+      "current_stage_decision_node_id": "sha256:05509912773c82266bbf1688f03c9bcae84665dad7764d32835b3ee3e3851b42",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:26faeb34d3ef67e474e74b725c0e63c7ba8058b44eb6b8a6cf94ddabecfcf841",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 5
+    },
+    {
+      "current_stage_decision_node_id": "sha256:ac6da0622a552ebe2d6d0b0e1a6c63146a2f42768e5b502c94fb9c4d9751d183",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:b2aaf2bf85a1ed990f63c29e80ac5f1b5a05a8e72faf8ffb790176a335bc8cf7",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 6
+    },
+    {
+      "current_stage_decision_node_id": "sha256:f3f75518190cd1f2e2d4772602325b9863807fb10d09da702c25dc44810d0a44",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:9fe26e52311cdc1ef381002200b98451ab92ce5b94733723e3dc56b340514dab",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 7
+    },
+    {
+      "current_stage_decision_node_id": "sha256:8699e97ae8f21c3815b139050cb75e8768817868b70dec37ed1d0b5b8a2898cc",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:ad87ba5d09d84185bbce27faa65cd51f1ee66c781bc4b42755c337dc66911feb",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 8
+    },
+    {
+      "current_stage_decision_node_id": "sha256:bbbea4b179e27dfcc13b75d45615913f06dd504efcbf41d4fd7b391d9b105929",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:2b262730fea092545bf6e2816d2721d4f3fadbcdf94269826fb659409850ec45",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 9
+    },
+    {
+      "current_stage_decision_node_id": "sha256:9fa5763f80cfe88a7d54e9bcb4b7711f75e3167a195ee1f9c361b65a47de3ee2",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:d48903eede3936b6314300779a3e29195d8cbdc5c674d8dd0f28946a433db30a",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 10
+    },
+    {
+      "current_stage_decision_node_id": "sha256:d2a437e246f4771fca2fa8db3b7e0198024773c16c54573cb17dc545e57570a6",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:43aff236ec78b300b75d1d14d027134fa40197959bc4a9e4ef99b10ed3ba2c0f",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 11
+    },
+    {
+      "current_stage_decision_node_id": "sha256:fe46e167d7f3f2c97c9dc24435518914f73177179f349f4b38d0d02a31d4af14",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:ad384ac59323b6fe1818b3ed999f4161043da5393273b8e63268166cf06009d7",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 12
+    },
+    {
+      "current_stage_decision_node_id": "sha256:1dd03749a09eb35c79be2fa40b1f25992ff682663de53d096781af4c5ca1c531",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:e4e36df45d14fc78008998e35118dc393c4016e49df69a8e8d76b2e9825e8599",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 13
+    },
+    {
+      "current_stage_decision_node_id": "sha256:14f772935c3fafb00ddbb29b5347fae72b9ff909698f51fb746b60bf81d92683",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:06f4e9153557c553c75e0d172533f2d60135398d31b737dd7c7f92323e40ccca",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 14
+    },
+    {
+      "current_stage_decision_node_id": "sha256:533e312b784657f266d5e9cb6bc792aea3c255ce73490c41fcd2eb0f8351adaf",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:b91f055eda996f113e9a75608ca0896751b263abe2debf52036b817a99034974",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 15
+    },
+    {
+      "current_stage_decision_node_id": "sha256:0ffe4e6270485e0315a6c4477f6f5a498ffdc10873b5829293c92e3d5c48e7ee",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:ff68106daaca25af7b835a94d02f2cba2b783cb7ffde20999a79fe6e8e60e6e0",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 16
+    },
+    {
+      "current_stage_decision_node_id": "sha256:f772b0d3bfa3752d829e40bc96b6381e1faccbdcffc35f8dbaa3939d89e875a5",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:d2a863e905d492fd56c43aeeb198a2170d12297ce84389f3e3635796b374e49c",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 17
+    },
+    {
+      "current_stage_decision_node_id": "sha256:ab5c82547fab430937379b1ff81ecd38904276c531d5641571857e200f1290ab",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:f791882a166c36a000fb833a7d0d015e34e986cb0cfd66531de70cf4303f1939",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 18
+    },
+    {
+      "current_stage_decision_node_id": "sha256:e5147fd3d1d0ebb6997ccb16827a254d68ed6faf15766d2310d6ca3da0ca87ef",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:fe5e72729dec7e99507d276d14c9c0f611be9754be7282c913e4b2b750b4099b",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 19
+    },
+    {
+      "current_stage_decision_node_id": "sha256:57c9c5fead7fb2ef0287b80a0682c8f5a122e4d0fa9bfd7ea976ce71d62be5c3",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:caa7bdb115007131259812d6c166f49863cd718c86a416450df12076951438b5",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 20
+    },
+    {
+      "current_stage_decision_node_id": "sha256:fbbadbb1c0ac95473cded0455a8571ed9eb61a4da20d790ef770461a307fd258",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 21
+    },
+    {
+      "current_stage_decision_node_id": "sha256:8030cb603f79d2000f9aa5cb1f9a2c54a5bc986e1642da7ef97d8731d795963e",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:dc8455ea20a4bf8fcdc7ce7dd4d8a321415fbb3aecfc6d3dd20efee2418385f8"
+      ],
+      "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+      "historical_decision_node_id": "sha256:8992f74913c5d6e2bd0019355be99114a28119a2130d87e8b1e78df9dde4cc81",
+      "historical_legal_record_ids": [
+        "flight:af4ca99014f03c9a6195c4356175d84a5e41525b3524cea71edcdedd6b57c114",
+        "flight:c640fac46ab6f456c7c8700658e076abd2aba49e0cec03a115ef5d491693eda0"
+      ],
+      "node_index": 22
+    },
+    {
+      "current_stage_decision_node_id": "sha256:bb4fb4e7df0ae885f8d45f836978bedc65a6e136cce35a40a4e47b0e4383a3d6",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:694190da1204b37f50a05a91e9f55db69ba3e71b8bba047700e5c6e230ee0bcd",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 0
+    },
+    {
+      "current_stage_decision_node_id": "sha256:48c0bc00b70204db5a1890d95df2b282ec8f4e42e766b762a948a95026f6fbf2",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:990f836108d858b616912bd66416f047dee9cf4cb04085616a01233ea779e75f",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 1
+    },
+    {
+      "current_stage_decision_node_id": "sha256:7cd51d80a10c7eb6272088aa3f8f5a86eeab03e2c3c4114248f7ad98a7a85acc",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:3e97fb11e8b0555e1895207c6eb69e56add9af948afa7d5a4bf152f6dda7b334",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 2
+    },
+    {
+      "current_stage_decision_node_id": "sha256:b29f0a035e58addcfd4578d19f619a211c80e653bd70656f5873fe033401bf94",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:afc2a2078634a5f06bb7211c7a4d4638d3915c74e493ed25434eb3f077164228",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 3
+    },
+    {
+      "current_stage_decision_node_id": "sha256:cb0f2d1c662785ddd945c9736a496dce2b9a6af8ea0e027f6a40b48cba1904df",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:f67959c7f62abdc89300a55a1e91b44bcdabaf44fb42c2cf2bcc43fa91f305fc",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 4
+    },
+    {
+      "current_stage_decision_node_id": "sha256:18fed0e0c3e990682fff3c577b30be210c140ad090cb6d6a591fd0f076627c46",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:cd91232c1eaaeaea3d05c3e095649c6bdd9f6ecf3cf4b9f07f048c57eedb2016",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 5
+    },
+    {
+      "current_stage_decision_node_id": "sha256:b678116cdfbbf5776b833fd8f8620a4d7e4d7a027b1651bc549325e9211941c7",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:ef137538c63491c9555537d3e6ead1e82ddc22b7980fc3a48c2f601946c466eb",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 6
+    },
+    {
+      "current_stage_decision_node_id": "sha256:e5bd7c98d965ff02eab80b837c18e2fe5867cdd2cf83fac925ff64f976b82974",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:ed80866db23552305f8a5b28f2cc41fc52409a7dde2d4620ff99d8c60fbc3a81"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:7e457e5194a23c533d510178b57a45469c69c2dc3e3f669aa12f080101e263a6",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 7
+    },
+    {
+      "current_stage_decision_node_id": "sha256:ea846d7d71ec90afd6bb2d2c53a8b418af1500ad6a1af9efd619ab98dede2a33",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:7b35ea41bf4895d0d45b59c366cbb2ced4d1e791c7859e44ea6d284d96615891",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 8
+    },
+    {
+      "current_stage_decision_node_id": "sha256:760a263b7cfc925d364583d9c3d98cb4792b7d50bb9a0b0b84cda3bc5c05a5eb",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:37dfd44b0e0e7a1248cd89ae99be99edb58713d36a5e5e4a2ae11d3463fb26b7",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 9
+    },
+    {
+      "current_stage_decision_node_id": "sha256:53774c7323bd6a0988ddf4743f6f88fbe20631bf8b729a59d42aae80c587fac0",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:0d2afbd99ce2239d6a901306ef10cbc8c98e3e91ef75891b5a08da2306c83458",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 10
+    },
+    {
+      "current_stage_decision_node_id": "sha256:9f0d9d406868c83c5fb0046827acd131c8196b0b35fb021b78a94811f8de3243",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 11
+    },
+    {
+      "current_stage_decision_node_id": "sha256:0dd3417d29bab31547e9f3d3d4b0ad8affa9eee6ba18b30a71c937bd7d4f0e33",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:71a8fbcf68cab826ae9649407123ab27647deae67bb76e78e58a7802c70ccd0d",
+        "weather:6193e47a4cc7a8e272b25ba1f6055993fb4602cc928ce98aabe767e773dd3198"
+      ],
+      "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+      "historical_decision_node_id": "sha256:e8c7063b76be5f32a2f70baeca5dc61a83ec772a3370e3e38875b26f1f37f1fd",
+      "historical_legal_record_ids": [
+        "flight:e7558dfbdebccfb7f708740cdac97bf2737c90423e83442be14ba9033cecff52",
+        "flight:fe225fab49113ca1923f3369c5b487556b51e9c56079b02ef4d85600c4dd3278"
+      ],
+      "node_index": 12
+    },
+    {
+      "current_stage_decision_node_id": "sha256:ced1d69a84bff8f9303c63a442e9cec941d5fe007224119e42111301ff9992fa",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:f0e396a7039fd211887f583d2b3c1ed60602761c90abcca9e112dcb04a814b81"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:2beb1ed920e20fe82191f23637801198ea889dc1ded3b6330c302fb74022ee57",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 0
+    },
+    {
+      "current_stage_decision_node_id": "sha256:3904eb70631fce82895233ddce8e1bd0d4a888fbc3f290e0b53c15fc0d6837a0",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:f0e396a7039fd211887f583d2b3c1ed60602761c90abcca9e112dcb04a814b81"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:59355523f898a05f8fa67d97f0a904e1868ce8f7745d8c4e36d2689ae1781686",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 1
+    },
+    {
+      "current_stage_decision_node_id": "sha256:47d4bc4b9b358d01f7acf0c707d1796b310ca903b2cfa00727c7d12a4ebac5c4",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:f0e396a7039fd211887f583d2b3c1ed60602761c90abcca9e112dcb04a814b81"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:4615893308ee6f33442113fcdd050ff057962b81ca8fa7f3a16fc0c3c6ac4075",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 2
+    },
+    {
+      "current_stage_decision_node_id": "sha256:945f5c6537639b5869d11d707290ecdd5bedf5591b451552fa800e94147c1c48",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:537f27f5e8e61e6bde4977ff6b3a0aaae9f338843cc34700e0fcc11c779ed8ef",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 3
+    },
+    {
+      "current_stage_decision_node_id": "sha256:5b845798e43eca3f633d7eee5ba4ce70a0057624fdb9dfb85751224c163540d7",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:1981ac30d3f0b744a9f8e06462b771c1d7389e703b697221c0ed4ff5bff1d5b5",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 4
+    },
+    {
+      "current_stage_decision_node_id": "sha256:12479352ddf5956ac9b9d3b70d60a16281348b35c873dc1c5e2e35ec1b3aa885",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:d0cb1ffd881a6a4567740428544fe4b1a6398add760046abf1f106276d3ae310",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 5
+    },
+    {
+      "current_stage_decision_node_id": "sha256:2948ef5a726f5e6112d9a9d54846f135f4c7d15023cccdeac9fd113e8b8aed68",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:84601c319ef3afb90bded08e9fe6bab63154059cc178de9c7218d3af8f0c0781",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 6
+    },
+    {
+      "current_stage_decision_node_id": "sha256:96b23dacf7fa23055ce96646f97553a507474ec4cfc6812a125780dca5908a38",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:836906af4c4cb32db66f08fd0ef723f9148ca4fcb94e23285e42587c95bf5ed1",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 7
+    },
+    {
+      "current_stage_decision_node_id": "sha256:ab363d0b64d8d3b0868d2abfbf298da894bae2e800621e6339875308aa274243",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:0cfe56aeedf36f4d7266f9e3765ac2b8a7039b58ab7dec08b7c2f7f0c8859549",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 8
+    },
+    {
+      "current_stage_decision_node_id": "sha256:7e88b667c7e9e26ecd29e1062df6709a018133e8ca2f1f6d3e4015887b3dc523",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:23501fd3abf68f010d6e878abce419b1c92120a457c84bb55e0615b76fd2bee3",
+        "weather:b4a07cb1a5342eaafd886b78485102ec317aeb1b1a1436c94322aad90cb2da15"
+      ],
+      "episode_id": "sha256:0000213b9588f86495b0a6e6509898bebcb682a67d312c90b8f7699bcee277b4",
+      "historical_decision_node_id": "sha256:6b6949ce65e1dc7d5db226bddca561ef3d4f556532b91b9cc46e262043eaab7c",
+      "historical_legal_record_ids": [
+        "flight:16673ea7800951b0692b96eb35d3bb30ff9cd2e33614dd4e9d7bca6d8238aae9",
+        "flight:211446a28ea65d0fa771ead1fe5b9e81717c977cd69937f25bd2dab10ce25018"
+      ],
+      "node_index": 9
+    },
+    {
+      "current_stage_decision_node_id": "sha256:78e911741ec82447d04bc36af173eee5d2fb5e12e4d8e0a873fed71b736e2662",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:16e7a37bc4186278ca37ddc1db70c5758c1a2a39b2e8ab1d76af0b79520633af",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 0
+    },
+    {
+      "current_stage_decision_node_id": "sha256:40d71848e332456cccb833579cbb48b66f320fec3b2975a172d9889e73c0623f",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:54b1fb859343754fcfca981b22a7b311c81dcb455e9144f18d491285b2895efb",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 1
+    },
+    {
+      "current_stage_decision_node_id": "sha256:883567fd2b9c3395e777d7cca42608e1c3b736f5aa8caf6b5de6aa8b576dd96a",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:cc63dd7c13be86695b61d603124ae061b5f0dc47004aa3737f272c9ba7d564a5",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 2
+    },
+    {
+      "current_stage_decision_node_id": "sha256:1819a42c09c2d860276b95f872d648ea9b5ce40bd20ead6b2349b07800cfb2d3",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:cb37b9e6f1436927b3ed92e9a873fc20ab593611a3b9ba54eec07dabfae5fc90",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 3
+    },
+    {
+      "current_stage_decision_node_id": "sha256:ecd929ff013368710d932d882f8dbf8f042f03332158d668d002803e1ab6ba92",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:18c19a6ec4b3b35cdcd45ddc61b72688c69cab4960acb8b97cb760f255fc0335",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 4
+    },
+    {
+      "current_stage_decision_node_id": "sha256:be11a959587ffba1afa3aa3ce8ecf7cf7fcf3b007435814441d8edc11d142a4c",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:0edc25ae4c5810b588b24a3915c10de328c661b337c1f6b6a208bbf00dff23ea",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 5
+    },
+    {
+      "current_stage_decision_node_id": "sha256:218187a10a7bab97172bbe558af84ec31a597f9e4edf7fac88e544c15cafd34a",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:2bfb57434ab8e14b1459e434a097ebca29d58c3c3b0a8691a3e4416ae439c833",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 6
+    },
+    {
+      "current_stage_decision_node_id": "sha256:bf5a2ae76111ac74108d3d4c2ca99f65976ed605200196e7ed386ee6db6d74eb",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:c171eec07c72eb8a02507749932fb5c846bc3646e878cf3867834ff8f2b26d2e",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 7
+    },
+    {
+      "current_stage_decision_node_id": "sha256:6e1a1e02b7c7e164b5448c0718453ea6925cbd78312357c7f74d13839f47f306",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:e9d8dbd8228b19a1bacbc5ae26b6f60fd292e954c200998d85ef97d88564f620"
+      ],
+      "episode_id": "sha256:000033f7e816498f6b15e5d723eb5d3785b9d055573cb27766bebcb9c71932bc",
+      "historical_decision_node_id": "sha256:e5d49e345d585424326458b73ee14626a27899573897c693c0515fbff8adf5a9",
+      "historical_legal_record_ids": [
+        "flight:2bbfe56883cf948863f5a9947f4931c39ba2d7e5eb7c3a7527e29b324d0b303c",
+        "flight:9d8d91a88d079ee9de2ba922ddf1d219b995ce1fe3888c21c114f10328ce7bd7"
+      ],
+      "node_index": 8
+    },
+    {
+      "current_stage_decision_node_id": "sha256:5ccb7ee4fd9c7e8859b9e861202f205256d6ec2ee1f5f8244d555af6ca040b66",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:7f14d6d3c76a441d3d448838320956946634817ca45399e499799092eb72177a",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 0
+    },
+    {
+      "current_stage_decision_node_id": "sha256:092a0a342bc9ff78f672724481c83659e0ffbc726e74d2df430f8d4a18de9d57",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:48e74e883df9beac85ac11f3e044ed9feb214674b5c28ba6aea8872fc4f57c59",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 1
+    },
+    {
+      "current_stage_decision_node_id": "sha256:120a612b6e49acff185abeedb1bc06520ce57ba5aff9924a4ceb8264a53a5f72",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:e08e39d2adc14c17ad6d1e0f95e6040e5773f90b75a5636c65d6c104b767c5fa",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 2
+    },
+    {
+      "current_stage_decision_node_id": "sha256:5ccf96cd1eb2e2ec6e8d1518d16f943bf0631f6c52d248a283590332092aa55b",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:658d34eb08f59703c68f3fefd474ce2fe1b2244566884dfcc2560fabdd74ea65",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 3
+    },
+    {
+      "current_stage_decision_node_id": "sha256:e96a63b19d8c19ae84c7f974b23793866395824554a3e8ca923de14655202e44",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:1e160db887c16cc871cab5cbaec73ad12623ad374ab1bd422b5dc6794dcfb717",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 4
+    },
+    {
+      "current_stage_decision_node_id": "sha256:907bfb1fea16d1e66be9200dc5aa546b9f30dc503958c15de8ee23391d3a45e5",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:de279a5521d79bb35bab617bcd5767bbb7f0f3e5cbedf3577c478054fadc7008",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 5
+    },
+    {
+      "current_stage_decision_node_id": "sha256:3293f91a420b2e690ed9a65783be6728071b8c89e62c844d48ca67e17182d983",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:234f1671fb0ce6a6e65ca53ce5019ca9e8e9d65ea8a0e765dd535906bf3208c5",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 6
+    },
+    {
+      "current_stage_decision_node_id": "sha256:3ec57ffa1d26018a213ad252656dfea1bb60758cf32c23b7fd0a72e366956728",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:f917b177385dab6ebcc3582a8227336285a7b64be24d5253e3accb42d8e7135f"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:adb9a64e23305fc4522dc94ad02b3b5e8d09dcb8b9b93a75ff59592c210afddb",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 7
+    },
+    {
+      "current_stage_decision_node_id": "sha256:7d00a04d15613113f573d86d2661ac1ebdbb06835b8b35b624581efcd1174a8b",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:b04e80611b444ae096df9603ff29f40a3027e3f63ffc2231fba3b6e247cfe6f3",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 8
+    },
+    {
+      "current_stage_decision_node_id": "sha256:ca6388c2ce2d8a21205d9ad82d17e5d89cfb0e15642fb3a3292c3801f4797fdd",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:dd958ddb3e03d994b3f553382e84c281b814922ef5c56fdf6a6341b173c9b6f3",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 9
+    },
+    {
+      "current_stage_decision_node_id": "sha256:480d6f41f109a94b2648209e2f80c9a864e21c42e7798bd3a2bf843381e0f6e4",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:685421e6c68fd3988b7723d515a0f8f124e84a08da939a3885317ac7cb39ff97",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 10
+    },
+    {
+      "current_stage_decision_node_id": "sha256:206cf01cd532bbbd82124dc6cc6314c9c4b6a403797fd2ec779ae40a3c91ffbb",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:c504a0b1060aa287da0eb6ea51cef2ed71296c11807059c9cfc08c9e595ae264",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 11
+    },
+    {
+      "current_stage_decision_node_id": "sha256:e2b12ece9bfda17973ca01e67ea7db090c43c8dbffd9537713120bf6c630e6f2",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:e0b679c0b1ebb5a8ddf9cf52aea74b104a88647064a8adef453d2fc5e7928793",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 12
+    },
+    {
+      "current_stage_decision_node_id": "sha256:d86fadd6856a9795cdfd1b073520e6d7089f69c76c9615c151c074f346327a48",
+      "current_typed_legal_record_ids": [
+        "canonical-flight:584dff85ec7fb0463320a26dc4db5cafed06e1f231fd1aaf2ed93a6ded621b83",
+        "weather:9d337f293622be74a64d4f3d92b26f83395e4b7fc495c6d3cc37a96df4ffac19"
+      ],
+      "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+      "historical_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+      "historical_legal_record_ids": [
+        "flight:3bfee79dca0022176689c836b39435e90844bf215f8fd25ba40bdc0e55f5182d",
+        "flight:dc59377552716b5960e29003715b6e38cc8ffd474ada840ee33a0a3be1c39ef3"
+      ],
+      "node_index": 13
+    }
+  ],
+  "registry_hash": "sha256:d261c8311ab326783d60baed71e8464a3eb61dabe72629a305cffe4f35f1d1ae",
+  "rolling_interval_minutes": 5,
+  "schema_version": "AIR_SLOT_EXP2_DATA2_DEVELOPMENT_CURRENT_STAGE_COHORT_V2",
+  "selector_disallows_variant_or_outcome_selection": true,
+  "selector_pre_outcome": true,
+  "selector_rule": "FIRST_N_ELIGIBLE_BY_STABLE_EPISODE_ID",
+  "selector_seed": 20260813,
+  "selector_seed_role": "DECLARED_NOT_USED_BY_FIRST_N_SELECTOR",
+  "source_dataset_id": "data2_2019",
+  "source_files": {
+    "data2\\raw\\bts\\ontime\\2019\\month=08\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_8.csv": "sha256:6e4705cc2c1bd24916e8dba72507be353e2dae3b78cb7140df65b91f79767106",
+    "data2\\raw\\bts\\ontime\\2019\\month=09\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_9.csv": "sha256:ad73c2e8df48179da8a4e2ea7e3e8ecf65c2279f82bc9e401e63eccd6af7a548"
+  },
+  "source_manifest_hash": "sha256:fc88827be0474f818c8877cdc0a76eea3d5188fe1c2339163188225280386b60",
+  "split": "DEVELOPMENT",
+  "split_containment_rule": "V5_FULL_EPISODE_SUPPORT_V1",
+  "stage_distribution": {
+    "changed_node_count": 3,
+    "changes": [
+      {
+        "current_stage": "POST_OB_PRE_TO",
+        "current_stage_decision_node_id": "sha256:fbbadbb1c0ac95473cded0455a8571ed9eb61a4da20d790ef770461a307fd258",
+        "decision_time": "2019-08-21T17:25:00+00:00",
+        "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+        "historical_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+        "historical_stage": "POST_IB_PRE_OB",
+        "node_index": 21
+      },
+      {
+        "current_stage": "POST_OB_PRE_TO",
+        "current_stage_decision_node_id": "sha256:9f0d9d406868c83c5fb0046827acd131c8196b0b35fb021b78a94811f8de3243",
+        "decision_time": "2019-09-10T17:12:00+00:00",
+        "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+        "historical_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+        "historical_stage": "POST_IB_PRE_OB",
+        "node_index": 11
+      },
+      {
+        "current_stage": "POST_OB_PRE_TO",
+        "current_stage_decision_node_id": "sha256:d86fadd6856a9795cdfd1b073520e6d7089f69c76c9615c151c074f346327a48",
+        "decision_time": "2019-09-18T02:26:00+00:00",
+        "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+        "historical_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+        "historical_stage": "POST_IB_PRE_OB",
+        "node_index": 13
+      }
+    ],
+    "current": {
+      "POST_IB_PRE_OB": 58,
+      "POST_OB_PRE_TO": 6,
+      "PRE_IB": 5
+    },
+    "historical": {
+      "POST_IB_PRE_OB": 61,
+      "POST_OB_PRE_TO": 3,
+      "PRE_IB": 5
+    }
+  },
+  "status": "NEW_DEVELOPMENT_COHORT_REFROZEN",
+  "successor_service_date_range": {
+    "end": "2019-09-30",
+    "start": "2019-08-01"
+  }
+}

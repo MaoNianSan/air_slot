@@ -15,9 +15,9 @@ def test_reconciliation_preserves_real_blockers_and_claim_boundaries(tmp_path):
 
     assert report["status"] == "READY_WITH_CURRENT_ARTIFACT_BLOCKERS"
     assert report["current_contracts"]["M1"]["model_id"] == "M1_V2_GRU_H32"
-    assert report["current_contracts"]["M1"]["development_inference_status"] == "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT"
-    assert report["current_contracts"]["M1"]["core_identity_exact"] is True
-    assert report["current_contracts"]["M1"]["stage_mismatch_count"] == 3
+    assert report["current_contracts"]["M1"]["development_inference_status"] == "NEW_DEVELOPMENT_COHORT_REFROZEN"
+    assert report["current_contracts"]["M1"]["current_stage_node_count"] == 69
+    assert report["current_contracts"]["M1"]["current_stage_changed_node_count"] == 3
     assert report["current_contracts"]["M2"]["artifact_status"] == "BLOCKED_M2_V2_FORMAL_VALUES_AND_AGGREGATE"
     assert report["current_contracts"]["M3"]["non_a00_v2_execution_enabled"] is False
     assert report["current_contracts"]["M4"]["production_mapping_enabled"] is False
@@ -28,7 +28,7 @@ def test_reconciliation_preserves_real_blockers_and_claim_boundaries(tmp_path):
     assert report["prohibitions"]["legacy_v1_promotion"] is True
     assert readiness["status"] == "AIR_SLOT_SCIENTIFIC_EXECUTION_READY"
     assert readiness["execution_status"] == "BLOCKED_CURRENT_REAL_ARTIFACT_GATES"
-    assert readiness["first_human_gate"] == "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT"
+    assert readiness["first_human_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
     assert readiness["manuscript_implementation_mismatch_count"] >= 2
     mismatches = report["manuscript_claim_audit"]["implementation_alignment"]["mismatches"]
     assert all(item["code"] == "MANUSCRIPT_IMPLEMENTATION_MISMATCH" for item in mismatches)
