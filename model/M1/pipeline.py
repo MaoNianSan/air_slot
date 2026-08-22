@@ -53,6 +53,7 @@ from .static_features import (
     static_reference_features_from_pre,
 )
 from .network import M1V2GRU, OrderedEventGRU
+from .history import HistoryEncoderMode
 from .scenarios import ancestral_sample_v2
 from .loss import hazard_pmf, monotone_positive_quantiles
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
@@ -147,9 +148,15 @@ class M1Pipeline:
 
     def __init__(self, model, contracts, temperatures=None, normalization=None,
                  static_context=None, calibration_contract=None,
-                 calibration_diagnostics=None, static_normalization=None):
+                 calibration_diagnostics=None, static_normalization=None,
+                 history_mode=None):
         self.model = model
         self.contracts = contracts
+        self.history_mode = HistoryEncoderMode(
+            history_mode or getattr(
+                model, "history_mode", HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+            )
+        )
         self.static_context = static_context or M1StaticReferenceContext()
         # Temperature registry (Tranche 3): the hazard temperature applies to
         # hazard logits; D_OB_ZERO / D_TX_ZERO apply ONLY to the hurdle zero
@@ -181,7 +188,8 @@ class M1Pipeline:
         return self.contracts
 
     @classmethod
-    def smoke(cls, input_size=4):
+    def smoke(cls, input_size=4, *,
+              history_mode=HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX):
         """Synthetic fixture helper; never resolves formal scientific bins.
 
         Smoke contracts carry the explicitly-labeled ``TEST_ONLY_LINEAR``
@@ -203,12 +211,16 @@ class M1Pipeline:
         torch.manual_seed(0)
         return cls(M1V2GRU(input_size, 16, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                            contracts["D_OB"], contracts["D_TX"],
-                           fast_input_size=input_size), contracts)
+                           fast_input_size=input_size,
+                           history_mode=history_mode), contracts,
+                   history_mode=history_mode)
 
     @classmethod
     def from_scientific_config(cls, scientific, *, input_size, normalization,
                                hidden_size=None, static_input_size=0,
-                               static_normalization=None):
+                               static_normalization=None,
+                               history_mode=HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX):
+        history_mode = HistoryEncoderMode(history_mode)
         if not isinstance(normalization, M1NormalizationArtifact) \
                 or normalization.fitted_split != "train":
             raise ValueError("M1_FORMAL_TRAIN_NORMALIZATION_REQUIRED")
@@ -253,9 +265,11 @@ class M1Pipeline:
         return cls(M1V2GRU(input_size, hidden, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                            contracts["D_OB"], contracts["D_TX"],
                            fast_input_size=input_size,
-                           static_input_size=static_input_size),
+                           static_input_size=static_input_size,
+                           history_mode=history_mode),
                    contracts, normalization=normalization,
-                   static_normalization=static_normalization)
+                   static_normalization=static_normalization,
+                   history_mode=history_mode)
 
     def _information_state(self, values, lengths, fast_features=None,
                            static_features=None, pre_state=None):
@@ -435,6 +449,7 @@ class M1Pipeline:
             "calibration_contract": self.calibration_contract.model_dump(mode="json"),
             "calibration_diagnostics": self.calibration_diagnostics,
             "static_input_size": getattr(self.model, "static_input_size", 0),
+            "history_mode": self.history_mode.value,
             "static_context": self.static_context.model_dump(mode="json"),
             "normalization": None if self.normalization is None
                 else self.normalization.model_dump(mode="json"),
@@ -466,7 +481,11 @@ class M1Pipeline:
                         contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                         contracts["D_OB"], contracts["D_TX"],
                         fast_input_size=fast_input_size,
-                        static_input_size=static_input_size)
+                        static_input_size=static_input_size,
+                        history_mode=payload.get(
+                            "history_mode",
+                            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+                        ))
         model.load_state_dict(payload["state"])
         normalization = payload.get("normalization")
         if normalization is not None:
@@ -490,4 +509,8 @@ class M1Pipeline:
                    static_context=static_context,
                    calibration_contract=calibration_contract,
                    calibration_diagnostics=payload.get("calibration_diagnostics"),
-                   static_normalization=static_normalization)
+                   static_normalization=static_normalization,
+                   history_mode=payload.get(
+                       "history_mode",
+                       HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+                   ))

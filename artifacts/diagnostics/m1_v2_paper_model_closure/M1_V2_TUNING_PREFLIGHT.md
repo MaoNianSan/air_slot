@@ -81,3 +81,12 @@ PAPER_FULL_RUN = false
 ```
 
 Stop and wait for human approval before any candidate run.
+
+## Stage 1 preparation
+
+`M1_V2_TUNING_STAGE1_MANIFEST.json` records the executable preparation for
+`NO_HISTORY`, `H8`, `H16`, and `H32`. The no-history baseline disables the
+history encoder and consumes only the current admissible observation/state
+input. The manifest also records the read-only Exp1 interface, including joint
+scenario identity, scenario-derived marginal summaries, history lineage, and
+the evaluation horizon grid `0,30,60,120,180,240,300,360,420,480` minutes.

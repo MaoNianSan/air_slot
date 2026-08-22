@@ -13,6 +13,13 @@ class HistoryRepresentation(str, Enum):
     ADAPTIVE_HISTORY = "ADAPTIVE_HISTORY"
 
 
+class HistoryEncoderMode(str, Enum):
+    """Model-side history contract for principal and baseline paths."""
+
+    FULL_ADAPTIVE_CAUSAL_PREFIX = "FULL_ADAPTIVE_CAUSAL_PREFIX"
+    NO_HISTORY_CURRENT_OBSERVATION = "NO_HISTORY_CURRENT_OBSERVATION"
+
+
 def adaptive_history(states: tuple[PREState, ...] | list[PREState]) -> tuple[PREState, ...]:
     """Return the full causal prefix inside one predecessor-successor episode."""
     output = tuple(states)

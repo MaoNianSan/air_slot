@@ -8,6 +8,7 @@ from .contracts import (
     TargetBinContract,
 )
 from .loss import hazard_pmf, monotone_positive_quantiles
+from .history import HistoryEncoderMode
 
 
 class OrderedEventGRU(nn.Module):
@@ -134,7 +135,8 @@ class M1V2GRU(nn.Module):
     Dependency graph (network, teacher forcing and ancestral sampler all obey
     this order):
 
-        h = GRU(full admissible causal history)
+        h = GRU(full admissible causal history), or a current-observation
+            projection for the explicit NO_HISTORY baseline
         state = concat(recurrent_repr=h, fast_repr=fast_encoder(r_fast))
         T_IB_A00 ~ p(. | state)             discrete hazard over remaining time
         D_OB     ~ p(. | T_IB_A00, state)   hurdle + positive conditional quantile
@@ -168,6 +170,9 @@ class M1V2GRU(nn.Module):
         *,
         fast_input_size: int = 0,
         static_input_size: int = 0,
+        history_mode: HistoryEncoderMode | str = (
+            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX
+        ),
     ):
         super().__init__()
         self.input_size = input_size
@@ -177,6 +182,10 @@ class M1V2GRU(nn.Module):
         self.d_tx_contract = d_tx
         self.fast_input_size = int(fast_input_size)
         self.static_input_size = int(static_input_size)
+        self.history_mode = HistoryEncoderMode(history_mode)
+        self.history_encoder_enabled = (
+            self.history_mode is HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX
+        )
         # chi = concat(GRU(history), projection(r_fast), projection(c_static)):
         # recurrent hidden block + projected current/local block + projected
         # static/reference block (zero block when a branch is absent).
@@ -196,8 +205,16 @@ class M1V2GRU(nn.Module):
             StaticRepresentationEncoder(self.static_input_size, hidden_size)
             if self.static_input_size > 0 else None
         )
-        self.gru = nn.GRU(
-            input_size, hidden_size, num_layers=1, batch_first=True, bidirectional=False
+        self.gru = (
+            nn.GRU(
+                input_size, hidden_size, num_layers=1,
+                batch_first=True, bidirectional=False,
+            )
+            if self.history_encoder_enabled else None
+        )
+        self.current_observation_encoder = (
+            None if self.history_encoder_enabled
+            else nn.Linear(input_size, hidden_size)
         )
         self.hazard_head = nn.Linear(self.state_width, hazard.finite_class_count)
         self.ib_embedding = nn.Embedding(hazard.class_count, hidden_size)
@@ -208,6 +225,17 @@ class M1V2GRU(nn.Module):
         self.d_tx_quantile_head = nn.Linear(self.state_width + hidden_size * 2, d_tx.quantile_count)
 
     def encode_history(self, values: torch.Tensor, lengths: torch.Tensor) -> torch.Tensor:
+        if not self.history_encoder_enabled:
+            if values.ndim != 3 or lengths.ndim != 1:
+                raise ValueError("M1_NO_HISTORY_INPUT_SHAPE_INVALID")
+            if values.shape[0] != lengths.shape[0]:
+                raise ValueError("M1_NO_HISTORY_BATCH_LENGTH_MISMATCH")
+            lengths = lengths.to(values.device)
+            if bool((lengths < 1).any()) or bool((lengths > values.shape[1]).any()):
+                raise ValueError("M1_NO_HISTORY_LENGTH_INVALID")
+            rows = torch.arange(values.shape[0], device=values.device)
+            current = values[rows, lengths - 1]
+            return self.current_observation_encoder(current)
         packed = nn.utils.rnn.pack_padded_sequence(
             values, lengths.cpu(), batch_first=True, enforce_sorted=False
         )
