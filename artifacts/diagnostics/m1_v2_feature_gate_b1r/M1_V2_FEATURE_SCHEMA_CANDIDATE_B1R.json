@@ -1,0 +1,1062 @@
+{
+  "applied_decisions": {
+    "B1-D01": "REMOVE",
+    "B1-D02": "COLLAPSE_OBJECT_LEVEL",
+    "B1-D03": "METADATA_ONLY",
+    "B1-D04": "REDUCE",
+    "B1-D05": "REMOVE",
+    "B1-D06": "TRAIN_STANDARDIZED",
+    "B1-D07": "PER_FEATURE_MASKED_BLOCK"
+  },
+  "dynamic_feature_count": 41,
+  "features": [
+    {
+      "EXPECTED_INFORMATION_ROLE": "FACTUAL_OPERATIONAL_STATE",
+      "FEATURE": "state.ib_realized",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_STATE",
+      "SOURCE_PRE_VARIABLE": "decision_node.operational_stage",
+      "TRANSFORMATION": "FACTUAL_STAGE_CONTRACTION_TO_REALIZED_FLAG",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FACTUAL_OPERATIONAL_STATE",
+      "FEATURE": "state.ob_realized",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_STATE",
+      "SOURCE_PRE_VARIABLE": "decision_node.operational_stage",
+      "TRANSFORMATION": "FACTUAL_STAGE_CONTRACTION_TO_REALIZED_FLAG",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FACTUAL_OPERATIONAL_STATE",
+      "FEATURE": "state.to_realized",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_STATE",
+      "SOURCE_PRE_VARIABLE": "decision_node.operational_stage",
+      "TRANSFORMATION": "FACTUAL_STAGE_CONTRACTION_TO_REALIZED_FLAG",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_SCHEDULE_POSITION",
+      "FEATURE": "schedule.signed_minutes_to_crs_departure",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_SCHEDULE",
+      "SOURCE_PRE_VARIABLE": "successor_state.schedule_reference.scheduled_departure_utc",
+      "TRANSFORMATION": "SIGNED_MINUTES_TO_CRS_DEPARTURE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "SCHEDULED_DEPARTURE_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.temperature_c",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.temperature_c",
+      "TRANSFORMATION": "CURRENT_CANONICAL_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "RAW_FIELD_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.dewpoint_c",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.dewpoint_c",
+      "TRANSFORMATION": "CURRENT_CANONICAL_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "RAW_FIELD_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.wind_direction_deg.sin",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "SIN_COS_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.wind_direction_deg",
+      "TRANSFORMATION": "CIRCULAR_SIN_COS_PAIR",
+      "UNIT": "unitless",
+      "VALIDITY_RULE": "RAW_FIELD_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.wind_direction_deg.cos",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "SIN_COS_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.wind_direction_deg",
+      "TRANSFORMATION": "CIRCULAR_SIN_COS_PAIR",
+      "UNIT": "unitless",
+      "VALIDITY_RULE": "RAW_FIELD_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.wind_speed_mps",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.wind_speed_mps",
+      "TRANSFORMATION": "CURRENT_CANONICAL_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "RAW_FIELD_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.qnh_hpa",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.qnh_hpa",
+      "TRANSFORMATION": "CURRENT_CANONICAL_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "RAW_FIELD_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.visibility_m",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_RAW_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.visibility_m",
+      "TRANSFORMATION": "CURRENT_CANONICAL_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "RAW_FIELD_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CURRENT_WEATHER_STATE",
+      "FEATURE": "weather.ceiling_base_m",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_WITH_FINITE_UNLIMITED_MISSING_THREE_STATE",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CURRENT_WEATHER",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.ceiling_base_m",
+      "TRANSFORMATION": "CURRENT_CANONICAL_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "FINITE_CEILING_ONLY"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "LOCAL_CHANGE",
+      "FEATURE": "delta.weather.temperature_c",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "ZERO_WITH_DERIVED_MISSING_MASK",
+      "NORMALIZATION": "DERIVED_FROM_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "LOCAL_DELTA",
+      "SOURCE_PRE_VARIABLE": "weather.temperature_c",
+      "TRANSFORMATION": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
+      "UNIT": "train_standard_deviation_difference",
+      "VALIDITY_RULE": "CURRENT_AND_IMMEDIATELY_PREVIOUS_LEGAL_NODE_OBSERVED"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "LOCAL_CHANGE",
+      "FEATURE": "delta.weather.dewpoint_c",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "ZERO_WITH_DERIVED_MISSING_MASK",
+      "NORMALIZATION": "DERIVED_FROM_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "LOCAL_DELTA",
+      "SOURCE_PRE_VARIABLE": "weather.dewpoint_c",
+      "TRANSFORMATION": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
+      "UNIT": "train_standard_deviation_difference",
+      "VALIDITY_RULE": "CURRENT_AND_IMMEDIATELY_PREVIOUS_LEGAL_NODE_OBSERVED"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "LOCAL_CHANGE",
+      "FEATURE": "delta.weather.wind_speed_mps",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "ZERO_WITH_DERIVED_MISSING_MASK",
+      "NORMALIZATION": "DERIVED_FROM_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "LOCAL_DELTA",
+      "SOURCE_PRE_VARIABLE": "weather.wind_speed_mps",
+      "TRANSFORMATION": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
+      "UNIT": "train_standard_deviation_difference",
+      "VALIDITY_RULE": "CURRENT_AND_IMMEDIATELY_PREVIOUS_LEGAL_NODE_OBSERVED"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "LOCAL_CHANGE",
+      "FEATURE": "delta.weather.qnh_hpa",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "ZERO_WITH_DERIVED_MISSING_MASK",
+      "NORMALIZATION": "DERIVED_FROM_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "LOCAL_DELTA",
+      "SOURCE_PRE_VARIABLE": "weather.qnh_hpa",
+      "TRANSFORMATION": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
+      "UNIT": "train_standard_deviation_difference",
+      "VALIDITY_RULE": "CURRENT_AND_IMMEDIATELY_PREVIOUS_LEGAL_NODE_OBSERVED"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "LOCAL_CHANGE",
+      "FEATURE": "delta.weather.visibility_m",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "ZERO_WITH_DERIVED_MISSING_MASK",
+      "NORMALIZATION": "DERIVED_FROM_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "LOCAL_DELTA",
+      "SOURCE_PRE_VARIABLE": "weather.visibility_m",
+      "TRANSFORMATION": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
+      "UNIT": "train_standard_deviation_difference",
+      "VALIDITY_RULE": "CURRENT_AND_IMMEDIATELY_PREVIOUS_LEGAL_NODE_OBSERVED"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "LOCAL_CHANGE",
+      "FEATURE": "delta.weather.ceiling_base_m",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "ZERO_WITH_DERIVED_MISSING_MASK",
+      "NORMALIZATION": "DERIVED_FROM_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "LOCAL_DELTA",
+      "SOURCE_PRE_VARIABLE": "weather.ceiling_base_m",
+      "TRANSFORMATION": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
+      "UNIT": "train_standard_deviation_difference",
+      "VALIDITY_RULE": "CURRENT_AND_IMMEDIATELY_PREVIOUS_LEGAL_NODE_OBSERVED"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "LOCAL_CHANGE",
+      "FEATURE": "delta.schedule.signed_minutes_to_crs_departure",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "ZERO_WITH_DERIVED_MISSING_MASK",
+      "NORMALIZATION": "DERIVED_FROM_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "LOCAL_DELTA",
+      "SOURCE_PRE_VARIABLE": "schedule.signed_minutes_to_crs_departure",
+      "TRANSFORMATION": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
+      "UNIT": "train_standard_deviation_difference",
+      "VALIDITY_RULE": "CURRENT_AND_IMMEDIATELY_PREVIOUS_LEGAL_NODE_OBSERVED"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "weather.temperature_c.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "weather.temperature_c",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "weather.dewpoint_c.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "weather.dewpoint_c",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "weather.wind_direction_deg.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "weather.wind_direction_deg",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "weather.wind_speed_mps.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "weather.wind_speed_mps",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "weather.qnh_hpa.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "weather.qnh_hpa",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "weather.visibility_m.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "weather.visibility_m",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "weather.ceiling_base_m.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "weather.ceiling_base_m",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "current_weather.stale_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "STALE_MASK",
+      "SOURCE_PRE_VARIABLE": "variable_lineage.current_weather",
+      "TRANSFORMATION": "STALE_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "current_weather.fallback_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "FALLBACK_MASK",
+      "SOURCE_PRE_VARIABLE": "variable_lineage.current_weather",
+      "TRANSFORMATION": "FALLBACK_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "schedule.signed_minutes_to_crs_departure.missing_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "RAW_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "schedule.signed_minutes_to_crs_departure",
+      "TRANSFORMATION": "RAW_MISSING_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "schedule.signed_minutes_to_crs_departure.stale_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "STALE_MASK",
+      "SOURCE_PRE_VARIABLE": "schedule.signed_minutes_to_crs_departure",
+      "TRANSFORMATION": "STALE_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "FIELD_OR_OBJECT_QUALITY_MASK",
+      "FEATURE": "schedule.signed_minutes_to_crs_departure.fallback_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "FALLBACK_MASK",
+      "SOURCE_PRE_VARIABLE": "schedule.signed_minutes_to_crs_departure",
+      "TRANSFORMATION": "FALLBACK_MASK",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "CEILING_THREE_STATE_ENCODING",
+      "FEATURE": "weather.ceiling_base_m.unlimited_mask",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "CEILING_STATUS",
+      "SOURCE_PRE_VARIABLE": "current_state.current_weather.ceiling_status",
+      "TRANSFORMATION": "CEILING_STATUS_EQUALS_UNLIMITED",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "DERIVED_FEATURE_VALIDITY",
+      "FEATURE": "delta.weather.temperature_c.derived_missing_mask",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "DERIVED_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "delta.weather.temperature_c",
+      "TRANSFORMATION": "DERIVED_VALIDITY_NEGATION",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "DERIVED_FEATURE_VALIDITY",
+      "FEATURE": "delta.weather.dewpoint_c.derived_missing_mask",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "DERIVED_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "delta.weather.dewpoint_c",
+      "TRANSFORMATION": "DERIVED_VALIDITY_NEGATION",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "DERIVED_FEATURE_VALIDITY",
+      "FEATURE": "delta.weather.wind_speed_mps.derived_missing_mask",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "DERIVED_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "delta.weather.wind_speed_mps",
+      "TRANSFORMATION": "DERIVED_VALIDITY_NEGATION",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "DERIVED_FEATURE_VALIDITY",
+      "FEATURE": "delta.weather.qnh_hpa.derived_missing_mask",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "DERIVED_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "delta.weather.qnh_hpa",
+      "TRANSFORMATION": "DERIVED_VALIDITY_NEGATION",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "DERIVED_FEATURE_VALIDITY",
+      "FEATURE": "delta.weather.visibility_m.derived_missing_mask",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "DERIVED_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "delta.weather.visibility_m",
+      "TRANSFORMATION": "DERIVED_VALIDITY_NEGATION",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "DERIVED_FEATURE_VALIDITY",
+      "FEATURE": "delta.weather.ceiling_base_m.derived_missing_mask",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "DERIVED_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "delta.weather.ceiling_base_m",
+      "TRANSFORMATION": "DERIVED_VALIDITY_NEGATION",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "DERIVED_FEATURE_VALIDITY",
+      "FEATURE": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask",
+      "HISTORY_SCOPE": "PREVIOUS_NODE_LOCAL",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "DERIVED_MISSING_MASK",
+      "SOURCE_PRE_VARIABLE": "delta.schedule.signed_minutes_to_crs_departure",
+      "TRANSFORMATION": "DERIVED_VALIDITY_NEGATION",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "OBSERVATION_FRESHNESS",
+      "FEATURE": "weather.observation_age_minutes",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "ZERO_WITHOUT_DEDICATED_AGE_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "OBSERVATION_AGE",
+      "SOURCE_PRE_VARIABLE": "variable_lineage.current_weather.age_seconds",
+      "TRANSFORMATION": "AGE_SECONDS_TO_MINUTES",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "CURRENT_WEATHER_LINEAGE_AGE_PRESENT"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "OBJECT_SUPPORT_STATE",
+      "FEATURE": "current_weather.support.ABSTAIN",
+      "HISTORY_SCOPE": "CURRENT_ONLY",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "SUPPORT_ENCODING",
+      "SOURCE_PRE_VARIABLE": "current_weather.support_state",
+      "TRANSFORMATION": "ONE_HOT",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "STATIC_OPERATIONAL_REFERENCE",
+      "FEATURE": "turnaround_reference_minutes",
+      "HISTORY_SCOPE": "STATIC_REFERENCE",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_PER_FEATURE_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "STATIC_REFERENCE",
+      "SOURCE_PRE_VARIABLE": "successor_state.turnaround_reference.value",
+      "TRANSFORMATION": "TRAIN_EPISODE_LEVEL_STANDARDIZED_REFERENCE_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "PUBLISHED_MODEL_FEATURE_WITH_REFERENCE_ID_AND_FREEZE_ID"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "STATIC_OPERATIONAL_REFERENCE",
+      "FEATURE": "taxi_reference_minutes",
+      "HISTORY_SCOPE": "STATIC_REFERENCE",
+      "MISSING_ENCODING": "ZERO_NEUTRAL_WITH_PER_FEATURE_MISSING_MASK",
+      "NORMALIZATION": "TRAIN_STANDARDIZED",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "STATIC_REFERENCE",
+      "SOURCE_PRE_VARIABLE": "successor_state.taxi_reference.value",
+      "TRANSFORMATION": "TRAIN_EPISODE_LEVEL_STANDARDIZED_REFERENCE_VALUE",
+      "UNIT": "train_standard_deviation",
+      "VALIDITY_RULE": "PUBLISHED_MODEL_FEATURE_WITH_REFERENCE_ID_AND_FREEZE_ID"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "STATIC_REFERENCE_VALIDITY",
+      "FEATURE": "turnaround_reference_minutes.missing_mask",
+      "HISTORY_SCOPE": "STATIC_REFERENCE",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "STATIC_REFERENCE",
+      "SOURCE_PRE_VARIABLE": "successor_state.turnaround_reference.value",
+      "TRANSFORMATION": "PER_FEATURE_REFERENCE_MISSINGNESS",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    },
+    {
+      "EXPECTED_INFORMATION_ROLE": "STATIC_REFERENCE_VALIDITY",
+      "FEATURE": "taxi_reference_minutes.missing_mask",
+      "HISTORY_SCOPE": "STATIC_REFERENCE",
+      "MISSING_ENCODING": "NOT_APPLICABLE",
+      "NORMALIZATION": "BINARY_NO_SCALE",
+      "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
+      "SEMANTIC_GROUP": "STATIC_REFERENCE",
+      "SOURCE_PRE_VARIABLE": "successor_state.taxi_reference.value",
+      "TRANSFORMATION": "PER_FEATURE_REFERENCE_MISSINGNESS",
+      "UNIT": "binary",
+      "VALIDITY_RULE": "ALWAYS_DEFINED_BY_ENCODER"
+    }
+  ],
+  "groups": {
+    "AR_SUMMARY": [],
+    "CEILING_STATUS": [
+      {
+        "branch": "dynamic",
+        "feature": "weather.ceiling_base_m.unlimited_mask",
+        "ordered_index": 31
+      }
+    ],
+    "CURRENT_SCHEDULE": [
+      {
+        "branch": "dynamic",
+        "feature": "schedule.signed_minutes_to_crs_departure",
+        "ordered_index": 3
+      }
+    ],
+    "CURRENT_STATE": [
+      {
+        "branch": "dynamic",
+        "feature": "state.ib_realized",
+        "ordered_index": 0
+      },
+      {
+        "branch": "dynamic",
+        "feature": "state.ob_realized",
+        "ordered_index": 1
+      },
+      {
+        "branch": "dynamic",
+        "feature": "state.to_realized",
+        "ordered_index": 2
+      }
+    ],
+    "CURRENT_WEATHER": [
+      {
+        "branch": "dynamic",
+        "feature": "weather.temperature_c",
+        "ordered_index": 4
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.dewpoint_c",
+        "ordered_index": 5
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.wind_direction_deg.sin",
+        "ordered_index": 6
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.wind_direction_deg.cos",
+        "ordered_index": 7
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.wind_speed_mps",
+        "ordered_index": 8
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.qnh_hpa",
+        "ordered_index": 9
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.visibility_m",
+        "ordered_index": 10
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.ceiling_base_m",
+        "ordered_index": 11
+      }
+    ],
+    "DERIVED_MISSING_MASK": [
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.temperature_c.derived_missing_mask",
+        "ordered_index": 32
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.dewpoint_c.derived_missing_mask",
+        "ordered_index": 33
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.wind_speed_mps.derived_missing_mask",
+        "ordered_index": 34
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.qnh_hpa.derived_missing_mask",
+        "ordered_index": 35
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.visibility_m.derived_missing_mask",
+        "ordered_index": 36
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.ceiling_base_m.derived_missing_mask",
+        "ordered_index": 37
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask",
+        "ordered_index": 38
+      }
+    ],
+    "EVIDENCE_ENCODING": [],
+    "FALLBACK_MASK": [
+      {
+        "branch": "dynamic",
+        "feature": "current_weather.fallback_mask",
+        "ordered_index": 27
+      },
+      {
+        "branch": "dynamic",
+        "feature": "schedule.signed_minutes_to_crs_departure.fallback_mask",
+        "ordered_index": 30
+      }
+    ],
+    "LOCAL_DELTA": [
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.temperature_c",
+        "ordered_index": 12
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.dewpoint_c",
+        "ordered_index": 13
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.wind_speed_mps",
+        "ordered_index": 14
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.qnh_hpa",
+        "ordered_index": 15
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.visibility_m",
+        "ordered_index": 16
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.weather.ceiling_base_m",
+        "ordered_index": 17
+      },
+      {
+        "branch": "dynamic",
+        "feature": "delta.schedule.signed_minutes_to_crs_departure",
+        "ordered_index": 18
+      }
+    ],
+    "OBSERVATION_AGE": [
+      {
+        "branch": "dynamic",
+        "feature": "weather.observation_age_minutes",
+        "ordered_index": 39
+      }
+    ],
+    "RAW_MISSING_MASK": [
+      {
+        "branch": "dynamic",
+        "feature": "weather.temperature_c.missing_mask",
+        "ordered_index": 19
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.dewpoint_c.missing_mask",
+        "ordered_index": 20
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.wind_direction_deg.missing_mask",
+        "ordered_index": 21
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.wind_speed_mps.missing_mask",
+        "ordered_index": 22
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.qnh_hpa.missing_mask",
+        "ordered_index": 23
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.visibility_m.missing_mask",
+        "ordered_index": 24
+      },
+      {
+        "branch": "dynamic",
+        "feature": "weather.ceiling_base_m.missing_mask",
+        "ordered_index": 25
+      },
+      {
+        "branch": "dynamic",
+        "feature": "schedule.signed_minutes_to_crs_departure.missing_mask",
+        "ordered_index": 28
+      }
+    ],
+    "STALE_MASK": [
+      {
+        "branch": "dynamic",
+        "feature": "current_weather.stale_mask",
+        "ordered_index": 26
+      },
+      {
+        "branch": "dynamic",
+        "feature": "schedule.signed_minutes_to_crs_departure.stale_mask",
+        "ordered_index": 29
+      }
+    ],
+    "STATIC_REFERENCE": [
+      {
+        "branch": "static",
+        "feature": "turnaround_reference_minutes",
+        "ordered_index": 41
+      },
+      {
+        "branch": "static",
+        "feature": "taxi_reference_minutes",
+        "ordered_index": 42
+      },
+      {
+        "branch": "static",
+        "feature": "turnaround_reference_minutes.missing_mask",
+        "ordered_index": 43
+      },
+      {
+        "branch": "static",
+        "feature": "taxi_reference_minutes.missing_mask",
+        "ordered_index": 44
+      }
+    ],
+    "SUPPORT_ENCODING": [
+      {
+        "branch": "dynamic",
+        "feature": "current_weather.support.ABSTAIN",
+        "ordered_index": 40
+      }
+    ]
+  },
+  "metadata_retained": {
+    "evidence_class": "PRE_LINEAGE_AND_ARTIFACT_PROVENANCE",
+    "full_support_state": "PRE_LINEAGE_AND_ARTIFACT_PROVENANCE",
+    "identity_and_reference_ids": "STATIC_CONTEXT_LINEAGE_ONLY_NO_ORDINAL_ENCODING",
+    "static_context_lineage": "CACHE_ROUNDTRIP_RETAINED"
+  },
+  "ordered_dynamic_features": [
+    "state.ib_realized",
+    "state.ob_realized",
+    "state.to_realized",
+    "schedule.signed_minutes_to_crs_departure",
+    "weather.temperature_c",
+    "weather.dewpoint_c",
+    "weather.wind_direction_deg.sin",
+    "weather.wind_direction_deg.cos",
+    "weather.wind_speed_mps",
+    "weather.qnh_hpa",
+    "weather.visibility_m",
+    "weather.ceiling_base_m",
+    "delta.weather.temperature_c",
+    "delta.weather.dewpoint_c",
+    "delta.weather.wind_speed_mps",
+    "delta.weather.qnh_hpa",
+    "delta.weather.visibility_m",
+    "delta.weather.ceiling_base_m",
+    "delta.schedule.signed_minutes_to_crs_departure",
+    "weather.temperature_c.missing_mask",
+    "weather.dewpoint_c.missing_mask",
+    "weather.wind_direction_deg.missing_mask",
+    "weather.wind_speed_mps.missing_mask",
+    "weather.qnh_hpa.missing_mask",
+    "weather.visibility_m.missing_mask",
+    "weather.ceiling_base_m.missing_mask",
+    "current_weather.stale_mask",
+    "current_weather.fallback_mask",
+    "schedule.signed_minutes_to_crs_departure.missing_mask",
+    "schedule.signed_minutes_to_crs_departure.stale_mask",
+    "schedule.signed_minutes_to_crs_departure.fallback_mask",
+    "weather.ceiling_base_m.unlimited_mask",
+    "delta.weather.temperature_c.derived_missing_mask",
+    "delta.weather.dewpoint_c.derived_missing_mask",
+    "delta.weather.wind_speed_mps.derived_missing_mask",
+    "delta.weather.qnh_hpa.derived_missing_mask",
+    "delta.weather.visibility_m.derived_missing_mask",
+    "delta.weather.ceiling_base_m.derived_missing_mask",
+    "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask",
+    "weather.observation_age_minutes",
+    "current_weather.support.ABSTAIN"
+  ],
+  "ordered_static_features": [
+    "turnaround_reference_minutes",
+    "taxi_reference_minutes",
+    "turnaround_reference_minutes.missing_mask",
+    "taxi_reference_minutes.missing_mask"
+  ],
+  "removed": {
+    "added_object_level_features": [
+      "current_weather.stale_mask",
+      "current_weather.fallback_mask"
+    ],
+    "all_exact_removed_feature_names": [
+      "ar.weather.temperature_c",
+      "ar.weather.dewpoint_c",
+      "ar.weather.wind_speed_mps",
+      "ar.weather.qnh_hpa",
+      "ar.weather.visibility_m",
+      "ar.weather.ceiling_base_m",
+      "weather.temperature_c.stale_mask",
+      "weather.temperature_c.fallback_mask",
+      "weather.dewpoint_c.stale_mask",
+      "weather.dewpoint_c.fallback_mask",
+      "weather.wind_direction_deg.stale_mask",
+      "weather.wind_direction_deg.fallback_mask",
+      "weather.wind_speed_mps.stale_mask",
+      "weather.wind_speed_mps.fallback_mask",
+      "weather.qnh_hpa.stale_mask",
+      "weather.qnh_hpa.fallback_mask",
+      "weather.visibility_m.stale_mask",
+      "weather.visibility_m.fallback_mask",
+      "weather.ceiling_base_m.stale_mask",
+      "weather.ceiling_base_m.fallback_mask",
+      "state.ib_realized.missing_mask",
+      "state.ib_realized.stale_mask",
+      "state.ib_realized.fallback_mask",
+      "state.ob_realized.missing_mask",
+      "state.ob_realized.stale_mask",
+      "state.ob_realized.fallback_mask",
+      "state.to_realized.missing_mask",
+      "state.to_realized.stale_mask",
+      "state.to_realized.fallback_mask",
+      "ar.weather.temperature_c.derived_missing_mask",
+      "ar.weather.dewpoint_c.derived_missing_mask",
+      "ar.weather.wind_speed_mps.derived_missing_mask",
+      "ar.weather.qnh_hpa.derived_missing_mask",
+      "ar.weather.visibility_m.derived_missing_mask",
+      "ar.weather.ceiling_base_m.derived_missing_mask",
+      "current_weather.evidence.DIRECT",
+      "current_weather.evidence.DERIVED",
+      "current_weather.evidence.DOMAIN_PROXY",
+      "current_weather.evidence.EMPIRICAL_REFERENCE",
+      "current_weather.evidence.EXTERNAL_STANDARD",
+      "current_weather.evidence.SCENARIO_PARAMETER",
+      "current_weather.evidence.UNSUPPORTED",
+      "schedule_reference.evidence.DIRECT",
+      "schedule_reference.evidence.DERIVED",
+      "schedule_reference.evidence.DOMAIN_PROXY",
+      "schedule_reference.evidence.EMPIRICAL_REFERENCE",
+      "schedule_reference.evidence.EXTERNAL_STANDARD",
+      "schedule_reference.evidence.SCENARIO_PARAMETER",
+      "schedule_reference.evidence.UNSUPPORTED",
+      "current_state.evidence.DIRECT",
+      "current_state.evidence.DERIVED",
+      "current_state.evidence.DOMAIN_PROXY",
+      "current_state.evidence.EMPIRICAL_REFERENCE",
+      "current_state.evidence.EXTERNAL_STANDARD",
+      "current_state.evidence.SCENARIO_PARAMETER",
+      "current_state.evidence.UNSUPPORTED",
+      "current_weather.support.SUPPORTED",
+      "current_weather.support.DEGRADED",
+      "schedule_reference.support.SUPPORTED",
+      "schedule_reference.support.DEGRADED",
+      "schedule_reference.support.ABSTAIN",
+      "current_state.support.SUPPORTED",
+      "current_state.support.DEGRADED",
+      "current_state.support.ABSTAIN"
+    ],
+    "evidence_numeric": [
+      "current_weather.evidence.DIRECT",
+      "current_weather.evidence.DERIVED",
+      "current_weather.evidence.DOMAIN_PROXY",
+      "current_weather.evidence.EMPIRICAL_REFERENCE",
+      "current_weather.evidence.EXTERNAL_STANDARD",
+      "current_weather.evidence.SCENARIO_PARAMETER",
+      "current_weather.evidence.UNSUPPORTED",
+      "schedule_reference.evidence.DIRECT",
+      "schedule_reference.evidence.DERIVED",
+      "schedule_reference.evidence.DOMAIN_PROXY",
+      "schedule_reference.evidence.EMPIRICAL_REFERENCE",
+      "schedule_reference.evidence.EXTERNAL_STANDARD",
+      "schedule_reference.evidence.SCENARIO_PARAMETER",
+      "schedule_reference.evidence.UNSUPPORTED",
+      "current_state.evidence.DIRECT",
+      "current_state.evidence.DERIVED",
+      "current_state.evidence.DOMAIN_PROXY",
+      "current_state.evidence.EMPIRICAL_REFERENCE",
+      "current_state.evidence.EXTERNAL_STANDARD",
+      "current_state.evidence.SCENARIO_PARAMETER",
+      "current_state.evidence.UNSUPPORTED"
+    ],
+    "full_prefix_ar": [
+      "ar.weather.temperature_c",
+      "ar.weather.dewpoint_c",
+      "ar.weather.wind_speed_mps",
+      "ar.weather.qnh_hpa",
+      "ar.weather.visibility_m",
+      "ar.weather.ceiling_base_m",
+      "ar.weather.temperature_c.derived_missing_mask",
+      "ar.weather.dewpoint_c.derived_missing_mask",
+      "ar.weather.wind_speed_mps.derived_missing_mask",
+      "ar.weather.qnh_hpa.derived_missing_mask",
+      "ar.weather.visibility_m.derived_missing_mask",
+      "ar.weather.ceiling_base_m.derived_missing_mask"
+    ],
+    "other_structural_constants": [],
+    "structural_state_masks": [
+      "state.ib_realized.missing_mask",
+      "state.ib_realized.stale_mask",
+      "state.ib_realized.fallback_mask",
+      "state.ob_realized.missing_mask",
+      "state.ob_realized.stale_mask",
+      "state.ob_realized.fallback_mask",
+      "state.to_realized.missing_mask",
+      "state.to_realized.stale_mask",
+      "state.to_realized.fallback_mask"
+    ],
+    "support_numeric": [
+      "current_weather.support.SUPPORTED",
+      "current_weather.support.DEGRADED",
+      "schedule_reference.support.SUPPORTED",
+      "schedule_reference.support.DEGRADED",
+      "schedule_reference.support.ABSTAIN",
+      "current_state.support.SUPPORTED",
+      "current_state.support.DEGRADED",
+      "current_state.support.ABSTAIN"
+    ],
+    "weather_duplicated_masks": [
+      "weather.temperature_c.stale_mask",
+      "weather.temperature_c.fallback_mask",
+      "weather.dewpoint_c.stale_mask",
+      "weather.dewpoint_c.fallback_mask",
+      "weather.wind_direction_deg.stale_mask",
+      "weather.wind_direction_deg.fallback_mask",
+      "weather.wind_speed_mps.stale_mask",
+      "weather.wind_speed_mps.fallback_mask",
+      "weather.qnh_hpa.stale_mask",
+      "weather.qnh_hpa.fallback_mask",
+      "weather.visibility_m.stale_mask",
+      "weather.visibility_m.fallback_mask",
+      "weather.ceiling_base_m.stale_mask",
+      "weather.ceiling_base_m.fallback_mask"
+    ]
+  },
+  "schema_hash": "sha256:0fa54b2b5d2db31ed15b10c6a4f3eba8dd1b3e3e82300cc70f6417266057930b",
+  "schema_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_SCHEMA_HASH",
+  "schema_id": "M1_V2_FEATURE_SCHEMA_CANDIDATE_B1R",
+  "schema_status": "CANDIDATE_NOT_FROZEN",
+  "schema_version": "M1_V2_FEATURE_SCHEMA_CANDIDATE_B1R_V1",
+  "static_feature_count": 4,
+  "total_feature_count": 45,
+  "training_frozen": false
+}

@@ -22,7 +22,12 @@ from model.M1.cache import M1DevelopmentBaseCache, cache_key as development_cach
 from model.M1.data import FEATURE_NAMES, fit_train_normalization
 from model.M1.lifecycle import M1Lifecycle, M1TrainingExample
 from model.M1.pipeline import M1Pipeline
-from model.M1.preparation import active_rows, build_training_examples, normalization_rows
+from model.M1.preparation import (
+    active_rows,
+    build_training_examples,
+    fit_static_normalization_from_rows,
+    normalization_rows,
+)
 from model.PRE.development import PREDevelopmentCohorts, build_sampled_pre_cohorts
 from model.PRE.streaming.data2 import (
     PROJECTED_ONTIME_COLUMNS,
@@ -118,6 +123,7 @@ def prepare_data(scientific) -> PreparedData:
     normalization = fit_train_normalization(
         normalization_rows([prefix for _, prefix, _ in rows["train"]]), split="train"
     )
+    static_normalization = fit_static_normalization_from_rows(rows["train"])
     template = M1Pipeline.from_scientific_config(
         scientific,
         input_size=len(FEATURE_NAMES),
@@ -125,7 +131,10 @@ def prepare_data(scientific) -> PreparedData:
         hidden_size=16,
     )
     examples = {
-        name: build_training_examples(values, normalization, template.bins)
+        name: build_training_examples(
+            values, normalization, template.bins,
+            static_normalization=static_normalization,
+        )
         for name, values in rows.items()
     }
     dates = {

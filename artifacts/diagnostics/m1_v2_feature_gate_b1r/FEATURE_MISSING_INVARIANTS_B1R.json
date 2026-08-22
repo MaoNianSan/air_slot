@@ -1,0 +1,253 @@
+{
+  "all_checked_encodings_exact": true,
+  "checks": [
+    {
+      "mask": "schedule.signed_minutes_to_crs_departure.missing_mask",
+      "missing_rows": 0,
+      "numeric": "schedule.signed_minutes_to_crs_departure",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.temperature_c.missing_mask",
+      "missing_rows": 2831,
+      "numeric": "weather.temperature_c",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.dewpoint_c.missing_mask",
+      "missing_rows": 2831,
+      "numeric": "weather.dewpoint_c",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.wind_speed_mps.missing_mask",
+      "missing_rows": 2831,
+      "numeric": "weather.wind_speed_mps",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.qnh_hpa.missing_mask",
+      "missing_rows": 3297,
+      "numeric": "weather.qnh_hpa",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.visibility_m.missing_mask",
+      "missing_rows": 2831,
+      "numeric": "weather.visibility_m",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.ceiling_base_m.missing_mask",
+      "missing_rows": 277,
+      "numeric": "weather.ceiling_base_m",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.wind_direction_deg.missing_mask",
+      "missing_rows": 3087,
+      "numeric": "weather.wind_direction_deg.sin",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.wind_direction_deg.missing_mask",
+      "missing_rows": 3087,
+      "numeric": "weather.wind_direction_deg.cos",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "weather.ceiling_base_m.unlimited_mask",
+      "missing_rows": 910,
+      "numeric": "weather.ceiling_base_m",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "delta.weather.temperature_c.derived_missing_mask",
+      "missing_rows": 2957,
+      "numeric": "delta.weather.temperature_c",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "delta.weather.dewpoint_c.derived_missing_mask",
+      "missing_rows": 2957,
+      "numeric": "delta.weather.dewpoint_c",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "delta.weather.wind_speed_mps.derived_missing_mask",
+      "missing_rows": 2957,
+      "numeric": "delta.weather.wind_speed_mps",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "delta.weather.qnh_hpa.derived_missing_mask",
+      "missing_rows": 3433,
+      "numeric": "delta.weather.qnh_hpa",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "delta.weather.visibility_m.derived_missing_mask",
+      "missing_rows": 2957,
+      "numeric": "delta.weather.visibility_m",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "delta.weather.ceiling_base_m.derived_missing_mask",
+      "missing_rows": 4062,
+      "numeric": "delta.weather.ceiling_base_m",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    },
+    {
+      "mask": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask",
+      "missing_rows": 320,
+      "numeric": "delta.schedule.signed_minutes_to_crs_departure",
+      "violations": 0,
+      "violations_by_split": {
+        "calibration": 0,
+        "development": 0,
+        "train": 0
+      }
+    }
+  ],
+  "observation_age_contract_note": "Missing age is zero-filled by the encoder without a dedicated age mask; current_weather.support.ABSTAIN is the only object-level proxy.",
+  "static": {
+    "PARTIAL_STATIC_OBSERVED_VALUE_LOST": 0,
+    "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK": 0,
+    "missing_mask_value_violations": 0,
+    "partial_missing_case_details": [
+      {
+        "decision_node_id": "sha256:e0be2872b2815f0918c6aee460b63ebb69d519a975db875fb4ee124969632849",
+        "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+        "missing_feature": "taxi_reference_minutes",
+        "observed_feature": "turnaround_reference_minutes",
+        "observed_missing_mask": 0.0,
+        "observed_numeric": -0.1663234531879425,
+        "observed_raw": 57.0,
+        "sample_index": 3428,
+        "split": "development"
+      },
+      {
+        "decision_node_id": "sha256:b0f415e19a37bc2ffa766f45525e51ff604f4194b575a11dbea6c9b73eddf56c",
+        "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+        "missing_feature": "taxi_reference_minutes",
+        "observed_feature": "turnaround_reference_minutes",
+        "observed_missing_mask": 0.0,
+        "observed_numeric": -0.1663234531879425,
+        "observed_raw": 57.0,
+        "sample_index": 3429,
+        "split": "development"
+      },
+      {
+        "decision_node_id": "sha256:90d7c6ee499efee79567f9c338e370d4c26df0c92c036a3830bd0343141a9433",
+        "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+        "missing_feature": "taxi_reference_minutes",
+        "observed_feature": "turnaround_reference_minutes",
+        "observed_missing_mask": 0.0,
+        "observed_numeric": -0.1663234531879425,
+        "observed_raw": 57.0,
+        "sample_index": 3430,
+        "split": "development"
+      },
+      {
+        "decision_node_id": "sha256:43d4c10a7a4d0968947c30c062ea78ba24d4db4aa73d592dea0e790654da0688",
+        "episode_id": "sha256:44b9fd5f6319da8e1d5b28b4fa9bc1200fc154b9ef0c157dae4a8b817ba24bc7",
+        "missing_feature": "taxi_reference_minutes",
+        "observed_feature": "turnaround_reference_minutes",
+        "observed_missing_mask": 0.0,
+        "observed_numeric": -0.1663234531879425,
+        "observed_raw": 57.0,
+        "sample_index": 3431,
+        "split": "development"
+      }
+    ],
+    "partial_missing_cases": 4,
+    "violations": []
+  },
+  "violation_counts": {
+    "DERIVED_INVALID_NUMERIC_NOT_ZERO": 0,
+    "MISSING_MASK_VALUE_VIOLATIONS": 0,
+    "MISSING_NUMERIC_NOT_ZERO": 0,
+    "UNLIMITED_CEILING_NUMERIC_NOT_ZERO": 0
+  },
+  "violations": []
+}

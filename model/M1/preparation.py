@@ -14,10 +14,15 @@ from model.M1.contracts import static_reference_context_from_pre
 from model.M1.data import (
     V2_WEATHER_FIELDS,
     encode_pre_sequence,
-    static_reference_features_from_pre,
 )
 from model.M1.history import adaptive_history
 from model.M1.lifecycle import M1TrainingExample
+from model.M1.static_features import (
+    M1StaticNormalizationArtifact,
+    fit_static_normalization,
+    raw_static_values_from_pre,
+    static_reference_features_from_pre,
+)
 
 
 def active_rows(partition, *, taxi_reference=None, taxi_reference_minutes=None,
@@ -62,28 +67,49 @@ def active_rows(partition, *, taxi_reference=None, taxi_reference_minutes=None,
     return tuple(output), dict(stages)
 
 
-def build_training_examples(rows, normalization, bins):
+def build_training_examples(rows, normalization, bins, *, static_normalization):
     """Encode legal M1 V2 histories into model-owned training examples."""
+    if not isinstance(static_normalization, M1StaticNormalizationArtifact):
+        raise ValueError("M1_STATIC_NORMALIZATION_REQUIRED")
     return tuple(
         M1TrainingExample.from_v2_target_labels(
             values=encode_pre_sequence(prefix, normalization), labels=labels,
-            static_values=_static_values(prefix),
+            static_values=_static_values(prefix, static_normalization),
             static_context_lineage=_static_lineage(prefix),
         )
         for _, prefix, labels in rows
     )
 
 
-def _static_values(prefix):
+def _static_values(prefix, normalization):
     context = static_reference_context_from_pre(prefix[-1].static_reference_publication)
-    values, _ = static_reference_features_from_pre(prefix[-1], context)
-    return None if values is None else values.reshape(-1)
+    values, _ = static_reference_features_from_pre(
+        prefix[-1], context, normalization
+    )
+    return values.reshape(-1)
 
 
 def _static_lineage(prefix):
     context = static_reference_context_from_pre(prefix[-1].static_reference_publication)
-    _, lineage = static_reference_features_from_pre(prefix[-1], context)
+    _, lineage = raw_static_values_from_pre(prefix[-1], context)
     return lineage
+
+
+def _static_raw_values(prefix):
+    context = static_reference_context_from_pre(prefix[-1].static_reference_publication)
+    values, _ = raw_static_values_from_pre(prefix[-1], context)
+    return values
+
+
+def fit_static_normalization_from_rows(rows) -> M1StaticNormalizationArtifact:
+    """Fit static scaling once per unique Train episode."""
+    return fit_static_normalization(
+        (
+            (episode.episode_id, _static_raw_values(prefix))
+            for episode, prefix, _ in rows
+        ),
+        split="train",
+    )
 
 
 def normalization_rows(prefixes):

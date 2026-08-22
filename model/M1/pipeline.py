@@ -17,7 +17,7 @@ Round 2.1 scientific closure (kept):
 Round 2.2/Tranche 3 representation contract:
 - The state-aware representation is
   ``state = concat(GRU(history), projection(r_fast))`` where ``r_fast`` is
-  the deterministic current/local-change/short-term AR block (last causal
+  the deterministic current/local-change block (last causal
   row); the Tranche 2.1 schedule-countdown static duplicate is removed.
 - PRE publishes typed static/reference context. Train-frozen numeric
   turnaround/taxi references enter ``c_static``; route/carrier/aircraft and
@@ -47,6 +47,9 @@ from .data import (
     M1NormalizationArtifact,
     STATIC_FEATURE_COUNT,
     fast_features_from_sequence,
+)
+from .static_features import (
+    M1StaticNormalizationArtifact,
     static_reference_features_from_pre,
 )
 from .network import M1V2GRU, OrderedEventGRU
@@ -64,7 +67,7 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
     Returns a dict keyed by the public primitive names ``{T_IB_A00, D_OB,
     D_TX}``.  ``state`` is the fused representation consumed by the common
     heads (for STATE_AWARE: ``concat(recurrent_repr, projection(r_fast))``;
-    for FAST: the deterministic current/AR feature block ``r_fast``).
+    for FAST: the deterministic current/local feature block ``r_fast``).
 
     Round 2.1 summary contract:
     - ``T_IB_A00``: hazard PMF over the INTERNAL remaining-time coordinate
@@ -144,7 +147,7 @@ class M1Pipeline:
 
     def __init__(self, model, contracts, temperatures=None, normalization=None,
                  static_context=None, calibration_contract=None,
-                 calibration_diagnostics=None):
+                 calibration_diagnostics=None, static_normalization=None):
         self.model = model
         self.contracts = contracts
         self.static_context = static_context or M1StaticReferenceContext()
@@ -167,6 +170,7 @@ class M1Pipeline:
                 temperatures[M1_TEMPERATURE_D_TX_ZERO] = temperatures.pop("D_TX")
         self.temperatures = temperatures
         self.normalization = normalization
+        self.static_normalization = static_normalization
         self.calibration_contract = (
             calibration_contract or common_calibration_policy())
         self.calibration_diagnostics = dict(calibration_diagnostics or {})
@@ -203,7 +207,8 @@ class M1Pipeline:
 
     @classmethod
     def from_scientific_config(cls, scientific, *, input_size, normalization,
-                               hidden_size=None, static_input_size=0):
+                               hidden_size=None, static_input_size=0,
+                               static_normalization=None):
         if not isinstance(normalization, M1NormalizationArtifact) \
                 or normalization.fitted_split != "train":
             raise ValueError("M1_FORMAL_TRAIN_NORMALIZATION_REQUIRED")
@@ -237,11 +242,16 @@ class M1Pipeline:
                                            quantile_levels=tuple(quantile_levels),
                                            upper_tail_policy=tail_policy),
         }
+        if static_input_size and not isinstance(
+            static_normalization, M1StaticNormalizationArtifact
+        ):
+            raise ValueError("M1_FORMAL_STATIC_TRAIN_NORMALIZATION_REQUIRED")
         return cls(M1V2GRU(input_size, hidden, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
                            contracts["D_OB"], contracts["D_TX"],
                            fast_input_size=input_size,
                            static_input_size=static_input_size),
-                   contracts, normalization=normalization)
+                   contracts, normalization=normalization,
+                   static_normalization=static_normalization)
 
     def _information_state(self, values, lengths, fast_features=None,
                            static_features=None, pre_state=None):
@@ -258,7 +268,8 @@ class M1Pipeline:
         """
         if fast_features is None:
             fast_features = fast_features_from_sequence(values, lengths)
-        if static_features is None and pre_state is not None:
+        if static_features is None and pre_state is not None \
+                and getattr(self.model, "static_input_size", 0):
             # Tranche 3 typed wiring: PRE writes plain per-field metadata
             # (``static_reference_publication``); M1 rebuilds its typed
             # ``M1StaticReferenceContext`` from it.  Only MODEL_FEATURE
@@ -266,8 +277,10 @@ class M1Pipeline:
             publication = getattr(pre_state, "static_reference_publication", None)
             context = (static_reference_context_from_pre(publication)
                        if publication else self.static_context)
+            if self.static_normalization is None:
+                raise ValueError("M1_STATIC_NORMALIZATION_REQUIRED_FOR_PRE_INFERENCE")
             static_features, _ = static_reference_features_from_pre(
-                pre_state, context)
+                pre_state, context, self.static_normalization)
         history = self.model.encode_history(values, lengths)
         state = self.model.state_representation(history, fast_features,
                                                 static_features)
@@ -421,6 +434,10 @@ class M1Pipeline:
             "static_context": self.static_context.model_dump(mode="json"),
             "normalization": None if self.normalization is None
                 else self.normalization.model_dump(mode="json"),
+            "static_normalization": (
+                None if self.static_normalization is None
+                else self.static_normalization.model_dump(mode="json")
+            ),
         }, path)
 
     @classmethod
@@ -450,6 +467,11 @@ class M1Pipeline:
         normalization = payload.get("normalization")
         if normalization is not None:
             normalization = M1NormalizationArtifact.model_validate(normalization)
+        static_normalization = payload.get("static_normalization")
+        if static_normalization is not None:
+            static_normalization = M1StaticNormalizationArtifact.model_validate(
+                static_normalization
+            )
         static_context = payload.get("static_context")
         if static_context is not None:
             if ("schedule_reference_context" in static_context
@@ -463,4 +485,5 @@ class M1Pipeline:
         return cls(model, contracts, payload["temperatures"], normalization,
                    static_context=static_context,
                    calibration_contract=calibration_contract,
-                   calibration_diagnostics=payload.get("calibration_diagnostics"))
+                   calibration_diagnostics=payload.get("calibration_diagnostics"),
+                   static_normalization=static_normalization)

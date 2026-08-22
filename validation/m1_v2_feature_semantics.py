@@ -157,7 +157,11 @@ def _semantic_row(name: str) -> dict:
         history = "FULL_PREFIX_SUMMARY"
         role = "ENGINEERED_LONG_HISTORY_SUMMARY"
     elif group in {"RAW_MISSING_MASK", "STALE_MASK", "FALLBACK_MASK"}:
-        source = name.rsplit(".", 1)[0]
+        source = (
+            "variable_lineage.current_weather"
+            if name.startswith("current_weather.")
+            else name.rsplit(".", 1)[0]
+        )
         transformation = group
         role = "FIELD_OR_OBJECT_QUALITY_MASK"
     elif group == "DERIVED_MISSING_MASK":
@@ -191,13 +195,21 @@ def _semantic_row(name: str) -> dict:
             if name.startswith("turnaround")
             else "successor_state.taxi_reference.value"
         )
-        unit = "minutes"
-        transformation = "TRAIN_FROZEN_REFERENCE_VALUE"
-        normalization = "STATIC_RAW"
-        validity = "PUBLISHED_MODEL_FEATURE_WITH_REFERENCE_ID_AND_FREEZE_ID"
-        missing = "WHOLE_STATIC_BLOCK_NONE_THEN_CACHE_ZERO_FILL"
+        if name.endswith(".missing_mask"):
+            unit = "binary"
+            transformation = "PER_FEATURE_REFERENCE_MISSINGNESS"
+            normalization = "BINARY_NO_SCALE"
+            validity = "ALWAYS_DEFINED_BY_ENCODER"
+            missing = "NOT_APPLICABLE"
+            role = "STATIC_REFERENCE_VALIDITY"
+        else:
+            unit = "train_standard_deviation"
+            transformation = "TRAIN_EPISODE_LEVEL_STANDARDIZED_REFERENCE_VALUE"
+            normalization = "TRAIN_STANDARDIZED"
+            validity = "PUBLISHED_MODEL_FEATURE_WITH_REFERENCE_ID_AND_FREEZE_ID"
+            missing = "ZERO_NEUTRAL_WITH_PER_FEATURE_MISSING_MASK"
+            role = "STATIC_OPERATIONAL_REFERENCE"
         history = "STATIC_REFERENCE"
-        role = "STATIC_OPERATIONAL_REFERENCE"
 
     return {
         "FEATURE": name,
@@ -210,6 +222,7 @@ def _semantic_row(name: str) -> dict:
         "MISSING_ENCODING": missing,
         "HISTORY_SCOPE": history,
         "EXPECTED_INFORMATION_ROLE": role,
+        "NUMERIC_OR_METADATA_ROLE": "PRINCIPAL_NUMERIC",
     }
 
 
@@ -268,20 +281,24 @@ def history_semantics() -> dict:
             "schedule_transformation": "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES",
         },
         "AR_ACTUAL_SEMANTICS": {
-            "classification": "FULL_PREFIX_CUMULATIVE_MEAN",
-            "window_start": "EPISODE_NODE_ZERO",
-            "window_end": "CURRENT_DECISION_NODE_INCLUSIVE",
-            "minimum_valid_count": "PREFIX_LENGTH",
-            "missing_propagation": "ANY_MISSING_IN_PREFIX_INVALIDATES_CURRENT_SUMMARY",
-            "full_prefix": True,
-            "cumulative_mean": True,
+            "classification": "REMOVED_BY_B1_D05",
+            "window_start": None,
+            "window_end": None,
+            "minimum_valid_count": None,
+            "missing_propagation": None,
+            "full_prefix": False,
+            "cumulative_mean": False,
             "true_autoregressive_statistic": False,
-            "human_review_required": True,
+            "human_review_required": False,
         },
-        "EXP1B_HISTORY_SEPARATION_STATUS": "HISTORY_DUPLICATED_IN_RFAST",
+        "FULL_PREFIX_HISTORY_FEATURE_COUNT": sum(
+            _semantic_row(name)["HISTORY_SCOPE"] == "FULL_PREFIX_SUMMARY"
+            for name in m1_data.FEATURE_NAMES_V2
+        ),
+        "EXP1B_HISTORY_SEPARATION_STATUS": "CLEAN",
         "exp1b_reason": (
-            "ADAPTIVE_HISTORY enters through GRU(history), while r_fast selects the "
-            "current row that already contains full-prefix cumulative summaries."
+            "r_fast contains current and previous-node-local features only; "
+            "ADAPTIVE history enters the history-conditioned branch through GRU(history)."
         ),
     }
 

@@ -29,10 +29,15 @@ from model.M1.contracts import (
     M1_V2_HAZARD_COORDINATE,
     static_reference_context_from_pre,
 )
-from model.M1.data import STATIC_FEATURE_COUNT, STATIC_FEATURE_NAMES, static_reference_features_from_pre
+from model.M1.data import STATIC_FEATURE_COUNT, STATIC_FEATURE_NAMES
 from model.M1.factual_state import factual_observed_state
 from model.M1.network import M1V2GRU
 from model.M1.pipeline import M1Pipeline
+from model.M1.static_features import (
+    M1StaticNormalizationArtifact,
+    StaticNormalizationValue,
+    static_reference_features_from_pre,
+)
 from model.PRE.canonical.normalization import canonicalize_ontime_row
 from model.PRE.pipeline import ProductionPRERequest, publish_production_pre
 from model.PRE.factual.availability import factual_replay_legal
@@ -106,6 +111,23 @@ def _taxi_reference(*, value=12.0):
         support_state=SupportState.SUPPORTED, reason_code="TRAIN_FROZEN")
 
 
+def _static_normalization():
+    return M1StaticNormalizationArtifact(
+        fitted_split="train",
+        episode_level_fit=True,
+        episode_count=2,
+        episode_ids_hash="sha256:static-normalization-test",
+        values={
+            "turnaround_reference_minutes": StaticNormalizationValue(
+                count=2, mean=40.0, std=5.0, min=35.0, max=45.0
+            ),
+            "taxi_reference_minutes": StaticNormalizationValue(
+                count=2, mean=10.0, std=2.0, min=8.0, max=12.0
+            ),
+        },
+    )
+
+
 def _static_pipeline():
     """Smoke pipeline wired with the PRE-published c_static block."""
     contracts = {
@@ -124,7 +146,7 @@ def _static_pipeline():
     model = M1V2GRU(4, 16, contracts[M1_V2_HAZARD_COORDINATE],
                     contracts["D_OB"], contracts["D_TX"],
                     fast_input_size=4, static_input_size=STATIC_FEATURE_COUNT)
-    return M1Pipeline(model, contracts)
+    return M1Pipeline(model, contracts, static_normalization=_static_normalization())
 
 
 def _turnaround_reference(*, value=45.0):
@@ -331,11 +353,14 @@ def test_25_taxi_label_input_freeze_lineage_identical():
     context = _static_context(pre)
     assert isinstance(context, M1StaticReferenceContext)
     assert context.static_context_status == "PRE_PUBLISHED"
-    static, lineage = static_reference_features_from_pre(pre, context)
-    assert static is not None
-    turnaround_value, taxi_value = static[0].tolist()
-    assert taxi_value == pytest.approx(12.0)
-    assert turnaround_value == pytest.approx(45.0)
+    static, lineage = static_reference_features_from_pre(
+        pre, context, _static_normalization()
+    )
+    turnaround_value, taxi_value, turnaround_missing, taxi_missing = static[0].tolist()
+    assert taxi_value == pytest.approx(1.0)
+    assert turnaround_value == pytest.approx(1.0)
+    assert turnaround_missing == 0.0
+    assert taxi_missing == 0.0
     # The D_TX label construction and the M1 static input reference the SAME
     # frozen taxi reference identity (freeze lineage equality).
     published_taxi = pre.successor_state["taxi_reference"].value
@@ -386,8 +411,10 @@ def test_27_retained_identity_not_fabricated_numeric_ordinal():
     context = _static_context(pre)
     assert context.aircraft_identity.model_feature_status == "RETAINED_IDENTITY"
     assert context.route_context.model_feature_status == "MODEL_FEATURE_PENDING"
-    static, lineage = static_reference_features_from_pre(pre, context)
-    assert static is None
+    static, lineage = static_reference_features_from_pre(
+        pre, context, _static_normalization()
+    )
+    assert static.tolist() == [[0.0, 0.0, 1.0, 1.0]]
     assert lineage["aircraft_identity"]["aircraft_id"] == "N1"
     assert isinstance(lineage["aircraft_identity"]["aircraft_id"], str)
 
@@ -413,5 +440,7 @@ def test_28_unsupported_resource_state_still_forbidden():
     assert pre.successor_state["route_context"].support_state is SupportState.ABSTAIN
     assert pre.successor_state["route_context"].reason_code == "NO_SCHEDULE"
     context = static_reference_context_from_pre(pre.static_reference_publication)
-    static, _ = static_reference_features_from_pre(pre, context)
-    assert static is None
+    static, _ = static_reference_features_from_pre(
+        pre, context, _static_normalization()
+    )
+    assert static.tolist() == [[0.0, 0.0, 1.0, 1.0]]

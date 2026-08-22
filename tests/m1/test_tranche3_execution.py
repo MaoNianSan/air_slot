@@ -398,8 +398,8 @@ def test_fast_static_parity_c_static_changes_state_and_distribution():
     values = torch.tensor([[[0.1, 0.2, 0.3, 0.4],
                             [0.5, 0.6, 0.7, 0.8]]])
     lengths = torch.tensor([2])
-    static_a = torch.tensor([[-4.0, -4.0]], dtype=torch.float32)
-    static_b = torch.tensor([[4.0, 4.0]], dtype=torch.float32)
+    static_a = torch.tensor([[-4.0, -4.0, 0.0, 0.0]], dtype=torch.float32)
+    static_b = torch.tensor([[4.0, 4.0, 0.0, 0.0]], dtype=torch.float32)
     with_a = predictor._predict_heads(values, lengths, static_features=static_a)
     with_b = predictor._predict_heads(values, lengths, static_features=static_b)
     # The static block changes the fused FAST state and therefore the
@@ -457,7 +457,7 @@ def test_state_aware_static_block_changes_distribution():
     without = pipe.predict_distributions(values, lengths)
     with_static = pipe.predict_distributions(
         values, lengths,
-        static_features=torch.tensor([[12.0, 45.0]], dtype=torch.float32))
+        static_features=torch.tensor([[12.0, 45.0, 0.0, 0.0]], dtype=torch.float32))
     assert not torch.allclose(without["T_IB_A00"], with_static["T_IB_A00"])
     assert model.static_input_size == STATIC_FEATURE_COUNT
     assert model.state_width == 2 * model.hidden_size + model.hidden_size

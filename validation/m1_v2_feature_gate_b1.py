@@ -59,6 +59,7 @@ def load_a2_cache() -> tuple[M1DevelopmentBaseCache, dict, dict]:
         data_path,
         manifest_path,
         expected_cache_key=manifest["cache_key"],
+        allow_legacy_schema=True,
     )
     return cache, manifest, result
 

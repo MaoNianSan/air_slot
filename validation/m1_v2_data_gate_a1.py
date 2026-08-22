@@ -25,7 +25,12 @@ from model.M1.data import (
     STATIC_FEATURE_NAMES,
     fit_train_normalization,
 )
-from model.M1.preparation import active_rows, build_training_examples, normalization_rows
+from model.M1.preparation import (
+    active_rows,
+    build_training_examples,
+    fit_static_normalization_from_rows,
+    normalization_rows,
+)
 from model.PRE.development import materialize_preselected_cohorts
 from model.PRE.reference.taxi_data2 import data2_taxi_reference_from_payload
 from model.PRE.reference.turnaround_data2 import data2_turnaround_reference_from_payload
@@ -250,7 +255,7 @@ def _load_frozen_partitions() -> tuple[dict[str, tuple], dict]:
     return partitions, audit
 
 
-def _static_and_cache(examples, normalization, source_hash) -> dict:
+def _static_and_cache(examples, normalization, static_normalization, source_hash) -> dict:
     static = {}
     for split in SPLITS:
         values = [row.static_values for row in examples[split] if row.static_values is not None]
@@ -284,6 +289,7 @@ def _static_and_cache(examples, normalization, source_hash) -> dict:
     cache = M1DevelopmentBaseCache.from_partitions(
         partitions=examples,
         normalization=normalization,
+        static_normalization=static_normalization,
         audit={"final_test_access_count": 0, "scope": "DATA_GATE_A1"},
         cache_key=key,
         source_manifest_hash=source_hash,
@@ -358,8 +364,12 @@ def run() -> dict:
         normalization_rows([prefix for _, prefix, _ in rows["train"]]),
         split="train",
     )
+    static_normalization = fit_static_normalization_from_rows(rows["train"])
     for split in SPLITS:
-        examples[split] = build_training_examples(rows[split], normalization, None)
+        examples[split] = build_training_examples(
+            rows[split], normalization, None,
+            static_normalization=static_normalization,
+        )
     matrices = {
         split: torch.cat([row.values for row in examples[split]], dim=0)
         for split in SPLITS
@@ -368,7 +378,8 @@ def run() -> dict:
     lineage = lineage_rows(feature_stats["train"])
     lineage_path = _write_lineage(lineage)
     static = _static_and_cache(
-        examples, normalization, selection_audit["source_manifest_hash"]
+        examples, normalization, static_normalization,
+        selection_audit["source_manifest_hash"]
     )
     time_checks = time_diagnostics(cohorts)
     unresolved = unresolved_column_queue(cohorts)
@@ -458,7 +469,7 @@ def run() -> dict:
         "numeric_feature_statistics": feature_stats,
         "identity_statistics": identity_statistics(examples),
         "static": static,
-        "history": history_diagnostics(rows, normalization),
+        "history": history_diagnostics(rows, normalization, static_normalization),
         "labels": label_statistics(rows),
         "time_checks": time_checks,
         "bts_actual_consistency": bts_consistency,

@@ -17,10 +17,10 @@ The FAST path shares with STATE_AWARE the V2 formal semantics:
 - support schema and V2 scenario schema (``model.M1.scenarios.ancestral_sample_v2``)
 
 Round 2.2 representation contract (``r_fast``):
-- ``r_fast(i, t)`` is the deterministic current/local-change/short-term AR
+- ``r_fast(i, t)`` is the deterministic current/local-change
   feature block (last causal row of the V2 feature vector:
-  current state + weather + decision-node schedule countdown + Delta X +
-  AR summaries + masks + evidence/support + stage) — NOT a second flattening
+  current state + weather + decision-node schedule countdown + local Delta X +
+  masks + reduced support + stage) — NOT a second flattening
   of the full sequence and NOT a LightGBM prediction/hidden state.
 - FAST consumes ``r_fast`` directly (never the GRU recurrent hidden state);
   STATE_AWARE consumes ``concat(GRU(history), projection(r_fast))``.
@@ -53,6 +53,10 @@ from .contracts import (
     M1_V2_HAZARD_COORDINATE,
 )
 from .data import STATIC_FEATURE_COUNT, fast_features_from_sequence
+from .static_features import (
+    M1StaticNormalizationArtifact,
+    static_reference_features_from_pre,
+)
 from .calibration import (
     common_calibration_policy,
     fit_hazard_temperature,
@@ -184,7 +188,7 @@ class LightGBMDistributionalPredictor:
     - ``D_OB`` / ``D_TX``: ``zero`` classifier plus ``quantiles`` per-level
       positive regressors, conditioned on the formal parents.
 
-    The predictor consumes ``r_fast`` (deterministic current/AR block), never
+    The predictor consumes ``r_fast`` (deterministic current/local block), never
     a GRU recurrent hidden state.  Without a registered train-frozen fitted
     artifact the principal ``predict_distributions`` path abstains
     (``ABSTAIN``) instead of fabricating distributions;
@@ -196,6 +200,7 @@ class LightGBMDistributionalPredictor:
         self,
         contracts: Mapping[str, object],
         models: Mapping[str, object] | None = None,
+        static_normalization: M1StaticNormalizationArtifact | None = None,
     ):
         self.contracts = dict(contracts)
         self.models = dict(models or {})
@@ -205,6 +210,7 @@ class LightGBMDistributionalPredictor:
             M1_TEMPERATURE_D_TX_ZERO: 1.0,
         }
         self.calibration_diagnostics: dict[str, object] = {}
+        self.static_normalization = static_normalization
         # Tranche 3 static parity: when fitted with PRE-published MODEL_FEATURE
         # fields, the ARX-LightGBM models are fitted on ``concat(r_fast,
         # c_static)`` and inference requires the same static block.
@@ -377,7 +383,7 @@ class LightGBMDistributionalPredictor:
         return self
 
     def _fast_features(self, values: torch.Tensor, lengths=None) -> torch.Tensor:
-        """Deterministic current/AR block ``r_fast`` (last causal row)."""
+        """Deterministic current/local block ``r_fast`` (last causal row)."""
         return fast_features_from_sequence(values, lengths)
 
     def hazard_risk_set_sizes(
@@ -406,7 +412,7 @@ class LightGBMDistributionalPredictor:
                              static_features: torch.Tensor | None = None) -> torch.Tensor:
         """FAST state = concat(r_fast, c_static) (no GRU recurrent hidden).
 
-        ``features`` is the deterministic current/AR block ``r_fast``; when
+        ``features`` is the deterministic current/local block ``r_fast``; when
         PRE-published static MODEL_FEATURE fields are supplied they are
         appended directly (deterministic, no projection).  Without static
         features the state is exactly ``r_fast``.
@@ -520,12 +526,15 @@ class LightGBMDistributionalPredictor:
         provenance enter ``c_static``.
         """
         from .contracts import static_reference_context_from_pre
-        from .data import static_reference_features_from_pre
         publication = getattr(pre_state, "static_reference_publication", None)
         context = (static_reference_context_from_pre(publication)
                    if publication else None)
+        if self._static_input_size == 0:
+            return self.predict_development(values, lengths)
+        if self.static_normalization is None:
+            raise ContractError("M1_FAST_STATIC_NORMALIZATION_REQUIRED_FOR_PRE_INFERENCE")
         static_features, _ = static_reference_features_from_pre(
-            pre_state, context)
+            pre_state, context, self.static_normalization)
         return self.predict_development(values, lengths, static_features)
 
     def calibration_policy(self):

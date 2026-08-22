@@ -45,7 +45,12 @@ from .development_diagnostics import (
 from .fast_path import LightGBMDistributionalPredictor
 from .lifecycle import M1Lifecycle
 from .pipeline import M1Pipeline
-from .preparation import active_rows, build_training_examples, normalization_rows
+from .preparation import (
+    active_rows,
+    build_training_examples,
+    fit_static_normalization_from_rows,
+    normalization_rows,
+)
 from .scenarios import required_observations_v2
 
 
@@ -271,8 +276,12 @@ def _build_or_load_cache(
         normalization_rows([prefix for _, prefix, _ in rows["train"]]),
         split="train",
     )
+    static_normalization = fit_static_normalization_from_rows(rows["train"])
     partitions = {
-        split: build_training_examples(rows[split], normalization, None)
+        split: build_training_examples(
+            rows[split], normalization, None,
+            static_normalization=static_normalization,
+        )
         for split in rows
     }
     if any(
@@ -293,6 +302,7 @@ def _build_or_load_cache(
     fresh = M1DevelopmentBaseCache.from_partitions(
         partitions=partitions,
         normalization=normalization,
+        static_normalization=static_normalization,
         audit=audit,
         cache_key=key,
         source_manifest_hash=identity["source_manifest_hash"],
@@ -349,7 +359,10 @@ def _baseline_diagnostics(pipeline, train, calibration, pilot, config) -> dict:
         "RANDOM_FOREST": {"status": "NOT_RUN_EXISTING_IMPLEMENTATION_NOT_FOUND"},
     }
     try:
-        predictor = LightGBMDistributionalPredictor(pipeline.contracts)
+        predictor = LightGBMDistributionalPredictor(
+            pipeline.contracts,
+            static_normalization=pipeline.static_normalization,
+        )
 
         def arrays(examples):
             x = torch.stack([fast_features_from_sequence(
@@ -517,6 +530,7 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
         normalization=cache.normalization,
         hidden_size=hidden_size,
         static_input_size=STATIC_FEATURE_COUNT,
+        static_normalization=cache.static_normalization,
     )
     lifecycle = M1Lifecycle(pipeline, device=str(config["training"]["device"]))
     batch_size = int(config["training"]["batch_size"])

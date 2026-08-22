@@ -8,6 +8,12 @@ import numpy as np
 
 from model.M1.cache import M1DevelopmentBaseCache
 from model.M1.data import FEATURE_NAMES_V2, STATIC_FEATURE_NAMES
+from model.M1.static_features import (
+    STATIC_MISSING_MASK_NAMES,
+    STATIC_NUMERIC_FEATURE_NAMES,
+    encode_static_values,
+    raw_static_values_from_lineage,
+)
 from validation.m1_v2_feature_semantics import semantic_group
 
 
@@ -32,48 +38,66 @@ def static_rows(cache: M1DevelopmentBaseCache) -> tuple[np.ndarray, np.ndarray, 
         values = np.full((len(store.sample_splits), len(STATIC_FEATURE_NAMES)), np.nan)
     else:
         values = store.static_values.numpy().astype(np.float64, copy=True)
+    if values.shape[1] != len(STATIC_FEATURE_NAMES):
+        raise ValueError("M1_B1R_STATIC_FEATURE_WIDTH_MISMATCH")
     valid = np.ones_like(values, dtype=bool)
     violations = []
-    lineage_keys = ("turnaround_reference", "taxi_reference")
+    if cache.static_normalization is None:
+        raise ValueError("M1_B1R_STATIC_NORMALIZATION_REQUIRED")
     for row_index, lineage in enumerate(store.static_context_lineages):
-        payload = lineage or {}
-        expected = []
-        for column, key in enumerate(lineage_keys):
-            item = payload.get(key)
-            raw = item.get("value") if isinstance(item, dict) else None
-            valid[row_index, column] = raw is not None
-            expected.append(None if raw is None else float(raw))
-        if all(item is not None for item in expected):
-            if not np.array_equal(values[row_index], np.asarray(expected, dtype=np.float64)):
-                violations.append(
-                    {
-                        "sample_index": row_index,
-                        "split": store.sample_splits[row_index],
-                        "episode_id": store.sample_episode_ids[row_index],
-                        "decision_node_id": store.sample_decision_node_ids[row_index],
-                        "kind": "STATIC_CACHE_VALUE_LINEAGE_MISMATCH",
-                        "cached": values[row_index].tolist(),
-                        "lineage_expected": expected,
-                    }
-                )
-        else:
-            valid[row_index, :] = False
+        raw = raw_static_values_from_lineage(lineage)
+        expected = encode_static_values(raw, cache.static_normalization)[0].numpy()
+        cached = values[row_index]
+        if not np.allclose(cached, expected, rtol=0.0, atol=1e-6):
             violations.append(
                 {
                     "sample_index": row_index,
                     "split": store.sample_splits[row_index],
                     "episode_id": store.sample_episode_ids[row_index],
                     "decision_node_id": store.sample_decision_node_ids[row_index],
-                    "kind": (
-                        "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK"
-                        if np.all(values[row_index] == 0.0)
-                        else "STATIC_PARTIAL_LINEAGE_WITH_UNMASKED_NUMERIC_BLOCK"
-                    ),
-                    "cached": values[row_index].tolist(),
-                    "lineage_expected": expected,
+                    "kind": "STATIC_CACHE_VALUE_LINEAGE_MISMATCH",
+                    "cached": cached.tolist(),
+                    "lineage_expected": expected.tolist(),
                 }
             )
-    values[~valid] = np.nan
+        partial = sum(raw[name] is None for name in STATIC_NUMERIC_FEATURE_NAMES) == 1
+        for column, name in enumerate(STATIC_NUMERIC_FEATURE_NAMES):
+            mask_column = len(STATIC_NUMERIC_FEATURE_NAMES) + column
+            observed = raw[name] is not None
+            valid[row_index, column] = observed
+            numeric = float(cached[column])
+            mask = float(cached[mask_column])
+            if not observed and (numeric != 0.0 or mask != 1.0):
+                violations.append(
+                    {
+                        "sample_index": row_index,
+                        "split": store.sample_splits[row_index],
+                        "episode_id": store.sample_episode_ids[row_index],
+                        "decision_node_id": store.sample_decision_node_ids[row_index],
+                        "feature": name,
+                        "kind": "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK",
+                        "cached_numeric": numeric,
+                        "cached_mask": mask,
+                    }
+                )
+            if observed and (mask != 0.0 or abs(numeric - float(expected[column])) > 1e-6):
+                violations.append(
+                    {
+                        "sample_index": row_index,
+                        "split": store.sample_splits[row_index],
+                        "episode_id": store.sample_episode_ids[row_index],
+                        "decision_node_id": store.sample_decision_node_ids[row_index],
+                        "feature": name,
+                        "kind": (
+                            "PARTIAL_STATIC_OBSERVED_VALUE_LOST"
+                            if partial
+                            else "STATIC_OBSERVED_VALUE_OR_MASK_MISMATCH"
+                        ),
+                        "cached_numeric": numeric,
+                        "cached_mask": mask,
+                        "expected_numeric": float(expected[column]),
+                    }
+                )
     return values, valid, violations
 
 
@@ -174,7 +198,7 @@ def _profile_column(name: str, column: np.ndarray, invalid: np.ndarray) -> dict:
 def _normalization_class(name: str) -> str:
     group = semantic_group(name)
     if group == "STATIC_REFERENCE":
-        return "STATIC_RAW"
+        return "BINARY_NO_SCALE" if name in STATIC_MISSING_MASK_NAMES else "TRAIN_STANDARDIZED"
     if group in {
         "CURRENT_STATE", "RAW_MISSING_MASK", "STALE_MASK", "FALLBACK_MASK",
         "DERIVED_MISSING_MASK", "CEILING_STATUS", "EVIDENCE_ENCODING",
@@ -276,15 +300,77 @@ def missing_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
         record_check(
             numeric_name, mask_name, bad, invalid, "DERIVED_INVALID_NUMERIC_NOT_ZERO",
         )
+    mask_columns = [
+        index[name] for name in FEATURE_NAMES_V2 if name.endswith("_mask")
+    ]
+    non_binary_masks = int(np.sum(
+        ~np.isin(matrix[:, mask_columns], (0.0, 1.0))
+    ))
+    ceiling_missing = matrix[:, index["weather.ceiling_base_m.missing_mask"]] > 0.5
+    ceiling_unlimited = matrix[:, index["weather.ceiling_base_m.unlimited_mask"]] > 0.5
+    ceiling_mask_overlap = int(np.sum(ceiling_missing & ceiling_unlimited))
+    static = static_encoding_audit(cache)
+    mask_value_violations = (
+        non_binary_masks
+        + ceiling_mask_overlap
+        + static["missing_mask_value_violations"]
+    )
+    violation_counts["MISSING_MASK_VALUE_VIOLATIONS"] += mask_value_violations
     return {
         "checks": checks,
         "violations": violations,
         "violation_counts": dict(violation_counts),
-        "all_checked_encodings_exact": not violations,
+        "static": static,
+        "all_checked_encodings_exact": not violations and not mask_value_violations,
         "observation_age_contract_note": (
             "Missing age is zero-filled by the encoder without a dedicated age mask; "
             "current_weather.support.ABSTAIN is the only object-level proxy."
         ),
+    }
+
+
+def static_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
+    store = cache.store
+    values, _, violations = static_rows(cache)
+    kinds = Counter(row["kind"] for row in violations)
+    partial_cases = []
+    for row_index, lineage in enumerate(store.static_context_lineages):
+        raw = raw_static_values_from_lineage(lineage)
+        missing = [name for name in STATIC_NUMERIC_FEATURE_NAMES if raw[name] is None]
+        if len(missing) != 1:
+            continue
+        observed = next(name for name in STATIC_NUMERIC_FEATURE_NAMES if raw[name] is not None)
+        observed_index = STATIC_NUMERIC_FEATURE_NAMES.index(observed)
+        mask_index = len(STATIC_NUMERIC_FEATURE_NAMES) + observed_index
+        partial_cases.append(
+            {
+                "sample_index": row_index,
+                "split": store.sample_splits[row_index],
+                "episode_id": store.sample_episode_ids[row_index],
+                "decision_node_id": store.sample_decision_node_ids[row_index],
+                "missing_feature": missing[0],
+                "observed_feature": observed,
+                "observed_raw": float(raw[observed]),
+                "observed_numeric": float(values[row_index, observed_index]),
+                "observed_missing_mask": float(values[row_index, mask_index]),
+            }
+        )
+    mask_kinds = {
+        "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK",
+        "STATIC_OBSERVED_VALUE_OR_MASK_MISMATCH",
+        "PARTIAL_STATIC_OBSERVED_VALUE_LOST",
+    }
+    return {
+        "partial_missing_cases": len(partial_cases),
+        "partial_missing_case_details": partial_cases,
+        "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK": kinds.get(
+            "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK", 0
+        ),
+        "PARTIAL_STATIC_OBSERVED_VALUE_LOST": kinds.get(
+            "PARTIAL_STATIC_OBSERVED_VALUE_LOST", 0
+        ),
+        "missing_mask_value_violations": sum(kinds.get(kind, 0) for kind in mask_kinds),
+        "violations": violations,
     }
 
 
@@ -356,12 +442,20 @@ def support_state_counts(cache: M1DevelopmentBaseCache) -> dict:
     output = {}
     for split in SPLITS:
         selected = splits == split
-        output[split] = {}
-        for obj in ("current_weather", "schedule_reference", "current_state"):
-            output[split][obj] = {
-                level: int(np.sum(matrix[selected, index[f"{obj}.support.{level}"]] > 0.5))
-                for level in ("SUPPORTED", "DEGRADED", "ABSTAIN")
-            }
+        abstain = int(np.sum(
+            matrix[selected, index["current_weather.support.ABSTAIN"]] > 0.5
+        ))
+        total = int(selected.sum())
+        output[split] = {
+            "current_weather": {
+                "SUPPORTED": total - abstain,
+                "DEGRADED": 0,
+                "ABSTAIN": abstain,
+                "numeric_encoding": "ABSTAIN_ONLY",
+            },
+            "schedule_reference": {"numeric_encoding": "METADATA_ONLY"},
+            "current_state": {"numeric_encoding": "METADATA_ONLY"},
+        }
     return output
 
 
@@ -371,6 +465,7 @@ __all__ = [
     "feature_profiles",
     "missing_encoding_audit",
     "shift_diagnostics",
+    "static_encoding_audit",
     "static_rows",
     "support_state_counts",
     "target_support_from_a2",

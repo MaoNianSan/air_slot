@@ -14,9 +14,15 @@ from model.common.identity import content_id
 
 from .data import M1NormalizationArtifact
 from .lifecycle import M1TrainingExample
+from .static_features import (
+    M1StaticNormalizationArtifact,
+    STATIC_FEATURE_COUNT,
+    STATIC_FEATURE_NAMES,
+)
 
 
-CACHE_SCHEMA_VERSION = "M1_V2_DEVELOPMENT_BASE_CACHE_V3"
+CACHE_SCHEMA_VERSION = "M1_V2_DEVELOPMENT_BASE_CACHE_V4"
+LEGACY_CACHE_SCHEMA_VERSIONS = ("M1_V2_DEVELOPMENT_BASE_CACHE_V3",)
 TARGET_NAMES = ("T_IB_REMAINING_HAZARD", "D_OB", "D_TX")
 ALLOWED_SPLITS = ("train", "calibration", "development")
 REQUIRED_CONTRACT_HASHES = (
@@ -172,14 +178,12 @@ class M1CanonicalRaggedStore:
             raise ValueError("M1_CACHE_STATIC_FEATURE_WIDTH_MISMATCH")
         static_values = None
         if static_widths:
+            if any(example.static_values is None for _, example in samples):
+                raise ValueError("M1_CACHE_PARTIAL_STATIC_BLOCK_REJECTED")
             width = static_widths.pop()
             static_values = torch.stack([
-                (
-                    example.static_values.detach().cpu().reshape(-1)
-                    .to(dtype=torch.float32).contiguous()
-                    if example.static_values is not None
-                    else torch.zeros(width, dtype=torch.float32)
-                )
+                example.static_values.detach().cpu().reshape(-1)
+                .to(dtype=torch.float32).contiguous()
                 for _, example in samples
             ])
         return cls(
@@ -286,27 +290,91 @@ class M1RaggedDataset(Sequence[M1TrainingExample]):
 class M1DevelopmentBaseCache:
     store: M1CanonicalRaggedStore
     normalization: M1NormalizationArtifact
+    static_normalization: M1StaticNormalizationArtifact | None
     audit: dict
     manifest: dict
 
     @classmethod
     def from_partitions(cls, *, partitions, normalization, audit,
                         cache_key: str, source_manifest_hash: str,
-                        contract_hashes: Mapping[str, str]):
+                        contract_hashes: Mapping[str, str],
+                        static_normalization: M1StaticNormalizationArtifact | None = None,
+                        feature_names: Sequence[str] | None = None,
+                        static_feature_names: Sequence[str] | None = None,
+                        provenance: Mapping[str, object] | None = None,
+                        feature_schema_hash: str | None = None):
         missing_contracts = set(REQUIRED_CONTRACT_HASHES) - set(contract_hashes)
         if missing_contracts:
             raise ValueError(f"M1_CACHE_CONTRACT_HASH_MISSING:{sorted(missing_contracts)}")
         store = M1CanonicalRaggedStore.from_partitions(partitions)
+        return cls.from_store(
+            store=store,
+            normalization=normalization,
+            static_normalization=static_normalization,
+            audit=audit,
+            cache_key=cache_key,
+            source_manifest_hash=source_manifest_hash,
+            contract_hashes=contract_hashes,
+            feature_names=feature_names,
+            static_feature_names=static_feature_names,
+            provenance=provenance,
+            feature_schema_hash=feature_schema_hash,
+        )
+
+    @classmethod
+    def from_store(cls, *, store: M1CanonicalRaggedStore, normalization,
+                   static_normalization, audit, cache_key: str,
+                   source_manifest_hash: str,
+                   contract_hashes: Mapping[str, str],
+                   feature_names: Sequence[str] | None = None,
+                   static_feature_names: Sequence[str] | None = None,
+                   provenance: Mapping[str, object] | None = None,
+                   feature_schema_hash: str | None = None):
+        missing_contracts = set(REQUIRED_CONTRACT_HASHES) - set(contract_hashes)
+        if missing_contracts:
+            raise ValueError(f"M1_CACHE_CONTRACT_HASH_MISSING:{sorted(missing_contracts)}")
+        dynamic_width = int(store.values_flat.shape[1])
+        static_width = 0 if store.static_values is None else int(store.static_values.shape[1])
+        if static_width == STATIC_FEATURE_COUNT and not isinstance(
+            static_normalization, M1StaticNormalizationArtifact
+        ):
+            raise ValueError("M1_CACHE_STATIC_NORMALIZATION_REQUIRED")
+        dynamic_names = tuple(feature_names or (
+            f"dynamic_feature_{index}" for index in range(dynamic_width)
+        ))
+        if len(dynamic_names) != dynamic_width:
+            raise ValueError("M1_CACHE_DYNAMIC_FEATURE_NAMES_WIDTH_MISMATCH")
+        if static_feature_names is None:
+            static_names = (
+                tuple(STATIC_FEATURE_NAMES)
+                if static_width == STATIC_FEATURE_COUNT
+                else tuple(f"static_feature_{index}" for index in range(static_width))
+            )
+        else:
+            static_names = tuple(static_feature_names)
+        if len(static_names) != static_width:
+            raise ValueError("M1_CACHE_STATIC_FEATURE_NAMES_WIDTH_MISMATCH")
         manifest = {
             "cache_schema_version": CACHE_SCHEMA_VERSION,
             "cache_key": cache_key,
             "source_manifest_hash": source_manifest_hash,
             "raw_input_manifest_hash": source_manifest_hash,
             "contract_hashes": dict(contract_hashes),
+            "feature_schema_hash": feature_schema_hash or contract_hashes.get(
+                "feature_contract_hash"
+            ),
             "cache_build_scope": list(ALLOWED_SPLITS),
             "final_test_included": False,
             "final_test_access_count": 0,
             "normalization": normalization.model_dump(mode="json"),
+            "static_normalization": (
+                None if static_normalization is None
+                else static_normalization.model_dump(mode="json")
+            ),
+            "feature_names": list(dynamic_names),
+            "static_feature_names": list(static_names),
+            "candidate_status": audit.get("candidate_status"),
+            "provenance": dict(provenance or {}),
             "audit": audit,
             "episode_count": len(store.episode_ids),
             "sample_count": len(store.sample_splits),
@@ -328,7 +396,13 @@ class M1DevelopmentBaseCache:
                 for split in ALLOWED_SPLITS
             },
         }
-        return cls(store=store, normalization=normalization, audit=audit, manifest=manifest)
+        return cls(
+            store=store,
+            normalization=normalization,
+            static_normalization=static_normalization,
+            audit=audit,
+            manifest=manifest,
+        )
 
     def partition(self, split: str, *, representation: str = "ADAPTIVE_HISTORY",
                   window_minutes: int | None = None) -> M1RaggedDataset:
@@ -379,9 +453,14 @@ class M1DevelopmentBaseCache:
         return manifest
 
     @classmethod
-    def load(cls, data_path: Path, manifest_path: Path, *, expected_cache_key: str):
+    def load(cls, data_path: Path, manifest_path: Path, *, expected_cache_key: str,
+             allow_legacy_schema: bool = False):
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if manifest.get("cache_schema_version") != CACHE_SCHEMA_VERSION:
+        schema = manifest.get("cache_schema_version")
+        allowed = {CACHE_SCHEMA_VERSION}
+        if allow_legacy_schema:
+            allowed.update(LEGACY_CACHE_SCHEMA_VERSIONS)
+        if schema not in allowed:
             raise ValueError("M1_CACHE_SCHEMA_VERSION_MISMATCH")
         if manifest.get("cache_key") != expected_cache_key:
             raise ValueError("M1_CACHE_KEY_MISMATCH")
@@ -417,10 +496,32 @@ class M1DevelopmentBaseCache:
                         for name in TARGET_NAMES},
             )
         normalization = M1NormalizationArtifact.model_validate(manifest["normalization"])
+        static_normalization = manifest.get("static_normalization")
+        if static_normalization is not None:
+            static_normalization = M1StaticNormalizationArtifact.model_validate(
+                static_normalization
+            )
+        if schema == CACHE_SCHEMA_VERSION:
+            feature_names = manifest.get("feature_names", [])
+            static_feature_names = manifest.get("static_feature_names", [])
+            if len(feature_names) != int(store.values_flat.shape[1]):
+                raise ValueError("M1_CACHE_DYNAMIC_FEATURE_NAMES_WIDTH_MISMATCH")
+            static_width = 0 if store.static_values is None else int(store.static_values.shape[1])
+            if len(static_feature_names) != static_width:
+                raise ValueError("M1_CACHE_STATIC_FEATURE_NAMES_WIDTH_MISMATCH")
+            if static_width == STATIC_FEATURE_COUNT and not isinstance(
+                static_normalization, M1StaticNormalizationArtifact
+            ):
+                raise ValueError("M1_CACHE_STATIC_NORMALIZATION_REQUIRED")
         if manifest.get("cache_hash") != _stable_store_hash(store):
             raise ValueError("M1_CACHE_CONTENT_HASH_MISMATCH")
-        return cls(store=store, normalization=normalization,
-                   audit=manifest["audit"], manifest=manifest)
+        return cls(
+            store=store,
+            normalization=normalization,
+            static_normalization=static_normalization,
+            audit=manifest["audit"],
+            manifest=manifest,
+        )
 
 
 def cache_key(*, source_manifest_hash: str, contract_hashes: Mapping[str, str],

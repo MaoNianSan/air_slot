@@ -16,7 +16,12 @@ from model.common.config import load_config_layers
 from model.common.identity import content_id
 from model.M1.cache import REQUIRED_CONTRACT_HASHES, M1DevelopmentBaseCache, cache_key
 from model.M1.data import FEATURE_NAMES_V2, fit_train_normalization
-from model.M1.preparation import active_rows, build_training_examples, normalization_rows
+from model.M1.preparation import (
+    active_rows,
+    build_training_examples,
+    fit_static_normalization_from_rows,
+    normalization_rows,
+)
 from model.PRE.development import materialize_preselected_cohorts
 from model.PRE.reference.taxi_data2 import data2_taxi_reference_from_payload
 from model.PRE.reference.turnaround_data2 import data2_turnaround_reference_from_payload
@@ -207,7 +212,9 @@ def _reference_comparison(old: dict[str, Any], new: dict[str, Any]) -> dict[str,
     }
 
 
-def _build_cache(examples: dict[str, tuple], normalization, source_hash: str) -> dict[str, Any]:
+def _build_cache(
+    examples: dict[str, tuple], normalization, static_normalization, source_hash: str
+) -> dict[str, Any]:
     contract_hashes = {
         name: content_id({
             "gate": "A2",
@@ -227,6 +234,7 @@ def _build_cache(examples: dict[str, tuple], normalization, source_hash: str) ->
     cache = M1DevelopmentBaseCache.from_partitions(
         partitions=examples,
         normalization=normalization,
+        static_normalization=static_normalization,
         audit={
             "final_test_access_count": 0,
             "scope": "DATA_GATE_A2",
@@ -417,10 +425,15 @@ def run() -> dict[str, Any]:
         normalization_rows([prefix for _, prefix, _ in rows["train"]]),
         split="train",
     )
+    static_normalization = fit_static_normalization_from_rows(rows["train"])
     for split in SPLITS:
-        examples[split] = build_training_examples(rows[split], normalization, None)
+        examples[split] = build_training_examples(
+            rows[split], normalization, None,
+            static_normalization=static_normalization,
+        )
     cache = _build_cache(
-        examples, normalization, selection_audit["source_manifest_hash"]
+        examples, normalization, static_normalization,
+        selection_audit["source_manifest_hash"]
     )
     new_labels = label_statistics(rows)
     replay = _replay_leakage(cohorts)

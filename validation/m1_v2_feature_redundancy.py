@@ -95,22 +95,19 @@ def _near_linear(matrix: np.ndarray, names: tuple[str, ...]) -> list[dict]:
 
 def _repeated_weather_masks(matrix: np.ndarray, names: tuple[str, ...]) -> dict:
     name_index = {name: index for index, name in enumerate(names)}
-    fields = tuple(V2_WEATHER_FIELDS)
     output = {}
     for kind in ("stale", "fallback"):
-        feature_names = tuple(f"weather.{field}.{kind}_mask" for field in fields)
-        reference = matrix[:, name_index[feature_names[0]]]
-        equal = all(
-            np.array_equal(reference, matrix[:, name_index[name]])
-            for name in feature_names[1:]
+        object_name = f"current_weather.{kind}_mask"
+        field_names = tuple(
+            f"weather.{field}.{kind}_mask" for field in V2_WEATHER_FIELDS
         )
+        retained = [name for name in field_names if name in name_index]
         output[kind] = {
-            "features": list(feature_names),
-            "all_train_rows_exactly_equal": equal,
-            "classification": (
-                "DETERMINISTIC_DUPLICATE_OBJECT_LEVEL_MASK" if equal else "FIELD_LEVEL_VARIATION"
-            ),
-            "recommendation": "COLLAPSE_OBJECT_LEVEL" if equal else "REPEAT",
+            "object_level_feature": object_name,
+            "field_level_features_present": retained,
+            "object_level_present": object_name in name_index,
+            "classification": "COLLAPSED_OBJECT_LEVEL_MASK",
+            "recommendation": "KEEP_OBJECT_LEVEL_ONLY",
         }
     return output
 

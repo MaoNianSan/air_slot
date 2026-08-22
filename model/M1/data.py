@@ -10,6 +10,11 @@ from model.common.enums import EvidenceClass, OperationalStage, SupportState
 from model.common.errors import ContractError
 from model.common.value_objects import FrozenModel, SupportedValue
 from model.PRE.contracts.pre_state import PREState
+from model.M1.static_features import (
+    STATIC_FEATURE_COUNT,
+    STATIC_FEATURE_NAMES,
+    static_reference_features_from_pre,
+)
 
 
 @dataclass(frozen=True)
@@ -95,9 +100,8 @@ NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", 
 # Dataset support split:
 #   SHARED            current operational/factual state, schedule timing,
 #                     NOAA weather (incl. ceiling-base ceiling_base_m), Delta X,
-#                     short-term AR summaries, Delta t, missing/stale/fallback
-#                     masks (including typed ceiling status and derived-validity),
-#                     evidence/support quality.
+#                     Delta t, field missingness, object quality, typed ceiling
+#                     status, derived validity, and reduced support quality.
 #   DATA1_SUPPORTED   predecessor_motion trajectory fields (NOT part of the V2
 #                     shared principal encoder; Data2 never requires them).
 #   UNSUPPORTED       crew / gate / slot / standby aircraft (no raw path).
@@ -128,12 +132,15 @@ V2_DELTA_X_FIELDS = tuple(
 ) + (
     "delta.schedule.signed_minutes_to_crs_departure",
 )
-V2_AR_FIELDS = tuple(
-    f"ar.weather.{name}" for name in V2_WEATHER_FIELDS
-    if name != "wind_direction_deg"
-)
+V2_AR_FIELDS: tuple[str, ...] = ()
 V2_DELTA_T_FIELDS = ("weather.observation_age_minutes",)
-V2_DERIVED_FIELDS = V2_DELTA_X_FIELDS + V2_AR_FIELDS
+V2_DERIVED_FIELDS = V2_DELTA_X_FIELDS
+V2_WEATHER_OBJECT_MASK_NAMES = (
+    "current_weather.stale_mask",
+    "current_weather.fallback_mask",
+)
+M1_V2_FEATURE_SCHEMA_ID = "M1_V2_FEATURE_SCHEMA_CANDIDATE_B1R"
+M1_V2_FEATURE_SCHEMA_STATUS = "CANDIDATE_NOT_FROZEN"
 
 
 def _v2_x_names() -> tuple[str, ...]:
@@ -145,25 +152,22 @@ def _v2_x_names() -> tuple[str, ...]:
         else:
             result.append(f"weather.{field}")
     result.extend(V2_DELTA_X_FIELDS)
-    result.extend(V2_AR_FIELDS)
     return tuple(result)
 
 
 X_NAMES_V2 = _v2_x_names()
-MASK_FIELDS_V2 = tuple(f"weather.{name}" for name in V2_WEATHER_FIELDS) + (
-    "schedule.signed_minutes_to_crs_departure",
-) + tuple(f"state.{name}" for name in V2_STATE_FIELDS)
 M_NAMES_V2 = (
-    tuple(f"{name}.{kind}_mask" for name in MASK_FIELDS_V2
-          for kind in ("missing", "stale", "fallback"))
+    tuple(f"weather.{name}.missing_mask" for name in V2_WEATHER_FIELDS)
+    + V2_WEATHER_OBJECT_MASK_NAMES
+    + tuple(
+        f"schedule.signed_minutes_to_crs_departure.{kind}_mask"
+        for kind in ("missing", "stale", "fallback")
+    )
     + ("weather.ceiling_base_m.unlimited_mask",)
     + tuple(f"{name}.derived_missing_mask" for name in V2_DERIVED_FIELDS)
 )
 DELTA_NAMES_V2 = V2_DELTA_T_FIELDS
-E_NAMES_V2 = tuple(f"{obj}.evidence.{level}" for obj in V2_OBJECTS
-                   for level in EVIDENCE_LEVELS) + tuple(
-                   f"{obj}.support.{level}" for obj in V2_OBJECTS
-                   for level in SUPPORT_LEVELS)
+E_NAMES_V2 = ("current_weather.support.ABSTAIN",)
 S_NAMES_V2 = ()
 FEATURE_NAMES_V2 = X_NAMES_V2 + M_NAMES_V2 + DELTA_NAMES_V2 + E_NAMES_V2 + S_NAMES_V2
 GROUP_SLICES_V2 = {
@@ -183,91 +187,15 @@ NORMALIZED_NAMES_V2 = tuple(
 
 V2_FAST_FEATURE_COUNT = len(FEATURE_NAMES_V2)
 
-# ---------------------------------------------------------------------------
-# Tranche 3 static/reference MODEL_FEATURE block (``c_static``).
-#
-# Only PRE-published MODEL_FEATURE fields enter the numeric static block.
-# RETAINED_IDENTITY fields (route / carrier / aircraft / schedule-reference)
-# never become ordinal numeric predictors without a frozen deterministic
-# encoding contract (MODEL_FEATURE_PENDING); they stay in the M1 input
-# lineage.  The numeric turnaround/taxi references are train-frozen empirical
-# artifacts (minutes) and enter directly (deterministic, no search).
-# ---------------------------------------------------------------------------
-STATIC_FEATURE_NAMES: tuple[str, ...] = (
-    "turnaround_reference_minutes",
-    "taxi_reference_minutes",
-)
-STATIC_FEATURE_COUNT: int = len(STATIC_FEATURE_NAMES)
-
-_PUBLISHED_STATIC_REFERENCE_FIELDS = (
-    "route_context",
-    "carrier_context",
-    "aircraft_identity",
-    "schedule_reference",
-    "turnaround_reference",
-    "taxi_reference",
-)
-
-
-def _published_static_value(pre: PREState, field: str):
-    value = _find(pre, "successor_state", field)
-    if value.support_state is SupportState.ABSTAIN or not isinstance(value.value, dict):
-        return None
-    return value.value
-
-
-def static_reference_features_from_pre(
-    pre_state: PREState,
-    static_context=None,
-) -> tuple[torch.Tensor | None, dict[str, object]]:
-    """Build ``c_static`` + retained-identity lineage from PRE publication.
-
-    Only MODEL_FEATURE fields that PRE has published (``static_context`` marks
-    the field published with ``model_feature_status == MODEL_FEATURE``, the
-    published value is SUPPORTED, and the reference carries a legal
-    ``reference_id`` / ``freeze_id``) enter the numeric block.  RETAINED_IDENTITY
-    / MODEL_FEATURE_PENDING fields are returned in the lineage dict and never
-    fabricated as ordinal numeric inputs.
-    """
-    model_feature_fields: set[str] = set()
-    if static_context is not None:
-        model_feature_fields = set(static_context.model_feature_fields())
-    numeric: list[float | None] = []
-    for field, name in (("turnaround_reference", "turnaround_reference_minutes"),
-                        ("taxi_reference", "taxi_reference_minutes")):
-        if field not in model_feature_fields:
-            numeric.append(None)
-            continue
-        published = _published_static_value(pre_state, field)
-        if published is None:
-            numeric.append(None)
-            continue
-        if not published.get("reference_id") or not published.get("freeze_id"):
-            # Legal provenance is required for a numeric MODEL_FEATURE; a
-            # published-but-unfrozen reference stays MODEL_FEATURE_PENDING.
-            numeric.append(None)
-            continue
-        raw = published.get("value")
-        numeric.append(None if raw is None else float(raw))
-    lineage: dict[str, object] = {}
-    for field in _PUBLISHED_STATIC_REFERENCE_FIELDS:
-        published = _published_static_value(pre_state, field)
-        if published is not None:
-            lineage[field] = published
-    if any(item is None for item in numeric):
-        return None, lineage
-    return torch.tensor([numeric], dtype=torch.float32), lineage
-
-
 def fast_features_from_sequence(
     values: torch.Tensor, lengths: torch.Tensor | None = None
 ) -> torch.Tensor:
-    """Current / local-change / short-term AR representation ``r_fast``.
+    """Current and previous-node-local representation ``r_fast``.
 
     ``r_fast(i, t)`` is the decision-node (last causal row) of the full V2
     feature vector: current state + current weather + decision-node schedule
-    countdown + Delta X (declared local changes) + short-term AR summaries +
-    missing/stale/fallback masks + evidence/support quality.  This is a
+    countdown + Delta X (declared local changes) + current missing/quality and
+    reduced support encoding.  It contains no full-prefix engineered summary.
     deterministic feature block (Round 2.2 ``IMPLEMENTATION_CHOICE_NO_SEARCH``),
     NOT a second flattening of the full sequence and NOT a LightGBM prediction.
     It is consumed by the FAST path directly and by the STATE_AWARE path via
@@ -391,17 +319,15 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
 
     The V2 encoder never requires predecessor_motion trajectory fields
     (DATA1_SUPPORTED only); Data2 principal inference is fully supported by
-    current state, schedule timing, NOAA weather (incl. ceiling-base), Delta X,
-    short-term AR summaries, Delta t, masks, and evidence/support quality.
+    current state, schedule timing, NOAA weather (incl. ceiling-base), local
+    Delta X, Delta t, masks, and reduced support quality.
     """
     validate_history_sequence(states, require_episode_start=require_episode_start)
     rows = []
     previous_schedule: float | None = None
     previous_observed: dict[str, bool] = {}
     previous_values: dict[str, float] = {}
-    ar_sum = {field: 0.0 for field in V2_WEATHER_FIELDS if field != "wind_direction_deg"}
-    ar_count = {field: 0 for field in V2_WEATHER_FIELDS if field != "wind_direction_deg"}
-    for row_index, pre in enumerate(states):
+    for pre in states:
         weather = _find(pre, "current_state", "current_weather")
         schedule = _find(pre, "successor_state", "schedule_reference")
         stage = pre.decision_node.operational_stage.value
@@ -430,10 +356,12 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
                 observed = ceiling_status == "FINITE" and raw is not None
             current_observed[field] = observed
             if field == "wind_direction_deg":
-                angle = radians(float(raw)) if observed else 0.0
-                x.extend((sin(angle), cos(angle)))
                 if observed:
+                    angle = radians(float(raw))
+                    x.extend((sin(angle), cos(angle)))
                     current_values[field] = float(raw)
+                else:
+                    x.extend((0.0, 0.0))
                 continue
             value = _scaled(normalization, f"weather.{field}", raw) if observed else 0.0
             x.append(value)
@@ -449,38 +377,25 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
                 x.append(0.0)
         schedule_delta_valid = schedule_minutes is not None and previous_schedule is not None
         x.append(schedule_scaled - previous_schedule if schedule_delta_valid else 0.0)
-        for field in V2_WEATHER_FIELDS:
-            if field == "wind_direction_deg":
-                continue
-            if current_observed[field]:
-                ar_sum[field] += current_values[field]
-                ar_count[field] += 1
-            ar_valid = ar_count[field] == row_index + 1
-            x.append(ar_sum[field] / ar_count[field] if ar_valid else 0.0)
         weather_lineage = _lineage(pre, "current_weather")
         schedule_lineage = _lineage(pre, "schedule_reference")
         stale_w, fallback_w = _quality_masks(weather, weather_lineage)
         stale_s, fallback_s = _quality_masks(schedule, schedule_lineage)
         masks: list[float] = []
         for field in V2_WEATHER_FIELDS:
-            raw = _field(weather, field)
             missing_mask = (
                 ceiling_status == "MISSING"
                 if field == "ceiling_base_m"
                 else not current_observed[field]
             )
-            masks.extend((float(missing_mask), stale_w, fallback_w))
+            masks.append(float(missing_mask))
+        masks.extend((stale_w, fallback_w))
         masks.extend((float(schedule_minutes is None), stale_s, fallback_s))
-        for _ in V2_STATE_FIELDS:
-            masks.extend((0.0, 0.0, 0.0))
         masks.append(float(ceiling_status == "UNLIMITED"))
         for field in V2_DERIVED_FIELDS:
             if field.startswith("delta.weather."):
                 source = field.removeprefix("delta.weather.")
                 valid = current_observed.get(source, False) and previous_observed.get(source, False)
-            elif field.startswith("ar.weather."):
-                source = field.removeprefix("ar.weather.")
-                valid = ar_count.get(source, 0) == row_index + 1
             else:
                 valid = schedule_delta_valid
             masks.append(float(not valid))
@@ -493,16 +408,8 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
             _scaled(normalization, "weather.observation_age_minutes", age)
             if age is not None else 0.0
         ]
-        evidence: list[float] = []
-        objects = {"current_weather": weather, "schedule_reference": schedule,
-                   "current_state": _state_support_value()}
-        for name in V2_OBJECTS:
-            value = objects[name]
-            evidence.extend(float(value.evidence_class.value == level) for level in EVIDENCE_LEVELS)
-        for name in V2_OBJECTS:
-            value = objects[name]
-            evidence.extend(float(value.support_state.value == level) for level in SUPPORT_LEVELS)
-        rows.append(x + masks + delta + evidence)
+        support = [float(weather.support_state is SupportState.ABSTAIN)]
+        rows.append(x + masks + delta + support)
         previous_schedule = schedule_scaled if schedule_minutes is not None else None
         previous_observed = current_observed
         previous_values = current_values

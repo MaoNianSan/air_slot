@@ -1,9 +1,8 @@
-from pathlib import Path
+import pytest
 
+from model.M1.cache import M1DevelopmentBaseCache
 from model.M1.data import FEATURE_NAMES_V2, STATIC_FEATURE_NAMES
-from validation.m1_v2_feature_gate_b1 import load_a2_cache, run
-from validation.m1_v2_feature_profile import feature_profiles, missing_encoding_audit
-from validation.m1_v2_feature_redundancy import redundancy_audit
+from validation.m1_v2_feature_gate_b1r import load_a2_baseline, run
 from validation.m1_v2_feature_semantics import (
     encoder_static_scan,
     feature_inventory,
@@ -12,65 +11,89 @@ from validation.m1_v2_feature_semantics import (
 )
 
 
-def test_b1_inventory_is_generated_from_current_code():
+@pytest.fixture(scope="module")
+def b1r_result(tmp_path_factory):
+    output = tmp_path_factory.mktemp("m1_v2_feature_gate_b1r")
+    return run(output), output
+
+
+def test_b1r_inventory_is_generated_from_current_candidate_code():
     inventory = feature_inventory()
-    assert inventory["dynamic_count"] == len(FEATURE_NAMES_V2) == 103
-    assert inventory["static_count"] == len(STATIC_FEATURE_NAMES) == 2
-    assert inventory["total_count"] == 105
+    assert inventory["dynamic_count"] == len(FEATURE_NAMES_V2) == 41
+    assert inventory["static_count"] == len(STATIC_FEATURE_NAMES) == 4
+    assert inventory["total_count"] == 45
     assert inventory["ordered_dynamic_features"] == list(FEATURE_NAMES_V2)
     assert inventory["ordered_static_features"] == list(STATIC_FEATURE_NAMES)
+    assert not any(name.startswith("ar.weather.") for name in FEATURE_NAMES_V2)
+    assert not any(".evidence." in name for name in FEATURE_NAMES_V2)
 
 
-def test_b1_semantics_expose_delta_ar_and_structural_zero_contracts():
+def test_b1r_semantics_keep_local_delta_and_remove_full_prefix_history():
     rows = {row["FEATURE"]: row for row in semantic_table()}
     assert rows["delta.weather.temperature_c"]["HISTORY_SCOPE"] == "PREVIOUS_NODE_LOCAL"
     assert rows["delta.weather.temperature_c"]["TRANSFORMATION"] == (
         "DIFFERENCE_OF_TRAIN_STANDARDIZED_VALUES"
     )
-    assert rows["ar.weather.temperature_c"]["HISTORY_SCOPE"] == "FULL_PREFIX_SUMMARY"
+    assert "ar.weather.temperature_c" not in rows
+    assert rows["turnaround_reference_minutes"]["NORMALIZATION"] == "TRAIN_STANDARDIZED"
+    assert rows["taxi_reference_minutes.missing_mask"]["NORMALIZATION"] == (
+        "BINARY_NO_SCALE"
+    )
     scan = encoder_static_scan()
-    assert scan["ast_structural_zero_loop_found"] is True
-    assert len(scan["features"]) == 9
+    assert scan["ast_structural_zero_loop_found"] is False
+    assert scan["features"] == []
     history = history_semantics()
-    assert history["AR_ACTUAL_SEMANTICS"]["classification"] == (
-        "FULL_PREFIX_CUMULATIVE_MEAN"
+    assert history["FULL_PREFIX_HISTORY_FEATURE_COUNT"] == 0
+    assert history["EXP1B_HISTORY_SEPARATION_STATUS"] == "CLEAN"
+
+
+def test_b1r_loads_frozen_a2_only_through_explicit_legacy_path():
+    cache, manifest, result, old_names = load_a2_baseline()
+    assert manifest["cache_schema_version"] == "M1_V2_DEVELOPMENT_BASE_CACHE_V3"
+    assert manifest["cache_hash"] == (
+        "sha256:7cb35178323aecdd288010b0b70daf15112695baf627b53d2bef03136393b082"
     )
-    assert history["EXP1B_HISTORY_SEPARATION_STATUS"] == "HISTORY_DUPLICATED_IN_RFAST"
+    assert result["DATA_GATE_STATUS"] == "DATA_GATE_A2_PASS_READY_FOR_GATE_B"
+    assert len(old_names) == cache.store.values_flat.shape[1] == 103
 
 
-def test_b1_a2_cache_profile_and_redundancy_are_train_only():
-    cache, manifest, _ = load_a2_cache()
-    assert manifest["final_test_access_count"] == 0
-    profiles = feature_profiles(cache)
-    assert len(profiles["profiles"]["train"]) == 105
-    assert all(row["count"] == 1880 for row in profiles["profiles"]["train"])
-    assert len(profiles["static_contract_violations"]) == 4
-    redundancy = redundancy_audit(cache)
-    assert redundancy["basis"] == "TRAIN_CURRENT_ROWS_ONLY_NO_LABELS"
-    assert redundancy["row_count"] == 1880
-    assert redundancy["weather_object_level_masks"]["stale"][
-        "all_train_rows_exactly_equal"
-    ] is True
-    assert redundancy["weather_object_level_masks"]["fallback"][
-        "all_train_rows_exactly_equal"
-    ] is True
+def test_b1r_repairs_wind_static_and_history_without_changing_targets(b1r_result):
+    report, _ = b1r_result
+    assert report["FEATURE_GATE_STATUS"] == "FEATURE_GATE_B1R_PASS_CANDIDATE_READY_FOR_B2"
+    assert report["wind_direction"]["missing_rows"] == 3087
+    assert report["wind_direction"]["violations"] == 0
+    assert report["missing_invariants"] == {
+        "MISSING_NUMERIC_NOT_ZERO": 0,
+        "DERIVED_INVALID_NUMERIC_NOT_ZERO": 0,
+        "MISSING_MASK_VALUE_VIOLATIONS": 0,
+        "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK": 0,
+        "PARTIAL_STATIC_OBSERVED_VALUE_LOST": 0,
+    }
+    assert report["static"]["partial_missing_cases"] == 4
+    assert report["static"]["observed_counterpart_retained"] is True
+    assert report["exp1b"]["FULL_PREFIX_HISTORY_FEATURE_COUNT"] == 0
+    assert report["target"]["label_profile_unchanged"] is True
+    assert report["target"]["overflow"] == 90
 
 
-def test_b1_missing_audit_detects_wind_cosine_non_neutral_missing_encoding():
-    cache, _, _ = load_a2_cache()
-    audit = missing_encoding_audit(cache)
-    wind = next(
-        row for row in audit["checks"]
-        if row["numeric"] == "weather.wind_direction_deg.cos"
+def test_b1r_candidate_cache_roundtrip_and_stops_before_b2(b1r_result):
+    report, output = b1r_result
+    manifest_path = output / "M1_V2_FEATURE_GATE_B1R_CANDIDATE_CACHE_MANIFEST.json"
+    data_path = output / "M1_V2_FEATURE_GATE_B1R_CANDIDATE_CACHE.npz"
+    loaded = M1DevelopmentBaseCache.load(
+        data_path,
+        manifest_path,
+        expected_cache_key=report["cache"]["candidate_cache_key"],
     )
-    assert wind["missing_rows"] > 0
-    assert wind["violations"] == wind["missing_rows"]
-    assert audit["all_checked_encodings_exact"] is False
-
-
-def test_b1_runner_stops_before_b2_and_writes_decision_packet(tmp_path: Path):
-    report = run(tmp_path)
-    assert report["FEATURE_GATE_STATUS"] == "FEATURE_GATE_B1_DATA_INCONSISTENCY"
+    assert loaded.store.values_flat.shape[1] == 41
+    assert loaded.store.static_values.shape[1] == 4
+    assert report["cache"]["roundtrip"]["status"] == "PASS"
+    assert all(
+        report["cache"]["a2_identity_labels_active_lineage_ids_unchanged"].values()
+    )
+    assert report["validation_gates"]["data_usage_status"] == (
+        "DATA_USAGE_CONTRACT_AUDIT_PASS"
+    )
     assert report["safety"] == {
         "M1_TRAINING_RUNS": 0,
         "TUNING_RUNS": 0,
@@ -79,13 +102,5 @@ def test_b1_runner_stops_before_b2_and_writes_decision_packet(tmp_path: Path):
         "GATE_B_ENTERED": True,
         "GATE_B2_FEATURE_FREEZE": False,
     }
-    assert report["automatic_decisions_applied"] is False
-    assert report["validation_gates"]["data_usage_status"] == (
-        "DATA_USAGE_CONTRACT_AUDIT_PASS"
-    )
-    assert report["validation_gates"]["ownership_status"] == "PASS"
-    assert [row["decision_id"] for row in report["human_decisions"]][:6] == [
-        "B1-D01", "B1-D02", "B1-D03", "B1-D04", "B1-D05", "B1-D06"
-    ]
-    assert (tmp_path / "AIR_SLOT_M1_V2_FEATURE_GATE_B1.json").is_file()
-    assert (tmp_path / "FEATURE_DECISION_PACKET.md").is_file()
+    assert (output / "M1_V2_FEATURE_SCHEMA_CANDIDATE_B1R.json").is_file()
+    assert (output / "M1_V2_FEATURE_GATE_B2_CANDIDATE_PACKET.md").is_file()

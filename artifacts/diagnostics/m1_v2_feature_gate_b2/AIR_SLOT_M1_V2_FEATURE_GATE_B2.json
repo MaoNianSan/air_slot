@@ -1,0 +1,162 @@
+{
+  "FEATURE_GATE_STATUS": "FEATURE_GATE_B2_CONTRACT_FAILURE",
+  "artifact_hash": "sha256:bb50c1ed6722e9cced806b29ee43a6f78779b85f54d5a56cb602bc8461a434dc",
+  "artifact_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH",
+  "cache": {
+    "candidate": "sha256:57c668b687bf08b9aa0ebfbd60c0b6792d970a38e39e5a5d104294aa44f3153e",
+    "candidate_status": "NOT_TRAINING_FROZEN",
+    "frozen": null,
+    "frozen_cache_key": null,
+    "frozen_status": null,
+    "schema_version": "M1_V2_DEVELOPMENT_BASE_CACHE_V4",
+    "tensor_equivalence": {
+      "status": "NOT_CREATED"
+    }
+  },
+  "candidate_cache_hash": "sha256:57c668b687bf08b9aa0ebfbd60c0b6792d970a38e39e5a5d104294aa44f3153e",
+  "candidate_schema_hash": "sha256:0fa54b2b5d2db31ed15b10c6a4f3eba8dd1b3e3e82300cc70f6417266057930b",
+  "decisions": {
+    "B1-D01": "REMOVE",
+    "B1-D02": "COLLAPSE_OBJECT_LEVEL",
+    "B1-D03": "METADATA_ONLY",
+    "B1-D04": "REDUCE",
+    "B1-D05": "REMOVE",
+    "B1-D06": "TRAIN_STANDARDIZED",
+    "B1-D07": "PER_FEATURE_MASKED_BLOCK"
+  },
+  "feature_counts": {
+    "dynamic": 41,
+    "static": 4,
+    "total": 45
+  },
+  "frozen_cache_key": null,
+  "frozen_schema_hash": null,
+  "gate_checks": {
+    "a2_provenance": true,
+    "candidate_ready": true,
+    "data_usage": true,
+    "deterministic_complements": true,
+    "exact_duplicates": false,
+    "feature_counts": true,
+    "history_separation": true,
+    "missing_invariants": true,
+    "pre_ownership": true,
+    "safety": true,
+    "static_volume": true,
+    "structural_constants": true
+  },
+  "information_architecture": {
+    "EXP1B_HISTORY_SEPARATION_STATUS": "CLEAN",
+    "FULL_PREFIX_HISTORY_FEATURE_COUNT": 0,
+    "c_static": "TRAIN_STANDARDIZED_REFERENCE_VALUES_PLUS_PER_FEATURE_MISSING_MASKS",
+    "h": "GRU_FULL_CAUSAL_HISTORY",
+    "r_fast": "CURRENT_STATE + CURRENT_SCHEDULE + CURRENT_WEATHER + PREVIOUS_NODE_LOCAL_DELTA + VALIDITY + OBJECT_WEATHER_QUALITY_SUPPORT"
+  },
+  "labels": {
+    "TARGET_SUPPORT_REVIEW_REQUIRED": "YES",
+    "overflow": 90,
+    "unchanged": true
+  },
+  "missing_invariants": {
+    "DERIVED_INVALID_NUMERIC_NOT_ZERO": 0,
+    "MISSING_MASK_VALUE_VIOLATIONS": 0,
+    "MISSING_NUMERIC_NOT_ZERO": 0,
+    "PARTIAL_STATIC_OBSERVED_VALUE_LOST": 0,
+    "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK": 0
+  },
+  "redundancy": {
+    "contract_structural_constants": [],
+    "deterministic_complement_count": 0,
+    "deterministic_complements": [],
+    "exact_duplicate_count": 3,
+    "exact_duplicate_groups": [
+      {
+        "classification": "EXACT_DUPLICATE",
+        "constant_group": false,
+        "features": [
+          "delta.weather.temperature_c.derived_missing_mask",
+          "delta.weather.dewpoint_c.derived_missing_mask",
+          "delta.weather.wind_speed_mps.derived_missing_mask",
+          "delta.weather.visibility_m.derived_missing_mask"
+        ]
+      },
+      {
+        "classification": "EXACT_DUPLICATE",
+        "constant_group": true,
+        "features": [
+          "state.to_realized",
+          "current_weather.stale_mask",
+          "current_weather.fallback_mask",
+          "schedule.signed_minutes_to_crs_departure.missing_mask",
+          "schedule.signed_minutes_to_crs_departure.stale_mask",
+          "schedule.signed_minutes_to_crs_departure.fallback_mask",
+          "turnaround_reference_minutes.missing_mask",
+          "taxi_reference_minutes.missing_mask"
+        ]
+      },
+      {
+        "classification": "EXACT_DUPLICATE",
+        "constant_group": false,
+        "features": [
+          "weather.temperature_c.missing_mask",
+          "weather.dewpoint_c.missing_mask",
+          "weather.wind_speed_mps.missing_mask",
+          "weather.visibility_m.missing_mask"
+        ]
+      }
+    ],
+    "near_linear_pairs_report_only": [
+      {
+        "automatic_removal": false,
+        "classification": "NEAR_LINEAR_REDUNDANCY",
+        "left": "delta.schedule.signed_minutes_to_crs_departure",
+        "pearson_correlation": 1.0,
+        "right": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask"
+      }
+    ]
+  },
+  "repository_head": "7bb500d965f90920ca056c613ae33783b4000be4",
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "GATE_B2_FEATURE_FREEZE": false,
+    "GATE_B_ENTERED": true,
+    "HYPERPARAMETER_TUNING_AUTHORIZED": false,
+    "M1_TARGET_SUPPORT_FROZEN": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "AIR_SLOT_M1_V2_FEATURE_GATE_B2_V1",
+  "static_normalization": {
+    "artifact_hash": "sha256:7e1924cba9fd8e36b62016d4245fb5a8f0bf2fc0259160e5b4ee06d6487b4caa",
+    "artifact_id": "M1_V2_STATIC_NORMALIZATION_B2",
+    "episode_count": 128,
+    "fit_split": "train",
+    "fitting_unit": "UNIQUE_TRAIN_EPISODE_STATIC_CONTEXTS",
+    "source_a2_reference_ids": {
+      "taxi": "sha256:be1a68b0c51c77da35f0ec631c2f846a79dd073d8b29ca49ee42b2d1de4e5c66",
+      "turnaround": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57"
+    },
+    "taxi": {
+      "count": 128,
+      "max": 24.0,
+      "mean": 15.328125,
+      "min": 10.0,
+      "std": 3.3145262081291498
+    },
+    "turnaround": {
+      "count": 128,
+      "max": 81.0,
+      "mean": 58.60546875,
+      "min": 28.0,
+      "std": 9.65268994725167
+    }
+  },
+  "validation_gates": {
+    "PRE_OWNERSHIP_GATE": "PASS",
+    "STATIC_VOLUME_GATE": "PASS",
+    "data_usage_artifact_hash": "sha256:88968b4484ec93c8b11b317c84303e1b7a2e7ce09573852cb62c89a8a7abd793",
+    "data_usage_status": "DATA_USAGE_CONTRACT_AUDIT_PASS",
+    "ownership_findings": []
+  }
+}

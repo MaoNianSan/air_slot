@@ -139,6 +139,21 @@ def test_cache_rejects_final_test_example():
             _example("test", date(2019, 10, 1), 2, 0),)})
 
 
+def test_cache_rejects_mixed_static_presence_instead_of_zero_filling():
+    with pytest.raises(ValueError, match="M1_CACHE_PARTIAL_STATIC_BLOCK_REJECTED"):
+        _cache({
+            "train": (
+                _example(
+                    "static", date(2019, 6, 1), 2, 0,
+                    static_values=torch.tensor([1.0, 2.0]),
+                ),
+                _example("missing", date(2019, 6, 2), 2, 1),
+            ),
+            "calibration": (),
+            "development": (),
+        })
+
+
 def test_cache_requires_complete_contract_key():
     with pytest.raises(ValueError, match="M1_CACHE_CONTRACT_HASH_MISSING"):
         cache_key(

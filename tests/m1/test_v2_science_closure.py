@@ -147,7 +147,7 @@ def test_data2_encoder_requires_no_trajectory_and_supports_ceiling():
     # The states carry no predecessor_motion input; encoding must still work.
     encoded = encode_pre_sequence(states, _normalization())
     assert encoded.shape == (3, len(FEATURE_NAMES_V2))
-    assert encoded.shape == (3, 103)
+    assert encoded.shape == (3, 41)
 
 
 def test_full_adaptive_causal_prefix_is_never_truncated():

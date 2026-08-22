@@ -13,9 +13,9 @@ from model.M1.data import (
     V2_WEATHER_FIELDS,
     encode_pre_sequence,
     fast_features_from_sequence,
-    static_reference_features_from_pre,
 )
 from model.M1.preparation import normalization_rows
+from model.M1.static_features import static_reference_features_from_pre
 
 
 SPLITS = ("train", "calibration", "development")
@@ -229,7 +229,7 @@ def label_statistics(rows: dict[str, tuple]) -> dict:
     return output
 
 
-def history_diagnostics(rows: dict[str, tuple], normalization) -> dict:
+def history_diagnostics(rows: dict[str, tuple], normalization, static_normalization) -> dict:
     episode_ids = sorted({episode.episode_id for episode, _, _ in rows["train"]})
     selected_ids = set(
         random.Random(20260821).sample(episode_ids, min(3, len(episode_ids)))
@@ -241,7 +241,9 @@ def history_diagnostics(rows: dict[str, tuple], normalization) -> dict:
             continue
         current = prefix[-1]
         context = static_reference_context_from_pre(current.static_reference_publication)
-        static_values, _ = static_reference_features_from_pre(current, context)
+        static_values, _ = static_reference_features_from_pre(
+            current, context, static_normalization
+        )
         for state in prefix:
             node = state.decision_node
             if node.information_cutoff > node.decision_time:

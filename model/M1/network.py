@@ -89,12 +89,12 @@ class OrderedEventGRU(nn.Module):
 
 
 class FastRepresentationEncoder(nn.Module):
-    """Projection of the deterministic current/AR block ``r_fast``.
+    """Projection of the deterministic current/local block ``r_fast``.
 
     IMPLEMENTATION_CHOICE (Round 2.2): a single linear projection to the
     recurrent hidden dimension (``hidden_size``, the frozen ``m1_hidden_size=32``);
     ``IMPLEMENTATION_CHOICE_NO_SEARCH`` — no development search.  ``r_fast``
-    is the decision-node current/local-change/short-term AR feature block
+    is the decision-node current/local-change feature block
     (``fast_features_from_sequence``), never a LightGBM prediction or hidden
     state.
     """
@@ -144,7 +144,7 @@ class M1V2GRU(nn.Module):
 
     The state-aware representation is
     ``state = concat(GRU(history), projection(r_fast))`` with
-    ``r_fast`` the deterministic current/AR feature block; manuscript
+    ``r_fast`` the deterministic current/local feature block; manuscript
     static/reference context is retained separately via
     ``M1StaticReferenceContext`` and enters only through PRE-published numeric
     MODEL_FEATURE fields; retained identities never become ordinal features and
@@ -178,7 +178,7 @@ class M1V2GRU(nn.Module):
         self.fast_input_size = int(fast_input_size)
         self.static_input_size = int(static_input_size)
         # chi = concat(GRU(history), projection(r_fast), projection(c_static)):
-        # recurrent hidden block + projected current/AR block + projected
+        # recurrent hidden block + projected current/local block + projected
         # static/reference block (zero block when a branch is absent).
         # Static/reference context enters only from PRE-published MODEL_FEATURE
         # fields (Tranche 3); RETAINED_IDENTITY fields never become ordinal

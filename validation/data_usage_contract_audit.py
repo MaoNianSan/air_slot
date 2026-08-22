@@ -352,9 +352,9 @@ def _pre_output_audit(bundle: RegistryBundle, rule_rows: list[dict[str, Any]]) -
 
 
 def _feature_upstream(name: str) -> tuple[str, str]:
-    if name == "turnaround_reference_minutes":
+    if name.startswith("turnaround_reference_minutes"):
         return "turnaround_reference", "PRE_STATIC_REFERENCE_PUBLICATION"
-    if name == "taxi_reference_minutes":
+    if name.startswith("taxi_reference_minutes"):
         return "taxi_reference", "PRE_STATIC_REFERENCE_PUBLICATION"
     if name.startswith(("weather.", "delta.weather.", "ar.weather.")):
         return "current_weather", "PRE_CURRENT_STATE"

@@ -1,0 +1,68 @@
+{
+  "basis": "TRAIN_CURRENT_ROWS_ONLY_NO_LABELS",
+  "deterministic_complements": [],
+  "exact_duplicate_groups": [
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": false,
+      "features": [
+        "delta.weather.temperature_c.derived_missing_mask",
+        "delta.weather.dewpoint_c.derived_missing_mask",
+        "delta.weather.wind_speed_mps.derived_missing_mask",
+        "delta.weather.visibility_m.derived_missing_mask"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": true,
+      "features": [
+        "state.to_realized",
+        "current_weather.stale_mask",
+        "current_weather.fallback_mask",
+        "schedule.signed_minutes_to_crs_departure.missing_mask",
+        "schedule.signed_minutes_to_crs_departure.stale_mask",
+        "schedule.signed_minutes_to_crs_departure.fallback_mask",
+        "turnaround_reference_minutes.missing_mask",
+        "taxi_reference_minutes.missing_mask"
+      ]
+    },
+    {
+      "classification": "EXACT_DUPLICATE",
+      "constant_group": false,
+      "features": [
+        "weather.temperature_c.missing_mask",
+        "weather.dewpoint_c.missing_mask",
+        "weather.wind_speed_mps.missing_mask",
+        "weather.visibility_m.missing_mask"
+      ]
+    }
+  ],
+  "feature_count": 45,
+  "near_linear_action": "REPORT_ONLY",
+  "near_linear_pairs": [
+    {
+      "automatic_removal": false,
+      "classification": "NEAR_LINEAR_REDUNDANCY",
+      "left": "delta.schedule.signed_minutes_to_crs_departure",
+      "pearson_correlation": 1.0,
+      "right": "delta.schedule.signed_minutes_to_crs_departure.derived_missing_mask"
+    }
+  ],
+  "row_count": 1880,
+  "weather_object_level_masks": {
+    "fallback": {
+      "classification": "COLLAPSED_OBJECT_LEVEL_MASK",
+      "field_level_features_present": [],
+      "object_level_feature": "current_weather.fallback_mask",
+      "object_level_present": true,
+      "recommendation": "KEEP_OBJECT_LEVEL_ONLY"
+    },
+    "stale": {
+      "classification": "COLLAPSED_OBJECT_LEVEL_MASK",
+      "field_level_features_present": [],
+      "object_level_feature": "current_weather.stale_mask",
+      "object_level_present": true,
+      "recommendation": "KEEP_OBJECT_LEVEL_ONLY"
+    }
+  }
+}
