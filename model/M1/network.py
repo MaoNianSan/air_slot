@@ -291,7 +291,12 @@ class M1V2GRU(nn.Module):
             pmf = hazard_pmf(hazard_logits, self.hazard_contract)
             return pmf @ self.ib_embedding.weight
         ib = self._as_index(ib_index, state.device, state.shape[0])
-        teacher = self.ib_embedding(ib)
+        # Inactive teacher-forcing rows carry the canonical sentinel ``-1``.
+        # Embed a legal placeholder first; the active mask below selects the
+        # teacher value only for supported rows and uses the hazard marginal
+        # otherwise.
+        safe_ib = ib.clamp(0, self.ib_embedding.num_embeddings - 1)
+        teacher = self.ib_embedding(safe_ib)
         if ib_active is None:
             return teacher
         pmf = hazard_pmf(hazard_logits, self.hazard_contract)
@@ -308,7 +313,8 @@ class M1V2GRU(nn.Module):
         if d_ob_index is None:
             return torch.zeros(state.shape[0], self.hidden_size, device=state.device)
         index = self._as_index(d_ob_index, state.device, state.shape[0])
-        teacher = self.d_ob_embedding(index)
+        safe_index = index.clamp(0, self.d_ob_embedding.num_embeddings - 1)
+        teacher = self.d_ob_embedding(safe_index)
         if d_ob_active is None:
             return teacher
         return torch.where(

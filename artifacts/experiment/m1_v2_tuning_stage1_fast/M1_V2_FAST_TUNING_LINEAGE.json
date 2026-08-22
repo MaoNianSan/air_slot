@@ -1,0 +1,41 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "PAPER_FULL_RUN": false,
+  "calibration_used_for_selection": false,
+  "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+  "history_lineage": {
+    "GRU_H16": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+    "GRU_H32": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+    "GRU_H8": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+    "NO_HISTORY": {
+      "full_episode_access": "FORBIDDEN",
+      "future_information": "FORBIDDEN",
+      "history_encoder_enabled": false,
+      "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+      "input_contract": "CURRENT_ADMISSIBLE_OBSERVATION_ONLY",
+      "selection_role": "BASELINE_DIAGNOSTIC_ONLY"
+    }
+  },
+  "input_cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+  "input_cache_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m1_v2_feature_gate_b2\\M1_V2_DEVELOPMENT_BASE_CACHE_B2.npz",
+  "lineage_hash": "sha256:457e2d5ab6b9aa7cb39149dbbef14a8ea3583538752c48d0e72c92e371fead0a",
+  "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+  "sample_counts": {
+    "development": 128,
+    "train": 128
+  },
+  "sample_identity_hash": "sha256:0f1dfa25e3a5753994e88fbe3e5ef4098d35afc3781af57e9a85c81f081e7635",
+  "schema_version": "M1_V2_FAST_TUNING_STAGE1_LINEAGE_V1",
+  "selection_split": "development",
+  "split_date_ranges": {
+    "development": [
+      "2019-08-01",
+      "2019-09-30"
+    ],
+    "train": [
+      "2019-01-01",
+      "2019-06-30"
+    ]
+  },
+  "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+}

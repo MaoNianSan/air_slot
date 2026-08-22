@@ -8,8 +8,10 @@ and a separately guarded FAST entry point used only after authorization.
 from __future__ import annotations
 
 import json
-from datetime import date
+from datetime import date, datetime, timezone
+from hashlib import sha256
 from pathlib import Path
+import subprocess
 from typing import Sequence
 
 import torch
@@ -23,6 +25,7 @@ from .contracts import (
 from .data import FEATURE_NAMES_V2, STATIC_FEATURE_COUNT
 from .history import HistoryEncoderMode
 from .lifecycle import M1Lifecycle
+from .pipeline import M1Pipeline
 from .network import M1V2GRU
 from .semantics import EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES
 
@@ -65,6 +68,55 @@ NO_HISTORY_BASELINE_CONTRACT = {
     "full_episode_access": "FORBIDDEN",
     "selection_role": "BASELINE_DIAGNOSTIC_ONLY",
 }
+
+
+def _write_json(path: Path, payload: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
+def _file_hash(path: Path) -> str:
+    return f"sha256:{sha256(path.read_bytes()).hexdigest()}"
+
+
+def _checkpoint_roundtrip(
+    lifecycle: M1Lifecycle,
+    development_examples: Sequence,
+    *,
+    checkpoint_path: Path,
+    batch_size: int,
+) -> dict[str, object]:
+    """Prove that the saved FAST candidate reproduces its held-out logits."""
+
+    probe = tuple(development_examples[: min(16, len(development_examples))])
+    lifecycle.pipeline.model.eval()
+    before, _, _, _ = lifecycle.batched_logits(
+        probe, batch_size=batch_size, teacher_forcing=True,
+    )
+    lifecycle.save(checkpoint_path)
+    loaded = M1Lifecycle.load(checkpoint_path, device=str(lifecycle.device))
+    loaded.pipeline.model.eval()
+    after, _, _, _ = loaded.batched_logits(
+        probe, batch_size=batch_size, teacher_forcing=True,
+    )
+    differences = {
+        name: float((before[name] - after[name]).abs().max())
+        for name in before
+    }
+    passed = all(value <= 1e-5 for value in differences.values())
+    if not passed:
+        raise ValueError("M1_V2_STAGE1_FAST_CHECKPOINT_ROUNDTRIP_FAILED")
+    return {
+        "status": "PASS",
+        "probe_example_count": len(probe),
+        "max_abs_difference": max(differences.values(), default=0.0),
+        "per_head_max_abs_difference": differences,
+        "checkpoint_sha256": _file_hash(checkpoint_path),
+    }
 
 
 def stage1_development_metrics(
@@ -249,7 +301,9 @@ def run_fast_train_mode(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     checkpoint = output_dir / "M1_V2_FAST_TRAIN_MODE.pt"
-    lifecycle.save(checkpoint)
+    roundtrip = _checkpoint_roundtrip(
+        lifecycle, development, checkpoint_path=checkpoint, batch_size=batch_size,
+    )
     return {
         "schema_version": "M1_V2_FAST_TRAIN_MODE_RESULT_V1",
         "model_id": f"M1_V2_{lifecycle.pipeline.history_mode.value}",
@@ -267,10 +321,12 @@ def run_fast_train_mode(
             lifecycle, development, batch_size=batch_size,
         ),
         "checkpoint_path": str(checkpoint),
+        "checkpoint_roundtrip": roundtrip,
         "paper_result": False,
         "full_run": False,
         "training_counter_semantics": "INCREMENT_ONLY_FOR_THIS_EXPLICITLY_AUTHORIZED_FAST_EXECUTION",
-        "TUNING_RUNS": 0,
+        "M1_TRAINING_RUNS": 1,
+        "TUNING_RUNS": 1,
         "FINAL_TEST_ACCESS_COUNT": 0,
         "PAPER_FULL_RUN": False,
     }
@@ -372,6 +428,294 @@ def stage1_manifest(root: Path) -> dict[str, object]:
     }
 
 
+def run_fast_stage1_tuning(
+    root: Path,
+    *,
+    output_dir: Path | None = None,
+    execution_authorized: bool = False,
+) -> dict[str, object]:
+    """Execute the authorized four-variant, Development-only FAST comparison.
+
+    This entry point intentionally consumes the B2 frozen cache directly.  It
+    neither rebuilds features nor reads calibration or Final Test records, so
+    all candidates receive the exact same 128/128 deterministic subset.
+    """
+
+    if not execution_authorized:
+        raise RuntimeError("M1_V2_STAGE1_FAST_REQUIRES_EXPLICIT_AUTHORIZATION")
+
+    root = Path(root).resolve()
+    closure_path = root / (
+        "artifacts/diagnostics/m1_v2_paper_model_closure/"
+        "AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE.json"
+    )
+    closure = json.loads(closure_path.read_text(encoding="utf-8"))
+    frozen_cache_dir = root / "artifacts/diagnostics/m1_v2_feature_gate_b2"
+    cache_path = frozen_cache_dir / "M1_V2_DEVELOPMENT_BASE_CACHE_B2.npz"
+    cache_manifest_path = (
+        frozen_cache_dir / "M1_V2_DEVELOPMENT_BASE_CACHE_B2_MANIFEST.json"
+    )
+    cache_manifest = json.loads(cache_manifest_path.read_text(encoding="utf-8"))
+    expected_cache_hash = closure["b2_immutability"]["cache_hash"]
+    expected_feature_hash = closure["feature_contract"]["feature_schema_hash"]
+    if cache_manifest.get("cache_hash") != expected_cache_hash:
+        raise ValueError("M1_V2_STAGE1_FAST_CACHE_HASH_MISMATCH")
+    if cache_manifest.get("feature_schema_hash") != expected_feature_hash:
+        raise ValueError("M1_V2_STAGE1_FAST_FEATURE_HASH_MISMATCH")
+    if (
+        cache_manifest.get("final_test_included") is not False
+        or cache_manifest.get("final_test_access_count") != 0
+        or cache_manifest.get("cache_build_scope") != [
+            "train", "calibration", "development",
+        ]
+    ):
+        raise ValueError("M1_V2_STAGE1_FAST_CACHE_SAFETY_VIOLATION")
+
+    from model.common.config import load_config_layers
+
+    from .cache import M1DevelopmentBaseCache
+
+    scientific = load_config_layers(root / "configs").scientific
+    validated = validate_stage1_contract(scientific)
+    if validated["feature_count"] + validated["static_feature_count"] != 43:
+        raise ValueError("M1_V2_STAGE1_FAST_FEATURE_COUNT_MISMATCH")
+    cache = M1DevelopmentBaseCache.load(
+        cache_path,
+        cache_manifest_path,
+        expected_cache_key=cache_manifest["cache_key"],
+    )
+    train = tuple(cache.partition("train"))
+    development = tuple(cache.partition("development"))
+    if any(
+        row.episode_date > date(2019, 6, 30) for row in train
+    ) or any(
+        not date(2019, 8, 1) <= row.episode_date <= date(2019, 9, 30)
+        for row in development
+    ):
+        raise ValueError("M1_V2_STAGE1_FAST_SPLIT_BOUNDARY_VIOLATION")
+    train_subset = tuple(sorted(
+        train, key=lambda row: (row.episode_date, row.episode_id),
+    ))[:128]
+    development_subset = tuple(sorted(
+        development, key=lambda row: (row.episode_date, row.episode_id),
+    ))[:128]
+    if len(train_subset) != 128 or len(development_subset) != 128:
+        raise ValueError("M1_V2_STAGE1_FAST_SUBSET_UNAVAILABLE")
+    if any(
+        row.episode_date >= date(2019, 10, 1)
+        for row in (*train_subset, *development_subset)
+    ):
+        raise ValueError("M1_V2_STAGE1_FAST_FINAL_TEST_EXAMPLE_FORBIDDEN")
+
+    output_dir = Path(output_dir or (
+        root / "artifacts/experiment/m1_v2_tuning_stage1_fast"
+    )).resolve()
+    if output_dir == root or root not in output_dir.parents:
+        raise ValueError("M1_V2_STAGE1_FAST_OUTPUT_OUTSIDE_PROJECT_FORBIDDEN")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    seed = 20260821
+    training_config = {
+        "optimizer": "Adam",
+        "learning_rate": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 2,
+        "batch_size": 64,
+        "seed": seed,
+        "max_train_examples": 128,
+        "max_development_examples": 128,
+        "mode": "FAST_TRAIN_MODE",
+        "full_run": False,
+        "paper_result": False,
+        "feature_schema_hash": expected_feature_hash,
+        "cache_hash": expected_cache_hash,
+        "support_hash": content_id(closure["final_support"]),
+        "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    }
+    candidate_specs = (
+        (
+            "NO_HISTORY",
+            "M1_V2_NO_HISTORY_BASELINE",
+            16,
+            HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION,
+        ),
+        (
+            "GRU_H8",
+            "M1_V2_GRU_H8",
+            8,
+            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+        ),
+        (
+            "GRU_H16",
+            "M1_V2_GRU_H16",
+            16,
+            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+        ),
+        (
+            "GRU_H32",
+            "M1_V2_GRU_H32",
+            32,
+            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+        ),
+    )
+    records = []
+    for variant, model_id, hidden_size, history_mode in candidate_specs:
+        # Paired initialization and optimization randomness are intentionally
+        # reset per candidate; H/history are the only changing factors.
+        torch.manual_seed(seed)
+        pipeline = M1Pipeline.from_scientific_config(
+            scientific,
+            input_size=len(FEATURE_NAMES_V2),
+            normalization=cache.normalization,
+            hidden_size=hidden_size,
+            static_input_size=STATIC_FEATURE_COUNT,
+            static_normalization=cache.static_normalization,
+            history_mode=history_mode,
+        )
+        lifecycle = M1Lifecycle(pipeline, device="cpu")
+        result = run_fast_train_mode(
+            lifecycle,
+            train_subset,
+            development_subset,
+            output_dir=output_dir / variant,
+            execution_authorized=True,
+            max_train_examples=128,
+            max_development_examples=128,
+            epochs=2,
+            learning_rate=0.001,
+            weight_decay=0.0,
+            batch_size=64,
+            seed=seed,
+        )
+        result.update({
+            "variant": variant,
+            "model_id": model_id,
+            "history_mode": history_mode.value,
+            "training_config": training_config,
+            "training_config_hash": content_id(training_config),
+            "run_status": "EXECUTED_FAST_NOT_SELECTED",
+            "calibration_used_for_selection": False,
+            "FINAL_TEST_ACCESS_COUNT": 0,
+            "PAPER_FULL_RUN": False,
+        })
+        metrics_path = output_dir / variant / "M1_V2_FAST_TUNING_METRICS.json"
+        _write_json(metrics_path, result)
+        result["metrics_path"] = str(metrics_path)
+        records.append(result)
+
+    ranked = sorted(
+        records,
+        key=lambda item: (
+            item["validation_result"]["EPISODE_BALANCED_JOINT_VALIDATION_LOSS"],
+            item["variant"],
+        ),
+    )
+    ranking = [
+        {
+            "rank": index,
+            "variant": item["variant"],
+            "model_id": item["model_id"],
+            "principal_loss": item["validation_result"][
+                "EPISODE_BALANCED_JOINT_VALIDATION_LOSS"
+            ],
+        }
+        for index, item in enumerate(ranked, start=1)
+    ]
+    best_second_difference = (
+        ranking[1]["principal_loss"] - ranking[0]["principal_loss"]
+    )
+    sample_identity = {
+        "train": [
+            [row.episode_id, row.decision_node_id, row.episode_date.isoformat()]
+            for row in train_subset
+        ],
+        "development": [
+            [row.episode_id, row.decision_node_id, row.episode_date.isoformat()]
+            for row in development_subset
+        ],
+    }
+    lineage = {
+        "schema_version": "M1_V2_FAST_TUNING_STAGE1_LINEAGE_V1",
+        "input_cache_path": str(cache_path),
+        "input_cache_hash": expected_cache_hash,
+        "feature_schema_hash": expected_feature_hash,
+        "support_hash": content_id(closure["final_support"]),
+        "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+        "selection_split": "development",
+        "calibration_used_for_selection": False,
+        "sample_identity_hash": content_id(sample_identity),
+        "sample_counts": {
+            "train": len(train_subset),
+            "development": len(development_subset),
+        },
+        "split_date_ranges": {
+            "train": ["2019-01-01", "2019-06-30"],
+            "development": ["2019-08-01", "2019-09-30"],
+        },
+        "history_lineage": {
+            "NO_HISTORY": NO_HISTORY_BASELINE_CONTRACT,
+            "GRU_H8": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
+            "GRU_H16": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
+            "GRU_H32": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
+        },
+        "FINAL_TEST_ACCESS_COUNT": 0,
+        "PAPER_FULL_RUN": False,
+    }
+    lineage["lineage_hash"] = content_id(lineage)
+    lineage_path = output_dir / "M1_V2_FAST_TUNING_LINEAGE.json"
+    _write_json(lineage_path, lineage)
+    repository_head = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=root, text=True,
+    ).strip()
+    manifest = {
+        "schema_version": "M1_V2_FAST_TUNING_STAGE1_MANIFEST_V1",
+        "status": "M1_V2_FAST_TUNING_COMPLETE",
+        "repository_head": repository_head,
+        "execution_authorized": True,
+        "execution_scope": "FAST_DEVELOPMENT_ONLY",
+        "fixed_contract": {
+            "feature_schema_hash": expected_feature_hash,
+            "cache_hash": expected_cache_hash,
+            "support": STAGE1_SUPPORT,
+            "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+            "train_split": ["2019-01-01", "2019-06-30"],
+            "development_split": ["2019-08-01", "2019-09-30"],
+            "calibration_role": "DO_NOT_USE_FOR_SELECTION",
+        },
+        "training_config": training_config,
+        "training_config_hash": content_id(training_config),
+        "variants": records,
+        "ranking": ranking,
+        "best_second_principal_loss_difference": best_second_difference,
+        "selection": {
+            "automatic_freeze": False,
+            "status": "HUMAN_SELECTION_REQUIRED",
+            "principal_metric": "EPISODE_BALANCED_JOINT_VALIDATION_LOSS",
+        },
+        "lineage_path": str(lineage_path),
+        "lineage_hash": lineage["lineage_hash"],
+        "safety": {
+            "M1_TRAINING_RUNS": len(records),
+            "TUNING_RUNS": len(records),
+            "FINAL_TEST_ACCESS_COUNT": 0,
+            "PAPER_FULL_RUN": False,
+            "FULL": False,
+        },
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+    }
+    manifest["artifact_hash"] = content_id(manifest)
+    manifest_path = output_dir / "M1_V2_FAST_TUNING_MANIFEST.json"
+    _write_json(manifest_path, manifest)
+    return {
+        "status": manifest["status"],
+        "manifest_path": str(manifest_path),
+        "lineage_path": str(lineage_path),
+        "ranking": ranking,
+        "best_second_principal_loss_difference": best_second_difference,
+        "safety": manifest["safety"],
+    }
+
+
 __all__ = [
     "NO_HISTORY_BASELINE_CONTRACT",
     "STAGE1_H_CANDIDATES",
@@ -380,6 +724,7 @@ __all__ = [
     "exp1_interface_contract",
     "fast_train_mode",
     "fast_train_mode_contract",
+    "run_fast_stage1_tuning",
     "stage1_development_metrics",
     "stage1_manifest",
     "stage1_training_config_hash",

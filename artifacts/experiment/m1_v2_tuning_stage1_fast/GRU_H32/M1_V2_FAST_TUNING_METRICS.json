@@ -1,0 +1,97 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "M1_TRAINING_RUNS": 1,
+  "PAPER_FULL_RUN": false,
+  "TUNING_RUNS": 1,
+  "calibration_used_for_selection": false,
+  "checkpoint_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\m1_v2_tuning_stage1_fast\\GRU_H32\\M1_V2_FAST_TRAIN_MODE.pt",
+  "checkpoint_roundtrip": {
+    "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "max_abs_difference": 0.0,
+    "per_head_max_abs_difference": {
+      "D_OB_quantile": 0.0,
+      "D_OB_zero": 0.0,
+      "D_TX_quantile": 0.0,
+      "D_TX_zero": 0.0,
+      "T_IB_REMAINING_HAZARD": 0.0
+    },
+    "probe_example_count": 16,
+    "status": "PASS"
+  },
+  "full_run": false,
+  "hidden_size": 32,
+  "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+  "model_id": "M1_V2_GRU_H32",
+  "paper_result": false,
+  "parameter_count": 20884,
+  "run_status": "EXECUTED_FAST_NOT_SELECTED",
+  "schema_version": "M1_V2_FAST_TRAIN_MODE_RESULT_V1",
+  "training_config": {
+    "batch_size": 64,
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "epochs": 2,
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "full_run": false,
+    "learning_rate": 0.001,
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "max_development_examples": 128,
+    "max_train_examples": 128,
+    "mode": "FAST_TRAIN_MODE",
+    "optimizer": "Adam",
+    "paper_result": false,
+    "seed": 20260821,
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3",
+    "weight_decay": 0.0
+  },
+  "training_config_hash": "sha256:f3935f25be266c9db5a2cb03964fd030aad8b32da8976d8dcbe1c6de42bfa92b",
+  "training_counter_semantics": "INCREMENT_ONLY_FOR_THIS_EXPLICITLY_AUTHORIZED_FAST_EXECUTION",
+  "training_history": [
+    {
+      "active_counts": {
+        "D_OB": 123,
+        "D_TX": 128,
+        "T_IB_REMAINING_HAZARD": 43
+      },
+      "episode_denominators": {
+        "ib": 4,
+        "ob_positive": 4,
+        "ob_zero": 9,
+        "tx_positive": 5,
+        "tx_zero": 9
+      },
+      "epoch": 1,
+      "loss": 37.29866409301758,
+      "microbatch_count": 2,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 123,
+        "D_TX": 128,
+        "T_IB_REMAINING_HAZARD": 43
+      },
+      "episode_denominators": {
+        "ib": 4,
+        "ob_positive": 4,
+        "ob_zero": 9,
+        "tx_positive": 5,
+        "tx_zero": 9
+      },
+      "epoch": 2,
+      "loss": 37.09539031982422,
+      "microbatch_count": 2,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    }
+  ],
+  "validation_result": {
+    "D_OB_POSITIVE_QUANTILE_LOSS": 7.154809474945068,
+    "D_OB_ZERO_BCE": 0.6513264179229736,
+    "D_TX_POSITIVE_QUANTILE_LOSS": 1.3778048753738403,
+    "D_TX_ZERO_BCE": 0.7027406096458435,
+    "EPISODE_BALANCED_JOINT_VALIDATION_LOSS": 11.37085908651352,
+    "T_IB_HAZARD_NLL": 1.4841777086257935
+  },
+  "variant": "GRU_H32"
+}
