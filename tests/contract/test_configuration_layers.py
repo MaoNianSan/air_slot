@@ -28,11 +28,13 @@ def test_layers_load_separately():
     assert layers.scientific.parameters["forecast_horizons_minutes"].value == [0,15,60]
     assert layers.scientific.parameters["delay_thresholds_minutes"].value == [15,30,60]
     hidden_size = layers.scientific.parameters["m1_hidden_size"]
-    assert hidden_size.freeze_state.value == "FROZEN"
+    assert hidden_size.freeze_state.value == "DEVELOPMENT_CANDIDATE"
     assert hidden_size.value == 32
-    assert hidden_size.provenance["decision_id"] == "D3_SIGNED_M1_H_W_REFREEZE"
-    assert hidden_size.provenance["target_contract"] == ["R_IB", "DELTA_OB", "T_TX"]
-    assert hidden_size.provenance["evidence"].endswith("m1_signed_hstar_evidence.json")
+    assert hidden_size.provenance["selection_state"] == "DEVELOPMENT_CANDIDATE"
+    assert hidden_size.provenance["target_contract"] == [
+        "T_IB_REMAINING_HAZARD", "D_OB", "D_TX"]
+    assert "historical evidence is not V2 selection evidence" in (
+        hidden_size.provenance["legacy_v1_provenance"])
     assert hidden_size.provenance["final_test_access_count"] == 0
     assert layers.scientific.parameters["m1_hidden_size_candidates"].value == [16,32]
     fixed_window = layers.scientific.parameters["m1_fixed_history_window_minutes"]
@@ -76,10 +78,25 @@ def test_layers_load_separately():
     assert layers.scientific.parameters["m1_delta_ob_min_finite_minutes"].value == -180
     assert layers.scientific.parameters["m1_delta_ob_max_finite_minutes"].value == 180
     assert layers.scientific.parameters["m1_t_tx_max_finite_minutes"].value == 60
-    for name in ("m1_r_ib_max_finite_minutes", "m1_t_tx_max_finite_minutes"):
+    for name in ("m1_r_ib_max_finite_minutes", "m1_delta_ob_min_finite_minutes",
+                 "m1_delta_ob_max_finite_minutes", "m1_t_tx_max_finite_minutes"):
         provenance = layers.scientific.parameters[name].provenance
-        assert provenance["selection_state"] == "DEVELOPMENT_FROZEN"
-        assert "Calibration 2019-07" in provenance["excluded_splits"]
+        assert provenance["role"] == "LEGACY_V1_PROVENANCE_ONLY"
+        assert provenance["controls_principal_v2_pipeline"] is False
+    v2_supports = {
+        "m1_v2_t_ib_remaining_max_finite_minutes": (360, "EPISODE_MAX_ACTIVE_REMAINING"),
+        "m1_v2_d_ob_max_finite_minutes": (210, "UNIQUE_EPISODE_OUTCOME"),
+        "m1_v2_d_tx_max_finite_minutes": (60, "UNIQUE_EPISODE_OUTCOME"),
+    }
+    for name, (value, statistic) in v2_supports.items():
+        parameter = layers.scientific.parameters[name]
+        assert parameter.freeze_state.value == "FROZEN"
+        assert parameter.value == value
+        assert parameter.provenance["support_provenance"] == (
+            "V2_SUPPORT_REFROZEN_AFTER_A2_B2")
+        assert parameter.provenance["selection_unit"] == "TRAIN_EPISODE_BALANCED"
+        assert parameter.provenance["statistic"] == statistic
+        assert parameter.provenance["final_test_access_count"] == 0
     warning_artifact = layers.scientific.parameters["m1_warning_model_artifact"]
     assert warning_artifact.value.endswith("M1_SIGNED_WARNING_MODEL_V1.pt")
     assert warning_artifact.provenance["selection_rule"] == "FIRST_PRE_REGISTERED_W_SEED"

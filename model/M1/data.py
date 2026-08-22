@@ -228,9 +228,21 @@ def fit_train_normalization(rows: list[dict[str, float]], *, split: str,
     return M1NormalizationArtifact(fitted_split="train", values=values)
 
 
-def episode_normalized_weights(episode_ids: list[str]) -> torch.Tensor:
-    counts = Counter(episode_ids)
-    return torch.tensor([1.0 / counts[item] for item in episode_ids], dtype=torch.float32)
+def episode_normalized_weights(
+    episode_ids: list[str] | tuple[str, ...],
+    active: list[bool] | tuple[bool, ...] | torch.Tensor | None = None,
+) -> torch.Tensor:
+    """Inverse eligible-node counts so each active episode sums to one."""
+    enabled = [True] * len(episode_ids) if active is None else [bool(item) for item in active]
+    if len(enabled) != len(episode_ids):
+        raise ValueError("M1_EPISODE_WEIGHT_MASK_LENGTH_MISMATCH")
+    counts = Counter(
+        episode_id for episode_id, is_active in zip(episode_ids, enabled) if is_active
+    )
+    return torch.tensor([
+        1.0 / counts[episode_id] if is_active else 0.0
+        for episode_id, is_active in zip(episode_ids, enabled)
+    ], dtype=torch.float32)
 
 
 def _find(pre: PREState, family: str, variable: str) -> SupportedValue:

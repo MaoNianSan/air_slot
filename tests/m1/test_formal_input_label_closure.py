@@ -143,8 +143,10 @@ def test_formal_pipeline_uses_frozen_target_supports():
     pipeline=M1Pipeline.from_scientific_config(scientific,input_size=len(FEATURE_NAMES_V2),
                                                normalization=_normalization(), hidden_size=16)
     assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
-        "T_IB_REMAINING_HAZARD":360,"D_OB":180,"D_TX":60}
-    for target, finite, overflow in (("T_IB_REMAINING_HAZARD",360,365),("D_OB",180,185),("D_TX",60,65)):
+        "T_IB_REMAINING_HAZARD":360,"D_OB":210,"D_TX":60}
+    assert pipeline.bins["D_OB"].positive_bin_count == 42
+    assert pipeline.bins["D_OB"].class_count == 43
+    for target, finite, overflow in (("T_IB_REMAINING_HAZARD",360,365),("D_OB",210,215),("D_TX",60,65)):
         bins=pipeline.bins[target]
         assert bins.encode(finite-0.001) == bins.class_count-2
         assert bins.encode(finite) == bins.class_count-1
@@ -154,6 +156,25 @@ def test_formal_pipeline_uses_frozen_target_supports():
     for target in ("D_OB", "D_TX"):
         with pytest.raises(ValueError, match="nonnegative"):
             pipeline.bins[target].encode(-1)
+
+
+def test_formal_v2_pipeline_does_not_require_legacy_support_names():
+    base=load_config_layers(__import__("pathlib").Path("configs")).scientific
+    legacy_names={"m1_r_ib_max_finite_minutes", "m1_delta_ob_min_finite_minutes",
+                  "m1_delta_ob_max_finite_minutes", "m1_t_tx_max_finite_minutes"}
+    without_legacy=ScientificConfig.model_validate({
+        "schema_version":base.schema_version,
+        "parameters":{
+            name:item.model_dump() for name,item in base.parameters.items()
+            if name not in legacy_names
+        },
+    })
+    pipeline=M1Pipeline.from_scientific_config(
+        without_legacy,input_size=len(FEATURE_NAMES_V2),
+        normalization=_normalization(),hidden_size=16,
+    )
+    assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
+        "T_IB_REMAINING_HAZARD":360,"D_OB":210,"D_TX":60}
 
 
 def test_output_support_change_cannot_change_full_input_history():
@@ -171,18 +192,27 @@ def test_output_support_change_cannot_change_full_input_history():
     base=load_config_layers(__import__("pathlib").Path("configs")).scientific
     alternate=ScientificConfig.model_validate({"schema_version":base.schema_version,
         "parameters":{name:item.model_dump() for name,item in base.parameters.items()}})
-    replacements={"m1_r_ib_max_finite_minutes":480,
-                  "m1_delta_ob_max_finite_minutes":240,
-                  "m1_t_tx_max_finite_minutes":90}
-    alternate=alternate.model_copy(update={"parameters":{
-        name:(item.model_copy(update={"value":replacements[name]}) if name in replacements else item)
+    legacy_replacements={"m1_r_ib_max_finite_minutes":480,
+                         "m1_delta_ob_max_finite_minutes":240,
+                         "m1_t_tx_max_finite_minutes":90}
+    legacy_alternate=alternate.model_copy(update={"parameters":{
+        name:(item.model_copy(update={"value":legacy_replacements[name]}) if name in legacy_replacements else item)
+        for name,item in alternate.parameters.items()}})
+    v2_replacements={"m1_v2_t_ib_remaining_max_finite_minutes":480,
+                     "m1_v2_d_ob_max_finite_minutes":240,
+                     "m1_v2_d_tx_max_finite_minutes":90}
+    v2_alternate=alternate.model_copy(update={"parameters":{
+        name:(item.model_copy(update={"value":v2_replacements[name]}) if name in v2_replacements else item)
         for name,item in alternate.parameters.items()}})
     pipeline_a=M1Pipeline.from_scientific_config(base,input_size=len(FEATURE_NAMES_V2),normalization=normalization, hidden_size=16)
-    pipeline_b=M1Pipeline.from_scientific_config(alternate,input_size=len(FEATURE_NAMES_V2),normalization=normalization, hidden_size=16)
+    pipeline_legacy=M1Pipeline.from_scientific_config(legacy_alternate,input_size=len(FEATURE_NAMES_V2),normalization=normalization, hidden_size=16)
+    pipeline_b=M1Pipeline.from_scientific_config(v2_alternate,input_size=len(FEATURE_NAMES_V2),normalization=normalization, hidden_size=16)
     assert torch.equal(encoded_a,encoded_b)
     assert [state.decision_node.decision_time for state in states] == [
         schedule.scheduled_departure_utc+timedelta(minutes=5*i) for i in range(3)]
     assert encoded_a.shape[0] == 3
+    assert {name:head.class_count for name,head in pipeline_a.bins.items()} == {
+        name:head.class_count for name,head in pipeline_legacy.bins.items()}
     assert {name:head.class_count for name,head in pipeline_a.bins.items()} != {
         name:head.class_count for name,head in pipeline_b.bins.items()}
     assert pipeline_a.bins["T_IB_REMAINING_HAZARD"].class_count != pipeline_b.bins["T_IB_REMAINING_HAZARD"].class_count

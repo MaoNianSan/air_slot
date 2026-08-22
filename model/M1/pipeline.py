@@ -213,9 +213,11 @@ class M1Pipeline:
                 or normalization.fitted_split != "train":
             raise ValueError("M1_FORMAL_TRAIN_NORMALIZATION_REQUIRED")
         width = scientific.parameters["m1_bin_width_minutes"].value
-        ib_max = scientific.parameters["m1_r_ib_max_finite_minutes"].value
-        d_ob_max = scientific.parameters["m1_delta_ob_max_finite_minutes"].value
-        d_tx_max = scientific.parameters["m1_t_tx_max_finite_minutes"].value
+        ib_max = scientific.parameters[
+            "m1_v2_t_ib_remaining_max_finite_minutes"
+        ].value
+        d_ob_max = scientific.parameters["m1_v2_d_ob_max_finite_minutes"].value
+        d_tx_max = scientific.parameters["m1_v2_d_tx_max_finite_minutes"].value
         quantile_levels = scientific.parameters["m1_v2_quantile_levels"].value
         if None in (ib_max, d_ob_max, d_tx_max) or not quantile_levels:
             raise ValueError("M1_V2_FINITE_SUPPORT_UNFROZEN")
@@ -223,8 +225,10 @@ class M1Pipeline:
         tail_policy = "UNRESOLVED" if tail_param is None else tail_param.value
         if tail_policy not in ("UNRESOLVED", "DECLARED_FROZEN"):
             raise ValueError("M1_V2_PRINCIPAL_TAIL_POLICY_TEST_ONLY_FORBIDDEN")
-        selected = scientific.parameters["m1_hidden_size"].value
-        hidden = selected if hidden_size is None else hidden_size
+        selected_parameter = scientific.parameters["m1_hidden_size"]
+        if hidden_size is None and selected_parameter.freeze_state.value != "FROZEN":
+            raise ValueError("M1_HIDDEN_SIZE_SELECTION_REQUIRED")
+        hidden = selected_parameter.value if hidden_size is None else hidden_size
         if hidden is None:
             raise ValueError("M1_HIDDEN_SIZE_SELECTION_REQUIRED")
         candidates = scientific.parameters.get("m1_hidden_size_candidates")

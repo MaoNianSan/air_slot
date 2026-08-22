@@ -103,8 +103,8 @@ def test_c0a_episode_audit_preserves_b2_and_final_test_boundary(tmp_path):
     report = run(tmp_path, source_scan=False)
 
     assert {path: _digest(path) for path in guarded} == before
-    assert report["TARGET_SUPPORT_C0A_STATUS"] == "TARGET_SUPPORT_C0A_WEIGHTING_REVIEW_REQUIRED"
-    assert report["status_flags"] == ["TARGET_SUPPORT_C0A_WEIGHTING_REVIEW_REQUIRED"]
+    assert report["TARGET_SUPPORT_C0A_STATUS"] == "TARGET_SUPPORT_C0A_REVIEW_PACKET_READY"
+    assert report["status_flags"] == []
     assert report["b2_immutability"]["schema_hash"] == EXPECTED_SCHEMA_HASH
     assert report["b2_immutability"]["cache_hash"] == EXPECTED_CACHE_HASH
     assert report["b2_immutability"]["labels_unchanged"] is True
@@ -134,4 +134,6 @@ def test_c0a_frozen_episode_profiles_and_recommendations(tmp_path):
         "EXPAND_TO_210",
         "KEEP_60",
     ]
-    assert report["training_weighting"]["row_weighted_loss_detected"] is True
+    assert report["training_weighting"]["episode_balanced_loss_status"] == "PASS"
+    assert report["training_weighting"]["formal_lifecycle_uses_episode_normalized_weights"] is True
+    assert report["training_weighting"]["row_weighted_loss_detected"] is False

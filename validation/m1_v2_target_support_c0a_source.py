@@ -22,7 +22,7 @@ SPLITS = ("train", "calibration", "development")
 CURRENT_SUPPORT = {"T_IB_REMAINING_HAZARD": 360, "D_OB": 180, "D_TX": 60}
 
 
-def _active_rows(cache, target: str, split: str) -> list[tuple[int, float]]:
+def _active_label_rows(cache, target: str, split: str) -> list[tuple[int, float]]:
     store = cache.store
     return [
         (index, float(store.labels[target][index]))
@@ -153,7 +153,7 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
     overflow_episode_ids = set()
     for target in TARGETS:
         for split in SPLITS:
-            for index, value in _active_rows(cache, target, split):
+            for index, value in _active_label_rows(cache, target, split):
                 if value >= CURRENT_SUPPORT[target]:
                     overflow_episode_ids.add(store.sample_episode_ids[index])
 
@@ -175,14 +175,14 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
         split: {
             store.sample_episode_ids[index]
             for target in TARGETS
-            for index, value in _active_rows(cache, target, split)
+            for index, value in _active_label_rows(cache, target, split)
             if value >= CURRENT_SUPPORT[target]
         }
         for split in SPLITS
     }
     train_d_ob_overflow = {
         store.sample_episode_ids[index]
-        for index, value in _active_rows(cache, "D_OB", "train")
+        for index, value in _active_label_rows(cache, "D_OB", "train")
         if value >= CURRENT_SUPPORT["D_OB"]
     }
 

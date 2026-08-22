@@ -119,7 +119,7 @@ def _load_a2_episodes() -> dict[str, Any]:
     return episodes
 
 
-def _active_rows(cache: M1DevelopmentBaseCache, target: str, split: str) -> list[tuple[int, float]]:
+def _active_label_rows(cache: M1DevelopmentBaseCache, target: str, split: str) -> list[tuple[int, float]]:
     store = cache.store
     return [
         (i, float(store.labels[target][i]))
@@ -151,7 +151,7 @@ def _profile(values: Iterable[float], support: int) -> dict[str, Any]:
 def _episode_groups(cache: M1DevelopmentBaseCache, target: str, split: str) -> dict[str, list[float]]:
     store = cache.store
     groups: dict[str, list[float]] = defaultdict(list)
-    for i, value in _active_rows(cache, target, split):
+    for i, value in _active_label_rows(cache, target, split):
         groups[store.sample_episode_ids[i]].append(value)
     return dict(groups)
 
@@ -291,7 +291,7 @@ def _episode_audit(cache: M1DevelopmentBaseCache, episodes: dict[str, Any], sour
     for split in SPLITS:
         all_profiles[split] = {}
         for target in TARGETS:
-            row_values = [value for _, value in _active_rows(cache, target, split)]
+            row_values = [value for _, value in _active_label_rows(cache, target, split)]
             groups = _episode_groups(cache, target, split)
             episode_values, consistency = _episode_values(groups, target)
             all_profiles[split][target] = {
@@ -307,7 +307,7 @@ def _episode_audit(cache: M1DevelopmentBaseCache, episodes: dict[str, Any], sour
             for episode_id, value in episode_values.items():
                 if value < CURRENT_SUPPORT[target]:
                     continue
-                indices = [i for i, row_value in _active_rows(cache, target, split)
+                indices = [i for i, row_value in _active_label_rows(cache, target, split)
                            if store.sample_episode_ids[i] == episode_id]
                 lineage = _lineage_fields(store.static_context_lineages[indices[0]] if indices else None)
                 episode = episodes.get(episode_id)

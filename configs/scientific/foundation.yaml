@@ -25,18 +25,27 @@ parameters:
   forecast_horizons_minutes: {freeze_state: FROZEN, value: [0, 15, 60]}
   delay_thresholds_minutes: {freeze_state: FROZEN, value: [15, 30, 60]}
   m1_hidden_size:
-    freeze_state: FROZEN
+    freeze_state: DEVELOPMENT_CANDIDATE
     value: 32
     provenance:
-      selection_state: DEVELOPMENT_FROZEN
-      decision_id: D3_SIGNED_M1_H_W_REFREEZE
-      decision_date: "2026-08-17"
-      selection_metric: episode-balanced Development joint NLL
-      target_contract: [R_IB, DELTA_OB, T_TX]
-      evidence: artifacts/diagnostics/v5_development_freeze/m1_signed_hstar_evidence.json
-      evidence_hash: sha256:ba8b6dd01ea0bcd00c9d94103bb2d7db7756178c01862fb6475a8f5ea1862057
+      selection_state: DEVELOPMENT_CANDIDATE
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      target_contract: [T_IB_REMAINING_HAZARD, D_OB, D_TX]
+      candidate_set: [16, 32]
+      selection_metric: EPISODE_BALANCED_JOINT_VALIDATION_LOSS
+      parsimony_rule: "prefer 16 when Development results are practically equivalent; select 32 only for meaningful Development improvement"
+      legacy_v1_provenance: "D3_SIGNED_M1_H_W_REFREEZE selected H=32 for [R_IB, DELTA_OB, T_TX]; historical evidence is not V2 selection evidence"
       final_test_access_count: 0
-  m1_hidden_size_candidates: {freeze_state: FROZEN, value: [16, 32]}
+  m1_hidden_size_candidates:
+    freeze_state: FROZEN
+    value: [16, 32]
+    provenance:
+      selection_state: HUMAN_APPROVED_CANDIDATE_SET
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      architecture_search_expansion_authorized: false
+      final_test_access_count: 0
   m1_fixed_history_window_minutes:
     freeze_state: SENSITIVITY_ONLY
     value: 30
@@ -79,29 +88,74 @@ parameters:
   m1_r_ib_max_finite_minutes:
     freeze_state: FROZEN
     value: 360
-    provenance: &m1_target_support_provenance
-      selection_state: DEVELOPMENT_FROZEN
-      statistic: rolling_node_target_support_profile
-      included_splits: ["Train 2019-01--2019-06", "Development 2019-08--2019-09"]
-      excluded_splits: ["Calibration 2019-07", "Final test 2019-10--2019-12"]
+    provenance:
+      role: LEGACY_V1_PROVENANCE_ONLY
+      controls_principal_v2_pipeline: false
+      target_contract: R_IB
+      final_test_access_count: 0
   m1_delta_ob_min_finite_minutes:
     freeze_state: FROZEN
     value: -180
-    provenance: &m1_signed_target_support_provenance
-      selection_state: HUMAN_APPROVED
+    provenance: &m1_legacy_signed_target_support_provenance
+      role: LEGACY_V1_PROVENANCE_ONLY
+      controls_principal_v2_pipeline: false
       decision_id: D3_SIGNED_M1_H_W_REFREEZE
       decision_date: "2026-08-17"
+      target_contract: DELTA_OB
       support_rule: symmetric_signed_support_with_explicit_tails
       bin_width_minutes: 5
       final_test_access_count: 0
   m1_delta_ob_max_finite_minutes:
     freeze_state: FROZEN
     value: 180
-    provenance: *m1_signed_target_support_provenance
+    provenance: *m1_legacy_signed_target_support_provenance
   m1_t_tx_max_finite_minutes:
     freeze_state: FROZEN
     value: 60
-    provenance: *m1_target_support_provenance
+    provenance:
+      role: LEGACY_V1_PROVENANCE_ONLY
+      controls_principal_v2_pipeline: false
+      target_contract: T_TX
+      final_test_access_count: 0
+  m1_v2_t_ib_remaining_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 360
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      support_provenance: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+      selection_unit: TRAIN_EPISODE_BALANCED
+      statistic: EPISODE_MAX_ACTIVE_REMAINING
+      calibration_role: DIAGNOSTIC_ONLY
+      development_role: DIAGNOSTIC_ONLY
+      final_test_access_count: 0
+  m1_v2_d_ob_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 210
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      support_provenance: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+      selection_unit: TRAIN_EPISODE_BALANCED
+      statistic: UNIQUE_EPISODE_OUTCOME
+      calibration_role: DIAGNOSTIC_ONLY
+      development_role: DIAGNOSTIC_ONLY
+      final_test_access_count: 0
+  m1_v2_d_tx_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 60
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      support_provenance: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+      selection_unit: TRAIN_EPISODE_BALANCED
+      statistic: UNIQUE_EPISODE_OUTCOME
+      calibration_role: DIAGNOSTIC_ONLY
+      development_role: DIAGNOSTIC_ONLY
+      final_test_access_count: 0
   m1_state_estimator_v2:
     freeze_state: FROZEN
     value: M1_STATE_ESTIMATOR_V2
@@ -112,7 +166,7 @@ parameters:
       primitive_targets: [T_IB_A00, D_OB, D_TX]
       derived_targets: [R_IB, D_TO]
       dependency_chain: "T_IB_A00 -> D_OB -> D_TX"
-      state_aware: causal_GRU_H32
+      state_aware: causal_GRU_H16_H32_DEVELOPMENT_CANDIDATE
       predecessor_head: DISCRETE_HAZARD
       successor_heads: HURDLE_QUANTILE
       successor_conditioning: "D_TX | T_IB_A00, D_OB (formal D_OB only; never signed DELTA_OB)"
@@ -120,14 +174,16 @@ parameters:
       d_to_identity: "D_TO = D_OB + D_TX per scenario; never a separate head"
       history: FULL_ADAPTIVE_CAUSAL_PREFIX
       scenario_count: 1000
-      support_sources: "finite supports reused from V1 development-frozen support statistics (m1_r_ib_max_finite_minutes=360, m1_delta_ob_max_finite_minutes=180, m1_t_tx_max_finite_minutes=60, m1_bin_width_minutes=5)"
+      support_sources: "V2_SUPPORT_REFROZEN_AFTER_A2_B2 (m1_v2_t_ib_remaining_max_finite_minutes=360, m1_v2_d_ob_max_finite_minutes=210, m1_v2_d_tx_max_finite_minutes=60, m1_bin_width_minutes=5); selection unit TRAIN_EPISODE_BALANCED; Calibration and Development diagnostic only; Final Test access 0"
+      training_objective: TARGET_SPECIFIC_EPISODE_BALANCED
+      development_selection_metric: EPISODE_BALANCED_JOINT_VALIDATION_LOSS
       legacy_v1: "m1_stochastic_targets=[R_IB, DELTA_OB, T_TX] retained as LEGACY_V1 provenance only; m1_fixed_history_window_minutes=30 migrated to SENSITIVITY_ONLY/HISTORICAL_V1"
       final_test_access_count: 0
   m1_v2_quantile_levels:
     freeze_state: DEVELOPMENT_ONLY
     value: [0.1, 0.3, 0.5, 0.7, 0.9]
     provenance:
-      selection_state: NOT_FROZEN
+      selection_state: DEVELOPMENT_CANDIDATE
       note: "manuscript does not freeze numeric positive-quantile levels; DEVELOPMENT_ONLY scaffold pending HUMAN_DECISION_REQUIRED"
       final_test_access_count: 0
   m1_v2_positive_tail_policy:

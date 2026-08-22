@@ -79,15 +79,16 @@ def hazard_interval_nll(
     upper: torch.Tensor,
     active: torch.Tensor,
     weights: torch.Tensor | None = None,
-    denominator: int | None = None,
+    denominator: int | float | None = None,
 ):
     """Negative discrete-hazard likelihood over remaining-time bins.
 
     For each active row the likelihood is the summed probability mass of every
     bin overlapping the label interval [lower, upper].  Exact-minute labels
-    pass lower == upper.  With ``denominator`` the term is the sum over active
-    rows divided by that global count (batch-split invariant); otherwise it is
-    the mean over the batch's active rows.
+    pass lower == upper.  With ``denominator`` the term is the weighted sum
+    over active rows divided by that global count (batch-split invariant).
+    Formal V2 training uses episode-normalized weights and an active-episode
+    denominator; otherwise this is the mean over the batch's active rows.
     """
     pmf = hazard_pmf(logits, contract)
     logp = torch.log(pmf.clamp_min(1e-12))
@@ -139,21 +140,25 @@ def hurdle_quantile_loss(
     value: torch.Tensor,
     active: torch.Tensor,
     weights: torch.Tensor | None = None,
-    zero_denominator: int | None = None,
-    positive_denominator: int | None = None,
+    zero_weights: torch.Tensor | None = None,
+    positive_weights: torch.Tensor | None = None,
+    zero_denominator: int | float | None = None,
+    positive_denominator: int | float | None = None,
 ) -> torch.Tensor:
     """Hurdle + positive conditional quantile loss for D_OB / D_TX.
 
     ``zero`` is the observed zero indicator (1 when D == 0) and ``value`` is
     the observed nonnegative delay in minutes.  Active rows contribute the
     zero-mass Bernoulli loss; active positive rows additionally contribute the
-    pinball loss at the declared quantile levels.  With ``zero_denominator``
-    / ``positive_denominator`` the terms are sums over the batch's active rows
-    divided by those global counts (batch-split invariant); otherwise each
-    term is the mean over the batch's active set.
+    pinball loss at the declared quantile levels. ``zero_weights`` and
+    ``positive_weights`` let the terms use distinct episode normalization; the
+    legacy ``weights`` argument remains a shared fallback. With global episode
+    denominators the result is batch-split invariant.
     """
     mask = active.float()
     zero_target = zero.float()
+    zero_row_weights = weights if zero_weights is None else zero_weights
+    positive_row_weights = weights if positive_weights is None else positive_weights
     if zero_logit.shape != zero_target.shape:
         if zero_logit.ndim == zero_target.ndim + 1 and zero_logit.shape[-1] == 1:
             zero_logit = zero_logit.squeeze(-1)
@@ -165,8 +170,8 @@ def hurdle_quantile_loss(
     zero_losses = torch.nn.functional.binary_cross_entropy_with_logits(
         zero_logit, zero_target, reduction="none"
     )
-    if weights is not None:
-        zero_losses = zero_losses * weights
+    if zero_row_weights is not None:
+        zero_losses = zero_losses * zero_row_weights
     if zero_denominator is not None:
         zero_term = (
             (zero_losses * mask).sum() / float(zero_denominator)
@@ -188,8 +193,8 @@ def hurdle_quantile_loss(
             value[active_positive], quantiles[active_positive],
             contract.quantile_levels,
         )
-        if weights is not None:
-            positive_losses = positive_losses * weights[active_positive]
+        if positive_row_weights is not None:
+            positive_losses = positive_losses * positive_row_weights[active_positive]
         if positive_denominator is not None:
             positive_term = (
                 positive_losses.sum() / float(positive_denominator)

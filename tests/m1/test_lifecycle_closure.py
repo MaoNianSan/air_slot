@@ -3,6 +3,7 @@
 from datetime import date, datetime, timezone
 from pathlib import Path
 
+import pytest
 import torch
 
 from model.M1.contracts import (
@@ -71,3 +72,16 @@ def test_support_mask_excludes_partial_target_from_training_loss():
     history = lifecycle.train([example], epochs=1, learning_rate=.01)
     assert history[0]["active_counts"]["D_OB"] == 0
     assert torch.isfinite(torch.tensor(history[0]["loss"]))
+
+
+def test_training_exposes_narrow_nonnegative_weight_decay_candidate():
+    example = _example("train", date(2019, 6, 1), 1)
+    lifecycle = M1Lifecycle(M1Pipeline.smoke(4))
+    history = lifecycle.train(
+        [example], epochs=1, learning_rate=.01, weight_decay=1e-4,
+    )
+    assert history[0]["weight_decay"] == pytest.approx(1e-4)
+    with pytest.raises(ValueError, match="M1_WEIGHT_DECAY_MUST_BE_NONNEGATIVE"):
+        lifecycle.train(
+            [example], epochs=1, learning_rate=.01, weight_decay=-1e-4,
+        )

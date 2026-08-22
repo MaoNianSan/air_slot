@@ -68,6 +68,13 @@ THIN_VALIDATION_TARGETS = {
     "validation/data2_v5_wstar_development.py",
 }
 
+# C0A is a closed, read-only source-clock audit. It invokes the official PRE
+# canonicalizer to verify selected source records and does not own or duplicate
+# PRE construction semantics.
+READ_ONLY_PRE_AUDIT_CONSUMERS = {
+    "validation/m1_v2_target_support_c0a_source.py",
+}
+
 
 def _module_names(tree: ast.AST) -> tuple[str, ...]:
     result = []
@@ -135,7 +142,8 @@ def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
                 if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     continue
                 calls = _call_names(node)
-                if rel.startswith(("validation/", "exp/")):
+                if rel.startswith(("validation/", "exp/")) \
+                        and rel not in READ_ONLY_PRE_AUDIT_CONSUMERS:
                     owned_calls = sorted(calls & PRE_IMPLEMENTATION_CALLS)
                     if owned_calls:
                         findings.append(

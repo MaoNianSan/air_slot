@@ -47,6 +47,7 @@ class SupportState(StrEnum):
 class FreezeState(StrEnum):
     FROZEN = "FROZEN"
     DEVELOPMENT_FROZEN = "DEVELOPMENT_FROZEN"
+    DEVELOPMENT_CANDIDATE = "DEVELOPMENT_CANDIDATE"
     SENSITIVITY_ONLY = "SENSITIVITY_ONLY"
     DEVELOPMENT_ONLY = "DEVELOPMENT_ONLY"
     # Round 2.1: a scientific decision is required before any numeric rule may

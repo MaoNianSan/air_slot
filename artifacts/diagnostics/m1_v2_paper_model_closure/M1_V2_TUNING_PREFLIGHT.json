@@ -1,0 +1,105 @@
+{
+  "schema_version": "M1_V2_TUNING_PREFLIGHT_V1",
+  "status": "M1_V2_TUNING_PREFLIGHT_READY",
+  "repository_head": "7127859c9be574d0209cd59ada757d46d7c7d897",
+  "tuning_authorized": false,
+  "final_feature_contract": {
+    "dynamic": 39,
+    "static": 4,
+    "total": 43,
+    "history": "FULL_ADAPTIVE_CAUSAL_PREFIX"
+  },
+  "final_target_support": {
+    "T_IB_REMAINING_HAZARD": 360,
+    "D_OB": 210,
+    "D_TX": 60,
+    "bin_width_minutes": 5,
+    "support_provenance": "V2_SUPPORT_REFROZEN_AFTER_A2_B2"
+  },
+  "episode_balanced_objective": {
+    "principal_metric": "EPISODE_BALANCED_JOINT_VALIDATION_LOSS",
+    "validation_factorization": "CHAIN_FACTOR_TEACHER_FORCED",
+    "calibration_applied_during_selection": false,
+    "primitive_diagnostics": [
+      "T_IB_HAZARD_NLL",
+      "D_OB_ZERO_BCE",
+      "D_OB_POSITIVE_PINBALL",
+      "D_TX_ZERO_BCE",
+      "D_TX_POSITIVE_PINBALL"
+    ],
+    "denominators": {
+      "T_IB_HAZARD_NLL": "active T_IB episodes",
+      "D_OB_ZERO_BCE": "active D_OB episodes",
+      "D_OB_POSITIVE_PINBALL": "positive D_OB episodes",
+      "D_TX_ZERO_BCE": "active D_TX episodes",
+      "D_TX_POSITIVE_PINBALL": "positive D_TX episodes"
+    }
+  },
+  "candidate_space": {
+    "hidden_size": [16, 32],
+    "learning_rate": [0.001, 0.003, 0.01],
+    "weight_decay": [0.0, 0.0001],
+    "optimization_duration_epochs": [4, 8],
+    "quantile_levels": {
+      "value": [0.1, 0.3, 0.5, 0.7, 0.9],
+      "role": "DEVELOPMENT_CANDIDATE_UNCHANGED_NOT_TUNED_IN_THIS_PROTOCOL"
+    },
+    "grounding": {
+      "learning_rate_endpoints": "existing V2 fast 0.001 and historical Development 0.01; 0.003 is the narrow intermediate",
+      "regularization": "current Adam weight_decay 0.0 plus one minimal L2 candidate",
+      "duration": "bounded between the existing 2-epoch engineering smoke and 8-epoch Development setting; no duration above 8"
+    }
+  },
+  "bounded_protocol": {
+    "search_form": "STAGED_ONE_FACTOR_PAIRED_COMPARISON_NO_CARTESIAN_GRID",
+    "stage_1_hidden_size": {
+      "candidates": [16, 32],
+      "reference_learning_rate": 0.001,
+      "reference_weight_decay": 0.0,
+      "reference_epochs": 8,
+      "parsimony_rule": "prefer 16 when relative mean Development loss differs by at most 0.5%; select 32 only for meaningful paired Development improvement"
+    },
+    "stage_2_learning_rate": {
+      "selected_hidden_size_only": true,
+      "candidates": [0.001, 0.003, 0.01]
+    },
+    "stage_3_regularization_and_duration": {
+      "selected_hidden_size_and_learning_rate_only": true,
+      "weight_decay_candidates": [0.0, 0.0001],
+      "epoch_candidates": [4, 8],
+      "joint_grid_authorized": false
+    },
+    "maximum_unique_candidate_configurations_per_seed": 6
+  },
+  "training_seed_policy": {
+    "paired_training_seeds": [20260813, 20260814, 20260815, 20260816, 20260817],
+    "same_seeds_for_every_candidate": true,
+    "selection_aggregation": "MEAN_ACROSS_PAIRED_SEEDS",
+    "seed_chosen_by_best_development_score": false,
+    "final_artifact_seed_policy": "DECIDE_AFTER_MODEL_CONFIGURATION_SELECTION"
+  },
+  "split_roles": {
+    "Train": "fit candidate model",
+    "Development": "select H/LR/regularization/duration using principal metric",
+    "Calibration": "post-selection probability calibration and diagnostics only",
+    "Final Test": "locked"
+  },
+  "fixed_not_tuned": [
+    "feature_set",
+    "target_support",
+    "bin_width",
+    "history_window",
+    "roll_interval",
+    "quantile_levels_in_this_protocol"
+  ],
+  "later_required": {
+    "positive_quantile_upper_tail": "REQUIRED_BEFORE_FULL_CHAIN_EXPERIMENTS_FOR_M4_CVAR_0_90",
+    "scope": "NOT_PART_OF_CURRENT_WEIGHTING_OR_TUNING_PREFLIGHT"
+  },
+  "safety": {
+    "M1_TRAINING_RUNS": 0,
+    "TUNING_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false
+  }
+}

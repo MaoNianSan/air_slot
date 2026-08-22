@@ -32,7 +32,7 @@ from .contracts import (
     M1_V2_HAZARD_COORDINATE,
     V2_TARGETS,
 )
-from .data import fast_features_from_sequence
+from .data import episode_normalized_weights, fast_features_from_sequence
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 from model.PRE.contracts.pre_state import TargetSupportState
 
@@ -218,70 +218,157 @@ class M1Lifecycle:
                 "padding_fraction": 0.0 if padded == 0 else 1.0 - actual / padded}
 
     @staticmethod
-    def _global_loss_counts(examples):
-        """Global active counts used to normalize loss terms across batches."""
-        ib_count = 0
-        ob_zero_count = 0
-        ob_positive_count = 0
-        tx_zero_count = 0
-        tx_positive_count = 0
-        for row in examples:
-            if row.active.get(M1_V2_HAZARD_COORDINATE):
-                ib_count += 1
-            if row.active.get("D_OB"):
-                ob_zero_count += 1
-                if row.targets.get("D_OB") is not None and float(row.targets["D_OB"]) > 0:
-                    ob_positive_count += 1
-            if row.active.get("D_TX"):
-                tx_zero_count += 1
-                if row.targets.get("D_TX") is not None and float(row.targets["D_TX"]) > 0:
-                    tx_positive_count += 1
+    def _episode_balanced_loss_spec(examples):
+        """Build component-specific inverse-node weights per episode."""
+        eligibility = {
+            "ib": lambda row: bool(row.active.get(M1_V2_HAZARD_COORDINATE)),
+            "ob_zero": lambda row: bool(row.active.get("D_OB")),
+            "ob_positive": lambda row: bool(row.active.get("D_OB"))
+            and row.targets.get("D_OB") is not None
+            and float(row.targets["D_OB"]) > 0,
+            "tx_zero": lambda row: bool(row.active.get("D_TX")),
+            "tx_positive": lambda row: bool(row.active.get("D_TX"))
+            and row.targets.get("D_TX") is not None
+            and float(row.targets["D_TX"]) > 0,
+        }
+        weights = {}
+        denominators = {}
+        episode_ids = tuple(row.episode_id for row in examples)
+        for name, eligible in eligibility.items():
+            active = tuple(eligible(row) for row in examples)
+            episode_weights = episode_normalized_weights(episode_ids, active)
+            weights[name] = episode_weights
+            denominators[name] = len({
+                episode_id for episode_id, is_active in zip(episode_ids, active)
+                if is_active
+            })
+        return {"weights": weights, "denominators": denominators}
+
+    def _loss_components(self, logits, encoded, contracts, denominators, weights):
+        """Batch shares of the five formal episode-balanced loss primitives."""
+        active = encoded["active"]
         return {
-            "ib": ib_count,
-            "ob_zero": ob_zero_count,
-            "ob_positive": ob_positive_count,
-            "tx_zero": tx_zero_count,
-            "tx_positive": tx_positive_count,
+            "T_IB_HAZARD_NLL": hazard_interval_nll(
+                logits[M1_V2_HAZARD_COORDINATE],
+                contracts[M1_V2_HAZARD_COORDINATE],
+                lower=encoded["ib_minutes"], upper=encoded["ib_minutes"],
+                active=active[M1_V2_HAZARD_COORDINATE], weights=weights["ib"],
+                denominator=denominators["ib"],
+            ),
+            "D_OB_ZERO_BCE": hurdle_quantile_loss(
+                logits["D_OB_zero"], logits["D_OB_quantile"], contracts["D_OB"],
+                zero=encoded["d_ob_zero"], value=encoded["d_ob_minutes"],
+                active=active["D_OB"], zero_weights=weights["ob_zero"],
+                positive_weights=weights["ob_positive"],
+                zero_denominator=denominators["ob_zero"], positive_denominator=0,
+            ),
+            "D_OB_POSITIVE_PINBALL": hurdle_quantile_loss(
+                logits["D_OB_zero"], logits["D_OB_quantile"], contracts["D_OB"],
+                zero=encoded["d_ob_zero"], value=encoded["d_ob_minutes"],
+                active=active["D_OB"], zero_weights=weights["ob_zero"],
+                positive_weights=weights["ob_positive"], zero_denominator=0,
+                positive_denominator=denominators["ob_positive"],
+            ),
+            "D_TX_ZERO_BCE": hurdle_quantile_loss(
+                logits["D_TX_zero"], logits["D_TX_quantile"], contracts["D_TX"],
+                zero=encoded["d_tx_zero"], value=encoded["d_tx_minutes"],
+                active=active["D_TX"], zero_weights=weights["tx_zero"],
+                positive_weights=weights["tx_positive"],
+                zero_denominator=denominators["tx_zero"], positive_denominator=0,
+            ),
+            "D_TX_POSITIVE_PINBALL": hurdle_quantile_loss(
+                logits["D_TX_zero"], logits["D_TX_quantile"], contracts["D_TX"],
+                zero=encoded["d_tx_zero"], value=encoded["d_tx_minutes"],
+                active=active["D_TX"], zero_weights=weights["tx_zero"],
+                positive_weights=weights["tx_positive"], zero_denominator=0,
+                positive_denominator=denominators["tx_positive"],
+            ),
         }
 
-    def _loss(self, logits, encoded, contracts, counts):
+    def _loss(self, logits, encoded, contracts, denominators, weights):
         """Batch-split invariant loss share of the global epoch loss.
 
-        Every term is a sum over the batch's active rows divided by the
-        corresponding global active count, so micro-batching reproduces the
-        full-batch loss and gradient exactly.
+        Each term is an episode-normalized weighted sum divided by its global
+        active-episode count, so micro-batching preserves loss and gradients.
         """
-        active = encoded["active"]
-        ib_loss = hazard_interval_nll(
-            logits[M1_V2_HAZARD_COORDINATE], contracts[M1_V2_HAZARD_COORDINATE],
-            lower=encoded["ib_minutes"], upper=encoded["ib_minutes"],
-            active=active[M1_V2_HAZARD_COORDINATE], denominator=counts["ib"],
+        components = self._loss_components(
+            logits, encoded, contracts, denominators, weights,
         )
-        d_ob_loss = hurdle_quantile_loss(
-            logits["D_OB_zero"], logits["D_OB_quantile"], contracts["D_OB"],
-            zero=encoded["d_ob_zero"], value=encoded["d_ob_minutes"],
-            active=active["D_OB"], zero_denominator=counts["ob_zero"],
-            positive_denominator=counts["ob_positive"],
-        )
-        d_tx_loss = hurdle_quantile_loss(
-            logits["D_TX_zero"], logits["D_TX_quantile"], contracts["D_TX"],
-            zero=encoded["d_tx_zero"], value=encoded["d_tx_minutes"],
-            active=active["D_TX"], zero_denominator=counts["tx_zero"],
-            positive_denominator=counts["tx_positive"],
-        )
-        return ib_loss + d_ob_loss + d_tx_loss
+        return sum(components.values())
 
-    def train(self, examples, *, epochs, learning_rate, batch_size=None,
-              bucketed=True, seed=None, teacher_forcing=True):
+    def episode_balanced_objective(self, examples, *, batch_size=None,
+                                   bucketed=True, teacher_forcing=True):
+        """Read-only joint Development objective and primitive diagnostics."""
+        if not examples:
+            raise ValueError("empty evaluation split")
+        loss_spec = self._episode_balanced_loss_spec(examples)
+        totals = {
+            name: torch.zeros((), dtype=torch.float32)
+            for name in (
+                "T_IB_HAZARD_NLL", "D_OB_ZERO_BCE", "D_OB_POSITIVE_PINBALL",
+                "D_TX_ZERO_BCE", "D_TX_POSITIVE_PINBALL",
+            )
+        }
+        self.pipeline.model.eval()
+        with torch.no_grad():
+            for indices in self._batch_indices(
+                examples, batch_size, bucketed=bucketed,
+            ):
+                batch = [examples[index] for index in indices]
+                values, lengths, encoded, static_values = self._batch(
+                    batch, self.pipeline.contracts, device=self.device,
+                )
+                teacher = None
+                if teacher_forcing:
+                    teacher = {
+                        M1_V2_HAZARD_COORDINATE: encoded["ib_bin"],
+                        "D_OB": encoded["d_ob_bin"],
+                        "D_TX": encoded["d_tx_bin"],
+                        "_active": {
+                            M1_V2_HAZARD_COORDINATE: encoded["ib_bin"] >= 0,
+                            "D_OB": encoded["d_ob_bin"] >= 0,
+                            "D_TX": encoded["d_tx_bin"] >= 0,
+                        },
+                    }
+                logits = self.pipeline.model(
+                    values, lengths, teacher=teacher,
+                    fast_features=fast_features_from_sequence(values, lengths),
+                    static_features=static_values,
+                )
+                batch_indices = torch.tensor(indices, dtype=torch.long)
+                batch_weights = {
+                    name: component[batch_indices].to(self.device)
+                    for name, component in loss_spec["weights"].items()
+                }
+                components = self._loss_components(
+                    logits, encoded, self.pipeline.contracts,
+                    loss_spec["denominators"], batch_weights,
+                )
+                for name, value in components.items():
+                    totals[name] = totals[name] + value.detach().cpu()
+        diagnostics = {name: float(value.item()) for name, value in totals.items()}
+        diagnostics["EPISODE_BALANCED_JOINT_VALIDATION_LOSS"] = sum(
+            diagnostics.values()
+        )
+        diagnostics["episode_denominators"] = dict(loss_spec["denominators"])
+        return diagnostics
+
+    def train(self, examples, *, epochs, learning_rate, weight_decay=0.0,
+              batch_size=None, bucketed=True, seed=None, teacher_forcing=True):
         if not examples:
             raise ValueError("empty training split")
+        if weight_decay < 0:
+            raise ValueError("M1_WEIGHT_DECAY_MUST_BE_NONNEGATIVE")
         if seed is not None:
             torch.manual_seed(seed)
-        optimizer = torch.optim.Adam(self.pipeline.model.parameters(), lr=learning_rate)
+        optimizer = torch.optim.Adam(
+            self.pipeline.model.parameters(), lr=learning_rate,
+            weight_decay=weight_decay,
+        )
         history = []
+        loss_spec = self._episode_balanced_loss_spec(examples)
         for epoch in range(epochs):
             batches = self._batch_indices(examples, batch_size, bucketed=bucketed)
-            counts = M1Lifecycle._global_loss_counts(examples)
             # Gradients accumulate across microbatches; the optimizer steps
             # once per epoch so microbatch and full-batch training agree.
             optimizer.zero_grad()
@@ -306,7 +393,15 @@ class M1Lifecycle:
                     values, lengths, teacher=teacher,
                     fast_features=fast_features_from_sequence(values, lengths),
                     static_features=static_values)
-                loss = self._loss(logits, encoded, self.pipeline.contracts, counts)
+                batch_indices = torch.tensor(indices, dtype=torch.long)
+                batch_weights = {
+                    name: component[batch_indices].to(self.device)
+                    for name, component in loss_spec["weights"].items()
+                }
+                loss = self._loss(
+                    logits, encoded, self.pipeline.contracts,
+                    loss_spec["denominators"], batch_weights,
+                )
                 total = total + loss.detach()
                 loss.backward()
             optimizer.step()
@@ -314,11 +409,13 @@ class M1Lifecycle:
                 "epoch": epoch + 1,
                 "loss": float(total.item()),
                 "optimizer_steps": 1,
+                "weight_decay": float(weight_decay),
                 "microbatch_count": len(batches),
                 "active_counts": {
                     name: sum(int(row.active.get(name, False)) for row in examples)
                     for name in V2_TARGETS
                 },
+                "episode_denominators": dict(loss_spec["denominators"]),
             })
         return history
 

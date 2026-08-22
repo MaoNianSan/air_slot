@@ -502,8 +502,11 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     config, fast_config_hash = _load_fast_config(root)
     scientific = load_config_layers(root / "configs").scientific
     hidden_size = int(scientific.parameters["m1_hidden_size"].value)
-    if hidden_size != 32:
-        raise ValueError("M1_V2_FAST_REQUIRES_FROZEN_H32")
+    hidden_candidates = tuple(
+        int(value) for value in scientific.parameters["m1_hidden_size_candidates"].value
+    )
+    if hidden_size not in hidden_candidates:
+        raise ValueError("M1_V2_FAST_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES")
     torch.set_num_threads(min(
         int(config["training"]["torch_threads"]), torch.get_num_threads(),
     ))
