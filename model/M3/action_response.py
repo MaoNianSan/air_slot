@@ -1,13 +1,14 @@
-"""M3 V2 action-response contracts and the A00 identity implementation.
+"""M3 V2 action-response contracts and conditional scenario materialization.
 
-Non-A00 action effectiveness is deliberately not calculated here. The module
-freezes eligibility/response separation and the scenario-preserving envelope
-that a future response implementation must produce.
+Non-A00 responses are materialized only as explicit, versioned scenario
+assumptions. They are not observed intervention effects or causal estimates.
 """
 
 from __future__ import annotations
 
 from enum import Enum
+from collections.abc import Mapping
+from math import isfinite
 from typing import Any
 
 from pydantic import Field, computed_field, model_validator
@@ -19,8 +20,10 @@ from model.M3.m2_action_interface import (
 )
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.enums import SupportState
+from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
+from model.M3.response import action_post_consequences, response_draw
 
 
 class EligibilityState(str, Enum):
@@ -264,6 +267,7 @@ class ActionEvaluationEnvelope(FrozenModel):
             "response_parameter_version": self.response_rule.parameter_version,
             "response_freeze_id": self.response_rule.freeze_id,
             "response_provenance": self.response_rule.provenance,
+            "response_parameters": self.response_rule.parameters,
             "scenario_ids": self.input_scenario_ids,
             "scenario_weights": self.input_scenario_weights,
             "scenario_consequences": tuple(
@@ -277,6 +281,8 @@ class ActionEvaluationEnvelope(FrozenModel):
                             "support_state": component.support_state.value,
                             "baseline_cu_artifact_id": component.baseline_cu_artifact_id,
                             "baseline_reference_lineage_hash": component.baseline_reference_lineage_hash,
+                            "response_intensity": component.response_intensity,
+                            "response_draw_id": component.response_draw_id,
                         }
                         for component in item.component_quantities
                     ),
@@ -352,6 +358,155 @@ def build_a00_identity_envelope(
     )
 
 
+def build_conditional_scenario_envelope(
+    baselines: tuple[M3BaselineConsequenceInput, ...],
+    *,
+    eligibility: ActionEligibility,
+    response_rule: ActionResponseRule,
+    response_parameters: Mapping[str, Any],
+    mitigation: Mapping[str, float],
+    induced: Mapping[str, float],
+    seed: int,
+    response_registry_hash: str,
+    sensitivity_level: str = "BASE",
+) -> ActionEvaluationEnvelope:
+    """Materialize ``A -> C^a -> CU^a`` in the conditional scenario lane.
+
+    The deterministic draw is keyed by the frozen episode/node/scenario/action
+    identity. Baseline abstentions remain abstentions, and no monetary mapping
+    or risk ranking occurs at this boundary.
+    """
+    if not baselines:
+        raise ValueError("M3_CONDITIONAL_REQUIRES_BASELINE_SCENARIOS")
+    if eligibility.state is not EligibilityState.ELIGIBLE:
+        raise ValueError("M3_CONDITIONAL_REQUIRES_ELIGIBLE_ACTION")
+    if response_rule.action_id == "A00":
+        raise ValueError("M3_CONDITIONAL_NON_A00_ACTION_REQUIRED")
+    if response_rule.support_state is not ResponseSupportClass.SCENARIO_ASSUMPTION:
+        raise ValueError("M3_CONDITIONAL_SCENARIO_SUPPORT_REQUIRED")
+    if response_rule.parameter_source is not ResponseSourceType.SCENARIO_ASSUMPTION:
+        raise ValueError("M3_CONDITIONAL_SCENARIO_SOURCE_REQUIRED")
+    if (
+        not isinstance(response_registry_hash, str)
+        or not response_registry_hash.startswith("sha256:")
+        or len(response_registry_hash) != 71
+    ):
+        raise ValueError("M3_RESPONSE_REGISTRY_HASH_REQUIRED")
+    if response_parameters.get("response_parameter_status") == "NOT_FROZEN":
+        raise ContractError("M3_CONDITIONAL_RESPONSE_PARAMETERS_NOT_FROZEN")
+    response_model = response_parameters.get("response_model")
+    if response_model not in {"DETERMINISTIC", "BERNOULLI_BETA"}:
+        raise ContractError(f"M3_RESPONSE_MODEL_NOT_IMPLEMENTED:{response_model}")
+    gamma = response_parameters.get("induced_score_to_cu")
+    if gamma is None or not isfinite(float(gamma)) or float(gamma) <= 0:
+        raise ContractError("M3_INDUCED_SCORE_TO_CU_SOURCE_MISSING")
+    unknown = (set(mitigation) | set(induced)) - set(CONSEQUENCE_COMPONENTS)
+    if unknown:
+        raise ValueError(f"M3_CONDITIONAL_UNKNOWN_COMPONENT:{sorted(unknown)}")
+    if not (set(mitigation) | set(induced)) <= set(response_rule.affected_components):
+        raise ValueError("M3_CONDITIONAL_RESPONSE_COMPONENT_SCOPE_MISMATCH")
+
+    scenario_ids = tuple(item.scenario_id for item in baselines)
+    scenario_weights = tuple(item.scenario_weight for item in baselines)
+    if len(scenario_ids) != len(set(scenario_ids)):
+        raise ValueError("M3_DUPLICATE_SCENARIO_ID")
+    if abs(sum(scenario_weights) - 1.0) > 1e-6:
+        raise ValueError("M3_SCENARIO_WEIGHTS_MUST_SUM_TO_ONE")
+
+    evaluations = []
+    for baseline in baselines:
+        rho = response_draw(
+            seed=seed,
+            episode_id=baseline.episode_id,
+            decision_node_id=baseline.decision_node_id,
+            scenario_id=baseline.scenario_id,
+            action_template_id=response_rule.action_id,
+            parameters=dict(response_parameters),
+            response_registry_hash=response_registry_hash,
+            sensitivity_level=sensitivity_level,
+        )
+        draw_id = content_id({
+            "seed": seed,
+            "episode_id": baseline.episode_id,
+            "decision_node_id": baseline.decision_node_id,
+            "scenario_id": baseline.scenario_id,
+            "action_id": response_rule.action_id,
+            "sensitivity_level": sensitivity_level,
+            "response_registry_hash": response_registry_hash,
+            "response_intensity": rho,
+        })
+        supported_values = {
+            item.component_id: item.value_cu
+            for item in baseline.component_quantities
+            if item.support_state is not SupportState.ABSTAIN and item.value_cu is not None
+        }
+        post_values = action_post_consequences(
+            pre_by_component=supported_values,
+            mitigation=mitigation,
+            induced=induced,
+            rho=float(rho),
+            induced_score_to_cu=float(gamma),
+            included_components=tuple(supported_values),
+        )
+        components = []
+        for item in baseline.component_quantities:
+            if item.support_state is SupportState.ABSTAIN:
+                adjusted_value = None
+                support_state = SupportState.ABSTAIN
+                reason_code = item.reason_code or "BASELINE_COMPONENT_ABSTAIN"
+                intensity = None
+                realization_id = None
+            else:
+                adjusted_value = post_values[item.component_id]
+                support_state = item.support_state
+                reason_code = None
+                intensity = float(rho)
+                realization_id = draw_id
+            components.append(ActionConditionedCUQuantity(
+                component_id=item.component_id,
+                scenario_id=baseline.scenario_id,
+                scenario_weight=baseline.scenario_weight,
+                baseline_cu_artifact_id=item.cu_artifact_id,
+                baseline_support_state=item.support_state,
+                adjusted_value_cu=adjusted_value,
+                support_state=support_state,
+                action_response_reference_id=response_rule.source_references[0],
+                action_response_parameter_version=response_rule.parameter_version,
+                action_response_freeze_id=response_rule.freeze_id,
+                response_rule_id=response_rule.response_rule_id,
+                response_rule_hash=response_rule.rule_hash,
+                response_source_type=response_rule.parameter_source.value,
+                baseline_reference_lineage_hash=item.reference_lineage_hash,
+                response_provenance=response_rule.provenance,
+                response_intensity=intensity,
+                response_draw_id=realization_id,
+                reason_code=reason_code,
+            ))
+        evaluations.append(M3ActionConditionedConsequence(
+            episode_id=baseline.episode_id,
+            decision_node_id=baseline.decision_node_id,
+            scenario_id=baseline.scenario_id,
+            scenario_weight=baseline.scenario_weight,
+            action_id=response_rule.action_id,
+            action_family=response_rule.action_family,
+            baseline_consequence_id=baseline.baseline_consequence_id,
+            baseline_interface_hash=baseline.baseline_interface_hash,
+            eligibility_id=eligibility.eligibility_id,
+            response_rule_id=response_rule.response_rule_id,
+            response_rule_hash=response_rule.rule_hash,
+            component_quantities=tuple(components),
+        ))
+    return ActionEvaluationEnvelope(
+        action_id=response_rule.action_id,
+        action_family=response_rule.action_family,
+        eligibility=eligibility,
+        response_rule=response_rule,
+        input_scenario_ids=scenario_ids,
+        input_scenario_weights=scenario_weights,
+        scenario_evaluations=tuple(evaluations),
+    )
+
+
 __all__ = [
     "ActionEligibility",
     "ActionEvaluationEnvelope",
@@ -362,4 +517,5 @@ __all__ = [
     "ResponseSourceType",
     "ResponseSupportClass",
     "build_a00_identity_envelope",
+    "build_conditional_scenario_envelope",
 ]

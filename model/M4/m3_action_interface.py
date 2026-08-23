@@ -10,6 +10,7 @@ from pydantic import Field, model_validator
 
 from model.M3.action_response import (
     ActionEvaluationEnvelope,
+    ResponseParameter,
     ResponseSourceType,
     ResponseSupportClass,
 )
@@ -28,6 +29,10 @@ class M4ActionCUComponentInput(FrozenModel):
     baseline_reference_lineage_hash: str = Field(
         pattern=r"^sha256:[0-9a-f]{64}$"
     )
+    response_intensity: float | None = None
+    response_draw_id: str | None = Field(
+        default=None, pattern=r"^sha256:[0-9a-f]{64}$"
+    )
 
     @model_validator(mode="after")
     def explicit_support(self):
@@ -37,6 +42,13 @@ class M4ActionCUComponentInput(FrozenModel):
             raise ValueError("M4_M3_ABSTAIN_COMPONENT_MUST_BE_NULL")
         if self.support_state is not SupportState.ABSTAIN and self.C_a_CU is None:
             raise ValueError("M4_M3_SUPPORTED_COMPONENT_REQUIRES_CU")
+        if self.response_intensity is None and self.response_draw_id is not None:
+            raise ValueError("M4_RESPONSE_DRAW_ID_REQUIRES_INTENSITY")
+        if self.response_intensity is not None:
+            if not 0.0 <= self.response_intensity <= 1.0:
+                raise ValueError("M4_RESPONSE_INTENSITY_OUT_OF_RANGE")
+            if self.response_draw_id is None:
+                raise ValueError("M4_RESPONSE_INTENSITY_REQUIRES_DRAW_ID")
         return self
 
 
@@ -69,6 +81,7 @@ class M4ActionEnvelopeInput(FrozenModel):
     response_parameter_version: str = Field(min_length=1)
     response_freeze_id: str = Field(min_length=1)
     response_provenance: tuple[str, ...] = Field(min_length=1)
+    response_parameters: tuple[ResponseParameter, ...] = ()
     scenario_ids: tuple[int, ...] = Field(min_length=1)
     scenario_weights: tuple[float, ...] = Field(min_length=1)
     scenario_consequences: tuple[M4ScenarioActionConsequenceInput, ...] = Field(

@@ -93,7 +93,11 @@ class M3BaselineConsequenceInput(FrozenModel):
 
 
 class ActionConditionedCUQuantity(FrozenModel):
-    """Future M3-owned CU response for one component; never a native quantity."""
+    """M3-owned scenario-conditioned CU response for one component.
+
+    The response draw fields are deterministic implementation lineage, not an
+    observed intervention outcome or a causal action-effect estimate.
+    """
 
     component_id: str = Field(min_length=1)
     scenario_id: int = Field(ge=0)
@@ -114,6 +118,10 @@ class ActionConditionedCUQuantity(FrozenModel):
         pattern=r"^sha256:[0-9a-f]{64}$"
     )
     response_provenance: tuple[str, ...] = Field(min_length=1)
+    response_intensity: float | None = None
+    response_draw_id: str | None = Field(
+        default=None, pattern=r"^sha256:[0-9a-f]{64}$"
+    )
     reason_code: str | None = None
 
     @model_validator(mode="after")
@@ -121,10 +129,22 @@ class ActionConditionedCUQuantity(FrozenModel):
         if self.component_id not in CONSEQUENCE_COMPONENTS:
             raise ValueError("UNKNOWN_M2_CONSEQUENCE_COMPONENT")
         if self.support_state is SupportState.ABSTAIN:
-            if self.adjusted_value_cu is not None or not self.reason_code:
+            if (
+                self.adjusted_value_cu is not None
+                or self.response_intensity is not None
+                or self.response_draw_id is not None
+                or not self.reason_code
+            ):
                 raise ValueError("M3_ACTION_CU_ABSTAIN_REQUIRES_NULL_AND_REASON")
         elif self.adjusted_value_cu is None:
             raise ValueError("M3_ACTION_CU_SUPPORTED_REQUIRES_VALUE")
+        if self.response_intensity is None and self.response_draw_id is not None:
+            raise ValueError("M3_RESPONSE_DRAW_ID_REQUIRES_INTENSITY")
+        if self.response_intensity is not None:
+            if not 0.0 <= self.response_intensity <= 1.0:
+                raise ValueError("M3_RESPONSE_INTENSITY_OUT_OF_RANGE")
+            if self.response_draw_id is None:
+                raise ValueError("M3_RESPONSE_INTENSITY_REQUIRES_DRAW_ID")
         if (
             self.baseline_support_state is SupportState.ABSTAIN
             and self.support_state is not SupportState.ABSTAIN

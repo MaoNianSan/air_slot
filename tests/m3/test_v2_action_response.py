@@ -13,6 +13,7 @@ from model.M3.action_response import (
     ResponseSourceType,
     ResponseSupportClass,
     build_a00_identity_envelope,
+    build_conditional_scenario_envelope,
 )
 from model.M3.m2_action_interface import (
     ActionConditionedCUQuantity,
@@ -74,6 +75,36 @@ def _identity_rule():
     )
 
 
+def _conditional_eligibility():
+    return ActionEligibility.create(
+        action_id="A13",
+        action_family="flight_execution",
+        decision_node_id="node-1",
+        state=EligibilityState.ELIGIBLE,
+        eligibility_conditions=("flight execution range available",),
+        fact_reference_ids=("FACT:flight_execution_range",),
+        provenance=("ACTION_TEMPLATES_V1:A13",),
+    )
+
+
+def _conditional_rule():
+    return ActionResponseRule.create(
+        response_rule_id="M3_V2_A13_SCENARIO",
+        action_id="A13",
+        action_family="flight_execution",
+        affected_components=("F_propagation", "R_operating"),
+        response_types=(ActionResponseType.DIRECT_REDUCTION,),
+        response_rule="Apply the frozen scenario response to the declared components.",
+        parameter_source=ResponseSourceType.SCENARIO_ASSUMPTION,
+        support_state=ResponseSupportClass.SCENARIO_ASSUMPTION,
+        source_references=("M3_RESPONSE_SCENARIO_V1:A13",),
+        parameter_version="M3_RESPONSE_SCENARIO_V1",
+        freeze_id="sha256:" + "a" * 64,
+        parameters=(),
+        provenance=("PURE_SCENARIO", "FORMAL_SUPPORT_UPGRADE_FALSE"),
+    )
+
+
 def _envelope():
     _, baselines = _baselines()
     return build_a00_identity_envelope(
@@ -123,6 +154,65 @@ def test_c_a00_is_exact_componentwise_identity():
         assert tuple(row.support_state for row in baseline.component_quantities) == tuple(
             row.support_state for row in evaluated.component_quantities
         )
+
+
+def test_c1_conditional_scenario_response_materializes_typed_cu_without_promoting_abstain():
+    _, baselines = _baselines()
+    response_parameters = {
+        "response_model": "BERNOULLI_BETA",
+        "response_parameter_status": "FROZEN",
+        "success_probability": 0.65,
+        "mean_intensity": 0.60,
+        "concentration": 12.0,
+        "induced_score_to_cu": 0.10,
+    }
+    envelope = build_conditional_scenario_envelope(
+        baselines,
+        eligibility=_conditional_eligibility(),
+        response_rule=_conditional_rule(),
+        response_parameters=response_parameters,
+        mitigation={"F_propagation": 0.30},
+        induced={"R_operating": 4.0},
+        seed=17,
+        response_registry_hash="sha256:" + "b" * 64,
+    )
+    repeat = build_conditional_scenario_envelope(
+        baselines,
+        eligibility=_conditional_eligibility(),
+        response_rule=_conditional_rule(),
+        response_parameters=response_parameters,
+        mitigation={"F_propagation": 0.30},
+        induced={"R_operating": 4.0},
+        seed=17,
+        response_registry_hash="sha256:" + "b" * 64,
+    )
+    assert envelope.envelope_hash == repeat.envelope_hash
+    assert envelope.response_rule.support_state is ResponseSupportClass.SCENARIO_ASSUMPTION
+    assert all(
+        component.response_intensity is not None
+        and component.response_draw_id is not None
+        for scenario in envelope.scenario_evaluations
+        for component in scenario.component_quantities
+        if component.support_state is not SupportState.ABSTAIN
+    )
+    assert all(
+        component.adjusted_value_cu is None
+        and component.response_intensity is None
+        and component.response_draw_id is None
+        and component.support_state is SupportState.ABSTAIN
+        for scenario in envelope.scenario_evaluations
+        for component in scenario.component_quantities
+        if component.baseline_support_state is SupportState.ABSTAIN
+    )
+    payload = envelope.m4_payload()
+    consumed = M4ActionEnvelopeInput.model_validate(payload)
+    assert consumed.response_support is ResponseSupportClass.SCENARIO_ASSUMPTION
+    assert payload["response_parameters"] == ()
+    assert all(
+        "response_intensity" in component and "response_draw_id" in component
+        for scenario in payload["scenario_consequences"]
+        for component in scenario["components"]
+    )
 
 
 def test_d_eligibility_and_response_are_independent_frozen_objects():

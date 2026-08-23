@@ -11,6 +11,7 @@ from .action_response import (
     ResponseSourceType,
     ResponseSupportClass,
     build_a00_identity_envelope,
+    build_conditional_scenario_envelope,
 )
 from .instantiate import instantiate_candidates
 from .m2_action_interface import (
@@ -38,5 +39,6 @@ __all__ = [
     "ResponseSourceType",
     "ResponseSupportClass",
     "build_a00_identity_envelope",
+    "build_conditional_scenario_envelope",
     "instantiate_candidates",
 ]
