@@ -191,12 +191,34 @@ parameters:
       note: "manuscript does not freeze numeric positive-quantile levels; DEVELOPMENT_ONLY scaffold pending HUMAN_DECISION_REQUIRED"
       final_test_access_count: 0
   m1_v2_positive_tail_policy:
-    freeze_state: HUMAN_DECISION_REQUIRED
-    value: UNRESOLVED
+    freeze_state: FROZEN
+    value: FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS
     provenance:
-      selection_state: NOT_FROZEN
-      human_gate: M1_POSITIVE_TAIL_DECISION_REQUIRED
-      note: "no numeric tail rule is frozen; Q(u) for u > q_max must raise/ABSTAIN in the principal path and never clamp to Q(q_max). Decisions needed: positive quantile levels, q_max, upper-tail representation/extrapolation rule, calibration/freeze procedure. TEST_ONLY rules are forbidden here."
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE
+      decision_date: "2026-08-22"
+      representation: "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
+      tail_class_id: OVERFLOW_TAIL
+      target_q_max_minutes:
+        T_IB_A00: 360
+        D_OB: 210
+        D_TX: 60
+      finite_support_bins:
+        bin_width_minutes: 5
+        interval_semantics: "[bin_start, bin_end)"
+        terminal_finite_bin_exclusive_upper_bound: true
+      tail_observability:
+        events_observable: true
+        raw_value_preserved: true
+        overflow_flag_preserved: true
+        no_truncation: true
+        no_deletion: true
+        no_winsorization: true
+      threshold_tuning:
+        development_based_threshold_tuning: false
+        q_max_source: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+      continuous_quantile_queries_above_q_max: "ABSTAIN_EXPLICIT_TAIL_CLASS_REQUIRED"
+      note: "Finite support bins encode values below q_max; values at or above q_max are retained as an explicit OVERFLOW_TAIL class with raw observed value and lineage. No scalar tail extrapolation, clamp, truncation, deletion, or winsorization is permitted."
       cvar_alpha_reference: 0.90
       final_test_access_count: 0
   m1_v2_representation_contract:

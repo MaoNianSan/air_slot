@@ -1,0 +1,142 @@
+{
+  "artifact_hash": "sha256:5bb1c291278b3432c620ed190688cf0b1ecaa4e90dc6b7a92a755ec6202097e0",
+  "derived_from": "sha256:13f917b0d94d851fa55adee18e1661cc376238ffd548bfb534d40cfe322a9dff",
+  "inputs": {
+    "data1_usage": {
+      "path": "data1/DATA_USAGE.md",
+      "sha256": "sha256:97c723a9b24033e8cb15422c4b57345e647c2a383f27c050559184849200d152"
+    },
+    "data2_usage": {
+      "path": "data2/DATA_USAGE.md",
+      "sha256": "sha256:82efb9fb78914c4912aed69dd5a8b19e73d32b0d7805ea6f1b648ab4b499d763"
+    },
+    "exp1_manifest": {
+      "path": "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:18bd679447d9fd9953b79de62798b474cce180495947108f834733261f277854"
+    },
+    "exp2_lineage": {
+      "path": "artifacts/experiment/exp2_formal_development_v7/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+      "sha256": "sha256:2fa98e329e9371af6b570b073218589fc4dcc659638b51e1d16f5fcfe96a743a"
+    },
+    "exp2_manifest": {
+      "path": "artifacts/experiment/exp2_formal_development_v7/EXP2_FORMAL_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:913242fb53d4066b82e567af2ecdd6ecef88ecbb58c36d7aa341be5185c09082"
+    },
+    "exp3_manifest": {
+      "path": "artifacts/diagnostics/exp3_formal_execution_preparation_v6/EXP3_FORMAL_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:71042730f41a5c1486bd992d8e987b7566d27b31378594503f5da663c5e1c736"
+    },
+    "exp3_readiness": {
+      "path": "artifacts/diagnostics/exp3_formal_execution_preparation_v6/EXP3_FORMAL_EXECUTION_READINESS_REPORT.json",
+      "sha256": "sha256:dfcdb1f48a42d242dbde433ab4989b7f9d1e055ea73cedbb09a32657fbcea5b1"
+    },
+    "exp4_manifest": {
+      "path": "artifacts/diagnostics/exp4_formal_execution_preparation_v6/EXP4_FORMAL_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:1a124c4d5661efca02a60677e65826e9fc794026eb21f15b1ec8be9027a46b42"
+    },
+    "exp4_readiness": {
+      "path": "artifacts/diagnostics/exp4_formal_execution_preparation_v6/EXP4_FORMAL_EXECUTION_READINESS_REPORT.json",
+      "sha256": "sha256:a8cd1423b60fa6d97c9e17b9f129b0b2ba069cb3631ac416ba766e1bdad8b232"
+    },
+    "m1_binding": {
+      "path": "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
+      "sha256": "sha256:5deb6684b757af4732a14a874d07f2d74a4ca4c1954deff43c849de7df0fc393"
+    },
+    "m1_current_stage_refreeze": {
+      "path": "artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3/M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json",
+      "sha256": "sha256:39bb979d077798c1c2e0d2d48ef5e5bc482af5aac5ac61137cf1a9875ad2de86"
+    },
+    "m1_freeze": {
+      "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
+      "sha256": "sha256:b5f6892fa096b96db55c4768a4fdd3ca8c0fce3c2e0bd83adda397108e1112e0"
+    },
+    "m1_positive_tail_freeze": {
+      "path": "artifacts/diagnostics/m1_v2_positive_tail_policy_freeze_v2/M1_V2_POSITIVE_TAIL_POLICY_FREEZE_MANIFEST.json",
+      "sha256": "sha256:c07f1c07f9035d903774d16a6e8994a61907e1579839f98286467cd602746dd2"
+    },
+    "m1_scenario_manifest": {
+      "path": "artifacts/experiment/m1_v2_current_stage_scenarios_v4/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIO_MANIFEST.json",
+      "sha256": "sha256:43f796d6eb3eb20de5c3d775ec27de1b0c72b980ed896d11f3023c36b76e907a"
+    },
+    "m1_semantic_reconciliation": {
+      "path": "artifacts/diagnostics/m1_v2_development_inference_binding/M1_V2_DEVELOPMENT_INFERENCE_SEMANTIC_RECONCILIATION_V2.json",
+      "sha256": "sha256:69d0eb2a710ac0f38c52c156be0596881763945c491eb6f8a0ccf2f1b097417c"
+    },
+    "m2_current_manifest": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
+      "sha256": "sha256:ab612f24137cc8917572d648cf83c49becdda819d7162135c3f4c8e5ba145a14"
+    },
+    "m2_manifest": {
+      "path": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_MANIFEST.json",
+      "sha256": "sha256:118d85dcab68972c3baca7497c54054aa20d15d7b7078287c720dca6c43e700e"
+    },
+    "m2_readiness": {
+      "path": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_READINESS_REPORT.json",
+      "sha256": "sha256:e8c74b371c7d5b35d14aa20f04d18a229e9dad4d929f25ebcada7bc21858e030"
+    },
+    "m2_validation": {
+      "path": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_FREEZE_VALIDATION_REPORT.json",
+      "sha256": "sha256:47a7c64140f2f91e4ff4f26ea6bbb622215f9e78a35fdb928e842d9e8f3d0c13"
+    },
+    "m3_bundle": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE.json",
+      "sha256": "sha256:e739302f01c073ced4cdf8f7a0e6d3e0b1d8588dfdd0352a0d63976a85b86597"
+    },
+    "m3_design": {
+      "path": "registries/m3_v2_action_response_design.json",
+      "sha256": "sha256:8caf4872641fc06da08fb6ddbf37db3625a395588b279ad862d89874493425e7"
+    },
+    "m4_design": {
+      "path": "registries/m4_v2_monetary_mapping_design.json",
+      "sha256": "sha256:8959b0efd3740587deadad44ad233948c447525ca998941b4e8de547d85d0ea9"
+    },
+    "m4_policy": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json",
+      "sha256": "sha256:86cb4f54291abf7bf4b869a6420753e74a361b007d475a1f53bea6b5416e822e"
+    },
+    "manuscript_archive": {
+      "path": "codex_framework/Airline_Recovery_under_Delayed_Information__Residual_Risk_Control (22).zip",
+      "sha256": "sha256:a79e0ea9b4a18d613c455f9976b13a4c51050e0ff715ab9c793d6c906e12dcf9"
+    },
+    "manuscript_boundary_freeze": {
+      "path": "codex_framework/AIR_SLOT_EXP1-4_CROSS_BOUNDARY_AUDIT_SECTION5_FREEZE_20260819.md",
+      "sha256": "sha256:5cc197da9df32de4d980a44cfa57f7b3b50f98172f6dff802404a6540eacecfa"
+    },
+    "manuscript_exp2_v3": {
+      "path": "codex_framework/AIR_SLOT_EXP2_REDESIGN_INSTRUCTION_20260819_V3.md",
+      "sha256": "sha256:8522e8b9b2ecb4f29aee9ddf8314d9f3b5aeaaacb050b9c3627ed0c04cc41aa0"
+    },
+    "manuscript_exp3_v3": {
+      "path": "codex_framework/AIR_SLOT_EXP3_REDESIGN_INSTRUCTION_20260819_V3.md",
+      "sha256": "sha256:dda9dcc9e105391bb0cc8572e699a00954240591943b13c9a9d55730973d24ed"
+    },
+    "manuscript_exp4_v3": {
+      "path": "codex_framework/AIR_SLOT_EXP4_REDESIGN_INSTRUCTION_20260819_V3.md",
+      "sha256": "sha256:943974fcc5b0ce41511e03cc74685aa13874af076e99f706e08cb6e2e0f49161"
+    },
+    "manuscript_framework": {
+      "path": "codex_framework/AIR_SLOT_Information_Sufficiency_Experimental_Framework.md",
+      "sha256": "sha256:10cf1d0151e6909013f93e724bf949b7c56181d8cdafcdb0324ae38b49ab69aa"
+    },
+    "manuscript_protocol": {
+      "path": "codex_framework/AIR_SLOT_Exp1_4_Updated_Experimental_Protocol_Information_Sufficiency.md",
+      "sha256": "sha256:e18b90655ab8e52236d0238858a1dbc0a48dfb615438b2a12e3fcd5edc57b3b7"
+    },
+    "manuscript_repository_draft": {
+      "path": "docs/manuscript/EXPERIMENTAL_EVALUATION_V5_DRAFT_20260818.md",
+      "sha256": "sha256:209d26d75f678d8ca2c8b609a5e5d15b403ee9dae6ac5672900684f154de1cbf"
+    }
+  },
+  "safety": {
+    "EXP2_RUNS_THIS_RECONCILIATION": 0,
+    "EXP3_RUNS_THIS_RECONCILIATION": 0,
+    "EXP4_RUNS_THIS_RECONCILIATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_RECONCILIATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_RECONCILIATION": 0
+  },
+  "schema_version": "AIR_SLOT_EXP2_4_RECONCILIATION_LINEAGE_V1",
+  "status": "BOUND_CURRENT_CONTRACTS_NO_EXECUTION"
+}

@@ -1,0 +1,96 @@
+{
+  "artifact_hash": "sha256:886b2dff9d2cb735e59d002577c21c1c3c0765427e8fa16660c77480d22e8525",
+  "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+  "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+  "decision_id": "AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE",
+  "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+  "observation_policy": {
+    "continuous_quantile_above_q_max": "ABSTAIN_EXPLICIT_TAIL_CLASS_REQUIRED",
+    "continuous_tail_extrapolation": false,
+    "no_deletion": true,
+    "no_truncation": true,
+    "no_winsorization": true,
+    "raw_observed_value_required": true,
+    "tail_class_required_at_or_above_q_max": true,
+    "tail_events_observable": true
+  },
+  "representation": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_FREEZE": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_FREEZE": 0
+  },
+  "schema_version": "M1_V2_TARGET_SUPPORT_MANIFEST_V2",
+  "source_support_provenance": "V2_SUPPORT_REFROZEN_AFTER_A2_B2",
+  "status": "M1_POSITIVE_TAIL_POLICY_FROZEN",
+  "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3",
+  "tail_class_id": "OVERFLOW_TAIL",
+  "target_contracts": {
+    "D_OB": {
+      "bin_width_minutes": 5,
+      "class_count": 43,
+      "finite_bin_count": 42,
+      "finite_support_interval": "[0, q_max)",
+      "no_deletion": true,
+      "no_truncation": true,
+      "no_winsorization": true,
+      "q_max_minutes": 210,
+      "tail_class": {
+        "class_id": "OVERFLOW_TAIL",
+        "explicit": true,
+        "index": 42,
+        "interval": "[q_max, +inf)",
+        "observable": true,
+        "overflow_flag_preserved": true,
+        "raw_value_preserved": true
+      },
+      "target": "D_OB"
+    },
+    "D_TX": {
+      "bin_width_minutes": 5,
+      "class_count": 13,
+      "finite_bin_count": 12,
+      "finite_support_interval": "[0, q_max)",
+      "no_deletion": true,
+      "no_truncation": true,
+      "no_winsorization": true,
+      "q_max_minutes": 60,
+      "tail_class": {
+        "class_id": "OVERFLOW_TAIL",
+        "explicit": true,
+        "index": 12,
+        "interval": "[q_max, +inf)",
+        "observable": true,
+        "overflow_flag_preserved": true,
+        "raw_value_preserved": true
+      },
+      "target": "D_TX"
+    },
+    "T_IB_A00": {
+      "bin_width_minutes": 5,
+      "class_count": 73,
+      "finite_bin_count": 72,
+      "finite_support_interval": "[0, q_max)",
+      "no_deletion": true,
+      "no_truncation": true,
+      "no_winsorization": true,
+      "q_max_minutes": 360,
+      "tail_class": {
+        "class_id": "OVERFLOW_TAIL",
+        "explicit": true,
+        "index": 72,
+        "interval": "[q_max, +inf)",
+        "observable": true,
+        "overflow_flag_preserved": true,
+        "raw_value_preserved": true
+      },
+      "target": "T_IB_A00"
+    }
+  },
+  "threshold_tuning": {
+    "development_based_threshold_tuning": false,
+    "q_max_values_are_not_reestimated": true
+  }
+}

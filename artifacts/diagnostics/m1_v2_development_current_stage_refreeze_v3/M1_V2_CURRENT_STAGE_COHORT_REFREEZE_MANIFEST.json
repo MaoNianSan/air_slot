@@ -1,0 +1,112 @@
+{
+  "EXP1_RUNS_THIS_REFREEZE": 0,
+  "EXP2_RUNS_THIS_REFREEZE": 0,
+  "EXP3_RUNS_THIS_REFREEZE": 0,
+  "EXP4_RUNS_THIS_REFREEZE": 0,
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "FULL": false,
+  "M1_TRAINING_RUNS_THIS_REFREEZE": 0,
+  "PAPER_FULL_RUN": false,
+  "TUNING_RUNS_THIS_REFREEZE": 0,
+  "artifact_hash": "sha256:92755904b1f4a84e66675e27de3ea28ce56f60bd1b495ac6f1b155134ba2c816",
+  "current_replay_policy": {
+    "decision_id": "DATA2_FACTUAL_REPLAY_POLICY_A1",
+    "freeze_state": "FROZEN",
+    "observed_availability_claim": false,
+    "principal_lag_minutes": 0,
+    "production_availability_claim": false,
+    "value": "DECLARED_EVENT_TIME_REPLAY"
+  },
+  "decision_id": "REFREEZE_CURRENT_STAGE_POLICY",
+  "downstream_binding_status": "READY_FOR_EXP2_4_REBIND_BEFORE_SCENARIOS",
+  "feature_compatibility": {
+    "path": "artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3/M1_V2_CURRENT_STAGE_FEATURE_COMPATIBILITY_REPORT.json",
+    "sha256": "sha256:df4f4cdd9c16648c962e90006d67066608bf98dea813cef3d72ddb0292572768",
+    "status": "PASS_FROZEN_M1_FEATURE_TENSOR_COMPATIBILITY"
+  },
+  "historical_cohort": {
+    "cohort_hash": "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63",
+    "path": "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json",
+    "preserved": true,
+    "sha256_after": "sha256:1554e50e14bb5beb51a3406d3b8c18151cd3812b9ec1a9a8a35260db17f4a02e",
+    "sha256_before": "sha256:1554e50e14bb5beb51a3406d3b8c18151cd3812b9ec1a9a8a35260db17f4a02e"
+  },
+  "inference_inputs": {
+    "artifact_hash": "sha256:956a8e383f1ca412abe623a05358263c21aecaebf1639e21f2c9bbbb983e484e",
+    "labels_materialized": false,
+    "path": "artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3/M1_V2_CURRENT_STAGE_DEVELOPMENT_INFERENCE_INPUTS.json",
+    "scenarios_materialized": false,
+    "sha256": "sha256:3be28aa96185c7e173323b796575d33b0845a8d96a77ce381fe88d394042bf63"
+  },
+  "m1_artifact_validity": {
+    "path": "artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3/M1_V2_CURRENT_STAGE_M1_ARTIFACT_VALIDITY_REPORT.json",
+    "sha256": "sha256:ab03903e00065584c222a70f02317769aac1accc0a05e0e060b9546ebf7a71e4",
+    "status": "PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS"
+  },
+  "m1_binding": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "feature_count": 43,
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "hidden_size": 32,
+    "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "model_id": "M1_V2_GRU_H32",
+    "modified": false,
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "new_cohort": {
+    "artifact_hash": "sha256:f5d02e75af5fec5fadfdd01d312bc2541b7b1ba860fe3f9f7614e2ad3e6e9b52",
+    "cohort_hash": "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86",
+    "episode_count": 5,
+    "new_hash_verified": true,
+    "node_count": 69,
+    "path": "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V3.json",
+    "sha256": "sha256:394cc471d747235b702e0ffaf6fd0bca45340639db739f4184680c3b04951fa9"
+  },
+  "next_gate": "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_REQUIRED",
+  "schema_version": "M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST_V1",
+  "stage_audit": {
+    "changed_node_count": 3,
+    "changes": [
+      {
+        "current_stage": "POST_OB_PRE_TO",
+        "current_stage_decision_node_id": "sha256:6040675fa0bc9b1bdc0c118ff6679e3384c929b077f574cd945bf7bb2a03468a",
+        "decision_time": "2019-08-21T17:25:00+00:00",
+        "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+        "historical_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+        "historical_stage": "POST_IB_PRE_OB",
+        "node_index": 21
+      },
+      {
+        "current_stage": "POST_OB_PRE_TO",
+        "current_stage_decision_node_id": "sha256:f83485542456f08862bcce1e880b449cf420018131be0caf16df6322e02408a2",
+        "decision_time": "2019-09-10T17:12:00+00:00",
+        "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+        "historical_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+        "historical_stage": "POST_IB_PRE_OB",
+        "node_index": 11
+      },
+      {
+        "current_stage": "POST_OB_PRE_TO",
+        "current_stage_decision_node_id": "sha256:a01af0508a1e9d56e7ca97cdd9747f3b82661fe6d775cb915bba928d02b5d54f",
+        "decision_time": "2019-09-18T02:26:00+00:00",
+        "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+        "historical_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+        "historical_stage": "POST_IB_PRE_OB",
+        "node_index": 13
+      }
+    ],
+    "current": {
+      "POST_IB_PRE_OB": 58,
+      "POST_OB_PRE_TO": 6,
+      "PRE_IB": 5
+    },
+    "historical": {
+      "POST_IB_PRE_OB": 61,
+      "POST_OB_PRE_TO": 3,
+      "PRE_IB": 5
+    }
+  },
+  "status": "NEW_DEVELOPMENT_COHORT_REFROZEN"
+}

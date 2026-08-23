@@ -235,7 +235,10 @@ class M1Pipeline:
             raise ValueError("M1_V2_FINITE_SUPPORT_UNFROZEN")
         tail_param = scientific.parameters.get("m1_v2_positive_tail_policy")
         tail_policy = "UNRESOLVED" if tail_param is None else tail_param.value
-        if tail_policy not in ("UNRESOLVED", "DECLARED_FROZEN"):
+        if tail_policy not in (
+            "UNRESOLVED", "DECLARED_FROZEN",
+            "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+        ):
             raise ValueError("M1_V2_PRINCIPAL_TAIL_POLICY_TEST_ONLY_FORBIDDEN")
         selected_parameter = scientific.parameters["m1_hidden_size"]
         if hidden_size is None and selected_parameter.freeze_state.value != "FROZEN":

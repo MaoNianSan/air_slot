@@ -1,0 +1,98 @@
+{
+  "artifact_hash": "sha256:23acc2ecc7e169e3deb19356e9450e0b0478fc297102afc258150cba8372f1da",
+  "execution_scope": "RECONCILIATION_AND_MINIMUM_ARTIFACT_PLANNING_NON_EXECUTION",
+  "m1_binding": {
+    "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "current_stage_changed_node_count": 3,
+    "current_stage_cohort_hash": "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86",
+    "current_stage_distribution": {
+      "changed_node_count": 3,
+      "changes": [
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:6040675fa0bc9b1bdc0c118ff6679e3384c929b077f574cd945bf7bb2a03468a",
+          "decision_time": "2019-08-21T17:25:00+00:00",
+          "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+          "historical_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 21
+        },
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:f83485542456f08862bcce1e880b449cf420018131be0caf16df6322e02408a2",
+          "decision_time": "2019-09-10T17:12:00+00:00",
+          "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+          "historical_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 11
+        },
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:a01af0508a1e9d56e7ca97cdd9747f3b82661fe6d775cb915bba928d02b5d54f",
+          "decision_time": "2019-09-18T02:26:00+00:00",
+          "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+          "historical_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 13
+        }
+      ],
+      "current": {
+        "POST_IB_PRE_OB": 58,
+        "POST_OB_PRE_TO": 6,
+        "PRE_IB": 5
+      },
+      "historical": {
+        "POST_IB_PRE_OB": 61,
+        "POST_OB_PRE_TO": 3,
+        "PRE_IB": 5
+      }
+    },
+    "current_stage_node_count": 69,
+    "development_inference_status": "NEW_DEVELOPMENT_COHORT_REFROZEN",
+    "feature_compatibility": "PASS_FROZEN_M1_FEATURE_TENSOR_COMPATIBILITY",
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "historical_development_inference_status": "M1_V2_DEVELOPMENT_INFERENCE_BINDING_BLOCKED_STAGE_SEMANTIC_DRIFT",
+    "historical_stage_mismatch_count": 3,
+    "human_decision_required": {
+      "status": "NONE_FOR_M1_CURRENT_STAGE_MATERIALIZATION"
+    },
+    "m1_artifact_validity": "PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS",
+    "model_id": "M1_V2_GRU_H32",
+    "positive_tail_freeze_manifest_hash": "sha256:c2c52801bb4ad11a95f356445b58196e829621d1658ccb1472436ae851048817",
+    "positive_tail_freeze_status": "M1_POSITIVE_TAIL_POLICY_FROZEN",
+    "positive_tail_policy": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+    "scenario_artifact_hash": "sha256:7e3c968df608006531dde94452dac75daae76707f04a7dd38093bccc6b5f6396",
+    "scenario_artifact_status": "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_MATERIALIZED",
+    "scenario_row_count": 17250,
+    "status": "BOUND_FROZEN_M1_V2",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "m2_preparation": "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_MANIFEST.json",
+  "m3_binding": {
+    "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+    "non_a00_v2_execution_enabled": false,
+    "response_registry_hash": "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0"
+  },
+  "m4_binding": {
+    "mapping_status": "MONETARY_MAPPING_BLOCKED",
+    "policy_status": "FROZEN",
+    "tail_support_state": "UNRESOLVED"
+  },
+  "outputs": {
+    "lineage": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v9/AIR_SLOT_EXP2_4_RECONCILIATION_LINEAGE.json",
+    "readiness": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v9/AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_READINESS_REPORT.json",
+    "reconciliation": "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v9/AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_RECONCILIATION.json"
+  },
+  "safety": {
+    "EXP2_RUNS_THIS_RECONCILIATION": 0,
+    "EXP3_RUNS_THIS_RECONCILIATION": 0,
+    "EXP4_RUNS_THIS_RECONCILIATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_RECONCILIATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_RECONCILIATION": 0
+  },
+  "schema_version": "AIR_SLOT_EXP2_4_SCIENTIFIC_EXECUTION_MANIFEST_V1",
+  "status": "AIR_SLOT_SCIENTIFIC_EXECUTION_READY"
+}

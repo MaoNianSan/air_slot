@@ -1,0 +1,31 @@
+{
+  "artifact": "artifacts/experiment/m1_v2_current_stage_development_labels_v1/M1_V2_CURRENT_STAGE_DEVELOPMENT_LABELS.json",
+  "artifact_hash": "sha256:0090f0be8f28774a510c41c83f2ae480bdbf180af3ee98aa36e28042b39fd8d2",
+  "cohort_hash": "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86",
+  "next_gate": "EXP2A_REPRESENTATION_METRIC_EXECUTION_READY",
+  "node_count": 69,
+  "row_count": 207,
+  "safety": {
+    "EXP2_RUNS_THIS_MATERIALIZATION": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_MATERIALIZATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_MATERIALIZATION": 0
+  },
+  "schema_version": "M1_V2_CURRENT_STAGE_DEVELOPMENT_LABEL_MANIFEST_V1",
+  "status": "M1_CURRENT_STAGE_DEVELOPMENT_LABEL_ARTIFACT_MATERIALIZED",
+  "status_counts": {
+    "D_OB": {
+      "FINITE_SUPPORT": 63,
+      "INACTIVE": 6
+    },
+    "D_TX": {
+      "FINITE_SUPPORT": 69
+    },
+    "T_IB_A00": {
+      "FINITE_SUPPORT": 5,
+      "INACTIVE": 64
+    }
+  }
+}

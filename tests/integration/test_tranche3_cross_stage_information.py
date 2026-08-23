@@ -241,8 +241,9 @@ def test_32_d_to_samplewise_identity():
 def test_33_tail_gate_unchanged():
     scientific = load_config_layers(Path("configs")).scientific
     tail = scientific.parameters["m1_v2_positive_tail_policy"]
-    assert tail.freeze_state.value == "HUMAN_DECISION_REQUIRED"
-    assert tail.value == "UNRESOLVED"
+    assert tail.freeze_state.value == "FROZEN"
+    assert tail.value == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
+    assert tail.provenance["decision_id"] == "AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE"
     quantile_levels = scientific.parameters["m1_v2_quantile_levels"]
     assert quantile_levels.freeze_state.value == "DEVELOPMENT_ONLY"
 

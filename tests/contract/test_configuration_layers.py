@@ -67,10 +67,13 @@ def test_layers_load_separately():
     assert quantile_levels.value == [0.1, 0.3, 0.5, 0.7, 0.9]
     assert quantile_levels.provenance["final_test_access_count"] == 0
     tail_policy = layers.scientific.parameters["m1_v2_positive_tail_policy"]
-    assert tail_policy.freeze_state.value == "HUMAN_DECISION_REQUIRED"
-    assert tail_policy.value == "UNRESOLVED"
-    assert tail_policy.provenance["human_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
-    assert tail_policy.provenance["selection_state"] == "NOT_FROZEN"
+    assert tail_policy.freeze_state.value == "FROZEN"
+    assert tail_policy.value == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
+    assert tail_policy.provenance["decision_id"] == "AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE"
+    assert tail_policy.provenance["target_q_max_minutes"] == {
+        "T_IB_A00": 360, "D_OB": 210, "D_TX": 60,
+    }
+    assert tail_policy.provenance["selection_state"] == "HUMAN_APPROVED"
     formal_contract = layers.scientific.parameters["m1_formal_output_contract"]
     assert formal_contract.freeze_state.value == "FROZEN"
     assert formal_contract.value == ["R_IB", "D_OB", "D_TX", "D_TO"]

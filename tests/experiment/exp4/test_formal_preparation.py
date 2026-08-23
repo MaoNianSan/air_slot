@@ -23,6 +23,8 @@ def test_formal_preparation_binds_frozen_m1_and_preserves_all_exp4_gates(tmp_pat
     assert manifest["datasets"]["primary"]["dataset_instance_id"] == "data2_2019"
     assert manifest["datasets"]["generalization"]["dataset_instance_id"] == "data1_2019"
     assert manifest["datasets"]["generalization"]["pooling"] == "FORBIDDEN"
+    assert manifest["fixed_contract"]["predictive_capability_audit_hash"].startswith("sha256:")
+    assert manifest["predictive_capability_audit"].endswith("EXP4_PREDICTIVE_CAPABILITY_AUDIT.json")
 
     assert tuple(baselines["baselines"]) == FORMAL_BASELINES
     assert baselines["baselines"]["HISTORICAL"]["fallback_to_legacy_v1"] == "FORBIDDEN"

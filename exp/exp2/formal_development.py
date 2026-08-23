@@ -96,8 +96,19 @@ def _load_inputs(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
         "m1_cache": root / "artifacts/diagnostics/m1_v2_feature_gate_b2/M1_V2_DEVELOPMENT_BASE_CACHE_B2.npz",
         "m1_cache_manifest": root / "artifacts/diagnostics/m1_v2_feature_gate_b2/M1_V2_DEVELOPMENT_BASE_CACHE_B2_MANIFEST.json",
         "exp1_full_manifest": root / "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
-        "exp2_cohort": root / "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V2.json",
-        "m1_current_stage_refreeze": root / "artifacts/diagnostics/m1_v2_development_current_stage_refreeze/M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json",
+        "exp2_cohort": root / "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V3.json",
+        "m1_current_stage_refreeze": root / "artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3/M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json",
+        "m1_positive_tail_freeze": root / "artifacts/diagnostics/m1_v2_positive_tail_policy_freeze_v2/M1_V2_POSITIVE_TAIL_POLICY_FREEZE_MANIFEST.json",
+        "m1_scenario_manifest": root / "artifacts/experiment/m1_v2_current_stage_scenarios_v4/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIO_MANIFEST.json",
+        "m1_scenarios": root / "artifacts/experiment/m1_v2_current_stage_scenarios_v4/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIOS.json",
+        "m1_development_label_manifest": root / "artifacts/experiment/m1_v2_current_stage_development_labels_v1/M1_V2_CURRENT_STAGE_DEVELOPMENT_LABEL_MANIFEST.json",
+        "m1_development_labels": root / "artifacts/experiment/m1_v2_current_stage_development_labels_v1/M1_V2_CURRENT_STAGE_DEVELOPMENT_LABELS.json",
+        "tail_aware_brier_manifest": root / "artifacts/experiment/exp2a_tail_aware_brier_v1/EXP2A_TAIL_AWARE_BRIER_MANIFEST.json",
+        "tail_aware_brier": root / "artifacts/experiment/exp2a_tail_aware_brier_v1/EXP2A_TAIL_AWARE_BRIER.json",
+        "tail_aware_calibration_manifest": root / "artifacts/experiment/exp2a_tail_aware_calibration_v1/EXP2A_TAIL_AWARE_CALIBRATION_MANIFEST.json",
+        "tail_aware_calibration": root / "artifacts/experiment/exp2a_tail_aware_calibration_v1/EXP2A_TAIL_AWARE_CALIBRATION.json",
+        "m2_consequence_manifest": root / "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
+        "m2_consequences": root / "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json",
         "m2_registry": root / "registries/m2_data2_formal_cu_v1.json",
         "m2_design": root / "registries/m2_v2_design.json",
         "m3_design": root / "registries/m3_v2_action_response_design.json",
@@ -118,6 +129,17 @@ def _validate_fixed_contract(root: Path, inputs: dict[str, tuple[Path, dict[str,
     exp1 = inputs["exp1_full_manifest"][1]
     cohort = inputs["exp2_cohort"][1]
     refreeze = inputs["m1_current_stage_refreeze"][1]
+    tail_freeze = inputs["m1_positive_tail_freeze"][1]
+    scenario_manifest = inputs["m1_scenario_manifest"][1]
+    scenarios = inputs["m1_scenarios"][1]
+    label_manifest = inputs["m1_development_label_manifest"][1]
+    labels = inputs["m1_development_labels"][1]
+    brier_manifest = inputs["tail_aware_brier_manifest"][1]
+    brier = inputs["tail_aware_brier"][1]
+    calibration_manifest = inputs["tail_aware_calibration_manifest"][1]
+    calibration = inputs["tail_aware_calibration"][1]
+    m2_consequence_manifest = inputs["m2_consequence_manifest"][1]
+    m2_consequences = inputs["m2_consequences"][1]
     foundation = yaml.safe_load(
         (root / "configs/scientific/foundation.yaml").read_text(encoding="utf-8")
     )
@@ -134,13 +156,46 @@ def _validate_fixed_contract(root: Path, inputs: dict[str, tuple[Path, dict[str,
         refreeze["status"] == "NEW_DEVELOPMENT_COHORT_REFROZEN",
         "EXP2_M1_CURRENT_STAGE_REFREEZE_STATUS_INVALID",
     )
-    _require(refreeze["next_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED", "EXP2_M1_CURRENT_STAGE_NEXT_GATE_INVALID")
+    _require(refreeze["next_gate"] in ("M1_POSITIVE_TAIL_DECISION_REQUIRED", "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_REQUIRED"), "EXP2_M1_CURRENT_STAGE_NEXT_GATE_INVALID")
+    _require(tail_freeze["status"] == "M1_POSITIVE_TAIL_POLICY_FROZEN", "EXP2_M1_POSITIVE_TAIL_FREEZE_NOT_BOUND")
+    _require(tail_freeze["current_stage_cohort_hash"] == cohort["cohort_hash"], "EXP2_M1_POSITIVE_TAIL_COHORT_HASH_MISMATCH")
+    _require(tail_freeze["feature_schema_hash"] == binding["frozen_contracts"]["feature_schema_hash"], "EXP2_M1_POSITIVE_TAIL_FEATURE_HASH_MISMATCH")
+    _require(tail_freeze["support_hash"] == binding["frozen_contracts"]["support_hash"], "EXP2_M1_POSITIVE_TAIL_SUPPORT_HASH_MISMATCH")
+    _require(tail_freeze["checkpoint_sha256"] == binding["checkpoint"]["sha256"], "EXP2_M1_POSITIVE_TAIL_CHECKPOINT_HASH_MISMATCH")
     _require(refreeze["new_cohort"]["cohort_hash"] == cohort["cohort_hash"], "EXP2_M1_CURRENT_STAGE_COHORT_HASH_MISMATCH")
     _require(refreeze["new_cohort"]["node_count"] == len(cohort["node_ids"]), "EXP2_M1_CURRENT_STAGE_NODE_COUNT_MISMATCH")
     _require(refreeze["stage_audit"]["changed_node_count"] == 3, "EXP2_M1_CURRENT_STAGE_STAGE_AUDIT_INVALID")
     _require(refreeze["feature_compatibility"]["status"] == "PASS_FROZEN_M1_FEATURE_TENSOR_COMPATIBILITY", "EXP2_M1_CURRENT_STAGE_FEATURE_COMPATIBILITY_INVALID")
     _require(refreeze["m1_artifact_validity"]["status"] == "PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS", "EXP2_M1_CURRENT_STAGE_M1_VALIDITY_INVALID")
-    for payload in (binding, exp1, cohort, refreeze):
+    _require(scenario_manifest["status"] == "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_MATERIALIZED", "EXP2_M1_SCENARIO_MANIFEST_INVALID")
+    _require(scenario_manifest["artifact_hash"] == scenarios["artifact_hash"], "EXP2_M1_SCENARIO_HASH_MISMATCH")
+    _require(scenarios["cohort"]["cohort_hash"] == cohort["cohort_hash"], "EXP2_M1_SCENARIO_COHORT_MISMATCH")
+    _require(scenarios["checkpoint"]["sha256"] == binding["checkpoint"]["sha256"], "EXP2_M1_SCENARIO_CHECKPOINT_MISMATCH")
+    _require(scenarios["feature_schema_hash"] == binding["frozen_contracts"]["feature_schema_hash"], "EXP2_M1_SCENARIO_FEATURE_MISMATCH")
+    _require(scenarios["support_hash"] == binding["frozen_contracts"]["support_hash"], "EXP2_M1_SCENARIO_SUPPORT_MISMATCH")
+    _require(scenarios["node_count"] == len(cohort["node_ids"]) and scenarios["row_count"] == len(cohort["node_ids"]) * 250, "EXP2_M1_SCENARIO_CARDINALITY_INVALID")
+    _require(label_manifest["status"] == "M1_CURRENT_STAGE_DEVELOPMENT_LABEL_ARTIFACT_MATERIALIZED", "EXP2_M1_DEVELOPMENT_LABEL_MANIFEST_INVALID")
+    _require(label_manifest["artifact_hash"] == labels["artifact_hash"], "EXP2_M1_DEVELOPMENT_LABEL_HASH_MISMATCH")
+    _require(labels["cohort_hash"] == cohort["cohort_hash"], "EXP2_M1_DEVELOPMENT_LABEL_COHORT_MISMATCH")
+    _require(labels["node_count"] == len(cohort["node_ids"]) and labels["row_count"] == len(cohort["node_ids"]) * 3, "EXP2_M1_DEVELOPMENT_LABEL_CARDINALITY_INVALID")
+    _require(labels["labels_are_model_inputs"] is False, "EXP2_M1_DEVELOPMENT_LABEL_INPUT_LEAKAGE")
+    _require(brier_manifest["status"] == "EXP2A_TAIL_AWARE_BRIER_MATERIALIZED", "EXP2_TAIL_AWARE_BRIER_MANIFEST_INVALID")
+    _require(brier_manifest["artifact_hash"] == brier["artifact_hash"], "EXP2_TAIL_AWARE_BRIER_HASH_MISMATCH")
+    _require(brier_manifest["source_label_artifact_hash"] == labels["artifact_hash"], "EXP2_TAIL_AWARE_BRIER_LABEL_MISMATCH")
+    _require(brier_manifest["source_scenario_artifact_hash"] == scenarios["artifact_hash"], "EXP2_TAIL_AWARE_BRIER_SCENARIO_MISMATCH")
+    _require(set(brier_manifest["metrics"]) == set(EXP2A), "EXP2_TAIL_AWARE_BRIER_VARIANTS_INVALID")
+    _require(calibration_manifest["status"] == "EXP2A_TAIL_AWARE_CALIBRATION_MATERIALIZED", "EXP2_TAIL_AWARE_CALIBRATION_MANIFEST_INVALID")
+    _require(calibration_manifest["artifact_hash"] == calibration["artifact_hash"], "EXP2_TAIL_AWARE_CALIBRATION_HASH_MISMATCH")
+    _require(calibration_manifest["source_brier_artifact_hash"] == brier["artifact_hash"], "EXP2_TAIL_AWARE_CALIBRATION_BRIER_MISMATCH")
+    _require(calibration["source_scenario_artifact_hash"] == scenarios["artifact_hash"], "EXP2_TAIL_AWARE_CALIBRATION_SCENARIO_MISMATCH")
+    _require(calibration["source_label_artifact_hash"] == labels["artifact_hash"], "EXP2_TAIL_AWARE_CALIBRATION_LABEL_MISMATCH")
+    _require(calibration["development_bin_tuning"] is False, "EXP2_TAIL_AWARE_CALIBRATION_WAS_TUNED")
+    _require(m2_consequence_manifest["status"] == "M2_V2_CONSEQUENCE_ARTIFACT_MATERIALIZED", "EXP2_M2_CONSEQUENCE_MANIFEST_INVALID")
+    _require(m2_consequence_manifest["artifact_hash"] == m2_consequences["artifact_hash"], "EXP2_M2_CONSEQUENCE_HASH_MISMATCH")
+    _require(m2_consequences["source_m1_artifact_hash"] == scenarios["artifact_hash"], "EXP2_M2_SOURCE_M1_HASH_MISMATCH")
+    _require(m2_consequences["row_count"] == scenarios["row_count"] and m2_consequences["node_count"] == scenarios["node_count"], "EXP2_M2_CONSEQUENCE_CARDINALITY_INVALID")
+    _require(m2_consequences["seven_component_status_counts"] == {"ABSTAIN": scenarios["row_count"]}, "EXP2_M2_SEVEN_COMPONENT_STATUS_INVALID")
+    for payload in (binding, exp1, cohort, refreeze, tail_freeze, scenario_manifest, scenarios, label_manifest, labels, brier_manifest, brier, calibration_manifest, calibration, m2_consequence_manifest, m2_consequences):
         safety = payload.get("safety", payload)
         _require(safety.get("FINAL_TEST_ACCESS_COUNT", payload.get("FINAL_TEST_ACCESS_COUNT")) == 0, "EXP2_INPUT_FINAL_TEST_ACCESS_NONZERO")
         _require(safety.get("PAPER_FULL_RUN", payload.get("PAPER_FULL_RUN")) is False, "EXP2_INPUT_PAPER_FULL_TRUE")
@@ -173,7 +228,25 @@ def _validate_fixed_contract(root: Path, inputs: dict[str, tuple[Path, dict[str,
         "m1_current_stage_distribution": refreeze["stage_audit"],
         "m1_current_stage_feature_compatibility": refreeze["feature_compatibility"]["status"],
         "m1_current_stage_artifact_validity": refreeze["m1_artifact_validity"]["status"],
+        "m1_current_stage_labels_materialized": True,
+        "m1_development_label_artifact_hash": labels["artifact_hash"],
+        "m1_development_label_row_count": labels["row_count"],
+        "m1_development_label_status_counts": labels["status_counts"],
+        "tail_aware_brier_artifact_hash": brier["artifact_hash"],
+        "tail_aware_brier_metrics": brier_manifest["metrics"],
+        "tail_aware_calibration_artifact_hash": calibration["artifact_hash"],
+        "tail_aware_calibration_metrics": calibration_manifest["variant_metrics"],
         "m1_positive_tail_policy": parameters["m1_v2_positive_tail_policy"]["value"],
+        "m1_positive_tail_freeze_manifest_hash": tail_freeze["artifact_hash"],
+        "m1_positive_tail_representation": tail_freeze["representation"],
+        "m1_target_support_manifest": tail_freeze["target_support_manifest"],
+        "m1_scenario_artifact_hash": scenarios["artifact_hash"],
+        "m1_scenario_count_per_node": scenarios["scenario_count_per_node"],
+        "m1_scenario_row_count": scenarios["row_count"],
+        "m2_consequence_artifact_hash": m2_consequences["artifact_hash"],
+        "m2_consequence_row_count": m2_consequences["row_count"],
+        "m2_formal_five_component_status_counts": m2_consequences["formal_five_component_status_counts"],
+        "m2_seven_component_status_counts": m2_consequences["seven_component_status_counts"],
     }
 
 
@@ -202,20 +275,66 @@ def _gates(inputs: dict[str, tuple[Path, dict[str, Any]]], fixed: dict[str, Any]
             "intersection_nodes": fixed["m1_cache_exp2_cohort_intersection_count"],
         },
         "M1_SCENARIOS": {
-            "status": "BLOCKED_M1_V2_SCENARIO_ARTIFACT_NOT_MATERIALIZED",
-            "reason": "NO_CONTENT_ADDRESSED_JOINT_SCENARIO_ARTIFACT_FOR_THE_CURRENT_STAGE_REFROZEN_DEVELOPMENT_COHORT",
+            "status": "PASS_M1_V2_TYPED_JOINT_SCENARIO_ARTIFACT_MATERIALIZED",
+            "reason": "CONTENT_ADDRESSED_TAIL_AWARE_JOINT_SCENARIOS_BOUND_TO_CURRENT_STAGE_DEVELOPMENT_COHORT",
+            "artifact_hash": fixed["m1_scenario_artifact_hash"],
+            "scenario_count_per_node": fixed["m1_scenario_count_per_node"],
+            "row_count": fixed["m1_scenario_row_count"],
+        },
+        "M1_DEVELOPMENT_LABELS": {
+            "status": "PASS_CURRENT_STAGE_DEVELOPMENT_LABEL_ARTIFACT_MATERIALIZED",
+            "reason": "EXP2A_PROPER_SCORES_REQUIRE_POST_OUTCOME_DEVELOPMENT_LABELS_BOUND_TO_THE_NEW_COHORT",
+            "artifact_hash": fixed["m1_development_label_artifact_hash"],
+            "row_count": fixed["m1_development_label_row_count"],
+            "status_counts": fixed["m1_development_label_status_counts"],
+            "labels_are_model_inputs": False,
+            "final_test": "FORBIDDEN",
+        },
+        "M1_TAIL_AWARE_PROPER_SCORES": {
+            "status": "BLOCKED_STANDARD_SCALAR_CRPS_AND_VARIOGRAM_UNDEFINED_FOR_EXPLICIT_TAIL_CLASS",
+            "reason": "OVERFLOW_TAIL_HAS_OBSERVABLE_CLASS_BUT_NO_SCALAR_MAGNITUDE_AND_MUST_NOT_BE_DROPPED_OR_EXTRAPOLATED",
+            "manuscript_implementation_mismatch": True,
+            "allowed_without_new_tail_assumption": ["THRESHOLD_EVENT_BRIER_WHEN_EVENT_IS_IDENTIFIABLE_FROM_CLASS_BOUNDS"],
+            "forbidden_workarounds": ["DROP_TAIL_DRAWS", "ZERO_FILL", "QMAX_SUBSTITUTION", "SCALAR_EXTRAPOLATION"],
+        },
+        "M1_TAIL_AWARE_BRIER": {
+            "status": "PASS_THRESHOLD_EVENT_BRIER_MATERIALIZED",
+            "artifact_hash": fixed["tail_aware_brier_artifact_hash"],
+            "event": "D_TO_GT_30_MINUTES",
+            "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_BRIERS",
+            "variant_metrics": fixed["tail_aware_brier_metrics"],
+            "abstention_policy": "UNRESOLVED_INTERVAL_OR_MISSING_OBSERVED_LABEL_ABSTAIN",
+        },
+        "M1_TAIL_AWARE_CALIBRATION": {
+            "status": "PASS_THRESHOLD_EVENT_CALIBRATION_MATERIALIZED",
+            "artifact_hash": fixed["tail_aware_calibration_artifact_hash"],
+            "event": "D_TO_GT_30_MINUTES",
+            "contract": "EPISODE_BALANCED_FIXED_EQUAL_WIDTH_TEN_BIN",
+            "development_bin_tuning": False,
+            "variant_metrics": fixed["tail_aware_calibration_metrics"],
         },
         "M1_POSITIVE_TAIL": {
-            "status": "BLOCKED_M1_POSITIVE_TAIL_UNRESOLVED",
+            "status": "PASS_M1_POSITIVE_TAIL_POLICY_FROZEN",
             "policy": fixed["m1_positive_tail_policy"],
-            "reason": "ANCESTRAL_SAMPLING_CANNOT_SILENTLY_CLAMP_OR_EXTRAPOLATE_ABOVE_THE_FROZEN_POSITIVE_QUANTILE_GRID",
+            "representation": fixed["m1_positive_tail_representation"],
+            "target_support_manifest": fixed["m1_target_support_manifest"],
+            "reason": "FINITE_SUPPORT_BINS_AND_EXPLICIT_TAIL_CLASS_PRESERVE_OBSERVABILITY_WITHOUT_SCALAR_EXTRAPOLATION",
         },
         "M2_SEVEN_COMPONENT": {
-            "status": "BLOCKED_M2_SEVEN_COMPONENT_CU_ARTIFACT_NOT_MATERIALIZED",
+            "status": "PASS_M2_TYPED_SEVEN_COMPONENT_VECTOR_MATERIALIZED_WITH_ABSTENTION",
+            "artifact_hash": fixed["m2_consequence_artifact_hash"],
+            "row_count": fixed["m2_consequence_row_count"],
             "formal_cu_components": covered,
             "required_components": M2_COMPONENTS,
             "uncovered_components": missing,
             "v2_formal_aggregate_status": m2_design["formal_aggregate_status"],
+            "formal_five_component_status_counts": fixed["m2_formal_five_component_status_counts"],
+            "seven_component_status_counts": fixed["m2_seven_component_status_counts"],
+            "representation_readiness": {
+                "EXP2B_7COMP": "READY_TYPED_VECTOR_WITH_EXPLICIT_ABSTAIN",
+                "EXP2B_3CHANNEL": "BLOCKED_PASSENGER_CHANNEL_INCOMPLETE",
+                "EXP2B_SCALAR": "BLOCKED_SEVEN_COMPONENT_AGGREGATE_UNRESOLVED",
+            },
         },
         "M3_NON_A00": {
             "status": "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE",
@@ -231,18 +350,43 @@ def _gates(inputs: dict[str, tuple[Path, dict[str, Any]]], fixed: dict[str, Any]
 
 
 def _variant_metrics(gates: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    m1_reason = ";".join((gates["M1_COHORT_BINDING"]["status"], gates["M1_SCENARIOS"]["status"], gates["M1_POSITIVE_TAIL"]["status"]))
+    m1_reason = ";".join((
+        gates["M1_COHORT_BINDING"]["status"],
+        gates["M1_SCENARIOS"]["status"],
+        gates["M1_POSITIVE_TAIL"]["status"],
+        gates["M1_DEVELOPMENT_LABELS"]["status"],
+    ))
+    tail_reason = gates["M1_TAIL_AWARE_PROPER_SCORES"]["status"]
     downstream_reason = ";".join((gates["M2_SEVEN_COMPONENT"]["status"], gates["M3_NON_A00"]["status"], gates["M4_MAPPING"]["status"]))
     records: dict[str, dict[str, Any]] = {}
     for variant in VARIANTS:
         if variant in EXP2A:
+            brier = gates["M1_TAIL_AWARE_BRIER"]["variant_metrics"][variant]
+            calibration = gates["M1_TAIL_AWARE_CALIBRATION"]["variant_metrics"][variant]
             records[variant] = {
                 "family": "EXP2A",
                 "reference_variant": EXP2A_JOINT,
-                "execution_status": "BLOCKED_BEFORE_METRIC_GENERATION",
+                "execution_status": "PARTIAL_TAIL_AWARE_BRIER_AND_CALIBRATION_COMPLETE_OTHER_STATE_AND_DECISION_METRICS_BLOCKED",
                 "state_metrics": {
-                    metric: _metric(m1_reason)
-                    for metric in ("STATE_CRPS", "STATE_BRIER", "STATE_CALIBRATION", "STATE_COVERAGE", "STATE_VARIOGRAM_SCORE")
+                    "STATE_CRPS": _metric(tail_reason),
+                    "STATE_VARIOGRAM_SCORE": _metric(tail_reason),
+                    "STATE_BRIER": {
+                        "value": brier["episode_balanced_brier"],
+                        "support_status": brier["support_status"],
+                        "event": "D_TO_GT_30_MINUTES",
+                        "supported_node_count": brier["supported_node_count"],
+                        "abstain_node_count": brier["abstain_node_count"],
+                        "supported_episode_count": brier["supported_episode_count"],
+                    },
+                    "STATE_CALIBRATION": {
+                        "value": calibration["episode_balanced_fixed_bin_calibration_gap"],
+                        "support_status": calibration["support_status"],
+                        "event": "D_TO_GT_30_MINUTES",
+                        "contract": "EPISODE_BALANCED_FIXED_EQUAL_WIDTH_TEN_BIN",
+                        "supported_node_count": calibration["supported_node_count"],
+                        "supported_episode_count": calibration["supported_episode_count"],
+                    },
+                    "STATE_COVERAGE": _metric(f"{m1_reason};TAIL_AWARE_INTERVAL_COVERAGE_IMPLEMENTATION_REQUIRED"),
                 },
                 "decision_metrics": {
                     metric: _metric(downstream_reason)
@@ -250,10 +394,11 @@ def _variant_metrics(gates: dict[str, dict[str, Any]]) -> dict[str, dict[str, An
                 },
             }
         else:
+            representation_status = gates["M2_SEVEN_COMPONENT"]["representation_readiness"][variant]
             records[variant] = {
                 "family": "EXP2B",
                 "reference_variant": EXP2B_7COMP,
-                "execution_status": "BLOCKED_BEFORE_METRIC_GENERATION",
+                "execution_status": representation_status,
                 "state_metrics": "NOT_APPLICABLE_TO_EXP2B",
                 "decision_metrics": {
                     metric: _metric(downstream_reason)
@@ -265,7 +410,7 @@ def _variant_metrics(gates: dict[str, dict[str, Any]]) -> dict[str, dict[str, An
 
 def run_formal_development(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/experiment/exp2_formal_development").resolve()
+    output_root = (output_root or root / "artifacts/experiment/exp2_formal_development_v9").resolve()
     inputs = _load_inputs(root)
     fixed = _validate_fixed_contract(root, inputs)
     gates = _gates(inputs, fixed)

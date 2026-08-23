@@ -250,6 +250,8 @@ def _apply_quantile_piecewise(
         return base
     if upper_tail_policy == "UNRESOLVED":
         raise ContractError("M1_QUANTILE_UPPER_TAIL_UNRESOLVED")
+    if upper_tail_policy == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS":
+        raise ContractError("M1_QUANTILE_EXPLICIT_TAIL_CLASS_REQUIRED")
     if upper_tail_policy == "DECLARED_FROZEN":
         raise ContractError("M1_QUANTILE_UPPER_TAIL_RULE_NOT_IMPLEMENTED")
     if upper_tail_policy != "TEST_ONLY_LINEAR":
@@ -277,8 +279,11 @@ def quantile_value(
     Round 2.1 tail contract: for ``u > q_max`` the value is never silently
     clamped to ``Q(q_max)``.  ``upper_tail_policy`` follows
     ``HurdleQuantileContract.upper_tail_policy``:
-    - ``UNRESOLVED`` (principal default): raise
+    - ``UNRESOLVED`` (legacy unresolved state): raise
       ``M1_QUANTILE_UPPER_TAIL_UNRESOLVED``;
+    - ``FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS``: raise
+      ``M1_QUANTILE_EXPLICIT_TAIL_CLASS_REQUIRED``; callers must emit the
+      explicit tail class and preserve the observed scalar separately;
     - ``TEST_ONLY_LINEAR``: linear extrapolation with the last-segment slope
       (synthetic smoke fixtures only);
     - ``DECLARED_FROZEN``: raise ``M1_QUANTILE_UPPER_TAIL_RULE_NOT_IMPLEMENTED``

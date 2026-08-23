@@ -70,11 +70,12 @@ def _inputs(root: Path) -> dict[str, tuple[Path, Any]]:
         "m1_binding": root / "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
         "m1_freeze": root / "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
         "m1_checkpoint": root / "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt",
-        "exp2_lineage": root / "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+        "exp2_lineage": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
         "data1_usage": root / "data1/DATA_USAGE.md",
         "data2_usage": root / "data2/DATA_USAGE.md",
         "dataset_capabilities": root / "registries/dataset_capabilities.yaml",
         "source_adapter_registry": root / "registries/source_adapter_registry.yaml",
+        "predictive_capability_audit": root / "artifacts/diagnostics/exp4_predictive_capability_audit_v1/EXP4_PREDICTIVE_CAPABILITY_AUDIT.json",
     }
     _require(all(path.is_file() for path in paths.values()), "EXP4_FORMAL_PREPARATION_INPUT_MISSING")
     loaded: dict[str, tuple[Path, Any]] = {}
@@ -114,6 +115,7 @@ def _validate(inputs: dict[str, tuple[Path, Any]]) -> dict[str, Any]:
     binding = inputs["m1_binding"][1]
     freeze = inputs["m1_freeze"][1]
     exp2_lineage = inputs["exp2_lineage"][1]
+    capability_audit = inputs["predictive_capability_audit"][1]
     checkpoint = inputs["m1_checkpoint"][0]
 
     _require(binding["status"] == "BOUND_FROZEN_M1_V2", "EXP4_M1_BINDING_NOT_FROZEN")
@@ -127,7 +129,8 @@ def _validate(inputs: dict[str, tuple[Path, Any]]) -> dict[str, Any]:
         "EXP4_M1_FREEZE_CHECKPOINT_MISMATCH",
     )
     _require(exp2_lineage["status"] == "BOUND_WITH_UNRESOLVED_UPSTREAM_GATES", "EXP4_CURRENT_GATE_SOURCE_INVALID")
-    for payload in (binding, freeze, exp2_lineage):
+    _require(capability_audit["status"] == "EXP4_PREDICTIVE_ARTIFACTS_BLOCKED_CAPABILITIES_AUDITED", "EXP4_CAPABILITY_AUDIT_STATUS_INVALID")
+    for payload in (binding, freeze, exp2_lineage, capability_audit):
         _input_safety(payload)
 
     binding_contract = binding["frozen_contracts"]
@@ -176,6 +179,8 @@ def _validate(inputs: dict[str, tuple[Path, Any]]) -> dict[str, Any]:
         },
         "evaluation_lead_minutes": EVALUATION_LEAD_MINUTES,
         "m1_model_horizon_minutes": (0, 15, 60),
+        "predictive_capability_audit_hash": capability_audit["artifact_hash"],
+        "data1_capability_status": capability_audit["data_environment_capabilities"]["data1_2019"]["status"],
     }
 
 
@@ -220,7 +225,7 @@ def _baseline_contracts() -> dict[str, dict[str, Any]]:
             "model_path": "STATE_AWARE_GRU_H32",
             "model_id": "M1_V2_GRU_H32",
             "checkpoint_binding": "FROZEN_HASH_VERIFIED",
-            "reason": "CURRENT_COHORT_IDENTITY_SCENARIO_AND_POSITIVE_TAIL_GATES_REMAIN_UNRESOLVED",
+            "reason": "CURRENT_M1_SCENARIO_ARTIFACT_IS_NODE_CONDITIONAL_AND_DOES_NOT_BIND_THE_FORMAL_EXP4_LEAD_TIME_GRID",
             "full_name_semantics": "STATE_AWARE_PATH_LABEL_ONLY_NOT_PAPER_FULL_OR_FULL_EXECUTION",
         },
     }
@@ -300,7 +305,7 @@ def _readiness(gates: dict[str, Any], baseline_contracts: dict[str, dict[str, An
 
 def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp4_formal_execution_preparation").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp4_formal_execution_preparation_v10").resolve()
     inputs = _inputs(root)
     fixed = _validate(inputs)
     gates = inputs["exp2_lineage"][1]["gates"]
@@ -336,13 +341,18 @@ def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> 
         "lead_time_policy": "FORMAL_EXP4_GRID_IS_DISTINCT_FROM_M1_MODEL_HORIZON_NO_IMPLICIT_INTERPOLATION",
         "fixed_contract": {
             key: fixed[key]
-            for key in ("feature_schema_hash", "cache_hash", "support_hash", "support", "loss_version")
+            for key in (
+                "feature_schema_hash", "cache_hash", "support_hash", "support",
+                "loss_version", "predictive_capability_audit_hash",
+                "data1_capability_status",
+            )
         },
         "inputs": {
             name: {"path": _relative(path, root), "sha256": _file_hash(path)}
             for name, (path, _) in inputs.items()
         },
         "shared_gates_source": _relative(inputs["exp2_lineage"][0], root),
+        "predictive_capability_audit": _relative(inputs["predictive_capability_audit"][0], root),
         "outputs": {
             "baseline_contracts": _relative(baseline_contracts_path, root),
             "lineage_schema": _relative(schema_path, root),

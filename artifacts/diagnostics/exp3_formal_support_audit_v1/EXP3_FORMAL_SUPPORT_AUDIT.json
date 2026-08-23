@@ -1,0 +1,73 @@
+{
+  "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+  "artifact_hash": "sha256:a018fb92622d301e92cdfbeec6f8bdfa71de7eb00b9957c963b01a2d2d551bef",
+  "bundle_action_ids_observed": [],
+  "executable_action_ids": [
+    "A00"
+  ],
+  "formal_multi_action_cohort": {
+    "episode_count": 0,
+    "episodes_with_repeated_formal_nodes": 0,
+    "node_count": 0,
+    "status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION"
+  },
+  "formal_support_upgrade": false,
+  "inputs": {
+    "bundle": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M3_SCENARIO_BUNDLE.json",
+      "sha256": "sha256:e739302f01c073ced4cdf8f7a0e6d3e0b1d8588dfdd0352a0d63976a85b86597"
+    },
+    "registry": {
+      "path": "registries/m3_v2_action_response_design.json",
+      "sha256": "sha256:8caf4872641fc06da08fb6ddbf37db3625a395588b279ad862d89874493425e7"
+    }
+  },
+  "interpretation": "A00 identity is available; non-A00 responses remain scenario assumptions and cannot produce paper-facing Exp3 comparison metrics.",
+  "non_a00_executable_action_ids": [],
+  "prohibitions": {
+    "Final_Test": true,
+    "paper_full": true,
+    "promote_scenario_assumption_to_formal": true,
+    "synthetic_metrics": true,
+    "zero_fill": true
+  },
+  "response_registry_hash": "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+  "safety": {
+    "EXP2_RUNS_THIS_AUDIT": 0,
+    "EXP3_RUNS_THIS_AUDIT": 0,
+    "EXP4_RUNS_THIS_AUDIT": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_AUDIT": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_AUDIT": 0
+  },
+  "scenario_assumption_action_ids": [
+    "A11",
+    "A13",
+    "A21",
+    "A22",
+    "A23",
+    "A31",
+    "A32",
+    "A33",
+    "A41",
+    "A42",
+    "A43",
+    "A51",
+    "A52",
+    "A53",
+    "A54",
+    "A55",
+    "A61",
+    "A62",
+    "A63",
+    "A64",
+    "A71",
+    "A72"
+  ],
+  "schema_version": "EXP3_FORMAL_SUPPORT_AUDIT_V1",
+  "scientific_rule": "EACH_EPISODE_REQUIRES_AT_LEAST_ONE_NODE_WITH_TWO_FORMALLY_COMPARABLE_ACTIONS_INCLUDING_ONE_NON_A00",
+  "scope": "DEVELOPMENT_FORMAL_MULTI_ACTION_SUPPORT_AUDIT_ONLY",
+  "status": "EXP3_FORMAL_COHORT_BLOCKED"
+}

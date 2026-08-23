@@ -1,0 +1,171 @@
+{
+  "artifact_hash": "sha256:63cbd6fcdd96bec129722c0573046ec347d6946eca700f00ec67ca1eb404a941",
+  "baselines": {
+    "HISTORICAL": {
+      "cohort_policy": "SAME_FROZEN_DATA2_DEVELOPMENT_COHORT_PER_BASELINE",
+      "distribution_output": "REQUIRED_FOR_CRPS_AND_MARGINAL_CALIBRATION",
+      "evaluation_lead_minutes": [
+        0,
+        30,
+        60,
+        120,
+        180,
+        240,
+        300,
+        360,
+        420,
+        480
+      ],
+      "fallback_to_legacy_v1": "FORBIDDEN",
+      "final_test": "FORBIDDEN",
+      "full_run": false,
+      "information_policy": "PRE_CUTOFF_INPUTS_ONLY_NO_FUTURE_INFORMATION",
+      "model_path": "HISTORICAL_REFERENCE",
+      "paper_full_run": false,
+      "reason": "CURRENT_BASELINE_AUDIT_AND_M1_DIAGNOSTICS_REPORT_NO_EXECUTABLE_CURRENT_V2_IMPLEMENTATION",
+      "result_policy": "NOT_RUN_UNTIL_EXACT_VERSIONED_ARTIFACT_IS_BOUND",
+      "status": "BLOCKED_NO_CURRENT_V2_HISTORICAL_BASELINE_ARTIFACT",
+      "synthetic_metrics": false,
+      "zero_fill": false
+    },
+    "LIGHTGBM_FAST": {
+      "cohort_policy": "SAME_FROZEN_DATA2_DEVELOPMENT_COHORT_PER_BASELINE",
+      "distribution_output": "REQUIRED_FOR_CRPS_AND_MARGINAL_CALIBRATION",
+      "evaluation_lead_minutes": [
+        0,
+        30,
+        60,
+        120,
+        180,
+        240,
+        300,
+        360,
+        420,
+        480
+      ],
+      "final_test": "FORBIDDEN",
+      "full_run": false,
+      "information_policy": "PRE_CUTOFF_INPUTS_ONLY_NO_FUTURE_INFORMATION",
+      "model_path": "FAST_CURRENT_LOCAL_R_FAST_PLUS_STATIC",
+      "paper_full_run": false,
+      "reason": "IMPLEMENTATION_EXISTS_BUT_PREDICT_DISTRIBUTIONS_ABSTAINS_UNTIL_TRAIN_FROZEN_ARTIFACT_IS_REGISTERED",
+      "result_policy": "NOT_RUN_UNTIL_EXACT_VERSIONED_ARTIFACT_IS_BOUND",
+      "state_aware_equivalence_claim": "FORBIDDEN_UNTIL_TYPED_PARITY_ARTIFACT",
+      "status": "BLOCKED_M1_FAST_V2_FITTED_ARTIFACT_NOT_REGISTERED",
+      "synthetic_metrics": false,
+      "zero_fill": false
+    },
+    "RANDOM_FOREST": {
+      "cohort_policy": "SAME_FROZEN_DATA2_DEVELOPMENT_COHORT_PER_BASELINE",
+      "distribution_output": "REQUIRED_FOR_CRPS_AND_MARGINAL_CALIBRATION",
+      "evaluation_lead_minutes": [
+        0,
+        30,
+        60,
+        120,
+        180,
+        240,
+        300,
+        360,
+        420,
+        480
+      ],
+      "fallback_to_different_baseline": "FORBIDDEN",
+      "final_test": "FORBIDDEN",
+      "full_run": false,
+      "information_policy": "PRE_CUTOFF_INPUTS_ONLY_NO_FUTURE_INFORMATION",
+      "model_path": "RANDOM_FOREST_REFERENCE",
+      "paper_full_run": false,
+      "reason": "M1_DEVELOPMENT_DIAGNOSTICS_RECORDS_NO_EXISTING_IMPLEMENTATION",
+      "result_policy": "NOT_RUN_UNTIL_EXACT_VERSIONED_ARTIFACT_IS_BOUND",
+      "status": "BLOCKED_NO_CURRENT_V2_RANDOM_FOREST_IMPLEMENTATION_OR_ARTIFACT",
+      "synthetic_metrics": false,
+      "zero_fill": false
+    },
+    "STATE_AWARE_FULL": {
+      "checkpoint_binding": "FROZEN_HASH_VERIFIED",
+      "cohort_policy": "SAME_FROZEN_DATA2_DEVELOPMENT_COHORT_PER_BASELINE",
+      "distribution_output": "REQUIRED_FOR_CRPS_AND_MARGINAL_CALIBRATION",
+      "evaluation_lead_minutes": [
+        0,
+        30,
+        60,
+        120,
+        180,
+        240,
+        300,
+        360,
+        420,
+        480
+      ],
+      "final_test": "FORBIDDEN",
+      "full_name_semantics": "STATE_AWARE_PATH_LABEL_ONLY_NOT_PAPER_FULL_OR_FULL_EXECUTION",
+      "full_run": false,
+      "information_policy": "PRE_CUTOFF_INPUTS_ONLY_NO_FUTURE_INFORMATION",
+      "model_id": "M1_V2_GRU_H32",
+      "model_path": "STATE_AWARE_GRU_H32",
+      "paper_full_run": false,
+      "reason": "CURRENT_M1_SCENARIO_ARTIFACT_IS_NODE_CONDITIONAL_AND_DOES_NOT_BIND_THE_FORMAL_EXP4_LEAD_TIME_GRID",
+      "result_policy": "NOT_RUN_UNTIL_EXACT_VERSIONED_ARTIFACT_IS_BOUND",
+      "status": "BLOCKED_FROZEN_CHECKPOINT_WITHOUT_BOUND_PREDICTIVE_ARTIFACT",
+      "synthetic_metrics": false,
+      "zero_fill": false
+    }
+  },
+  "fixed_m1_contract": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "data1": {
+      "cross_dataset_reference_overlay": false,
+      "dataset_instance_id": "data1_2019",
+      "pooling": "FORBIDDEN",
+      "profile": "TRAJECTORY_RICH_ROLLING_INSTANCE",
+      "role": "GENERALIZATION_ENVIRONMENT_ONLY",
+      "substitution_for_data2": "FORBIDDEN"
+    },
+    "data2": {
+      "cross_dataset_reference_overlay": false,
+      "dataset_instance_id": "data2_2019",
+      "profile": "EVENT_RICH_POSTHOC_INSTANCE",
+      "role": "PRIMARY_DEVELOPMENT_EVALUATION_ENVIRONMENT",
+      "split": "DEVELOPMENT"
+    },
+    "evaluation_lead_minutes": [
+      0,
+      30,
+      60,
+      120,
+      180,
+      240,
+      300,
+      360,
+      420,
+      480
+    ],
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "m1_hidden_size": 32,
+    "m1_model_horizon_minutes": [
+      0,
+      15,
+      60
+    ],
+    "m1_model_id": "M1_V2_GRU_H32",
+    "support": {
+      "D_OB": 210,
+      "D_TX": 60,
+      "T_IB": 360,
+      "bin_width_minutes": 5
+    },
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_PREPARATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_PREPARATION": 0
+  },
+  "schema_version": "EXP4_FORMAL_BASELINE_CONTRACTS_V1",
+  "status": "READY_WITH_BLOCKED_EXECUTABLE_ARTIFACTS"
+}

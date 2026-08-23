@@ -9,6 +9,8 @@ from exp.common.context import (
 )
 from exp.common.real_fast import assert_real_fast_context, blocked_gate, m4_result_unit
 from exp.common.result_schema import MetricLevel, MetricObservation, SupportStatus
+from exp.common.contracts import RuntimeMode
+from model.common.errors import ContractError
 
 from .variants import EXP1_VARIANTS, EXP1_VARIANTS_WITH_SENSITIVITY, variant_definition
 
@@ -145,6 +147,8 @@ class Exp1Runner:
         )
 
     def run(self, rows=None, *, smoke=False, **kwargs):
+        if kwargs.get("runtime_mode") == RuntimeMode.PAPER_FULL.value and not kwargs.get("paper_full_approved", False):
+            raise ContractError("PAPER_FULL_EXPLICIT_APPROVAL_REQUIRED")
         if smoke:
             return self.execute_fast(
                 dataset=kwargs.get("dataset", "data2_2019"),

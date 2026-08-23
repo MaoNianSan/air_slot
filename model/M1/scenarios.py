@@ -236,9 +236,11 @@ def _sample_hurdle_quantile(
 ) -> tuple[float, int, bool]:
     """One draw from P(D=0) + P(D>0) * Q_D(u | D>0).
 
-    ``u > q_max`` follows the contract tail policy: with ``UNRESOLVED`` the
-    draw raises instead of silently truncating the positive tail; smoke
-    fixtures use ``TEST_ONLY_LINEAR``.
+    ``u > q_max`` follows the contract tail policy.  The scientific explicit
+    tail-class policy raises at scalar quantile evaluation so the caller can
+    emit the overflow class with the observed/raw value rather than silently
+    truncating, clamping, or extrapolating it.  Smoke fixtures use
+    ``TEST_ONLY_LINEAR``.
     """
     zero_probability = float(torch.sigmoid(zero_logit[0]).detach())
     quantiles = monotone_positive_quantiles(quantile_logits)[0].detach()

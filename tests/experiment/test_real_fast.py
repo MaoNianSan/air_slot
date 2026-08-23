@@ -58,10 +58,14 @@ def test_real_fast_reuses_one_frozen_data2_development_context():
     assert context.split == "DEVELOPMENT"
     assert context.episode_count == 5
     assert context.node_count == 69
-    assert context.lineage["cohort_hash"] == "sha256:81f9ee2dcfa81bb9d72e5a1518f386295a63829c179d25bd6cb84e333a35b7a8"
+    assert context.lineage["cohort_hash"] == "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86"
     assert context.lineage["historical_parent_cohort_hash"] == "sha256:cc224488e1b6fecfd865dcc494b0004af9ca752dc609eb901d46ad88b82edb63"
-    assert context.lineage["scenario_status"] == "BLOCKED_M1_POSITIVE_TAIL_DECISION_REQUIRED"
-    assert context.shared_gates["M1_POSITIVE_TAIL"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+    assert context.lineage["scenario_status"] == "PASS_M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_MATERIALIZED"
+    assert context.lineage["scenario_count_per_node"] == 250
+    assert context.scenario_hash == "sha256:7e3c968df608006531dde94452dac75daae76707f04a7dd38093bccc6b5f6396"
+    assert context.lineage["m2_status"] == "PASS_M2_TYPED_SEVEN_COMPONENT_VECTOR_MATERIALIZED_WITH_ABSTENTION"
+    assert context.shared_gates["M2_SEVEN_COMPONENT"] == "PASS_M2_TYPED_SEVEN_COMPONENT_VECTOR_MATERIALIZED_WITH_ABSTENTION"
+    assert context.shared_gates["M1_POSITIVE_TAIL"] == "FROZEN_EXPLICIT_TAIL_CLASS"
     assert {result.lineage["cohort_hash"] for result in results} == {
         context.lineage["cohort_hash"],
     }

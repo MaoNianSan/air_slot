@@ -1,0 +1,410 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "FULL": false,
+  "PAPER_FULL_RUN": false,
+  "artifact_hash": "sha256:cd3178591ab24a2bbf97f83fe6a3126ee605121351621f02d6dd95a9d19535b5",
+  "cohort": {
+    "cohort_hash": "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86",
+    "episode_count": 5,
+    "node_count": 69,
+    "split": "DEVELOPMENT"
+  },
+  "fixed_contract": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "exp2_cohort_node_count": 69,
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "m1_cache_development_node_count": 1769,
+    "m1_cache_exp2_cohort_intersection_count": 0,
+    "m1_cache_exp2_cohort_missing_node_count": 69,
+    "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "m1_current_stage_artifact_validity": "PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS",
+    "m1_current_stage_changed_node_count": 3,
+    "m1_current_stage_cohort_hash": "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86",
+    "m1_current_stage_distribution": {
+      "changed_node_count": 3,
+      "changes": [
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:6040675fa0bc9b1bdc0c118ff6679e3384c929b077f574cd945bf7bb2a03468a",
+          "decision_time": "2019-08-21T17:25:00+00:00",
+          "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+          "historical_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 21
+        },
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:f83485542456f08862bcce1e880b449cf420018131be0caf16df6322e02408a2",
+          "decision_time": "2019-09-10T17:12:00+00:00",
+          "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+          "historical_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 11
+        },
+        {
+          "current_stage": "POST_OB_PRE_TO",
+          "current_stage_decision_node_id": "sha256:a01af0508a1e9d56e7ca97cdd9747f3b82661fe6d775cb915bba928d02b5d54f",
+          "decision_time": "2019-09-18T02:26:00+00:00",
+          "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+          "historical_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+          "historical_stage": "POST_IB_PRE_OB",
+          "node_index": 13
+        }
+      ],
+      "current": {
+        "POST_IB_PRE_OB": 58,
+        "POST_OB_PRE_TO": 6,
+        "PRE_IB": 5
+      },
+      "historical": {
+        "POST_IB_PRE_OB": 61,
+        "POST_OB_PRE_TO": 3,
+        "PRE_IB": 5
+      }
+    },
+    "m1_current_stage_feature_compatibility": "PASS_FROZEN_M1_FEATURE_TENSOR_COMPATIBILITY",
+    "m1_current_stage_labels_materialized": true,
+    "m1_current_stage_node_count": 69,
+    "m1_current_stage_refreeze_status": "NEW_DEVELOPMENT_COHORT_REFROZEN",
+    "m1_development_label_artifact_hash": "sha256:0090f0be8f28774a510c41c83f2ae480bdbf180af3ee98aa36e28042b39fd8d2",
+    "m1_development_label_row_count": 207,
+    "m1_development_label_status_counts": {
+      "D_OB": {
+        "FINITE_SUPPORT": 63,
+        "INACTIVE": 6
+      },
+      "D_TX": {
+        "FINITE_SUPPORT": 69
+      },
+      "T_IB_A00": {
+        "FINITE_SUPPORT": 5,
+        "INACTIVE": 64
+      }
+    },
+    "m1_positive_tail_freeze_manifest_hash": "sha256:c2c52801bb4ad11a95f356445b58196e829621d1658ccb1472436ae851048817",
+    "m1_positive_tail_policy": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+    "m1_positive_tail_representation": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+    "m1_scenario_artifact_hash": "sha256:7e3c968df608006531dde94452dac75daae76707f04a7dd38093bccc6b5f6396",
+    "m1_scenario_count_per_node": 250,
+    "m1_scenario_row_count": 17250,
+    "m1_target_support_manifest": "artifacts/diagnostics/m1_v2_positive_tail_policy_freeze_v2/M1_V2_TARGET_SUPPORT_MANIFEST.json",
+    "m2_consequence_artifact_hash": "sha256:595ba672d786d597f74553871ff3a532f8533a4759e6e2ef17befd9ae9c56b89",
+    "m2_consequence_row_count": 17250,
+    "m2_formal_five_component_status_counts": {
+      "FORMAL_AGGREGATE_UNRESOLVED": 1684,
+      "FORMAL_AVAILABLE": 15566
+    },
+    "m2_seven_component_status_counts": {
+      "ABSTAIN": 17250
+    },
+    "support": {
+      "D_OB": 210,
+      "D_TX": 60,
+      "T_IB": 360,
+      "bin_width_minutes": 5
+    },
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3",
+    "tail_aware_brier_artifact_hash": "sha256:4272d8c93be0af70fcec643884e98e7f08ab562a9923326604fe5c89148de5a7",
+    "tail_aware_brier_metrics": {
+      "EXP2A_JOINT": {
+        "abstain_node_count": 6,
+        "episode_balanced_brier": 0.17125971596403597,
+        "support_status": "SUPPORTED",
+        "supported_episode_count": 5,
+        "supported_node_count": 63
+      },
+      "EXP2A_MARGINAL": {
+        "abstain_node_count": 6,
+        "episode_balanced_brier": 0.17452970922410924,
+        "support_status": "SUPPORTED",
+        "supported_episode_count": 5,
+        "supported_node_count": 63
+      },
+      "EXP2A_POINT": {
+        "abstain_node_count": 6,
+        "episode_balanced_brier": 0.8,
+        "support_status": "SUPPORTED",
+        "supported_episode_count": 5,
+        "supported_node_count": 63
+      }
+    }
+  },
+  "gates": {
+    "M1_COHORT_BINDING": {
+      "cache_development_nodes": 1769,
+      "changed_node_count_from_historical_parent": 3,
+      "current_stage_cohort_hash": "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86",
+      "current_stage_node_count": 69,
+      "current_stage_refreeze_status": "NEW_DEVELOPMENT_COHORT_REFROZEN",
+      "exp2_cohort_nodes": 69,
+      "feature_compatibility": "PASS_FROZEN_M1_FEATURE_TENSOR_COMPATIBILITY",
+      "historical_parent_preserved": true,
+      "intersection_nodes": 0,
+      "m1_artifact_validity": "PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS",
+      "reason": "NEW_COHORT_BINDS_CURRENT_APPROVED_DECLARED_EVENT_TIME_REPLAY_STAGE_POLICY",
+      "stage_distribution": {
+        "changed_node_count": 3,
+        "changes": [
+          {
+            "current_stage": "POST_OB_PRE_TO",
+            "current_stage_decision_node_id": "sha256:6040675fa0bc9b1bdc0c118ff6679e3384c929b077f574cd945bf7bb2a03468a",
+            "decision_time": "2019-08-21T17:25:00+00:00",
+            "episode_id": "sha256:000000c8e7fbf60aa1a48faea61029012263d6f1891e049ae8062b5c6afb3adc",
+            "historical_decision_node_id": "sha256:7af9bf8af703b124972bed51521e1a5746b445363798a0cfe134f436e6a94b7a",
+            "historical_stage": "POST_IB_PRE_OB",
+            "node_index": 21
+          },
+          {
+            "current_stage": "POST_OB_PRE_TO",
+            "current_stage_decision_node_id": "sha256:f83485542456f08862bcce1e880b449cf420018131be0caf16df6322e02408a2",
+            "decision_time": "2019-09-10T17:12:00+00:00",
+            "episode_id": "sha256:00001aafa211a593a9ef7322c11ef1890190bc972c071ff59e7b5393b32ac94c",
+            "historical_decision_node_id": "sha256:eaa73129adf7ccd44b3b47c6ffa21734c67947a1f25c211b3cb181dd06b800d5",
+            "historical_stage": "POST_IB_PRE_OB",
+            "node_index": 11
+          },
+          {
+            "current_stage": "POST_OB_PRE_TO",
+            "current_stage_decision_node_id": "sha256:a01af0508a1e9d56e7ca97cdd9747f3b82661fe6d775cb915bba928d02b5d54f",
+            "decision_time": "2019-09-18T02:26:00+00:00",
+            "episode_id": "sha256:00004dd1cc0685767535080c453c6930c7abb5570b1a7bab92c9d302bbd06f55",
+            "historical_decision_node_id": "sha256:078abb9f3a733e2f4c9077bdedee9572db3a814f3017d8b971bafc831c32e113",
+            "historical_stage": "POST_IB_PRE_OB",
+            "node_index": 13
+          }
+        ],
+        "current": {
+          "POST_IB_PRE_OB": 58,
+          "POST_OB_PRE_TO": 6,
+          "PRE_IB": 5
+        },
+        "historical": {
+          "POST_IB_PRE_OB": 61,
+          "POST_OB_PRE_TO": 3,
+          "PRE_IB": 5
+        }
+      },
+      "status": "PASS_CURRENT_STAGE_COHORT_REFROZEN"
+    },
+    "M1_DEVELOPMENT_LABELS": {
+      "artifact_hash": "sha256:0090f0be8f28774a510c41c83f2ae480bdbf180af3ee98aa36e28042b39fd8d2",
+      "final_test": "FORBIDDEN",
+      "labels_are_model_inputs": false,
+      "reason": "EXP2A_PROPER_SCORES_REQUIRE_POST_OUTCOME_DEVELOPMENT_LABELS_BOUND_TO_THE_NEW_COHORT",
+      "row_count": 207,
+      "status": "PASS_CURRENT_STAGE_DEVELOPMENT_LABEL_ARTIFACT_MATERIALIZED",
+      "status_counts": {
+        "D_OB": {
+          "FINITE_SUPPORT": 63,
+          "INACTIVE": 6
+        },
+        "D_TX": {
+          "FINITE_SUPPORT": 69
+        },
+        "T_IB_A00": {
+          "FINITE_SUPPORT": 5,
+          "INACTIVE": 64
+        }
+      }
+    },
+    "M1_POSITIVE_TAIL": {
+      "policy": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+      "reason": "FINITE_SUPPORT_BINS_AND_EXPLICIT_TAIL_CLASS_PRESERVE_OBSERVABILITY_WITHOUT_SCALAR_EXTRAPOLATION",
+      "representation": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+      "status": "PASS_M1_POSITIVE_TAIL_POLICY_FROZEN",
+      "target_support_manifest": "artifacts/diagnostics/m1_v2_positive_tail_policy_freeze_v2/M1_V2_TARGET_SUPPORT_MANIFEST.json"
+    },
+    "M1_SCENARIOS": {
+      "artifact_hash": "sha256:7e3c968df608006531dde94452dac75daae76707f04a7dd38093bccc6b5f6396",
+      "reason": "CONTENT_ADDRESSED_TAIL_AWARE_JOINT_SCENARIOS_BOUND_TO_CURRENT_STAGE_DEVELOPMENT_COHORT",
+      "row_count": 17250,
+      "scenario_count_per_node": 250,
+      "status": "PASS_M1_V2_TYPED_JOINT_SCENARIO_ARTIFACT_MATERIALIZED"
+    },
+    "M1_TAIL_AWARE_BRIER": {
+      "abstention_policy": "UNRESOLVED_INTERVAL_OR_MISSING_OBSERVED_LABEL_ABSTAIN",
+      "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_BRIERS",
+      "artifact_hash": "sha256:4272d8c93be0af70fcec643884e98e7f08ab562a9923326604fe5c89148de5a7",
+      "event": "D_TO_GT_30_MINUTES",
+      "status": "PASS_THRESHOLD_EVENT_BRIER_MATERIALIZED",
+      "variant_metrics": {
+        "EXP2A_JOINT": {
+          "abstain_node_count": 6,
+          "episode_balanced_brier": 0.17125971596403597,
+          "support_status": "SUPPORTED",
+          "supported_episode_count": 5,
+          "supported_node_count": 63
+        },
+        "EXP2A_MARGINAL": {
+          "abstain_node_count": 6,
+          "episode_balanced_brier": 0.17452970922410924,
+          "support_status": "SUPPORTED",
+          "supported_episode_count": 5,
+          "supported_node_count": 63
+        },
+        "EXP2A_POINT": {
+          "abstain_node_count": 6,
+          "episode_balanced_brier": 0.8,
+          "support_status": "SUPPORTED",
+          "supported_episode_count": 5,
+          "supported_node_count": 63
+        }
+      }
+    },
+    "M1_TAIL_AWARE_PROPER_SCORES": {
+      "allowed_without_new_tail_assumption": [
+        "THRESHOLD_EVENT_BRIER_WHEN_EVENT_IS_IDENTIFIABLE_FROM_CLASS_BOUNDS"
+      ],
+      "forbidden_workarounds": [
+        "DROP_TAIL_DRAWS",
+        "ZERO_FILL",
+        "QMAX_SUBSTITUTION",
+        "SCALAR_EXTRAPOLATION"
+      ],
+      "manuscript_implementation_mismatch": true,
+      "reason": "OVERFLOW_TAIL_HAS_OBSERVABLE_CLASS_BUT_NO_SCALAR_MAGNITUDE_AND_MUST_NOT_BE_DROPPED_OR_EXTRAPOLATED",
+      "status": "BLOCKED_STANDARD_SCALAR_CRPS_AND_VARIOGRAM_UNDEFINED_FOR_EXPLICIT_TAIL_CLASS"
+    },
+    "M2_SEVEN_COMPONENT": {
+      "artifact_hash": "sha256:595ba672d786d597f74553871ff3a532f8533a4759e6e2ef17befd9ae9c56b89",
+      "formal_cu_components": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "P_time",
+        "R_operating"
+      ],
+      "formal_five_component_status_counts": {
+        "FORMAL_AGGREGATE_UNRESOLVED": 1684,
+        "FORMAL_AVAILABLE": 15566
+      },
+      "representation_readiness": {
+        "EXP2B_3CHANNEL": "BLOCKED_PASSENGER_CHANNEL_INCOMPLETE",
+        "EXP2B_7COMP": "READY_TYPED_VECTOR_WITH_EXPLICIT_ABSTAIN",
+        "EXP2B_SCALAR": "BLOCKED_SEVEN_COMPONENT_AGGREGATE_UNRESOLVED"
+      },
+      "required_components": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "P_time",
+        "P_itinerary",
+        "P_service",
+        "R_operating"
+      ],
+      "row_count": 17250,
+      "seven_component_status_counts": {
+        "ABSTAIN": 17250
+      },
+      "status": "PASS_M2_TYPED_SEVEN_COMPONENT_VECTOR_MATERIALIZED_WITH_ABSTENTION",
+      "uncovered_components": [
+        "P_itinerary",
+        "P_service"
+      ],
+      "v2_formal_aggregate_status": "FORMAL_AGGREGATE_UNRESOLVED"
+    },
+    "M3_NON_A00": {
+      "non_a00_v2_execution_enabled": false,
+      "status": "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE"
+    },
+    "M4_MAPPING": {
+      "monetary_mapping_status": "MONETARY_MAPPING_BLOCKED",
+      "policy_status": "FROZEN_POLICY_TAIL_EXECUTION_BLOCKED",
+      "production_mapping_enabled": false,
+      "status": "BLOCKED_M4_MAPPING_NOT_FROZEN"
+    }
+  },
+  "inputs": {
+    "exp1_full_manifest": {
+      "path": "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
+      "sha256": "sha256:18bd679447d9fd9953b79de62798b474cce180495947108f834733261f277854"
+    },
+    "exp2_cohort": {
+      "path": "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V3.json",
+      "sha256": "sha256:394cc471d747235b702e0ffaf6fd0bca45340639db739f4184680c3b04951fa9"
+    },
+    "m1_binding": {
+      "path": "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
+      "sha256": "sha256:5deb6684b757af4732a14a874d07f2d74a4ca4c1954deff43c849de7df0fc393"
+    },
+    "m1_cache": {
+      "path": "artifacts/diagnostics/m1_v2_feature_gate_b2/M1_V2_DEVELOPMENT_BASE_CACHE_B2.npz",
+      "sha256": "sha256:cb55ab2d390fc104cde2e1cd7eaf2561b809e91c95eae0120a3490fd267b0e88"
+    },
+    "m1_cache_manifest": {
+      "path": "artifacts/diagnostics/m1_v2_feature_gate_b2/M1_V2_DEVELOPMENT_BASE_CACHE_B2_MANIFEST.json",
+      "sha256": "sha256:34080d750b4d1e25357ec107219b53b1d4d236735b75436c2cf042da7ba4451e"
+    },
+    "m1_checkpoint": {
+      "path": "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt",
+      "sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b"
+    },
+    "m1_current_stage_refreeze": {
+      "path": "artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3/M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json",
+      "sha256": "sha256:39bb979d077798c1c2e0d2d48ef5e5bc482af5aac5ac61137cf1a9875ad2de86"
+    },
+    "m1_development_label_manifest": {
+      "path": "artifacts/experiment/m1_v2_current_stage_development_labels_v1/M1_V2_CURRENT_STAGE_DEVELOPMENT_LABEL_MANIFEST.json",
+      "sha256": "sha256:89ced5b746b81e75dcc6813f72af25a6341a39c6704b1562c0592badcf6ca5bb"
+    },
+    "m1_development_labels": {
+      "path": "artifacts/experiment/m1_v2_current_stage_development_labels_v1/M1_V2_CURRENT_STAGE_DEVELOPMENT_LABELS.json",
+      "sha256": "sha256:5d2e5e9416dd6594180eaba827d707d0f8653baa41171adb14629e746ea4bc91"
+    },
+    "m1_freeze": {
+      "path": "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
+      "sha256": "sha256:b5f6892fa096b96db55c4768a4fdd3ca8c0fce3c2e0bd83adda397108e1112e0"
+    },
+    "m1_positive_tail_freeze": {
+      "path": "artifacts/diagnostics/m1_v2_positive_tail_policy_freeze_v2/M1_V2_POSITIVE_TAIL_POLICY_FREEZE_MANIFEST.json",
+      "sha256": "sha256:c07f1c07f9035d903774d16a6e8994a61907e1579839f98286467cd602746dd2"
+    },
+    "m1_scenario_manifest": {
+      "path": "artifacts/experiment/m1_v2_current_stage_scenarios_v4/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIO_MANIFEST.json",
+      "sha256": "sha256:43f796d6eb3eb20de5c3d775ec27de1b0c72b980ed896d11f3023c36b76e907a"
+    },
+    "m1_scenarios": {
+      "path": "artifacts/experiment/m1_v2_current_stage_scenarios_v4/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIOS.json",
+      "sha256": "sha256:fd375949bec3e192e7f5faad41de6b72d6c8e6076cd5f4ea60b16cedeffc7439"
+    },
+    "m2_consequence_manifest": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
+      "sha256": "sha256:ab612f24137cc8917572d648cf83c49becdda819d7162135c3f4c8e5ba145a14"
+    },
+    "m2_consequences": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json",
+      "sha256": "sha256:afc1b02358bb6e6df6599b2e58f94cd90d5fcb9f7101b05b686b928b79a82138"
+    },
+    "m2_design": {
+      "path": "registries/m2_v2_design.json",
+      "sha256": "sha256:931d13908975fafa627f633bd352876ae8f69872e8d994226b2ff3ea4695184c"
+    },
+    "m2_registry": {
+      "path": "registries/m2_data2_formal_cu_v1.json",
+      "sha256": "sha256:edaa8bc1787dfd01e3de73d41daae86ee2afe7f71ca3447c7d1225e3288fc25a"
+    },
+    "m3_design": {
+      "path": "registries/m3_v2_action_response_design.json",
+      "sha256": "sha256:8caf4872641fc06da08fb6ddbf37db3625a395588b279ad862d89874493425e7"
+    },
+    "m4_design": {
+      "path": "registries/m4_v2_monetary_mapping_design.json",
+      "sha256": "sha256:8959b0efd3740587deadad44ad233948c447525ca998941b4e8de547d85d0ea9"
+    },
+    "m4_policy": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json",
+      "sha256": "sha256:86cb4f54291abf7bf4b869a6420753e74a361b007d475a1f53bea6b5416e822e"
+    },
+    "tail_aware_brier": {
+      "path": "artifacts/experiment/exp2a_tail_aware_brier_v1/EXP2A_TAIL_AWARE_BRIER.json",
+      "sha256": "sha256:e08c09d2bc0e80a41d071cfbcee96ec01ae9eed21d7abd2929bd32dda0e48413"
+    },
+    "tail_aware_brier_manifest": {
+      "path": "artifacts/experiment/exp2a_tail_aware_brier_v1/EXP2A_TAIL_AWARE_BRIER_MANIFEST.json",
+      "sha256": "sha256:b8cda00f5c13fd93e8028fa482315d341af3253501c249862f64fa58a5a951dc"
+    }
+  },
+  "schema_version": "EXP2_FORMAL_ARTIFACT_LINEAGE_V1",
+  "status": "BOUND_WITH_UNRESOLVED_UPSTREAM_GATES"
+}

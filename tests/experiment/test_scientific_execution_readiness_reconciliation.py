@@ -18,17 +18,22 @@ def test_reconciliation_preserves_real_blockers_and_claim_boundaries(tmp_path):
     assert report["current_contracts"]["M1"]["development_inference_status"] == "NEW_DEVELOPMENT_COHORT_REFROZEN"
     assert report["current_contracts"]["M1"]["current_stage_node_count"] == 69
     assert report["current_contracts"]["M1"]["current_stage_changed_node_count"] == 3
-    assert report["current_contracts"]["M2"]["artifact_status"] == "BLOCKED_M2_V2_FORMAL_VALUES_AND_AGGREGATE"
+    assert report["current_contracts"]["M1"]["scenario_artifact_status"] == "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_MATERIALIZED"
+    assert report["current_contracts"]["M1"]["scenario_row_count"] == 17_250
+    assert report["current_contracts"]["M2"]["current_artifact_status"] == "M2_V2_CONSEQUENCE_ARTIFACT_MATERIALIZED"
+    assert report["current_contracts"]["M2"]["row_count"] == 17_250
     assert report["current_contracts"]["M3"]["non_a00_v2_execution_enabled"] is False
     assert report["current_contracts"]["M4"]["production_mapping_enabled"] is False
-    assert report["minimum_real_artifacts"]["Exp2"]["current_status"] == "BLOCKED_BEFORE_METRIC_GENERATION"
+    assert report["minimum_real_artifacts"]["Exp2"]["current_status"] == "TAIL_AWARE_BRIER_AND_CALIBRATION_MATERIALIZED_OTHER_STATE_AND_DOWNSTREAM_METRICS_BLOCKED"
     assert report["minimum_real_artifacts"]["Exp3"]["current_status"] == "BLOCKED_CURRENT_FROZEN_ARTIFACT_GATES"
     assert report["minimum_real_artifacts"]["Exp4"]["current_status"] == "BLOCKED_CURRENT_ARTIFACT_AND_BASELINE_GATES"
     assert report["manuscript_claim_audit"]["claims"][1]["current_status"] == "BLOCKED"
     assert report["prohibitions"]["legacy_v1_promotion"] is True
     assert readiness["status"] == "AIR_SLOT_SCIENTIFIC_EXECUTION_READY"
     assert readiness["execution_status"] == "BLOCKED_CURRENT_REAL_ARTIFACT_GATES"
-    assert readiness["first_human_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+    assert readiness["exp3_status"] == "EXP3_FORMAL_COHORT_BLOCKED"
+    assert readiness["first_human_gate"] == "M3_NON_A00_RESPONSE_RULES_OR_MANUSCRIPT_SCOPE_DECISION_REQUIRED"
+    assert readiness["first_automatic_action"] == "NONE_BEFORE_M3_HUMAN_SCIENTIFIC_GATE"
     assert readiness["manuscript_implementation_mismatch_count"] >= 2
     mismatches = report["manuscript_claim_audit"]["implementation_alignment"]["mismatches"]
     assert all(item["code"] == "MANUSCRIPT_IMPLEMENTATION_MISMATCH" for item in mismatches)

@@ -1,0 +1,71 @@
+{
+  "artifact_hash": "sha256:3d8fabfe1c0da088f6e2bbae895b9be80f64e56266fd144990664d16c01fbca1",
+  "execution_status": "EXP3_FORMAL_COHORT_BLOCKED",
+  "metric_policy": "NOT_RUN_UNTIL_TYPED_CHAIN_ARTIFACTS_ARE_BOUND_NO_ZERO_FILL_NO_SYNTHETIC_DOWNSTREAM_METRICS",
+  "preparation_status": "READY",
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "PAPER_FULL_RUN": false
+  },
+  "schema_version": "EXP3_FORMAL_EXECUTION_READINESS_V1",
+  "shared_blockers": [
+    "BLOCKED_STANDARD_SCALAR_CRPS_AND_VARIOGRAM_UNDEFINED_FOR_EXPLICIT_TAIL_CLASS",
+    "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE",
+    "BLOCKED_M4_MAPPING_NOT_FROZEN",
+    "EXP3_FORMAL_COHORT_BLOCKED"
+  ],
+  "status": "EXP3_FORMAL_EXECUTION_READY",
+  "variant_readiness": {
+    "FULL_CHAIN": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "LAG_10": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "LAG_5": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "MODULE_REMOVAL_M1": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "MODULE_REMOVAL_M2": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "MODULE_REMOVAL_M3": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "MODULE_REMOVAL_M4": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "ONE_SHOT": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "ROLLING": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    },
+    "SYNC": {
+      "formal_multi_action_cohort_status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+      "requires_execution_authorization": true,
+      "status": "EXP3_FORMAL_COHORT_BLOCKED"
+    }
+  }
+}

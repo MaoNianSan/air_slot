@@ -1,0 +1,112 @@
+{
+  "artifact_hash": "sha256:67711e4b1501f2b6cc736588df93c36ac9a93bf4e9a2adf065d0fcd19ed615b4",
+  "baseline_capabilities": {
+    "HISTORICAL": {
+      "implementation_or_fitted_artifact_found": false,
+      "status": "BLOCKED_NO_CURRENT_V2_HISTORICAL_BASELINE_ARTIFACT"
+    },
+    "LIGHTGBM_FAST": {
+      "implementation_found": true,
+      "status": "BLOCKED_M1_FAST_V2_FITTED_ARTIFACT_NOT_REGISTERED",
+      "train_frozen_fitted_artifact_registered": false
+    },
+    "RANDOM_FOREST": {
+      "implementation_or_fitted_artifact_found": false,
+      "status": "BLOCKED_NO_CURRENT_V2_RANDOM_FOREST_IMPLEMENTATION_OR_ARTIFACT"
+    },
+    "STATE_AWARE_FULL": {
+      "formal_exp4_lead_grid_artifact_found": false,
+      "node_conditional_scenario_artifact_found": true,
+      "status": "BLOCKED_FROZEN_CHECKPOINT_WITHOUT_BOUND_PREDICTIVE_ARTIFACT"
+    }
+  },
+  "data_environment_capabilities": {
+    "data1_2019": {
+      "action_response_history": {
+        "decision_time_role": "SCENARIO_ONLY",
+        "formal_input_support": "UNSUPPORTED",
+        "freeze_state": "UNSUPPORTED",
+        "max_evidence_class": "UNSUPPORTED",
+        "realized_outcome_support": "UNSUPPORTED",
+        "reason_code": "NO_ACTION_LOG",
+        "scientific_object": "action_response_history",
+        "source_families": []
+      },
+      "pooling_with_data2": "FORBIDDEN",
+      "role": "TRAJECTORY_RICH_APPLICABILITY_ENVIRONMENT",
+      "schedule": {
+        "decision_time_role": "UNSUPPORTED",
+        "formal_input_support": "UNSUPPORTED",
+        "freeze_state": "UNSUPPORTED",
+        "max_evidence_class": "UNSUPPORTED",
+        "realized_outcome_support": "UNSUPPORTED",
+        "reason_code": "NO_TRUE_SCHEDULE",
+        "scientific_object": "schedule",
+        "source_families": []
+      },
+      "silent_schedule_proxy": "FORBIDDEN",
+      "status": "DEGRADED_BUT_VALID_FOR_TYPED_APPLICABILITY_NOT_ISOMORPHIC_EXTERNAL_VALIDATION",
+      "trajectory": {
+        "decision_time_role": "INFERENCE_EVIDENCE",
+        "formal_input_support": "DIRECT",
+        "freeze_state": "FROZEN",
+        "max_evidence_class": "DIRECT",
+        "realized_outcome_support": "DERIVED",
+        "scientific_object": "trajectory",
+        "source_families": [
+          "opensky_state_vectors"
+        ]
+      }
+    },
+    "data2_2019": {
+      "realized_events": {
+        "decision_time_role": "EVAL_OUTCOME",
+        "formal_input_support": "UNSUPPORTED",
+        "freeze_state": "FROZEN",
+        "max_evidence_class": "DIRECT",
+        "realized_outcome_support": "DIRECT",
+        "reason_code": "POSTHOC_ONLY",
+        "scientific_object": "realized_events",
+        "source_families": [
+          "bts_ontime"
+        ]
+      },
+      "role": "PRIMARY_DEVELOPMENT_EVALUATION_ENVIRONMENT",
+      "status": "SUPPORTED_FOR_OBSERVED_OUTCOME_EVALUATION_AFTER_BASELINE_ARTIFACTS_EXIST"
+    }
+  },
+  "inputs": {
+    "dataset_capabilities": {
+      "path": "registries/dataset_capabilities.yaml",
+      "sha256": "sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b"
+    },
+    "development_training": {
+      "path": "model/M1/development_training.py",
+      "sha256": "sha256:bfc5b9928de58c0379be38f8b08596130aabd1702d4667e0aa77ff35736090fa"
+    },
+    "fast_path": {
+      "path": "model/M1/fast_path.py",
+      "sha256": "sha256:244e859530178d826261a6cf69512540f6f2342b0f296dab4d09144938b1d301"
+    },
+    "m1_scenario_manifest": {
+      "path": "artifacts/experiment/m1_v2_current_stage_scenarios_v4/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIO_MANIFEST.json",
+      "sha256": "sha256:43f796d6eb3eb20de5c3d775ec27de1b0c72b980ed896d11f3023c36b76e907a"
+    }
+  },
+  "next_automatic_actions": [
+    "IMPLEMENT_VERSIONED_HISTORICAL_AND_RANDOM_FOREST_BASELINES_ON_TRAIN_ONLY",
+    "REGISTER_TRAIN_FROZEN_LIGHTGBM_FAST_ARTIFACT",
+    "MATERIALIZE_STATE_AWARE_EXP4_LEAD_GRID_PREDICTIONS_FROM_FROZEN_CHECKPOINT",
+    "MATERIALIZE_TYPED_DATA1_APPLICABILITY_DENOMINATORS_WITH_UNSUPPORTED_FIELDS_ABSTAIN"
+  ],
+  "safety": {
+    "EXP4_RUNS_THIS_AUDIT": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_AUDIT": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_AUDIT": 0
+  },
+  "schema_version": "EXP4_PREDICTIVE_CAPABILITY_AUDIT_V1",
+  "status": "EXP4_PREDICTIVE_ARTIFACTS_BLOCKED_CAPABILITIES_AUDITED"
+}

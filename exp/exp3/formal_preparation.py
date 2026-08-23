@@ -82,8 +82,9 @@ def _inputs(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
     paths = {
         "m1_binding": root / "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
         "m1_freeze": root / "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
-        "exp2_manifest": root / "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_EXECUTION_MANIFEST.json",
-        "exp2_lineage": root / "artifacts/experiment/exp2_formal_development/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+        "exp2_manifest": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_EXECUTION_MANIFEST.json",
+        "exp2_lineage": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+        "m3_support_audit": root / "artifacts/diagnostics/exp3_formal_support_audit_v1/EXP3_FORMAL_SUPPORT_AUDIT.json",
     }
     _require(all(path.is_file() for path in paths.values()), "EXP3_FORMAL_PREPARATION_INPUT_MISSING")
     return {name: (path, _load(path)) for name, path in paths.items()}
@@ -94,6 +95,7 @@ def _validate(inputs: dict[str, tuple[Path, dict[str, Any]]], root: Path) -> dic
     freeze = inputs["m1_freeze"][1]
     exp2_manifest = inputs["exp2_manifest"][1]
     exp2_lineage = inputs["exp2_lineage"][1]
+    m3_support_audit = inputs["m3_support_audit"][1]
     checkpoint = root / binding["checkpoint"]["path"]
     _require(binding["status"] == "BOUND_FROZEN_M1_V2", "EXP3_M1_BINDING_NOT_FROZEN")
     _require(binding["model_id"] == "M1_V2_GRU_H32", "EXP3_M1_MODEL_NOT_H32")
@@ -102,7 +104,9 @@ def _validate(inputs: dict[str, tuple[Path, dict[str, Any]]], root: Path) -> dic
     _require(exp2_manifest["status"] == "EXP2_FORMAL_EXECUTION_COMPLETE", "EXP3_EXP2_BINDING_NOT_COMPLETE")
     _require(exp2_manifest["split"] == "DEVELOPMENT", "EXP3_EXP2_BINDING_NOT_DEVELOPMENT")
     _require(exp2_lineage["status"] == "BOUND_WITH_UNRESOLVED_UPSTREAM_GATES", "EXP3_EXP2_LINEAGE_STATUS_INVALID")
-    for payload in (binding, freeze, exp2_manifest, exp2_lineage):
+    _require(m3_support_audit["status"] == "EXP3_FORMAL_COHORT_BLOCKED", "EXP3_M3_SUPPORT_AUDIT_STATUS_INVALID")
+    _require(m3_support_audit["non_a00_executable_action_ids"] == [], "EXP3_UNEXPECTED_NON_A00_EXECUTABLE_ACTIONS")
+    for payload in (binding, freeze, exp2_manifest, exp2_lineage, m3_support_audit):
         safety = payload.get("safety", payload)
         _require(safety.get("FINAL_TEST_ACCESS_COUNT", payload.get("FINAL_TEST_ACCESS_COUNT")) == 0, "EXP3_FINAL_TEST_ACCESS_NONZERO")
         _require(safety.get("PAPER_FULL_RUN", payload.get("PAPER_FULL_RUN")) is False, "EXP3_PAPER_FULL_TRUE")
@@ -119,6 +123,9 @@ def _validate(inputs: dict[str, tuple[Path, dict[str, Any]]], root: Path) -> dic
         "exp2_cohort_hash": exp2_lineage["cohort"]["cohort_hash"],
         "exp2_cohort_episode_count": exp2_lineage["cohort"]["episode_count"],
         "exp2_cohort_node_count": exp2_lineage["cohort"]["node_count"],
+        "m3_support_audit_hash": m3_support_audit["artifact_hash"],
+        "m3_executable_action_ids": m3_support_audit["executable_action_ids"],
+        "m3_formal_multi_action_cohort_status": m3_support_audit["formal_multi_action_cohort"]["status"],
     }
 
 
@@ -201,19 +208,21 @@ def _lineage_schema() -> dict[str, Any]:
     })
 
 
-def _readiness(gates: dict[str, Any]) -> dict[str, Any]:
+def _readiness(gates: dict[str, Any], fixed: dict[str, Any]) -> dict[str, Any]:
     blockers = tuple(item["status"] for item in gates.values() if str(item["status"]).startswith("BLOCKED_"))
+    blockers = tuple(dict.fromkeys((*blockers, "EXP3_FORMAL_COHORT_BLOCKED")))
     return _artifact({
         "schema_version": "EXP3_FORMAL_EXECUTION_READINESS_V1",
         "status": "EXP3_FORMAL_EXECUTION_READY",
         "preparation_status": "READY",
-        "execution_status": "BLOCKED_CURRENT_FROZEN_ARTIFACT_GATES",
+        "execution_status": "EXP3_FORMAL_COHORT_BLOCKED",
         "shared_blockers": blockers,
         "metric_policy": "NOT_RUN_UNTIL_TYPED_CHAIN_ARTIFACTS_ARE_BOUND_NO_ZERO_FILL_NO_SYNTHETIC_DOWNSTREAM_METRICS",
         "variant_readiness": {
             variant: {
-                "status": "BLOCKED_CURRENT_FROZEN_ARTIFACT_GATES",
+                "status": "EXP3_FORMAL_COHORT_BLOCKED",
                 "requires_execution_authorization": True,
+                "formal_multi_action_cohort_status": fixed["m3_formal_multi_action_cohort_status"],
             }
             for variant in FORMAL_VARIANT_IDS
         },
@@ -227,7 +236,7 @@ def _readiness(gates: dict[str, Any]) -> dict[str, Any]:
 
 def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_execution_preparation").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_execution_preparation_v9").resolve()
     inputs = _inputs(root)
     fixed = _validate(inputs, root)
     gates = inputs["exp2_lineage"][1]["gates"]
@@ -243,7 +252,7 @@ def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> 
     schema = _lineage_schema()
     schema_path = output_root / "EXP3_FORMAL_LINEAGE_SCHEMA.json"
     _write(schema_path, schema)
-    readiness = _readiness(gates)
+    readiness = _readiness(gates, fixed)
     readiness_path = output_root / "EXP3_FORMAL_EXECUTION_READINESS_REPORT.json"
     _write(readiness_path, readiness)
     manifest = _artifact({
@@ -254,6 +263,7 @@ def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> 
         "variants": FORMAL_VARIANT_IDS,
         "m1_binding": {"model_id": "M1_V2_GRU_H32", "modified": False},
         "shared_gates_source": _relative(inputs["exp2_lineage"][0], root),
+        "m3_support_audit": _relative(inputs["m3_support_audit"][0], root),
         "outputs": {
             "variant_contracts": _relative(contracts_path, root),
             "lineage_schema": _relative(schema_path, root),

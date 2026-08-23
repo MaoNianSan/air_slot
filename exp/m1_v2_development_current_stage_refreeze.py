@@ -45,8 +45,8 @@ from model.common.identity import content_id
 
 
 HISTORICAL_COHORT = Path("artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT.json")
-NEW_COHORT = Path("artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V2.json")
-OUTPUT_DIRECTORY = Path("artifacts/diagnostics/m1_v2_development_current_stage_refreeze")
+NEW_COHORT = Path("artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V3.json")
+OUTPUT_DIRECTORY = Path("artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3")
 INPUTS_NAME = "M1_V2_CURRENT_STAGE_DEVELOPMENT_INFERENCE_INPUTS.json"
 MANIFEST_NAME = "M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json"
 FEATURE_REPORT_NAME = "M1_V2_CURRENT_STAGE_FEATURE_COMPATIBILITY_REPORT.json"
@@ -187,7 +187,15 @@ def _approved_policy(paths: dict[str, Path], publisher: ProductionPREPublisher) 
     _require(replay["provenance"]["principal_lag_minutes"] == 0, "M1_V2_CURRENT_STAGE_REPLAY_LAG_INVALID")
     _require(publisher.factual_availability_policy == replay["value"], "M1_V2_CURRENT_STAGE_PUBLISHER_POLICY_MISMATCH")
     _require(publisher.factual_replay_declared_lag_minutes == 0.0, "M1_V2_CURRENT_STAGE_PUBLISHER_LAG_MISMATCH")
-    _require(tail["freeze_state"] == "HUMAN_DECISION_REQUIRED" and tail["value"] == "UNRESOLVED", "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_GATE_CHANGED")
+    _require(
+        tail["freeze_state"] == "FROZEN"
+        and tail["value"] == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+        "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_POLICY_NOT_FROZEN",
+    )
+    _require(
+        tail["provenance"]["target_q_max_minutes"] == {"T_IB_A00": 360, "D_OB": 210, "D_TX": 60},
+        "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_QMAX_MISMATCH",
+    )
     return {"replay": replay, "positive_tail": tail, "quantile_levels": parameters["m1_v2_quantile_levels"]}
 
 
@@ -494,7 +502,7 @@ def refreeze_current_stage_cohort(*, root: Path, output_root: Path | None = None
         "loss_contract_match": binding["frozen_contracts"]["loss_version"] == freeze["fixed_contracts"]["loss_version"],
         "conditional_head_schema_stable": True,
         "positive_tail_policy": policy["positive_tail"]["value"],
-        "next_gate": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
+        "next_gate": "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_REQUIRED",
         "model_modified": False,
         "checkpoint_modified": False,
         **_SAFETY,
@@ -561,7 +569,7 @@ def refreeze_current_stage_cohort(*, root: Path, output_root: Path | None = None
             "scenarios_materialized": False,
         },
         "downstream_binding_status": "READY_FOR_EXP2_4_REBIND_BEFORE_SCENARIOS",
-        "next_gate": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
+        "next_gate": "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_REQUIRED",
         **_SAFETY,
     })
     manifest_path = output_root / MANIFEST_NAME

@@ -24,7 +24,7 @@ def test_current_stage_refreeze_preserves_parent_and_validates_frozen_m1(tmp_pat
     m1_report = json.loads(outputs["m1_report"].read_text(encoding="utf-8"))
 
     assert manifest["status"] == "NEW_DEVELOPMENT_COHORT_REFROZEN"
-    assert manifest["next_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+    assert manifest["next_gate"] == "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_REQUIRED"
     assert cohort["cohort_hash"] != manifest["historical_cohort"]["cohort_hash"]
     assert _sha256(historical) == manifest["historical_cohort"]["sha256_before"]
     assert historical.read_bytes() == historical_before
@@ -40,9 +40,8 @@ def test_current_stage_refreeze_preserves_parent_and_validates_frozen_m1(tmp_pat
     assert feature_report["feature_schema_modified"] is False
     assert feature_report["support_modified"] is False
     assert m1_report["status"] == "PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS"
-    assert m1_report["positive_tail_policy"] == "UNRESOLVED"
+    assert m1_report["positive_tail_policy"] == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
     for payload in (manifest, cohort, feature_report, m1_report):
         assert payload["FINAL_TEST_ACCESS_COUNT"] == 0
         assert payload["PAPER_FULL_RUN"] is False
         assert payload["FULL"] is False
-

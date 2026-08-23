@@ -56,3 +56,8 @@ specs/*.zip
 
 # Temporary Exp2 development-report namespace (regenerable, keep local)
 artifacts/exp2/
+
+# ===== Large generated scenario/consequence artifacts =====
+# Regenerable experiment outputs exceeding GitHub size limits (kept local)
+artifacts/experiment/**/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIOS.json
+artifacts/experiment/**/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json

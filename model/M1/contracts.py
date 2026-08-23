@@ -435,7 +435,12 @@ class HazardBinContract(FrozenModel):
 # tail rule, so ``Q(u)`` for ``u > q_max`` must never silently clamp to
 # ``Q(q_max)``.  ``TEST_ONLY_LINEAR`` exists solely for synthetic smoke
 # fixtures and is forbidden in foundation configs.
-UpperTailPolicyName = Literal["UNRESOLVED", "TEST_ONLY_LINEAR", "DECLARED_FROZEN"]
+UpperTailPolicyName = Literal[
+    "UNRESOLVED",
+    "TEST_ONLY_LINEAR",
+    "DECLARED_FROZEN",
+    "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+]
 
 M1_POSITIVE_TAIL_DECISION_REQUIRED = "M1_POSITIVE_TAIL_DECISION_REQUIRED"
 
@@ -455,8 +460,11 @@ class HurdleQuantileContract(FrozenModel):
     - ``UNRESOLVED``: raising/ABSTAIN in the principal path; no silent clamp.
     - ``TEST_ONLY_LINEAR``: linear extrapolation for synthetic smoke fixtures
       only; never carried by a foundation scientific config.
-    - ``DECLARED_FROZEN``: a frozen tail rule exists (``upper_tail_policy_reference``
-      points to its provenance); no such rule is frozen in this tranche.
+    - ``DECLARED_FROZEN``: a scalar frozen tail rule exists (legacy extension
+      point; no scalar extrapolation is enabled by the current policy).
+    - ``FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS``: values at or above
+      ``max_finite_minutes`` are represented by the explicit overflow class;
+      continuous quantile queries above ``q_max`` remain gated.
     """
 
     target_name: Literal["D_OB", "D_TX"]
@@ -477,7 +485,8 @@ class HurdleQuantileContract(FrozenModel):
             raise ValueError("quantile levels must be strictly increasing")
         if self.upper_tail_policy == "DECLARED_FROZEN"                 and not self.upper_tail_policy_reference:
             raise ValueError("declared tail rule requires a policy reference")
-        if self.upper_tail_policy == "UNRESOLVED"                 and self.upper_tail_policy_reference is not None:
+        if self.upper_tail_policy in ("UNRESOLVED", "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS") \
+                and self.upper_tail_policy_reference is not None:
             raise ValueError("unresolved tail policy cannot carry a reference")
         return self
 
@@ -536,7 +545,7 @@ def cvar_support_status(contract: HurdleQuantileContract, alpha: float) -> str:
     q_max = contract.q_max
     if q_max < alpha - 1e-12:
         return "GATED"
-    if contract.upper_tail_policy == "UNRESOLVED":
+    if contract.upper_tail_policy in ("UNRESOLVED", "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"):
         return "GATED"
     return "SUPPORTED"
 

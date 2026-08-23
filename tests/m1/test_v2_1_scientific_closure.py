@@ -505,10 +505,13 @@ def test_q_full_causal_history_unchanged():
 def test_r_final_test_access_remains_zero():
     scientific = load_config_layers(Path("configs")).scientific
     tail = scientific.parameters["m1_v2_positive_tail_policy"]
-    assert tail.freeze_state.value == "HUMAN_DECISION_REQUIRED"
-    assert tail.value == "UNRESOLVED"
-    assert tail.provenance["human_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED"
-    assert tail.provenance["selection_state"] == "NOT_FROZEN"
+    assert tail.freeze_state.value == "FROZEN"
+    assert tail.value == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
+    assert tail.provenance["decision_id"] == "AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE"
+    assert tail.provenance["target_q_max_minutes"] == {
+        "T_IB_A00": 360, "D_OB": 210, "D_TX": 60,
+    }
+    assert tail.provenance["selection_state"] == "HUMAN_APPROVED"
     quantile_levels = scientific.parameters["m1_v2_quantile_levels"]
     assert quantile_levels.freeze_state.value == "DEVELOPMENT_ONLY"
     for name in ("m1_state_estimator_v2", "m1_v2_quantile_levels",

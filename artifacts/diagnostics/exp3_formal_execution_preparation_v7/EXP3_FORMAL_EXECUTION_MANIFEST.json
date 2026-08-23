@@ -1,0 +1,48 @@
+{
+  "artifact_hash": "sha256:62588eb37eb5b2262396783a99fce86c85eabdb38ad09a9452efa6270bad3d5b",
+  "execution_scope": "DEVELOPMENT_PREPARATION_NON_FULL",
+  "fixed_contract": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "dataset": "DATA2",
+    "exp2_cohort_episode_count": 5,
+    "exp2_cohort_hash": "sha256:79cc67a30e28c45ba4e389e319375d9c48c46314fe86b8e4190704de058f9a86",
+    "exp2_cohort_node_count": 69,
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
+    "m1_checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "m1_model_id": "M1_V2_GRU_H32",
+    "split": "DEVELOPMENT",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "m1_binding": {
+    "model_id": "M1_V2_GRU_H32",
+    "modified": false
+  },
+  "outputs": {
+    "execution_readiness_report": "artifacts/diagnostics/exp3_formal_execution_preparation_v7/EXP3_FORMAL_EXECUTION_READINESS_REPORT.json",
+    "lineage_schema": "artifacts/diagnostics/exp3_formal_execution_preparation_v7/EXP3_FORMAL_LINEAGE_SCHEMA.json",
+    "variant_contracts": "artifacts/diagnostics/exp3_formal_execution_preparation_v7/EXP3_FORMAL_VARIANT_CONTRACTS.json"
+  },
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS_THIS_PREPARATION": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS_THIS_PREPARATION": 0
+  },
+  "schema_version": "EXP3_FORMAL_EXECUTION_MANIFEST_V1",
+  "shared_gates_source": "artifacts/experiment/exp2_formal_development_v8/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
+  "status": "EXP3_FORMAL_EXECUTION_READY",
+  "variants": [
+    "FULL_CHAIN",
+    "MODULE_REMOVAL_M1",
+    "MODULE_REMOVAL_M2",
+    "MODULE_REMOVAL_M3",
+    "MODULE_REMOVAL_M4",
+    "ROLLING",
+    "ONE_SHOT",
+    "SYNC",
+    "LAG_5",
+    "LAG_10"
+  ]
+}

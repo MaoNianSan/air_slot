@@ -56,8 +56,8 @@ def _write(path: Path, payload: dict[str, Any]) -> None:
 def create_current_stage_positive_tail_packet(*, root: Path, output_root: Path | None = None) -> Path:
     root = Path(root).resolve()
     output_root = (output_root or root / OUTPUT_DIRECTORY).resolve()
-    refreeze_path = root / "artifacts/diagnostics/m1_v2_development_current_stage_refreeze/M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json"
-    cohort_path = root / "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V2.json"
+    refreeze_path = root / "artifacts/diagnostics/m1_v2_development_current_stage_refreeze_v3/M1_V2_CURRENT_STAGE_COHORT_REFREEZE_MANIFEST.json"
+    cohort_path = root / "artifacts/experiment/exp2/DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V3.json"
     binding_path = root / "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json"
     checkpoint_path = root / "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt"
     foundation_path = root / "configs/scientific/foundation.yaml"
@@ -71,17 +71,21 @@ def create_current_stage_positive_tail_packet(*, root: Path, output_root: Path |
     tail = parameters["m1_v2_positive_tail_policy"]
     levels = parameters["m1_v2_quantile_levels"]
     _require(refreeze["status"] == "NEW_DEVELOPMENT_COHORT_REFROZEN", "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_REFREEZE_INVALID")
-    _require(refreeze["next_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED", "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_NEXT_GATE_INVALID")
+    _require(refreeze["next_gate"] in ("M1_POSITIVE_TAIL_DECISION_REQUIRED", "M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_REQUIRED"), "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_NEXT_GATE_INVALID")
     _require(cohort["cohort_hash"] == refreeze["new_cohort"]["cohort_hash"], "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_COHORT_HASH_MISMATCH")
-    _require(tail["freeze_state"] == "HUMAN_DECISION_REQUIRED" and tail["value"] == "UNRESOLVED", "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_POLICY_ALREADY_CHANGED")
-    _require(tail["provenance"]["human_gate"] == "M1_POSITIVE_TAIL_DECISION_REQUIRED", "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_GATE_CODE_MISMATCH")
+    frozen = tail["freeze_state"] == "FROZEN" and tail["value"] == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
+    _require(
+        frozen or (tail["freeze_state"] == "HUMAN_DECISION_REQUIRED" and tail["value"] == "UNRESOLVED"),
+        "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_POLICY_INVALID",
+    )
     pipeline = M1Pipeline.load(checkpoint_path)
     policies = {name: contract.upper_tail_policy for name, contract in pipeline.contracts.items() if hasattr(contract, "upper_tail_policy")}
     _require(set(policies) == {"D_OB", "D_TX"}, "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_TARGET_MISMATCH")
-    _require(set(policies.values()) == {"UNRESOLVED"}, "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_CONTRACT_POLICY_MISMATCH")
+    _require(set(policies.values()) in ({"UNRESOLVED"}, {"FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"}), "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_CONTRACT_POLICY_MISMATCH")
+    status = "M1_POSITIVE_TAIL_POLICY_FROZEN" if frozen else "M1_POSITIVE_TAIL_DECISION_REQUIRED"
     payload = {
         "schema_version": "M1_V2_CURRENT_STAGE_POSITIVE_TAIL_HUMAN_DECISION_PACKET_V1",
-        "status": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
+        "status": status,
         "scope": "CURRENT_STAGE_REFROZEN_DEVELOPMENT_SCENARIO_ENVELOPE_GATE",
         "cohort": {
             "path": str(cohort_path.relative_to(root)).replace("\\", "/"),
@@ -107,17 +111,20 @@ def create_current_stage_positive_tail_packet(*, root: Path, output_root: Path |
         "configured_policy": {
             "freeze_state": tail["freeze_state"],
             "value": tail["value"],
-            "human_gate": tail["provenance"]["human_gate"],
+            "decision_id": tail["provenance"].get("decision_id"),
+            "human_gate": tail["provenance"].get("human_gate"),
             "positive_quantile_grid": levels["value"],
             "q_max": max(levels["value"]),
-            "cvar_alpha_reference": tail["provenance"]["cvar_alpha_reference"],
+            "target_q_max_minutes": tail["provenance"].get("target_q_max_minutes"),
+            "representation": tail["provenance"].get("representation"),
+            "cvar_alpha_reference": tail["provenance"].get("cvar_alpha_reference"),
             "checkpoint_contract_policies": policies,
         },
         "scenario_envelope": {
             "joint_state_distribution_artifact": "BLOCKED",
             "marginal_distribution_artifact": "BLOCKED_FOR_SCENARIO_DERIVATION",
-            "reason": "Q(u) above q_max has no frozen principal-path rule",
-            "allowed_before_decision": ["current-stage cohort lineage", "43-feature compatibility", "conditional head schema validation"],
+            "reason": "Explicit tail class is frozen; joint scenario artifact is still not materialized",
+            "allowed_before_decision": ["current-stage cohort lineage", "43-feature compatibility", "conditional head schema validation", "tail-class lineage"],
             "prohibited_without_human_decision": [
                 "clamp_to_q_max",
                 "implicit_linear_extrapolation",
@@ -126,7 +133,7 @@ def create_current_stage_positive_tail_packet(*, root: Path, output_root: Path |
                 "Exp2_4_metric_generation",
             ],
         },
-        "human_decision_required": [
+        "human_decision_required": [] if frozen else [
             "positive_quantile_levels_and_q_max",
             "upper_tail_representation_or_extrapolation_rule",
             "calibration_and_development_freeze_procedure",
@@ -146,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
     path = create_current_stage_positive_tail_packet(root=Path(__file__).resolve().parents[1], output_root=args.output_root)
-    print(json.dumps({"status": "M1_POSITIVE_TAIL_DECISION_REQUIRED", "packet": str(path), **_SAFETY}, sort_keys=True))
+    print(json.dumps({"status": _load(path)["status"], "packet": str(path), **_SAFETY}, sort_keys=True))
     return 0
 
 
