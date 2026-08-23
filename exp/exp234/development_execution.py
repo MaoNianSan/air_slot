@@ -14,6 +14,7 @@ replaced with invented contracts or fixture coverage.
 """
 from __future__ import annotations
 import json
+import math
 from pathlib import Path
 import time
 import pyarrow as pa
@@ -198,7 +199,6 @@ def _fast_pre_rows(m2: dict, context, scenario_rows: list[dict]) -> list[dict]:
     turnaround = getattr(context.turnaround_reference, "value", None)
     exposure = getattr(context.expected_downstream_exposure, "value", None)
     passenger = getattr(context.passenger_exposure, "value", None)
-    taxi_ref = getattr(context.taxi_reference, "value", None)
     multipliers = {
         name: 1.0 / float(m2["registry"].scale(name)) for name in FULL_SCOPE
     }
@@ -209,19 +209,21 @@ def _fast_pre_rows(m2: dict, context, scenario_rows: list[dict]) -> list[dict]:
     output = []
     for row in scenario_rows:
         r_ib = row.get("r_ib_minutes")
-        delta_ob = row.get("delta_ob_minutes")
-        if delta_ob is None:
-            delta_ob = row.get("r_ob_minutes")
-        taxi = row.get("t_tx_minutes")
+        # M2 V2 consumes strict formal M1 fields. Legacy delta_ob/t_tx fields
+        # are not valid substitutes and must remain ABSTAIN when d_ob/d_tx are
+        # absent from the typed scenario row.
+        d_ob = row.get("d_ob_minutes")
+        d_tx = row.get("d_tx_minutes")
+        d_to = row.get("d_to_minutes")
+        d_ob_support = row.get("d_ob_support", "SUPPORTED")
+        d_tx_support = row.get("d_tx_support", "SUPPORTED")
+        d_to_support = row.get("d_to_support", "SUPPORTED")
         rib_support = supported(r_ib)
-        delta_support = supported(delta_ob)
-        taxi_support = supported(taxi)
-        rob = None if delta_ob is None else max(0.0, float(delta_ob))
-        takeoff = (
-            None
-            if delta_ob is None or taxi is None or taxi_ref is None
-            else max(0.0, float(delta_ob) + float(taxi) - float(taxi_ref))
-        )
+        d_ob_supported = supported(d_ob) and d_ob_support != "ABSTAIN"
+        d_tx_supported = supported(d_tx) and d_tx_support != "ABSTAIN"
+        d_to_supported = supported(d_to) and d_to_support != "ABSTAIN"
+        rob = None if not d_ob_supported else float(d_ob)
+        takeoff = None if not d_to_supported else float(d_to)
         components = {}
         def publish(component, value, parents_supported):
             if not parents_supported or value is None:
@@ -231,18 +233,24 @@ def _fast_pre_rows(m2: dict, context, scenario_rows: list[dict]) -> list[dict]:
         publish("F_continuity",
                 None if not (rib_support and supported(turnaround)) else max(0.0, float(r_ib) - float(turnaround)),
                 rib_support and supported(turnaround))
-        publish("F_execution", rob, delta_support)
+        publish("F_execution", rob, d_ob_supported)
         publish("F_propagation",
                 None if takeoff is None or exposure is None else takeoff * float(exposure),
-                delta_support and taxi_support and supported(exposure))
+                d_to_supported and supported(exposure))
         publish("P_time",
                 None if takeoff is None or passenger is None else takeoff * float(passenger),
-                delta_support and taxi_support and supported(passenger))
+                d_to_supported and supported(passenger))
+        # These components require typed M2 inputs not present in this legacy
+        # scenario artifact; preserve ABSTAIN instead of proxy substitution.
+        components["P_itinerary"] = None
+        components["P_service"] = None
         publish("R_operating",
-                None if taxi is None or taxi_ref is None else max(0.0, float(taxi) - float(taxi_ref)),
-                taxi_support and supported(taxi_ref))
+                None if not d_tx_supported else float(d_tx),
+                d_tx_supported)
         formal_values = [components[name] for name in FULL_SCOPE]
         formal_cu = None if any(value is None for value in formal_values) else float(sum(formal_values))
+        valued = [value for value in components.values() if value is not None]
+        diagnostic_cu = None if not valued else float(sum(valued))
         output.append({
             "scenario_id": int(row["scenario_id"]),
             "scenario_weight": float(row.get("scenario_weight", 1.0 / len(scenario_rows))),
@@ -250,7 +258,7 @@ def _fast_pre_rows(m2: dict, context, scenario_rows: list[dict]) -> list[dict]:
             "formal_status": "FORMAL_AVAILABLE" if formal_cu is not None else "FORMAL_AGGREGATE_UNRESOLVED",
             "formal_reason": None if formal_cu is not None else "INCLUDED_COMPONENT_ABSTAIN",
             "components": components,
-            "diagnostic_cu": None if formal_cu is None else formal_cu,
+            "diagnostic_cu": diagnostic_cu,
         })
     return output
 def fast_path_equivalence(m2: dict, context, scenario_rows: list[dict]) -> dict:
@@ -260,14 +268,30 @@ def fast_path_equivalence(m2: dict, context, scenario_rows: list[dict]) -> dict:
     equal = True
     maximum_difference = 0.0
     for left, right in zip(reference, fast):
-        if left["formal_cu"] != right["formal_cu"]:
+        if not (
+            (left["formal_cu"] is None and right["formal_cu"] is None)
+            or (
+                left["formal_cu"] is not None
+                and right["formal_cu"] is not None
+                and math.isclose(left["formal_cu"], right["formal_cu"], rel_tol=1e-12, abs_tol=1e-12)
+            )
+        ):
             equal = False
         for name in FULL_SCOPE:
             a, b = left["components"].get(name), right["components"].get(name)
-            if a != b:
+            if a is None or b is None:
+                if a is not None or b is not None:
+                    equal = False
+                continue
+            if not math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-12):
                 equal = False
-            if a is not None and b is not None:
-                maximum_difference = max(maximum_difference, abs(a - b))
+            maximum_difference = max(maximum_difference, abs(a - b))
+        if left["diagnostic_cu"] is not None and right["diagnostic_cu"] is not None:
+            if not math.isclose(left["diagnostic_cu"], right["diagnostic_cu"], rel_tol=1e-12, abs_tol=1e-12):
+                equal = False
+            maximum_difference = max(maximum_difference, abs(left["diagnostic_cu"] - right["diagnostic_cu"]))
+        elif left["diagnostic_cu"] != right["diagnostic_cu"]:
+            equal = False
     return {
         "status": "PASS" if equal else "FAIL",
         "scenarios_checked": len(scenario_rows),
@@ -636,6 +660,7 @@ def exp3_development() -> dict:
             "FORMAL" if (relaxed_top1 is not None and reference.get(relaxed_top1) is not None)
             else "CONDITIONAL"
         )
+        relaxed_numeric_actions = [action for action, value in relaxed.items() if value is not None]
         rows.append({
             "episode_id": parquet["episode_id"][index],
             "decision_node_id": parquet["decision_node_id"][index],
@@ -651,7 +676,7 @@ def exp3_development() -> dict:
             "relaxed_top1_full_lane": relaxed_top1_full_lane,
             "relaxed_topk_full_lanes": [
                 "FORMAL" if reference.get(action) is not None else "CONDITIONAL"
-                for action in sorted(relaxed, key=relaxed.get)[:3]
+                for action in sorted(relaxed_numeric_actions, key=relaxed.get)[:3]
             ],
             "formal_coverage": 1.0 if formal else 0.0,
             "relaxed_coverage": 1.0 if formal else 0.0,
@@ -718,10 +743,10 @@ def exp4_development(*, limit_nodes: int | None = None) -> dict:
         rows = [_run_exp4_node(position) for position in range(len(node_rows))]
     for row in rows:
         for left, right in rank_agreement:
-            left_rank = tuple(sorted(row[f"{left.lower()}_action_map"],
-                                     key=row[f"{left.lower()}_action_map"].get))
-            right_rank = tuple(sorted(row[f"{right.lower()}_action_map"],
-                                      key=row[f"{right.lower()}_action_map"].get))
+            left_map = row[f"{left.lower()}_action_map"]
+            right_map = row[f"{right.lower()}_action_map"]
+            left_rank = tuple(sorted((k for k, v in left_map.items() if v is not None), key=left_map.get))
+            right_rank = tuple(sorted((k for k, v in right_map.items() if v is not None), key=right_map.get))
             if left_rank and right_rank:
                 agreement = sum(a == b for a, b in zip(left_rank, right_rank)) / len(left_rank)
             else:
@@ -810,7 +835,8 @@ def build_audit_cases(*, limit_nodes: int | None = None) -> tuple[list[dict], di
                           if value is not None}
         top1 = min(formal_actions, key=formal_actions.get) if formal_actions else None
         relaxed = variants.get("point_flight") or {}
-        relaxed_top1 = min(relaxed, key=relaxed.get) if relaxed else None
+        relaxed_numeric = {action: value for action, value in relaxed.items() if value is not None}
+        relaxed_top1 = min(relaxed_numeric, key=relaxed_numeric.get) if relaxed_numeric else None
 
         if top1 is None:
             continue

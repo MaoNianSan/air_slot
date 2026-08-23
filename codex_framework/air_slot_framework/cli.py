@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
 from .experiments import (
     EXP1_VARIANTS,
@@ -19,7 +20,9 @@ from .workflow import (
     write_contract_audit,
     write_development_manifest,
     write_experiment_readiness,
+    write_data1_acceptance,
     write_validation_report,
+    write_phase0_consistency_audit,
 )
 
 
@@ -46,23 +49,28 @@ def smoke_report() -> dict[str, object]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="AIR SLOT development contract CLI")
-    parser.add_argument("command", choices=("smoke", "workflow"))
+    parser.add_argument("command", choices=("smoke", "workflow", "formal-pipeline"))
     parser.add_argument("--output", default="codex_framework", help="development artifact directory")
     args = parser.parse_args()
     if args.command == "smoke":
         print(json.dumps(smoke_report(), sort_keys=True))
     elif args.command == "workflow":
-        from pathlib import Path
-
         output = Path(args.output)
         paths = (
             write_development_manifest(output / "workflow_manifest.json"),
+            write_phase0_consistency_audit(output / "phase0_consistency_audit.json", root=output.parent),
             write_artifact_manifest(output / "artifact_manifest.json"),
             write_contract_audit(output / "contract_audit.json"),
             write_experiment_readiness(output / "experiment_readiness.json"),
+            write_data1_acceptance(output / "exp4_data1_acceptance.json"),
             write_validation_report(output / "validation_report.json"),
         )
         print(json.dumps({"status": "DEVELOPMENT_WORKFLOW_READY", "formal_execution": False, "paths": [str(p) for p in paths]}, sort_keys=True))
+    elif args.command == "formal-pipeline":
+        from .formal_execution import run_ordered_execution
+
+        report = run_ordered_execution(root=Path.cwd(), output_path=Path(args.output) / "formal_experiment_execution_status.json")
+        print(json.dumps({"status": report["status"], "path": str(Path(args.output) / "formal_experiment_execution_status.json"), "safety": report["safety"]}, sort_keys=True))
 
 
 if __name__ == "__main__":

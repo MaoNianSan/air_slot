@@ -70,46 +70,64 @@ def formal_multi_action_gate(count: int) -> dict[str, object]:
             "principal_authoritative_ranking_claim": count >= 100}
 
 
-def consequence_distortion(reference: dict[str, float], variant: dict[str, float]) -> float:
-    keys = sorted(set(reference) & set(variant))
+def _numeric_common(reference, variant):
+    return sorted(
+        key for key in set(reference) & set(variant)
+        if reference.get(key) is not None and variant.get(key) is not None
+    )
+
+
+def consequence_distortion(reference: dict[str, float | None], variant: dict[str, float | None]) -> float | None:
+    keys = _numeric_common(reference, variant)
+    if not keys:
+        return None
     return sum(abs(float(variant[key]) - float(reference[key])) for key in keys)
 
 
-def action_gap_distortion(reference: dict[str, float], variant: dict[str, float]) -> float:
-    common = sorted(set(reference) & set(variant))
+def action_gap_distortion(reference: dict[str, float | None], variant: dict[str, float | None]) -> float | None:
+    common = _numeric_common(reference, variant)
     if len(common) < 2:
-        return 0.0
+        return None
     return sum(abs((variant[a] - variant[b]) - (reference[a] - reference[b]))
                for a, b in combinations(common, 2)) / len(list(combinations(common, 2)))
 
 
-def pairwise_ranking_reversal_rate(reference: dict[str, float], variant: dict[str, float]) -> float:
-    pairs = list(combinations(sorted(set(reference) & set(variant)), 2))
+def pairwise_ranking_reversal_rate(reference: dict[str, float | None], variant: dict[str, float | None]) -> float | None:
+    pairs = list(combinations(_numeric_common(reference, variant), 2))
     if not pairs:
-        return 0.0
+        return None
     reversals = sum((reference[a] - reference[b]) * (variant[a] - variant[b]) < 0 for a, b in pairs)
     return reversals / len(pairs)
 
 
-def top1_disagreement(reference: dict[str, float], variant: dict[str, float]) -> float:
-    if not reference or not variant:
-        return 0.0
+def top1_disagreement(reference: dict[str, float | None], variant: dict[str, float | None]) -> float | None:
+    common = _numeric_common(reference, variant)
+    if not common:
+        return None
+    reference = {key: reference[key] for key in common}
+    variant = {key: variant[key] for key in common}
     return float(min(reference, key=reference.get) != min(variant, key=variant.get))
 
 
-def ranking_at_3_overlap(reference: dict[str, float], variant: dict[str, float]) -> float | None:
-    if len(reference) < 3 or len(variant) < 3:
+def ranking_at_3_overlap(reference: dict[str, float | None], variant: dict[str, float | None]) -> float | None:
+    common = _numeric_common(reference, variant)
+    if len(common) < 3:
         return None
+    reference = {key: reference[key] for key in common}
+    variant = {key: variant[key] for key in common}
     left = set(sorted(reference, key=reference.get)[:3])
     right = set(sorted(variant, key=variant.get)[:3])
     return len(left & right) / 3.0
 
 
-def reference_objective_selection_penalty(reference: dict[str, float], variant: dict[str, float]) -> dict:
+def reference_objective_selection_penalty(reference: dict[str, float | None], variant: dict[str, float | None]) -> dict:
     """Select under the variant, then score that action under the reference evaluator."""
-    if not reference or not variant:
+    common = _numeric_common(reference, variant)
+    if not common:
         return {"ReferenceObjectiveSelectionPenalty": None,
                 "NormalizedReferenceObjectiveSelectionPenalty": None}
+    reference = {key: reference[key] for key in common}
+    variant = {key: variant[key] for key in common}
     chosen = min(variant, key=variant.get)
     reference_choice = min(reference, key=reference.get)
     penalty = float(reference[chosen]) - float(reference[reference_choice])

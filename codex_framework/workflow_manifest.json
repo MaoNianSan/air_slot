@@ -87,17 +87,17 @@
     },
     {
       "stage_id": "W6",
-      "status": "BLOCKED",
-      "purpose": "Exp4 performance efficiency and generalization",
+      "status": "PASS",
+      "purpose": "Exp4 bounded Data1 execution and typed applicability",
       "required_inputs": [
-        "Data2 main",
-        "Data1 portability",
-        "runtime protocol"
+        "Data1 raw root",
+        "Data1 adapter",
+        "bounded contract tests"
       ],
       "outputs": [
-        "exp4_result.json"
+        "exp4_data1_acceptance.json"
       ],
-      "stop_reason": "HUMAN_GATE_REQUIRED_FOR_FORMAL_EXP4"
+      "stop_reason": null
     },
     {
       "stage_id": "W7",
@@ -122,5 +122,5 @@
   },
   "formal_experiments_run": false,
   "paper_full_run": false,
-  "manifest_hash": "sha256:6ca11201a95e1455e6296e13ff5fccf330f3bc01451f32f2126e0ab3785bede8"
+  "manifest_hash": "sha256:ec1f0d5d3ddca68047025cc7eda81baa24919dc305b3862295eb57a91e7275c0"
 }

@@ -20,8 +20,11 @@ from codex_framework.air_slot_framework.contracts import (
     SupportState,
 )
 from codex_framework.air_slot_framework.experiments import (
+    EXP4_DATA1_RUN_ACCEPTABILITY,
+    EXP4_VARIANTS,
     ExperimentStage,
     SafetyState,
+    build_data1_acceptance_report,
     build_experiment_manifest,
     validate_representation_isolation,
 )
@@ -243,7 +246,24 @@ def test_workflow_stops_formal_experiments():
     assert manifest.formal_experiments_run is False
     assert manifest.paper_full_run is False
     assert manifest.safety.final_test_access_count == 0
-    assert {item.stage_id for item in manifest.stages if item.status.value == "BLOCKED"} == {"W3", "W4", "W5", "W6"}
+    assert {item.stage_id for item in manifest.stages if item.status.value == "BLOCKED"} == {"W3", "W4", "W5"}
+    assert next(item for item in manifest.stages if item.stage_id == "W6").status.value == "PASS"
+
+
+def test_exp4_data1_bounded_acceptance_and_data2_protocol_unchanged():
+    report = build_data1_acceptance_report()
+    assert report["status"] == "PASS_BOUNDED_DATA1_EXECUTION"
+    assert report["dataset_id"] == "data1_2019"
+    assert report["observations"]["data1_rows_read"] > 0
+    assert report["FINAL_TEST_ACCESS_COUNT"] == 0
+    assert report["PAPER_FULL_RUN"] is False
+    assert EXP4_DATA1_RUN_ACCEPTABILITY not in EXP4_VARIANTS
+    assert EXP4_VARIANTS == (
+        "EXP4A_PREDICTIVE_ADEQUACY",
+        "EXP4B_DECISION_OUTPUT_VALIDITY",
+        "EXP4C_DATA1_DATA2_PORTABILITY",
+        "EXP4D_END_TO_END_RUNTIME",
+    )
 
 
 def test_end_to_end_chain_stops_at_conditional_decision():

@@ -6,6 +6,8 @@ logic lives here beyond the frozen template map.
 """
 from __future__ import annotations
 
+import json
+
 from exp.exp2.metrics import (
     action_gap_distortion,
     pairwise_ranking_reversal_rate,

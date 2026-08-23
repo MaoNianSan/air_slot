@@ -37,18 +37,23 @@
     },
     "Exp4": {
       "ownership": "performance_efficiency_generalization",
+      "data2_scope": "UNCHANGED_ORIGINAL_EXP4_PROTOCOL",
+      "primary_development_scope": "DATA1_RUN_AND_ACCEPTABLE_EFFECT",
       "variants": [
+        "DATA1_RUN_ACCEPTABILITY"
+      ],
+      "optional_formal_variants": [
         "PREDICTIVE_ADEQUACY",
         "DECISION_OUTPUT_VALIDITY",
         "DATA1_DATA2_PORTABILITY",
         "END_TO_END_RUNTIME"
       ],
-      "status": "BLOCKED"
+      "status": "DATA1_BOUNDED_PASS_FORMAL_NOT_RUN"
     }
   },
   "blockers": [
     "W2 frozen source artifact is not supplied to codex_framework",
-    "formal Exp execution requires explicit human gate",
+    "formal Exp execution requires explicit human gate; bounded Data1 execution is complete",
     "FINAL_TEST_ACCESS_COUNT must remain zero",
     "PAPER_FULL_RUN must remain false"
   ]

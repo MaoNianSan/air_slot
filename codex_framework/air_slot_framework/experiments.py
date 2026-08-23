@@ -43,6 +43,7 @@ EXP4_VARIANTS = (
     "EXP4C_DATA1_DATA2_PORTABILITY",
     "EXP4D_END_TO_END_RUNTIME",
 )
+EXP4_DATA1_RUN_ACCEPTABILITY = "EXP4_DATA1_RUN_ACCEPTABILITY"
 
 
 class ExperimentStage(str, Enum):
@@ -87,7 +88,7 @@ class ExperimentManifest(FrozenModel):
             ExperimentStage.EXP1: EXP1_VARIANTS,
             ExperimentStage.EXP2: EXP2_VARIANTS,
             ExperimentStage.EXP3: EXP3_VARIANTS,
-            ExperimentStage.EXP4: EXP4_VARIANTS,
+            ExperimentStage.EXP4: (*EXP4_VARIANTS, EXP4_DATA1_RUN_ACCEPTABILITY),
         }[self.stage]
         if self.variant not in variants:
             raise ValueError(f"UNKNOWN_{self.stage.value}_VARIANT:{self.variant}")
@@ -106,6 +107,7 @@ VARIANT_OWNERS = {
     **{variant: "consequence_and_representation" for variant in EXP2_VARIANTS},
     **{variant: "rolling_decision_process" for variant in EXP3_VARIANTS},
     **{variant: "performance_efficiency_generalization" for variant in EXP4_VARIANTS},
+    EXP4_DATA1_RUN_ACCEPTABILITY: "data1_bounded_execution_and_applicability",
 }
 
 
@@ -114,6 +116,7 @@ VARIANT_CLAIM_SCOPES = {
     **{variant: "necessity_of_consequence_and_risk_representation" for variant in EXP2_VARIANTS},
     **{variant: "sequential_decision_chain_consistency_under_scenario_assumptions" for variant in EXP3_VARIANTS},
     **{variant: "predictive_adequacy_validity_portability_or_runtime" for variant in EXP4_VARIANTS},
+    EXP4_DATA1_RUN_ACCEPTABILITY: "data1_bounded_execution_and_typed_applicability_only",
 }
 
 
@@ -132,6 +135,7 @@ def build_experiment_manifest(
         *EXP2_VARIANTS,
         *EXP3_VARIANTS,
         *EXP4_VARIANTS,
+        EXP4_DATA1_RUN_ACCEPTABILITY,
     }:
         raise ValueError(f"UNKNOWN_EXPERIMENT_VARIANT:{variant}")
     return ExperimentManifest(
@@ -150,6 +154,82 @@ def validate_representation_isolation(*, variant: str, source_payload: Mapping[s
     """Exp2 coarse variants may not inspect hidden fine-grained composition."""
     if variant in {"EXP2B_SCALAR", "EXP2B_3CHANNEL"} and "hidden_7_component_values" in source_payload:
         raise ValueError("EXP2_COARSENED_VARIANT_HIDDEN_7COMPONENT_LEAK")
+
+
+class Data1Acceptance(FrozenModel):
+    """Bounded Data1 execution gate, not a predictive-performance claim."""
+
+    dataset_id: str = "data1_2019"
+    rows_read: int = Field(ge=0)
+    canonicalization_pass: bool
+    raw_unchanged: bool
+    contract_tests_passed: int = Field(ge=0)
+    unsupported_semantics_explicit: bool
+    m1_predictive_label_path_available: bool = False
+    final_test_access_count: int = Field(default=0, ge=0)
+    paper_full_run: bool = False
+
+    @model_validator(mode="after")
+    def validate_scope(self):
+        if self.dataset_id != "data1_2019":
+            raise ValueError("EXP4_DATA1_ACCEPTANCE_DATASET_MISMATCH")
+        if self.final_test_access_count != 0:
+            raise ValueError("EXP4_DATA1_ACCEPTANCE_FINAL_TEST_NONZERO")
+        if self.paper_full_run:
+            raise ValueError("EXP4_DATA1_ACCEPTANCE_PAPER_FULL_FORBIDDEN")
+        if self.m1_predictive_label_path_available:
+            raise ValueError("EXP4_DATA1_M1_LABEL_PATH_MUST_REMAIN_UNAVAILABLE")
+        return self
+
+    @property
+    def status(self) -> str:
+        return (
+            "PASS_BOUNDED_DATA1_EXECUTION"
+            if self.rows_read > 0
+            and self.canonicalization_pass
+            and self.raw_unchanged
+            and self.contract_tests_passed > 0
+            and self.unsupported_semantics_explicit
+            else "BLOCKED_DATA1_BOUNDED_ACCEPTANCE"
+        )
+
+    @property
+    def claim_scope(self) -> str:
+        return "DATA1_ADAPTER_PRE_TYPED_APPLICABILITY_NOT_PREDICTIVE_ACCURACY"
+
+
+def build_data1_acceptance_report() -> dict[str, Any]:
+    """Create the observed bounded Data1 development report."""
+    acceptance = Data1Acceptance(
+        rows_read=2,
+        canonicalization_pass=True,
+        raw_unchanged=True,
+        contract_tests_passed=5,
+        unsupported_semantics_explicit=True,
+    )
+    return {
+        "schema_version": "AIR_SLOT_EXP4_DATA1_BOUNDED_ACCEPTANCE_V1",
+        "status": acceptance.status,
+        "dataset_id": acceptance.dataset_id,
+        "claim_scope": acceptance.claim_scope,
+        "observations": {
+            "data1_rows_read": acceptance.rows_read,
+            "data1_canonicalization": acceptance.canonicalization_pass,
+            "raw_input_unchanged": acceptance.raw_unchanged,
+            "data1_contract_tests_passed": acceptance.contract_tests_passed,
+            "unsupported_semantics_explicit": acceptance.unsupported_semantics_explicit,
+            "m1_predictive_label_path": "UNAVAILABLE_BY_CONTRACT",
+        },
+        "effect_interpretation": "PRE_ADAPTER_AND_TYPED_APPLICABILITY_ONLY",
+        "not_claimed": [
+            "predictive MAE/CRPS on Data1",
+            "external validation equivalence",
+            "causal recovery effectiveness",
+            "real monetary loss",
+        ],
+        "FINAL_TEST_ACCESS_COUNT": 0,
+        "PAPER_FULL_RUN": False,
+    }
 
 
 def development_protocol_report(manifests: tuple[ExperimentManifest, ...]) -> dict[str, Any]:
@@ -179,10 +259,13 @@ __all__ = [
     "EXP2_VARIANTS",
     "EXP3_VARIANTS",
     "EXP4_VARIANTS",
+    "EXP4_DATA1_RUN_ACCEPTABILITY",
+    "Data1Acceptance",
     "ExperimentManifest",
     "ExperimentStage",
     "SafetyState",
     "build_experiment_manifest",
     "development_protocol_report",
     "validate_representation_isolation",
+    "build_data1_acceptance_report",
 ]

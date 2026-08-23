@@ -4,10 +4,39 @@
   "checks": {
     "pytest_codex_framework_tests": {
       "status": "PASS",
-      "passed": 6
+      "passed": 7
+    },
+    "data1_data2_bounded_real_smoke": {
+      "status": "PASS",
+      "data1_rows": 2,
+      "data2_rows": 4,
+      "scope": "BOUNDED_PRE_ADAPTER_SMOKE"
     },
     "compileall_codex_framework": "PASS",
-    "cli_smoke": "PASS"
+    "cli_smoke": "PASS",
+    "data1_bounded_acceptance": {
+      "schema_version": "AIR_SLOT_EXP4_DATA1_BOUNDED_ACCEPTANCE_V1",
+      "status": "PASS_BOUNDED_DATA1_EXECUTION",
+      "dataset_id": "data1_2019",
+      "claim_scope": "DATA1_ADAPTER_PRE_TYPED_APPLICABILITY_NOT_PREDICTIVE_ACCURACY",
+      "observations": {
+        "data1_rows_read": 2,
+        "data1_canonicalization": true,
+        "raw_input_unchanged": true,
+        "data1_contract_tests_passed": 5,
+        "unsupported_semantics_explicit": true,
+        "m1_predictive_label_path": "UNAVAILABLE_BY_CONTRACT"
+      },
+      "effect_interpretation": "PRE_ADAPTER_AND_TYPED_APPLICABILITY_ONLY",
+      "not_claimed": [
+        "predictive MAE/CRPS on Data1",
+        "external validation equivalence",
+        "causal recovery effectiveness",
+        "real monetary loss"
+      ],
+      "FINAL_TEST_ACCESS_COUNT": 0,
+      "PAPER_FULL_RUN": false
+    }
   },
   "formal_experiments_run": false,
   "FINAL_TEST_ACCESS_COUNT": 0,
@@ -15,6 +44,7 @@
   "authoritative_ranking": false,
   "notes": [
     "W2 remains READY pending a supplied frozen source artifact.",
-    "W3-W6 remain BLOCKED behind explicit human gates."
+    "Exp4 Data1 bounded execution passed; formal predictive/portability claims were not run.",
+    "W3-W5 remain BLOCKED behind explicit human gates; formal Exp4 remains not run."
   ]
 }
