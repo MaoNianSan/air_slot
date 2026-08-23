@@ -81,7 +81,6 @@ def _inputs(root: Path) -> dict[str, Path]:
         "manuscript_exp2_v3": root / "codex_framework/AIR_SLOT_EXP2_REDESIGN_INSTRUCTION_20260819_V3.md",
         "manuscript_exp3_v3": root / "codex_framework/AIR_SLOT_EXP3_REDESIGN_INSTRUCTION_20260819_V3.md",
         "manuscript_exp4_v3": root / "codex_framework/AIR_SLOT_EXP4_REDESIGN_INSTRUCTION_20260819_V3.md",
-        "manuscript_archive": next(root.glob("codex_framework/*.zip"), root / "codex_framework/NO_MANUSCRIPT_ARCHIVE.zip"),
         "m1_binding": root / "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
         "m1_freeze": root / "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
         "m1_semantic_reconciliation": root / "artifacts/diagnostics/m1_v2_development_inference_binding/M1_V2_DEVELOPMENT_INFERENCE_SEMANTIC_RECONCILIATION_V2.json",
@@ -131,7 +130,6 @@ def _claim_audit(*, paths: dict[str, Path], current: dict[str, Any]) -> dict[str
         "manuscript_exp2_v3",
         "manuscript_exp3_v3",
         "manuscript_exp4_v3",
-        "manuscript_archive",
     ]
     sources = [
         {

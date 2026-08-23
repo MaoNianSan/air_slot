@@ -16,7 +16,7 @@ from typing import Any
 from model.common.identity import content_id
 
 
-POSITIONING = Path("codex_framework/定位.txt")
+POSITIONING = Path("codex_framework/定位.md")
 CHAIN = "E -> S -> C -> CU -> RMB -> risk -> decision"
 SAFETY = {
     "M1_TRAINING_RUNS": 0,

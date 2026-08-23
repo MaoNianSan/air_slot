@@ -17,6 +17,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from model.common.identity import content_id
 
+from .frozen_artifact_loader import load_current_development_binding
 from .result_schema import ExperimentResult, MetricObservation, SupportStatus
 
 
@@ -118,6 +119,7 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
     than as ``UNBOUND_FAST`` placeholders.
     """
     repository_root = root or Path(__file__).resolve().parents[2]
+    frozen_binding = load_current_development_binding(repository_root)
     artifact_root = repository_root / "artifacts" / "experiment" / "exp2"
     diagnostics_root = repository_root / "artifacts" / "diagnostics"
     cohort = _load_real_fast_artifact(artifact_root / "DATA2_DEVELOPMENT_PILOT_COHORT_CURRENT_STAGE_V3.json")
@@ -176,6 +178,8 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
     mapping_status = str(m4_policy.get("monetary_mapping_status", "MONETARY_MAPPING_BLOCKED"))
     scenario_status = "PASS_M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_MATERIALIZED"
     scenario_hash = str(scenario_manifest["artifact_hash"])
+    if scenario_hash != frozen_binding.scenario_hash:
+        raise ValueError("REAL_FAST_FROZEN_BINDING_SCENARIO_HASH_DRIFT")
     return ExperimentContext(
         dataset_id="DATA2",
         split="DEVELOPMENT",
@@ -200,7 +204,7 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
         m4_policy=str(policy.get("policy_hash", m4_policy.get("artifact_hash"))),
         model_hashes={
             "PRE": str(cohort["artifact_hash"]),
-            "M1": scenario_hash,
+            "M1": frozen_binding.model_hash,
             "M2": m2_hash,
             "M3": str(m3_bundle["bundle_hash"]),
             "M4": str(m4_policy["artifact_hash"]),
@@ -209,7 +213,7 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
             "PRE_REGISTRY": str(cohort["registry_hash"]),
             "M3_ACTION_REGISTRY": str(m3_bundle["action_registry_hash"]),
             "M3_RESPONSE_REGISTRY": str(m3_bundle["response_registry_hash"]),
-            "M4_MAPPING_DESIGN": content_id(m4_policy.get("monetary_mapping_reference", {})),
+            "M4_MAPPING_DESIGN": frozen_binding.mapping_hash,
         },
         config_hash=str(cohort["config_hash"]),
         scenario_hash=scenario_hash,
@@ -217,6 +221,7 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
             "execution_scope": "REAL_DATA_FAST",
             "cohort_id": cohort["artifact_hash"],
             "cohort_hash": cohort["cohort_hash"],
+            "formal_frozen_hashes": frozen_binding.as_dict(),
             "refreeze_manifest_hash": refreeze["artifact_hash"],
             "positive_tail_freeze_manifest_hash": positive_tail["artifact_hash"],
             "historical_parent_cohort_hash": refreeze["historical_cohort"]["cohort_hash"],

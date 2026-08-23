@@ -6,9 +6,9 @@ from pathlib import Path
 
 PRODUCTION_ROOTS = ("model", "exp", "validation")
 
-# Approved exemptions to the 800-logical-line threshold (user-granted
-# 2026-08-18 for the Exp234 development-execution module).
-SIZE_EXEMPTIONS = frozenset({"exp/exp234/development_execution.py"})
+# Formal runtime has no large-file exemptions. Archived implementations live
+# under ``archive/`` and are intentionally outside production roots.
+SIZE_EXEMPTIONS = frozenset()
 
 def logical_lines(path: Path) -> int:
     """Count nonblank executable/declarative lines, excluding imports and docstrings."""

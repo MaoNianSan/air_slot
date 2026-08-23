@@ -362,6 +362,10 @@ def refreeze_current_stage_cohort(*, root: Path, output_root: Path | None = None
     }
     new_cohort_hash = content_id(identity)
     _require(new_cohort_hash != historical["cohort_hash"], "M1_V2_CURRENT_STAGE_COHORT_HASH_NOT_NEW")
+    new_cohort_path = root / NEW_COHORT
+    existing_git_sha = None
+    if new_cohort_path.is_file():
+        existing_git_sha = json.loads(new_cohort_path.read_text(encoding="utf-8")).get("git_sha")
     new_cohort = _artifact({
         "schema_version": "AIR_SLOT_EXP2_DATA2_DEVELOPMENT_CURRENT_STAGE_COHORT_V2",
         "status": "NEW_DEVELOPMENT_COHORT_REFROZEN",
@@ -403,13 +407,17 @@ def refreeze_current_stage_cohort(*, root: Path, output_root: Path | None = None
             "changed_node_count": len(stage_changes),
             "changes": stage_changes,
         },
-        "git_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
+        # A frozen cohort must remain reproducible after later code-only
+        # commits. Preserve its original provenance SHA when rematerializing
+        # the same semantic payload instead of injecting the current HEAD.
+        "git_sha": existing_git_sha or subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=root, text=True
+        ).strip(),
         "config_hash": current_config_hash,
         "registry_hash": current_registry_hash,
         "cohort_hash": new_cohort_hash,
         **_SAFETY,
     })
-    new_cohort_path = root / NEW_COHORT
     _write(new_cohort_path, new_cohort)
     _require(_hash(historical_path) == historical_sha_before, "M1_V2_CURRENT_STAGE_HISTORICAL_COHORT_MUTATED")
 
