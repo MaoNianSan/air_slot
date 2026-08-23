@@ -1,0 +1,25 @@
+{
+  "artifact_hash": "sha256:1c453a9f9bedccc09bb210054008d96d8e9b026712973d2966181a34db13643f",
+  "preparation_status": "READY",
+  "reason_codes": [
+    "BLOCKED_CURRENT_M1_PREDICTIVE_ARTIFACT_GATES",
+    "BLOCKED_M4_MAPPING_NOT_AUTHORITATIVE",
+    "DATA1_TYPED_GENERALIZATION_ARTIFACT_NOT_MATERIALIZED"
+  ],
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "EXP4_EXECUTION_READINESS_AFTER_CU_RMB_V1",
+  "source_readiness": {
+    "path": "artifacts/diagnostics/exp4_formal_execution_preparation_v10/EXP4_FORMAL_EXECUTION_READINESS_REPORT.json",
+    "sha256": "sha256:a8cd1423b60fa6d97c9e17b9f129b0b2ba069cb3631ac416ba766e1bdad8b232"
+  },
+  "status": "BLOCKED_PREDICTIVE_ARTIFACTS_AND_MAPPING"
+}

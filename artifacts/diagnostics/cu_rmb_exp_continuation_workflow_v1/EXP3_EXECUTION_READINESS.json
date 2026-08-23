@@ -1,0 +1,25 @@
+{
+  "artifact_hash": "sha256:b397d422e0c4deb8648b748eb20671013ba00310d090f43bbf260ee0478f6911",
+  "preparation_status": "READY",
+  "reason_codes": [
+    "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE",
+    "BLOCKED_M4_MAPPING_NOT_AUTHORITATIVE",
+    "EXP3_FORMAL_COHORT_BLOCKED"
+  ],
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "EXP3_EXECUTION_READINESS_AFTER_CU_RMB_V1",
+  "source_readiness": {
+    "path": "artifacts/diagnostics/exp3_formal_execution_preparation_v10/EXP3_FORMAL_EXECUTION_READINESS_REPORT.json",
+    "sha256": "sha256:156ac0b32852b260c2804a8645a8a36e6353d29ac9dcc6cc8997cbaa5b3765ad"
+  },
+  "status": "BLOCKED_FORMAL_COHORT_AND_MAPPING"
+}

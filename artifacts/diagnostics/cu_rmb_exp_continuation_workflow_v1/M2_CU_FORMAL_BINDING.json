@@ -1,0 +1,49 @@
+{
+  "abstain_components": [
+    "P_itinerary",
+    "P_service"
+  ],
+  "aggregation_rule": "SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED",
+  "artifact_hash": "sha256:c5abac3fb21d44f136367dd5e618f73705ca2edfa79cbe591ca05bc2599dcd53",
+  "formal_scope": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "R_operating"
+  ],
+  "inputs": {
+    "artifact": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json",
+      "sha256": "sha256:afc1b02358bb6e6df6599b2e58f94cd90d5fcb9f7101b05b686b928b79a82138"
+    },
+    "manifest": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
+      "sha256": "sha256:ab612f24137cc8917572d648cf83c49becdda819d7162135c3f4c8e5ba145a14"
+    },
+    "registry": {
+      "path": "registries/m2_data2_formal_cu_v1.json",
+      "sha256": "sha256:edaa8bc1787dfd01e3de73d41daae86ee2afe7f71ca3447c7d1225e3288fc25a"
+    }
+  },
+  "mapping": "CU_k = q_k / s_k_CU",
+  "no_development_calibration": true,
+  "outside_principal_scope": [
+    "P_itinerary",
+    "P_service"
+  ],
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "scale_rule": "POSITIVE_TRAIN_PERIOD_MEDIAN",
+  "schema_version": "M2_CU_FORMAL_BINDING_V2",
+  "status": "M2_CU_FORMAL_BINDING_READY",
+  "support_rule": "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY"
+}

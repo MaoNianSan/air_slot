@@ -1,0 +1,30 @@
+{
+  "affected_components": [
+    "P_itinerary",
+    "P_service"
+  ],
+  "artifact_hash": "sha256:b9fdc7981b4d97a73a274174064d2acc3c219d4ca6c61981fda958f89c344435",
+  "justification": [
+    "M2_FORMAL_FREEZE explicitly excludes both components from the principal Data2 scope",
+    "Data2 has no observed itinerary/service outcomes or action logs for these dimensions",
+    "proxy substitution would change the estimand and could be mistaken for supported evidence",
+    "scenario sensitivity may be retained only as a separately labelled non-principal diagnostic"
+  ],
+  "paper_limitation_statement": "Principal results cover the supported five-component consequence basis; itinerary and service consequences remain unresolved and are not zero-filled, renormalized, or represented by an unsupported proxy.",
+  "principal_strategy": "A_KEEP_ABSTAIN_AND_EVALUATE_SUPPORTED_DIMENSIONS_ONLY",
+  "rejected_strategy": "B_EXPLICIT_PROXY_FOR_P_ITINERARY_P_SERVICE",
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "ABSTAIN_COMPONENT_SCIENTIFIC_DECISION_V1",
+  "secondary_strategy": "C_SCENARIO_SENSITIVITY_ONLY_WITH_SEPARATE_NON_PRINCIPAL_LABEL",
+  "status": "ABSTAIN_POLICY_SELECTED",
+  "support_rule": "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY"
+}

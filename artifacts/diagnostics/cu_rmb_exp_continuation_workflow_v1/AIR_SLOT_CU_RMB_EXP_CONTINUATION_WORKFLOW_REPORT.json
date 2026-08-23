@@ -1,0 +1,41 @@
+{
+  "artifact_hash": "sha256:bb538f3a4c9f62df2b1dac9f24bb0a7e065f0c88bb3d5ea3085271c60e83dfe3",
+  "artifacts": {
+    "abstain_decision": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\ABSTAIN_COMPONENT_SCIENTIFIC_DECISION.json",
+    "exp2_readiness": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\EXP2_EXECUTION_READINESS.json",
+    "exp3_readiness": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\EXP3_EXECUTION_READINESS.json",
+    "exp4_readiness": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\EXP4_EXECUTION_READINESS.json",
+    "literature_review": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\CU_TRANSFORMATION_LITERATURE_REVIEW.json",
+    "m2_binding": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\M2_CU_FORMAL_BINDING.json",
+    "m4_readiness": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\M4_RISK_EVALUATION_READINESS.json",
+    "rmb_binding": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\cu_rmb_exp_continuation_workflow_v1\\M4_CU_RMB_INTERFACE_BINDING.json"
+  },
+  "chain": "E -> S -> C -> CU -> RMB -> risk -> decision",
+  "completed": [
+    "literature-oriented CU option review",
+    "approved M2 CU transformation binding",
+    "ABSTAIN policy decision packet",
+    "RMB baseline interface binding",
+    "M4 sensitivity readiness",
+    "Exp2/Exp3/Exp4 readiness propagation"
+  ],
+  "next_automatic_action": "NONE_BEFORE_FORMAL_M3_SUPPORT_AND_NON_TEST_M4_MAPPING",
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "AIR_SLOT_CU_RMB_EXP_CONTINUATION_WORKFLOW_V1",
+  "scientific_decisions": {
+    "abstain_principal": "KEEP_ABSTAIN",
+    "abstain_secondary": "SCENARIO_SENSITIVITY_ONLY",
+    "cu_transformation": "TRAIN_POSITIVE_MEDIAN",
+    "rmb_baseline": "RMB_k = 1.0 * CU_k"
+  },
+  "status": "PAPER_ALIGNED_READINESS_MATERIALIZED_WITH_UPSTREAM_BLOCKERS"
+}
