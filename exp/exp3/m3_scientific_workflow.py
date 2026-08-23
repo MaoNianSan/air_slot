@@ -21,7 +21,7 @@ from .action_consequence_literature_mapping import materialize as materialize_co
 from .action_library_scientific_materialization import materialize as materialize_library
 from .conditional_action_support_acceptance import materialize as materialize_conditional_support
 from .conditional_support_binding import bind as bind_conditional_support
-from exp.m2_rmb_consequence_mapping_correction import materialize as materialize_m2_rmb
+from exp.m2_cu_rmb_interface_correction import materialize as materialize_m2_rmb
 from .formal_preparation import prepare_formal_execution as prepare_exp3
 from .formal_support_audit import audit as audit_support
 from exp.exp4.formal_preparation import prepare_formal_execution as prepare_exp4

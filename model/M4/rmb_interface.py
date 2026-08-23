@@ -1,4 +1,4 @@
-"""M4 interface for the corrected C -> constructed RMB -> risk chain."""
+"""M4 interface for the corrected C -> CU -> constructed RMB -> risk chain."""
 
 from __future__ import annotations
 
@@ -12,7 +12,10 @@ from model.common.value_objects import FrozenModel
 class RMBConsequenceComponent(FrozenModel):
     component_id: str = Field(min_length=1)
     consequence_value: float | None
-    support_state: SupportState
+    consequence_support_state: SupportState
+    cu_value: float | None
+    cu_support_state: SupportState
+    cu_artifact_id: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
     native_artifact_id: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
     reference_lineage_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     reason_code: str | None = None
@@ -21,11 +24,18 @@ class RMBConsequenceComponent(FrozenModel):
     def explicit_support(self):
         if self.component_id not in CONSEQUENCE_COMPONENTS:
             raise ValueError("RMB_UNKNOWN_CONSEQUENCE_COMPONENT")
-        if self.support_state is SupportState.ABSTAIN:
+        if self.consequence_support_state is SupportState.ABSTAIN:
             if self.consequence_value is not None or not self.reason_code:
                 raise ValueError("RMB_ABSTAIN_COMPONENT_MUST_BE_NULL")
         elif self.consequence_value is None:
             raise ValueError("RMB_SUPPORTED_COMPONENT_REQUIRES_CONSEQUENCE_VALUE")
+        if self.cu_support_state is SupportState.ABSTAIN:
+            if self.cu_value is not None or not self.reason_code:
+                raise ValueError("RMB_ABSTAIN_CU_MUST_BE_NULL")
+        elif self.cu_value is None or self.cu_artifact_id is None:
+            raise ValueError("RMB_SUPPORTED_COMPONENT_REQUIRES_CU_VALUE_AND_ARTIFACT")
+        if self.consequence_support_state is SupportState.ABSTAIN and self.cu_support_state is not SupportState.ABSTAIN:
+            raise ValueError("RMB_CU_CANNOT_BE_SUPPORTED_WHEN_CONSEQUENCE_ABSTAINS")
         return self
 
 
@@ -42,7 +52,7 @@ class RMBScenarioActionConsequence(FrozenModel):
 
 
 class RMBActionEnvelopeInput(FrozenModel):
-    """Action-conditioned consequence C^a before any RMB mapping."""
+    """Action-conditioned C^a and CU^a before RMB mapping."""
 
     episode_id: str = Field(min_length=1)
     decision_node_id: str = Field(min_length=1)

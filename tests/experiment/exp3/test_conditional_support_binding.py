@@ -15,5 +15,5 @@ def test_conditional_support_is_bound_to_exp3_without_formal_upgrade(tmp_path):
     assert artifact["formal_multi_action_status"] == "BLOCKED_UNCHANGED"
     assert artifact["authoritative_ranking_allowed"] is False
     assert artifact["causal_effect_claim_allowed"] is False
-    assert artifact["monetary_chain"] == "C^a -> RMB^a -> risk"
+    assert artifact["monetary_chain"] == "C^a -> CU^a -> RMB^a -> risk"
     assert artifact["safety"]["FINAL_TEST_ACCESS_COUNT"] == 0

@@ -1,13 +1,11 @@
-"""Canonical constructed-RMB mapping from seven-component consequences.
+"""Canonical constructed-RMB mapping from intermediate CU values.
 
 This module is the corrected monetary boundary:
 
-    C_k (consequence component) -> RMB_k -> risk
+    C_k (consequence component) -> CU_k -> RMB_k -> risk
 
-``RMB`` is a constructed monetary unit for the study.  It is not observed
-currency and this registry never claims monetary ground truth.  The older CU
-normalization classes remain available only for historical compatibility; they
-are deliberately not accepted by this API.
+``CU`` and ``RMB`` are both constructed representations. ``RMB`` is not
+observed currency and this registry never claims monetary ground truth.
 """
 
 from __future__ import annotations
@@ -50,9 +48,10 @@ class RMBMappingParameter(FrozenModel):
 
 
 class RMBMappingRule(FrozenModel):
-    """One explicit ``f_k(C_k)`` rule producing a constructed RMB value."""
+    """One explicit ``f_k(CU_k)`` rule producing a constructed RMB value."""
 
     constructed_unit_id: str = "RMB"
+    input_unit_id: str = "CU"
     component_id: str = Field(min_length=1)
     mapping_function: RMBMappingFunction
     parameter_version: str = Field(min_length=1)
@@ -68,6 +67,7 @@ class RMBMappingRule(FrozenModel):
     def create(cls, **values) -> "RMBMappingRule":
         payload = {
             "constructed_unit_id": values.get("constructed_unit_id", "RMB"),
+            "input_unit_id": values.get("input_unit_id", "CU"),
             **values,
             "mapping_function": (
                 values["mapping_function"].value
@@ -84,7 +84,7 @@ class RMBMappingRule(FrozenModel):
 
     @model_validator(mode="after")
     def complete_mapping(self):
-        if self.constructed_unit_id != "RMB":
+        if self.constructed_unit_id != "RMB" or self.input_unit_id != "CU":
             raise ValueError("RMB_MAPPING_UNIT_ID_INVALID")
         if self.component_id not in CONSEQUENCE_COMPONENTS:
             raise ValueError("RMB_MAPPING_UNKNOWN_COMPONENT")
@@ -92,7 +92,7 @@ class RMBMappingRule(FrozenModel):
         if len(names) != len(set(names)):
             raise ValueError("RMB_MAPPING_DUPLICATE_PARAMETER")
         if self.mapping_function is RMBMappingFunction.LINEAR_SCALE and names != (
-            "rmb_per_consequence_unit",
+            "rmb_per_cu",
         ):
             raise ValueError("RMB_LINEAR_MAPPING_PARAMETER_NAME_INVALID")
         payload = self.model_dump(mode="json", exclude={"rule_hash"})
@@ -100,16 +100,17 @@ class RMBMappingRule(FrozenModel):
             raise ValueError("RMB_MAPPING_RULE_HASH_MISMATCH")
         return self
 
-    def map_consequence(self, value_c: float) -> float:
+    def map_cu(self, value_cu: float) -> float:
         if self.mapping_function is RMBMappingFunction.LINEAR_SCALE:
-            return float(value_c) * self.parameters[0].value
+            return float(value_cu) * self.parameters[0].value
         raise ValueError("RMB_MAPPING_FUNCTION_NOT_IMPLEMENTED")
 
 
 class RMBMappingRegistry(FrozenModel):
-    """Versioned constructed-RMB mappings over native consequence values."""
+    """Versioned constructed-RMB mappings over intermediate CU values."""
 
     constructed_unit_id: str = "RMB"
+    input_unit_id: str = "CU"
     registry_id: str = Field(min_length=1)
     registry_version: str = Field(default="UNFROZEN", min_length=1)
     registry_hash: str = ""
@@ -125,7 +126,7 @@ class RMBMappingRegistry(FrozenModel):
 
     @model_validator(mode="after")
     def strict_mapping(self):
-        if self.constructed_unit_id != "RMB":
+        if self.constructed_unit_id != "RMB" or self.input_unit_id != "CU":
             raise ValueError("RMB_MAPPING_UNIT_ID_INVALID")
         if self.monetary_ground_truth_claim:
             raise ValueError("RMB_MONETARY_GROUND_TRUTH_CLAIM_FORBIDDEN")
@@ -139,7 +140,7 @@ class RMBMappingRegistry(FrozenModel):
         if set(self.component_mappings) - set(CONSEQUENCE_COMPONENTS):
             raise ValueError("RMB_MAPPING_UNKNOWN_COMPONENT")
         for component, rule in self.component_mappings.items():
-            if component != rule.component_id or rule.constructed_unit_id != "RMB":
+            if component != rule.component_id or rule.constructed_unit_id != "RMB" or rule.input_unit_id != "CU":
                 raise ValueError("RMB_MAPPING_RULE_COMPONENT_MISMATCH")
         if self.registry_hash and self.registry_hash != self.digest():
             raise ValueError("RMB_MAPPING_REGISTRY_HASH_MISMATCH")
@@ -161,21 +162,21 @@ class RMBMappingRegistry(FrozenModel):
     def digest(self) -> str:
         return content_id(self.registry_payload())
 
-    def to_component_rmb(self, consequence_by_component: Mapping[str, float]) -> dict[str, float] | None:
+    def to_component_rmb(self, cu_by_component: Mapping[str, float]) -> dict[str, float] | None:
         if not self.executable:
             return None
-        if set(consequence_by_component) - set(CONSEQUENCE_COMPONENTS):
+        if set(cu_by_component) - set(CONSEQUENCE_COMPONENTS):
             raise ValueError("RMB_MAPPING_INPUT_UNKNOWN_COMPONENT")
         values: dict[str, float] = {}
-        for component, value_c in consequence_by_component.items():
+        for component, value_cu in cu_by_component.items():
             rule = self.component_mappings.get(component)
             if rule is None:
                 raise ValueError(f"RMB_MAPPING_COMPONENT_MISSING:{component}")
-            values[component] = rule.map_consequence(float(value_c))
+            values[component] = rule.map_cu(float(value_cu))
         return values
 
-    def to_rmb(self, consequence_by_component: Mapping[str, float]) -> float | None:
-        mapped = self.to_component_rmb(consequence_by_component)
+    def to_rmb(self, cu_by_component: Mapping[str, float]) -> float | None:
+        mapped = self.to_component_rmb(cu_by_component)
         return None if mapped is None else sum(mapped.values())
 
     @classmethod

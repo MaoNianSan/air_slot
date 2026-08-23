@@ -19,7 +19,7 @@ def _registry():
             source_type=RMBSourceType.SCENARIO_ASSUMPTION,
             reference=("TEST_CONSTRUCTED_MAPPING",),
             freeze_id="TEST_RMB_FREEZE",
-            parameters=(RMBMappingParameter(parameter_name="rmb_per_consequence_unit", value=2.0, unit="RMB/C", provenance=("TEST",)),),
+            parameters=(RMBMappingParameter(parameter_name="rmb_per_cu", value=2.0, unit="RMB/CU", provenance=("TEST",)),),
             provenance=("TEST_ONLY",),
             rule_id=f"RMB_{component}",
         )

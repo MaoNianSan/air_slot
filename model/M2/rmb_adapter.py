@@ -32,4 +32,21 @@ def consequence_vector(rows: tuple[ConsequenceRow, ...]) -> tuple[dict, ...]:
     return values
 
 
-__all__ = ["consequence_component", "consequence_vector"]
+def cu_component(row: ConsequenceRow) -> dict:
+    """Serialize the intermediate constructed CU_k owned by M2."""
+    if not isinstance(row, ConsequenceRow):
+        raise TypeError("M2_RMB_ADAPTER_REQUIRES_CONSEQUENCE_ROW")
+    return {
+        "component_id": row.component_id,
+        "cu_value": row.constructed_value_cu,
+        "cu_status": row.cu_status.value,
+        "cu_artifact_id": (getattr(row.cu_quantity, "artifact_id", None) if row.cu_quantity is not None else None),
+        "consequence_value": row.native_quantity,
+        "support_state": row.support_state.value,
+        "native_artifact_id": row.native_artifact_id,
+        "reference_lineage_hash": row.reference_lineage_hash,
+        "reason_code": row.reason_code,
+    }
+
+
+__all__ = ["consequence_component", "consequence_vector", "cu_component"]

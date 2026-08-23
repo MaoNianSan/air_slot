@@ -1,0 +1,76 @@
+{
+  "action_chain": "A -> C^a -> CU^a -> RMB^a -> risk",
+  "artifact_hash": "sha256:72d7b81a1312bcb6efd60661154e28096b20b71de97f36d1a361024255c17a99",
+  "component_order": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "inputs": {
+    "cu_rmb_design": {
+      "path": "registries/m4_cu_rmb_mapping_design_v2.json",
+      "sha256": "sha256:c3a985c09733cc457d1bac6480d52790e81118fc592c4aa64da8b125e48f38d6"
+    },
+    "m2_artifact": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json",
+      "sha256": "sha256:afc1b02358bb6e6df6599b2e58f94cd90d5fcb9f7101b05b686b928b79a82138"
+    },
+    "m2_manifest": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
+      "sha256": "sha256:ab612f24137cc8917572d648cf83c49becdda819d7162135c3f4c8e5ba145a14"
+    }
+  },
+  "m2_output_contract": {
+    "abstain_preserved": true,
+    "channels": {
+      "Flight": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation"
+      ],
+      "Passenger": [
+        "P_time",
+        "P_itinerary",
+        "P_service"
+      ],
+      "Resource": [
+        "R_operating"
+      ]
+    },
+    "component_source_field": "native_quantity",
+    "constructed_value_field": "constructed_value_cu",
+    "cu_lineage_field": "cu_artifact_id",
+    "cu_status_field": "cu_status",
+    "input_object": "C",
+    "intermediate_object": "CU",
+    "mapping": "CU_k = g_k(C_k)",
+    "no_zero_fill": true
+  },
+  "previous_v1_status": "SUPERSEDED_BY_CU_RMB_CORRECTION",
+  "rmb_mapping_contract": {
+    "aggregation": "RMB = SUM_k RMB_k",
+    "formula": "RMB_k = f_k(CU_k)",
+    "input_object": "CU",
+    "mapping_status": "NOT_FROZEN",
+    "monetary_ground_truth_claim": false,
+    "output_object": "RMB",
+    "real_currency_claim": false,
+    "scenario_dependent": true
+  },
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "M2_CU_RMB_INTERFACE_ARTIFACT_V2",
+  "status": "M2_C_TO_CU_INTERFACE_BOUND"
+}

@@ -1,4 +1,4 @@
-"""Risk evaluation over constructed RMB values, never CU values."""
+"""Risk evaluation over constructed RMB values obtained from CU values."""
 
 from __future__ import annotations
 
@@ -30,12 +30,12 @@ def evaluate_rmb_risk(
     totals = []
     component_rows = []
     for scenario in envelope.scenario_consequences:
-        supported = [item for item in scenario.components if item.consequence_value is not None]
+        supported = [item for item in scenario.components if item.cu_value is not None]
         if len(supported) != len(scenario.components) or not rmb_mapping.executable:
             component_rows.append({"scenario_id": scenario.scenario_id, "rmb_by_component": None, "total_rmb": None})
             continue
-        consequence = {item.component_id: float(item.consequence_value) for item in supported}
-        mapped = rmb_mapping.to_component_rmb(consequence)
+        cu = {item.component_id: float(item.cu_value) for item in supported}
+        mapped = rmb_mapping.to_component_rmb(cu)
         total = None if mapped is None else sum(mapped.values())
         component_rows.append({"scenario_id": scenario.scenario_id, "rmb_by_component": mapped, "total_rmb": total})
         if total is not None:
