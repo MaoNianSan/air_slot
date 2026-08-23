@@ -195,13 +195,21 @@ def _compact(consequence: Any) -> dict[str, Any]:
     }
 
 
-def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
+def materialize(
+    *,
+    root: Path,
+    output_root: Path | None = None,
+    m1_artifact_path: Path | None = None,
+    m1_manifest_path: Path | None = None,
+    pre_inputs_path: Path | None = None,
+    expected_m1_scope: str = "DATA2_DEVELOPMENT_CURRENT_STAGE_V3_NO_FINAL_TEST",
+) -> dict[str, Path]:
     root = Path(root).resolve()
     output_root = (output_root or root / DEFAULT_OUTPUT).resolve()
     paths = {
-        "m1_artifact": root / M1_ARTIFACT,
-        "m1_manifest": root / M1_MANIFEST,
-        "pre_inputs": root / PRE_INPUTS,
+        "m1_artifact": (root / M1_ARTIFACT if m1_artifact_path is None else Path(m1_artifact_path).resolve()),
+        "m1_manifest": (root / M1_MANIFEST if m1_manifest_path is None else Path(m1_manifest_path).resolve()),
+        "pre_inputs": (root / PRE_INPUTS if pre_inputs_path is None else Path(pre_inputs_path).resolve()),
         "m2_registry": root / M2_REGISTRY,
         "m2_design": root / M2_DESIGN,
         **{
@@ -215,7 +223,7 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
     pre_inputs = _load(paths["pre_inputs"])
     design = _load(paths["m2_design"])
     _require(m1_manifest["artifact_hash"] == m1["artifact_hash"], "M2_V2_M1_ARTIFACT_HASH_MISMATCH")
-    _require(m1["scope"] == "DATA2_DEVELOPMENT_CURRENT_STAGE_V3_NO_FINAL_TEST", "M2_V2_M1_SCOPE_INVALID")
+    _require(m1["scope"] == expected_m1_scope, "M2_V2_M1_SCOPE_INVALID")
     _require(design["formal_aggregate_status"] == "FORMAL_AGGREGATE_UNRESOLVED", "M2_V2_DESIGN_AGGREGATE_STATUS_DRIFT")
     references = {name: _load(paths[name]) for name in REFERENCE_FILES}
     bundle = load_data2_reference_bundle(references)
@@ -249,7 +257,7 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
     payload = {
         "schema_version": "M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_ARTIFACT_V1",
         "status": "M2_V2_SEVEN_COMPONENT_REPRESENTATION_MATERIALIZED_WITH_TYPED_ABSTENTION",
-        "scope": "DATA2_DEVELOPMENT_CURRENT_STAGE_V3",
+        "scope": m1["scope"].removesuffix("_NO_FINAL_TEST"),
         "source_m1_artifact_hash": m1["artifact_hash"],
         "source_m1_scenario_count_per_node": m1["scenario_count_per_node"],
         "m2_design": {
@@ -308,9 +316,23 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--m1-artifact", type=Path)
+    parser.add_argument("--m1-manifest", type=Path)
+    parser.add_argument("--pre-inputs", type=Path)
+    parser.add_argument(
+        "--expected-m1-scope",
+        default="DATA2_DEVELOPMENT_CURRENT_STAGE_V3_NO_FINAL_TEST",
+    )
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parents[1]
-    materialize(root=root, output_root=args.output_root)
+    materialize(
+        root=root,
+        output_root=args.output_root,
+        m1_artifact_path=args.m1_artifact,
+        m1_manifest_path=args.m1_manifest,
+        pre_inputs_path=args.pre_inputs,
+        expected_m1_scope=args.expected_m1_scope,
+    )
     print("M2_V2_CONSEQUENCE_ARTIFACT_MATERIALIZED")
     return 0
 
