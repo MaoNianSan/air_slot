@@ -9,7 +9,7 @@ from model.M3.registry import PRINCIPAL_IDS
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REPORT = ROOT / "artifacts/diagnostics/m3_scientific_workflow_v4/M3_SCIENTIFIC_WORKFLOW_REPORT.json"
+REPORT = ROOT / "artifacts/diagnostics/m3_scientific_workflow_v6/M3_SCIENTIFIC_WORKFLOW_REPORT.json"
 
 
 def test_workflow_report_preserves_action_identity_and_safety():
@@ -37,6 +37,7 @@ def test_workflow_stage_outputs_are_hash_bound_and_complete():
     assert set(report["stages"]) == {
         "consequence_mapping",
         "action_library",
+        "m2_rmb_interface",
         "conditional_action_support",
         "conditional_support_binding",
         "formal_support_audit",

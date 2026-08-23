@@ -1,0 +1,89 @@
+{
+  "action_chain": "A -> C^a -> RMB^a -> risk",
+  "artifact_hash": "sha256:76f48fa8b1ca05f670ef877fa037f8120b6247d0ebc0dacb45a81940eb0fafbd",
+  "component_order": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "inputs": {
+    "m2_artifact": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json",
+      "sha256": "sha256:afc1b02358bb6e6df6599b2e58f94cd90d5fcb9f7101b05b686b928b79a82138"
+    },
+    "m2_manifest": {
+      "path": "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
+      "sha256": "sha256:ab612f24137cc8917572d648cf83c49becdda819d7162135c3f4c8e5ba145a14"
+    },
+    "rmb_design": {
+      "path": "registries/m4_rmb_mapping_design_v1.json",
+      "sha256": "sha256:390d81f3c1ebcfa910bc3d4892d059e9e03a1fb958e75da29b3d6f3c6c085adc"
+    }
+  },
+  "legacy_cu_boundary": {
+    "monetary_interface": false,
+    "source_artifact_preserved": true,
+    "status": "HISTORICAL_COMPATIBILITY_ONLY"
+  },
+  "m2_output_contract": {
+    "abstain_preserved": true,
+    "channels": {
+      "Flight": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation"
+      ],
+      "Passenger": [
+        "P_time",
+        "P_itinerary",
+        "P_service"
+      ],
+      "Resource": [
+        "R_operating"
+      ]
+    },
+    "components": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation",
+      "P_time",
+      "P_itinerary",
+      "P_service",
+      "R_operating"
+    ],
+    "lineage_fields": [
+      "native_artifact_id",
+      "reference_lineage"
+    ],
+    "no_zero_fill": true,
+    "object": "C",
+    "source_field": "native_quantity",
+    "support_field": "support_state"
+  },
+  "monetary_mapping_contract": {
+    "aggregation": "RMB = SUM_k RMB_k",
+    "constructed_unit_id": "RMB",
+    "formula": "RMB_k = f_k(C_k)",
+    "mapping_status": "NOT_FROZEN",
+    "monetary_ground_truth_claim": false,
+    "real_currency_claim": false,
+    "scenario_dependent": true
+  },
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "M2_RMB_CONSEQUENCE_INTERFACE_ARTIFACT_V1",
+  "source_m2_artifact_status": "M2_V2_CONSEQUENCE_ARTIFACT_MATERIALIZED",
+  "status": "M2_CONSEQUENCE_TO_RMB_INTERFACE_MATERIALIZED"
+}

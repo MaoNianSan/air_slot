@@ -21,6 +21,7 @@ from .action_consequence_literature_mapping import materialize as materialize_co
 from .action_library_scientific_materialization import materialize as materialize_library
 from .conditional_action_support_acceptance import materialize as materialize_conditional_support
 from .conditional_support_binding import bind as bind_conditional_support
+from exp.m2_rmb_consequence_mapping_correction import materialize as materialize_m2_rmb
 from .formal_preparation import prepare_formal_execution as prepare_exp3
 from .formal_support_audit import audit as audit_support
 from exp.exp4.formal_preparation import prepare_formal_execution as prepare_exp4
@@ -100,6 +101,7 @@ def run_workflow(*, root: Path, output_root: Path | None = None) -> dict[str, Pa
     stages = {
         "consequence_mapping": _stage("consequence_mapping", lambda: materialize_consequence(root=root)),
         "action_library": _stage("action_library", lambda: materialize_library(root=root)),
+        "m2_rmb_interface": _stage("m2_rmb_interface", lambda: materialize_m2_rmb(root=root)),
         "conditional_action_support": _stage("conditional_action_support", lambda: materialize_conditional_support(root=root)),
         "conditional_support_binding": _stage("conditional_support_binding", lambda: bind_conditional_support(root=root)),
         "formal_support_audit": _stage("formal_support_audit", lambda: audit_support(root=root)),
@@ -131,6 +133,7 @@ def run_workflow(*, root: Path, output_root: Path | None = None) -> dict[str, Pa
             "conditional_action_count": conditional_support["conditional_action_count"],
             "conditional_scenario_lane": conditional_support["conditional_scenario_lane"],
             "conditional_binding_status": conditional_binding["status"],
+            "monetary_chain": conditional_binding["monetary_chain"],
             "exp3_status": exp3["status"],
             "exp3_execution_status": exp3_readiness.get("execution_status", "UNKNOWN"),
             "exp4_status": exp4["status"],
