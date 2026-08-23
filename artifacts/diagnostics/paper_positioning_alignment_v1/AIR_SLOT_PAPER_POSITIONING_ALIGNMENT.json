@@ -1,0 +1,60 @@
+{
+  "artifact_hash": "sha256:5b2556cd9b878f688dbb0794907cfca2d2b61321d79b2333566019003ea57795",
+  "central_chain": "E -> S -> C -> CU -> RMB -> risk -> decision",
+  "claim_guardrails": {
+    "authoritative_ranking_claim": false,
+    "causal_action_effect_claim": false,
+    "conditional_ranking_interpretation": "decision-chain consistency and residual-risk sensitivity only",
+    "monetary_ground_truth_claim": false,
+    "passenger_completeness_claim": false,
+    "real_currency_claim": false,
+    "universal_optimality_claim": false
+  },
+  "experiment_alignment": {
+    "Exp1": {
+      "implementation_boundary": "information/history ablations only; no representation-granularity reinterpretation",
+      "question": "necessity of global information sharing and historical state dependency",
+      "status": "BOUND_TO_EXISTING_EXP1_CONTRACT"
+    },
+    "Exp2": {
+      "implementation_boundary": "POINT/MARGINAL/JOINT and SCALAR/3CHANNEL/7COMP representation sensitivity under one common chain",
+      "question": "necessity of the proposed consequence representation and risk construction",
+      "status": "M4_INTERNAL_LOSS_READY_M3_CONDITIONAL_GATE_REMAINS"
+    },
+    "Exp3": {
+      "forbidden_reinterpretation": "causal action-effect estimation or empirical action effectiveness",
+      "implementation_boundary": "decision refresh, state synchronization, chain consistency, and conditional residual-risk ranking",
+      "non_a00_status": "SCENARIO_CONDITIONED_DECISION_CANDIDATES",
+      "question": "necessity of the proposed sequential decision process",
+      "status": "FORMAL_COHORT_BLOCKED"
+    },
+    "Exp4": {
+      "implementation_boundary": "predictive adequacy, operational validity, portability, and computation",
+      "question": "necessary performance and generalization evaluation",
+      "status": "PREDICTIVE_ARTIFACTS_BLOCKED"
+    }
+  },
+  "positioning_source": {
+    "path": "codex_framework/\u5b9a\u4f4d.txt",
+    "sha256": "sha256:ed48612afe7d2bf39e8357cfd406185a7587cfacc14d11c1959627b51acdc845"
+  },
+  "required_followup": [
+    "retain M3 non-A00 responses as scenario-conditioned candidates",
+    "report Exp3 rankings as conditional/non-authoritative when formal support permits",
+    "keep unsupported passenger itinerary/service components explicit ABSTAIN",
+    "do not rename internal-loss sensitivity as observed RMB cost or causal action effect"
+  ],
+  "research_objective": "Why global information sharing and state dependency are necessary in rolling airline disruption recovery, and how the proposed decision chain realizes this.",
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "AIR_SLOT_PAPER_POSITIONING_ALIGNMENT_V1",
+  "status": "POSITIONING_BOUND_NO_EXPERIMENT_DEFINITION_CHANGE"
+}

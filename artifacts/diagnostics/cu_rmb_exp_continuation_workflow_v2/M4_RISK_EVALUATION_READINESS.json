@@ -1,0 +1,29 @@
+{
+  "abstain_behavior": "any unsupported component causes ABSTAIN; no zero-fill or renormalization",
+  "artifact_hash": "sha256:1aacc2263dee9d464a2e87ec935f1d0c9cf71e9b0ee8b08d4417214355585690",
+  "authoritative_status": "BLOCKED_TEST_ONLY_MAPPING_AND_UNRESOLVED_TAIL_POLICY",
+  "inputs": {
+    "m4_policy": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json",
+      "sha256": "sha256:86cb4f54291abf7bf4b869a6420753e74a361b007d475a1f53bea6b5416e822e"
+    },
+    "rmb_binding": {
+      "path": "D:/research/air_slot/code/explore/artifacts/diagnostics/cu_rmb_exp_continuation_workflow_v2/M4_CU_RMB_INTERFACE_BINDING.json",
+      "sha256": "sha256:23c18bfee06782b7129c5ebf660a93c3426f520c8a3600f7533ee17125a194fe"
+    }
+  },
+  "risk_evaluation": "callable_for_sensitivity_only",
+  "rmb_mapping": "TEST_ONLY_BASELINE_BOUND",
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "M4_RISK_EVALUATION_READINESS_V2",
+  "status": "SCENARIO_CONDITIONED_NON_AUTHORITATIVE_READY"
+}

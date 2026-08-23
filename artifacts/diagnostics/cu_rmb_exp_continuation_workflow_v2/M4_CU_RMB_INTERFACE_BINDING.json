@@ -1,0 +1,38 @@
+{
+  "aggregation": "RMB = SUM_k RMB_k",
+  "artifact_hash": "sha256:45ec15cef7fbe89bc9470c66b57ff61fd827957cf1eeab40ef1ad364d00eaf21",
+  "authoritative_ranking_allowed": false,
+  "c_to_cu": "CU_k = q_k / s_k_CU",
+  "chain": "C -> CU -> RMB -> risk",
+  "cu_to_rmb": "RMB_k = 1.0 * CU_k",
+  "inputs": {
+    "m2_binding": {
+      "path": "D:/research/air_slot/code/explore/artifacts/diagnostics/cu_rmb_exp_continuation_workflow_v2/M2_CU_FORMAL_BINDING.json",
+      "sha256": "sha256:fbc34cdf18db6ea71698074eb66150fda1e4b83de726bb118f8f51dc0c78da61"
+    },
+    "rmb_candidate": {
+      "path": "artifacts/diagnostics/m4_rmb_mapping_freeze_candidate_v1/M4_RMB_MAPPING_FREEZE_CANDIDATE.json",
+      "sha256": "sha256:634a63d675fcf3cfbb6fcdb36fa3b2decb77260d6e42c33965e15e339d7b3e9a"
+    },
+    "rmb_registry": {
+      "path": "registries/m4_cu_rmb_mapping_candidate_v1.json",
+      "sha256": "sha256:8ee64f958f3103234bcac778090cf5c5bc379171dbf3234fce6fa7569768dc70"
+    }
+  },
+  "monetary_ground_truth_claim": false,
+  "real_currency_claim": false,
+  "rmb_mapping_status": "TEST_ONLY",
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "M4_CU_RMB_INTERFACE_BINDING_V3",
+  "sensitivity_policy": "0.5x, 1.0x, 2.0x global and component-wise; no selection from Development outcomes",
+  "status": "RMB_BASELINE_BOUND_TEST_ONLY"
+}

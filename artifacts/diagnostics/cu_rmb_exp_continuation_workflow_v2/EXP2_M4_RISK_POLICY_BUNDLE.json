@@ -1,0 +1,13 @@
+{
+  "CVaR_policy": "EXPECTED_LOSS_PLUS_CVAR_ALPHA_0.90",
+  "hash": "sha256:3af3c6acc7594270f9739f7119530dc61057eda02fa4ddf7b652404345fb91b2",
+  "parameters": {
+    "alpha": 0.9,
+    "cvar_coefficient": 0.25,
+    "expected_loss_coefficient": 0.75
+  },
+  "policy_id": "M4_EXP2_RESIDUAL_RISK_POLICY_V2",
+  "support_status": "FROZEN",
+  "tail_policy": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+  "version": "M4_RESIDUAL_RISK_V2"
+}
