@@ -1,0 +1,20 @@
+{
+  "schema_version": "AIR_SLOT_VALIDATION_REPORT_V1",
+  "status": "PASS",
+  "checks": {
+    "pytest_codex_framework_tests": {
+      "status": "PASS",
+      "passed": 6
+    },
+    "compileall_codex_framework": "PASS",
+    "cli_smoke": "PASS"
+  },
+  "formal_experiments_run": false,
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "PAPER_FULL_RUN": false,
+  "authoritative_ranking": false,
+  "notes": [
+    "W2 remains READY pending a supplied frozen source artifact.",
+    "W3-W6 remain BLOCKED behind explicit human gates."
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "workflow_id": "AIR_SLOT_EXP_PROGRAMMING_WORKFLOW_V1",
+  "chain": "E -> S -> C -> CU -> RMB -> residual risk -> decision",
+  "stages": [
+    {
+      "stage_id": "W0",
+      "status": "PASS",
+      "purpose": "freeze manuscript positioning and experiment ownership",
+      "required_inputs": [
+        "\u5b9a\u4f4d.md",
+        "Section_1_to_4",
+        "Exp1_to_4_protocols"
+      ],
+      "outputs": [
+        "workflow_manifest.json"
+      ],
+      "stop_reason": null
+    },
+    {
+      "stage_id": "W1",
+      "status": "PASS",
+      "purpose": "audit E/S/C/CU/M3/M4 contracts",
+      "required_inputs": [
+        "contracts.py",
+        "action_response.py",
+        "risk.py"
+      ],
+      "outputs": [
+        "contract_audit.json"
+      ],
+      "stop_reason": null
+    },
+    {
+      "stage_id": "W2",
+      "status": "READY",
+      "purpose": "bind immutable shared artifact and lineage",
+      "required_inputs": [
+        "frozen source artifact",
+        "split",
+        "seed",
+        "information cutoff"
+      ],
+      "outputs": [
+        "artifact_manifest.json"
+      ],
+      "stop_reason": "FORMAL_DATA_ARTIFACT_NOT_SUPPLIED"
+    },
+    {
+      "stage_id": "W3",
+      "status": "BLOCKED",
+      "purpose": "Exp1 information-role necessity",
+      "required_inputs": [
+        "W2 artifact",
+        "Exp1 variant manifest"
+      ],
+      "outputs": [
+        "exp1_result.json"
+      ],
+      "stop_reason": "HUMAN_GATE_REQUIRED_FOR_FORMAL_EXP1"
+    },
+    {
+      "stage_id": "W4",
+      "status": "BLOCKED",
+      "purpose": "Exp2 consequence and risk representation necessity",
+      "required_inputs": [
+        "W2 artifact",
+        "M3 action response",
+        "M4 mapping policy"
+      ],
+      "outputs": [
+        "exp2_result.json"
+      ],
+      "stop_reason": "HUMAN_GATE_REQUIRED_FOR_FORMAL_EXP2"
+    },
+    {
+      "stage_id": "W5",
+      "status": "BLOCKED",
+      "purpose": "Exp3 sequential decision process",
+      "required_inputs": [
+        "W2 artifact",
+        "Exp3 process variants"
+      ],
+      "outputs": [
+        "exp3_result.json"
+      ],
+      "stop_reason": "HUMAN_GATE_REQUIRED_FOR_FORMAL_EXP3"
+    },
+    {
+      "stage_id": "W6",
+      "status": "BLOCKED",
+      "purpose": "Exp4 performance efficiency and generalization",
+      "required_inputs": [
+        "Data2 main",
+        "Data1 portability",
+        "runtime protocol"
+      ],
+      "outputs": [
+        "exp4_result.json"
+      ],
+      "stop_reason": "HUMAN_GATE_REQUIRED_FOR_FORMAL_EXP4"
+    },
+    {
+      "stage_id": "W7",
+      "status": "PASS",
+      "purpose": "development validation and report",
+      "required_inputs": [
+        "pytest",
+        "compileall",
+        "synthetic smoke"
+      ],
+      "outputs": [
+        "validation_report.json"
+      ],
+      "stop_reason": null
+    }
+  ],
+  "safety": {
+    "final_test_access_count": 0,
+    "paper_full_run": false,
+    "authoritative_ranking": false,
+    "formal_execution_authorized": false
+  },
+  "formal_experiments_run": false,
+  "paper_full_run": false,
+  "manifest_hash": "sha256:6ca11201a95e1455e6296e13ff5fccf330f3bc01451f32f2126e0ab3785bede8"
+}

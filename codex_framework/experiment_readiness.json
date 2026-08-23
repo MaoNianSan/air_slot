@@ -1,0 +1,55 @@
+{
+  "schema_version": "AIR_SLOT_EXP_READINESS_MANIFEST_V1",
+  "status": "PROTOCOL_READY_FORMAL_RUN_BLOCKED",
+  "experiments": {
+    "Exp1": {
+      "ownership": "information_role_necessity",
+      "variants": [
+        "NO_DIRECT_REUSE",
+        "FULL",
+        "CURRENT",
+        "ADAPTIVE_HISTORY"
+      ],
+      "status": "BLOCKED"
+    },
+    "Exp2": {
+      "ownership": "consequence_and_risk_representation_necessity",
+      "variants": [
+        "POINT",
+        "MARGINAL",
+        "JOINT",
+        "SCALAR",
+        "3CHANNEL",
+        "7COMP"
+      ],
+      "status": "BLOCKED"
+    },
+    "Exp3": {
+      "ownership": "sequential_decision_process",
+      "variants": [
+        "ONE_SHOT",
+        "ROLLING",
+        "SYNC",
+        "STATE_LAG_5",
+        "STATE_LAG_10"
+      ],
+      "status": "BLOCKED"
+    },
+    "Exp4": {
+      "ownership": "performance_efficiency_generalization",
+      "variants": [
+        "PREDICTIVE_ADEQUACY",
+        "DECISION_OUTPUT_VALIDITY",
+        "DATA1_DATA2_PORTABILITY",
+        "END_TO_END_RUNTIME"
+      ],
+      "status": "BLOCKED"
+    }
+  },
+  "blockers": [
+    "W2 frozen source artifact is not supplied to codex_framework",
+    "formal Exp execution requires explicit human gate",
+    "FINAL_TEST_ACCESS_COUNT must remain zero",
+    "PAPER_FULL_RUN must remain false"
+  ]
+}
