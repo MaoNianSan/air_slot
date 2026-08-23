@@ -1,0 +1,68 @@
+{
+  "artifact_hash": "sha256:a06178429985379ba245abb6c282ede6fbe8e1f95a7551ece0b1a14fc6bf10ad",
+  "chain": "C -> CU -> RMB -> risk",
+  "checks": {
+    "abstention_and_no_zero_fill": true,
+    "canonical_action_chain": true,
+    "constructed_not_real_currency": true,
+    "exact_seven_component_order": true,
+    "m2_c_to_cu_boundary": true,
+    "mapping_not_frozen": true,
+    "no_automatic_parameter_synthesis": true,
+    "no_direct_c_to_rmb_mapping": true,
+    "rmb_cu_to_rmb_boundary": true
+  },
+  "component_order": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "inputs": {
+    "m2_interface": {
+      "path": "artifacts/diagnostics/m2_cu_rmb_interface_correction_v2/M2_CU_RMB_INTERFACE.json",
+      "sha256": "sha256:c3bc10f4f26c326b173cec32fc9f151c19e31a4fc2d6c2cf9458284a77160104"
+    },
+    "m4_design": {
+      "path": "registries/m4_cu_rmb_mapping_design_v2.json",
+      "sha256": "sha256:c3a985c09733cc457d1bac6480d52790e81118fc592c4aa64da8b125e48f38d6"
+    },
+    "m4_policy": {
+      "path": "artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json",
+      "sha256": "sha256:86cb4f54291abf7bf4b869a6420753e74a361b007d475a1f53bea6b5416e822e"
+    }
+  },
+  "mapping_gate": {
+    "prohibited_automatic_actions": [
+      "synthesize_rmb_parameters",
+      "fit_mapping_from_development_outcomes",
+      "freeze_mapping_without_scientific_authorization",
+      "emit_authoritative_m4_ranking"
+    ],
+    "required_decisions": [
+      "mapping_function_per_component",
+      "rmb_per_cu_or_explicit_function_parameters",
+      "source_reference_and_provenance",
+      "parameter_version_and_freeze_id",
+      "scenario_dependence_policy"
+    ],
+    "status": "HUMAN_SCIENTIFIC_DECISION_REQUIRED"
+  },
+  "readiness_status": "BLOCKED_M4_RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED",
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "M4_CU_RMB_READINESS_AUDIT_V1",
+  "scope": "INTERFACE_AND_SCIENTIFIC_GATE_AUDIT_ONLY",
+  "status": "M4_CU_RMB_READINESS_AUDITED"
+}

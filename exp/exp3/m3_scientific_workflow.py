@@ -22,6 +22,7 @@ from .action_library_scientific_materialization import materialize as materializ
 from .conditional_action_support_acceptance import materialize as materialize_conditional_support
 from .conditional_support_binding import bind as bind_conditional_support
 from exp.m2_cu_rmb_interface_correction import materialize as materialize_m2_rmb
+from exp.m4_cu_rmb_readiness_audit import materialize as audit_cu_rmb
 from .formal_preparation import prepare_formal_execution as prepare_exp3
 from .formal_support_audit import audit as audit_support
 from exp.exp4.formal_preparation import prepare_formal_execution as prepare_exp4
@@ -97,11 +98,12 @@ def _stage(name: str, fn: Callable[[], dict[str, Path]]) -> dict[str, Any]:
 
 def run_workflow(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/m3_scientific_workflow_v1").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/m3_scientific_workflow_v11").resolve()
     stages = {
         "consequence_mapping": _stage("consequence_mapping", lambda: materialize_consequence(root=root)),
         "action_library": _stage("action_library", lambda: materialize_library(root=root)),
         "m2_rmb_interface": _stage("m2_rmb_interface", lambda: materialize_m2_rmb(root=root)),
+        "cu_rmb_readiness_audit": _stage("cu_rmb_readiness_audit", lambda: audit_cu_rmb(root=root)),
         "conditional_action_support": _stage("conditional_action_support", lambda: materialize_conditional_support(root=root)),
         "conditional_support_binding": _stage("conditional_support_binding", lambda: bind_conditional_support(root=root)),
         "formal_support_audit": _stage("formal_support_audit", lambda: audit_support(root=root)),
@@ -114,13 +116,14 @@ def run_workflow(*, root: Path, output_root: Path | None = None) -> dict[str, Pa
     support = _load(Path(stages["formal_support_audit"]["outputs"]["artifact"]["path"]))
     conditional_support = _load(Path(stages["conditional_action_support"]["outputs"]["artifact"]["path"]))
     conditional_binding = _load(Path(stages["conditional_support_binding"]["outputs"]["artifact"]["path"]))
+    cu_rmb_audit = _load(Path(stages["cu_rmb_readiness_audit"]["outputs"]["artifact"]["path"]))
     exp3 = _load(Path(stages["exp3_preparation"]["outputs"]["manifest"]["path"]))
     exp3_readiness = _load(Path(stages["exp3_preparation"]["outputs"]["readiness"]["path"]))
     exp4 = _load(Path(stages["exp4_preparation"]["outputs"]["manifest"]["path"]))
     reconciliation = _load(Path(stages["scientific_reconciliation"]["outputs"]["readiness"]["path"]))
     ids = [row["action_id"] for row in library["action_evidence_table"]]
     report = {
-        "schema_version": "M3_SCIENTIFIC_WORKFLOW_REPORT_V1",
+        "schema_version": "M3_SCIENTIFIC_WORKFLOW_REPORT_V2",
         "status": "WORKFLOW_COMPLETED_WITH_SCIENTIFIC_BLOCKERS",
         "scope": "DEVELOPMENT_MATERIALIZATION_AND_READINESS_ONLY",
         "stages": stages,
@@ -134,12 +137,15 @@ def run_workflow(*, root: Path, output_root: Path | None = None) -> dict[str, Pa
             "conditional_scenario_lane": conditional_support["conditional_scenario_lane"],
             "conditional_binding_status": conditional_binding["status"],
             "monetary_chain": conditional_binding["monetary_chain"],
+            "cu_rmb_readiness_status": cu_rmb_audit["readiness_status"],
+            "cu_rmb_checks_passed": all(cu_rmb_audit["checks"].values()),
+            "cu_rmb_mapping_status": cu_rmb_audit["mapping_gate"]["status"],
             "exp3_status": exp3["status"],
             "exp3_execution_status": exp3_readiness.get("execution_status", "UNKNOWN"),
             "exp4_status": exp4["status"],
             "exp4_readiness_status": reconciliation["execution_status"],
         },
-        "next_automatic_action": "NONE; stop at human scientific gate for non-A00 response rules",
+        "next_automatic_action": "NONE; stop at M4 CU-to-RMB scientific decision gate and M3 non-A00 response gate",
         "safety": dict(SAFETY),
     }
     report["artifact_hash"] = content_id(report)
