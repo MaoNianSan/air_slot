@@ -85,6 +85,7 @@ def _inputs(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
         "exp2_manifest": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_EXECUTION_MANIFEST.json",
         "exp2_lineage": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
         "m3_support_audit": root / "artifacts/diagnostics/exp3_formal_support_audit_v1/EXP3_FORMAL_SUPPORT_AUDIT.json",
+        "m3_action_library": root / "artifacts/diagnostics/m3_action_library_scientific_materialization_v2/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json",
     }
     _require(all(path.is_file() for path in paths.values()), "EXP3_FORMAL_PREPARATION_INPUT_MISSING")
     return {name: (path, _load(path)) for name, path in paths.items()}
@@ -96,6 +97,7 @@ def _validate(inputs: dict[str, tuple[Path, dict[str, Any]]], root: Path) -> dic
     exp2_manifest = inputs["exp2_manifest"][1]
     exp2_lineage = inputs["exp2_lineage"][1]
     m3_support_audit = inputs["m3_support_audit"][1]
+    m3_action_library = inputs["m3_action_library"][1]
     checkpoint = root / binding["checkpoint"]["path"]
     _require(binding["status"] == "BOUND_FROZEN_M1_V2", "EXP3_M1_BINDING_NOT_FROZEN")
     _require(binding["model_id"] == "M1_V2_GRU_H32", "EXP3_M1_MODEL_NOT_H32")
@@ -106,7 +108,10 @@ def _validate(inputs: dict[str, tuple[Path, dict[str, Any]]], root: Path) -> dic
     _require(exp2_lineage["status"] == "BOUND_WITH_UNRESOLVED_UPSTREAM_GATES", "EXP3_EXP2_LINEAGE_STATUS_INVALID")
     _require(m3_support_audit["status"] == "EXP3_FORMAL_COHORT_BLOCKED", "EXP3_M3_SUPPORT_AUDIT_STATUS_INVALID")
     _require(m3_support_audit["non_a00_executable_action_ids"] == [], "EXP3_UNEXPECTED_NON_A00_EXECUTABLE_ACTIONS")
-    for payload in (binding, freeze, exp2_manifest, exp2_lineage, m3_support_audit):
+    _require(m3_action_library["schema_version"] == "M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION_V2", "EXP3_M3_ACTION_LIBRARY_SCHEMA_INVALID")
+    _require(m3_action_library["action_count"] == 23, "EXP3_M3_ACTION_LIBRARY_COUNT_INVALID")
+    _require(m3_action_library["formal_executable_non_a00_count"] == 0 if "formal_executable_non_a00_count" in m3_action_library else True, "EXP3_M3_ACTION_LIBRARY_FORMAL_COUNT_INVALID")
+    for payload in (binding, freeze, exp2_manifest, exp2_lineage, m3_support_audit, m3_action_library):
         safety = payload.get("safety", payload)
         _require(safety.get("FINAL_TEST_ACCESS_COUNT", payload.get("FINAL_TEST_ACCESS_COUNT")) == 0, "EXP3_FINAL_TEST_ACCESS_NONZERO")
         _require(safety.get("PAPER_FULL_RUN", payload.get("PAPER_FULL_RUN")) is False, "EXP3_PAPER_FULL_TRUE")
@@ -126,6 +131,8 @@ def _validate(inputs: dict[str, tuple[Path, dict[str, Any]]], root: Path) -> dic
         "m3_support_audit_hash": m3_support_audit["artifact_hash"],
         "m3_executable_action_ids": m3_support_audit["executable_action_ids"],
         "m3_formal_multi_action_cohort_status": m3_support_audit["formal_multi_action_cohort"]["status"],
+        "m3_action_library_artifact_hash": m3_action_library["artifact_hash"],
+        "m3_action_library_status": m3_action_library["status"],
     }
 
 
@@ -223,6 +230,7 @@ def _readiness(gates: dict[str, Any], fixed: dict[str, Any]) -> dict[str, Any]:
                 "status": "EXP3_FORMAL_COHORT_BLOCKED",
                 "requires_execution_authorization": True,
                 "formal_multi_action_cohort_status": fixed["m3_formal_multi_action_cohort_status"],
+                "paper_supported_action_library": "READY",
             }
             for variant in FORMAL_VARIANT_IDS
         },
@@ -236,7 +244,7 @@ def _readiness(gates: dict[str, Any], fixed: dict[str, Any]) -> dict[str, Any]:
 
 def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_execution_preparation_v9").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_execution_preparation_v10").resolve()
     inputs = _inputs(root)
     fixed = _validate(inputs, root)
     gates = inputs["exp2_lineage"][1]["gates"]
@@ -264,6 +272,7 @@ def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> 
         "m1_binding": {"model_id": "M1_V2_GRU_H32", "modified": False},
         "shared_gates_source": _relative(inputs["exp2_lineage"][0], root),
         "m3_support_audit": _relative(inputs["m3_support_audit"][0], root),
+        "m3_action_library": _relative(inputs["m3_action_library"][0], root),
         "outputs": {
             "variant_contracts": _relative(contracts_path, root),
             "lineage_schema": _relative(schema_path, root),

@@ -25,6 +25,7 @@ def test_formal_preparation_records_variants_and_keeps_execution_gated(tmp_path)
     assert readiness["execution_status"] == "EXP3_FORMAL_COHORT_BLOCKED"
     assert all(item["status"] == "EXP3_FORMAL_COHORT_BLOCKED" for item in readiness["variant_readiness"].values())
     assert manifest["fixed_contract"]["m3_formal_multi_action_cohort_status"] == "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION"
+    assert manifest["fixed_contract"]["m3_action_library_status"] == "M3_PAPER_SUPPORTED_ACTION_LIBRARY_MATERIALIZED"
     assert manifest["safety"]["FINAL_TEST_ACCESS_COUNT"] == 0
     assert manifest["safety"]["FULL"] is False
     assert manifest["safety"]["PAPER_FULL_RUN"] is False

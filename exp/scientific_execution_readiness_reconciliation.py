@@ -92,8 +92,8 @@ def _inputs(root: Path) -> dict[str, Path]:
         "m2_current_manifest": root / "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
         "exp2_manifest": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_EXECUTION_MANIFEST.json",
         "exp2_lineage": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
-        "exp3_manifest": root / "artifacts/diagnostics/exp3_formal_execution_preparation_v9/EXP3_FORMAL_EXECUTION_MANIFEST.json",
-        "exp3_readiness": root / "artifacts/diagnostics/exp3_formal_execution_preparation_v9/EXP3_FORMAL_EXECUTION_READINESS_REPORT.json",
+        "exp3_manifest": root / "artifacts/diagnostics/exp3_formal_execution_preparation_v10/EXP3_FORMAL_EXECUTION_MANIFEST.json",
+        "exp3_readiness": root / "artifacts/diagnostics/exp3_formal_execution_preparation_v10/EXP3_FORMAL_EXECUTION_READINESS_REPORT.json",
         "exp4_manifest": root / "artifacts/diagnostics/exp4_formal_execution_preparation_v10/EXP4_FORMAL_EXECUTION_MANIFEST.json",
         "exp4_readiness": root / "artifacts/diagnostics/exp4_formal_execution_preparation_v10/EXP4_FORMAL_EXECUTION_READINESS_REPORT.json",
         "m2_manifest": root / "artifacts/diagnostics/m2_v2_artifact_freeze_preparation/M2_V2_ARTIFACT_FREEZE_MANIFEST.json",
@@ -489,7 +489,7 @@ def _shortest_path() -> list[dict[str, Any]]:
 
 def reconcile(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v13").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp2_4_scientific_execution_readiness_reconciliation_v14").resolve()
     paths = _inputs(root)
     for name in ("m1_binding", "m1_freeze", "m1_semantic_reconciliation", "m1_current_stage_refreeze", "m1_positive_tail_freeze", "m1_scenario_manifest", "m2_current_manifest", "exp1_manifest", "exp2_manifest", "exp2_lineage", "exp3_manifest", "exp3_readiness", "exp4_manifest", "exp4_readiness", "m2_manifest", "m2_readiness", "m2_validation", "m3_design", "m3_bundle", "m4_design", "m4_policy"):
         _safety(_load(paths[name]))

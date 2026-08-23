@@ -13,10 +13,13 @@ def test_action_library_is_paper_supported_without_formal_effect_overclaim(tmp_p
     artifact = json.loads(paths["artifact"].read_text(encoding="utf-8"))
 
     assert artifact["status"] == "M3_PAPER_SUPPORTED_ACTION_LIBRARY_MATERIALIZED"
+    assert artifact["schema_version"] == "M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION_V2"
     assert artifact["action_count"] == 23
     assert tuple(row["action_id"] for row in artifact["action_evidence_table"]) == PRINCIPAL_IDS
     assert artifact["execution_status_counts"] == {"conditional": 22, "executable": 1}
     assert all(row["literature_reference"] for row in artifact["action_evidence_table"])
+    assert all(row["consequence_literature"] for row in artifact["action_evidence_table"])
+    assert all(row["effect_mechanism"] for row in artifact["action_evidence_table"])
     assert artifact["formal_support_upgrade"] is False
     assert artifact["non_a00_v2_execution_enabled"] is False
     assert artifact["exp3_readiness_impact"]["formal_multi_action_cohort"] == "STILL_BLOCKED"
