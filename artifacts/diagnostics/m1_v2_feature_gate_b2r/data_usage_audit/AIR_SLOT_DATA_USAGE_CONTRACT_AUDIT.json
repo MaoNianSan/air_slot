@@ -1,5 +1,5 @@
 {
-  "artifact_hash": "sha256:a5f920d2e505f21bdabf8970028abd8e2748942d546fadeda76e3e8af92de440",
+  "artifact_hash": "sha256:e0e4327e23c61ba9f21a24b2e8d63ebec32b5ae4122f1f7795a0c8863aa6e149",
   "artifact_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH",
   "artifacts": {
     "audit": "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json",
@@ -2609,7 +2609,7 @@
       "status": "COVERED_ACTIVE"
     }
   ],
-  "repository_head": "6c8d1e727a9a1e5763d79ea3cc660d7c54113844",
+  "repository_head": "7be319916c514c8b56855490cb118d5e1639efe6",
   "rule_audit": [
     {
       "canonical_variable": "predecessor_motion",
@@ -2961,73 +2961,73 @@
   ],
   "runtime_rule_references": [
     {
-      "line": 161,
+      "line": 188,
       "path": "model/PRE/canonical/normalization_references.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-EUROSTAT"
     },
     {
-      "line": 223,
+      "line": 252,
       "path": "model/PRE/canonical/normalization_references.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-EUROSTAT"
     },
     {
-      "line": 56,
+      "line": 88,
       "path": "model/PRE/canonical/normalization_weather.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-METAR"
     },
     {
-      "line": 203,
+      "line": 227,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-OPENSKY-FLIGHT"
     },
     {
-      "line": 223,
+      "line": 249,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-OPENSKY-FLIGHT-EVENT"
     },
     {
-      "line": 254,
+      "line": 281,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-OPENSKY-STATE"
     },
     {
-      "line": 308,
+      "line": 345,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D1-TRAJECTORY-EVENT"
     },
     {
-      "line": 157,
+      "line": 174,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D2-BTS-ACTUAL"
     },
     {
-      "line": 65,
+      "line": 74,
       "path": "model/PRE/factual/replay.py",
       "reference_kind": "declared_replay_rule_id",
       "rule_id": "D2-BTS-FACTUAL-REPLAY"
     },
     {
-      "line": 69,
+      "line": 82,
       "path": "model/PRE/canonical/normalization_flights.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D2-BTS-SCHEDULE"
     },
     {
-      "line": 250,
+      "line": 318,
       "path": "model/PRE/canonical/normalization_weather.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D2-NOAA-ISD"
     },
     {
-      "line": 67,
+      "line": 77,
       "path": "model/PRE/canonical/normalization_references.py",
       "reference_kind": "provenance_rule_id",
       "rule_id": "D2-TIMEZONE"
@@ -3045,24 +3045,24 @@
   "source_hashes": {
     "configs/scientific/foundation.yaml": "sha256:d661b143536cbd2dc9ec2204062481259aae6bb36a9ab7565e11722125831342",
     "docs/reconciliation/AIR_SLOT_DATA_USAGE_CONTRACT_V1.md": "sha256:bc28019f9dbfefd557bfc76f1f5cfbe860a3268a1000f552e3d51b34a9525f4d",
-    "model/M1/data.py": "sha256:648ccf86547256a61dc37326de6d3e6acae4a0cc684ab3339166acf6c0cacbc7",
-    "model/M2/freeze.py": "sha256:40bbcc8f9d6a447b1f313a96843bd853ee8fda6d1da4e5c565dd15ba931d49b4",
-    "model/PRE/adapters/registry.py": "sha256:23a6e23821efb4c8a94ff583606aed9aed036e5a14ba25005303d331f164ac28",
-    "model/PRE/canonical/data2_timestamps.py": "sha256:25e12935d89d5d25c946949f39cadbf7522a041118dd8eb85251b2053e3d4168",
-    "model/PRE/canonical/normalization_flights.py": "sha256:4f3f5fa5493f434f48ea324d7f53cfedb25a403d10d0bbe0e437e1a9fd73aa29",
-    "model/PRE/canonical/normalization_references.py": "sha256:256cd176591546c937a9a1665cf0c2b81797cfe8ae20fec1b9502dc0cb183f56",
-    "model/PRE/canonical/normalization_weather.py": "sha256:122206b098487a9d74c8b1e7167c4345b77a6011118b5e14256607a7e9a5ab17",
-    "model/PRE/contracts/training_artifacts.py": "sha256:f31adbbcd449ad395b476dcc09d9e58b8ed3ed1ffd1d87e9964dce6ff5cab327",
-    "model/PRE/feature_registry/models.py": "sha256:24a2f1b4b4bfd75c1bc257994aa3e83e36ab035fa44d15e271d5120db4d7177e",
-    "model/PRE/mapping.py": "sha256:f367f10c0aae40b72b2c25d8b13d237a633566c6087a02a1e467af1c9a4542a5",
-    "model/PRE/publication/static_reference.py": "sha256:bad3d2f2cdb4bff8dbb0d848a597317841a246d24396f762980a788f3e662ed7",
-    "model/PRE/reference/data2_m2_train_fit.py": "sha256:b741d0bb85a0ba5efcb835c8f44e75dbb007f8598e9a1a80a28f3ae14aeea4a8",
+    "model/M1/data.py": "sha256:e82036a197cda66c016160fbd03c011bb3e073525935a4b3938656456f65ba7f",
+    "model/M2/freeze.py": "sha256:9c71b21b37b08c98e59c417efa13e3494d0d66f2c730125d93eec9c168f15c01",
+    "model/PRE/adapters/registry.py": "sha256:be3893772c52708cac175fc3baa0a36150547d58d4e05d7117e43be6cc97ebcd",
+    "model/PRE/canonical/data2_timestamps.py": "sha256:050600232901618c2370808546b5885cb493c289539850d94b796aa085e23743",
+    "model/PRE/canonical/normalization_flights.py": "sha256:96daa96ab4f51d666eb530cfde8a0c00a225978125880d5ed25336fcf7ca419b",
+    "model/PRE/canonical/normalization_references.py": "sha256:b4ab91550fd4bc56586024cd549f338731f5d57715ea54ce01cd98705b7ac73b",
+    "model/PRE/canonical/normalization_weather.py": "sha256:f39213290839b724427dee582292cf900b8e0ecb280f246ff24fecaaf964cc19",
+    "model/PRE/contracts/training_artifacts.py": "sha256:55f7779970f9ec8b2051d044bca012ccedea4a51e8cf9c74982ebdd001e07016",
+    "model/PRE/feature_registry/models.py": "sha256:86b433339066551914247f14e5badaba5ddc837485a5746f30455643d8560713",
+    "model/PRE/mapping.py": "sha256:9dfc5be2cf04ae5626a287a7102043d5a89944f972596b5744d7923ba87ff646",
+    "model/PRE/publication/static_reference.py": "sha256:231d3654f1501ffb392e490d491b1e7989654e8ea7681dab074240a37dc85d18",
+    "model/PRE/reference/data2_m2_train_fit.py": "sha256:d64c18a22444942f0381b307f475e7e16c41d144fb7efa053b02b108db15b39d",
     "registries/data_usage_rules.yaml": "sha256:ea962838805730851ef70967f6b08791408a4c1a4aec406e5926dbdb78a08a9b",
     "registries/dataset_capabilities.yaml": "sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b",
     "registries/scientific_variables.yaml": "sha256:b48f20879001775e40ea2f35b2bb868fb26553a254b8308857560895b1c3c5b0",
     "registries/source_adapter_registry.yaml": "sha256:83f288e0123ea04ed2e49152efd73e003c5548b37696dad4d186c3733ab96c70",
-    "validation/data_usage_classification.py": "sha256:2ef6fa04bb1501d15001f1bbcea6ae194ec8c1f05451e9aa9646d088aa1929fb",
-    "validation/data_usage_contract_audit.py": "sha256:a4758f82b647501d8d2006db38430c56f910db4231d74fa55ca8eed7125f7fd9"
+    "validation/data_usage_classification.py": "sha256:84b82db1442eb5bcd0e5056d6dd5a3af30b8410f496acc2aa623c352cb6531d8",
+    "validation/data_usage_contract_audit.py": "sha256:939ea11b0941d0e0c412da9146e00f1b4959f38735dfc63467948c73ea401205"
   },
   "status": "DATA_USAGE_CONTRACT_AUDIT_PASS"
 }
