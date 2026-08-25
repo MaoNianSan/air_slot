@@ -44,45 +44,93 @@ def _interpretation_class(candidate) -> str:
 
 
 def aggregate_a00_baseline_gate(m2_consequences, material_coverage_contract):
-    gates = tuple(evaluate_a00_baseline_gate(
-        consequence.component_vector.rows, material_coverage_contract)
-        for consequence in m2_consequences)
+    gates = tuple(
+        evaluate_a00_baseline_gate(
+            consequence.component_vector.rows, material_coverage_contract
+        )
+        for consequence in m2_consequences
+    )
     return A00BaselineComparatorGate(
         valid=all(item.valid for item in gates),
-        missing_components=tuple(sorted({component for item in gates for component in item.missing_components})),
-        explanation=tuple(sorted({explanation for item in gates for explanation in item.explanation})),
+        missing_components=tuple(
+            sorted(
+                {component for item in gates for component in item.missing_components}
+            )
+        ),
+        explanation=tuple(
+            sorted({explanation for item in gates for explanation in item.explanation})
+        ),
     )
 
 
-def _aggregate_candidate_coverage(candidate, m2_consequences, material_coverage_contract):
-    rows = tuple(evaluate_material_coverage(
-        candidate, consequence.component_vector.rows, material_coverage_contract)
-        for consequence in m2_consequences)
+def _aggregate_candidate_coverage(
+    candidate, m2_consequences, material_coverage_contract
+):
+    rows = tuple(
+        evaluate_material_coverage(
+            candidate, consequence.component_vector.rows, material_coverage_contract
+        )
+        for consequence in m2_consequences
+    )
     return MaterialCoverageEvaluation(
         candidate_action_id=candidate.candidate_action_id,
         material_benefit_coverage=all(item.material_benefit_coverage for item in rows),
         material_burden_coverage=all(item.material_burden_coverage for item in rows),
         baseline_coverage=all(item.baseline_coverage for item in rows),
-        nonmaterial_missingness=tuple(sorted({component for item in rows for component in item.nonmaterial_missingness})),
-        coverage_explanation=tuple(sorted({explanation for item in rows for explanation in item.coverage_explanation})),
-        quality_flags=tuple(sorted({flag for item in rows for flag in item.quality_flags})),
+        nonmaterial_missingness=tuple(
+            sorted(
+                {
+                    component
+                    for item in rows
+                    for component in item.nonmaterial_missingness
+                }
+            )
+        ),
+        coverage_explanation=tuple(
+            sorted(
+                {
+                    explanation
+                    for item in rows
+                    for explanation in item.coverage_explanation
+                }
+            )
+        ),
+        quality_flags=tuple(
+            sorted({flag for item in rows for flag in item.quality_flags})
+        ),
     )
 
 
-def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
-                       material_coverage_contract, baseline_gate, monetary_mapping,
-                       lambda_risk, alpha, seed):
+def evaluate_candidate(
+    candidate,
+    *,
+    episode_id,
+    m1_scenarios,
+    m2_consequences,
+    material_coverage_contract,
+    baseline_gate,
+    monetary_mapping,
+    lambda_risk,
+    alpha,
+    seed,
+):
     if not isinstance(monetary_mapping, MonetaryMappingRegistry):
         monetary_mapping = MonetaryMappingRegistry.model_validate(monetary_mapping)
     by_scenario = {row.scenario_id: row for row in m2_consequences}
     weights = [float(scenario["scenario_weight"]) for scenario in m1_scenarios]
     opportunities = scenario_opportunities(candidate, m1_scenarios)
     opportunity = weighted_mean(opportunities, weights)
-    coverage = _aggregate_candidate_coverage(candidate, m2_consequences, material_coverage_contract)
+    coverage = _aggregate_candidate_coverage(
+        candidate, m2_consequences, material_coverage_contract
+    )
     monetary_frozen = monetary_mapping.frozen
-    lane = assign_lane(candidate, opportunity, baseline_valid=baseline_gate.valid,
-                       material_coverage_valid=coverage.formal_coverage_valid,
-                       monetary_mapping_frozen=monetary_frozen)
+    lane = assign_lane(
+        candidate,
+        opportunity,
+        baseline_valid=baseline_gate.valid,
+        material_coverage_valid=coverage.formal_coverage_valid,
+        monetary_mapping_frozen=monetary_frozen,
+    )
     formal_status = FormalEstimandStatus.FORMAL_AVAILABLE
     post = []
     any_scenario_conditioned = False
@@ -93,10 +141,14 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
         if formal.status is not FormalEstimandStatus.FORMAL_AVAILABLE:
             formal_status = formal.status
             continue
-        values = {row.component_id: row.constructed_value_cu
-                  for row in consequence.component_vector.rows
-                  if row.component_id in formal.included_components}
-        if any(value is None for value in values.values()) or len(values) != len(formal.included_components):
+        values = {
+            row.component_id: row.constructed_value_cu
+            for row in consequence.component_vector.rows
+            if row.component_id in formal.included_components
+        }
+        if any(value is None for value in values.values()) or len(values) != len(
+            formal.included_components
+        ):
             formal_status = FormalEstimandStatus.FORMAL_AGGREGATE_UNRESOLVED
             continue
         if not monetary_frozen:
@@ -173,7 +225,8 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
         cu_normalization_registry_id=scope.cu_normalization_registry_id,
         monetary_system=monetary_mapping.monetary_system_id,
         monetary_mapping_registry_id=monetary_mapping.registry_id,
-        monetary_mapping_registry_hash=monetary_mapping.registry_hash or monetary_mapping.digest(),
+        monetary_mapping_registry_hash=monetary_mapping.registry_hash
+        or monetary_mapping.digest(),
         formal_aggregate_status=formal_status,
         expected_residual=mean,
         var=var,
@@ -184,5 +237,7 @@ def evaluate_candidate(candidate, *, episode_id, m1_scenarios, m2_consequences,
         post_total_status=post_total_status,
         interpretation_class=_interpretation_class(candidate),
         quality_flags=coverage.quality_flags,
-        coverage_explanation=tuple(sorted(set(coverage.coverage_explanation + baseline_gate.explanation))),
+        coverage_explanation=tuple(
+            sorted(set(coverage.coverage_explanation + baseline_gate.explanation))
+        ),
     )

@@ -3,12 +3,12 @@
 import ast
 from pathlib import Path
 
-
 PRODUCTION_ROOTS = ("model", "exp", "validation")
 
 # Formal runtime has no large-file exemptions. Archived implementations live
 # under ``archive/`` and are intentionally outside production roots.
 SIZE_EXEMPTIONS = frozenset()
+
 
 def logical_lines(path: Path) -> int:
     """Count nonblank executable/declarative lines, excluding imports and docstrings."""
@@ -19,22 +19,39 @@ def logical_lines(path: Path) -> int:
         if isinstance(node, (ast.Import, ast.ImportFrom)):
             excluded.update(range(node.lineno, (node.end_lineno or node.lineno) + 1))
     bodies = [tree.body]
-    bodies.extend(node.body for node in ast.walk(tree)
-                  if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)))
+    bodies.extend(
+        node.body
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+    )
     for body in bodies:
-        if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) \
-                and isinstance(body[0].value.value, str):
-            excluded.update(range(body[0].lineno, (body[0].end_lineno or body[0].lineno) + 1))
-    return sum(1 for number, line in enumerate(text.splitlines(), 1)
-               if line.strip() and not line.lstrip().startswith("#") and number not in excluded)
+        if (
+            body
+            and isinstance(body[0], ast.Expr)
+            and isinstance(body[0].value, ast.Constant)
+            and isinstance(body[0].value.value, str)
+        ):
+            excluded.update(
+                range(body[0].lineno, (body[0].end_lineno or body[0].lineno) + 1)
+            )
+    return sum(
+        1
+        for number, line in enumerate(text.splitlines(), 1)
+        if line.strip() and not line.lstrip().startswith("#") and number not in excluded
+    )
 
 
 def audit_python_sizes(root: Path) -> list[dict[str, str | int]]:
     records = []
-    paths = (path for production_root in PRODUCTION_ROOTS
-             for path in (root / production_root).rglob("*.py"))
+    paths = (
+        path
+        for production_root in PRODUCTION_ROOTS
+        for path in (root / production_root).rglob("*.py")
+    )
     for path in sorted(paths):
-        if any(part in {".pytest_cache", "__pycache__", "outputs"} for part in path.parts):
+        if any(
+            part in {".pytest_cache", "__pycache__", "outputs"} for part in path.parts
+        ):
             continue
         count = logical_lines(path)
         rel = path.relative_to(root).as_posix()

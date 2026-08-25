@@ -20,6 +20,7 @@ Lineage: RAW BTS On-Time rows -> OperationalEventRecord (D2-BTS-ACTUAL) ->
 DATA2_TAXI_REFERENCE@1.0.0 -> taxi_reference (FROZEN_REFERENCE) ->
 M2 (reference), M1 (floor boundary). data1 TAXI_REFERENCE@1.0.0 is untouched.
 """
+
 from __future__ import annotations
 
 import csv
@@ -97,7 +98,9 @@ class Data2TaxiReference:
         a cell below min support fall back to the global median. Airports with
         no train evidence at all ABSTAIN (value None), never fabricated.
         """
-        cell = next((item for item in self.cells if item.airport_id == airport_id), None)
+        cell = next(
+            (item for item in self.cells if item.airport_id == airport_id), None
+        )
         if cell is None:
             return SupportedValue(
                 value=None,
@@ -362,23 +365,15 @@ def data2_taxi_reference_from_payload(payload: dict[str, Any]) -> Data2TaxiRefer
         rule_version=payload["rule_version"],
         fit_period=payload["fit_period"],
         statistic_id=payload.get("statistic_id", STATISTIC_ID),
-        minimum_support_rule=payload.get(
-            "minimum_support_rule", MINIMUM_SUPPORT_RULE
-        ),
-        fallback_hierarchy=tuple(
-            payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)
-        ),
-        applicability_scope=payload.get(
-            "applicability_scope", APPLICABILITY_SCOPE
-        ),
+        minimum_support_rule=payload.get("minimum_support_rule", MINIMUM_SUPPORT_RULE),
+        fallback_hierarchy=tuple(payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)),
+        applicability_scope=payload.get("applicability_scope", APPLICABILITY_SCOPE),
         global_value_minutes=float(payload["global_value_minutes"]),
         global_sample_count=int(payload["global_sample_count"]),
         cells=cells,
         manifest_freeze_id=payload["manifest_freeze_id"],
         support_state=SupportState(payload["support_state"]),
-        reason_code=payload.get(
-            "reason_code", "DIRECT_TAXI_OUT_REFERENCE"
-        ),
+        reason_code=payload.get("reason_code", "DIRECT_TAXI_OUT_REFERENCE"),
     )
 
 
@@ -394,9 +389,17 @@ def build_data2_taxi_reference_streaming(
     input_rows = accepted_rows = 0
     source_hashes = {}
     projected = (
-        "FlightDate", "Reporting_Airline", "Flight_Number_Reporting_Airline",
-        "Origin", "Dest", "CRSDepTime", "CRSArrTime", "Tail_Number",
-        "TaxiOut", "Cancelled", "Diverted",
+        "FlightDate",
+        "Reporting_Airline",
+        "Flight_Number_Reporting_Airline",
+        "Origin",
+        "Dest",
+        "CRSDepTime",
+        "CRSArrTime",
+        "Tail_Number",
+        "TaxiOut",
+        "Cancelled",
+        "Diverted",
     )
     for path in csv_paths:
         source_hashes[str(path)] = f"sha256:{sha256(path.read_bytes()).hexdigest()}"
@@ -407,17 +410,24 @@ def build_data2_taxi_reference_streaming(
                 try:
                     day = date.fromisoformat(str(row["FlightDate"])[:10])
                     origin, destination = str(row["Origin"]), str(row["Dest"])
-                    if origin not in timezones or destination not in timezones \
-                            or missing(row["Tail_Number"]):
+                    if (
+                        origin not in timezones
+                        or destination not in timezones
+                        or missing(row["Tail_Number"])
+                    ):
                         continue
                     scheduled_departure = local_hhmm_to_utc(
-                        day, row["CRSDepTime"], timezones[origin])
+                        day, row["CRSDepTime"], timezones[origin]
+                    )
                     scheduled_arrival = local_hhmm_to_utc(
-                        day, row["CRSArrTime"], timezones[destination])
+                        day, row["CRSArrTime"], timezones[destination]
+                    )
                     if scheduled_departure is None or scheduled_arrival is None:
                         continue
                     infer_rollover(scheduled_departure, scheduled_arrival)
-                    if bool(number(row["Cancelled"]) or 0) or bool(number(row["Diverted"]) or 0):
+                    if bool(number(row["Cancelled"]) or 0) or bool(
+                        number(row["Diverted"]) or 0
+                    ):
                         continue
                     taxi = number(row["TaxiOut"])
                     if taxi is None or float(taxi) <= 0:
@@ -437,16 +447,20 @@ def build_data2_taxi_reference_streaming(
             value, level = float(median(values)), _LEVEL_CELL
         else:
             value, level = global_value, _LEVEL_GLOBAL
-        cells.append(Data2TaxiReferenceCell(
-            airport_id=airport,
-            value_minutes=value,
-            sample_count=len(values),
-            fallback_level=level,
-            provenance=(
-                f"airport={airport}", f"n={len(values)}", f"fallback_level={level}",
-                f"{RULE_ID}@{RULE_VERSION}",
-            ),
-        ))
+        cells.append(
+            Data2TaxiReferenceCell(
+                airport_id=airport,
+                value_minutes=value,
+                sample_count=len(values),
+                fallback_level=level,
+                provenance=(
+                    f"airport={airport}",
+                    f"n={len(values)}",
+                    f"fallback_level={level}",
+                    f"{RULE_ID}@{RULE_VERSION}",
+                ),
+            )
+        )
     freeze_payload = {
         "rule": f"{RULE_ID}@{RULE_VERSION}",
         "fit_period": fit_period,
@@ -455,7 +469,12 @@ def build_data2_taxi_reference_streaming(
         "accepted_rows": accepted_rows,
         "global_value_minutes": global_value,
         "cells": [
-            [item.airport_id, item.value_minutes, item.sample_count, item.fallback_level]
+            [
+                item.airport_id,
+                item.value_minutes,
+                item.sample_count,
+                item.fallback_level,
+            ]
             for item in cells
         ],
     }

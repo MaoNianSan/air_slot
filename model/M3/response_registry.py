@@ -23,7 +23,6 @@ from model.common.errors import RegistryError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 
-
 REGISTRY_ID = "M3_RESPONSE_SCENARIO_V1"
 SCHEMA_VERSION = "M3_RESPONSE_SCENARIO_V1"
 # Backwards-compatible alias: the principal-23 set now lives in model.M3.registry.
@@ -77,7 +76,9 @@ class ResponseScenarioAction(FrozenModel):
         ):
             raise RegistryError("M3_RESPONSE_NON_A00_ASSUMPTION_BLOCK_REQUIRED")
         if self.response_provenance not in {
-            "PURE_SCENARIO", "OPERATOR_INDUSTRY", "STRUCTURAL_BOUNDED_SCENARIO",
+            "PURE_SCENARIO",
+            "OPERATOR_INDUSTRY",
+            "STRUCTURAL_BOUNDED_SCENARIO",
             "ASSUMPTION_GROUNDED",
         }:
             raise RegistryError("M3_RESPONSE_INVALID_PROVENANCE")
@@ -166,7 +167,8 @@ class ResponseScenarioRegistry(FrozenModel):
         for level in SENSITIVITY_LEVELS:
             entry = self.sensitivity.get(level.lower())
             if entry is None or set(entry) != {
-                "success_probability_delta", "response_mean_delta",
+                "success_probability_delta",
+                "response_mean_delta",
             }:
                 raise RegistryError("M3_RESPONSE_SENSITIVITY_SPEC_INVALID")
         for name, item in self.actions.items():
@@ -183,7 +185,9 @@ class ResponseScenarioRegistry(FrozenModel):
         if not set(PRINCIPAL_IDS) <= set(structural_ids):
             raise RegistryError("M3_RESPONSE_STRUCTURAL_PRINCIPAL_SUBSET_MISMATCH")
 
-    def parameters(self, template_id: str, *, sensitivity: str = "BASE") -> dict[str, Any]:
+    def parameters(
+        self, template_id: str, *, sensitivity: str = "BASE"
+    ) -> dict[str, Any]:
         """Materialized response parameters for one action at one sensitivity."""
         if template_id not in self.actions:
             raise RegistryError(f"M3_RESPONSE_UNKNOWN_ACTION:{template_id}")
@@ -238,7 +242,8 @@ class ResponseScenarioRegistry(FrozenModel):
             "induced_score_to_cu": float(self.induced_score_to_cu),
             "assumption_grounded": (
                 action.assumption_grounded.model_dump(mode="json")
-                if action.assumption_grounded is not None else None
+                if action.assumption_grounded is not None
+                else None
             ),
         }
 
@@ -296,7 +301,9 @@ class ResponseScenarioRegistry(FrozenModel):
         return output_path
 
 
-def load_response_registry(path: Path, *, structural_path: Path) -> ResponseScenarioRegistry:
+def load_response_registry(
+    path: Path, *, structural_path: Path
+) -> ResponseScenarioRegistry:
     structural = ActionRegistry.load(structural_path)
     return ResponseScenarioRegistry.load(path, structural_registry=structural)
 

@@ -9,7 +9,9 @@ from model.PRE.streaming.development import run_development_pre_stream
 
 
 def main(argv=None) -> None:
-    parser = argparse.ArgumentParser(description="Verify the PRE-owned Development stream")
+    parser = argparse.ArgumentParser(
+        description="Verify the PRE-owned Development stream"
+    )
     parser.add_argument("--max-episodes", type=int)
     parser.add_argument("--heartbeat-seconds", type=float, default=45.0)
     parser.add_argument("--output", type=Path)

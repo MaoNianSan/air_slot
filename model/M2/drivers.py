@@ -14,7 +14,6 @@ from model.M2.contracts import (
     SourceType,
 )
 
-
 _CONTEXT_FIELDS = tuple(M2ScientificContext.model_fields)
 
 COMPONENT_INPUT_CONTRACTS = {
@@ -106,9 +105,7 @@ def _scenario_value(
     return float(value), support
 
 
-def _context_value(
-    context: M2ScientificContext, name: str
-) -> ScientificContextValue:
+def _context_value(context: M2ScientificContext, name: str) -> ScientificContextValue:
     return getattr(context, name)
 
 
@@ -305,7 +302,9 @@ def native_quantities(
             reference_source=reference_source,
             reference_lineage=typed_reference_lineage,
             confidence=confidence,
-            reason_code="DEGRADED_PARENT_INPUT" if state is SupportState.DEGRADED else None,
+            reason_code=(
+                "DEGRADED_PARENT_INPUT" if state is SupportState.DEGRADED else None
+            ),
             provenance=tuple(sorted(set(provenance))),
         )
 
@@ -359,12 +358,14 @@ def native_quantities(
         ),
         publish(
             "P_service",
-            lambda: float(ctx("passenger_exposure").value)
-            if (
-                d_to is not None
-                and d_to >= float(ctx("service_policy_reference").value)
-            )
-            else 0.0,
+            lambda: (
+                float(ctx("passenger_exposure").value)
+                if (
+                    d_to is not None
+                    and d_to >= float(ctx("service_policy_reference").value)
+                )
+                else 0.0
+            ),
             "threshold_events",
             "service_policy_threshold",
             (("d_to_minutes", d_to, d_to_support),),

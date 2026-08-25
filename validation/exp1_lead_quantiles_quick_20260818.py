@@ -9,6 +9,7 @@ No Exp1 inference rerun. Cross-validated against the frozen evidence.json
 median/IQR. Then merges into the quick-diagnostic JSON and writes the final
 markdown report.
 """
+
 from __future__ import annotations
 
 import json
@@ -21,7 +22,9 @@ ROOT = Path(__file__).resolve().parents[1]
 FREEZE = ROOT / "artifacts" / "diagnostics" / "v5_development_freeze"
 PRINCIPAL = FREEZE / "exp1_development_warning" / "principal_s250"
 EVIDENCE = json.loads((PRINCIPAL / "evidence.json").read_text(encoding="utf-8"))
-JSON_PATH = ROOT / "artifacts" / "diagnostics" / "M1_HORIZON_ACCURACY_QUICK_20260818.json"
+JSON_PATH = (
+    ROOT / "artifacts" / "diagnostics" / "M1_HORIZON_ACCURACY_QUICK_20260818.json"
+)
 MD_PATH = ROOT / "docs" / "diagnostics" / "M1_HORIZON_ACCURACY_QUICK_20260818.md"
 
 VARIANTS = {
@@ -34,12 +37,22 @@ THRESHOLD_KEY = "0.1"  # frozen operating point at target FPR 0.1
 
 def read_variant_month(variant_dir: str, month: str) -> pd.DataFrame:
     import pyarrow.dataset as ds
+
     base = PRINCIPAL / f"month={month}" / variant_dir
     schema = ds.dataset(base, format="parquet").schema
-    keep = [c for c in schema.names if c in {
-        "episode_id", "decision_time", "lead_time_minutes", "warning_probability",
-        "warning_support_state", "realized_event_positive",
-    }]
+    keep = [
+        c
+        for c in schema.names
+        if c
+        in {
+            "episode_id",
+            "decision_time",
+            "lead_time_minutes",
+            "warning_probability",
+            "warning_support_state",
+            "realized_event_positive",
+        }
+    ]
     table = ds.dataset(base, format="parquet").to_table(columns=keep)
     return table.to_pandas()
 
@@ -53,7 +66,8 @@ def episode_lead_quantiles(frame: pd.DataFrame, threshold: float) -> dict:
     """
     f = frame.copy()
     f["sup"] = (f["warning_support_state"] == "SUPPORTED") & np.isfinite(
-        f["warning_probability"].to_numpy(dtype=np.float64))
+        f["warning_probability"].to_numpy(dtype=np.float64)
+    )
     grp_ep = f.groupby("episode_id", sort=False)
     prev_lead = f["lead_time_minutes"].shift(1)
     prev_prob = f["warning_probability"].shift(1)
@@ -65,8 +79,13 @@ def episode_lead_quantiles(frame: pd.DataFrame, threshold: float) -> dict:
 
     gap_ok = (prev_lead - f["lead_time_minutes"] - 5.0).abs() <= 1e-9
     pair_ok = gap_ok & f["sup"] & prev_sup
-    score = np.where(pair_ok.to_numpy(), np.minimum(prev_prob.to_numpy(),
-                    f["warning_probability"].to_numpy(dtype=np.float64)), -1.0)
+    score = np.where(
+        pair_ok.to_numpy(),
+        np.minimum(
+            prev_prob.to_numpy(), f["warning_probability"].to_numpy(dtype=np.float64)
+        ),
+        -1.0,
+    )
     score = np.nan_to_num(score, nan=-1.0)
     f["score"] = score
     f["pair_ok"] = pair_ok
@@ -75,18 +94,30 @@ def episode_lead_quantiles(frame: pd.DataFrame, threshold: float) -> dict:
     ep_max = score_grp.transform("max")
     run_max = score_grp.cummax()
     prev_best = run_max.shift(1).fillna(-1.0)
-    first_max = (score >= 0) & (score == ep_max.to_numpy()) & (score > prev_best.to_numpy())
-    sustained_lead = pd.Series(np.where(first_max, prev_lead.to_numpy(dtype=np.float64), np.nan),
-                               index=f.index)
+    first_max = (
+        (score >= 0) & (score == ep_max.to_numpy()) & (score > prev_best.to_numpy())
+    )
+    sustained_lead = pd.Series(
+        np.where(first_max, prev_lead.to_numpy(dtype=np.float64), np.nan), index=f.index
+    )
 
-    any_warning = (f["sup"] & (f["warning_probability"] >= threshold)).groupby(
-        f["episode_id"], sort=False).transform("any")
-    sustained = (f["pair_ok"] & (f["score"] >= threshold)).groupby(
-        f["episode_id"], sort=False).transform("any")
+    any_warning = (
+        (f["sup"] & (f["warning_probability"] >= threshold))
+        .groupby(f["episode_id"], sort=False)
+        .transform("any")
+    )
+    sustained = (
+        (f["pair_ok"] & (f["score"] >= threshold))
+        .groupby(f["episode_id"], sort=False)
+        .transform("any")
+    )
     evaluable = f["pair_ok"].groupby(f["episode_id"], sort=False).transform("any")
     lead_ep = sustained_lead.groupby(f["episode_id"], sort=False).transform("first")
-    realized_ep = f["realized_event_positive"].groupby(
-        f["episode_id"], sort=False).transform("first")
+    realized_ep = (
+        f["realized_event_positive"]
+        .groupby(f["episode_id"], sort=False)
+        .transform("first")
+    )
 
     keep = boundary.to_numpy()
     pos = (realized_ep & evaluable & sustained)[keep].to_numpy()
@@ -106,9 +137,15 @@ def episode_lead_quantiles(frame: pd.DataFrame, threshold: float) -> dict:
             "iqr_min": float(q3 - q1),
             "positive_evaluable": int(((realized_ep & evaluable)[keep]).sum()),
             "sustained_warning_count": int((pos).sum()),
-            "episode_recall": float(((realized_ep & evaluable & any_warning)[keep].sum()
-                                     / (realized_ep & evaluable)[keep].sum())),
-            "sustained_warning_recall": float((pos.sum() / (realized_ep & evaluable)[keep].sum())),
+            "episode_recall": float(
+                (
+                    (realized_ep & evaluable & any_warning)[keep].sum()
+                    / (realized_ep & evaluable)[keep].sum()
+                )
+            ),
+            "sustained_warning_recall": float(
+                (pos.sum() / (realized_ep & evaluable)[keep].sum())
+            ),
         }
     return {"threshold": threshold, "N_leads": 0}
 
@@ -126,8 +163,11 @@ def main() -> None:
         # frozen _ordered_rows sorts each episode by lead_time_minutes descending;
         # some variants' files are not pre-sorted, so sort explicitly (stable).
         frame = frame.sort_values(
-            ["episode_id", "lead_time_minutes"], ascending=[True, False],
-            kind="stable", ignore_index=True)
+            ["episode_id", "lead_time_minutes"],
+            ascending=[True, False],
+            kind="stable",
+            ignore_index=True,
+        )
         assert frame["warning_support_state"].notna().all()
         res = episode_lead_quantiles(frame, threshold=spec["threshold"])
         res["variant"] = name
@@ -135,9 +175,21 @@ def main() -> None:
         res["frozen_median_crosscheck"] = frozen["median_risk_lead_minutes"]
         res["frozen_iqr_crosscheck"] = frozen["iqr_risk_lead_minutes"]
         res["frozen_positive_denominator"] = frozen["positive_denominator"]
-        assert abs(res["median_min"] - frozen["median_risk_lead_minutes"]) < 1e-9, (name, res, frozen)
-        assert abs(res["iqr_min"] - frozen["iqr_risk_lead_minutes"]) < 1e-9, (name, res, frozen)
-        assert res["positive_evaluable"] == frozen["positive_denominator"], (name, res, frozen)
+        assert abs(res["median_min"] - frozen["median_risk_lead_minutes"]) < 1e-9, (
+            name,
+            res,
+            frozen,
+        )
+        assert abs(res["iqr_min"] - frozen["iqr_risk_lead_minutes"]) < 1e-9, (
+            name,
+            res,
+            frozen,
+        )
+        assert res["positive_evaluable"] == frozen["positive_denominator"], (
+            name,
+            res,
+            frozen,
+        )
         results[name] = res
         print(name, res)
         del frames, frame
@@ -152,7 +204,9 @@ def main() -> None:
         "variants": results,
         "crosscheck_against_frozen_evidence": "PASS (median/IQR/denominators identical)",
     }
-    JSON_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    JSON_PATH.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
     print("MERGED", JSON_PATH)
 
     write_markdown(payload)
@@ -197,9 +251,13 @@ def target_tables(payload, name, horizons):
         f"{overall['acc_within_5_min']*100:.0f}% | {overall['acc_within_10_min']*100:.0f}% | "
         f"{overall['acc_within_15_min']*100:.0f}% | {overall['acc_within_30_min']*100:.0f}% |"
     )
-    lines += ["", "**DISTRIBUTIONAL QUALITY（仅填写 artifact 支持项）**", "",
-              "| Horizon | NLL | CRPS | Cov50 | Cov80 | Cov90 | W50 | W80 | W90 |",
-              "|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    lines += [
+        "",
+        "**DISTRIBUTIONAL QUALITY（仅填写 artifact 支持项）**",
+        "",
+        "| Horizon | NLL | CRPS | Cov50 | Cov80 | Cov90 | W50 | W80 | W90 |",
+        "|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
     for h in horizons:
         r = rows.get(h)
         if r is None:
@@ -267,9 +325,12 @@ def write_markdown(payload: dict) -> None:
         ]
     dto = payload["targets"]["D_TO"]
     rows = {r["horizon_minutes"]: r for r in dto["horizons"]}
-    lines += ["### D_TO（derived，冻结恒等式 max(0, DELTA_OB + T_TX − taxi_ref)）", "",
-              "| Horizon | N | MAE | MedianAE | RMSE | ±5m | ±10m | ±15m | ±30m |",
-              "|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    lines += [
+        "### D_TO（derived，冻结恒等式 max(0, DELTA_OB + T_TX − taxi_ref)）",
+        "",
+        "| Horizon | N | MAE | MedianAE | RMSE | ±5m | ±10m | ±15m | ±30m |",
+        "|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
     for h in horizons:
         r = rows.get(h)
         if r is None:
@@ -287,10 +348,14 @@ def write_markdown(payload: dict) -> None:
     )
     lines += [f"\n- 说明: {dto['caveats']}。", ""]
 
-    lines += ["## 3. Exp1 Lead Time Quantiles（从 frozen parquet 只读计算）", "",
-              f"- 定义: {lead['lead_definition']}", "",
-              "| Variant | Median | Q25 | Q75 | IQR | N_leads | 与 frozen evidence 交叉验证 |",
-              "|---|---:|---:|---:|---:|---:|---|"]
+    lines += [
+        "## 3. Exp1 Lead Time Quantiles（从 frozen parquet 只读计算）",
+        "",
+        f"- 定义: {lead['lead_definition']}",
+        "",
+        "| Variant | Median | Q25 | Q75 | IQR | N_leads | 与 frozen evidence 交叉验证 |",
+        "|---|---:|---:|---:|---:|---:|---|",
+    ]
     for name in ("CURRENT", "FIXED_HISTORY", "ADAPTIVE_HISTORY"):
         v = lead["variants"][name]
         lines.append(
@@ -315,7 +380,9 @@ def write_markdown(payload: dict) -> None:
         f"±10m {payload['targets']['R_IB']['horizons'][1]['acc_within_10_min']*100:.0f}%；"
         f"±15m {payload['targets']['R_IB']['horizons'][1]['acc_within_15_min']*100:.0f}%；"
         f"±30m {payload['targets']['R_IB']['horizons'][1]['acc_within_30_min']*100:.0f}%。",
-        "", "### 4.2 120 min ahead", "",
+        "",
+        "### 4.2 120 min ahead",
+        "",
         f"- T_TX: MAE {payload['targets']['T_TX']['horizons'][2]['MAE_min']:.1f} min；"
         f"±10m {payload['targets']['T_TX']['horizons'][2]['acc_within_10_min']*100:.0f}%；"
         f"±15m {payload['targets']['T_TX']['horizons'][2]['acc_within_15_min']*100:.0f}%；"
@@ -328,12 +395,21 @@ def write_markdown(payload: dict) -> None:
         f"±10m {payload['targets']['R_IB']['horizons'][2]['acc_within_10_min']*100:.0f}%；"
         f"±15m {payload['targets']['R_IB']['horizons'][2]['acc_within_15_min']*100:.0f}%；"
         f"±30m {payload['targets']['R_IB']['horizons'][2]['acc_within_30_min']*100:.0f}%。",
-        "", "### 4.3 30 → 60 → 120 → 180 → 240 的下降趋势", "",
+        "",
+        "### 4.3 30 → 60 → 120 → 180 → 240 的下降趋势",
+        "",
     ]
     for name, col in (("T_TX", "T_TX"), ("DELTA_OB", "DELTA_OB"), ("R_IB", "R_IB")):
         acc = []
         for h in (30, 60, 120, 180, 240):
-            r = next((x for x in payload["targets"][name]["horizons"] if x["horizon_minutes"] == h), None)
+            r = next(
+                (
+                    x
+                    for x in payload["targets"][name]["horizons"]
+                    if x["horizon_minutes"] == h
+                ),
+                None,
+            )
             acc.append("N/A" if r is None else f"{r['acc_within_15_min']*100:.0f}%")
         lines.append(f"- {name}（±15m）: 30→60→120→180→240 = {' → '.join(acc)}。")
     lines += [

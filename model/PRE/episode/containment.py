@@ -6,7 +6,6 @@ import math
 
 from model.PRE.cohort import split_for_date
 
-
 REASON_CROSS_V5_SPLIT_EXCLUDED = "CROSS_V5_SPLIT_EXCLUDED"
 _SPLIT_LABELS = {
     "train": "TRAIN",
@@ -36,7 +35,9 @@ def decision_times(*, episode_start_time: datetime, episode_end_time: datetime):
         current += timedelta(minutes=5)
 
 
-def episode_node_count(*, episode_start_time: datetime, episode_end_time: datetime) -> int:
+def episode_node_count(
+    *, episode_start_time: datetime, episode_end_time: datetime
+) -> int:
     seconds = (episode_end_time - episode_start_time).total_seconds()
     if seconds < 0:
         return 0
@@ -77,10 +78,7 @@ def evaluate_episode_containment(
         episode.episode_end_time,
         *tuple(extra_decision_times),
     )
-    support_splits = tuple(
-        split_for_date(stamp.date())
-        for stamp in support_times
-    )
+    support_splits = tuple(split_for_date(stamp.date()) for stamp in support_times)
     sequence = (predecessor_split, *support_splits, successor_split)
     ordered_unique = tuple(name for name in _SPLIT_ORDER if name in set(sequence))
     transitions = tuple(
@@ -100,7 +98,9 @@ def evaluate_episode_containment(
     )
 
 
-def episode_containment_from_rows(episode, rows_by_id: dict[str, dict]) -> SplitContainmentResult:
+def episode_containment_from_rows(
+    episode, rows_by_id: dict[str, dict]
+) -> SplitContainmentResult:
     predecessor = rows_by_id[episode.predecessor_flight_id]
     successor = rows_by_id[episode.successor_flight_id]
     return evaluate_episode_containment(

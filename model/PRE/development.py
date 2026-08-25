@@ -182,13 +182,9 @@ def materialize_preselected_cohorts(
         )
         for episode in selected
     }
-    replay_lag = int(
-        scientific.parameters["data2_weather_replay_lag_minutes"].value
-    )
+    replay_lag = int(scientific.parameters["data2_weather_replay_lag_minutes"].value)
     max_age = int(scientific.parameters["weather_max_age_minutes"].value)
-    weather, weather_audit = weather_index(
-        data2_root, replay_lag, heartbeat=heartbeat
-    )
+    weather, weather_audit = weather_index(data2_root, replay_lag, heartbeat=heartbeat)
     config_hash_value, registry_hash_value = config_hash(root), registry_hash(root)
     publisher = ProductionPREPublisher.from_project()
     published = {}
@@ -207,12 +203,9 @@ def materialize_preselected_cohorts(
         )
     audit = {
         **(selection_audit or {}),
-        "sampled_episodes": {
-            name: len(partitions[name]) for name in partitions
-        },
+        "sampled_episodes": {name: len(partitions[name]) for name in partitions},
         "pre_decision_nodes": {
-            name: sum(len(item.nodes) for item in published[name])
-            for name in published
+            name: sum(len(item.nodes) for item in published[name]) for name in published
         },
         "stage_counts": stage_counts,
         "weather": weather_audit,
@@ -268,9 +261,7 @@ def build_sampled_pre_cohorts(
         existing_ids = {
             item.episode_id for values in partitions.values() for item in values
         }
-        duplicate_ids = existing_ids & {
-            item.episode_id for item in extra_development
-        }
+        duplicate_ids = existing_ids & {item.episode_id for item in extra_development}
         if duplicate_ids:
             raise ValueError(
                 f"PRE_ADDITIONAL_DEVELOPMENT_DUPLICATE:{sorted(duplicate_ids)}"
@@ -281,10 +272,12 @@ def build_sampled_pre_cohorts(
             for item in extra_development
         ):
             raise ValueError("PRE_ADDITIONAL_DEVELOPMENT_SPLIT_VIOLATION")
-        partitions["development"] = tuple(sorted(
-            partitions["development"] + extra_development,
-            key=lambda item: item.episode_id,
-        ))
+        partitions["development"] = tuple(
+            sorted(
+                partitions["development"] + extra_development,
+                key=lambda item: item.episode_id,
+            )
+        )
     del reservoirs
     gc.collect()
     selection_audit = {

@@ -20,14 +20,18 @@ class HistoryEncoderMode(str, Enum):
     NO_HISTORY_CURRENT_OBSERVATION = "NO_HISTORY_CURRENT_OBSERVATION"
 
 
-def adaptive_history(states: tuple[PREState, ...] | list[PREState]) -> tuple[PREState, ...]:
+def adaptive_history(
+    states: tuple[PREState, ...] | list[PREState],
+) -> tuple[PREState, ...]:
     """Return the full causal prefix inside one predecessor-successor episode."""
     output = tuple(states)
     validate_history_sequence(output, require_episode_start=True)
     return output
 
 
-def current_history(states: tuple[PREState, ...] | list[PREState]) -> tuple[PREState, ...]:
+def current_history(
+    states: tuple[PREState, ...] | list[PREState],
+) -> tuple[PREState, ...]:
     """Return only the current legal decision node."""
     full = adaptive_history(states)
     output = (full[-1],)

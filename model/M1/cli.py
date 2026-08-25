@@ -13,7 +13,9 @@ def main(argv=None):
     train.add_argument("--output", type=Path, required=True)
     train_data2_fast = sub.add_parser("train-data2-fast")
     train_data2_fast.add_argument(
-        "--root", type=Path, default=Path(__file__).resolve().parents[2],
+        "--root",
+        type=Path,
+        default=Path(__file__).resolve().parents[2],
     )
     train_data2_fast.add_argument("--output", type=Path)
     infer = sub.add_parser("infer-smoke")
@@ -39,11 +41,14 @@ def main(argv=None):
             return 2
     elif args.command == "train-smoke":
         pipe = M1Pipeline.smoke(4)
-        optimizer = torch.optim.Adam(pipe.model.parameters(), lr=.01)
+        optimizer = torch.optim.Adam(pipe.model.parameters(), lr=0.01)
         values = torch.randn(8, 3, 4)
         lengths = torch.full((8,), 3)
-        labels = {n: torch.arange(8) % b.class_count for n, b in pipe.contracts.items()
-                  if hasattr(b, "class_count")}
+        labels = {
+            n: torch.arange(8) % b.class_count
+            for n, b in pipe.contracts.items()
+            if hasattr(b, "class_count")
+        }
         initial = None
         for _ in range(8):
             optimizer.zero_grad()
@@ -54,27 +59,39 @@ def main(argv=None):
             optimizer.step()
         path = args.output / "m1.pt"
         pipe.save(path)
-        result = {"status": "PASS", "initial_loss": initial,
-                  "final_loss": float(loss.detach()), "artifact": path.as_posix()}
+        result = {
+            "status": "PASS",
+            "initial_loss": initial,
+            "final_loss": float(loss.detach()),
+            "artifact": path.as_posix(),
+        }
     elif args.command == "infer-smoke":
         pipe = M1Pipeline.load(args.artifact)
-        dist = pipe.predict_distributions(torch.zeros(1, 3, pipe.model.input_size),
-                                          torch.tensor([3]))
-        result = {"status": "PASS",
-                  "heads": {n: list(v.shape) if hasattr(v, "shape") else v
-                            for n, v in dist.items()}}
+        dist = pipe.predict_distributions(
+            torch.zeros(1, 3, pipe.model.input_size), torch.tensor([3])
+        )
+        result = {
+            "status": "PASS",
+            "heads": {
+                n: list(v.shape) if hasattr(v, "shape") else v for n, v in dist.items()
+            },
+        }
     elif args.command == "inspect-artifact":
         lifecycle = M1Lifecycle.load(args.artifact)
-        result = {"status": "PASS",
-                  "hidden_size": lifecycle.pipeline.model.hidden_size,
-                  "temperatures": lifecycle.pipeline.temperatures,
-                  "contract_version": "M1_STATE_ESTIMATOR_V2",
-                  "primitive_targets": ["T_IB_A00", "D_OB", "D_TX"]}
+        result = {
+            "status": "PASS",
+            "hidden_size": lifecycle.pipeline.model.hidden_size,
+            "temperatures": lifecycle.pipeline.temperatures,
+            "contract_version": "M1_STATE_ESTIMATOR_V2",
+            "primitive_targets": ["T_IB_A00", "D_OB", "D_TX"],
+        }
     else:
-        result = {"status": "PASS",
-                  "architecture": "one_layer_unidirectional_gru",
-                  "primitive_targets": ["T_IB_A00", "D_OB", "D_TX"],
-                  "heads": ["DISCRETE_HAZARD", "HURDLE_QUANTILE", "HURDLE_QUANTILE"]}
+        result = {
+            "status": "PASS",
+            "architecture": "one_layer_unidirectional_gru",
+            "primitive_targets": ["T_IB_A00", "D_OB", "D_TX"],
+            "heads": ["DISCRETE_HAZARD", "HURDLE_QUANTILE", "HURDLE_QUANTILE"],
+        }
     print(json.dumps(result, sort_keys=True))
     return 0
 

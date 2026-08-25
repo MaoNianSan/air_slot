@@ -55,7 +55,9 @@ from model.PRE.streaming.data2 import load_timezones
 def ontime_paths(root: Path, months: tuple[int, ...]) -> tuple[Path, ...]:
     paths = []
     for month in months:
-        directory = root / "data2" / "raw" / "bts" / "ontime" / "2019" / f"month={month:02d}"
+        directory = (
+            root / "data2" / "raw" / "bts" / "ontime" / "2019" / f"month={month:02d}"
+        )
         matches = sorted(directory.glob("*.csv"))
         if len(matches) != 1:
             raise ContractError(f"M2_ONTIME_MONTH_FILE_COUNT:{month}")
@@ -63,20 +65,23 @@ def ontime_paths(root: Path, months: tuple[int, ...]) -> tuple[Path, ...]:
     return tuple(paths)
 
 
-def iter_train_rows(
-    paths: tuple[Path, ...], timezones: dict[str, str]
-):
+def iter_train_rows(paths: tuple[Path, ...], timezones: dict[str, str]):
     """Stream compact canonical train row dicts (schedule + outcome fields)."""
     for path in paths:
         with path.open(encoding="utf-8-sig", newline="", errors="replace") as handle:
             for raw in csv.DictReader(handle):
                 try:
                     schedule, outcome = canonicalize_ontime_row(
-                        {key: raw.get(key, "") for key in ONTIME_PROJECTED_FIELDS}, timezones
+                        {key: raw.get(key, "") for key in ONTIME_PROJECTED_FIELDS},
+                        timezones,
                     )
                 except Exception:
                     continue
-                if schedule.aircraft_id is None or outcome.cancelled or outcome.diverted:
+                if (
+                    schedule.aircraft_id is None
+                    or outcome.cancelled
+                    or outcome.diverted
+                ):
                     continue
                 yield {
                     "dataset_instance_id": schedule.dataset_instance_id,
@@ -109,17 +114,13 @@ def build_data2_m2_train_preparation(
 ) -> Data2M2TrainPreparationArtifact:
     """Read and canonicalize the frozen M2 Train partition inside PRE."""
     paths = ontime_paths(root, months)
-    timezones = load_timezones(
-        root / "data2" / "refs" / "us_airport_timezones.csv"
-    )
+    timezones = load_timezones(root / "data2" / "refs" / "us_airport_timezones.csv")
     return Data2M2TrainPreparationArtifact(
         rows=collect_train_rows(paths, timezones),
         source_paths=paths,
         months=months,
         fit_period=fit_period,
     )
-
-
 
 
 __all__ = [
@@ -134,10 +135,26 @@ __all__ = [
 ]
 
 ONTIME_PROJECTED_FIELDS = [
-    "FlightDate", "Reporting_Airline", "Tail_Number", "Flight_Number_Reporting_Airline",
-    "Origin", "Dest", "CRSDepTime", "CRSArrTime", "DepTime", "ArrTime",
-    "WheelsOff", "WheelsOn", "TaxiOut", "TaxiIn", "DepDelay", "ArrDelay",
-    "DepDelayMinutes", "ArrDelayMinutes", "Cancelled", "Diverted",
+    "FlightDate",
+    "Reporting_Airline",
+    "Tail_Number",
+    "Flight_Number_Reporting_Airline",
+    "Origin",
+    "Dest",
+    "CRSDepTime",
+    "CRSArrTime",
+    "DepTime",
+    "ArrTime",
+    "WheelsOff",
+    "WheelsOn",
+    "TaxiOut",
+    "TaxiIn",
+    "DepDelay",
+    "ArrDelay",
+    "DepDelayMinutes",
+    "ArrDelayMinutes",
+    "Cancelled",
+    "Diverted",
 ]
 
 M2_FORMAL_SCOPE = (
@@ -180,7 +197,6 @@ M2_NATIVE_DEFINITIONS = {
         "driver": "excess_taxi",
     },
 }
-
 
 
 def stream_passenger_routes(coupon_paths: tuple[Path, ...]) -> list[dict[str, Any]]:
@@ -361,15 +377,9 @@ def fit_train_references(
     exposure = build_data2_downstream_exposure(rows, fit_period=fit_period)
     coupon_paths = tuple(
         sorted(
-            (
-                root
-                / "data2"
-                / "raw"
-                / "bts"
-                / "db1b"
-                / "2019"
-                / "coupon"
-            ).glob("Origin_and_Destination_Survey_DB1BCoupon_2019_[12].csv")
+            (root / "data2" / "raw" / "bts" / "db1b" / "2019" / "coupon").glob(
+                "Origin_and_Destination_Survey_DB1BCoupon_2019_[12].csv"
+            )
         )
     )
     passenger_rows = stream_passenger_routes(coupon_paths)
@@ -410,7 +420,9 @@ def _supported_value(reference, *args) -> float | None:
     return float(value.value)
 
 
-def _turnaround_taxi_value(index, airport, reference, *, abstain_if_missing=False) -> float | None:
+def _turnaround_taxi_value(
+    index, airport, reference, *, abstain_if_missing=False
+) -> float | None:
     """Same resolution as Data2Turnaround/TaxiReference.lookup (cell or global).
 
     Turnaround always has a global fallback; taxi ABSTAINs for airports with
@@ -549,5 +561,3 @@ def compute_train_scales(
             "definition": M2_NATIVE_DEFINITIONS[name]["definition"],
         }
     return output
-
-

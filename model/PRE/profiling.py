@@ -7,10 +7,17 @@ from pathlib import Path
 
 from model.common.identity import content_id
 from model.PRE.adapters.data2 import _normalize_isd_station_id
-from model.PRE.canonical.normalization import canonicalize_isd_row, canonicalize_ontime_row
+from model.PRE.canonical.normalization import (
+    canonicalize_isd_row,
+    canonicalize_ontime_row,
+)
 from model.PRE.episode.builder import build_data2_episode_records
 from model.PRE.episode.node_builder import build_rolling_decision_nodes
-from model.PRE.pipeline import ProductionPREPublisher, ProductionPRERequest, publish_production_pre
+from model.PRE.pipeline import (
+    ProductionPREPublisher,
+    ProductionPRERequest,
+    publish_production_pre,
+)
 from model.PRE.streaming.data2 import (
     PROJECTED_ONTIME_COLUMNS,
     config_hash,
@@ -18,7 +25,6 @@ from model.PRE.streaming.data2 import (
     load_timezones,
     registry_hash,
 )
-
 
 ROW_LIMIT = 50_000
 EPISODE_LIMIT = 8
@@ -42,7 +48,9 @@ class PREProfileBundle:
 
 def _discover_source(data2_root: Path) -> Path:
     files = tuple(
-        sorted((data2_root / "raw" / "bts" / "ontime" / "2019" / "month=01").glob("*.csv"))
+        sorted(
+            (data2_root / "raw" / "bts" / "ontime" / "2019" / "month=01").glob("*.csv")
+        )
     )
     if len(files) != 1:
         raise RuntimeError(f"PROFILE_JANUARY_FILE_COUNT:{len(files)}")
@@ -116,7 +124,9 @@ def _weather_sources(data2_root: Path):
     }
     files = {
         _normalize_isd_station_id(path.stem): path
-        for path in sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv"))
+        for path in sorted(
+            (data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv")
+        )
     }
     return station_map_path, airport_to_station, station_to_airport, files
 
@@ -133,7 +143,11 @@ def _select_episodes(episodes, airport_to_station, weather_files):
     airport = sorted(counts, key=lambda item: (-counts[item], item))[0]
     selected = tuple(
         sorted(
-            (episode for episode in available if episode.connection_airport_id == airport),
+            (
+                episode
+                for episode in available
+                if episode.connection_airport_id == airport
+            ),
             key=lambda item: item.episode_id,
         )[:EPISODE_LIMIT]
     )
@@ -259,18 +273,22 @@ def build_profile_pre_bundle(scientific, *, root: Path, profiler, optimized: boo
     input_hash = content_id({"path": str(path.relative_to(root)), "rows": raw_rows})
     zones = load_timezones(data2_root / "refs" / "us_airport_timezones.csv")
     converted = profiler.capture(
-        "dtype_datetime_conversion", lambda: _convert_rows(raw_rows, zones), input_rows=len(raw_rows)
+        "dtype_datetime_conversion",
+        lambda: _convert_rows(raw_rows, zones),
+        input_rows=len(raw_rows),
     )
     filtered, records = profiler.capture(
-        "flight_filtering", lambda: _filter_completed(converted), input_rows=len(converted)
+        "flight_filtering",
+        lambda: _filter_completed(converted),
+        input_rows=len(converted),
     )
     episodes = profiler.capture(
         "predecessor_successor_pairing",
         lambda: build_data2_episode_records(filtered),
         input_rows=len(filtered),
     )
-    station_map_path, airport_to_station, station_to_airport, weather_files = _weather_sources(
-        data2_root
+    station_map_path, airport_to_station, station_to_airport, weather_files = (
+        _weather_sources(data2_root)
     )
     airport, selected = _select_episodes(episodes, airport_to_station, weather_files)
     items = profiler.capture(
@@ -330,5 +348,7 @@ def build_profile_pre_bundle(scientific, *, root: Path, profiler, optimized: boo
         airport=airport,
         station=station,
         weather_rows=len(weather),
-        bytes_read=path.stat().st_size + weather_path.stat().st_size + station_map_path.stat().st_size,
+        bytes_read=path.stat().st_size
+        + weather_path.stat().st_size
+        + station_map_path.stat().st_size,
     )

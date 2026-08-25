@@ -120,8 +120,12 @@ def _feature_row(
             raw = values[field]
             if field in {"heading_deg", "wind_direction_deg"}:
                 angle = radians(float(raw)) if raw is not None else 0.0
-                row.extend((sin(angle) if raw is not None else 0.0,
-                            cos(angle) if raw is not None else 0.0))
+                row.extend(
+                    (
+                        sin(angle) if raw is not None else 0.0,
+                        cos(angle) if raw is not None else 0.0,
+                    )
+                )
             elif field == "on_ground":
                 row.append(float(bool(raw)) if raw is not None else 0.0)
             else:
@@ -129,7 +133,11 @@ def _feature_row(
 
     scheduled = schedule["scheduled_departure_utc"]
     schedule_minutes = (scheduled - decision_time).total_seconds() / 60.0
-    row.append(_scaled(normalization, "schedule.signed_minutes_to_crs_departure", schedule_minutes))
+    row.append(
+        _scaled(
+            normalization, "schedule.signed_minutes_to_crs_departure", schedule_minutes
+        )
+    )
 
     for prefix, fields, values in (
         ("motion", MOTION_FIELDS, motion_values),
@@ -146,28 +154,48 @@ def _feature_row(
         if observation is None
         else (decision_time - observation.availability_time).total_seconds() / 60.0
     )
-    spacing = 0.0 if previous_time is None else (
-        (decision_time - previous_time).total_seconds() / 60.0
+    spacing = (
+        0.0
+        if previous_time is None
+        else ((decision_time - previous_time).total_seconds() / 60.0)
     )
-    row.extend((
-        _scaled(normalization, "motion.observation_age_minutes", motion_age),
-        _scaled(normalization, "weather.observation_age_minutes", weather_age),
-        _scaled(normalization, "node.spacing_minutes", spacing),
-    ))
+    row.extend(
+        (
+            _scaled(normalization, "motion.observation_age_minutes", motion_age),
+            _scaled(normalization, "weather.observation_age_minutes", weather_age),
+            _scaled(normalization, "node.spacing_minutes", spacing),
+        )
+    )
 
     row.extend(_one_hot(EVIDENCE_LEVELS, EvidenceClass.UNSUPPORTED.value))
-    row.extend(_one_hot(EVIDENCE_LEVELS, (
-        EvidenceClass.DIRECT.value if observation is not None else EvidenceClass.UNSUPPORTED.value
-    )))
+    row.extend(
+        _one_hot(
+            EVIDENCE_LEVELS,
+            (
+                EvidenceClass.DIRECT.value
+                if observation is not None
+                else EvidenceClass.UNSUPPORTED.value
+            ),
+        )
+    )
     row.extend(_one_hot(EVIDENCE_LEVELS, EvidenceClass.EMPIRICAL_REFERENCE.value))
     row.extend(_one_hot(SUPPORT_LEVELS, SupportState.ABSTAIN.value))
-    row.extend(_one_hot(SUPPORT_LEVELS, (
-        SupportState.SUPPORTED.value if observation is not None else SupportState.ABSTAIN.value
-    )))
+    row.extend(
+        _one_hot(
+            SUPPORT_LEVELS,
+            (
+                SupportState.SUPPORTED.value
+                if observation is not None
+                else SupportState.ABSTAIN.value
+            ),
+        )
+    )
     row.extend(_one_hot(SUPPORT_LEVELS, SupportState.SUPPORTED.value))
     row.extend(_one_hot(STAGE_LEVELS, stage))
     if len(row) != len(FEATURE_NAMES):
-        raise RuntimeError(f"M1_COMPACT_FEATURE_COUNT_MISMATCH:{len(row)}:{len(FEATURE_NAMES)}")
+        raise RuntimeError(
+            f"M1_COMPACT_FEATURE_COUNT_MISMATCH:{len(row)}:{len(FEATURE_NAMES)}"
+        )
     return row
 
 
@@ -185,15 +213,23 @@ def build_compact_warning_episode(
     episode, successor_schedule, predecessor_outcome, successor_outcome = item
     schedule = {
         "flight_id": _value(successor_schedule, "flight_id"),
-        "scheduled_departure_utc": _value(successor_schedule, "scheduled_departure_utc"),
+        "scheduled_departure_utc": _value(
+            successor_schedule, "scheduled_departure_utc"
+        ),
         "scheduled_arrival_utc": _value(successor_schedule, "scheduled_arrival_utc"),
-        "canonical_record_id": _value(successor_schedule, "canonical_schedule_record_id")
+        "canonical_record_id": _value(
+            successor_schedule, "canonical_schedule_record_id"
+        )
         or _value(successor_schedule, "canonical_record_id"),
         "service_date": _value(successor_schedule, "service_date"),
     }
     reference = taxi_reference.lookup(episode.connection_airport_id)
-    reference_state = getattr(reference.support_state, "value", str(reference.support_state))
-    reference_supported = reference_state == SupportState.SUPPORTED.value and reference.value is not None
+    reference_state = getattr(
+        reference.support_state, "value", str(reference.support_state)
+    )
+    reference_supported = (
+        reference_state == SupportState.SUPPORTED.value and reference.value is not None
+    )
     reference_minutes = None if not reference_supported else float(reference.value)
     reference_id = taxi_reference.reference_id if reference_supported else None
     reference_hash = taxi_reference.manifest_freeze_id if reference_supported else None
@@ -226,33 +262,39 @@ def build_compact_warning_episode(
         legal_ids = [schedule["canonical_record_id"]]
         if observation is not None:
             legal_ids.append(observation.canonical_record_id)
-        node_ids.append(_canonical_node_id(
-            episode_id=episode.episode_id,
-            decision_time=decision_time,
-            config_hash=config_hash,
-            registry_hash=registry_hash,
-            legal_record_ids=legal_ids,
-        ))
-        rows.append(_feature_row(
-            decision_time=decision_time,
-            previous_time=previous,
-            stage=stage,
-            schedule=schedule,
-            observation=observation,
-            normalization=normalization,
-        ))
-        stages.append(stage)
-        observed_r_ib.append(
-            None
-            if stage == OperationalStage.PRE_IB.value
-            else 0.0
+        node_ids.append(
+            _canonical_node_id(
+                episode_id=episode.episode_id,
+                decision_time=decision_time,
+                config_hash=config_hash,
+                registry_hash=registry_hash,
+                legal_record_ids=legal_ids,
+            )
         )
+        rows.append(
+            _feature_row(
+                decision_time=decision_time,
+                previous_time=previous,
+                stage=stage,
+                schedule=schedule,
+                observation=observation,
+                normalization=normalization,
+            )
+        )
+        stages.append(stage)
+        observed_r_ib.append(None if stage == OperationalStage.PRE_IB.value else 0.0)
         observed_delta.append(
             None
-            if stage not in {OperationalStage.POST_OB_PRE_TO.value, OperationalStage.COMPLETED.value}
+            if stage
+            not in {
+                OperationalStage.POST_OB_PRE_TO.value,
+                OperationalStage.COMPLETED.value,
+            }
             else (
-                _value(successor_outcome, "actual_departure_utc") - schedule["scheduled_departure_utc"]
-            ).total_seconds() / 60.0
+                _value(successor_outcome, "actual_departure_utc")
+                - schedule["scheduled_departure_utc"]
+            ).total_seconds()
+            / 60.0
         )
         observed_tx.append(
             None
@@ -260,7 +302,10 @@ def build_compact_warning_episode(
             else _value(successor_outcome, "taxi_out_minutes")
         )
         lead_times.append(
-            (_value(successor_outcome, "wheels_off_utc") - decision_time).total_seconds() / 60.0
+            (
+                _value(successor_outcome, "wheels_off_utc") - decision_time
+            ).total_seconds()
+            / 60.0
             if _value(successor_outcome, "wheels_off_utc") is not None
             else float("nan")
         )
@@ -268,13 +313,18 @@ def build_compact_warning_episode(
         previous = decision_time
 
     realized_d_to = None
-    if reference_minutes is not None and _value(successor_outcome, "actual_departure_utc") is not None \
-            and _value(successor_outcome, "taxi_out_minutes") is not None:
+    if (
+        reference_minutes is not None
+        and _value(successor_outcome, "actual_departure_utc") is not None
+        and _value(successor_outcome, "taxi_out_minutes") is not None
+    ):
         realized_delta = (
-            _value(successor_outcome, "actual_departure_utc") - schedule["scheduled_departure_utc"]
+            _value(successor_outcome, "actual_departure_utc")
+            - schedule["scheduled_departure_utc"]
         ).total_seconds() / 60.0
         realized_d_to = max(0.0, realized_delta) + max(
-            0.0, float(_value(successor_outcome, "taxi_out_minutes")) - reference_minutes
+            0.0,
+            float(_value(successor_outcome, "taxi_out_minutes")) - reference_minutes,
         )
 
     return CompactWarningEpisode(

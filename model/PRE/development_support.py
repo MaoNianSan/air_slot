@@ -23,7 +23,9 @@ def stream_coupon_routes(csv_paths):
     sums, counts = defaultdict(float), defaultdict(int)
     raw_rows = missing_passengers = 0
     for csv_path in csv_paths:
-        with csv_path.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
+        with csv_path.open(
+            encoding="utf-8-sig", errors="replace", newline=""
+        ) as stream:
             reader = csv.reader(stream)
             header = next(reader)
             passenger_index = header.index("Passengers")
@@ -63,7 +65,9 @@ def stream_coupon_routes(csv_paths):
     return rows, raw_rows, missing_passengers
 
 
-def reference_summary(reference, *, cells: list[dict], globals_: dict | None = None) -> dict:
+def reference_summary(
+    reference, *, cells: list[dict], globals_: dict | None = None
+) -> dict:
     return {
         "rule_id": reference.rule_id,
         "rule_version": reference.rule_version,
@@ -145,7 +149,8 @@ def sample_three_way_cohort(
 ):
     rng = random.Random(seed)
     pool = sorted(
-        episodes, key=lambda episode: (episode.episode_id, episode.predecessor_flight_id)
+        episodes,
+        key=lambda episode: (episode.episode_id, episode.predecessor_flight_id),
     )
     train = rng.sample(pool, train_count)
     train_ids = {episode.episode_id for episode in train}
@@ -168,7 +173,9 @@ def load_typed_records(episodes, *, csv_paths, projected, zones_path):
     zones = load_timezones(zones_path)
     schedules, outcomes = {}, {}
     for csv_path in csv_paths:
-        with csv_path.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
+        with csv_path.open(
+            encoding="utf-8-sig", errors="replace", newline=""
+        ) as stream:
             for raw in csv.DictReader(stream):
                 try:
                     schedule, outcome = canonicalize_ontime_row(
@@ -177,7 +184,10 @@ def load_typed_records(episodes, *, csv_paths, projected, zones_path):
                 except Exception:
                     continue
                 if schedule.flight_id in needed and schedule.flight_id not in schedules:
-                    schedules[schedule.flight_id], outcomes[schedule.flight_id] = schedule, outcome
+                    schedules[schedule.flight_id], outcomes[schedule.flight_id] = (
+                        schedule,
+                        outcome,
+                    )
     missing_ids = needed - set(schedules)
     if missing_ids:
         raise RuntimeError(f"COHORT_FLIGHT_RECORD_MISSING:{sorted(missing_ids)[:5]}")

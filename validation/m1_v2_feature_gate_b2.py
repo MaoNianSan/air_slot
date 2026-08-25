@@ -25,7 +25,6 @@ from validation.m1_v2_feature_redundancy import redundancy_audit
 from validation.m1_v2_feature_semantics import history_semantics
 from validation.ownership_gate_v2 import build_gate_result
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_feature_gate_b2"
 DECISIONS = {
@@ -55,11 +54,15 @@ def _read_json(path: Path) -> dict:
 
 def _write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def _head() -> str:
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+    ).strip()
 
 
 def _load_candidate() -> tuple[M1DevelopmentBaseCache, dict, dict, dict]:
@@ -119,7 +122,8 @@ def _static_artifact(cache: M1DevelopmentBaseCache, report: dict) -> dict:
         "episode_ids_hash": normalization.episode_ids_hash,
         "ordered_feature_names": list(STATIC_FEATURE_NAMES),
         "numeric_feature_names": [
-            "turnaround_reference_minutes", "taxi_reference_minutes"
+            "turnaround_reference_minutes",
+            "taxi_reference_minutes",
         ],
         "missing_mask_feature_names": [
             "turnaround_reference_minutes.missing_mask",
@@ -175,12 +179,21 @@ def _equivalence(left, right) -> dict[str, bool]:
     checks = {
         "dynamic_tensors": left.store.values_flat.equal(right.store.values_flat),
         "static_tensors": left.store.static_values.equal(right.store.static_values),
-        "labels": all(left.store.labels[name].equal(right.store.labels[name]) for name in left.store.labels),
-        "active_masks": all(left.store.active[name].equal(right.store.active[name]) for name in left.store.active),
+        "labels": all(
+            left.store.labels[name].equal(right.store.labels[name])
+            for name in left.store.labels
+        ),
+        "active_masks": all(
+            left.store.active[name].equal(right.store.active[name])
+            for name in left.store.active
+        ),
         "episode_ids": left.store.episode_ids == right.store.episode_ids,
-        "decision_node_ids": left.store.sample_decision_node_ids == right.store.sample_decision_node_ids,
-        "lineage": left.store.static_context_lineages == right.store.static_context_lineages,
-        "sample_episode_ids": left.store.sample_episode_ids == right.store.sample_episode_ids,
+        "decision_node_ids": left.store.sample_decision_node_ids
+        == right.store.sample_decision_node_ids,
+        "lineage": left.store.static_context_lineages
+        == right.store.static_context_lineages,
+        "sample_episode_ids": left.store.sample_episode_ids
+        == right.store.sample_episode_ids,
         "sample_splits": left.store.sample_splits == right.store.sample_splits,
     }
     return {"status": "PASS" if all(checks.values()) else "FAIL", **checks}
@@ -200,24 +213,33 @@ def _write_packet(path: Path, report: dict) -> None:
         f"- Deterministic complements: `{report['redundancy']['deterministic_complement_count']}`",
         "",
     ]
-    if report["FEATURE_GATE_STATUS"] == "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT":
-        lines.extend([
-            f"- Frozen schema hash: `{report['frozen_schema_hash']}`",
-            f"- Frozen cache key: `{report['frozen_cache_key']}`",
-            "- Feature content equivalence: `PASS`",
-            "- Target support remains the next gate: `M1_TARGET_SUPPORT_GATE_C0`",
-        ])
+    if (
+        report["FEATURE_GATE_STATUS"]
+        == "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT"
+    ):
+        lines.extend(
+            [
+                f"- Frozen schema hash: `{report['frozen_schema_hash']}`",
+                f"- Frozen cache key: `{report['frozen_cache_key']}`",
+                "- Feature content equivalence: `PASS`",
+                "- Target support remains the next gate: `M1_TARGET_SUPPORT_GATE_C0`",
+            ]
+        )
     else:
-        lines.extend([
-            "- Frozen schema: `NOT_CREATED`",
-            "- Frozen cache: `NOT_CREATED`",
-            "- Freeze is blocked; no feature was added, removed, reordered, or redefined.",
-        ])
-    lines.extend([
-        "",
-        "Training, tuning, Final Test, FULL, paper_full, and C0 were not executed.",
-        "",
-    ])
+        lines.extend(
+            [
+                "- Frozen schema: `NOT_CREATED`",
+                "- Frozen cache: `NOT_CREATED`",
+                "- Freeze is blocked; no feature was added, removed, reordered, or redefined.",
+            ]
+        )
+    lines.extend(
+        [
+            "",
+            "Training, tuning, Final Test, FULL, paper_full, and C0 were not executed.",
+            "",
+        ]
+    )
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -243,14 +265,21 @@ def _link_b2r_freeze(report: dict, output_dir: Path) -> None:
         "tensor_equivalence": report["cache"]["tensor_equivalence"],
         "GATE_B2_FEATURE_FREEZE": report["safety"]["GATE_B2_FEATURE_FREEZE"],
         "M1_TARGET_SUPPORT_FROZEN": report["safety"]["M1_TARGET_SUPPORT_FROZEN"],
-        "HYPERPARAMETER_TUNING_AUTHORIZED": report["safety"]["HYPERPARAMETER_TUNING_AUTHORIZED"],
+        "HYPERPARAMETER_TUNING_AUTHORIZED": report["safety"][
+            "HYPERPARAMETER_TUNING_AUTHORIZED"
+        ],
     }
     b2r["safety"]["GATE_B2_FEATURE_FREEZE"] = True
     b2r["artifact_hash_basis"] = "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH"
-    basis = json.dumps({key: value for key, value in b2r.items() if key != "artifact_hash"}, sort_keys=True, separators=(",", ":"))
+    basis = json.dumps(
+        {key: value for key, value in b2r.items() if key != "artifact_hash"},
+        sort_keys=True,
+        separators=(",", ":"),
+    )
     b2r["artifact_hash"] = f"sha256:{sha256(basis.encode('utf-8')).hexdigest()}"
     _write_json(path, b2r)
     from validation.m1_v2_feature_gate_b2r import _write_packet as write_b2r_packet
+
     write_b2r_packet(B2R_OUTPUT / "M1_V2_FEATURE_GATE_B2R_PACKET.md", b2r)
 
 
@@ -274,7 +303,8 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     }
     gate_checks = {
         "feature_counts": feature_counts == {"dynamic": 39, "static": 4, "total": 43},
-        "candidate_ready": b2r["FEATURE_GATE_STATUS"] in {
+        "candidate_ready": b2r["FEATURE_GATE_STATUS"]
+        in {
             "FEATURE_GATE_B2R_PASS_CANDIDATE_READY_FOR_B2",
             "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT",
         },
@@ -285,7 +315,8 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
                 "DERIVED_INVALID_NUMERIC_NOT_ZERO",
                 "MISSING_MASK_VALUE_VIOLATIONS",
             )
-        ) and missing["static"]["STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK"] == 0
+        )
+        and missing["static"]["STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK"] == 0
         and missing["static"]["PARTIAL_STATIC_OBSERVED_VALUE_LOST"] == 0,
         "history_separation": (
             history["FULL_PREFIX_HISTORY_FEATURE_COUNT"] == 0
@@ -298,7 +329,8 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "data_usage": data_usage["status"] == "DATA_USAGE_CONTRACT_AUDIT_PASS",
         "pre_ownership": ownership["PRE_OWNERSHIP_GATE"] == "PASS",
         "static_volume": ownership["STATIC_VOLUME_GATE"] == "PASS",
-        "a2_provenance": candidate_manifest["provenance"]["a2_cache_hash"] == A2_EXPECTED_CACHE_HASH,
+        "a2_provenance": candidate_manifest["provenance"]["a2_cache_hash"]
+        == A2_EXPECTED_CACHE_HASH,
         "safety": candidate_manifest["final_test_access_count"] == 0,
     }
     freeze_allowed = all(gate_checks.values())
@@ -313,13 +345,15 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         frozen_schema = _frozen_schema(candidate_schema, static_artifact)
         frozen_contracts = dict(candidate_manifest["contract_hashes"])
         frozen_contracts["feature_contract_hash"] = frozen_schema["schema_hash"]
-        frozen_key = content_id({
-            "scope": "FEATURE_GATE_B2_FROZEN_DEVELOPMENT",
-            "candidate_cache_hash": candidate_manifest["cache_hash"],
-            "candidate_cache_key": candidate_manifest["cache_key"],
-            "frozen_schema_hash": frozen_schema["schema_hash"],
-            "static_artifact_hash": static_artifact["content_hash"],
-        })
+        frozen_key = content_id(
+            {
+                "scope": "FEATURE_GATE_B2_FROZEN_DEVELOPMENT",
+                "candidate_cache_hash": candidate_manifest["cache_hash"],
+                "candidate_cache_key": candidate_manifest["cache_key"],
+                "frozen_schema_hash": frozen_schema["schema_hash"],
+                "static_artifact_hash": static_artifact["content_hash"],
+            }
+        )
         frozen_cache = M1DevelopmentBaseCache.from_store(
             store=candidate.store,
             normalization=candidate.normalization,
@@ -352,7 +386,9 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             },
             feature_schema_hash=frozen_schema["schema_hash"],
         )
-        frozen_cache_manifest = frozen_cache.save(frozen_data_path, frozen_manifest_path)
+        frozen_cache_manifest = frozen_cache.save(
+            frozen_data_path, frozen_manifest_path
+        )
         loaded_frozen = M1DevelopmentBaseCache.load(
             frozen_data_path, frozen_manifest_path, expected_cache_key=frozen_key
         )
@@ -390,8 +426,12 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             "r_fast": "CURRENT_STATE + CURRENT_SCHEDULE + CURRENT_WEATHER + PREVIOUS_NODE_LOCAL_DELTA + VALIDITY + OBJECT_WEATHER_QUALITY_SUPPORT",
             "h": "GRU_FULL_CAUSAL_HISTORY",
             "c_static": "TRAIN_STANDARDIZED_REFERENCE_VALUES_PLUS_PER_FEATURE_MISSING_MASKS",
-            "FULL_PREFIX_HISTORY_FEATURE_COUNT": history["FULL_PREFIX_HISTORY_FEATURE_COUNT"],
-            "EXP1B_HISTORY_SEPARATION_STATUS": history["EXP1B_HISTORY_SEPARATION_STATUS"],
+            "FULL_PREFIX_HISTORY_FEATURE_COUNT": history[
+                "FULL_PREFIX_HISTORY_FEATURE_COUNT"
+            ],
+            "EXP1B_HISTORY_SEPARATION_STATUS": history[
+                "EXP1B_HISTORY_SEPARATION_STATUS"
+            ],
         },
         "static_normalization": {
             "artifact_id": static_artifact["artifact_id"],
@@ -405,20 +445,42 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         },
         "cache": {
             "candidate": candidate_manifest["cache_hash"],
-            "frozen": None if frozen_cache_manifest is None else frozen_cache_manifest["cache_hash"],
-            "frozen_cache_key": None if frozen_cache_manifest is None else frozen_cache_manifest["cache_key"],
+            "frozen": (
+                None
+                if frozen_cache_manifest is None
+                else frozen_cache_manifest["cache_hash"]
+            ),
+            "frozen_cache_key": (
+                None
+                if frozen_cache_manifest is None
+                else frozen_cache_manifest["cache_key"]
+            ),
             "schema_version": candidate_manifest["cache_schema_version"],
             "candidate_status": candidate_manifest["candidate_status"],
-            "frozen_status": None if frozen_cache_manifest is None else frozen_cache_manifest["candidate_status"],
+            "frozen_status": (
+                None
+                if frozen_cache_manifest is None
+                else frozen_cache_manifest["candidate_status"]
+            ),
             "tensor_equivalence": equivalence,
         },
         "redundancy": {
             "contract_structural_constants": structural_constants,
-            "contract_structural_constant_count": redundancy["contract_structural_constant_count"],
-            "contract_exact_duplicate_count": redundancy["contract_exact_duplicate_count"],
-            "contract_exact_duplicate_groups": redundancy["contract_exact_duplicate_groups"],
-            "empirical_exact_duplicate_count": redundancy["empirical_exact_duplicate_count"],
-            "empirical_exact_duplicate_groups": redundancy["empirical_exact_duplicate_groups"],
+            "contract_structural_constant_count": redundancy[
+                "contract_structural_constant_count"
+            ],
+            "contract_exact_duplicate_count": redundancy[
+                "contract_exact_duplicate_count"
+            ],
+            "contract_exact_duplicate_groups": redundancy[
+                "contract_exact_duplicate_groups"
+            ],
+            "empirical_exact_duplicate_count": redundancy[
+                "empirical_exact_duplicate_count"
+            ],
+            "empirical_exact_duplicate_groups": redundancy[
+                "empirical_exact_duplicate_groups"
+            ],
             "train_support_constant_count": redundancy["train_support_constant_count"],
             "train_support_constants": redundancy["train_support_constants"],
             "exact_duplicate_count": len(exact_groups),
@@ -429,11 +491,21 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             "near_linear_pairs_report_only": redundancy["near_linear_pairs"],
         },
         "missing_invariants": {
-            "MISSING_NUMERIC_NOT_ZERO": missing["violation_counts"].get("MISSING_NUMERIC_NOT_ZERO", 0),
-            "DERIVED_INVALID_NUMERIC_NOT_ZERO": missing["violation_counts"].get("DERIVED_INVALID_NUMERIC_NOT_ZERO", 0),
-            "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK": missing["static"]["STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK"],
-            "PARTIAL_STATIC_OBSERVED_VALUE_LOST": missing["static"]["PARTIAL_STATIC_OBSERVED_VALUE_LOST"],
-            "MISSING_MASK_VALUE_VIOLATIONS": missing["violation_counts"].get("MISSING_MASK_VALUE_VIOLATIONS", 0),
+            "MISSING_NUMERIC_NOT_ZERO": missing["violation_counts"].get(
+                "MISSING_NUMERIC_NOT_ZERO", 0
+            ),
+            "DERIVED_INVALID_NUMERIC_NOT_ZERO": missing["violation_counts"].get(
+                "DERIVED_INVALID_NUMERIC_NOT_ZERO", 0
+            ),
+            "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK": missing["static"][
+                "STATIC_MISSING_BLOCK_ZERO_FILLED_WITHOUT_MASK"
+            ],
+            "PARTIAL_STATIC_OBSERVED_VALUE_LOST": missing["static"][
+                "PARTIAL_STATIC_OBSERVED_VALUE_LOST"
+            ],
+            "MISSING_MASK_VALUE_VIOLATIONS": missing["violation_counts"].get(
+                "MISSING_MASK_VALUE_VIOLATIONS", 0
+            ),
         },
         "labels": {
             "unchanged": b2r["labels"]["unchanged"],
@@ -455,7 +527,9 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     }
     report["artifact_hash_basis"] = "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH"
     report_basis = json.dumps(report, sort_keys=True, separators=(",", ":"))
-    report["artifact_hash"] = f"sha256:{sha256(report_basis.encode('utf-8')).hexdigest()}"
+    report["artifact_hash"] = (
+        f"sha256:{sha256(report_basis.encode('utf-8')).hexdigest()}"
+    )
     _write_json(output_dir / "AIR_SLOT_M1_V2_FEATURE_GATE_B2.json", report)
     _write_json(output_dir / "B2_GATE_CHECKS.json", gate_checks)
     _write_packet(output_dir / "M1_V2_FEATURE_GATE_B2_FREEZE_PACKET.md", report)
@@ -466,14 +540,24 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
 
 def main() -> None:
     report = run()
-    print(json.dumps({
-        "FEATURE_GATE_STATUS": report["FEATURE_GATE_STATUS"],
-        "artifact_hash": report["artifact_hash"],
-        "contract_exact_duplicate_count": report["redundancy"]["contract_exact_duplicate_count"],
-        "empirical_exact_duplicate_count": report["redundancy"]["empirical_exact_duplicate_count"],
-        "frozen_schema_hash": report.get("frozen_schema_hash"),
-        "safety": report["safety"],
-    }, indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "FEATURE_GATE_STATUS": report["FEATURE_GATE_STATUS"],
+                "artifact_hash": report["artifact_hash"],
+                "contract_exact_duplicate_count": report["redundancy"][
+                    "contract_exact_duplicate_count"
+                ],
+                "empirical_exact_duplicate_count": report["redundancy"][
+                    "empirical_exact_duplicate_count"
+                ],
+                "frozen_schema_hash": report.get("frozen_schema_hash"),
+                "safety": report["safety"],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

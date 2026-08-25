@@ -19,7 +19,6 @@ import yaml
 
 from model.M1.cache import M1DevelopmentBaseCache
 
-
 ROOT = Path(__file__).resolve().parents[1]
 B2_OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_feature_gate_b2"
 A2_OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_data_gate_a2"
@@ -34,8 +33,12 @@ CANDIDATES = {
 }
 BIN_WIDTH = 5
 QUANTILE_LEVELS = (0.1, 0.3, 0.5, 0.7, 0.9)
-EXPECTED_SCHEMA_HASH = "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a"
-EXPECTED_CACHE_HASH = "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919"
+EXPECTED_SCHEMA_HASH = (
+    "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a"
+)
+EXPECTED_CACHE_HASH = (
+    "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919"
+)
 EXPECTED_B2_STATUS = "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT"
 
 SAFETY = {
@@ -55,11 +58,15 @@ def _read_json(path: Path) -> dict[str, Any]:
 
 def _write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def _head() -> str:
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+    ).strip()
 
 
 def _jsonable(value: Any) -> Any:
@@ -101,7 +108,11 @@ def _load_a2_report() -> dict[str, Any]:
 
 
 def _config_provenance() -> dict[str, Any]:
-    config = yaml.safe_load((ROOT / "configs" / "scientific" / "foundation.yaml").read_text(encoding="utf-8"))
+    config = yaml.safe_load(
+        (ROOT / "configs" / "scientific" / "foundation.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
     parameters = config["parameters"]
     names = {
         "T_IB_REMAINING_HAZARD": "m1_r_ib_max_finite_minutes",
@@ -109,7 +120,9 @@ def _config_provenance() -> dict[str, Any]:
         "D_TX": "m1_t_tx_max_finite_minutes",
     }
     values = {target: int(parameters[name]["value"]) for target, name in names.items()}
-    support_sources = parameters["m1_state_estimator_v2"]["provenance"]["support_sources"]
+    support_sources = parameters["m1_state_estimator_v2"]["provenance"][
+        "support_sources"
+    ]
     return {
         "legacy_parameter_names": names,
         "legacy_parameter_values": values,
@@ -125,7 +138,9 @@ def _config_provenance() -> dict[str, Any]:
     }
 
 
-def _active_values(cache: M1DevelopmentBaseCache, target: str, split: str) -> np.ndarray:
+def _active_values(
+    cache: M1DevelopmentBaseCache, target: str, split: str
+) -> np.ndarray:
     store = cache.store
     values = [
         float(store.labels[target][index])
@@ -156,7 +171,9 @@ def _profile(values: np.ndarray, support: int) -> dict[str, Any]:
             "current_support_count": 0,
             "current_support_fraction": None,
         }
-    quantiles = np.quantile(values, (0.5, 0.75, 0.9, 0.95, 0.975, 0.99, 0.995, 0.999), method="linear")
+    quantiles = np.quantile(
+        values, (0.5, 0.75, 0.9, 0.95, 0.975, 0.99, 0.995, 0.999), method="linear"
+    )
     tail = values >= support
     return {
         "active_count": int(len(values)),
@@ -182,29 +199,39 @@ def _profile(values: np.ndarray, support: int) -> dict[str, Any]:
 def _candidate_rows(values: np.ndarray, target: str) -> list[dict[str, Any]]:
     current = CURRENT_SUPPORT[target]
     current_class_count = current // BIN_WIDTH + 1
-    current_finite_bins = {int(value // BIN_WIDTH) for value in values if value < current}
+    current_finite_bins = {
+        int(value // BIN_WIDTH) for value in values if value < current
+    }
     rows = []
     candidates = list(CANDIDATES[target])
     max_value = float(np.max(values)) if len(values) else 0.0
-    next_candidate = ((int(np.ceil(max_value / BIN_WIDTH)) * BIN_WIDTH) or BIN_WIDTH)
+    next_candidate = (int(np.ceil(max_value / BIN_WIDTH)) * BIN_WIDTH) or BIN_WIDTH
     while candidates[-1] < next_candidate:
         candidates.append(candidates[-1] + BIN_WIDTH)
     for candidate in candidates:
         finite = values < candidate
         finite_bins = {int(value // BIN_WIDTH) for value in values[finite]}
         class_count = candidate // BIN_WIDTH + 1
-        rows.append({
-            "target": target,
-            "candidate_support_minutes": candidate,
-            "finite_count": int(np.sum(finite)),
-            "tail_count": int(np.sum(~finite)),
-            "tail_fraction": float(np.mean(~finite)) if len(values) else None,
-            "additional_finite_classes": max(0, candidate // BIN_WIDTH - current // BIN_WIDTH),
-            "additional_finite_classes_observed": max(0, len(finite_bins - current_finite_bins)),
-            "finite_class_count": candidate // BIN_WIDTH,
-            "class_count_including_tail": class_count,
-            "relative_class_count_increase": float(class_count / current_class_count - 1.0),
-        })
+        rows.append(
+            {
+                "target": target,
+                "candidate_support_minutes": candidate,
+                "finite_count": int(np.sum(finite)),
+                "tail_count": int(np.sum(~finite)),
+                "tail_fraction": float(np.mean(~finite)) if len(values) else None,
+                "additional_finite_classes": max(
+                    0, candidate // BIN_WIDTH - current // BIN_WIDTH
+                ),
+                "additional_finite_classes_observed": max(
+                    0, len(finite_bins - current_finite_bins)
+                ),
+                "finite_class_count": candidate // BIN_WIDTH,
+                "class_count_including_tail": class_count,
+                "relative_class_count_increase": float(
+                    class_count / current_class_count - 1.0
+                ),
+            }
+        )
     return rows
 
 
@@ -270,7 +297,9 @@ def _overflow_rows(cache: M1DevelopmentBaseCache) -> list[dict[str, Any]]:
                 "excess_above_support_minutes": value - support,
                 "decision_time": None,
                 "t_ib_a00": None,
-                "remaining_minutes": value if target == "T_IB_REMAINING_HAZARD" else None,
+                "remaining_minutes": (
+                    value if target == "T_IB_REMAINING_HAZARD" else None
+                ),
                 "scheduled_departure": lineage["scheduled_departure"],
                 "actual_departure": None,
                 "signed_dep_delay": None,
@@ -284,24 +313,42 @@ def _overflow_rows(cache: M1DevelopmentBaseCache) -> list[dict[str, Any]]:
                 "source_consistency_status": "NOT_VERIFIABLE_FROM_FROZEN_CACHE",
             }
             rows.append(_jsonable(row))
-    rows.sort(key=lambda row: (row["target"], row["split"], row["episode_id"], row["decision_node_id"]))
+    rows.sort(
+        key=lambda row: (
+            row["target"],
+            row["split"],
+            row["episode_id"],
+            row["decision_node_id"],
+        )
+    )
     return rows
 
 
-def _source_consistency(a2: dict[str, Any], overflow_rows: list[dict[str, Any]]) -> dict[str, Any]:
+def _source_consistency(
+    a2: dict[str, Any], overflow_rows: list[dict[str, Any]]
+) -> dict[str, Any]:
     source = a2.get("source_semantics", {})
     direct = source.get("direct_signed_consistency", {})
     departure_details = {
         split: {
-            "exact_agreement_rate": direct.get(split, {}).get("departure", {}).get("exact_agreement_rate"),
-            "within_1min_rate": direct.get(split, {}).get("departure", {}).get("within_1min_rate"),
-            "max_abs_difference_minutes": direct.get(split, {}).get("departure", {}).get("max_abs_difference_minutes"),
-            "deterministic_inconsistency_samples": direct.get(split, {}).get("departure", {}).get("deterministic_inconsistency_samples", []),
+            "exact_agreement_rate": direct.get(split, {})
+            .get("departure", {})
+            .get("exact_agreement_rate"),
+            "within_1min_rate": direct.get(split, {})
+            .get("departure", {})
+            .get("within_1min_rate"),
+            "max_abs_difference_minutes": direct.get(split, {})
+            .get("departure", {})
+            .get("max_abs_difference_minutes"),
+            "deterministic_inconsistency_samples": direct.get(split, {})
+            .get("departure", {})
+            .get("deterministic_inconsistency_samples", []),
         }
         for split in ("train", "calibration", "development")
     }
     global_pass = all(
-        item["exact_agreement_rate"] == 1.0 and not item["deterministic_inconsistency_samples"]
+        item["exact_agreement_rate"] == 1.0
+        and not item["deterministic_inconsistency_samples"]
         for item in departure_details.values()
     )
     unavailable = len(overflow_rows) > 0
@@ -312,7 +359,9 @@ def _source_consistency(a2: dict[str, Any], overflow_rows: list[dict[str, Any]])
         "row_level_source_fields_retained": False,
         "row_level_verification": "NOT_VERIFIABLE_FROM_FROZEN_CACHE",
         "classification_if_unverifiable": "TARGET_SUPPORT_C0_DATA_ANOMALY",
-        "overflow_rows_with_unverifiable_source_fields": len(overflow_rows) if unavailable else 0,
+        "overflow_rows_with_unverifiable_source_fields": (
+            len(overflow_rows) if unavailable else 0
+        ),
         "status": "TARGET_SUPPORT_C0_DATA_ANOMALY" if unavailable else "PASS",
         "formulas": {
             "T_IB_REMAINING_HAZARD": "max(0, T_IB_A00 - decision_time)",
@@ -324,19 +373,34 @@ def _source_consistency(a2: dict[str, Any], overflow_rows: list[dict[str, Any]])
 
 def _d_ob_tail_bands(cache: M1DevelopmentBaseCache) -> dict[str, int]:
     values = _active_values(cache, "D_OB", "train")
-    bands = ((180, 210, "180--210"), (210, 240, "210--240"),
-             (240, 300, "240--300"), (300, 360, "300--360"),
-             (360, float("inf"), ">360"))
-    return {name: int(np.sum((values >= low) & (values < high))) for low, high, name in bands}
+    bands = (
+        (180, 210, "180--210"),
+        (210, 240, "210--240"),
+        (240, 300, "240--300"),
+        (300, 360, "300--360"),
+        (360, float("inf"), ">360"),
+    )
+    return {
+        name: int(np.sum((values >= low) & (values < high)))
+        for low, high, name in bands
+    }
 
 
 def _d_tx_comparison(cache: M1DevelopmentBaseCache) -> dict[str, Any]:
     store = cache.store
     groups: dict[str, list[float]] = {"D_OB_finite": [], "D_OB_overflow": []}
     for index, split in enumerate(store.sample_splits):
-        if split != "train" or not bool(store.active["D_OB"][index]) or not bool(store.active["D_TX"][index]):
+        if (
+            split != "train"
+            or not bool(store.active["D_OB"][index])
+            or not bool(store.active["D_TX"][index])
+        ):
             continue
-        key = "D_OB_overflow" if float(store.labels["D_OB"][index]) >= CURRENT_SUPPORT["D_OB"] else "D_OB_finite"
+        key = (
+            "D_OB_overflow"
+            if float(store.labels["D_OB"][index]) >= CURRENT_SUPPORT["D_OB"]
+            else "D_OB_finite"
+        )
         groups[key].append(float(store.labels["D_TX"][index]))
     output = {}
     for key, values in groups.items():
@@ -347,7 +411,9 @@ def _d_tx_comparison(cache: M1DevelopmentBaseCache) -> dict[str, Any]:
             "zero_fraction": float(np.mean(array == 0)) if len(array) else None,
             "positive_mean": float(np.mean(positive)) if len(positive) else None,
             "positive_median": float(np.median(positive)) if len(positive) else None,
-            "positive_p90": float(np.quantile(positive, 0.9)) if len(positive) else None,
+            "positive_p90": (
+                float(np.quantile(positive, 0.9)) if len(positive) else None
+            ),
         }
     return output
 
@@ -362,30 +428,47 @@ def _d_tx_development_clusters(cache: M1DevelopmentBaseCache) -> dict[str, Any]:
         if value < CURRENT_SUPPORT["D_TX"]:
             continue
         fields = _lineage_fields(store.static_context_lineages[index])
-        rows.append({
-            "episode_id": store.sample_episode_ids[index],
-            "service_date": store.sample_episode_dates[index],
-            "origin": fields["origin"],
-            "destination": fields["destination"],
-            "carrier": fields["carrier"],
-            "taxi_reference_minutes": fields["taxi_reference"],
-            "fallback_level": fields["taxi_reference_level"],
-            "target_exact_minutes": value,
-        })
+        rows.append(
+            {
+                "episode_id": store.sample_episode_ids[index],
+                "service_date": store.sample_episode_dates[index],
+                "origin": fields["origin"],
+                "destination": fields["destination"],
+                "carrier": fields["carrier"],
+                "taxi_reference_minutes": fields["taxi_reference"],
+                "fallback_level": fields["taxi_reference_level"],
+                "target_exact_minutes": value,
+            }
+        )
+
     def grouped(key: str) -> list[dict[str, Any]]:
         counts: dict[str, dict[str, Any]] = {}
         for row in rows:
             value = str(row[key])
-            item = counts.setdefault(value, {"group": value, "row_count": 0, "episode_ids": set(), "target_values": set()})
+            item = counts.setdefault(
+                value,
+                {
+                    "group": value,
+                    "row_count": 0,
+                    "episode_ids": set(),
+                    "target_values": set(),
+                },
+            )
             item["row_count"] += 1
             item["episode_ids"].add(row["episode_id"])
             item["target_values"].add(row["target_exact_minutes"])
         return [
-            {"group": item["group"], "row_count": item["row_count"],
-             "episode_count": len(item["episode_ids"]),
-             "target_values": sorted(item["target_values"])}
-            for item in sorted(counts.values(), key=lambda item: (-item["row_count"], item["group"]))
+            {
+                "group": item["group"],
+                "row_count": item["row_count"],
+                "episode_count": len(item["episode_ids"]),
+                "target_values": sorted(item["target_values"]),
+            }
+            for item in sorted(
+                counts.values(), key=lambda item: (-item["row_count"], item["group"])
+            )
         ]
+
     return {
         "overflow_row_count": len(rows),
         "overflow_episode_count": len({row["episode_id"] for row in rows}),
@@ -401,7 +484,11 @@ def _d_tx_development_clusters(cache: M1DevelopmentBaseCache) -> dict[str, Any]:
 
 def _scenario_representation(cache: M1DevelopmentBaseCache) -> dict[str, Any]:
     output = {}
-    for target, split in (("T_IB_REMAINING_HAZARD", "train"), ("D_OB", "train"), ("D_TX", "development")):
+    for target, split in (
+        ("T_IB_REMAINING_HAZARD", "train"),
+        ("D_OB", "train"),
+        ("D_TX", "development"),
+    ):
         values = _active_values(cache, target, split)
         support = CURRENT_SUPPORT[target]
         overflow = values[values >= support]
@@ -412,17 +499,27 @@ def _scenario_representation(cache: M1DevelopmentBaseCache) -> dict[str, Any]:
             "overflow_count": int(len(overflow)),
             "overflow_values": sorted(set(float(value) for value in overflow)),
             "representative_minutes": representative,
-            "absolute_error_mean_minutes": float(np.mean(errors)) if len(errors) else None,
-            "absolute_error_max_minutes": float(np.max(errors)) if len(errors) else None,
+            "absolute_error_mean_minutes": (
+                float(np.mean(errors)) if len(errors) else None
+            ),
+            "absolute_error_max_minutes": (
+                float(np.max(errors)) if len(errors) else None
+            ),
         }
     return output
 
 
 def _loss_truncation() -> dict[str, Any]:
     source = (ROOT / "model" / "M1" / "lifecycle.py").read_text(encoding="utf-8")
-    exact_minutes = all(token in source for token in (
-        'd_ob_minutes[index] = minutes', 'd_tx_minutes[index] = minutes',
-        'value=encoded["d_ob_minutes"]', 'value=encoded["d_tx_minutes"]'))
+    exact_minutes = all(
+        token in source
+        for token in (
+            "d_ob_minutes[index] = minutes",
+            "d_tx_minutes[index] = minutes",
+            'value=encoded["d_ob_minutes"]',
+            'value=encoded["d_tx_minutes"]',
+        )
+    )
     return {
         "TRAIN_VALUE_LOSS_TRUNCATION": False if exact_minutes else True,
         "evidence": "M1Lifecycle._encode stores exact positive minutes and _loss passes encoded minute values to hurdle_quantile_loss.",
@@ -440,7 +537,9 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         for row in rows:
-            writer.writerow({key: "" if row.get(key) is None else row.get(key) for key in fields})
+            writer.writerow(
+                {key: "" if row.get(key) is None else row.get(key) for key in fields}
+            )
 
 
 def _markdown(report: dict[str, Any]) -> str:
@@ -485,68 +584,74 @@ def _markdown(report: dict[str, Any]) -> str:
             f"p50={item['p50']}, p90={item['p90']}, p99={item['p99']}, max={item['max']}, "
             f"current-tail={item['current_support_count']} ({item['current_support_fraction']:.6f})."
         )
-    lines.extend([
-        "",
-        "## CALIBRATION_DIAGNOSTIC",
-        "",
-        f"- Calibration: `{json.dumps(report['CALIBRATION_DIAGNOSTIC'], sort_keys=True)}`",
-        "- Calibration is diagnostic only and was not used to select support.",
-        "",
-        "## DEVELOPMENT_DIAGNOSTIC",
-        "",
-        f"- Development: `{json.dumps(report['DEVELOPMENT_DIAGNOSTIC'], sort_keys=True)}`",
-        "- Development is diagnostic only and was not used to select support.",
-        "",
-        "## Forensic Gate",
-        "",
-        f"- Overflow rows: `{report['overflow_counts']}`.",
-        f"- A2 global signed departure consistency: `{report['source_consistency']['a2_global_signed_departure_consistency']}`.",
-        f"- A2 departure detail: `{json.dumps(report['source_consistency']['a2_departure_details'], sort_keys=True)}`.",
-        "- Row-level actual departure, signed DepDelay, TaxiOut, T_IB_A00, and decision time are not retained in the frozen B2 cache.",
-        f"- Row-level source-consistency status: `{report['source_consistency']['status']}`; see `M1_V2_TARGET_SUPPORT_C0_OVERFLOW.csv`.",
-        "",
-        "## Conditioning And Representation",
-        "",
-        f"- D_OB Train tail bands: `{report['d_ob_train_tail_bands']}`.",
-        f"- D_OB finite-vs-overflow D_TX diagnostic: `{json.dumps(report['d_ob_to_d_tx_diagnostic'], sort_keys=True)}`.",
-        f"- D_TX parent-conditioning role: `{report['conditioning_consequences']['D_TX_PARENT_CONDITIONING_ROLE']}`.",
-        f"- Scenario representative diagnostics: `{json.dumps(report['scenario_representation'], sort_keys=True)}`.",
-        f"- TRAIN_VALUE_LOSS_TRUNCATION: `{report['train_value_loss_truncation']['TRAIN_VALUE_LOSS_TRUNCATION']}`.",
-        "",
-        "## Finite Support vs Quantile Tail",
-        "",
-        "- `FINITE_SUPPORT_REVIEW` is the only C0 decision surface.",
-        "- `POSITIVE_QUANTILE_TAIL_STATUS = UNRESOLVED_AND_OUT_OF_SCOPE`.",
-        "- Positive quantile levels remain `[0.1, 0.3, 0.5, 0.7, 0.9]`; no tail policy was changed.",
-        "",
-        "## Human Decisions",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "## CALIBRATION_DIAGNOSTIC",
+            "",
+            f"- Calibration: `{json.dumps(report['CALIBRATION_DIAGNOSTIC'], sort_keys=True)}`",
+            "- Calibration is diagnostic only and was not used to select support.",
+            "",
+            "## DEVELOPMENT_DIAGNOSTIC",
+            "",
+            f"- Development: `{json.dumps(report['DEVELOPMENT_DIAGNOSTIC'], sort_keys=True)}`",
+            "- Development is diagnostic only and was not used to select support.",
+            "",
+            "## Forensic Gate",
+            "",
+            f"- Overflow rows: `{report['overflow_counts']}`.",
+            f"- A2 global signed departure consistency: `{report['source_consistency']['a2_global_signed_departure_consistency']}`.",
+            f"- A2 departure detail: `{json.dumps(report['source_consistency']['a2_departure_details'], sort_keys=True)}`.",
+            "- Row-level actual departure, signed DepDelay, TaxiOut, T_IB_A00, and decision time are not retained in the frozen B2 cache.",
+            f"- Row-level source-consistency status: `{report['source_consistency']['status']}`; see `M1_V2_TARGET_SUPPORT_C0_OVERFLOW.csv`.",
+            "",
+            "## Conditioning And Representation",
+            "",
+            f"- D_OB Train tail bands: `{report['d_ob_train_tail_bands']}`.",
+            f"- D_OB finite-vs-overflow D_TX diagnostic: `{json.dumps(report['d_ob_to_d_tx_diagnostic'], sort_keys=True)}`.",
+            f"- D_TX parent-conditioning role: `{report['conditioning_consequences']['D_TX_PARENT_CONDITIONING_ROLE']}`.",
+            f"- Scenario representative diagnostics: `{json.dumps(report['scenario_representation'], sort_keys=True)}`.",
+            f"- TRAIN_VALUE_LOSS_TRUNCATION: `{report['train_value_loss_truncation']['TRAIN_VALUE_LOSS_TRUNCATION']}`.",
+            "",
+            "## Finite Support vs Quantile Tail",
+            "",
+            "- `FINITE_SUPPORT_REVIEW` is the only C0 decision surface.",
+            "- `POSITIVE_QUANTILE_TAIL_STATUS = UNRESOLVED_AND_OUT_OF_SCOPE`.",
+            "- Positive quantile levels remain `[0.1, 0.3, 0.5, 0.7, 0.9]`; no tail policy was changed.",
+            "",
+            "## Human Decisions",
+            "",
+        ]
+    )
     for decision in decisions:
-        lines.extend([
-            f"### {decision['decision_id']}",
+        lines.extend(
+            [
+                f"### {decision['decision_id']}",
+                "",
+                f"- Options: `{' / '.join(decision['options'])}`",
+                f"- Recommendation: `{decision['recommendation']}`",
+                f"- Evidence: {decision['evidence']}",
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "## Safety",
             "",
-            f"- Options: `{' / '.join(decision['options'])}`",
-            f"- Recommendation: `{decision['recommendation']}`",
-            f"- Evidence: {decision['evidence']}",
+            "```text",
+            "M1_TRAINING_RUNS = 0",
+            "TUNING_RUNS = 0",
+            "FINAL_TEST_ACCESS_COUNT = 0",
+            "PAPER_FULL_RUN = false",
+            "GATE_B2_FEATURE_FREEZE = true",
+            "M1_TARGET_SUPPORT_FROZEN = false",
+            "HYPERPARAMETER_TUNING_AUTHORIZED = false",
+            "```",
             "",
-        ])
-    lines.extend([
-        "## Safety",
-        "",
-        "```text",
-        "M1_TRAINING_RUNS = 0",
-        "TUNING_RUNS = 0",
-        "FINAL_TEST_ACCESS_COUNT = 0",
-        "PAPER_FULL_RUN = false",
-        "GATE_B2_FEATURE_FREEZE = true",
-        "M1_TARGET_SUPPORT_FROZEN = false",
-        "HYPERPARAMETER_TUNING_AUTHORIZED = false",
-        "```",
-        "",
-        "No support/config update, training, tuning, C1, Final Test, FULL, or paper_full was run.",
-        "",
-    ])
+            "No support/config update, training, tuning, C1, Final Test, FULL, or paper_full was run.",
+            "",
+        ]
+    )
     return "\n".join(lines)
 
 
@@ -556,18 +661,23 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     a2 = _load_a2_report()
     provenance = _config_provenance()
     train_profiles = {
-        target: _profile(_active_values(cache, target, "train"), CURRENT_SUPPORT[target])
+        target: _profile(
+            _active_values(cache, target, "train"), CURRENT_SUPPORT[target]
+        )
         for target in TARGETS
     }
     split_profiles = {
         split: {
-            target: _profile(_active_values(cache, target, split), CURRENT_SUPPORT[target])
+            target: _profile(
+                _active_values(cache, target, split), CURRENT_SUPPORT[target]
+            )
             for target in TARGETS
         }
         for split in ("calibration", "development")
     }
     threshold_rows = [
-        row for target in TARGETS
+        row
+        for target in TARGETS
         for row in _candidate_rows(_active_values(cache, target, "train"), target)
     ]
     overflow_rows = _overflow_rows(cache)
@@ -580,7 +690,11 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     )
     report: dict[str, Any] = {
         "schema_version": "AIR_SLOT_M1_V2_TARGET_SUPPORT_GATE_C0_V1",
-        "TARGET_SUPPORT_C0_STATUS": "TARGET_SUPPORT_C0_DATA_ANOMALY" if source_consistency["status"] != "PASS" else "TARGET_SUPPORT_C0_REVIEW_PACKET_READY",
+        "TARGET_SUPPORT_C0_STATUS": (
+            "TARGET_SUPPORT_C0_DATA_ANOMALY"
+            if source_consistency["status"] != "PASS"
+            else "TARGET_SUPPORT_C0_REVIEW_PACKET_READY"
+        ),
         "repository_head": _head(),
         "scope": "TRAIN_SELECTION_CALIBRATION_DIAGNOSTIC_DEVELOPMENT_DIAGNOSTIC_ONLY",
         "b2_baseline": {
@@ -605,7 +719,11 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "threshold_candidates_train_only": threshold_rows,
         "overflow_counts": {
             target: {
-                split: sum(1 for row in overflow_rows if row["target"] == target and row["split"] == split)
+                split: sum(
+                    1
+                    for row in overflow_rows
+                    if row["target"] == target and row["split"] == split
+                )
                 for split in ("train", "calibration", "development")
             }
             for target in TARGETS
@@ -633,21 +751,41 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             {
                 "decision_id": "C0-D01",
                 "target": "T_IB_REMAINING_HAZARD",
-                "options": ["KEEP_360", "EXPAND_TO_390", "EXPAND_TO_420", "EXPAND_TO_450", "EXPAND_TO_480", "OTHER"],
+                "options": [
+                    "KEEP_360",
+                    "EXPAND_TO_390",
+                    "EXPAND_TO_420",
+                    "EXPAND_TO_450",
+                    "EXPAND_TO_480",
+                    "OTHER",
+                ],
                 "recommendation": "KEEP_360",
                 "evidence": "Train overflow is 2/342 (0.58%), exact values are 360 and 365, and the 365-minute survival representative has mean absolute error 2.5 minutes (max 5).",
             },
             {
                 "decision_id": "C0-D02",
                 "target": "D_OB",
-                "options": ["KEEP_180", "EXPAND_TO_210", "EXPAND_TO_240", "EXPAND_TO_300", "EXPAND_TO_360", "OTHER"],
+                "options": [
+                    "KEEP_180",
+                    "EXPAND_TO_210",
+                    "EXPAND_TO_240",
+                    "EXPAND_TO_300",
+                    "EXPAND_TO_360",
+                    "OTHER",
+                ],
                 "recommendation": "EXPAND_TO_210",
                 "evidence": "Train overflow is 34/1793 (1.90%); 24 rows are 189/199 and 10 rows are 343. Expanding to 210 resolves the 24 moderate-tail rows while retaining the rare 343-minute tail and avoids unnecessary class doubling.",
             },
             {
                 "decision_id": "C0-D03",
                 "target": "D_TX",
-                "options": ["KEEP_60", "EXPAND_TO_75", "EXPAND_TO_90", "EXPAND_TO_120", "OTHER"],
+                "options": [
+                    "KEEP_60",
+                    "EXPAND_TO_75",
+                    "EXPAND_TO_90",
+                    "EXPAND_TO_120",
+                    "OTHER",
+                ],
                 "recommendation": "KEEP_60",
                 "evidence": "Train overflow is 0/1880; Development has 28/1765 (1.59%) across only 3 episodes, and D_TX is a chain endpoint with no downstream parent-conditioning role.",
             },
@@ -660,24 +798,42 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     report["artifact_hash"] = f"sha256:{sha256(basis.encode('utf-8')).hexdigest()}"
 
     _write_json(output_dir / "AIR_SLOT_M1_V2_TARGET_SUPPORT_GATE_C0.json", report)
-    _write_json(output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_PROFILES.json", {
-        "train": train_profiles, "calibration": split_profiles["calibration"], "development": split_profiles["development"]
-    })
-    _write_json(output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_DTX_SHIFT.json", report["d_tx_development_shift"])
-    _write_csv(output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_THRESHOLDS.csv", threshold_rows)
+    _write_json(
+        output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_PROFILES.json",
+        {
+            "train": train_profiles,
+            "calibration": split_profiles["calibration"],
+            "development": split_profiles["development"],
+        },
+    )
+    _write_json(
+        output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_DTX_SHIFT.json",
+        report["d_tx_development_shift"],
+    )
+    _write_csv(
+        output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_THRESHOLDS.csv", threshold_rows
+    )
     _write_csv(output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_OVERFLOW.csv", overflow_rows)
-    (output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_HUMAN_REVIEW_PACKET.md").write_text(_markdown(report), encoding="utf-8")
+    (output_dir / "M1_V2_TARGET_SUPPORT_GATE_C0_HUMAN_REVIEW_PACKET.md").write_text(
+        _markdown(report), encoding="utf-8"
+    )
     return report
 
 
 def main() -> None:
     report = run()
-    print(json.dumps({
-        "TARGET_SUPPORT_C0_STATUS": report["TARGET_SUPPORT_C0_STATUS"],
-        "artifact_hash": report["artifact_hash"],
-        "overflow_counts": report["overflow_counts"],
-        "safety": report["safety"],
-    }, indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "TARGET_SUPPORT_C0_STATUS": report["TARGET_SUPPORT_C0_STATUS"],
+                "artifact_hash": report["artifact_hash"],
+                "overflow_counts": report["overflow_counts"],
+                "safety": report["safety"],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

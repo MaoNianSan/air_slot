@@ -47,7 +47,6 @@ from validation.m1_v2_feature_semantics import (
 )
 from validation.ownership_gate_v2 import build_gate_result
 
-
 ROOT = Path(__file__).resolve().parents[1]
 A2_ROOT = ROOT / "artifacts" / "diagnostics" / "m1_v2_data_gate_a2"
 B1_ROOT = ROOT / "artifacts" / "diagnostics" / "m1_v2_feature_gate_b1"
@@ -63,7 +62,9 @@ def _read_json(path: Path) -> dict:
 
 def _write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def _head() -> str:
@@ -107,9 +108,7 @@ def _transform_dynamic(
         if name not in {"current_weather.stale_mask", "current_weather.fallback_mask"}:
             raise ValueError(f"M1_B1R_DYNAMIC_SOURCE_MISSING:{name}")
         kind = "stale" if ".stale_" in name else "fallback"
-        sources = tuple(
-            f"weather.{field}.{kind}_mask" for field in V2_WEATHER_FIELDS
-        )
+        sources = tuple(f"weather.{field}.{kind}_mask" for field in V2_WEATHER_FIELDS)
         source_columns = [values[:, old_index[source]] for source in sources]
         reference = source_columns[0]
         if not all(torch.equal(reference, column) for column in source_columns[1:]):
@@ -178,23 +177,29 @@ def _fit_and_encode_static(cache: M1DevelopmentBaseCache):
         for episode_id, split in zip(store.sample_episode_ids, store.sample_splits)
         if split in {"calibration", "development"}
     }
-    return artifact, static_values, {
-        "fit_split": artifact.fitted_split,
-        "fitting_unit": "UNIQUE_TRAIN_EPISODE_STATIC_CONTEXTS",
-        "episode_level_fit": artifact.episode_level_fit,
-        "fit_episode_count": len(train_ids),
-        "fit_episode_ids_hash": artifact.episode_ids_hash,
-        "calibration_development_episode_ids_in_fit": len(train_ids & transform_only_ids),
-        "STATIC_NORMALIZATION_TRAIN_ONLY": (
-            "PASS"
-            if artifact.fitted_split == "train"
-            and artifact.episode_level_fit
-            and artifact.episode_count == len(train_ids)
-            and not (train_ids & transform_only_ids)
-            else "FAIL"
-        ),
-        "artifact_hash": content_id(artifact.model_dump(mode="json")),
-    }
+    return (
+        artifact,
+        static_values,
+        {
+            "fit_split": artifact.fitted_split,
+            "fitting_unit": "UNIQUE_TRAIN_EPISODE_STATIC_CONTEXTS",
+            "episode_level_fit": artifact.episode_level_fit,
+            "fit_episode_count": len(train_ids),
+            "fit_episode_ids_hash": artifact.episode_ids_hash,
+            "calibration_development_episode_ids_in_fit": len(
+                train_ids & transform_only_ids
+            ),
+            "STATIC_NORMALIZATION_TRAIN_ONLY": (
+                "PASS"
+                if artifact.fitted_split == "train"
+                and artifact.episode_level_fit
+                and artifact.episode_count == len(train_ids)
+                and not (train_ids & transform_only_ids)
+                else "FAIL"
+            ),
+            "artifact_hash": content_id(artifact.model_dump(mode="json")),
+        },
+    )
 
 
 def _reference_value(lineage: dict[str, object] | None, feature: str) -> float | None:
@@ -216,10 +221,13 @@ def _removed_features(old_names: tuple[str, ...]) -> dict[str, list[str]]:
     removed = [name for name in old_names if name not in FEATURE_NAMES_V2]
     categories = {
         "structural_state_masks": [
-            name for name in removed if name.startswith("state.") and name.endswith("_mask")
+            name
+            for name in removed
+            if name.startswith("state.") and name.endswith("_mask")
         ],
         "weather_duplicated_masks": [
-            name for name in removed
+            name
+            for name in removed
             if name.startswith("weather.")
             and name.endswith((".stale_mask", ".fallback_mask"))
         ],
@@ -294,9 +302,11 @@ def _support_metadata_counts(
         output[split] = {}
         for obj in ("current_weather", "schedule_reference", "current_state"):
             output[split][obj] = {
-                level: int(torch.count_nonzero(
-                    matrix[selected, old_index[f"{obj}.support.{level}"]]
-                ))
+                level: int(
+                    torch.count_nonzero(
+                        matrix[selected, old_index[f"{obj}.support.{level}"]]
+                    )
+                )
                 for level in ("SUPPORTED", "DEGRADED", "ABSTAIN")
             }
     return output
@@ -312,7 +322,9 @@ def _store_identity_equal(left, right) -> dict[str, bool]:
         "sample_start_offsets": torch.equal(
             left.sample_start_offsets, right.sample_start_offsets
         ),
-        "sample_end_offsets": torch.equal(left.sample_end_offsets, right.sample_end_offsets),
+        "sample_end_offsets": torch.equal(
+            left.sample_end_offsets, right.sample_end_offsets
+        ),
         "sample_episode_ids": left.sample_episode_ids == right.sample_episode_ids,
         "sample_decision_node_ids": (
             left.sample_decision_node_ids == right.sample_decision_node_ids
@@ -322,8 +334,12 @@ def _store_identity_equal(left, right) -> dict[str, bool]:
         "static_context_lineages": (
             left.static_context_lineages == right.static_context_lineages
         ),
-        "labels": all(torch.equal(left.labels[name], right.labels[name]) for name in left.labels),
-        "active": all(torch.equal(left.active[name], right.active[name]) for name in left.active),
+        "labels": all(
+            torch.equal(left.labels[name], right.labels[name]) for name in left.labels
+        ),
+        "active": all(
+            torch.equal(left.active[name], right.active[name]) for name in left.active
+        ),
     }
 
 
@@ -376,12 +392,12 @@ def _write_packet(path: Path, report: dict) -> None:
 
 def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     if len(FEATURE_NAMES_V2) != 41:
-        raise RuntimeError(
-            "M1_B1R_HISTORICAL_CANDIDATE_ONLY_CURRENT_SCHEMA_IS_B2R"
-        )
+        raise RuntimeError("M1_B1R_HISTORICAL_CANDIDATE_ONLY_CURRENT_SCHEMA_IS_B2R")
     a2_cache, a2_manifest, a2_result, old_names = load_a2_baseline()
     schema = _candidate_schema(old_names)
-    dynamic, dynamic_transform = _transform_dynamic(a2_cache.store.values_flat, old_names)
+    dynamic, dynamic_transform = _transform_dynamic(
+        a2_cache.store.values_flat, old_names
+    )
     static_normalization, static_values, static_fit = _fit_and_encode_static(a2_cache)
     candidate_store = replace(
         a2_cache.store,
@@ -390,21 +406,25 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     )
     contract_hashes = dict(a2_manifest["contract_hashes"])
     contract_hashes["feature_contract_hash"] = schema["schema_hash"]
-    contract_hashes["normalization_contract_hash"] = content_id({
-        "dynamic_normalization": a2_cache.normalization.model_dump(mode="json"),
-        "static_normalization": static_normalization.model_dump(mode="json"),
-        "fitted_split": "train",
-    })
+    contract_hashes["normalization_contract_hash"] = content_id(
+        {
+            "dynamic_normalization": a2_cache.normalization.model_dump(mode="json"),
+            "static_normalization": static_normalization.model_dump(mode="json"),
+            "fitted_split": "train",
+        }
+    )
     if set(REQUIRED_CONTRACT_HASHES) - set(contract_hashes):
         raise ValueError("M1_B1R_REQUIRED_CONTRACT_HASH_MISSING")
-    candidate_key = content_id({
-        "scope": "FEATURE_GATE_B1R_CANDIDATE",
-        "a2_cache_hash": a2_manifest["cache_hash"],
-        "a2_cache_key": a2_manifest["cache_key"],
-        "candidate_schema_hash": schema["schema_hash"],
-        "static_normalization_hash": static_fit["artifact_hash"],
-        "partition_counts": a2_manifest["partition_counts"],
-    })
+    candidate_key = content_id(
+        {
+            "scope": "FEATURE_GATE_B1R_CANDIDATE",
+            "a2_cache_hash": a2_manifest["cache_hash"],
+            "a2_cache_key": a2_manifest["cache_key"],
+            "candidate_schema_hash": schema["schema_hash"],
+            "static_normalization_hash": static_fit["artifact_hash"],
+            "partition_counts": a2_manifest["partition_counts"],
+        }
+    )
     candidate = M1DevelopmentBaseCache.from_store(
         store=candidate_store,
         normalization=a2_cache.normalization,
@@ -460,10 +480,10 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     }
     train_profile = profiles["profiles"]["train"]
     object_mask_train_constants = [
-        row["feature"] for row in train_profile
-        if row["feature"] in {
-            "current_weather.stale_mask", "current_weather.fallback_mask"
-        }
+        row["feature"]
+        for row in train_profile
+        if row["feature"]
+        in {"current_weather.stale_mask", "current_weather.fallback_mask"}
         and row["constant"]
     ]
     structural_scan = encoder_static_scan()
@@ -503,11 +523,15 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     status = (
         "CONTRACT_FAILURE"
         if not contract_pass
-        else "FEATURE_GATE_B1R_DATA_INCONSISTENCY"
-        if not invariant_pass
-        else "FEATURE_GATE_B1R_REVIEW_REMAINS"
-        if contract_structural_constants
-        else "FEATURE_GATE_B1R_PASS_CANDIDATE_READY_FOR_B2"
+        else (
+            "FEATURE_GATE_B1R_DATA_INCONSISTENCY"
+            if not invariant_pass
+            else (
+                "FEATURE_GATE_B1R_REVIEW_REMAINS"
+                if contract_structural_constants
+                else "FEATURE_GATE_B1R_PASS_CANDIDATE_READY_FOR_B2"
+            )
+        )
     )
     static_values_payload = static_normalization.values
     report = {
@@ -517,7 +541,9 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
         "applied_decisions": schema["applied_decisions"],
         "wind_direction": {
-            "missing_rows": wind_checks["weather.wind_direction_deg.sin"]["missing_rows"],
+            "missing_rows": wind_checks["weather.wind_direction_deg.sin"][
+                "missing_rows"
+            ],
             "sin_missing_neutral": (
                 wind_checks["weather.wind_direction_deg.sin"]["violations"] == 0
             ),
@@ -552,12 +578,16 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
             "normalization_artifact_hash": static_fit["artifact_hash"],
             "fit_episode_count": static_fit["fit_episode_count"],
             "fit_episode_ids_hash": static_fit["fit_episode_ids_hash"],
-            "turnaround": static_values_payload["turnaround_reference_minutes"].model_dump(
+            "turnaround": static_values_payload[
+                "turnaround_reference_minutes"
+            ].model_dump(mode="json"),
+            "taxi": static_values_payload["taxi_reference_minutes"].model_dump(
                 mode="json"
             ),
-            "taxi": static_values_payload["taxi_reference_minutes"].model_dump(mode="json"),
             "partial_missing_cases": static_audit["partial_missing_cases"],
-            "partial_missing_case_details": static_audit["partial_missing_case_details"],
+            "partial_missing_case_details": static_audit[
+                "partial_missing_case_details"
+            ],
             "observed_counterpart_retained": (
                 static_audit["PARTIAL_STATIC_OBSERVED_VALUE_LOST"] == 0
             ),
@@ -629,9 +659,13 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     report["artifact_hash"] = f"sha256:{sha256(basis.encode('utf-8')).hexdigest()}"
 
     _write_json(output_dir / "M1_V2_FEATURE_SCHEMA_CANDIDATE_B1R.json", schema)
-    _write_json(output_dir / "FEATURE_PROFILE_AND_SHIFT_B1R.json", {
-        "profiles": profiles["profiles"], "shift_report_only": shifts,
-    })
+    _write_json(
+        output_dir / "FEATURE_PROFILE_AND_SHIFT_B1R.json",
+        {
+            "profiles": profiles["profiles"],
+            "shift_report_only": shifts,
+        },
+    )
     _write_json(output_dir / "FEATURE_REDUNDANCY_B1R.json", redundancy)
     _write_json(output_dir / "FEATURE_MISSING_INVARIANTS_B1R.json", missing)
     _write_json(output_dir / "AIR_SLOT_M1_V2_FEATURE_GATE_B1R.json", report)
@@ -641,13 +675,19 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
 
 def main() -> None:
     report = run()
-    print(json.dumps({
-        "FEATURE_GATE_STATUS": report["FEATURE_GATE_STATUS"],
-        "artifact_hash": report["artifact_hash"],
-        "schema_hash": report["feature_schema"]["schema_hash"],
-        "candidate_cache_hash": report["cache"]["candidate_cache_hash"],
-        "safety": report["safety"],
-    }, indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "FEATURE_GATE_STATUS": report["FEATURE_GATE_STATUS"],
+                "artifact_hash": report["artifact_hash"],
+                "schema_hash": report["feature_schema"]["schema_hash"],
+                "candidate_cache_hash": report["cache"]["candidate_cache_hash"],
+                "safety": report["safety"],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

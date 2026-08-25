@@ -91,12 +91,18 @@ class OpsComponentRule(FrozenModel):
             if actual != expected:
                 raise ValueError("MONETARY_MAPPING_PLAN_BAND_VALUES_MISMATCH")
             if self.anchor_status is not NumericAnchorStatus.FROZEN_ASSUMPTION_GROUNDED:
-                raise ValueError("MONETARY_MAPPING_PLAN_FROZEN_ANCHOR_REQUIRES_FROZEN_STATUS")
+                raise ValueError(
+                    "MONETARY_MAPPING_PLAN_FROZEN_ANCHOR_REQUIRES_FROZEN_STATUS"
+                )
         else:
             if any(band.per_cu_money is not None for band in self.bands):
-                raise ValueError("MONETARY_MAPPING_PLAN_PARTIAL_NUMERIC_BANDS_FORBIDDEN")
+                raise ValueError(
+                    "MONETARY_MAPPING_PLAN_PARTIAL_NUMERIC_BANDS_FORBIDDEN"
+                )
             if self.anchor_status is not NumericAnchorStatus.HUMAN_DECISION_REQUIRED:
-                raise ValueError("MONETARY_MAPPING_PLAN_PENDING_ANCHOR_REQUIRES_HUMAN_STATUS")
+                raise ValueError(
+                    "MONETARY_MAPPING_PLAN_PENDING_ANCHOR_REQUIRES_HUMAN_STATUS"
+                )
             if not self.anchor_reason:
                 raise ValueError("MONETARY_MAPPING_PLAN_PENDING_ANCHOR_REQUIRES_REASON")
         return self
@@ -144,7 +150,9 @@ class EU261Staircase(FrozenModel):
             raise ValueError("EU261_SELECTED_TAU_MUST_BE_IN_TAU_OPTIONS")
         if self.tau_comp_selected_minutes in self.tau_comp_sensitivity_minutes:
             raise ValueError("EU261_SELECTED_TAU_MUST_NOT_BE_IN_SENSITIVITY")
-        if not set(self.tau_comp_sensitivity_minutes) <= set(self.tau_comp_options_minutes):
+        if not set(self.tau_comp_sensitivity_minutes) <= set(
+            self.tau_comp_options_minutes
+        ):
             raise ValueError("EU261_TAU_SENSITIVITY_MUST_BE_IN_TAU_OPTIONS")
         return self
 
@@ -179,17 +187,25 @@ class MonetaryConversionPlan(FrozenModel):
     @model_validator(mode="after")
     def single_recommendation(self):
         if sum(option.recommended for option in self.options) != 1:
-            raise ValueError("MONETARY_CONVERSION_PLAN_REQUIRES_EXACTLY_ONE_RECOMMENDED_OPTION")
+            raise ValueError(
+                "MONETARY_CONVERSION_PLAN_REQUIRES_EXACTLY_ONE_RECOMMENDED_OPTION"
+            )
         return self
 
 
 class MonetaryMappingPlanRegistry(FrozenModel):
     """Assumption-grounded monetary mapping registry (EUR-native, D1 frozen)."""
 
-    schema_version: str = Field(default="M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V1", min_length=1)
-    registry_id: str = Field(default="M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V1", min_length=1)
+    schema_version: str = Field(
+        default="M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V1", min_length=1
+    )
+    registry_id: str = Field(
+        default="M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V1", min_length=1
+    )
     monetary_system_id: str = Field(default=MONETARY_SYSTEM_ID, min_length=1)
-    numeric_freeze_status: NumericFreezeStatus = NumericFreezeStatus.AWAITING_HUMAN_CONFIRMATION
+    numeric_freeze_status: NumericFreezeStatus = (
+        NumericFreezeStatus.AWAITING_HUMAN_CONFIRMATION
+    )
     monetary_ground_truth_claim: bool = False
     claim_statement: str = ""
     ops_components: tuple[OpsComponentRule, ...] = Field(min_length=7)
@@ -208,7 +224,10 @@ class MonetaryMappingPlanRegistry(FrozenModel):
             raise ValueError("MONETARY_MAPPING_PLAN_PAPER_FULL_VIOLATION")
         if self.monetary_ground_truth_claim:
             raise ValueError("MONETARY_MAPPING_PLAN_CANNOT_CLAIM_MONETARY_GROUND_TRUTH")
-        if tuple(rule.component_id for rule in self.ops_components) != CONSEQUENCE_COMPONENTS:
+        if (
+            tuple(rule.component_id for rule in self.ops_components)
+            != CONSEQUENCE_COMPONENTS
+        ):
             raise ValueError("MONETARY_MAPPING_PLAN_REQUIRES_EXACT_SEVEN_COMPONENTS")
         if self.numeric_freeze_status is NumericFreezeStatus.FROZEN_ASSUMPTION_GROUNDED:
             if not any(
@@ -219,7 +238,8 @@ class MonetaryMappingPlanRegistry(FrozenModel):
                     "MONETARY_MAPPING_PLAN_FROZEN_REQUIRES_AT_LEAST_ONE_FROZEN_ANCHOR"
                 )
             frozen_missing = [
-                rule.component_id for rule in self.ops_components
+                rule.component_id
+                for rule in self.ops_components
                 if rule.anchor_status is NumericAnchorStatus.FROZEN_ASSUMPTION_GROUNDED
                 and rule.base_per_cu_money is None
             ]
@@ -229,9 +249,13 @@ class MonetaryMappingPlanRegistry(FrozenModel):
                     + ",".join(frozen_missing)
                 )
             if self.conversion_plan.status != "FROZEN":
-                raise ValueError("MONETARY_MAPPING_PLAN_FROZEN_REQUIRES_FROZEN_CONVERSION_PLAN")
+                raise ValueError(
+                    "MONETARY_MAPPING_PLAN_FROZEN_REQUIRES_FROZEN_CONVERSION_PLAN"
+                )
             if not self.claim_statement:
-                raise ValueError("MONETARY_MAPPING_PLAN_FROZEN_REQUIRES_CLAIM_STATEMENT")
+                raise ValueError(
+                    "MONETARY_MAPPING_PLAN_FROZEN_REQUIRES_CLAIM_STATEMENT"
+                )
         if self.registry_hash and self.registry_hash != self.digest():
             raise ValueError("MONETARY_MAPPING_PLAN_REGISTRY_HASH_MISMATCH")
         return self
@@ -246,12 +270,15 @@ class MonetaryMappingPlanRegistry(FrozenModel):
 
     @property
     def numeric_frozen(self) -> bool:
-        return self.numeric_freeze_status is NumericFreezeStatus.FROZEN_ASSUMPTION_GROUNDED
+        return (
+            self.numeric_freeze_status is NumericFreezeStatus.FROZEN_ASSUMPTION_GROUNDED
+        )
 
     @property
     def pending_anchor_components(self) -> tuple[str, ...]:
         return tuple(
-            rule.component_id for rule in self.ops_components
+            rule.component_id
+            for rule in self.ops_components
             if rule.anchor_status is NumericAnchorStatus.HUMAN_DECISION_REQUIRED
         )
 
@@ -262,7 +289,8 @@ class MonetaryMappingPlanRegistry(FrozenModel):
         if set(cu_by_component) != set(CONSEQUENCE_COMPONENTS):
             raise ValueError("MONETARY_MAPPING_PLAN_COMPONENT_KEYS_INVALID")
         return {
-            rule.component_id: float(cu_by_component[rule.component_id]) * rule.base_per_cu_money
+            rule.component_id: float(cu_by_component[rule.component_id])
+            * rule.base_per_cu_money
             for rule in self.ops_components
             if rule.anchor_status is NumericAnchorStatus.FROZEN_ASSUMPTION_GROUNDED
         }

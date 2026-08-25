@@ -64,21 +64,36 @@ class M1TrainingExample:
     static_context_lineage: dict[str, object] | None = None
 
     @classmethod
-    def from_pre_support(cls, *, episode_id, episode_date, values, targets,
-                         target_support: tuple[TargetSupportState, ...]):
+    def from_pre_support(
+        cls,
+        *,
+        episode_id,
+        episode_date,
+        values,
+        targets,
+        target_support: tuple[TargetSupportState, ...],
+    ):
         active = {}
         for item in target_support:
             name = _V1_TO_V2_TRAINING_TARGETS.get(item.target_name, item.target_name)
-            active[name] = item.active \
-                and str(item.support_state.value) != "ABSTAIN"
-        return cls(episode_id=episode_id, episode_date=episode_date, values=values,
-                   targets=targets, active=active)
+            active[name] = item.active and str(item.support_state.value) != "ABSTAIN"
+        return cls(
+            episode_id=episode_id,
+            episode_date=episode_date,
+            values=values,
+            targets=targets,
+            active=active,
+        )
 
     @classmethod
-    def from_v2_target_labels(cls, *, values: torch.Tensor,
-                              labels: tuple[M1V2TargetLabel, ...],
-                              static_values: torch.Tensor | None = None,
-                              static_context_lineage: dict[str, object] | None = None):
+    def from_v2_target_labels(
+        cls,
+        *,
+        values: torch.Tensor,
+        labels: tuple[M1V2TargetLabel, ...],
+        static_values: torch.Tensor | None = None,
+        static_context_lineage: dict[str, object] | None = None,
+    ):
         if {item.target_name for item in labels} != set(V2_TARGETS):
             raise ValueError("M1_TYPED_TARGET_SET_INCOMPLETE")
         episodes = {item.episode_id for item in labels}
@@ -93,16 +108,25 @@ class M1TrainingExample:
         for item in labels:
             active[item.target_name] = item.active
             targets[item.target_name] = item.exact_minutes if item.active else None
-        return cls(episode_id=next(iter(episodes)), episode_date=next(iter(dates)),
-                   values=values, targets=targets, active=active,
-                   decision_node_id=next(iter(node_ids)),
-                   static_values=static_values,
-                   static_context_lineage=static_context_lineage)
+        return cls(
+            episode_id=next(iter(episodes)),
+            episode_date=next(iter(dates)),
+            values=values,
+            targets=targets,
+            active=active,
+            decision_node_id=next(iter(node_ids)),
+            static_values=static_values,
+            static_context_lineage=static_context_lineage,
+        )
 
 
 def chronological_split(examples):
-    boundaries = (("train", date(2019, 6, 30)), ("calibration", date(2019, 7, 31)),
-                  ("development", date(2019, 9, 30)), ("test", date.max))
+    boundaries = (
+        ("train", date(2019, 6, 30)),
+        ("calibration", date(2019, 7, 31)),
+        ("development", date(2019, 9, 30)),
+        ("test", date.max),
+    )
     output = {name: [] for name, _ in boundaries}
     membership = {}
     for example in sorted(examples, key=lambda row: (row.episode_date, row.episode_id)):
@@ -140,13 +164,21 @@ class M1Lifecycle:
         ib_bin = torch.full((len(values),), -1, dtype=torch.long, device=device)
         d_ob_bin = torch.full((len(values),), -1, dtype=torch.long, device=device)
         d_tx_bin = torch.full((len(values),), -1, dtype=torch.long, device=device)
-        ib_minutes = torch.full((len(values),), float("nan"), dtype=torch.float32, device=device)
-        d_ob_minutes = torch.full((len(values),), float("nan"), dtype=torch.float32, device=device)
-        d_tx_minutes = torch.full((len(values),), float("nan"), dtype=torch.float32, device=device)
+        ib_minutes = torch.full(
+            (len(values),), float("nan"), dtype=torch.float32, device=device
+        )
+        d_ob_minutes = torch.full(
+            (len(values),), float("nan"), dtype=torch.float32, device=device
+        )
+        d_tx_minutes = torch.full(
+            (len(values),), float("nan"), dtype=torch.float32, device=device
+        )
         d_ob_zero = torch.zeros(len(values), dtype=torch.bool, device=device)
         d_tx_zero = torch.zeros(len(values), dtype=torch.bool, device=device)
-        active = {name: torch.zeros(len(values), dtype=torch.bool, device=device)
-                  for name in V2_TARGETS}
+        active = {
+            name: torch.zeros(len(values), dtype=torch.bool, device=device)
+            for name in V2_TARGETS
+        }
         for index, row in enumerate(values):
             for name in V2_TARGETS:
                 active[name][index] = row.active.get(name, False)
@@ -165,32 +197,47 @@ class M1Lifecycle:
                 d_tx_zero[index] = minutes == 0.0
                 d_tx_bin[index] = d_tx.encode(minutes)
         return {
-            "ib_bin": ib_bin, "d_ob_bin": d_ob_bin, "d_tx_bin": d_tx_bin,
-            "ib_minutes": ib_minutes, "d_ob_minutes": d_ob_minutes,
-            "d_tx_minutes": d_tx_minutes, "d_ob_zero": d_ob_zero,
-            "d_tx_zero": d_tx_zero, "active": active,
+            "ib_bin": ib_bin,
+            "d_ob_bin": d_ob_bin,
+            "d_tx_bin": d_tx_bin,
+            "ib_minutes": ib_minutes,
+            "d_ob_minutes": d_ob_minutes,
+            "d_tx_minutes": d_tx_minutes,
+            "d_ob_zero": d_ob_zero,
+            "d_tx_zero": d_tx_zero,
+            "active": active,
         }
 
     @staticmethod
     def _batch(examples, contracts, *, device=None):
         target = torch.device("cpu") if device is None else torch.device(device)
-        lengths = torch.tensor([row.values.shape[0] for row in examples], dtype=torch.long)
+        lengths = torch.tensor(
+            [row.values.shape[0] for row in examples], dtype=torch.long
+        )
         values = torch.nn.utils.rnn.pad_sequence(
-            [row.values for row in examples], batch_first=True).to(target)
+            [row.values for row in examples], batch_first=True
+        ).to(target)
         encoded = M1Lifecycle._encode(examples, contracts, target)
         static_values = None
         declared_width = next(
-            (int(row.static_values.numel()) for row in examples
-             if row.static_values is not None),
+            (
+                int(row.static_values.numel())
+                for row in examples
+                if row.static_values is not None
+            ),
             0,
         )
         if declared_width:
-            static_values = torch.stack([
-                (row.static_values.reshape(-1)
-                 if row.static_values is not None
-                 else torch.zeros(declared_width, dtype=torch.float32))
-                for row in examples
-            ]).to(target)
+            static_values = torch.stack(
+                [
+                    (
+                        row.static_values.reshape(-1)
+                        if row.static_values is not None
+                        else torch.zeros(declared_width, dtype=torch.float32)
+                    )
+                    for row in examples
+                ]
+            ).to(target)
         return values, lengths, encoded, static_values
 
     @staticmethod
@@ -202,20 +249,28 @@ class M1Lifecycle:
         order = list(range(len(examples)))
         if bucketed:
             order.sort(key=lambda index: (examples[index].values.shape[0], index))
-        return tuple(tuple(order[start:start + batch_size])
-                     for start in range(0, len(order), batch_size))
+        return tuple(
+            tuple(order[start : start + batch_size])
+            for start in range(0, len(order), batch_size)
+        )
 
     @classmethod
     def batching_diagnostics(cls, examples, *, batch_size, bucketed=True):
         batches = cls._batch_indices(examples, batch_size, bucketed=bucketed)
-        actual = sum(int(examples[index].values.shape[0])
-                     for batch in batches for index in batch)
-        padded = sum(max(int(examples[index].values.shape[0])
-                         for index in batch) * len(batch)
-                     for batch in batches if batch)
-        return {"batches": len(batches), "padded_rows": padded,
-                "actual_rows": actual,
-                "padding_fraction": 0.0 if padded == 0 else 1.0 - actual / padded}
+        actual = sum(
+            int(examples[index].values.shape[0]) for batch in batches for index in batch
+        )
+        padded = sum(
+            max(int(examples[index].values.shape[0]) for index in batch) * len(batch)
+            for batch in batches
+            if batch
+        )
+        return {
+            "batches": len(batches),
+            "padded_rows": padded,
+            "actual_rows": actual,
+            "padding_fraction": 0.0 if padded == 0 else 1.0 - actual / padded,
+        }
 
     @staticmethod
     def _episode_balanced_loss_spec(examples):
@@ -238,10 +293,13 @@ class M1Lifecycle:
             active = tuple(eligible(row) for row in examples)
             episode_weights = episode_normalized_weights(episode_ids, active)
             weights[name] = episode_weights
-            denominators[name] = len({
-                episode_id for episode_id, is_active in zip(episode_ids, active)
-                if is_active
-            })
+            denominators[name] = len(
+                {
+                    episode_id
+                    for episode_id, is_active in zip(episode_ids, active)
+                    if is_active
+                }
+            )
         return {"weights": weights, "denominators": denominators}
 
     def _loss_components(self, logits, encoded, contracts, denominators, weights):
@@ -251,36 +309,58 @@ class M1Lifecycle:
             "T_IB_HAZARD_NLL": hazard_interval_nll(
                 logits[M1_V2_HAZARD_COORDINATE],
                 contracts[M1_V2_HAZARD_COORDINATE],
-                lower=encoded["ib_minutes"], upper=encoded["ib_minutes"],
-                active=active[M1_V2_HAZARD_COORDINATE], weights=weights["ib"],
+                lower=encoded["ib_minutes"],
+                upper=encoded["ib_minutes"],
+                active=active[M1_V2_HAZARD_COORDINATE],
+                weights=weights["ib"],
                 denominator=denominators["ib"],
             ),
             "D_OB_ZERO_BCE": hurdle_quantile_loss(
-                logits["D_OB_zero"], logits["D_OB_quantile"], contracts["D_OB"],
-                zero=encoded["d_ob_zero"], value=encoded["d_ob_minutes"],
-                active=active["D_OB"], zero_weights=weights["ob_zero"],
+                logits["D_OB_zero"],
+                logits["D_OB_quantile"],
+                contracts["D_OB"],
+                zero=encoded["d_ob_zero"],
+                value=encoded["d_ob_minutes"],
+                active=active["D_OB"],
+                zero_weights=weights["ob_zero"],
                 positive_weights=weights["ob_positive"],
-                zero_denominator=denominators["ob_zero"], positive_denominator=0,
+                zero_denominator=denominators["ob_zero"],
+                positive_denominator=0,
             ),
             "D_OB_POSITIVE_PINBALL": hurdle_quantile_loss(
-                logits["D_OB_zero"], logits["D_OB_quantile"], contracts["D_OB"],
-                zero=encoded["d_ob_zero"], value=encoded["d_ob_minutes"],
-                active=active["D_OB"], zero_weights=weights["ob_zero"],
-                positive_weights=weights["ob_positive"], zero_denominator=0,
+                logits["D_OB_zero"],
+                logits["D_OB_quantile"],
+                contracts["D_OB"],
+                zero=encoded["d_ob_zero"],
+                value=encoded["d_ob_minutes"],
+                active=active["D_OB"],
+                zero_weights=weights["ob_zero"],
+                positive_weights=weights["ob_positive"],
+                zero_denominator=0,
                 positive_denominator=denominators["ob_positive"],
             ),
             "D_TX_ZERO_BCE": hurdle_quantile_loss(
-                logits["D_TX_zero"], logits["D_TX_quantile"], contracts["D_TX"],
-                zero=encoded["d_tx_zero"], value=encoded["d_tx_minutes"],
-                active=active["D_TX"], zero_weights=weights["tx_zero"],
+                logits["D_TX_zero"],
+                logits["D_TX_quantile"],
+                contracts["D_TX"],
+                zero=encoded["d_tx_zero"],
+                value=encoded["d_tx_minutes"],
+                active=active["D_TX"],
+                zero_weights=weights["tx_zero"],
                 positive_weights=weights["tx_positive"],
-                zero_denominator=denominators["tx_zero"], positive_denominator=0,
+                zero_denominator=denominators["tx_zero"],
+                positive_denominator=0,
             ),
             "D_TX_POSITIVE_PINBALL": hurdle_quantile_loss(
-                logits["D_TX_zero"], logits["D_TX_quantile"], contracts["D_TX"],
-                zero=encoded["d_tx_zero"], value=encoded["d_tx_minutes"],
-                active=active["D_TX"], zero_weights=weights["tx_zero"],
-                positive_weights=weights["tx_positive"], zero_denominator=0,
+                logits["D_TX_zero"],
+                logits["D_TX_quantile"],
+                contracts["D_TX"],
+                zero=encoded["d_tx_zero"],
+                value=encoded["d_tx_minutes"],
+                active=active["D_TX"],
+                zero_weights=weights["tx_zero"],
+                positive_weights=weights["tx_positive"],
+                zero_denominator=0,
                 positive_denominator=denominators["tx_positive"],
             ),
         }
@@ -292,12 +372,17 @@ class M1Lifecycle:
         active-episode count, so micro-batching preserves loss and gradients.
         """
         components = self._loss_components(
-            logits, encoded, contracts, denominators, weights,
+            logits,
+            encoded,
+            contracts,
+            denominators,
+            weights,
         )
         return sum(components.values())
 
-    def episode_balanced_objective(self, examples, *, batch_size=None,
-                                   bucketed=True, teacher_forcing=True):
+    def episode_balanced_objective(
+        self, examples, *, batch_size=None, bucketed=True, teacher_forcing=True
+    ):
         """Read-only joint Development objective and primitive diagnostics."""
         if not examples:
             raise ValueError("empty evaluation split")
@@ -305,18 +390,25 @@ class M1Lifecycle:
         totals = {
             name: torch.zeros((), dtype=torch.float32)
             for name in (
-                "T_IB_HAZARD_NLL", "D_OB_ZERO_BCE", "D_OB_POSITIVE_PINBALL",
-                "D_TX_ZERO_BCE", "D_TX_POSITIVE_PINBALL",
+                "T_IB_HAZARD_NLL",
+                "D_OB_ZERO_BCE",
+                "D_OB_POSITIVE_PINBALL",
+                "D_TX_ZERO_BCE",
+                "D_TX_POSITIVE_PINBALL",
             )
         }
         self.pipeline.model.eval()
         with torch.no_grad():
             for indices in self._batch_indices(
-                examples, batch_size, bucketed=bucketed,
+                examples,
+                batch_size,
+                bucketed=bucketed,
             ):
                 batch = [examples[index] for index in indices]
                 values, lengths, encoded, static_values = self._batch(
-                    batch, self.pipeline.contracts, device=self.device,
+                    batch,
+                    self.pipeline.contracts,
+                    device=self.device,
                 )
                 teacher = None
                 if teacher_forcing:
@@ -331,7 +423,9 @@ class M1Lifecycle:
                         },
                     }
                 logits = self.pipeline.model(
-                    values, lengths, teacher=teacher,
+                    values,
+                    lengths,
+                    teacher=teacher,
                     fast_features=fast_features_from_sequence(values, lengths),
                     static_features=static_values,
                 )
@@ -341,8 +435,11 @@ class M1Lifecycle:
                     for name, component in loss_spec["weights"].items()
                 }
                 components = self._loss_components(
-                    logits, encoded, self.pipeline.contracts,
-                    loss_spec["denominators"], batch_weights,
+                    logits,
+                    encoded,
+                    self.pipeline.contracts,
+                    loss_spec["denominators"],
+                    batch_weights,
                 )
                 for name, value in components.items():
                     totals[name] = totals[name] + value.detach().cpu()
@@ -353,8 +450,18 @@ class M1Lifecycle:
         diagnostics["episode_denominators"] = dict(loss_spec["denominators"])
         return diagnostics
 
-    def train(self, examples, *, epochs, learning_rate, weight_decay=0.0,
-              batch_size=None, bucketed=True, seed=None, teacher_forcing=True):
+    def train(
+        self,
+        examples,
+        *,
+        epochs,
+        learning_rate,
+        weight_decay=0.0,
+        batch_size=None,
+        bucketed=True,
+        seed=None,
+        teacher_forcing=True,
+    ):
         if not examples:
             raise ValueError("empty training split")
         if weight_decay < 0:
@@ -362,7 +469,8 @@ class M1Lifecycle:
         if seed is not None:
             torch.manual_seed(seed)
         optimizer = torch.optim.Adam(
-            self.pipeline.model.parameters(), lr=learning_rate,
+            self.pipeline.model.parameters(),
+            lr=learning_rate,
             weight_decay=weight_decay,
         )
         history = []
@@ -376,7 +484,8 @@ class M1Lifecycle:
             for indices in batches:
                 batch = [examples[index] for index in indices]
                 values, lengths, encoded, static_values = self._batch(
-                    batch, self.pipeline.contracts, device=self.device)
+                    batch, self.pipeline.contracts, device=self.device
+                )
                 teacher = None
                 if teacher_forcing:
                     teacher = {
@@ -390,84 +499,119 @@ class M1Lifecycle:
                         },
                     }
                 logits = self.pipeline.model(
-                    values, lengths, teacher=teacher,
+                    values,
+                    lengths,
+                    teacher=teacher,
                     fast_features=fast_features_from_sequence(values, lengths),
-                    static_features=static_values)
+                    static_features=static_values,
+                )
                 batch_indices = torch.tensor(indices, dtype=torch.long)
                 batch_weights = {
                     name: component[batch_indices].to(self.device)
                     for name, component in loss_spec["weights"].items()
                 }
                 loss = self._loss(
-                    logits, encoded, self.pipeline.contracts,
-                    loss_spec["denominators"], batch_weights,
+                    logits,
+                    encoded,
+                    self.pipeline.contracts,
+                    loss_spec["denominators"],
+                    batch_weights,
                 )
                 total = total + loss.detach()
                 loss.backward()
             optimizer.step()
-            history.append({
-                "epoch": epoch + 1,
-                "loss": float(total.item()),
-                "optimizer_steps": 1,
-                "weight_decay": float(weight_decay),
-                "microbatch_count": len(batches),
-                "active_counts": {
-                    name: sum(int(row.active.get(name, False)) for row in examples)
-                    for name in V2_TARGETS
-                },
-                "episode_denominators": dict(loss_spec["denominators"]),
-            })
+            history.append(
+                {
+                    "epoch": epoch + 1,
+                    "loss": float(total.item()),
+                    "optimizer_steps": 1,
+                    "weight_decay": float(weight_decay),
+                    "microbatch_count": len(batches),
+                    "active_counts": {
+                        name: sum(int(row.active.get(name, False)) for row in examples)
+                        for name in V2_TARGETS
+                    },
+                    "episode_denominators": dict(loss_spec["denominators"]),
+                }
+            )
         return history
 
-
-    def batched_logits(self, examples, *, batch_size=None, bucketed=True,
-                       teacher_forcing=True):
+    def batched_logits(
+        self, examples, *, batch_size=None, bucketed=True, teacher_forcing=True
+    ):
         output = None
-        all_labels = {name: torch.empty(len(examples), dtype=torch.long) for name in V2_TARGETS}
-        all_active = {name: torch.empty(len(examples), dtype=torch.bool) for name in V2_TARGETS}
-        all_zero = {name: torch.empty(len(examples), dtype=torch.bool)
-                    for name in ("D_OB", "D_TX")}
+        all_labels = {
+            name: torch.empty(len(examples), dtype=torch.long) for name in V2_TARGETS
+        }
+        all_active = {
+            name: torch.empty(len(examples), dtype=torch.bool) for name in V2_TARGETS
+        }
+        all_zero = {
+            name: torch.empty(len(examples), dtype=torch.bool)
+            for name in ("D_OB", "D_TX")
+        }
         self.pipeline.model.eval()
         with torch.no_grad():
             for indices in self._batch_indices(examples, batch_size, bucketed=bucketed):
                 batch = [examples[index] for index in indices]
                 values, lengths, encoded, static_values = self._batch(
-                    batch, self.pipeline.contracts, device=self.device)
-                teacher = None if not teacher_forcing else {
-                    M1_V2_HAZARD_COORDINATE: encoded["ib_bin"],
-                    "D_OB": encoded["d_ob_bin"],
-                    "D_TX": encoded["d_tx_bin"],
-                    "_active": {
-                        M1_V2_HAZARD_COORDINATE: encoded["ib_bin"] >= 0,
-                        "D_OB": encoded["d_ob_bin"] >= 0,
-                        "D_TX": encoded["d_tx_bin"] >= 0,
-                    },
-                }
+                    batch, self.pipeline.contracts, device=self.device
+                )
+                teacher = (
+                    None
+                    if not teacher_forcing
+                    else {
+                        M1_V2_HAZARD_COORDINATE: encoded["ib_bin"],
+                        "D_OB": encoded["d_ob_bin"],
+                        "D_TX": encoded["d_tx_bin"],
+                        "_active": {
+                            M1_V2_HAZARD_COORDINATE: encoded["ib_bin"] >= 0,
+                            "D_OB": encoded["d_ob_bin"] >= 0,
+                            "D_TX": encoded["d_tx_bin"] >= 0,
+                        },
+                    }
+                )
                 logits = self.pipeline.model(
-                    values, lengths, teacher=teacher,
+                    values,
+                    lengths,
+                    teacher=teacher,
                     fast_features=fast_features_from_sequence(values, lengths),
-                    static_features=static_values)
+                    static_features=static_values,
+                )
                 target_indices = torch.tensor(indices, dtype=torch.long)
                 if output is None:
-                    output = {name: torch.empty(
-                        (len(examples), logits[name].shape[1]),
-                        dtype=logits[name].dtype) for name in logits}
+                    output = {
+                        name: torch.empty(
+                            (len(examples), logits[name].shape[1]),
+                            dtype=logits[name].dtype,
+                        )
+                        for name in logits
+                    }
                 for name, value in logits.items():
                     value = value.detach().cpu()
                     output[name][target_indices] = value
-                label_map = {M1_V2_HAZARD_COORDINATE: "ib_bin",
-                             "D_OB": "d_ob_bin", "D_TX": "d_tx_bin"}
+                label_map = {
+                    M1_V2_HAZARD_COORDINATE: "ib_bin",
+                    "D_OB": "d_ob_bin",
+                    "D_TX": "d_tx_bin",
+                }
                 for name in V2_TARGETS:
-                    all_labels[name][target_indices] = encoded[label_map[name]].detach().cpu()
+                    all_labels[name][target_indices] = (
+                        encoded[label_map[name]].detach().cpu()
+                    )
                     # A label=-1 row is inactive for calibration even if a
                     # malformed input set its support flag to true.
                     all_active[name][target_indices] = (
-                        encoded["active"][name]
-                        & (encoded[label_map[name]] >= 0)
-                    ).detach().cpu()
+                        (encoded["active"][name] & (encoded[label_map[name]] >= 0))
+                        .detach()
+                        .cpu()
+                    )
                 for name in ("D_OB", "D_TX"):
-                    all_zero[name][target_indices] = encoded[
-                        {"D_OB": "d_ob_zero", "D_TX": "d_tx_zero"}[name]].detach().cpu()
+                    all_zero[name][target_indices] = (
+                        encoded[{"D_OB": "d_ob_zero", "D_TX": "d_tx_zero"}[name]]
+                        .detach()
+                        .cpu()
+                    )
         return output, all_labels, all_active, all_zero
 
     def calibrate(self, examples, *, batch_size=None):
@@ -480,7 +624,8 @@ class M1Lifecycle:
         # quantiles stay ``QUANTILE_CALIBRATION_NOT_APPLIED``.
         require_no_final_test(0)
         logits, labels, active, zero = self.batched_logits(
-            examples, batch_size=batch_size, teacher_forcing=True)
+            examples, batch_size=batch_size, teacher_forcing=True
+        )
         # Temperature registry (Tranche 3): hazard temperature fits the
         # predecessor by discrete-hazard EVENT-TIME NLL; D_OB_ZERO / D_TX_ZERO
         # fit the hurdle Bernoulli zero logits by binary CE.  Positive
@@ -500,8 +645,10 @@ class M1Lifecycle:
                 hazard_active,
                 hazard,
             )
-        for name, key in (("D_OB", M1_TEMPERATURE_D_OB_ZERO),
-                          ("D_TX", M1_TEMPERATURE_D_TX_ZERO)):
+        for name, key in (
+            ("D_OB", M1_TEMPERATURE_D_OB_ZERO),
+            ("D_TX", M1_TEMPERATURE_D_TX_ZERO),
+        ):
             target_active = active[name]
             if target_active.any():
                 temperatures[key] = fit_zero_mass_temperature(
@@ -512,15 +659,22 @@ class M1Lifecycle:
         self.pipeline.temperatures = temperatures
         coverage = {}
         for name in ("D_OB", "D_TX"):
-            actual = torch.tensor([
-                float(row.targets[name])
-                if row.targets.get(name) is not None else float("nan")
-                for row in examples
-            ], dtype=torch.float32)
+            actual = torch.tensor(
+                [
+                    (
+                        float(row.targets[name])
+                        if row.targets.get(name) is not None
+                        else float("nan")
+                    )
+                    for row in examples
+                ],
+                dtype=torch.float32,
+            )
             positive_active = active[name] & ~zero[name] & torch.isfinite(actual)
             predicted = monotone_positive_quantiles(logits[f"{name}_quantile"])
             coverage[name] = quantile_coverage_diagnostic(
-                predicted, actual,
+                predicted,
+                actual,
                 tuple(self.pipeline.contracts[name].quantile_levels),
                 positive_active,
             )

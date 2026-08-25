@@ -8,7 +8,6 @@ from pathlib import Path
 
 from model.M1 import data as m1_data
 
-
 SEMANTIC_GROUPS = (
     "CURRENT_STATE",
     "CURRENT_SCHEDULE",
@@ -116,7 +115,11 @@ def _semantic_row(name: str) -> dict:
     elif group == "CURRENT_WEATHER":
         field = _weather_field(name)
         source = f"current_state.current_weather.{field}"
-        unit = "unitless" if name.endswith((".sin", ".cos")) else "train_standard_deviation"
+        unit = (
+            "unitless"
+            if name.endswith((".sin", ".cos"))
+            else "train_standard_deviation"
+        )
         transformation = (
             "CIRCULAR_SIN_COS_PAIR"
             if name.endswith((".sin", ".cos"))
@@ -128,9 +131,7 @@ def _semantic_row(name: str) -> dict:
             else "TRAIN_STANDARDIZED"
         )
         validity = (
-            "FINITE_CEILING_ONLY"
-            if field == "ceiling_base_m"
-            else "RAW_FIELD_PRESENT"
+            "FINITE_CEILING_ONLY" if field == "ceiling_base_m" else "RAW_FIELD_PRESENT"
         )
         missing = (
             "ZERO_WITH_FINITE_UNLIMITED_MISSING_THREE_STATE"
@@ -242,7 +243,9 @@ def _contains_zero_tuple_extend(node: ast.For) -> bool:
         value = child.args[0]
         if not isinstance(value, (ast.Tuple, ast.List)) or len(value.elts) != 3:
             continue
-        if all(isinstance(item, ast.Constant) and item.value == 0.0 for item in value.elts):
+        if all(
+            isinstance(item, ast.Constant) and item.value == 0.0 for item in value.elts
+        ):
             return True
     return False
 
@@ -263,7 +266,9 @@ def encoder_static_scan() -> dict:
         for kind in ("missing", "stale", "fallback")
     ]
     return {
-        "encoder_source": str(Path(inspect.getsourcefile(m1_data.encode_pre_sequence) or "")),
+        "encoder_source": str(
+            Path(inspect.getsourcefile(m1_data.encode_pre_sequence) or "")
+        ),
         "ast_structural_zero_loop_found": structural_line is not None,
         "source_line": structural_line,
         "classification": "STRUCTURAL_CONSTANT",

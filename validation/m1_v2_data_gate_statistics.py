@@ -17,7 +17,6 @@ from model.M1.data import (
 from model.M1.preparation import normalization_rows
 from model.M1.static_features import static_reference_features_from_pre
 
-
 SPLITS = ("train", "calibration", "development")
 LABEL_SUPPORT = {
     "T_IB_REMAINING_HAZARD": 360.0,
@@ -27,9 +26,11 @@ LABEL_SUPPORT = {
 
 
 def _mask_name(feature: str) -> str | None:
-    if feature.startswith("weather.") and not feature.startswith(
-        ("weather.observation_age",)
-    ) and not feature.endswith((".sin", ".cos", "_mask")):
+    if (
+        feature.startswith("weather.")
+        and not feature.startswith(("weather.observation_age",))
+        and not feature.endswith((".sin", ".cos", "_mask"))
+    ):
         return f"{feature}.missing_mask"
     if feature == "schedule.signed_minutes_to_crs_departure":
         return f"{feature}.missing_mask"
@@ -96,7 +97,9 @@ def numeric_statistics(matrices: dict[str, torch.Tensor]) -> dict:
                 outlier_fraction = float(
                     ((observed < lower) | (observed > upper)).float().mean()
                 )
-            unique = torch.unique(usable, return_counts=True)[1] if len(usable) else None
+            unique = (
+                torch.unique(usable, return_counts=True)[1] if len(usable) else None
+            )
             dominant = float(unique.max() / len(usable)) if unique is not None else None
             std = float(basis.std(unbiased=False)) if len(basis) else None
             records.append(
@@ -229,7 +232,9 @@ def label_statistics(rows: dict[str, tuple]) -> dict:
     return output
 
 
-def history_diagnostics(rows: dict[str, tuple], normalization, static_normalization) -> dict:
+def history_diagnostics(
+    rows: dict[str, tuple], normalization, static_normalization
+) -> dict:
     episode_ids = sorted({episode.episode_id for episode, _, _ in rows["train"]})
     selected_ids = set(
         random.Random(20260821).sample(episode_ids, min(3, len(episode_ids)))
@@ -240,7 +245,9 @@ def history_diagnostics(rows: dict[str, tuple], normalization, static_normalizat
         if episode.episode_id not in selected_ids:
             continue
         current = prefix[-1]
-        context = static_reference_context_from_pre(current.static_reference_publication)
+        context = static_reference_context_from_pre(
+            current.static_reference_publication
+        )
         static_values, _ = static_reference_features_from_pre(
             current, context, static_normalization
         )
@@ -272,7 +279,9 @@ def history_diagnostics(rows: dict[str, tuple], normalization, static_normalizat
                 "r_fast_row": r_fast.tolist(),
                 "current_equals_r_fast": torch.equal(values[-1], r_fast),
                 "static_values": (
-                    None if static_values is None else static_values.reshape(-1).tolist()
+                    None
+                    if static_values is None
+                    else static_values.reshape(-1).tolist()
                 ),
                 "operational_stage": current.decision_node.operational_stage.value,
             }
@@ -302,9 +311,12 @@ def time_diagnostics(cohorts) -> dict:
                 successor.actual_arrival_utc,
                 successor.wheels_off_utc,
             )
-            counts["timestamps_checked"] += sum(value is not None for value in timestamps)
+            counts["timestamps_checked"] += sum(
+                value is not None for value in timestamps
+            )
             counts["timezone_violations"] += sum(
-                value is not None and (value.tzinfo is None or value.utcoffset() is None)
+                value is not None
+                and (value.tzinfo is None or value.utcoffset() is None)
                 for value in timestamps
             )
             counts["negative_schedule_duration"] += int(
@@ -362,8 +374,6 @@ def time_diagnostics(cohorts) -> dict:
             "PASS" if not counts["negative_schedule_duration"] else "FAIL"
         ),
         "planned_actual_time": "DIRECT_PRIMARY_WITH_DECLARED_REPLAY_FOR_STAGE",
-        "rolling_time": (
-            "PASS" if not counts["rolling_spacing_not_five"] else "FAIL"
-        ),
+        "rolling_time": ("PASS" if not counts["rolling_spacing_not_five"] else "FAIL"),
         "hhmm_parser": "STRING_HHMM_NOT_DECIMAL",
     }

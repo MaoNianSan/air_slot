@@ -26,9 +26,12 @@ class RegistryInspector:
         rules = self._bundle.data_usage_rules
         if dataset_id is not None:
             rules = tuple(rule for rule in rules if rule.dataset_id == dataset_id)
-        return tuple(LineageChain(
-            rule_id=rule.rule_id,
-            source_family=rule.logical_source,
-            canonical_variable=rule.canonical_variable,
-            consumers=rule.downstream_consumers,
-        ) for rule in rules)
+        return tuple(
+            LineageChain(
+                rule_id=rule.rule_id,
+                source_family=rule.logical_source,
+                canonical_variable=rule.canonical_variable,
+                consumers=rule.downstream_consumers,
+            )
+            for rule in rules
+        )

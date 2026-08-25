@@ -15,10 +15,31 @@ from .contracts import ActionTemplate
 # action universe is not a closed set; extra structural actions are allowed and
 # must satisfy the full Gamma_a contract (Round 2, spec 6.1).
 PRINCIPAL_IDS = (
-    "A00", "A11", "A13", "A21", "A22", "A23", "A31", "A32", "A33",
-    "A41", "A42", "A43", "A51", "A52", "A53", "A54", "A55",
-    "A61", "A62", "A63", "A64", "A71", "A72",
+    "A00",
+    "A11",
+    "A13",
+    "A21",
+    "A22",
+    "A23",
+    "A31",
+    "A32",
+    "A33",
+    "A41",
+    "A42",
+    "A43",
+    "A51",
+    "A52",
+    "A53",
+    "A54",
+    "A55",
+    "A61",
+    "A62",
+    "A63",
+    "A64",
+    "A71",
+    "A72",
 )
+
 
 class ActionRegistry(FrozenModel):
     schema_version: str
@@ -51,9 +72,7 @@ class ActionRegistry(FrozenModel):
     def digest(self) -> str:
         return content_id(self.registry_payload())
 
-    def write_manifest(
-        self, output_path: Path, *, overwrite: bool = False
-    ) -> Path:
+    def write_manifest(self, output_path: Path, *, overwrite: bool = False) -> Path:
         if output_path.exists() and not overwrite:
             raise RegistryError("ACTION_REGISTRY_MANIFEST_EXISTS")
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -88,8 +107,9 @@ class ActionRegistry(FrozenModel):
 
     @model_validator(mode="after")
     def principal_subset_registry(self):
-        ids=tuple(item.template_id for item in self.templates)
-        if len(ids)!=len(set(ids)): raise RegistryError("DUPLICATE_ACTION_ID")
+        ids = tuple(item.template_id for item in self.templates)
+        if len(ids) != len(set(ids)):
+            raise RegistryError("DUPLICATE_ACTION_ID")
         if self.enforce_principal_ids and not set(PRINCIPAL_IDS) <= set(ids):
             raise RegistryError("PRINCIPAL_ACTION_SUBSET_MISMATCH")
         return self

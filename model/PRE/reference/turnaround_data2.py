@@ -23,6 +23,7 @@ DATA2_TURNAROUND_REFERENCE@1.0.0 -> turnaround_reference (FROZEN_REFERENCE)
 -> M2 (reference), M1 (floor boundary). data1 TURNAROUND_REFERENCE@1.0.0
 is untouched.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -100,14 +101,23 @@ class Data2TurnaroundReference:
         min-support met resolves to the cell median. data2 basis is DIRECT
         official gate actuals, so support stays SUPPORTED (never fabricated).
         """
-        cell = next((item for item in self.cells if item.airport_id == airport_id), None)
+        cell = next(
+            (item for item in self.cells if item.airport_id == airport_id), None
+        )
         if cell is not None and cell.fallback_level == _LEVEL_CELL:
-            value, level, count, reason = cell.value_minutes, _LEVEL_CELL, cell.sample_count, (
-                "DIRECT_GATE_TURNAROUND_REFERENCE;CELL_MEDIAN"
+            value, level, count, reason = (
+                cell.value_minutes,
+                _LEVEL_CELL,
+                cell.sample_count,
+                ("DIRECT_GATE_TURNAROUND_REFERENCE;CELL_MEDIAN"),
             )
             flags = ("REFERENCE_LEVEL_CELL", "REFERENCE_SOURCE_DIRECT_GATE_ACTUALS")
         else:
-            value, level, count = self.global_value_minutes, _LEVEL_GLOBAL, self.global_sample_count
+            value, level, count = (
+                self.global_value_minutes,
+                _LEVEL_GLOBAL,
+                self.global_sample_count,
+            )
             reason = "DIRECT_GATE_TURNAROUND_REFERENCE;FALLBACK_GLOBAL"
             flags = ("REFERENCE_LEVEL_GLOBAL", "REFERENCE_SOURCE_DIRECT_GATE_ACTUALS")
             if cell is not None:
@@ -178,7 +188,9 @@ def build_data2_turnaround_reference(
     training_rows = [row for row in flights if row["split"] == "train"]
     if not training_rows:
         raise ContractError("REFERENCE_TRAIN_PARTITION_EMPTY")
-    episodes = build_data2_episode_records(training_rows, max_gap_minutes=MAX_GAP_MINUTES)
+    episodes = build_data2_episode_records(
+        training_rows, max_gap_minutes=MAX_GAP_MINUTES
+    )
 
     by_flight_id = {row["flight_id"]: row for row in training_rows}
     gaps: list[tuple[float, str]] = []
@@ -320,21 +332,13 @@ def data2_turnaround_reference_from_payload(
         rule_version=_require(payload, "rule_version"),
         fit_period=_require(payload, "fit_period"),
         statistic_id=payload.get("statistic_id", STATISTIC_ID),
-        minimum_support_rule=payload.get(
-            "minimum_support_rule", MINIMUM_SUPPORT_RULE
-        ),
-        fallback_hierarchy=tuple(
-            payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)
-        ),
-        applicability_scope=payload.get(
-            "applicability_scope", APPLICABILITY_SCOPE
-        ),
+        minimum_support_rule=payload.get("minimum_support_rule", MINIMUM_SUPPORT_RULE),
+        fallback_hierarchy=tuple(payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)),
+        applicability_scope=payload.get("applicability_scope", APPLICABILITY_SCOPE),
         global_value_minutes=float(_require(payload, "global_value_minutes")),
         global_sample_count=int(_require(payload, "global_sample_count")),
         cells=cells,
         manifest_freeze_id=_require(payload, "manifest_freeze_id"),
         support_state=SupportState(_require(payload, "support_state")),
-        reason_code=payload.get(
-            "reason_code", "DIRECT_GATE_TURNAROUND_REFERENCE"
-        ),
+        reason_code=payload.get("reason_code", "DIRECT_GATE_TURNAROUND_REFERENCE"),
     )

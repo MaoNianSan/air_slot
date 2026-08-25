@@ -13,12 +13,16 @@ def scenario_opportunities(candidate, m1_scenarios):
     deadlines = [
         scenario.get(
             "deadline_minutes",
-            by_scenario.get(str(scenario["scenario_id"]),
-                            by_scenario.get(scenario["scenario_id"], scalar)),
+            by_scenario.get(
+                str(scenario["scenario_id"]),
+                by_scenario.get(scenario["scenario_id"], scalar),
+            ),
         )
         for scenario in m1_scenarios
     ]
-    if candidate.precondition_state == "UNKNOWN" and any(value is None for value in deadlines):
+    if candidate.precondition_state == "UNKNOWN" and any(
+        value is None for value in deadlines
+    ):
         return [1.0 for _ in m1_scenarios]
     if any(value is None for value in deadlines):
         raise ContractError("ACTION_DEADLINE_UNRESOLVED")

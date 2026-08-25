@@ -43,9 +43,9 @@ def validate_same_lineage(
     for other in keys[1:]:
         if require_weights_equal and other != reference:
             raise ContractError("SCENARIO_LINEAGE_MISMATCH")
-        if not require_weights_equal and tuple(
-            key[:3] for key in other
-        ) != tuple(key[:3] for key in reference):
+        if not require_weights_equal and tuple(key[:3] for key in other) != tuple(
+            key[:3] for key in reference
+        ):
             raise ContractError("SCENARIO_LINEAGE_IDENTITY_MISMATCH")
     if len({key[2] for key in reference}) != len(reference):
         raise ContractError("SCENARIO_LINEAGE_DUPLICATE_SCENARIO_ID")

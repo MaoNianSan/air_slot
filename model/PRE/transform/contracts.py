@@ -15,6 +15,7 @@ from model.common.enums import (
 from model.common.errors import RegistryError
 from model.common.value_objects import FrozenModel
 
+
 class ConstructionType(str, Enum):
     DIRECT_OBSERVATION = "DIRECT_OBSERVATION"
     DETERMINISTIC_DERIVATION = "DETERMINISTIC_DERIVATION"
@@ -65,10 +66,14 @@ class TransformationRule(FrozenModel):
     def explicit_unfrozen_state(self):
         if not weaker_or_equal(self.evidence_class, self.support_ceiling):
             raise ValueError("TRANSFORMATION_EVIDENCE_EXCEEDS_SUPPORT_CEILING")
-        if self.status in {
-            TransformationStatus.DEVELOPMENT_CANDIDATE,
-            TransformationStatus.UNSUPPORTED,
-        } and not self.reason_code:
+        if (
+            self.status
+            in {
+                TransformationStatus.DEVELOPMENT_CANDIDATE,
+                TransformationStatus.UNSUPPORTED,
+            }
+            and not self.reason_code
+        ):
             raise ValueError("UNFROZEN_TRANSFORMATION_REQUIRES_REASON")
         if self.status is TransformationStatus.UNSUPPORTED and (
             self.construction_type is not ConstructionType.UNSUPPORTED
@@ -138,7 +143,6 @@ class ScientificObjectValue(FrozenModel):
         elif self.value is None:
             raise ValueError("DERIVED_NULL_REQUIRES_ABSTAIN")
         return self
-
 
 
 class ReferenceFitManifest(FrozenModel):

@@ -139,4 +139,4 @@ This constructs a binding only. No method that executes M3, M4, Exp2, reporting,
 
 ## Tests
 
-`tests/experiment/test_exp2_execution/` verifies manifest validation, artifact hashes, missing/unsupported blocked statuses, and cross-variant fixed binding. The injected callable fixtures fail deliberately if invoked, proving that these tests do not execute an experiment.
+`tests/experiments/test_exp2_execution/` verifies manifest validation, artifact hashes, missing/unsupported blocked statuses, and cross-variant fixed binding. The injected callable fixtures fail deliberately if invoked, proving that these tests do not execute an experiment.

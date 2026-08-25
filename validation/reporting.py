@@ -4,7 +4,6 @@ from pydantic import computed_field
 
 from model.common.value_objects import FrozenModel
 
-
 Status = Literal["PASS", "FAIL", "BLOCKED", "NOT_RUN", "NOT_IMPLEMENTED_BY_SCOPE"]
 
 
@@ -27,8 +26,16 @@ class ValidationRun(FrozenModel):
     @property
     def summary(self) -> dict[str, int]:
         counts = Counter(finding.status for finding in self.findings)
-        return {status: counts.get(status, 0) for status in
-                ("PASS", "FAIL", "BLOCKED", "NOT_RUN", "NOT_IMPLEMENTED_BY_SCOPE")}
+        return {
+            status: counts.get(status, 0)
+            for status in (
+                "PASS",
+                "FAIL",
+                "BLOCKED",
+                "NOT_RUN",
+                "NOT_IMPLEMENTED_BY_SCOPE",
+            )
+        }
 
 
 def exit_code(run: ValidationRun) -> int:

@@ -26,13 +26,9 @@ class M4ActionCUComponentInput(FrozenModel):
     baseline_cu_artifact_id: str | None = Field(
         default=None, pattern=r"^sha256:[0-9a-f]{64}$"
     )
-    baseline_reference_lineage_hash: str = Field(
-        pattern=r"^sha256:[0-9a-f]{64}$"
-    )
+    baseline_reference_lineage_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     response_intensity: float | None = None
-    response_draw_id: str | None = Field(
-        default=None, pattern=r"^sha256:[0-9a-f]{64}$"
-    )
+    response_draw_id: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
 
     @model_validator(mode="after")
     def explicit_support(self):
@@ -59,7 +55,10 @@ class M4ScenarioActionConsequenceInput(FrozenModel):
 
     @model_validator(mode="after")
     def exact_component_vector(self):
-        if tuple(item.component_id for item in self.components) != CONSEQUENCE_COMPONENTS:
+        if (
+            tuple(item.component_id for item in self.components)
+            != CONSEQUENCE_COMPONENTS
+        ):
             raise ValueError("M4_M3_EXACT_SEVEN_COMPONENTS_REQUIRED")
         return self
 
@@ -105,9 +104,15 @@ class M4ActionEnvelopeInput(FrozenModel):
             raise ValueError("M4_M3_DUPLICATE_SCENARIO_ID")
         if abs(sum(self.scenario_weights) - 1.0) > 1e-6:
             raise ValueError("M4_M3_SCENARIO_WEIGHTS_MUST_SUM_TO_ONE")
-        if tuple(item.scenario_id for item in self.scenario_consequences) != self.scenario_ids:
+        if (
+            tuple(item.scenario_id for item in self.scenario_consequences)
+            != self.scenario_ids
+        ):
             raise ValueError("M4_M3_SCENARIO_ID_MISMATCH")
-        if tuple(item.scenario_weight for item in self.scenario_consequences) != self.scenario_weights:
+        if (
+            tuple(item.scenario_weight for item in self.scenario_consequences)
+            != self.scenario_weights
+        ):
             raise ValueError("M4_M3_SCENARIO_WEIGHT_MISMATCH")
         return self
 

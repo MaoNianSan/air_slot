@@ -53,9 +53,7 @@ class M2CUNormalizationAdapter:
         aspect = (
             "Flight"
             if native.component_id.startswith("F_")
-            else "Passenger"
-            if native.component_id.startswith("P_")
-            else "Resource"
+            else "Passenger" if native.component_id.startswith("P_") else "Resource"
         )
         base = {
             "component_id": native.component_id,

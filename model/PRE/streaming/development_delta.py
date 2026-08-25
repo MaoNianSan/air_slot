@@ -5,7 +5,6 @@ from pathlib import Path
 
 from model.PRE.streaming.development import pre_contract_hash
 
-
 OLD_EPISODES = 951359
 OLD_NODES = 13721540
 
@@ -34,7 +33,9 @@ def build_development_delta_manifest(
     )
     new_episodes = OLD_EPISODES - removed_episodes
     new_nodes = OLD_NODES - removed_nodes
-    new_insufficient = int(old_counts["insufficient_history_episodes"]) - removed_insufficient
+    new_insufficient = (
+        int(old_counts["insufficient_history_episodes"]) - removed_insufficient
+    )
     manifest = {
         "schema_version": "AIR_SLOT_PRE_DEVELOPMENT_STREAM_MANIFEST_V2",
         "completion_status": "PASS",
@@ -73,6 +74,8 @@ def build_development_delta_manifest(
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
     temporary = output_path.with_suffix(output_path.suffix + ".tmp")
-    temporary.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+    temporary.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+    )
     temporary.replace(output_path)
     return manifest

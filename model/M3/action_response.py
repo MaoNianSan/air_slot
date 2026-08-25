@@ -202,9 +202,7 @@ class ActionEvaluationEnvelope(FrozenModel):
         if self.eligibility.state is EligibilityState.INELIGIBLE:
             raise ValueError("M3_INELIGIBLE_ACTION_CANNOT_HAVE_EVALUATION")
         if not (
-            self.action_id
-            == self.eligibility.action_id
-            == self.response_rule.action_id
+            self.action_id == self.eligibility.action_id == self.response_rule.action_id
         ) or not (
             self.action_family
             == self.eligibility.action_family
@@ -215,7 +213,10 @@ class ActionEvaluationEnvelope(FrozenModel):
         output_weights = tuple(
             item.scenario_weight for item in self.scenario_evaluations
         )
-        if output_ids != self.input_scenario_ids or output_weights != self.input_scenario_weights:
+        if (
+            output_ids != self.input_scenario_ids
+            or output_weights != self.input_scenario_weights
+        ):
             raise ValueError("M3_SCENARIO_DISTRIBUTION_NOT_PRESERVED")
         if len(output_ids) != len(set(output_ids)):
             raise ValueError("M3_DUPLICATE_SCENARIO_ID")
@@ -302,7 +303,10 @@ def build_a00_identity_envelope(
     """Implement only the frozen A00 identity: `C^A00 = C^0`."""
     if not baselines:
         raise ValueError("M3_A00_REQUIRES_BASELINE_SCENARIOS")
-    if eligibility.action_id != "A00" or eligibility.state is not EligibilityState.ELIGIBLE:
+    if (
+        eligibility.action_id != "A00"
+        or eligibility.state is not EligibilityState.ELIGIBLE
+    ):
         raise ValueError("M3_A00_REQUIRES_ELIGIBLE_IDENTITY_ACTION")
     if response_rule.action_id != "A00" or response_rule.response_types != (
         ActionResponseType.IDENTITY,
@@ -425,20 +429,23 @@ def build_conditional_scenario_envelope(
             response_registry_hash=response_registry_hash,
             sensitivity_level=sensitivity_level,
         )
-        draw_id = content_id({
-            "seed": seed,
-            "episode_id": baseline.episode_id,
-            "decision_node_id": baseline.decision_node_id,
-            "scenario_id": baseline.scenario_id,
-            "action_id": response_rule.action_id,
-            "sensitivity_level": sensitivity_level,
-            "response_registry_hash": response_registry_hash,
-            "response_intensity": rho,
-        })
+        draw_id = content_id(
+            {
+                "seed": seed,
+                "episode_id": baseline.episode_id,
+                "decision_node_id": baseline.decision_node_id,
+                "scenario_id": baseline.scenario_id,
+                "action_id": response_rule.action_id,
+                "sensitivity_level": sensitivity_level,
+                "response_registry_hash": response_registry_hash,
+                "response_intensity": rho,
+            }
+        )
         supported_values = {
             item.component_id: item.value_cu
             for item in baseline.component_quantities
-            if item.support_state is not SupportState.ABSTAIN and item.value_cu is not None
+            if item.support_state is not SupportState.ABSTAIN
+            and item.value_cu is not None
         }
         post_values = action_post_consequences(
             pre_by_component=supported_values,
@@ -462,40 +469,44 @@ def build_conditional_scenario_envelope(
                 reason_code = None
                 intensity = float(rho)
                 realization_id = draw_id
-            components.append(ActionConditionedCUQuantity(
-                component_id=item.component_id,
+            components.append(
+                ActionConditionedCUQuantity(
+                    component_id=item.component_id,
+                    scenario_id=baseline.scenario_id,
+                    scenario_weight=baseline.scenario_weight,
+                    baseline_cu_artifact_id=item.cu_artifact_id,
+                    baseline_support_state=item.support_state,
+                    adjusted_value_cu=adjusted_value,
+                    support_state=support_state,
+                    action_response_reference_id=response_rule.source_references[0],
+                    action_response_parameter_version=response_rule.parameter_version,
+                    action_response_freeze_id=response_rule.freeze_id,
+                    response_rule_id=response_rule.response_rule_id,
+                    response_rule_hash=response_rule.rule_hash,
+                    response_source_type=response_rule.parameter_source.value,
+                    baseline_reference_lineage_hash=item.reference_lineage_hash,
+                    response_provenance=response_rule.provenance,
+                    response_intensity=intensity,
+                    response_draw_id=realization_id,
+                    reason_code=reason_code,
+                )
+            )
+        evaluations.append(
+            M3ActionConditionedConsequence(
+                episode_id=baseline.episode_id,
+                decision_node_id=baseline.decision_node_id,
                 scenario_id=baseline.scenario_id,
                 scenario_weight=baseline.scenario_weight,
-                baseline_cu_artifact_id=item.cu_artifact_id,
-                baseline_support_state=item.support_state,
-                adjusted_value_cu=adjusted_value,
-                support_state=support_state,
-                action_response_reference_id=response_rule.source_references[0],
-                action_response_parameter_version=response_rule.parameter_version,
-                action_response_freeze_id=response_rule.freeze_id,
+                action_id=response_rule.action_id,
+                action_family=response_rule.action_family,
+                baseline_consequence_id=baseline.baseline_consequence_id,
+                baseline_interface_hash=baseline.baseline_interface_hash,
+                eligibility_id=eligibility.eligibility_id,
                 response_rule_id=response_rule.response_rule_id,
                 response_rule_hash=response_rule.rule_hash,
-                response_source_type=response_rule.parameter_source.value,
-                baseline_reference_lineage_hash=item.reference_lineage_hash,
-                response_provenance=response_rule.provenance,
-                response_intensity=intensity,
-                response_draw_id=realization_id,
-                reason_code=reason_code,
-            ))
-        evaluations.append(M3ActionConditionedConsequence(
-            episode_id=baseline.episode_id,
-            decision_node_id=baseline.decision_node_id,
-            scenario_id=baseline.scenario_id,
-            scenario_weight=baseline.scenario_weight,
-            action_id=response_rule.action_id,
-            action_family=response_rule.action_family,
-            baseline_consequence_id=baseline.baseline_consequence_id,
-            baseline_interface_hash=baseline.baseline_interface_hash,
-            eligibility_id=eligibility.eligibility_id,
-            response_rule_id=response_rule.response_rule_id,
-            response_rule_hash=response_rule.rule_hash,
-            component_quantities=tuple(components),
-        ))
+                component_quantities=tuple(components),
+            )
+        )
     return ActionEvaluationEnvelope(
         action_id=response_rule.action_id,
         action_family=response_rule.action_family,

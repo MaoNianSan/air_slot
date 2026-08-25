@@ -16,7 +16,12 @@ from model.PRE.episode.containment import (
     episode_node_count,
 )
 from model.common.identity import content_id
-from model.PRE.streaming.data2 import aircraft_tail, lightweight_flights, load_timezones, ontime_paths
+from model.PRE.streaming.data2 import (
+    aircraft_tail,
+    lightweight_flights,
+    load_timezones,
+    ontime_paths,
+)
 
 
 def audit_v5_split_containment(root: Path) -> dict:
@@ -54,16 +59,22 @@ def audit_v5_split_containment(root: Path) -> dict:
 
     def heartbeat(phase: str, *, rows: int | None = None, **_) -> None:
         nonlocal last_heartbeat
-        print(json.dumps({
-            "PHASE": phase,
-            "ROWS": source_rows if rows is None else rows,
-            "EPISODES": episodes,
-            "BOUNDARY_CANDIDATES": boundary_candidates,
-            "CROSS_SPLIT_FOUND": sum(cross_by_pool.values()),
-            "RSS_MB": round(process.memory_info().rss / 1024**2, 3),
-            "ELAPSED_SECONDS": round(time.perf_counter() - started, 3),
-            "FINAL_TEST_ACCESS_COUNT": 0,
-        }, sort_keys=True), flush=True)
+        print(
+            json.dumps(
+                {
+                    "PHASE": phase,
+                    "ROWS": source_rows if rows is None else rows,
+                    "EPISODES": episodes,
+                    "BOUNDARY_CANDIDATES": boundary_candidates,
+                    "CROSS_SPLIT_FOUND": sum(cross_by_pool.values()),
+                    "RSS_MB": round(process.memory_info().rss / 1024**2, 3),
+                    "ELAPSED_SECONDS": round(time.perf_counter() - started, 3),
+                    "FINAL_TEST_ACCESS_COUNT": 0,
+                },
+                sort_keys=True,
+            ),
+            flush=True,
+        )
         last_heartbeat = time.perf_counter()
 
     for month, path in zip(months, paths):
@@ -130,7 +141,9 @@ def audit_v5_split_containment(root: Path) -> dict:
                     examples.append(record)
                 historical_split = selected_ids.get(episode.episode_id)
                 if historical_split is not None:
-                    cohort_size = sum(value == historical_split for value in selected_ids.values())
+                    cohort_size = sum(
+                        value == historical_split for value in selected_ids.values()
+                    )
                     selected_cross[episode.episode_id] = {
                         **record,
                         "historical_split": historical_split,
@@ -161,7 +174,9 @@ def audit_v5_split_containment(root: Path) -> dict:
         "pool_after": dict(pool_after),
         "cross_split_by_pool": dict(cross_by_pool),
         "removed_nodes_by_pool": dict(removed_nodes_by_pool),
-        "removed_insufficient_history_by_pool": dict(removed_insufficient_history_by_pool),
+        "removed_insufficient_history_by_pool": dict(
+            removed_insufficient_history_by_pool
+        ),
         "cross_split_total": sum(cross_by_pool.values()),
         "cross_split_transitions": dict(transition_counts),
         "cross_split_examples": cross_examples,
@@ -194,7 +209,11 @@ def _iter_data2_episode_pairs(rows: list[dict]):
     grouped: dict[tuple[str, str, str], list[dict]] = {}
     for row in rows:
         grouped.setdefault(
-            (row["dataset_instance_id"], row["aircraft_id_namespace"], row["aircraft_id"]),
+            (
+                row["dataset_instance_id"],
+                row["aircraft_id_namespace"],
+                row["aircraft_id"],
+            ),
             [],
         ).append(row)
     for group in grouped.values():
@@ -211,7 +230,9 @@ def _iter_data2_episode_pairs(rows: list[dict]):
                 continue
             if predecessor["actual_arrival_utc"] >= successor["actual_departure_utc"]:
                 continue
-            gap = (successor["actual_departure_utc"] - predecessor["actual_arrival_utc"]).total_seconds() / 60
+            gap = (
+                successor["actual_departure_utc"] - predecessor["actual_arrival_utc"]
+            ).total_seconds() / 60
             if gap > 360:
                 continue
             if predecessor["event_end_time"] >= successor["event_start_time"]:
@@ -250,13 +271,22 @@ def _fast_split(value: date | datetime | str) -> str:
 
 
 def _historical_selected_ids(root: Path) -> dict[str, str]:
-    path = root / "artifacts" / "diagnostics" / "v5_development_freeze" / "M1_BASE_CACHE.npz"
+    path = (
+        root
+        / "artifacts"
+        / "diagnostics"
+        / "v5_development_freeze"
+        / "M1_BASE_CACHE.npz"
+    )
     if not path.is_file():
         return {}
     with np.load(path, allow_pickle=False) as arrays:
         episode_ids = arrays["episode_ids"].astype(str)
         split_by_episode: dict[str, str] = {}
-        for episode_id, split in zip(arrays["sample_episode_ids"].astype(str), arrays["sample_splits"].astype(str)):
+        for episode_id, split in zip(
+            arrays["sample_episode_ids"].astype(str),
+            arrays["sample_splits"].astype(str),
+        ):
             split_by_episode.setdefault(episode_id, split)
         return {
             episode_id: split_by_episode.get(episode_id, "unknown")

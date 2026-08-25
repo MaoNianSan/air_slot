@@ -8,11 +8,15 @@ from model.PRE.streaming.containment import audit_v5_split_containment
 
 
 def main(argv=None) -> None:
-    parser = argparse.ArgumentParser(description="Audit and close V5 episode split containment")
+    parser = argparse.ArgumentParser(
+        description="Audit and close V5 episode split containment"
+    )
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("artifacts/diagnostics/v5_development_freeze/PRE_SPLIT_CONTAINMENT_AUDIT.json"),
+        default=Path(
+            "artifacts/diagnostics/v5_development_freeze/PRE_SPLIT_CONTAINMENT_AUDIT.json"
+        ),
     )
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parents[1]

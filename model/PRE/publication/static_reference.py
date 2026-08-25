@@ -61,10 +61,12 @@ def _reference_value(reference, airport_id: str) -> SupportedValue | None:
     return lookup
 
 
-def _supported_value(value: Any, *, unit: str, support_state: str,
-                     quality_flags=()) -> SupportedValue:
+def _supported_value(
+    value: Any, *, unit: str, support_state: str, quality_flags=()
+) -> SupportedValue:
     return SupportedValue(
-        value=value, unit=unit,
+        value=value,
+        unit=unit,
         evidence_class=EvidenceClass.DIRECT,
         support_ceiling=EvidenceClass.DIRECT,
         support_state=SupportState(support_state),
@@ -75,7 +77,8 @@ def _supported_value(value: Any, *, unit: str, support_state: str,
 def _abstain_value(reason: str) -> SupportedValue:
     """Unsupported/missing-data publication: ABSTAIN, never fabricated."""
     return SupportedValue(
-        value=None, unit="canonical",
+        value=None,
+        unit="canonical",
         evidence_class=EvidenceClass.UNSUPPORTED,
         support_ceiling=EvidenceClass.UNSUPPORTED,
         support_state=SupportState.ABSTAIN,
@@ -140,8 +143,11 @@ def publish_static_reference(
             ),
         }
         published["route_context"] = _supported_value(
-            route, unit="canonical", support_state="SUPPORTED",
-            quality_flags=("ROUTE_CONTEXT_FROM_SCHEDULE",))
+            route,
+            unit="canonical",
+            support_state="SUPPORTED",
+            quality_flags=("ROUTE_CONTEXT_FROM_SCHEDULE",),
+        )
         publication_meta["route_context"] = {
             "publication_status": "MODEL_FEATURE_PENDING",
             "model_feature_status": "MODEL_FEATURE_PENDING",
@@ -151,8 +157,11 @@ def publish_static_reference(
 
         carrier = {"carrier_id": schedule.get("carrier_id")}
         published["carrier_context"] = _supported_value(
-            carrier, unit="canonical", support_state="SUPPORTED",
-            quality_flags=("CARRIER_FROM_BTS_REPORTING_AIRLINE",))
+            carrier,
+            unit="canonical",
+            support_state="SUPPORTED",
+            quality_flags=("CARRIER_FROM_BTS_REPORTING_AIRLINE",),
+        )
         publication_meta["carrier_context"] = {
             "publication_status": "MODEL_FEATURE_PENDING",
             "model_feature_status": "MODEL_FEATURE_PENDING",
@@ -165,8 +174,11 @@ def publish_static_reference(
             "aircraft_id_namespace": schedule.get("aircraft_id_namespace"),
         }
         published["aircraft_identity"] = _supported_value(
-            aircraft, unit="canonical", support_state="SUPPORTED",
-            quality_flags=("AIRCRAFT_IDENTITY_RETAINED_REGISTRATION",))
+            aircraft,
+            unit="canonical",
+            support_state="SUPPORTED",
+            quality_flags=("AIRCRAFT_IDENTITY_RETAINED_REGISTRATION",),
+        )
         publication_meta["aircraft_identity"] = {
             "publication_status": "RETAINED_IDENTITY",
             "model_feature_status": "RETAINED_IDENTITY",
@@ -194,7 +206,8 @@ def publish_static_reference(
     # The connection/turn station is the successor origin (the predecessor
     # destination), never the successor destination.
     connection = connection_airport_id or (
-        None if schedule is None else schedule.get("origin_airport_id"))
+        None if schedule is None else schedule.get("origin_airport_id")
+    )
 
     # Turnaround reference: train-frozen numeric MODEL_FEATURE.
     turnaround = _reference_dict(turnaround_reference)
@@ -205,26 +218,44 @@ def publish_static_reference(
         "reference_id": None if turnaround is None else turnaround["reference_id"],
         "freeze_id": None if turnaround is None else turnaround["freeze_id"],
         "fallback_level": next(
-            (flag.removeprefix("REFERENCE_LEVEL_") for flag in
-             (turnaround_lookup.quality_flags if turnaround_lookup is not None else ())
-             if flag.startswith("REFERENCE_LEVEL_")), None),
-        "support_state": (turnaround_lookup.support_state.value
-                          if turnaround_lookup is not None else "ABSTAIN"),
+            (
+                flag.removeprefix("REFERENCE_LEVEL_")
+                for flag in (
+                    turnaround_lookup.quality_flags
+                    if turnaround_lookup is not None
+                    else ()
+                )
+                if flag.startswith("REFERENCE_LEVEL_")
+            ),
+            None,
+        ),
+        "support_state": (
+            turnaround_lookup.support_state.value
+            if turnaround_lookup is not None
+            else "ABSTAIN"
+        ),
         "provenance": turnaround,
     }
     if turnaround_lookup is None:
         published["turnaround_reference"] = _abstain_value(
-            "NO_TURNAROUND_REFERENCE_CELL")
+            "NO_TURNAROUND_REFERENCE_CELL"
+        )
     else:
         published["turnaround_reference"] = _supported_value(
-            turnaround_value, unit="minutes", support_state="SUPPORTED",
-            quality_flags=("TURNAROUND_REFERENCE_PUBLISHED",))
-    turnaround_status = ("MODEL_FEATURE" if turnaround_lookup is not None
-                          else "MODEL_FEATURE_PENDING")
+            turnaround_value,
+            unit="minutes",
+            support_state="SUPPORTED",
+            quality_flags=("TURNAROUND_REFERENCE_PUBLISHED",),
+        )
+    turnaround_status = (
+        "MODEL_FEATURE" if turnaround_lookup is not None else "MODEL_FEATURE_PENDING"
+    )
     publication_meta["turnaround_reference"] = {
         "publication_status": turnaround_status,
         "model_feature_status": turnaround_status,
-        "provenance_reference_id": None if turnaround is None else turnaround["reference_id"],
+        "provenance_reference_id": (
+            None if turnaround is None else turnaround["reference_id"]
+        ),
         "freeze_id": None if turnaround is None else turnaround["freeze_id"],
     }
 
@@ -237,21 +268,32 @@ def publish_static_reference(
         "reference_id": None if taxi is None else taxi["reference_id"],
         "freeze_id": None if taxi is None else taxi["freeze_id"],
         "fallback_level": next(
-            (flag.removeprefix("REFERENCE_LEVEL_") for flag in
-             (taxi_lookup.quality_flags if taxi_lookup is not None else ())
-             if flag.startswith("REFERENCE_LEVEL_")), None),
-        "support_state": (taxi_lookup.support_state.value
-                          if taxi_lookup is not None else "ABSTAIN"),
+            (
+                flag.removeprefix("REFERENCE_LEVEL_")
+                for flag in (
+                    taxi_lookup.quality_flags if taxi_lookup is not None else ()
+                )
+                if flag.startswith("REFERENCE_LEVEL_")
+            ),
+            None,
+        ),
+        "support_state": (
+            taxi_lookup.support_state.value if taxi_lookup is not None else "ABSTAIN"
+        ),
         "provenance": taxi,
     }
     if taxi_lookup is None:
         published["taxi_reference"] = _abstain_value("NO_TAXI_REFERENCE_CELL")
     else:
         published["taxi_reference"] = _supported_value(
-            taxi_value, unit="minutes", support_state="SUPPORTED",
-            quality_flags=("TAXI_REFERENCE_PUBLISHED",))
-    taxi_status = ("MODEL_FEATURE" if taxi_lookup is not None
-                    else "MODEL_FEATURE_PENDING")
+            taxi_value,
+            unit="minutes",
+            support_state="SUPPORTED",
+            quality_flags=("TAXI_REFERENCE_PUBLISHED",),
+        )
+    taxi_status = (
+        "MODEL_FEATURE" if taxi_lookup is not None else "MODEL_FEATURE_PENDING"
+    )
     publication_meta["taxi_reference"] = {
         "publication_status": taxi_status,
         "model_feature_status": taxi_status,

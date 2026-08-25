@@ -15,7 +15,6 @@ from model.PRE.canonical.normalization_common import deterministic_id, number
 from model.PRE.canonical.timezone import local_hhmm_to_utc
 from model.PRE.streaming.data2 import load_timezones, ontime_paths
 
-
 ROOT = Path(__file__).resolve().parents[1]
 TARGETS = ("T_IB_REMAINING_HAZARD", "D_OB", "D_TX")
 SPLITS = ("train", "calibration", "development")
@@ -85,7 +84,8 @@ def classify_departure_values(
     return {
         "schedule_local_datetime": schedule_local.isoformat(),
         "actual_direct_local_datetime": actual_local.isoformat(),
-        "schedule_utc_offset_minutes": schedule_local.utcoffset().total_seconds() / 60.0,
+        "schedule_utc_offset_minutes": schedule_local.utcoffset().total_seconds()
+        / 60.0,
         "actual_utc_offset_minutes": actual_local.utcoffset().total_seconds() / 60.0,
         "offset_change_minutes": offset_change,
         "signed_dep_delay": float(signed_delay),
@@ -101,7 +101,11 @@ def classify_departure_values(
 
 
 def classify_departure_consistency(
-    *, schedule_utc: datetime, direct_utc: datetime, timezone_name: str, signed_delay: float
+    *,
+    schedule_utc: datetime,
+    direct_utc: datetime,
+    timezone_name: str,
+    signed_delay: float,
 ) -> str:
     """Public seam for synthetic DST/source-clock contract tests."""
     return classify_departure_values(
@@ -112,12 +116,16 @@ def classify_departure_consistency(
     )["classification"]
 
 
-def _dst_candidate(clock: dict[str, Any], timezone_name: str, direct_utc: datetime) -> datetime | None:
+def _dst_candidate(
+    clock: dict[str, Any], timezone_name: str, direct_utc: datetime
+) -> datetime | None:
     naive = datetime.fromisoformat(clock["expected_actual_local_wall_datetime"])
     candidates = _local_wall_candidates(naive, timezone_name)
     if not candidates:
         return None
-    return min(candidates, key=lambda value: (abs((value - direct_utc).total_seconds()), value))
+    return min(
+        candidates, key=lambda value: (abs((value - direct_utc).total_seconds()), value)
+    )
 
 
 def _flight_id(row: dict[str, Any]) -> str:
@@ -192,7 +200,9 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
     paths = ontime_paths(ROOT, range(1, 10))
     rows_by_split = Counter()
     for month, path in enumerate(paths, start=1):
-        split = "train" if month <= 6 else "calibration" if month == 7 else "development"
+        split = (
+            "train" if month <= 6 else "calibration" if month == 7 else "development"
+        )
         with path.open(encoding="utf-8-sig", errors="replace", newline="") as handle:
             for row_number, row in enumerate(csv.DictReader(handle), start=2):
                 row_flight_id = _flight_id(row)
@@ -223,7 +233,9 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
                     day = date.fromisoformat(str(row["FlightDate"])[:10])
                     zone = zones.get(row.get("Origin", ""))
                     schedule_utc = (
-                        local_hhmm_to_utc(day, row.get("CRSDepTime"), zone) if zone else None
+                        local_hhmm_to_utc(day, row.get("CRSDepTime"), zone)
+                        if zone
+                        else None
                     )
                     signed = number(row.get("DepDelay"))
                     if schedule_utc is None or signed is None or not zone:
@@ -237,7 +249,10 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
                         reporting_delay_minutes_value=row.get("DepDelayMinutes"),
                         label="DEPARTURE",
                     )
-                    if resolution.difference_minutes is None or resolution.direct_utc is None:
+                    if (
+                        resolution.difference_minutes is None
+                        or resolution.direct_utc is None
+                    ):
                         continue
                     rows_by_split[split] += 1
                     clock = classify_departure_values(
@@ -251,7 +266,9 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
                     if resolution.difference_minutes <= 1:
                         continue
                     direct_hhmm = _hhmm(row.get("DepTime"))
-                    resolved_hhmm = resolution.direct_utc.astimezone(ZoneInfo(zone)).strftime("%H%M")
+                    resolved_hhmm = resolution.direct_utc.astimezone(
+                        ZoneInfo(zone)
+                    ).strftime("%H%M")
                     if direct_hhmm is not None and direct_hhmm != resolved_hhmm:
                         clock["classification"] = "DATE_OFFSET_AMBIGUOUS"
                         clock["direct_clock_roundtrip_hhmm"] = resolved_hhmm
@@ -291,10 +308,14 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
                             "dst_aware_candidate_timestamp": candidate,
                             "canonical_timestamp_changed": (
                                 repairable_class
-                                and
-                                candidate is not None
+                                and candidate is not None
                                 and resolution.canonical_utc is not None
-                                and abs((candidate - resolution.canonical_utc).total_seconds()) > 1
+                                and abs(
+                                    (
+                                        candidate - resolution.canonical_utc
+                                    ).total_seconds()
+                                )
+                                > 1
                             ),
                             "forensic_interpretation": interpretation,
                             **clock,
@@ -346,7 +367,9 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
             "in_c0_train_d_ob_overflow": len(
                 inconsistent & flights_in_episodes(train_d_ob_overflow)
             ),
-            "conflict_flights_in_a2_cohort": len(source_conflicts & selected_inconsistent),
+            "conflict_flights_in_a2_cohort": len(
+                source_conflicts & selected_inconsistent
+            ),
         },
         "canonical_timestamp_change_count": sum(
             bool(row["canonical_timestamp_changed"]) for row in mismatch_rows
@@ -366,4 +389,8 @@ def scan_source_clock(cache, episodes: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-__all__ = ["classify_departure_consistency", "classify_departure_values", "scan_source_clock"]
+__all__ = [
+    "classify_departure_consistency",
+    "classify_departure_values",
+    "scan_source_clock",
+]

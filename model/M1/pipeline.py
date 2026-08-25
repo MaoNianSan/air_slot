@@ -94,7 +94,8 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
     device = state.device
     with torch.no_grad():
         hazard_logits = model.hazard_logits(state) / float(
-            temps.get(M1_TEMPERATURE_HAZARD, 1.0))
+            temps.get(M1_TEMPERATURE_HAZARD, 1.0)
+        )
         pmf = hazard_pmf(hazard_logits, hazard)  # (B, K)
         k = hazard.class_count
         d_ob_zero = torch.zeros(batch, device=device)
@@ -108,19 +109,22 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
             # Zero-mass calibration temperature scales ONLY the hurdle
             # Bernoulli zero logit; positive quantile values/logits are never
             # temperature-scaled by it (QUANTILE_CALIBRATION_NOT_APPLIED).
-            z_ob = torch.sigmoid(zero_ob.squeeze(-1) / float(
-                temps.get(M1_TEMPERATURE_D_OB_ZERO, 1.0)))
+            z_ob = torch.sigmoid(
+                zero_ob.squeeze(-1) / float(temps.get(M1_TEMPERATURE_D_OB_ZERO, 1.0))
+            )
             q_ob = monotone_positive_quantiles(quant_ob)
             d_ob_zero = d_ob_zero + weight * z_ob
             d_ob_quant = d_ob_quant + weight[:, None] * q_ob
             expected_d_ob = (1.0 - z_ob) * q_ob.mean(dim=-1)
             expected_bin = torch.clamp(
                 (expected_d_ob / d_ob.bin_width_minutes).long(),
-                0, d_ob.overflow_index,
+                0,
+                d_ob.overflow_index,
             )
             zero_tx, quant_tx = model.d_tx_heads(state, ib, expected_bin)
-            z_tx = torch.sigmoid(zero_tx.squeeze(-1) / float(
-                temps.get(M1_TEMPERATURE_D_TX_ZERO, 1.0)))
+            z_tx = torch.sigmoid(
+                zero_tx.squeeze(-1) / float(temps.get(M1_TEMPERATURE_D_TX_ZERO, 1.0))
+            )
             q_tx = monotone_positive_quantiles(quant_tx)
             d_tx_zero = d_tx_zero + weight * z_tx
             d_tx_quant = d_tx_quant + weight[:, None] * q_tx
@@ -146,15 +150,26 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
 class M1Pipeline:
     """V2 principal pipeline (hazard + hurdle-quantile heads)."""
 
-    def __init__(self, model, contracts, temperatures=None, normalization=None,
-                 static_context=None, calibration_contract=None,
-                 calibration_diagnostics=None, static_normalization=None,
-                 history_mode=None):
+    def __init__(
+        self,
+        model,
+        contracts,
+        temperatures=None,
+        normalization=None,
+        static_context=None,
+        calibration_contract=None,
+        calibration_diagnostics=None,
+        static_normalization=None,
+        history_mode=None,
+    ):
         self.model = model
         self.contracts = contracts
         self.history_mode = HistoryEncoderMode(
-            history_mode or getattr(
-                model, "history_mode", HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+            history_mode
+            or getattr(
+                model,
+                "history_mode",
+                HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
             )
         )
         self.static_context = static_context or M1StaticReferenceContext()
@@ -178,8 +193,7 @@ class M1Pipeline:
         self.temperatures = temperatures
         self.normalization = normalization
         self.static_normalization = static_normalization
-        self.calibration_contract = (
-            calibration_contract or common_calibration_policy())
+        self.calibration_contract = calibration_contract or common_calibration_policy()
         self.calibration_diagnostics = dict(calibration_diagnostics or {})
 
     @property
@@ -188,8 +202,12 @@ class M1Pipeline:
         return self.contracts
 
     @classmethod
-    def smoke(cls, input_size=4, *,
-              history_mode=HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX):
+    def smoke(
+        cls,
+        input_size=4,
+        *,
+        history_mode=HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+    ):
         """Synthetic fixture helper; never resolves formal scientific bins.
 
         Smoke contracts carry the explicitly-labeled ``TEST_ONLY_LINEAR``
@@ -198,36 +216,58 @@ class M1Pipeline:
         """
         contracts = {
             M1_V2_HAZARD_COORDINATE_TARGET: HazardBinContract(
-                bin_width_minutes=5, max_finite_minutes=60),
-            "D_OB": HurdleQuantileContract(target_name="D_OB", bin_width_minutes=5,
-                                           max_finite_minutes=60,
-                                           quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
-                                           upper_tail_policy="TEST_ONLY_LINEAR"),
-            "D_TX": HurdleQuantileContract(target_name="D_TX", bin_width_minutes=5,
-                                           max_finite_minutes=30,
-                                           quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
-                                           upper_tail_policy="TEST_ONLY_LINEAR"),
+                bin_width_minutes=5, max_finite_minutes=60
+            ),
+            "D_OB": HurdleQuantileContract(
+                target_name="D_OB",
+                bin_width_minutes=5,
+                max_finite_minutes=60,
+                quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
+                upper_tail_policy="TEST_ONLY_LINEAR",
+            ),
+            "D_TX": HurdleQuantileContract(
+                target_name="D_TX",
+                bin_width_minutes=5,
+                max_finite_minutes=30,
+                quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
+                upper_tail_policy="TEST_ONLY_LINEAR",
+            ),
         }
         torch.manual_seed(0)
-        return cls(M1V2GRU(input_size, 16, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
-                           contracts["D_OB"], contracts["D_TX"],
-                           fast_input_size=input_size,
-                           history_mode=history_mode), contracts,
-                   history_mode=history_mode)
+        return cls(
+            M1V2GRU(
+                input_size,
+                16,
+                contracts[M1_V2_HAZARD_COORDINATE_TARGET],
+                contracts["D_OB"],
+                contracts["D_TX"],
+                fast_input_size=input_size,
+                history_mode=history_mode,
+            ),
+            contracts,
+            history_mode=history_mode,
+        )
 
     @classmethod
-    def from_scientific_config(cls, scientific, *, input_size, normalization,
-                               hidden_size=None, static_input_size=0,
-                               static_normalization=None,
-                               history_mode=HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX):
+    def from_scientific_config(
+        cls,
+        scientific,
+        *,
+        input_size,
+        normalization,
+        hidden_size=None,
+        static_input_size=0,
+        static_normalization=None,
+        history_mode=HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+    ):
         history_mode = HistoryEncoderMode(history_mode)
-        if not isinstance(normalization, M1NormalizationArtifact) \
-                or normalization.fitted_split != "train":
+        if (
+            not isinstance(normalization, M1NormalizationArtifact)
+            or normalization.fitted_split != "train"
+        ):
             raise ValueError("M1_FORMAL_TRAIN_NORMALIZATION_REQUIRED")
         width = scientific.parameters["m1_bin_width_minutes"].value
-        ib_max = scientific.parameters[
-            "m1_v2_t_ib_remaining_max_finite_minutes"
-        ].value
+        ib_max = scientific.parameters["m1_v2_t_ib_remaining_max_finite_minutes"].value
         d_ob_max = scientific.parameters["m1_v2_d_ob_max_finite_minutes"].value
         d_tx_max = scientific.parameters["m1_v2_d_tx_max_finite_minutes"].value
         quantile_levels = scientific.parameters["m1_v2_quantile_levels"].value
@@ -236,7 +276,8 @@ class M1Pipeline:
         tail_param = scientific.parameters.get("m1_v2_positive_tail_policy")
         tail_policy = "UNRESOLVED" if tail_param is None else tail_param.value
         if tail_policy not in (
-            "UNRESOLVED", "DECLARED_FROZEN",
+            "UNRESOLVED",
+            "DECLARED_FROZEN",
             "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
         ):
             raise ValueError("M1_V2_PRINCIPAL_TAIL_POLICY_TEST_ONLY_FORBIDDEN")
@@ -251,31 +292,47 @@ class M1Pipeline:
             raise ValueError("M1_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES")
         contracts = {
             M1_V2_HAZARD_COORDINATE_TARGET: HazardBinContract(
-                bin_width_minutes=width, max_finite_minutes=ib_max),
-            "D_OB": HurdleQuantileContract(target_name="D_OB", bin_width_minutes=width,
-                                           max_finite_minutes=d_ob_max,
-                                           quantile_levels=tuple(quantile_levels),
-                                           upper_tail_policy=tail_policy),
-            "D_TX": HurdleQuantileContract(target_name="D_TX", bin_width_minutes=width,
-                                           max_finite_minutes=d_tx_max,
-                                           quantile_levels=tuple(quantile_levels),
-                                           upper_tail_policy=tail_policy),
+                bin_width_minutes=width, max_finite_minutes=ib_max
+            ),
+            "D_OB": HurdleQuantileContract(
+                target_name="D_OB",
+                bin_width_minutes=width,
+                max_finite_minutes=d_ob_max,
+                quantile_levels=tuple(quantile_levels),
+                upper_tail_policy=tail_policy,
+            ),
+            "D_TX": HurdleQuantileContract(
+                target_name="D_TX",
+                bin_width_minutes=width,
+                max_finite_minutes=d_tx_max,
+                quantile_levels=tuple(quantile_levels),
+                upper_tail_policy=tail_policy,
+            ),
         }
         if static_input_size and not isinstance(
             static_normalization, M1StaticNormalizationArtifact
         ):
             raise ValueError("M1_FORMAL_STATIC_TRAIN_NORMALIZATION_REQUIRED")
-        return cls(M1V2GRU(input_size, hidden, contracts[M1_V2_HAZARD_COORDINATE_TARGET],
-                           contracts["D_OB"], contracts["D_TX"],
-                           fast_input_size=input_size,
-                           static_input_size=static_input_size,
-                           history_mode=history_mode),
-                   contracts, normalization=normalization,
-                   static_normalization=static_normalization,
-                   history_mode=history_mode)
+        return cls(
+            M1V2GRU(
+                input_size,
+                hidden,
+                contracts[M1_V2_HAZARD_COORDINATE_TARGET],
+                contracts["D_OB"],
+                contracts["D_TX"],
+                fast_input_size=input_size,
+                static_input_size=static_input_size,
+                history_mode=history_mode,
+            ),
+            contracts,
+            normalization=normalization,
+            static_normalization=static_normalization,
+            history_mode=history_mode,
+        )
 
-    def _information_state(self, values, lengths, fast_features=None,
-                           static_features=None, pre_state=None):
+    def _information_state(
+        self, values, lengths, fast_features=None, static_features=None, pre_state=None
+    ):
         """Shared ``h + r_fast (+ c_static)`` information state.
 
         Tranche 3 execution closure: production forecast
@@ -289,26 +346,33 @@ class M1Pipeline:
         """
         if fast_features is None:
             fast_features = fast_features_from_sequence(values, lengths)
-        if static_features is None and pre_state is not None \
-                and getattr(self.model, "static_input_size", 0):
+        if (
+            static_features is None
+            and pre_state is not None
+            and getattr(self.model, "static_input_size", 0)
+        ):
             # Tranche 3 typed wiring: PRE writes plain per-field metadata
             # (``static_reference_publication``); M1 rebuilds its typed
             # ``M1StaticReferenceContext`` from it.  Only MODEL_FEATURE
             # fields with legal frozen-reference provenance enter ``c_static``.
             publication = getattr(pre_state, "static_reference_publication", None)
-            context = (static_reference_context_from_pre(publication)
-                       if publication else self.static_context)
+            context = (
+                static_reference_context_from_pre(publication)
+                if publication
+                else self.static_context
+            )
             if self.static_normalization is None:
                 raise ValueError("M1_STATIC_NORMALIZATION_REQUIRED_FOR_PRE_INFERENCE")
             static_features, _ = static_reference_features_from_pre(
-                pre_state, context, self.static_normalization)
+                pre_state, context, self.static_normalization
+            )
         history = self.model.encode_history(values, lengths)
-        state = self.model.state_representation(history, fast_features,
-                                                static_features)
+        state = self.model.state_representation(history, fast_features, static_features)
         return history, fast_features, static_features, state
 
-    def predict_distributions(self, values, lengths, fast_features=None,
-                              static_features=None):
+    def predict_distributions(
+        self, values, lengths, fast_features=None, static_features=None
+    ):
         """Conditional head summary (V2 schema); alias of the module function.
 
         Returns clearly CONDITIONAL head summaries keyed by the public
@@ -325,9 +389,11 @@ class M1Pipeline:
         zero fast block unless the model has no fast encoder at all).
         """
         _, _, _, state = self._information_state(
-            values, lengths, fast_features, static_features)
-        return conditional_head_summary(self.model, state, self.contracts,
-                                        temperatures=self.temperatures)
+            values, lengths, fast_features, static_features
+        )
+        return conditional_head_summary(
+            self.model, state, self.contracts, temperatures=self.temperatures
+        )
 
     def predict_from_pre(self, pre_state, values, lengths):
         """Production forecast over a PRE state (identical information state).
@@ -336,30 +402,36 @@ class M1Pipeline:
         ``predict_now`` and ``sample_from_pre`` share the PRE-published static
         context through ``static_reference_features_from_pre``.
         """
-        _, _, _, state = self._information_state(
-            values, lengths, pre_state=pre_state)
-        return conditional_head_summary(self.model, state, self.contracts,
-                                        temperatures=self.temperatures)
+        _, _, _, state = self._information_state(values, lengths, pre_state=pre_state)
+        return conditional_head_summary(
+            self.model, state, self.contracts, temperatures=self.temperatures
+        )
 
-    def sample_from_pre(self, pre_state, values, lengths, *, observed, count, seed,
-                        taxi_reference=None):
+    def sample_from_pre(
+        self, pre_state, values, lengths, *, observed, count, seed, taxi_reference=None
+    ):
         if not isinstance(self.model, M1V2GRU):
             raise ValueError("M1_V1_PRINCIPAL_DISABLED")
         if values.shape[0] != 1:
-            raise ValueError("formal scenario generation accepts one decision node at a time")
+            raise ValueError(
+                "formal scenario generation accepts one decision node at a time"
+            )
         support = {}
         for item in pre_state.target_support:
             name = V1_TO_V2_SUPPORT.get(item.target_name, item.target_name)
-            support[name] = (item.support_state.value
-                             if hasattr(item.support_state, "value")
-                             else str(item.support_state))
+            support[name] = (
+                item.support_state.value
+                if hasattr(item.support_state, "value")
+                else str(item.support_state)
+            )
         stage = pre_state.decision_node.operational_stage
         stage = stage.value if hasattr(stage, "value") else str(stage)
         decision_time_utc = pre_state.decision_node.decision_time.isoformat()
         self.model.eval()
         with torch.no_grad():
             history, fast_features, static_features, _ = self._information_state(
-                values, lengths, fast_features=None, pre_state=pre_state)
+                values, lengths, fast_features=None, pre_state=pre_state
+            )
         schedule = pre_state.successor_state.get("schedule_reference")
         schedule_value = None if schedule is None else schedule.value
         scheduled_ob_utc = None
@@ -389,39 +461,60 @@ class M1Pipeline:
             reference_context = {
                 "taxi_reference_id": published_payload.get("reference_id"),
                 "taxi_reference_hash": published_payload.get("freeze_id"),
-                "taxi_reference_fallback_level": published_payload.get("fallback_level"),
+                "taxi_reference_fallback_level": published_payload.get(
+                    "fallback_level"
+                ),
                 "taxi_reference_support_state": published_payload.get("support_state"),
             }
         if taxi_reference is not None:
-            if getattr(taxi_reference, "dataset_instance_id", None) != "data2_2019" \
-                    or getattr(taxi_reference, "rule_id", None) != "DATA2_TAXI_REFERENCE":
+            if (
+                getattr(taxi_reference, "dataset_instance_id", None) != "data2_2019"
+                or getattr(taxi_reference, "rule_id", None) != "DATA2_TAXI_REFERENCE"
+            ):
                 raise ValueError("M1_REQUIRES_TRAIN_FROZEN_DATA2_TAXI_REFERENCE")
             lookup = taxi_reference.lookup(origin_airport_id)
             state = getattr(lookup.support_state, "value", str(lookup.support_state))
             flags = set(getattr(lookup, "quality_flags", ()))
-            fallback = next((flag.removeprefix("REFERENCE_LEVEL_") for flag in flags
-                             if flag.startswith("REFERENCE_LEVEL_")), None)
+            fallback = next(
+                (
+                    flag.removeprefix("REFERENCE_LEVEL_")
+                    for flag in flags
+                    if flag.startswith("REFERENCE_LEVEL_")
+                ),
+                None,
+            )
             supplied_context = {
                 "taxi_reference_id": taxi_reference.reference_id,
-                "taxi_reference_hash": getattr(taxi_reference, "manifest_freeze_id", None),
+                "taxi_reference_hash": getattr(
+                    taxi_reference, "manifest_freeze_id", None
+                ),
                 "taxi_reference_fallback_level": fallback,
                 "taxi_reference_support_state": state,
             }
             if published_payload is not None and (
-                supplied_context["taxi_reference_id"] != published_payload.get("reference_id")
-                or supplied_context["taxi_reference_hash"] != published_payload.get("freeze_id")
+                supplied_context["taxi_reference_id"]
+                != published_payload.get("reference_id")
+                or supplied_context["taxi_reference_hash"]
+                != published_payload.get("freeze_id")
             ):
                 raise ValueError("M1_TAXI_REFERENCE_LINEAGE_MISMATCH")
             reference_context = supplied_context
         return ancestral_sample_v2(
-            self.model, history, self.contracts,
+            self.model,
+            history,
+            self.contracts,
             episode_id=pre_state.decision_node.episode_id,
             decision_node_id=pre_state.decision_node.decision_node_id,
-            stage=stage, observed=observed, count=count, seed=seed,
-            target_support=support, decision_time_utc=decision_time_utc,
+            stage=stage,
+            observed=observed,
+            count=count,
+            seed=seed,
+            target_support=support,
+            decision_time_utc=decision_time_utc,
             scheduled_ob_utc=scheduled_ob_utc,
             temperatures=self.temperatures,
-            fast_features=fast_features, static_features=static_features,
+            fast_features=fast_features,
+            static_features=static_features,
             **reference_context,
         )
 
@@ -431,64 +524,86 @@ class M1Pipeline:
 
     def summarize(self, scenarios, **kwargs):
         from .summaries import horizon_summaries
+
         return horizon_summaries(scenarios, **kwargs)
 
     def warning_probability(self, scenarios, **kwargs):
         from .warning import warning_probability
+
         return warning_probability(scenarios, **kwargs)
 
     def save(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
-        torch.save({
-            "state": self.model.state_dict(),
-            "input_size": self.model.input_size,
-            "hidden_size": self.model.hidden_size,
-            "fast_input_size": getattr(self.model, "fast_input_size", 0),
-            "contracts": {
-                name: contract.model_dump() for name, contract in self.contracts.items()
+        torch.save(
+            {
+                "state": self.model.state_dict(),
+                "input_size": self.model.input_size,
+                "hidden_size": self.model.hidden_size,
+                "fast_input_size": getattr(self.model, "fast_input_size", 0),
+                "contracts": {
+                    name: contract.model_dump()
+                    for name, contract in self.contracts.items()
+                },
+                "contract_version": "M1_STATE_ESTIMATOR_V2_3",
+                "temperatures": self.temperatures,
+                "calibration_contract": self.calibration_contract.model_dump(
+                    mode="json"
+                ),
+                "calibration_diagnostics": self.calibration_diagnostics,
+                "static_input_size": getattr(self.model, "static_input_size", 0),
+                "history_mode": self.history_mode.value,
+                "static_context": self.static_context.model_dump(mode="json"),
+                "normalization": (
+                    None
+                    if self.normalization is None
+                    else self.normalization.model_dump(mode="json")
+                ),
+                "static_normalization": (
+                    None
+                    if self.static_normalization is None
+                    else self.static_normalization.model_dump(mode="json")
+                ),
             },
-            "contract_version": "M1_STATE_ESTIMATOR_V2_3",
-            "temperatures": self.temperatures,
-            "calibration_contract": self.calibration_contract.model_dump(mode="json"),
-            "calibration_diagnostics": self.calibration_diagnostics,
-            "static_input_size": getattr(self.model, "static_input_size", 0),
-            "history_mode": self.history_mode.value,
-            "static_context": self.static_context.model_dump(mode="json"),
-            "normalization": None if self.normalization is None
-                else self.normalization.model_dump(mode="json"),
-            "static_normalization": (
-                None if self.static_normalization is None
-                else self.static_normalization.model_dump(mode="json")
-            ),
-        }, path)
+            path,
+        )
 
     @classmethod
     def load(cls, path: Path):
         payload = torch.load(path, map_location="cpu", weights_only=True)
         if "bins" in payload and "contracts" not in payload:
             # LEGACY_V1 frozen artifact: keep deserializable for provenance.
-            bins = {name: TargetBinContract(**value) for name, value in payload["bins"].items()}
+            bins = {
+                name: TargetBinContract(**value)
+                for name, value in payload["bins"].items()
+            }
             model = OrderedEventGRU(payload["input_size"], payload["hidden_size"], bins)
             model.load_state_dict(payload["state"])
             pipeline = cls(model, bins, payload["temperatures"])
             pipeline._legacy_v1 = True
             return pipeline
         contracts = {
-            name: (HazardBinContract(**value) if name == M1_V2_HAZARD_COORDINATE_TARGET
-                   else HurdleQuantileContract(**value))
+            name: (
+                HazardBinContract(**value)
+                if name == M1_V2_HAZARD_COORDINATE_TARGET
+                else HurdleQuantileContract(**value)
+            )
             for name, value in payload["contracts"].items()
         }
         fast_input_size = payload.get("fast_input_size", payload["input_size"])
         static_input_size = payload.get("static_input_size", 0)
-        model = M1V2GRU(payload["input_size"], payload["hidden_size"],
-                        contracts[M1_V2_HAZARD_COORDINATE_TARGET],
-                        contracts["D_OB"], contracts["D_TX"],
-                        fast_input_size=fast_input_size,
-                        static_input_size=static_input_size,
-                        history_mode=payload.get(
-                            "history_mode",
-                            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
-                        ))
+        model = M1V2GRU(
+            payload["input_size"],
+            payload["hidden_size"],
+            contracts[M1_V2_HAZARD_COORDINATE_TARGET],
+            contracts["D_OB"],
+            contracts["D_TX"],
+            fast_input_size=fast_input_size,
+            static_input_size=static_input_size,
+            history_mode=payload.get(
+                "history_mode",
+                HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+            ),
+        )
         model.load_state_dict(payload["state"])
         normalization = payload.get("normalization")
         if normalization is not None:
@@ -500,20 +615,31 @@ class M1Pipeline:
             )
         static_context = payload.get("static_context")
         if static_context is not None:
-            if ("schedule_reference_context" in static_context
-                    and "schedule_reference" not in static_context):
+            if (
+                "schedule_reference_context" in static_context
+                and "schedule_reference" not in static_context
+            ):
                 static_context = dict(static_context)
                 static_context["schedule_reference"] = static_context.pop(
-                    "schedule_reference_context")
+                    "schedule_reference_context"
+                )
             static_context = M1StaticReferenceContext.model_validate(static_context)
         calibration_contract = M1CalibrationContract.model_validate(
-            payload.get("calibration_contract", common_calibration_policy().model_dump()))
-        return cls(model, contracts, payload["temperatures"], normalization,
-                   static_context=static_context,
-                   calibration_contract=calibration_contract,
-                   calibration_diagnostics=payload.get("calibration_diagnostics"),
-                   static_normalization=static_normalization,
-                   history_mode=payload.get(
-                       "history_mode",
-                       HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
-                   ))
+            payload.get(
+                "calibration_contract", common_calibration_policy().model_dump()
+            )
+        )
+        return cls(
+            model,
+            contracts,
+            payload["temperatures"],
+            normalization,
+            static_context=static_context,
+            calibration_contract=calibration_contract,
+            calibration_diagnostics=payload.get("calibration_diagnostics"),
+            static_normalization=static_normalization,
+            history_mode=payload.get(
+                "history_mode",
+                HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+            ),
+        )

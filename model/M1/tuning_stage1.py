@@ -29,7 +29,6 @@ from .pipeline import M1Pipeline
 from .network import M1V2GRU
 from .semantics import EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES
 
-
 STAGE1_H_CANDIDATES: tuple[int, ...] = (8, 16, 32)
 STAGE1_METRICS: tuple[str, ...] = (
     "EPISODE_BALANCED_JOINT_VALIDATION_LOSS",
@@ -74,7 +73,8 @@ def _write_json(path: Path, payload: dict[str, object]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8",
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
     )
     temporary.replace(path)
 
@@ -95,17 +95,20 @@ def _checkpoint_roundtrip(
     probe = tuple(development_examples[: min(16, len(development_examples))])
     lifecycle.pipeline.model.eval()
     before, _, _, _ = lifecycle.batched_logits(
-        probe, batch_size=batch_size, teacher_forcing=True,
+        probe,
+        batch_size=batch_size,
+        teacher_forcing=True,
     )
     lifecycle.save(checkpoint_path)
     loaded = M1Lifecycle.load(checkpoint_path, device=str(lifecycle.device))
     loaded.pipeline.model.eval()
     after, _, _, _ = loaded.batched_logits(
-        probe, batch_size=batch_size, teacher_forcing=True,
+        probe,
+        batch_size=batch_size,
+        teacher_forcing=True,
     )
     differences = {
-        name: float((before[name] - after[name]).abs().max())
-        for name in before
+        name: float((before[name] - after[name]).abs().max()) for name in before
     }
     passed = all(value <= 1e-5 for value in differences.values())
     if not passed:
@@ -128,11 +131,12 @@ def stage1_development_metrics(
     """Project the existing episode-balanced objective into the Stage 1 schema."""
 
     raw = lifecycle.episode_balanced_objective(
-        examples, batch_size=batch_size, teacher_forcing=True,
+        examples,
+        batch_size=batch_size,
+        teacher_forcing=True,
     )
     aliases = {
-        "EPISODE_BALANCED_JOINT_VALIDATION_LOSS":
-            "EPISODE_BALANCED_JOINT_VALIDATION_LOSS",
+        "EPISODE_BALANCED_JOINT_VALIDATION_LOSS": "EPISODE_BALANCED_JOINT_VALIDATION_LOSS",
         "T_IB_HAZARD_NLL": "T_IB_HAZARD_NLL",
         "D_OB_ZERO_BCE": "D_OB_ZERO_BCE",
         "D_OB_POSITIVE_QUANTILE_LOSS": "D_OB_POSITIVE_PINBALL",
@@ -149,9 +153,7 @@ def validate_stage1_contract(scientific) -> dict[str, object]:
     """Validate only the frozen contracts required by Stage 1 preparation."""
 
     candidates = tuple(
-        int(value) for value in scientific.parameters[
-            "m1_hidden_size_candidates"
-        ].value
+        int(value) for value in scientific.parameters["m1_hidden_size_candidates"].value
     )
     if candidates != STAGE1_H_CANDIDATES:
         raise ValueError(f"M1_V2_STAGE1_H_CANDIDATES_MISMATCH:{candidates}")
@@ -181,7 +183,12 @@ def exp1_interface_contract() -> dict[str, object]:
     return {
         "joint_state_distribution_artifact": {
             "producer": "M1Pipeline.sample_from_pre",
-            "scenario_identity": ["episode_id", "decision_node_id", "scenario_id", "scenario_seed_key"],
+            "scenario_identity": [
+                "episode_id",
+                "decision_node_id",
+                "scenario_id",
+                "scenario_seed_key",
+            ],
             "status": "READY",
         },
         "marginal_distribution_artifact": {
@@ -219,7 +226,9 @@ def fast_train_mode_contract() -> dict[str, object]:
 def stage1_parameter_count(
     hidden_size: int | None,
     *,
-    history_mode: HistoryEncoderMode | str = HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+    history_mode: (
+        HistoryEncoderMode | str
+    ) = HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
 ) -> int:
     """Count parameters without initializing an optimizer or running training."""
 
@@ -232,17 +241,25 @@ def stage1_parameter_count(
         hidden = int(hidden_size)
     hazard = HazardBinContract(bin_width_minutes=5, max_finite_minutes=360)
     d_ob = HurdleQuantileContract(
-        target_name="D_OB", bin_width_minutes=5, max_finite_minutes=210,
+        target_name="D_OB",
+        bin_width_minutes=5,
+        max_finite_minutes=210,
         quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
         upper_tail_policy="UNRESOLVED",
     )
     d_tx = HurdleQuantileContract(
-        target_name="D_TX", bin_width_minutes=5, max_finite_minutes=60,
+        target_name="D_TX",
+        bin_width_minutes=5,
+        max_finite_minutes=60,
         quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
         upper_tail_policy="UNRESOLVED",
     )
     model = M1V2GRU(
-        len(FEATURE_NAMES_V2), hidden, hazard, d_ob, d_tx,
+        len(FEATURE_NAMES_V2),
+        hidden,
+        hazard,
+        d_ob,
+        d_tx,
         fast_input_size=len(FEATURE_NAMES_V2),
         static_input_size=STATIC_FEATURE_COUNT,
         history_mode=mode,
@@ -275,34 +292,45 @@ def run_fast_train_mode(
     if not execution_authorized:
         raise RuntimeError("M1_V2_FAST_TRAIN_REQUIRES_EXPLICIT_AUTHORIZATION")
     if (
-        max_train_examples <= 0 or max_development_examples <= 0
-        or max_train_examples > 128 or max_development_examples > 128
+        max_train_examples <= 0
+        or max_development_examples <= 0
+        or max_train_examples > 128
+        or max_development_examples > 128
     ):
         raise ValueError("M1_V2_FAST_TRAIN_SUBSET_SIZE_INVALID")
     if epochs <= 0 or epochs > 2:
         raise ValueError("M1_V2_FAST_TRAIN_EPOCH_BOUND_INVALID")
-    train = tuple(sorted(train_examples, key=lambda row: (row.episode_date, row.episode_id)))[
-        :max_train_examples
-    ]
-    development = tuple(sorted(
-        development_examples, key=lambda row: (row.episode_date, row.episode_id),
-    ))[:max_development_examples]
+    train = tuple(
+        sorted(train_examples, key=lambda row: (row.episode_date, row.episode_id))
+    )[:max_train_examples]
+    development = tuple(
+        sorted(
+            development_examples,
+            key=lambda row: (row.episode_date, row.episode_id),
+        )
+    )[:max_development_examples]
     if not train or not development:
         raise ValueError("M1_V2_FAST_TRAIN_SUBSET_EMPTY")
-    if any(row.episode_date >= date(2019, 10, 1)
-           for row in (*train, *development)):
+    if any(row.episode_date >= date(2019, 10, 1) for row in (*train, *development)):
         raise ValueError("M1_V2_FAST_FINAL_TEST_EXAMPLE_FORBIDDEN")
     torch.manual_seed(seed)
     training = lifecycle.train(
-        train, epochs=epochs, learning_rate=learning_rate,
-        weight_decay=weight_decay, batch_size=batch_size,
-        seed=seed, teacher_forcing=True,
+        train,
+        epochs=epochs,
+        learning_rate=learning_rate,
+        weight_decay=weight_decay,
+        batch_size=batch_size,
+        seed=seed,
+        teacher_forcing=True,
     )
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     checkpoint = output_dir / "M1_V2_FAST_TRAIN_MODE.pt"
     roundtrip = _checkpoint_roundtrip(
-        lifecycle, development, checkpoint_path=checkpoint, batch_size=batch_size,
+        lifecycle,
+        development,
+        checkpoint_path=checkpoint,
+        batch_size=batch_size,
     )
     return {
         "schema_version": "M1_V2_FAST_TRAIN_MODE_RESULT_V1",
@@ -311,14 +339,20 @@ def run_fast_train_mode(
         "parameter_count": sum(
             parameter.numel() for parameter in lifecycle.pipeline.model.parameters()
         ),
-        "training_config_hash": content_id({
-            "epochs": epochs, "learning_rate": learning_rate,
-            "weight_decay": weight_decay, "batch_size": batch_size,
-            "seed": seed,
-        }),
+        "training_config_hash": content_id(
+            {
+                "epochs": epochs,
+                "learning_rate": learning_rate,
+                "weight_decay": weight_decay,
+                "batch_size": batch_size,
+                "seed": seed,
+            }
+        ),
         "training_history": training,
         "validation_result": stage1_development_metrics(
-            lifecycle, development, batch_size=batch_size,
+            lifecycle,
+            development,
+            batch_size=batch_size,
         ),
         "checkpoint_path": str(checkpoint),
         "checkpoint_roundtrip": roundtrip,
@@ -339,13 +373,15 @@ def fast_train_mode(*args, **kwargs) -> dict[str, object]:
 
 
 def stage1_training_config_hash() -> str:
-    return content_id({
-        "training": STAGE1_TRAINING_CONFIG,
-        "objective": "TARGET_SPECIFIC_EPISODE_BALANCED",
-        "splits": STAGE1_SPLITS,
-        "support": STAGE1_SUPPORT,
-        "metrics": STAGE1_METRICS,
-    })
+    return content_id(
+        {
+            "training": STAGE1_TRAINING_CONFIG,
+            "objective": "TARGET_SPECIFIC_EPISODE_BALANCED",
+            "splits": STAGE1_SPLITS,
+            "support": STAGE1_SUPPORT,
+            "metrics": STAGE1_METRICS,
+        }
+    )
 
 
 def stage1_manifest(root: Path) -> dict[str, object]:
@@ -364,27 +400,32 @@ def stage1_manifest(root: Path) -> dict[str, object]:
     training_hash = stage1_training_config_hash()
     candidates = []
     for hidden_size in STAGE1_H_CANDIDATES:
-        candidates.append({
-            "model_id": f"M1_V2_STATE_AWARE_H{hidden_size}",
-            "hidden_size": hidden_size,
-            "history_mode": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
-            "parameter_count": stage1_parameter_count(hidden_size),
+        candidates.append(
+            {
+                "model_id": f"M1_V2_STATE_AWARE_H{hidden_size}",
+                "hidden_size": hidden_size,
+                "history_mode": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
+                "parameter_count": stage1_parameter_count(hidden_size),
+                "training_config_hash": training_hash,
+                "validation_result": None,
+                "run_status": "NOT_RUN",
+            }
+        )
+    candidates.append(
+        {
+            "model_id": "M1_V2_NO_HISTORY_BASELINE",
+            "hidden_size": 16,
+            "history_mode": HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION.value,
+            "parameter_count": stage1_parameter_count(
+                16,
+                history_mode=HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION,
+            ),
+            "baseline_reference_hidden_size": 16,
             "training_config_hash": training_hash,
             "validation_result": None,
             "run_status": "NOT_RUN",
-        })
-    candidates.append({
-        "model_id": "M1_V2_NO_HISTORY_BASELINE",
-        "hidden_size": 16,
-        "history_mode": HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION.value,
-        "parameter_count": stage1_parameter_count(
-            16, history_mode=HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION,
-        ),
-        "baseline_reference_hidden_size": 16,
-        "training_config_hash": training_hash,
-        "validation_result": None,
-        "run_status": "NOT_RUN",
-    })
+        }
+    )
     fixed_contract = {
         **contract,
         "total_feature_count": len(FEATURE_NAMES_V2) + STATIC_FEATURE_COUNT,
@@ -465,8 +506,11 @@ def run_fast_stage1_tuning(
     if (
         cache_manifest.get("final_test_included") is not False
         or cache_manifest.get("final_test_access_count") != 0
-        or cache_manifest.get("cache_build_scope") != [
-            "train", "calibration", "development",
+        or cache_manifest.get("cache_build_scope")
+        != [
+            "train",
+            "calibration",
+            "development",
         ]
     ):
         raise ValueError("M1_V2_STAGE1_FAST_CACHE_SAFETY_VIOLATION")
@@ -486,19 +530,23 @@ def run_fast_stage1_tuning(
     )
     train = tuple(cache.partition("train"))
     development = tuple(cache.partition("development"))
-    if any(
-        row.episode_date > date(2019, 6, 30) for row in train
-    ) or any(
+    if any(row.episode_date > date(2019, 6, 30) for row in train) or any(
         not date(2019, 8, 1) <= row.episode_date <= date(2019, 9, 30)
         for row in development
     ):
         raise ValueError("M1_V2_STAGE1_FAST_SPLIT_BOUNDARY_VIOLATION")
-    train_subset = tuple(sorted(
-        train, key=lambda row: (row.episode_date, row.episode_id),
-    ))[:128]
-    development_subset = tuple(sorted(
-        development, key=lambda row: (row.episode_date, row.episode_id),
-    ))[:128]
+    train_subset = tuple(
+        sorted(
+            train,
+            key=lambda row: (row.episode_date, row.episode_id),
+        )
+    )[:128]
+    development_subset = tuple(
+        sorted(
+            development,
+            key=lambda row: (row.episode_date, row.episode_id),
+        )
+    )[:128]
     if len(train_subset) != 128 or len(development_subset) != 128:
         raise ValueError("M1_V2_STAGE1_FAST_SUBSET_UNAVAILABLE")
     if any(
@@ -507,9 +555,9 @@ def run_fast_stage1_tuning(
     ):
         raise ValueError("M1_V2_STAGE1_FAST_FINAL_TEST_EXAMPLE_FORBIDDEN")
 
-    output_dir = Path(output_dir or (
-        root / "artifacts/experiment/m1_v2_tuning_stage1_fast"
-    )).resolve()
+    output_dir = Path(
+        output_dir or (root / "artifacts/experiment/m1_v2_tuning_stage1_fast")
+    ).resolve()
     if output_dir == root or root not in output_dir.parents:
         raise ValueError("M1_V2_STAGE1_FAST_OUTPUT_OUTSIDE_PROJECT_FORBIDDEN")
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -587,17 +635,19 @@ def run_fast_stage1_tuning(
             batch_size=64,
             seed=seed,
         )
-        result.update({
-            "variant": variant,
-            "model_id": model_id,
-            "history_mode": history_mode.value,
-            "training_config": training_config,
-            "training_config_hash": content_id(training_config),
-            "run_status": "EXECUTED_FAST_NOT_SELECTED",
-            "calibration_used_for_selection": False,
-            "FINAL_TEST_ACCESS_COUNT": 0,
-            "PAPER_FULL_RUN": False,
-        })
+        result.update(
+            {
+                "variant": variant,
+                "model_id": model_id,
+                "history_mode": history_mode.value,
+                "training_config": training_config,
+                "training_config_hash": content_id(training_config),
+                "run_status": "EXECUTED_FAST_NOT_SELECTED",
+                "calibration_used_for_selection": False,
+                "FINAL_TEST_ACCESS_COUNT": 0,
+                "PAPER_FULL_RUN": False,
+            }
+        )
         metrics_path = output_dir / variant / "M1_V2_FAST_TUNING_METRICS.json"
         _write_json(metrics_path, result)
         result["metrics_path"] = str(metrics_path)
@@ -621,9 +671,7 @@ def run_fast_stage1_tuning(
         }
         for index, item in enumerate(ranked, start=1)
     ]
-    best_second_difference = (
-        ranking[1]["principal_loss"] - ranking[0]["principal_loss"]
-    )
+    best_second_difference = ranking[1]["principal_loss"] - ranking[0]["principal_loss"]
     sample_identity = {
         "train": [
             [row.episode_id, row.decision_node_id, row.episode_date.isoformat()]
@@ -665,7 +713,9 @@ def run_fast_stage1_tuning(
     lineage_path = output_dir / "M1_V2_FAST_TUNING_LINEAGE.json"
     _write_json(lineage_path, lineage)
     repository_head = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=root, text=True,
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        text=True,
     ).strip()
     manifest = {
         "schema_version": "M1_V2_FAST_TUNING_STAGE1_MANIFEST_V1",

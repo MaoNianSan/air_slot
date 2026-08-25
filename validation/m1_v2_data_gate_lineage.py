@@ -6,7 +6,6 @@ from collections import Counter
 
 from model.M1.data import FEATURE_NAMES_V2, V2_WEATHER_FIELDS
 
-
 NOAA_RAW = {
     "temperature_c": "TMP",
     "dewpoint_c": "DEW",
@@ -120,7 +119,11 @@ def lineage_rows(train_stats: list[dict]) -> list[dict]:
             }
         )
     for name, raw, pre_output in (
-        ("turnaround_reference_minutes", "DepTime;ArrTime", "turnaround_reference.value"),
+        (
+            "turnaround_reference_minutes",
+            "DepTime;ArrTime",
+            "turnaround_reference.value",
+        ),
         ("taxi_reference_minutes", "TaxiOut", "taxi_reference.value"),
     ):
         records.append(
@@ -150,9 +153,7 @@ def lineage_rows(train_stats: list[dict]) -> list[dict]:
         records.append(
             {
                 "SOURCE": "bts_ontime",
-                "RAW_COLUMN": (
-                    "Origin;Dest;Reporting_Airline;Tail_Number;CRSDepTime"
-                ),
+                "RAW_COLUMN": ("Origin;Dest;Reporting_Airline;Tail_Number;CRSDepTime"),
                 "CANONICAL_FIELD": name,
                 "PRE_OUTPUT": name,
                 "M1_FIELD": name,

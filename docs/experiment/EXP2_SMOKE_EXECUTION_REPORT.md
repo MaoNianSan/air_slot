@@ -51,8 +51,8 @@ The tests verify fail-closed behavior before any downstream callback:
 
 ## Verification
 
-- `python -m compileall exp tests/experiment`: PASS
-- `python -m pytest tests/experiment`: PASS, `50 passed`
+- `python -m compileall exp tests/experiments`: PASS
+- `python -m pytest tests/experiments`: PASS, `50 passed`
 - `git diff --check`: PASS
 - `git status --short -- model`: empty; no model modification
 

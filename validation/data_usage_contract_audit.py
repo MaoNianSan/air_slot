@@ -28,31 +28,82 @@ from validation.data_usage_classification import (
     zero_failure_counts,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "artifacts" / "diagnostics" / "data_usage_contract_audit"
 SCHEMA_VERSION = "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V2"
 _CANONICALIZERS = {
-    "D1-FLIGHTLIST": (("model/PRE/canonical/normalization_flights.py", "canonicalize_flightlist_row"),),
-    "D1-STATE": (("model/PRE/canonical/normalization_flights.py", "canonicalize_state_vector_row"),),
-    "D1-METAR": (("model/PRE/canonical/normalization_weather.py", "canonicalize_metar_row"),),
-    "D1-EUROSTAT": (
-        ("model/PRE/canonical/normalization_references.py", "canonicalize_eurostat_payload"),
-        ("model/PRE/canonical/normalization_references.py", "canonicalize_eurostat_passengers_payload"),
+    "D1-FLIGHTLIST": (
+        ("model/PRE/canonical/normalization_flights.py", "canonicalize_flightlist_row"),
     ),
-    "D1-OURAIRPORTS": (("model/PRE/canonical/normalization_references.py", "canonicalize_airport_row"),),
-    "D2-ONTIME": (("model/PRE/canonical/normalization_flights.py", "canonicalize_ontime_row"),),
-    "D2-DB1B": (("model/PRE/canonical/normalization_references.py", "canonicalize_aggregate_row"),),
-    "D2-T100": (("model/PRE/canonical/normalization_references.py", "canonicalize_aggregate_row"),),
-    "D2-TIMEZONE": (("model/PRE/canonical/normalization_references.py", "canonicalize_timezone_row"),),
-    "D2-AIRPORT-REFERENCE": (("model/PRE/canonical/normalization_references.py", "canonicalize_airport_row"),),
-    "D2-ISD": (("model/PRE/canonical/normalization_weather.py", "canonicalize_isd_row"),),
+    "D1-STATE": (
+        (
+            "model/PRE/canonical/normalization_flights.py",
+            "canonicalize_state_vector_row",
+        ),
+    ),
+    "D1-METAR": (
+        ("model/PRE/canonical/normalization_weather.py", "canonicalize_metar_row"),
+    ),
+    "D1-EUROSTAT": (
+        (
+            "model/PRE/canonical/normalization_references.py",
+            "canonicalize_eurostat_payload",
+        ),
+        (
+            "model/PRE/canonical/normalization_references.py",
+            "canonicalize_eurostat_passengers_payload",
+        ),
+    ),
+    "D1-OURAIRPORTS": (
+        ("model/PRE/canonical/normalization_references.py", "canonicalize_airport_row"),
+    ),
+    "D2-ONTIME": (
+        ("model/PRE/canonical/normalization_flights.py", "canonicalize_ontime_row"),
+    ),
+    "D2-DB1B": (
+        (
+            "model/PRE/canonical/normalization_references.py",
+            "canonicalize_aggregate_row",
+        ),
+    ),
+    "D2-T100": (
+        (
+            "model/PRE/canonical/normalization_references.py",
+            "canonicalize_aggregate_row",
+        ),
+    ),
+    "D2-TIMEZONE": (
+        (
+            "model/PRE/canonical/normalization_references.py",
+            "canonicalize_timezone_row",
+        ),
+    ),
+    "D2-AIRPORT-REFERENCE": (
+        ("model/PRE/canonical/normalization_references.py", "canonicalize_airport_row"),
+    ),
+    "D2-ISD": (
+        ("model/PRE/canonical/normalization_weather.py", "canonicalize_isd_row"),
+    ),
 }
 _DOWNSTREAM_ROOTS = ("model/M1", "model/M2", "model/M3", "model/M4", "exp")
-_AMBIGUOUS_COLUMN_KEYS = {"class", "id", "lat", "lon", "number", "size", "time", "type", "value"}
+_AMBIGUOUS_COLUMN_KEYS = {
+    "class",
+    "id",
+    "lat",
+    "lon",
+    "number",
+    "size",
+    "time",
+    "type",
+    "value",
+}
 _STATIC_PUBLICATION = {
-    "route_context", "carrier_context", "aircraft_identity", "schedule_reference",
-    "turnaround_reference", "taxi_reference",
+    "route_context",
+    "carrier_context",
+    "aircraft_identity",
+    "schedule_reference",
+    "turnaround_reference",
+    "taxi_reference",
 }
 _ALLOWED_UNPUBLISHED_ROLES = {"EPISODE_CONSTRUCTION", "TRAIN_LABEL", "EVAL_OUTCOME"}
 
@@ -68,11 +119,14 @@ def _file_hash(path: Path) -> str:
 def _function_strings(path: Path, function_name: str) -> set[str]:
     tree = ast.parse(path.read_text(encoding="utf-8-sig"))
     node = next(
-        item for item in tree.body
-        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and item.name == function_name
+        item
+        for item in tree.body
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and item.name == function_name
     )
     return {
-        item.value for item in ast.walk(node)
+        item.value
+        for item in ast.walk(node)
         if isinstance(item, ast.Constant) and isinstance(item.value, str)
     }
 
@@ -94,9 +148,13 @@ def _column_accesses(path: Path, known_columns: set[str]) -> list[dict[str, Any]
         value = None
         if isinstance(node, ast.Subscript) and isinstance(node.slice, ast.Constant):
             value = node.slice.value
-        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
-                and node.func.attr in {"get", "pop", "setdefault"} and node.args \
-                and isinstance(node.args[0], ast.Constant):
+        elif (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr in {"get", "pop", "setdefault"}
+            and node.args
+            and isinstance(node.args[0], ast.Constant)
+        ):
             value = node.args[0].value
         if isinstance(value, str) and value in known_columns:
             findings.add((value, node.lineno))
@@ -126,19 +184,38 @@ def _runtime_rule_references() -> list[dict[str, Any]]:
             if isinstance(node, ast.Dict):
                 for key, value in zip(node.keys, node.values):
                     if not isinstance(key, ast.Constant) or key.value not in {
-                        "provenance_rule_id", "declared_replay_rule_id"
+                        "provenance_rule_id",
+                        "declared_replay_rule_id",
                     }:
                         continue
-                    if isinstance(value, ast.Constant) and isinstance(value.value, str) \
-                            and pattern.fullmatch(value.value):
-                        findings.add((value.value, path.relative_to(ROOT).as_posix(),
-                                      value.lineno, str(key.value)))
-            if isinstance(node, ast.keyword) and node.arg == "provenance_rule_id" \
-                    and isinstance(node.value, ast.Constant) \
-                    and isinstance(node.value.value, str) \
-                    and pattern.fullmatch(node.value.value):
-                findings.add((node.value.value, path.relative_to(ROOT).as_posix(),
-                              node.value.lineno, node.arg))
+                    if (
+                        isinstance(value, ast.Constant)
+                        and isinstance(value.value, str)
+                        and pattern.fullmatch(value.value)
+                    ):
+                        findings.add(
+                            (
+                                value.value,
+                                path.relative_to(ROOT).as_posix(),
+                                value.lineno,
+                                str(key.value),
+                            )
+                        )
+            if (
+                isinstance(node, ast.keyword)
+                and node.arg == "provenance_rule_id"
+                and isinstance(node.value, ast.Constant)
+                and isinstance(node.value.value, str)
+                and pattern.fullmatch(node.value.value)
+            ):
+                findings.add(
+                    (
+                        node.value.value,
+                        path.relative_to(ROOT).as_posix(),
+                        node.value.lineno,
+                        node.arg,
+                    )
+                )
     return [
         {"rule_id": rule_id, "path": path, "line": line, "reference_kind": kind}
         for rule_id, path, line, kind in sorted(findings)
@@ -163,8 +240,12 @@ def _definition_index(bundle: RegistryBundle) -> dict[str, list[Any]]:
     return result
 
 
-def _rule_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinition, ...]) -> list[dict[str, Any]]:
-    source_index = {(item.dataset_instance_id, item.source_family): item for item in sources}
+def _rule_audit(
+    bundle: RegistryBundle, sources: tuple[SourceAdapterDefinition, ...]
+) -> list[dict[str, Any]]:
+    source_index = {
+        (item.dataset_instance_id, item.source_family): item for item in sources
+    }
     definitions = _definition_index(bundle)
     rows = []
     for rule in bundle.data_usage_rules:
@@ -199,28 +280,37 @@ def _rule_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinition, 
             }
             for field, value in expected.items():
                 if getattr(rule, field) != value:
-                    semantic_conflicts.append(f"FACTUAL_REPLAY_{field.upper()}_MISMATCH")
+                    semantic_conflicts.append(
+                        f"FACTUAL_REPLAY_{field.upper()}_MISMATCH"
+                    )
         status = (
-            "ACTIVE_REGISTRY_CONFLICT" if registry_conflicts
-            else "ACTIVE_SEMANTIC_CONFLICT" if semantic_conflicts
-            else "COVERED_ACTIVE"
+            "ACTIVE_REGISTRY_CONFLICT"
+            if registry_conflicts
+            else "ACTIVE_SEMANTIC_CONFLICT" if semantic_conflicts else "COVERED_ACTIVE"
         )
-        rows.append({
-            "rule_id": rule.rule_id,
-            "dataset_instance_id": rule.dataset_id,
-            "source_family": rule.logical_source,
-            "canonical_variable": rule.canonical_variable,
-            "scientific_variables": sorted(item.scientific_variable for item in mapped),
-            "missing_source_columns": missing_source_columns,
-            "source_kind": rule.source_kind,
-            "status": status,
-            "findings": registry_conflicts + semantic_conflicts,
-        })
+        rows.append(
+            {
+                "rule_id": rule.rule_id,
+                "dataset_instance_id": rule.dataset_id,
+                "source_family": rule.logical_source,
+                "canonical_variable": rule.canonical_variable,
+                "scientific_variables": sorted(
+                    item.scientific_variable for item in mapped
+                ),
+                "missing_source_columns": missing_source_columns,
+                "source_kind": rule.source_kind,
+                "status": status,
+                "findings": registry_conflicts + semantic_conflicts,
+            }
+        )
     return rows
 
 
-def _raw_column_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinition, ...],
-                      bypasses: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _raw_column_audit(
+    bundle: RegistryBundle,
+    sources: tuple[SourceAdapterDefinition, ...],
+    bypasses: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     _, by_column = _rule_index(bundle)
     bypass_by_column: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for finding in bypasses:
@@ -233,7 +323,9 @@ def _raw_column_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefini
         projected = set(source.projected_columns)
         primary_rules = set(source.rule_ids)
         for column in _source_columns(source):
-            matches = by_column[(source.dataset_instance_id, source.source_family, column)]
+            matches = by_column[
+                (source.dataset_instance_id, source.source_family, column)
+            ]
             matched_ids = {item.rule_id for item in matches}
             declared_role = source.column_roles.get(column)
             status, findings = classify_source_column(
@@ -243,53 +335,69 @@ def _raw_column_audit(bundle: RegistryBundle, sources: tuple[SourceAdapterDefini
                 primary_rule_ids=primary_rules,
                 pre_bypass=bool(bypass_by_column[column]),
             )
-            rows.append({
-                "dataset_instance_id": source.dataset_instance_id,
-                "adapter_id": source.adapter_id,
-                "source_family": source.source_family,
-                "raw_column": column,
-                "required": column in required,
-                "projected": column in projected,
-                "canonicalizer_accessed": column in used,
-                "declared_role": declared_role,
-                "rule_ids": sorted(matched_ids),
-                "primary_rule_ids": sorted(primary_rules & matched_ids),
-                "status": status,
-                "findings": findings,
-                "pre_bypass_locations": bypass_by_column[column],
-            })
+            rows.append(
+                {
+                    "dataset_instance_id": source.dataset_instance_id,
+                    "adapter_id": source.adapter_id,
+                    "source_family": source.source_family,
+                    "raw_column": column,
+                    "required": column in required,
+                    "projected": column in projected,
+                    "canonicalizer_accessed": column in used,
+                    "declared_role": declared_role,
+                    "rule_ids": sorted(matched_ids),
+                    "primary_rule_ids": sorted(primary_rules & matched_ids),
+                    "status": status,
+                    "findings": findings,
+                    "pre_bypass_locations": bypass_by_column[column],
+                }
+            )
     for rule in bundle.data_usage_rules:
         key = (rule.dataset_id, rule.logical_source)
         if key not in source_keys:
             continue
-        source = next(item for item in sources
-                      if (item.dataset_instance_id, item.source_family) == key)
+        source = next(
+            item
+            for item in sources
+            if (item.dataset_instance_id, item.source_family) == key
+        )
         schema = set(_source_columns(source))
         used = _canonicalizer_columns(source)
         declared_columns = set(rule.raw_columns) | set(rule.projected_columns)
         for column in sorted(declared_columns - schema):
-            rows.append({
-                "dataset_instance_id": rule.dataset_id,
-                "adapter_id": source.adapter_id,
-                "source_family": rule.logical_source,
-                "raw_column": column,
-                "required": False,
-                "projected": False,
-                "canonicalizer_accessed": column in used,
-                "rule_ids": [rule.rule_id],
-                "primary_rule_ids": [],
-                "declared_role": None,
-                "status": "ACTIVE_REGISTRY_CONFLICT",
-                "findings": ["REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER"],
-                "pre_bypass_locations": bypass_by_column[column],
-            })
-    return sorted(rows, key=lambda row: (
-        row["dataset_instance_id"], row["adapter_id"], row["raw_column"], row["rule_ids"]
-    ))
+            rows.append(
+                {
+                    "dataset_instance_id": rule.dataset_id,
+                    "adapter_id": source.adapter_id,
+                    "source_family": rule.logical_source,
+                    "raw_column": column,
+                    "required": False,
+                    "projected": False,
+                    "canonicalizer_accessed": column in used,
+                    "rule_ids": [rule.rule_id],
+                    "primary_rule_ids": [],
+                    "declared_role": None,
+                    "status": "ACTIVE_REGISTRY_CONFLICT",
+                    "findings": ["REGISTRY_COLUMN_NOT_DECLARED_BY_SOURCE_ADAPTER"],
+                    "pre_bypass_locations": bypass_by_column[column],
+                }
+            )
+    return sorted(
+        rows,
+        key=lambda row: (
+            row["dataset_instance_id"],
+            row["adapter_id"],
+            row["raw_column"],
+            row["rule_ids"],
+        ),
+    )
 
 
-def _mapping_draft(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinition, ...],
-                   raw_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _mapping_draft(
+    bundle: RegistryBundle,
+    sources: tuple[SourceAdapterDefinition, ...],
+    raw_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     rules = {item.rule_id: item for item in bundle.data_usage_rules}
     sources_by_id = {item.adapter_id: item for item in sources}
     result = []
@@ -298,35 +406,50 @@ def _mapping_draft(bundle: RegistryBundle, sources: tuple[SourceAdapterDefinitio
         matched = [rules[rule_id] for rule_id in row["rule_ids"]]
         candidates: Iterable[Any] = matched or (None,)
         for rule in candidates:
-            result.append({
-                "authoritative": False,
-                "draft_status": row["status"],
-                "dataset_instance_id": row["dataset_instance_id"],
-                "adapter_id": row["adapter_id"],
-                "source": row["source_family"],
-                "raw_column": row["raw_column"],
-                "source_schema_declared": row["required"] or row["projected"],
-                "canonicalizer_accessed": row["canonicalizer_accessed"],
-                "candidate_rule_ids": ";".join(source.rule_ids) if rule is None else "",
-                "rule_id": "" if rule is None else rule.rule_id,
-                "canonical_variable": "" if rule is None else rule.canonical_variable,
-                "owner": "PRE",
-                "role": "" if rule is None else rule.decision_time_role.value,
-                "raw_unit": "" if rule is None or rule.raw_unit is None else rule.raw_unit,
-                "unit": "" if rule is None else rule.canonical_unit,
-                "availability_rule": "" if rule is None else rule.availability_rule,
-                "transformation": "" if rule is None else rule.transformation_rule,
-                "missing_rule": "" if rule is None else rule.missing_rule,
-                "downstream_module": "" if rule is None else ";".join(rule.downstream_consumers),
-                "provenance": "" if rule is None else f"{rule.rule_id}@{rule.rule_version}",
-                "findings": ";".join(row["findings"]),
-            })
+            result.append(
+                {
+                    "authoritative": False,
+                    "draft_status": row["status"],
+                    "dataset_instance_id": row["dataset_instance_id"],
+                    "adapter_id": row["adapter_id"],
+                    "source": row["source_family"],
+                    "raw_column": row["raw_column"],
+                    "source_schema_declared": row["required"] or row["projected"],
+                    "canonicalizer_accessed": row["canonicalizer_accessed"],
+                    "candidate_rule_ids": (
+                        ";".join(source.rule_ids) if rule is None else ""
+                    ),
+                    "rule_id": "" if rule is None else rule.rule_id,
+                    "canonical_variable": (
+                        "" if rule is None else rule.canonical_variable
+                    ),
+                    "owner": "PRE",
+                    "role": "" if rule is None else rule.decision_time_role.value,
+                    "raw_unit": (
+                        "" if rule is None or rule.raw_unit is None else rule.raw_unit
+                    ),
+                    "unit": "" if rule is None else rule.canonical_unit,
+                    "availability_rule": "" if rule is None else rule.availability_rule,
+                    "transformation": "" if rule is None else rule.transformation_rule,
+                    "missing_rule": "" if rule is None else rule.missing_rule,
+                    "downstream_module": (
+                        "" if rule is None else ";".join(rule.downstream_consumers)
+                    ),
+                    "provenance": (
+                        "" if rule is None else f"{rule.rule_id}@{rule.rule_version}"
+                    ),
+                    "findings": ";".join(row["findings"]),
+                }
+            )
     return result
 
 
-def _pre_output_audit(bundle: RegistryBundle, rule_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _pre_output_audit(
+    bundle: RegistryBundle, rule_rows: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     conflict_variables = {
-        row["canonical_variable"] for row in rule_rows
+        row["canonical_variable"]
+        for row in rule_rows
         if row["status"] in {"ACTIVE_SEMANTIC_CONFLICT", "ACTIVE_REGISTRY_CONFLICT"}
     }
     rows = []
@@ -339,15 +462,23 @@ def _pre_output_audit(bundle: RegistryBundle, rule_rows: list[dict[str, Any]]) -
         else:
             publication = "REGISTRY_PRE_MAPPER"
         conflicts = sorted(set(definition.canonical_inputs) & conflict_variables)
-        rows.append({
-            "scientific_variable": variable,
-            "pre_family": definition.pre_family,
-            "canonical_inputs": list(definition.canonical_inputs),
-            "publication_path": publication,
-            "consumers": list(definition.consumers),
-            "status": "ACTIVE_PRE_OUTPUT_CONFLICT" if conflicts else "COVERED_ACTIVE",
-            "findings": [] if not conflicts else ["UPSTREAM_RULE_CONFLICT:" + ",".join(conflicts)],
-        })
+        rows.append(
+            {
+                "scientific_variable": variable,
+                "pre_family": definition.pre_family,
+                "canonical_inputs": list(definition.canonical_inputs),
+                "publication_path": publication,
+                "consumers": list(definition.consumers),
+                "status": (
+                    "ACTIVE_PRE_OUTPUT_CONFLICT" if conflicts else "COVERED_ACTIVE"
+                ),
+                "findings": (
+                    []
+                    if not conflicts
+                    else ["UPSTREAM_RULE_CONFLICT:" + ",".join(conflicts)]
+                ),
+            }
+        )
     return rows
 
 
@@ -364,24 +495,35 @@ def _feature_upstream(name: str) -> tuple[str, str]:
         return "decision_node.operational_stage", "PRE_FACTUAL_REPLAY_STAGE"
     for variable in ("current_weather", "schedule_reference", "current_state"):
         if name.startswith(variable + "."):
-            upstream = "decision_node.operational_stage" if variable == "current_state" else variable
+            upstream = (
+                "decision_node.operational_stage"
+                if variable == "current_state"
+                else variable
+            )
             return upstream, "M1_EVIDENCE_SUPPORT_ENCODING"
     return "", ""
 
 
 def _m1_feature_audit() -> list[dict[str, Any]]:
     rows = []
-    for branch, names in (("dynamic", FEATURE_NAMES_V2), ("static", STATIC_FEATURE_NAMES)):
+    for branch, names in (
+        ("dynamic", FEATURE_NAMES_V2),
+        ("static", STATIC_FEATURE_NAMES),
+    ):
         for feature in names:
             upstream, path = _feature_upstream(feature)
-            rows.append({
-                "feature": feature,
-                "branch": branch,
-                "upstream_pre_variable": upstream,
-                "consumption_path": path,
-                "status": "COVERED_ACTIVE" if upstream else "RUNTIME_USED_NO_CONTRACT",
-                "findings": [] if upstream else ["M1_FEATURE_UPSTREAM_UNRESOLVED"],
-            })
+            rows.append(
+                {
+                    "feature": feature,
+                    "branch": branch,
+                    "upstream_pre_variable": upstream,
+                    "consumption_path": path,
+                    "status": (
+                        "COVERED_ACTIVE" if upstream else "RUNTIME_USED_NO_CONTRACT"
+                    ),
+                    "findings": [] if upstream else ["M1_FEATURE_UPSTREAM_UNRESOLVED"],
+                }
+            )
     return rows
 
 
@@ -392,10 +534,16 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer = csv.DictWriter(stream, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow({
-                key: json.dumps(value, sort_keys=True) if isinstance(value, (list, dict)) else value
-                for key, value in row.items()
-            })
+            writer.writerow(
+                {
+                    key: (
+                        json.dumps(value, sort_keys=True)
+                        if isinstance(value, (list, dict))
+                        else value
+                    )
+                    for key, value in row.items()
+                }
+            )
 
 
 def _write_yaml(path: Path, payload: dict[str, Any]) -> None:
@@ -436,22 +584,30 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         item for item in runtime_refs if item["rule_id"] not in registered_rule_ids
     ]
     source_files = (
-        "registries/source_adapter_registry.yaml", "registries/data_usage_rules.yaml",
-        "registries/scientific_variables.yaml", "registries/dataset_capabilities.yaml",
-        "configs/scientific/foundation.yaml", "model/M2/freeze.py",
+        "registries/source_adapter_registry.yaml",
+        "registries/data_usage_rules.yaml",
+        "registries/scientific_variables.yaml",
+        "registries/dataset_capabilities.yaml",
+        "configs/scientific/foundation.yaml",
+        "model/M2/freeze.py",
         "model/PRE/adapters/registry.py",
         "model/PRE/canonical/data2_timestamps.py",
         "model/PRE/canonical/normalization_flights.py",
         "model/PRE/canonical/normalization_weather.py",
         "model/PRE/canonical/normalization_references.py",
         "model/PRE/contracts/training_artifacts.py",
-        "model/PRE/feature_registry/models.py", "model/PRE/mapping.py",
-        "model/PRE/publication/static_reference.py", "model/M1/data.py",
+        "model/PRE/feature_registry/models.py",
+        "model/PRE/mapping.py",
+        "model/PRE/publication/static_reference.py",
+        "model/M1/data.py",
         "model/PRE/reference/data2_m2_train_fit.py",
         "docs/reconciliation/AIR_SLOT_DATA_USAGE_CONTRACT_V1.md",
-        "validation/data_usage_classification.py", "validation/data_usage_contract_audit.py",
+        "validation/data_usage_classification.py",
+        "validation/data_usage_contract_audit.py",
     )
-    all_rows = [row for rows in (raw_rows, rule_rows, pre_rows, m1_rows) for row in rows]
+    all_rows = [
+        row for rows in (raw_rows, rule_rows, pre_rows, m1_rows) for row in rows
+    ]
     failure_counts = zero_failure_counts()
     for row in all_rows:
         if row["status"] in failure_counts:
@@ -472,13 +628,20 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "audit": output_dir / "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json",
     }
     _write_csv(paths["mapping_draft"], mapping_rows)
-    _write_yaml(paths["mapping_draft_yaml"], {
-        "schema_version": "AIR_SLOT_DATA_USAGE_MAPPING_DRAFT_V1",
-        "authoritative": False,
-        "status": "PASS" if status == "DATA_USAGE_CONTRACT_AUDIT_PASS" else "REVIEW_REQUIRED",
-        "generated_from": SCHEMA_VERSION,
-        "mappings": mapping_rows,
-    })
+    _write_yaml(
+        paths["mapping_draft_yaml"],
+        {
+            "schema_version": "AIR_SLOT_DATA_USAGE_MAPPING_DRAFT_V1",
+            "authoritative": False,
+            "status": (
+                "PASS"
+                if status == "DATA_USAGE_CONTRACT_AUDIT_PASS"
+                else "REVIEW_REQUIRED"
+            ),
+            "generated_from": SCHEMA_VERSION,
+            "mappings": mapping_rows,
+        },
+    )
     _write_csv(paths["raw_column_audit"], raw_rows)
     _write_csv(paths["pre_output_audit"], pre_rows)
     _write_csv(paths["m1_feature_audit"], m1_rows)
@@ -510,7 +673,9 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "pre_bypass_findings": bypasses,
         "runtime_rule_references": runtime_refs,
         "missing_runtime_rule_registrations": missing_runtime_rules,
-        "artifacts": {key: path.relative_to(output_dir).as_posix() for key, path in paths.items()},
+        "artifacts": {
+            key: path.relative_to(output_dir).as_posix() for key, path in paths.items()
+        },
         "safety": {
             "M1_TRAINING_RUNS": 0,
             "TUNING_RUNS": 0,

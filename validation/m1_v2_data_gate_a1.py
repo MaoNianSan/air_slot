@@ -54,11 +54,13 @@ from validation.m1_v2_data_gate_statistics import (
     time_diagnostics,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_data_gate_a1"
 DATA_USAGE_AUDIT = (
-    ROOT / "artifacts" / "diagnostics" / "data_usage_contract_audit"
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "data_usage_contract_audit"
     / "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json"
 )
 PREPARATION_ROOT = ROOT / "artifacts" / "diagnostics" / "v5_development_freeze"
@@ -77,7 +79,9 @@ def _json_serialized_payload(payload):
 
 
 def _heartbeat(phase: str, **values) -> None:
-    print(json.dumps({"phase": phase, **values}, sort_keys=True, default=str), flush=True)
+    print(
+        json.dumps({"phase": phase, **values}, sort_keys=True, default=str), flush=True
+    )
 
 
 def _bts_consistency(cohorts) -> dict:
@@ -97,7 +101,11 @@ def _bts_consistency(cohorts) -> dict:
             cross_midnight = 0
             both = 0
             for prepared in prepared_rows:
-                record = prepared.predecessor_outcome if label == "ArrTime" else prepared.successor_outcome
+                record = (
+                    prepared.predecessor_outcome
+                    if label == "ArrTime"
+                    else prepared.successor_outcome
+                )
                 direct = getattr(record, direct_name)
                 derived = getattr(record, derived_name)
                 if direct is None or derived is None:
@@ -106,25 +114,37 @@ def _bts_consistency(cohorts) -> dict:
                 diff = abs((direct - derived).total_seconds()) / 60.0
                 differences.append(diff)
                 if diff > 5 and len(cases) < 10:
-                    cases.append({
-                        "episode_id": prepared.episode.episode_id,
-                        "source_record_id": record.canonical_record_id,
-                        "direct": direct,
-                        "derived": derived,
-                        "abs_difference_minutes": diff,
-                    })
+                    cases.append(
+                        {
+                            "episode_id": prepared.episode.episode_id,
+                            "source_record_id": record.canonical_record_id,
+                            "direct": direct,
+                            "derived": derived,
+                            "abs_difference_minutes": diff,
+                        }
+                    )
                 date_offset += int(direct.date() != derived.date())
-                cross_midnight += int(
-                    (direct.date() != derived.date()) and diff > 0
-                )
+                cross_midnight += int((direct.date() != derived.date()) and diff > 0)
             ordered = sorted(differences)
-            percentile = lambda q: ordered[min(len(ordered) - 1, int(round((len(ordered) - 1) * q)))] if ordered else None
+            percentile = lambda q: (
+                ordered[min(len(ordered) - 1, int(round((len(ordered) - 1) * q)))]
+                if ordered
+                else None
+            )
             output[split][label] = {
                 "both_available_count": both,
-                "exact_agreement_rate": sum(value == 0 for value in differences) / both if both else None,
-                "within_1min_rate": sum(value <= 1 for value in differences) / both if both else None,
-                "within_5min_rate": sum(value <= 5 for value in differences) / both if both else None,
-                "median_abs_difference_minutes": median(differences) if differences else None,
+                "exact_agreement_rate": (
+                    sum(value == 0 for value in differences) / both if both else None
+                ),
+                "within_1min_rate": (
+                    sum(value <= 1 for value in differences) / both if both else None
+                ),
+                "within_5min_rate": (
+                    sum(value <= 5 for value in differences) / both if both else None
+                ),
+                "median_abs_difference_minutes": (
+                    median(differences) if differences else None
+                ),
                 "p95_abs_difference_minutes": percentile(0.95),
                 "p99_abs_difference_minutes": percentile(0.99),
                 "max_abs_difference_minutes": max(differences) if differences else None,
@@ -140,8 +160,13 @@ def _bts_consistency(cohorts) -> dict:
 
 
 def _weather_profile(cohorts) -> dict:
-    counts = {"total": 0, "finite": 0, "unlimited": 0, "missing": 0,
-              "wind_direction_observed": 0}
+    counts = {
+        "total": 0,
+        "finite": 0,
+        "unlimited": 0,
+        "missing": 0,
+        "wind_direction_observed": 0,
+    }
     for split in SPLITS:
         for prepared in getattr(cohorts, split):
             for state in prepared.states:
@@ -153,15 +178,21 @@ def _weather_profile(cohorts) -> dict:
                     continue
                 status = payload.get("ceiling_status", "MISSING")
                 counts[status.lower()] = counts.get(status.lower(), 0) + 1
-                counts["wind_direction_observed"] += int(payload.get("wind_direction_deg") is not None)
+                counts["wind_direction_observed"] += int(
+                    payload.get("wind_direction_deg") is not None
+                )
     total = max(counts["total"], 1)
     return {
         **counts,
         "ceiling_finite_pct": 100.0 * counts.get("finite", 0) / total,
         "ceiling_unlimited_pct": 100.0 * counts.get("unlimited", 0) / total,
         "ceiling_missing_pct": 100.0 * counts.get("missing", 0) / total,
-        "wind_direction_observed_pct": 100.0 * counts["wind_direction_observed"] / total,
-        "wind_direction_sin_cos_coverage_pct": 100.0 * counts["wind_direction_observed"] / total,
+        "wind_direction_observed_pct": 100.0
+        * counts["wind_direction_observed"]
+        / total,
+        "wind_direction_sin_cos_coverage_pct": 100.0
+        * counts["wind_direction_observed"]
+        / total,
     }
 
 
@@ -170,13 +201,18 @@ def _replay_leakage(cohorts) -> dict:
         "PRE_IB": (),
         "POST_IB_PRE_OB": ("predecessor_outcome", "actual_arrival_utc"),
         "POST_OB_PRE_TO": (
-            "predecessor_outcome", "actual_arrival_utc",
-            "successor_outcome", "actual_departure_utc",
+            "predecessor_outcome",
+            "actual_arrival_utc",
+            "successor_outcome",
+            "actual_departure_utc",
         ),
         "COMPLETED": (
-            "predecessor_outcome", "actual_arrival_utc",
-            "successor_outcome", "actual_departure_utc",
-            "successor_outcome", "wheels_off_utc",
+            "predecessor_outcome",
+            "actual_arrival_utc",
+            "successor_outcome",
+            "actual_departure_utc",
+            "successor_outcome",
+            "wheels_off_utc",
         ),
     }
     out = {stage: {"nodes": 0, "failures": 0, "samples": []} for stage in requirements}
@@ -192,13 +228,29 @@ def _replay_leakage(cohorts) -> dict:
                 for index in range(0, len(req), 2):
                     record = getattr(prepared, req[index])
                     timestamp = getattr(record, req[index + 1])
-                    okay = timestamp is not None and timestamp <= state.decision_node.information_cutoff
-                    values.append({"event": f"{req[index]}.{req[index + 1]}", "declared_availability_time": timestamp, "cutoff": state.decision_node.information_cutoff, "legal": okay})
+                    okay = (
+                        timestamp is not None
+                        and timestamp <= state.decision_node.information_cutoff
+                    )
+                    values.append(
+                        {
+                            "event": f"{req[index]}.{req[index + 1]}",
+                            "declared_availability_time": timestamp,
+                            "cutoff": state.decision_node.information_cutoff,
+                            "legal": okay,
+                        }
+                    )
                     legal = legal and okay
                 if not legal:
                     item["failures"] += 1
                 if len(item["samples"]) < 3:
-                    item["samples"].append({"episode_id": prepared.episode.episode_id, "node_id": state.decision_node.decision_node_id, "events": values})
+                    item["samples"].append(
+                        {
+                            "episode_id": prepared.episode.episode_id,
+                            "node_id": state.decision_node.decision_node_id,
+                            "events": values,
+                        }
+                    )
     for item in out.values():
         item["status"] = "PASS" if item["failures"] == 0 else "LEAKAGE_FAIL"
     return out
@@ -206,12 +258,14 @@ def _replay_leakage(cohorts) -> dict:
 
 def _load_references():
     taxi_payload = json.loads(
-        (PREPARATION_ROOT / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json")
-        .read_text(encoding="utf-8")
+        (PREPARATION_ROOT / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json").read_text(
+            encoding="utf-8"
+        )
     )
     turnaround_payload = json.loads(
-        (PREPARATION_ROOT / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json")
-        .read_text(encoding="utf-8")
+        (
+            PREPARATION_ROOT / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json"
+        ).read_text(encoding="utf-8")
     )
     return (
         data2_taxi_reference_from_payload(taxi_payload),
@@ -255,11 +309,21 @@ def _load_frozen_partitions() -> tuple[dict[str, tuple], dict]:
     return partitions, audit
 
 
-def _static_and_cache(examples, normalization, static_normalization, source_hash) -> dict:
+def _static_and_cache(
+    examples, normalization, static_normalization, source_hash
+) -> dict:
     static = {}
     for split in SPLITS:
-        values = [row.static_values for row in examples[split] if row.static_values is not None]
-        matrix = torch.stack(values) if values else torch.empty((0, len(STATIC_FEATURE_NAMES)))
+        values = [
+            row.static_values
+            for row in examples[split]
+            if row.static_values is not None
+        ]
+        matrix = (
+            torch.stack(values)
+            if values
+            else torch.empty((0, len(STATIC_FEATURE_NAMES)))
+        )
         static[split] = {
             "row_count": len(examples[split]),
             "available_count": len(values),
@@ -272,12 +336,14 @@ def _static_and_cache(examples, normalization, static_normalization, source_hash
             "maxs": matrix.max(dim=0).values.tolist() if len(matrix) else None,
         }
     contracts = {
-        name: content_id({
-            "gate": "A1",
-            "contract": name,
-            "feature_schema": "AIR_SLOT_M1_V2_DATA_GATE_A1_V1",
-            "feature_names": list(FEATURE_NAMES_V2),
-        })
+        name: content_id(
+            {
+                "gate": "A1",
+                "contract": name,
+                "feature_schema": "AIR_SLOT_M1_V2_DATA_GATE_A1_V1",
+                "feature_names": list(FEATURE_NAMES_V2),
+            }
+        )
         for name in REQUIRED_CONTRACT_HASHES
     }
     key = cache_key(
@@ -298,10 +364,11 @@ def _static_and_cache(examples, normalization, static_normalization, source_hash
     data_path = OUTPUT / "M1_V2_DATA_GATE_A1_CACHE.npz"
     manifest_path = OUTPUT / "M1_V2_DATA_GATE_A1_CACHE_MANIFEST.json"
     cache.save(data_path, manifest_path)
-    loaded = M1DevelopmentBaseCache.load(data_path, manifest_path, expected_cache_key=key)
+    loaded = M1DevelopmentBaseCache.load(
+        data_path, manifest_path, expected_cache_key=key
+    )
     static_equal = (
-        cache.store.static_values is None
-        and loaded.store.static_values is None
+        cache.store.static_values is None and loaded.store.static_values is None
     ) or (
         cache.store.static_values is not None
         and loaded.store.static_values is not None
@@ -345,7 +412,10 @@ def run() -> dict:
     partitions, selection_audit = _load_frozen_partitions()
     taxi, turnaround, reference_ids = _load_references()
     scientific = load_config_layers(ROOT / "configs").scientific
-    if scientific.parameters["data2_factual_replay_availability"].value != "DECLARED_EVENT_TIME_REPLAY":
+    if (
+        scientific.parameters["data2_factual_replay_availability"].value
+        != "DECLARED_EVENT_TIME_REPLAY"
+    ):
         raise RuntimeError("DATA_GATE_A1_EXPECTED_DECLARED_EVENT_TIME_REPLAY")
     _heartbeat("PRE_MATERIALIZATION_START", counts=selection_audit["cohort_counts"])
     cohorts = materialize_preselected_cohorts(
@@ -367,7 +437,9 @@ def run() -> dict:
     static_normalization = fit_static_normalization_from_rows(rows["train"])
     for split in SPLITS:
         examples[split] = build_training_examples(
-            rows[split], normalization, None,
+            rows[split],
+            normalization,
+            None,
             static_normalization=static_normalization,
         )
     matrices = {
@@ -378,8 +450,10 @@ def run() -> dict:
     lineage = lineage_rows(feature_stats["train"])
     lineage_path = _write_lineage(lineage)
     static = _static_and_cache(
-        examples, normalization, static_normalization,
-        selection_audit["source_manifest_hash"]
+        examples,
+        normalization,
+        static_normalization,
+        selection_audit["source_manifest_hash"],
     )
     time_checks = time_diagnostics(cohorts)
     unresolved = unresolved_column_queue(cohorts)
@@ -393,7 +467,9 @@ def run() -> dict:
         "static_feature_count": len(STATIC_FEATURE_NAMES),
         "context_only_count": 4,
         "constant_count_train": sum(item["constant"] for item in train_profile),
-        "near_constant_count_train": sum(item["near_constant"] for item in train_profile),
+        "near_constant_count_train": sum(
+            item["near_constant"] for item in train_profile
+        ),
         "derived_valid_coverage": {
             item["feature"]: 1.0 - item["missing_pct"] / 100.0
             for item in train_profile
@@ -401,9 +477,13 @@ def run() -> dict:
             and not item["feature"].endswith("derived_missing_mask")
         },
         "removed_principal": [
-            "weather.wind_gust_mps", "delta.weather.wind_gust_mps", "ar.weather.wind_gust_mps",
-            "delta.weather.wind_direction_deg", "ar.weather.wind_direction_deg",
-            "stage.*", "node.spacing_minutes",
+            "weather.wind_gust_mps",
+            "delta.weather.wind_gust_mps",
+            "ar.weather.wind_gust_mps",
+            "delta.weather.wind_direction_deg",
+            "ar.weather.wind_direction_deg",
+            "stage.*",
+            "node.spacing_minutes",
         ],
     }
     result = {
@@ -430,7 +510,9 @@ def run() -> dict:
         },
         "counts": {
             "raw_candidate_source_column_pairs": 28,
-            "pre_published_expanded_fields": len({row["PRE_OUTPUT"] for row in lineage}),
+            "pre_published_expanded_fields": len(
+                {row["PRE_OUTPUT"] for row in lineage}
+            ),
             "m1_dynamic": len(FEATURE_NAMES_V2),
             "m1_static": len(STATIC_FEATURE_NAMES),
             "context_only": 4,
@@ -514,16 +596,11 @@ def run() -> dict:
             {
                 "severity": "FIXED",
                 "field": "wind_gust_mps",
-                "problem": (
-                    "wind gust value, delta, AR, and principal masks removed"
-                ),
+                "problem": ("wind gust value, delta, AR, and principal masks removed"),
             },
             {
                 "severity": "MEDIUM",
-                "field": (
-                    "state flags, schedule delta, "
-                    "metadata one-hots"
-                ),
+                "field": ("state flags, schedule delta, " "metadata one-hots"),
                 "problem": (
                     "deterministic duplicate or near-constant inputs require "
                     "Gate B removal review"

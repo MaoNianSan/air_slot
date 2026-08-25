@@ -14,7 +14,6 @@ from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 from model.PRE.transformation import ConstructionType
 
-
 COMPONENTS = CONSEQUENCE_COMPONENTS
 Component = Literal[
     "F_continuity",
@@ -468,7 +467,10 @@ class ConsequenceRow(FrozenModel):
     @model_validator(mode="after")
     def value_support_and_normalization(self):
         if self.support_state is SupportState.ABSTAIN:
-            if self.native_quantity is not None or self.constructed_value_cu is not None:
+            if (
+                self.native_quantity is not None
+                or self.constructed_value_cu is not None
+            ):
                 raise ValueError("ABSTAIN_COMPONENT_MUST_REMAIN_NULL")
         if self.constructed_value_cu is not None and (
             self.cu_status is not CUNormalizationStatus.CU_FROZEN

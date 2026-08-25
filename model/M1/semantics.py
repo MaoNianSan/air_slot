@@ -21,11 +21,19 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import Final
 
-
 FORMAL_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (0, 15, 60)
 DELAY_THRESHOLDS_MINUTES: Final[tuple[int, ...]] = (15, 30, 60)
 EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (
-    0, 30, 60, 120, 180, 240, 300, 360, 420, 480
+    0,
+    30,
+    60,
+    120,
+    180,
+    240,
+    300,
+    360,
+    420,
+    480,
 )
 
 # ---------------------------------------------------------------------------
@@ -33,7 +41,9 @@ EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (
 # ---------------------------------------------------------------------------
 M1_V2_PRIMITIVE_TARGETS: Final[tuple[str, ...]] = ("T_IB_A00", "D_OB", "D_TX")
 M1_V2_DERIVED_TARGETS: Final[tuple[str, ...]] = ("R_IB", "D_TO")
-M1_V2_ALL_TARGETS: Final[tuple[str, ...]] = M1_V2_PRIMITIVE_TARGETS + M1_V2_DERIVED_TARGETS
+M1_V2_ALL_TARGETS: Final[tuple[str, ...]] = (
+    M1_V2_PRIMITIVE_TARGETS + M1_V2_DERIVED_TARGETS
+)
 # Round 2.1 coordinate separation: the public primitive T_IB_A00 is the
 # absolute predecessor in-block event time (ISO UTC); the hazard head/label
 # parameterize the INTERNAL remaining-time coordinate from the decision node.
@@ -133,13 +143,16 @@ M1_V2_TARGET_SEMANTICS: Final[dict[str, dict[str, str]]] = {
 }
 
 
-def derived_r_ib_minutes(t_ib_a00_utc: str | None, decision_time_utc: str | None) -> float | None:
+def derived_r_ib_minutes(
+    t_ib_a00_utc: str | None, decision_time_utc: str | None
+) -> float | None:
     """Derived R_IB = max(0, T_IB_A00 - t); never a trained head."""
     if t_ib_a00_utc is None or decision_time_utc is None:
         return None
     try:
         remaining = (
-            datetime.fromisoformat(t_ib_a00_utc) - datetime.fromisoformat(decision_time_utc)
+            datetime.fromisoformat(t_ib_a00_utc)
+            - datetime.fromisoformat(decision_time_utc)
         ).total_seconds() / 60.0
     except ValueError:
         return None
@@ -158,7 +171,9 @@ def remaining_hazard_coordinate_minutes(
     return derived_r_ib_minutes(t_ib_a00_utc, decision_time_utc)
 
 
-def t_ib_a00_from_remaining_minutes(decision_time_utc: str, remaining_minutes: float) -> str:
+def t_ib_a00_from_remaining_minutes(
+    decision_time_utc: str, remaining_minutes: float
+) -> str:
     """Public absolute event time T_IB_A00 = decision_time + remaining minutes.
 
     Raises ``ValueError`` (``M1_V2_DECISION_TIME_REQUIRED``) when the decision
@@ -179,7 +194,9 @@ def derived_r_ib_from_remaining(remaining_minutes: float | None) -> float | None
     return max(0.0, float(remaining_minutes))
 
 
-def derived_d_to_from_primitives(d_ob_minutes: float | None, d_tx_minutes: float | None) -> float | None:
+def derived_d_to_from_primitives(
+    d_ob_minutes: float | None, d_tx_minutes: float | None
+) -> float | None:
     """V2 D_TO = D_OB + D_TX per scenario (never a separate head)."""
     if d_ob_minutes is None or d_tx_minutes is None:
         return None
@@ -217,28 +234,50 @@ def derived_d_to_minutes(
     return d_ob + d_tx
 
 
-def takeoff_event_time_minutes(t_ob_minutes: float | None, t_tx_minutes: float | None) -> float | None:
+def takeoff_event_time_minutes(
+    t_ob_minutes: float | None, t_tx_minutes: float | None
+) -> float | None:
     if t_ob_minutes is None or t_tx_minutes is None:
         return None
     return float(t_ob_minutes) + float(t_tx_minutes)
 
 
-def total_takeoff_delay_minutes(*, delta_ob_minutes: float | None = None,
-                                t_tx_minutes: float | None,
-                                taxi_reference_minutes: float | None,
-                                t_ob_minutes: float | None = None,
-                                scheduled_ob_minutes: float | None = None) -> float | None:
+def total_takeoff_delay_minutes(
+    *,
+    delta_ob_minutes: float | None = None,
+    t_tx_minutes: float | None,
+    taxi_reference_minutes: float | None,
+    t_ob_minutes: float | None = None,
+    scheduled_ob_minutes: float | None = None,
+) -> float | None:
     """Return the formal total takeoff delay ``D_TO = D_OB + D_TX``."""
-    if delta_ob_minutes is None and t_ob_minutes is not None and scheduled_ob_minutes is not None:
+    if (
+        delta_ob_minutes is None
+        and t_ob_minutes is not None
+        and scheduled_ob_minutes is not None
+    ):
         delta_ob_minutes = float(t_ob_minutes) - float(scheduled_ob_minutes)
-    if delta_ob_minutes is None or t_tx_minutes is None or taxi_reference_minutes is None:
+    if (
+        delta_ob_minutes is None
+        or t_tx_minutes is None
+        or taxi_reference_minutes is None
+    ):
         return None
     return derived_d_to_minutes(delta_ob_minutes, t_tx_minutes, taxi_reference_minutes)
 
 
-def delay_from_event_times(t_ob: datetime | None, taxi_duration_minutes: float | None,
-                           scheduled_ob: datetime | None, taxi_reference_minutes: float | None) -> float | None:
-    if t_ob is None or taxi_duration_minutes is None or scheduled_ob is None or taxi_reference_minutes is None:
+def delay_from_event_times(
+    t_ob: datetime | None,
+    taxi_duration_minutes: float | None,
+    scheduled_ob: datetime | None,
+    taxi_reference_minutes: float | None,
+) -> float | None:
+    if (
+        t_ob is None
+        or taxi_duration_minutes is None
+        or scheduled_ob is None
+        or taxi_reference_minutes is None
+    ):
         return None
     delta_ob = (t_ob - scheduled_ob).total_seconds() / 60.0
     return total_takeoff_delay_minutes(

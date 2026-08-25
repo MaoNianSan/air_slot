@@ -21,7 +21,10 @@ from model.PRE.canonical.data2_timestamps import (
     resolve_bts_actual_timestamp,
     resolve_bts_event_clock,
 )
-from model.PRE.canonical.normalization import canonicalize_isd_row, canonicalize_ontime_row
+from model.PRE.canonical.normalization import (
+    canonicalize_isd_row,
+    canonicalize_ontime_row,
+)
 from model.PRE.canonical.normalization_common import deterministic_id, missing, number
 from model.PRE.canonical.timezone import infer_rollover, local_hhmm_to_utc
 from model.PRE.cohort import split_for_date
@@ -30,7 +33,6 @@ from model.PRE.episode.containment import episode_containment_from_rows
 from model.PRE.episode.node_builder import build_rolling_decision_nodes
 from model.PRE.feature_registry.loader import load_registry_bundle
 from model.PRE.pipeline import ProductionPREPublisher, ProductionPRERequest
-
 
 PROJECTED_ONTIME_COLUMNS = (
     "FlightDate",
@@ -114,7 +116,9 @@ def development_source_paths(root: Path) -> tuple[Path, ...]:
     data2_root = root / "data2"
     paths = (
         ontime_paths(root)
-        + tuple(sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv")))
+        + tuple(
+            sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv"))
+        )
         + (
             data2_root / "refs" / "weather_station_map.csv",
             data2_root / "refs" / "us_airport_timezones.csv",
@@ -201,7 +205,9 @@ def iter_lightweight_flights(
                 )
                 if scheduled_departure is None or scheduled_arrival is None:
                     raise ValueError
-                scheduled_arrival = infer_rollover(scheduled_departure, scheduled_arrival)
+                scheduled_arrival = infer_rollover(
+                    scheduled_departure, scheduled_arrival
+                )
                 if bool(number(value("Cancelled")) or 0) or bool(
                     number(value("Diverted")) or 0
                 ):
@@ -590,7 +596,9 @@ def weather_index(
     index = defaultdict(list)
     accepted = input_rows = 0
     started = last_heartbeat = time.perf_counter()
-    paths = tuple(sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv")))
+    paths = tuple(
+        sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv"))
+    )
     limit = end_exclusive.isoformat()
     start = None if start_inclusive is None else start_inclusive.isoformat()
     for path_index, path in enumerate(paths, start=1):
@@ -722,7 +730,9 @@ def stream_completed_flights(
     per_month = Counter()
     for csv_path in csv_paths:
         month = csv_path.parent.name.replace("month=", "")
-        with csv_path.open(encoding="utf-8-sig", errors="replace", newline="") as stream:
+        with csv_path.open(
+            encoding="utf-8-sig", errors="replace", newline=""
+        ) as stream:
             for raw in csv.DictReader(stream):
                 try:
                     schedule, outcome = canonicalize_ontime_row(
@@ -731,7 +741,11 @@ def stream_completed_flights(
                 except Exception:
                     skipped += 1
                     continue
-                if schedule.aircraft_id is None or outcome.cancelled or outcome.diverted:
+                if (
+                    schedule.aircraft_id is None
+                    or outcome.cancelled
+                    or outcome.diverted
+                ):
                     skipped += 1
                     continue
                 row = {
@@ -748,7 +762,9 @@ def stream_completed_flights(
                 }
                 if include_service_date:
                     row["service_date"] = (
-                        schedule.service_date.isoformat() if schedule.service_date else None
+                        schedule.service_date.isoformat()
+                        if schedule.service_date
+                        else None
                     )
                 flight_rows.append(row)
                 per_month[month] += 1

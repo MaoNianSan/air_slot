@@ -20,6 +20,7 @@ Construction rule (data1):
     Evidence: EMPIRICAL_REFERENCE from realized archive chains -> DEGRADED
     support (flightlist is a posthoc archive, never online evidence).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -91,7 +92,9 @@ class ExposureReference:
     reason_code: str
 
     def lookup(self, airport_id: str) -> SupportedValue:
-        cell = next((item for item in self.cells if item.airport_id == airport_id), None)
+        cell = next(
+            (item for item in self.cells if item.airport_id == airport_id), None
+        )
         if cell is None:
             return SupportedValue(
                 value=None,
@@ -188,11 +191,14 @@ def build_downstream_exposure(
     training_rows = [row for row in flights if row["split"] == "train"]
     if not training_rows:
         raise ContractError("REFERENCE_TRAIN_PARTITION_EMPTY")
-    episodes = build_episode_records(training_rows)  # chain rule max_gap=360 (D1-1); horizon is a separate window
+    episodes = build_episode_records(
+        training_rows
+    )  # chain rule max_gap=360 (D1-1); horizon is a separate window
 
     by_flight_id = {row["flight_id"]: row for row in training_rows}
     successor_of = {
-        episode.predecessor_flight_id: episode.successor_flight_id for episode in episodes
+        episode.predecessor_flight_id: episode.successor_flight_id
+        for episode in episodes
     }
 
     counts: list[tuple[int, str]] = []

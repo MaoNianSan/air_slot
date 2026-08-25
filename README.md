@@ -23,6 +23,8 @@ The V5 experiment layer uses one cross-experiment contract, named RNG streams, i
 artifacts, controlled Exp1-Exp4 evaluation, and read-only publication generation. Engineering
 presence does not imply real-data paper readiness. See
 `docs/EXPERIMENT_V5_IMPLEMENTATION_AUDIT.md` and the generated status manifests before any larger run.
+The local output map is in [`OUTPUT_INDEX.md`](OUTPUT_INDEX.md); runtime outputs,
+diagnostic artifacts, and human-readable reports are kept in separate roots.
 
 Use the current Python 3.11 interpreter directly:
 

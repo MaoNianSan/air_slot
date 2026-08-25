@@ -28,9 +28,14 @@ def _m3_registry_hash(value: Any) -> str:
     return content_id(value)
 
 
-def run_formal_pipeline(nodes: Iterable[Mapping[str, Any]], *, dataset_instance_id: str = "data2_2019",
-                        global_seed: int = 0, contract_hashes: Mapping[str, str] | None = None,
-                        output_path=None) -> FormalArtifactBundle:
+def run_formal_pipeline(
+    nodes: Iterable[Mapping[str, Any]],
+    *,
+    dataset_instance_id: str = "data2_2019",
+    global_seed: int = 0,
+    contract_hashes: Mapping[str, str] | None = None,
+    output_path=None,
+) -> FormalArtifactBundle:
     """Materialize one frozen formal PRE-M4 bundle from already-typed node outputs.
 
     The function deliberately accepts prepared typed boundaries rather than raw rows. It is a
@@ -44,12 +49,24 @@ def run_formal_pipeline(nodes: Iterable[Mapping[str, Any]], *, dataset_instance_
             decision_node_id=str(row["decision_node_id"]),
             decision_time=_text(row["decision_time"]),
             information_cutoff=_text(row["information_cutoff"]),
-            PRE_contract_hash=hashes.get("PRE_contract_hash", content_id(row.get("pre_state", {}))),
-            M1_model_hash=hashes.get("M1_model_hash", content_id(row.get("m1_model", {}))),
-            M1_scenario_hash=hashes.get("M1_scenario_hash", content_id(row.get("m1_scenarios", ()))),
-            M2_contract_hash=hashes.get("M2_contract_hash", content_id(row.get("m2_contract", {}))),
-            M3_registry_hash=hashes.get("M3_registry_hash", _m3_registry_hash(row.get("m3_registry", {}))),
-            M4_config_hash=hashes.get("M4_config_hash", content_id(row.get("m4_config", {}))),
+            PRE_contract_hash=hashes.get(
+                "PRE_contract_hash", content_id(row.get("pre_state", {}))
+            ),
+            M1_model_hash=hashes.get(
+                "M1_model_hash", content_id(row.get("m1_model", {}))
+            ),
+            M1_scenario_hash=hashes.get(
+                "M1_scenario_hash", content_id(row.get("m1_scenarios", ()))
+            ),
+            M2_contract_hash=hashes.get(
+                "M2_contract_hash", content_id(row.get("m2_contract", {}))
+            ),
+            M3_registry_hash=hashes.get(
+                "M3_registry_hash", _m3_registry_hash(row.get("m3_registry", {}))
+            ),
+            M4_config_hash=hashes.get(
+                "M4_config_hash", content_id(row.get("m4_config", {}))
+            ),
             global_seed=int(row.get("global_seed", global_seed)),
             pre_state=dict(row.get("pre_state", {})),
             m1_scenarios=tuple(row.get("m1_scenarios", ())),
@@ -65,5 +82,6 @@ def run_formal_pipeline(nodes: Iterable[Mapping[str, Any]], *, dataset_instance_
     ).with_hash()
     if output_path is not None:
         from .artifacts import write_formal_bundle
+
         write_formal_bundle(output_path, bundle)
     return bundle

@@ -32,14 +32,17 @@ def build(*, root: Path, artifact_dir: Path) -> dict:
     manifest_path = artifact_dir / "M2_DATA2_FORMAL_CU_V1_MANIFEST.json"
     status_path = artifact_dir / "M2_FORMAL_FREEZE_STATUS.json"
     started = datetime.now(timezone.utc)
-    _write_status(status_path, {
-        "phase": "FITTING_REFERENCES_AND_SCALES",
-        "started": started.isoformat(),
-        "elapsed_seconds": 0,
-        "rss_mb": int(psutil.Process().memory_info().rss / 1024 / 1024),
-        "final_test_access_count": 0,
-        "paper_full_run": False,
-    })
+    _write_status(
+        status_path,
+        {
+            "phase": "FITTING_REFERENCES_AND_SCALES",
+            "started": started.isoformat(),
+            "elapsed_seconds": 0,
+            "rss_mb": int(psutil.Process().memory_info().rss / 1024 / 1024),
+            "final_test_access_count": 0,
+            "paper_full_run": False,
+        },
+    )
     registry, written = build_m2_data2_formal_registry(
         root=root, artifact_dir=artifact_dir
     )
@@ -80,7 +83,11 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
     root = args.root.resolve()
-    artifact_dir = args.artifact_dir.resolve() if args.artifact_dir.is_absolute() else (root / args.artifact_dir)
+    artifact_dir = (
+        args.artifact_dir.resolve()
+        if args.artifact_dir.is_absolute()
+        else (root / args.artifact_dir)
+    )
     return build(root=root, artifact_dir=artifact_dir)
 
 

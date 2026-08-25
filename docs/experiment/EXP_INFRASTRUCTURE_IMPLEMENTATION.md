@@ -14,12 +14,12 @@ Scope status: common infrastructure implemented; Exp1-Exp4 not implemented.
 | `exp/common/evaluator.py` | `MetricDefinition`, `EvaluationSuite`, `default_evaluation_suite` | state/decision/system metric registration without formulas |
 | `exp/common/reporting.py` | `ExperimentReporter` | JSON, metric CSV, and Markdown summary output |
 | `docs/experiment/EXP_EXPERIMENT_FRAMEWORK_DESIGN.md` | design contract | architecture and separation rules written before code |
-| `tests/experiment/conftest.py` | fixture | in-memory, NOT_RUN result fixture |
-| `tests/experiment/test_result_schema.py` | tests | serialization, hash, timestamp and schema guards |
-| `tests/experiment/test_variant_registry.py` | tests | registry consistency and required example IDs |
-| `tests/experiment/test_protocol.py` | tests | abstract lifecycle and common runner sequencing |
-| `tests/experiment/test_evaluator.py` | tests | metric levels, declaration-only defaults and typed registration |
-| `tests/experiment/test_reporting.py` | tests | JSON/CSV/summary lineage preservation and overwrite guard |
+| `tests/experiments/conftest.py` | fixture | in-memory, NOT_RUN result fixture |
+| `tests/experiments/test_result_schema.py` | tests | serialization, hash, timestamp and schema guards |
+| `tests/experiments/test_variant_registry.py` | tests | registry consistency and required example IDs |
+| `tests/experiments/test_protocol.py` | tests | abstract lifecycle and common runner sequencing |
+| `tests/experiments/test_evaluator.py` | tests | metric levels, declaration-only defaults and typed registration |
+| `tests/experiments/test_reporting.py` | tests | JSON/CSV/summary lineage preservation and overwrite guard |
 
 ## Modified files
 
@@ -94,8 +94,8 @@ All future protocols must use the frozen model interfaces and must preserve bloc
 Commands run:
 
 ```text
-python -m compileall -q exp/common tests/experiment
-python -m pytest -q tests/experiment tests/experiments tests/contract/test_experiment_v5_contract.py tests/integration/test_reconciliation_contracts.py tests/static
+python -m compileall -q exp/common tests/experiments
+python -m pytest -q tests/experiments tests/contract/test_experiment_v5_contract.py tests/integration/test_reconciliation_contracts.py tests/static
 ```
 
 Result:

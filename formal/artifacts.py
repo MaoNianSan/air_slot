@@ -49,7 +49,9 @@ class FormalArtifactBundle(FrozenModel):
         return self.model_copy(update={"bundle_hash": content_id(payload)})
 
 
-def write_formal_bundle(path: Path, bundle: FormalArtifactBundle, *, overwrite: bool = False) -> Path:
+def write_formal_bundle(
+    path: Path, bundle: FormalArtifactBundle, *, overwrite: bool = False
+) -> Path:
     """Write once by default; evaluation code must not overwrite formal artifacts."""
     if path.exists() and not overwrite:
         raise ContractError("FORMAL_ARTIFACT_IMMUTABLE_OVERWRITE")
@@ -66,7 +68,10 @@ def load_formal_bundle(path: Path) -> FormalArtifactBundle:
     if not path.is_file():
         raise ContractError("FROZEN_FORMAL_ARTIFACT_MISSING")
     payload = json.loads(path.read_text(encoding="utf-8"))
-    if payload.get("artifact_layer") != "FORMAL" or payload.get("immutable") is not True:
+    if (
+        payload.get("artifact_layer") != "FORMAL"
+        or payload.get("immutable") is not True
+    ):
         raise ContractError("FORMAL_ARTIFACT_NOT_IMMUTABLE")
     bundle = FormalArtifactBundle.model_validate(payload)
     if bundle.with_hash().bundle_hash != bundle.bundle_hash:

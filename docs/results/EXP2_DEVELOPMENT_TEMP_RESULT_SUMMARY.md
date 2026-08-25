@@ -93,7 +93,7 @@ Status: `EXP2_FORMAL_RANKING_RESULTS = BLOCKED_BY_M4_MATERIAL_COVERAGE_UNFROZEN`
 | ReferenceObjectiveSelectionPenalty (normalized) | 0.0536 |
 | ReferenceObjectiveSelectionPenalty (raw) | 0.0972 |
 
-`ReferenceObjectiveSelectionPenalty` is not called regret. Per-node values: `exp2_temp_scenario_action_results.parquet` (local, not pushed).
+`ReferenceObjectiveSelectionPenalty` is not called regret. Per-node values: `artifacts/_archive/2026-08-25/exp2_development_temp/exp2_temp_scenario_action_results.parquet` (local, not pushed).
 
 ## Interpretation
 
@@ -106,10 +106,10 @@ C is not upgraded into a final paper claim.
 ## Provenance
 
 - M1 scenario artifact: `sha256:ca3370a3…1dfec`
-- Exp2 temporary manifest: `sha256:ceeabb16…6920` (`EXP2_TEMPORARY_MANIFEST.json`, local)
+- Exp2 temporary manifest: `sha256:ceeabb16…6920` (`artifacts/_archive/2026-08-25/exp2_development_temp/EXP2_TEMPORARY_MANIFEST.json`, local)
 - Exp2 development V1 checkpoint: `sha256:1cf8a7ac…666d` (`EXP2_DEVELOPMENT_V1.json`, local)
 - M2 registry: `sha256:c257debc…b029`; M3 response registry: `sha256:ff8adb30…5ce0`
 - Global development closure: `sha256:d43ae36f…1b1ad`
 - Temporary aggregate checkpoint vs frozen `EXP2_DEVELOPMENT_V1.json`: 20/20 items matched within 1e-9 (`frozen_aggregate_checkpoint_pass=True`)
-- Source: `artifacts/exp2/development_temp/` (local, gitignored); detailed report `docs/TEMPORARY_DEVELOPMENT_REPORT_20260818.md`
+- Source: `artifacts/_archive/2026-08-25/exp2_development_temp/` (local, gitignored); detailed report `docs/TEMPORARY_DEVELOPMENT_REPORT_20260818.md`
 

@@ -30,7 +30,9 @@ def _weighted_empirical_quantile(values, weights, level: float) -> float:
     if cdf_hi <= cdf_lo:
         return float(sorted_v[index])
     fraction = (target - cdf_lo) / (cdf_hi - cdf_lo)
-    return float(sorted_v[index - 1] + fraction * (sorted_v[index] - sorted_v[index - 1]))
+    return float(
+        sorted_v[index - 1] + fraction * (sorted_v[index] - sorted_v[index - 1])
+    )
 
 
 def scenario_marginal_summary(
@@ -52,8 +54,9 @@ def scenario_marginal_summary(
     """
     rows = tuple(scenarios)
     if not rows:
-        return {name: _marginal_abstain(name, "NO_ALIGNED_SCENARIOS")
-                for name in targets}
+        return {
+            name: _marginal_abstain(name, "NO_ALIGNED_SCENARIOS") for name in targets
+        }
     attribute = {
         "R_IB": "r_ib_minutes",
         "D_OB": "d_ob_minutes",
@@ -76,8 +79,11 @@ def scenario_marginal_summary(
         values = np.asarray([item[0] for item in pairs], dtype=float)
         weights = np.asarray([item[1] for item in pairs], dtype=float)
         weight_sum = float(weights.sum())
-        zero_probability = float(weights[values == 0.0].sum() / weight_sum) \
-            if (values == 0.0).any() else 0.0
+        zero_probability = (
+            float(weights[values == 0.0].sum() / weight_sum)
+            if (values == 0.0).any()
+            else 0.0
+        )
         output[name] = {
             "target_name": name,
             "summary_kind": "SCENARIO_MARGINAL_SUMMARY",
@@ -108,33 +114,57 @@ def _marginal_abstain(name: str, reason: str) -> dict[str, object]:
     }
 
 
-def horizon_summaries(scenarios_by_horizon, *, thresholds=DELAY_THRESHOLDS_MINUTES,
-                      horizons=FORMAL_FORECAST_HORIZONS_MINUTES):
+def horizon_summaries(
+    scenarios_by_horizon,
+    *,
+    thresholds=DELAY_THRESHOLDS_MINUTES,
+    horizons=FORMAL_FORECAST_HORIZONS_MINUTES,
+):
     """Summarize formal horizons over V2 aligned scenarios.
 
-Consumes only V2 formal scenario quantities (T_IB_A00 / D_OB / D_TX /
-derived D_TO via ``M1V2Scenario``); legacy grids require explicit evaluation
-opt-in.  The horizon layer itself stays gated
-(``HORIZON_SEMANTICS_DECISION_REQUIRED``) until manuscript Eq. (18) semantics
-are uniquely resolved.
-"""
+    Consumes only V2 formal scenario quantities (T_IB_A00 / D_OB / D_TX /
+    derived D_TO via ``M1V2Scenario``); legacy grids require explicit evaluation
+    opt-in.  The horizon layer itself stays gated
+    (``HORIZON_SEMANTICS_DECISION_REQUIRED``) until manuscript Eq. (18) semantics
+    are uniquely resolved.
+    """
     horizons = tuple(horizons)
-    allowed = set(FORMAL_FORECAST_HORIZONS_MINUTES) | set(EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES)
+    allowed = set(FORMAL_FORECAST_HORIZONS_MINUTES) | set(
+        EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES
+    )
     if not set(horizons) <= allowed:
         raise ValueError(f"UNKNOWN_FORECAST_HORIZON:{sorted(set(horizons) - allowed)}")
-    unknown=set(scenarios_by_horizon)-set(horizons)
-    if unknown:raise ValueError(f"UNKNOWN_FORECAST_HORIZON:{sorted(unknown)}")
-    rows=[]
+    unknown = set(scenarios_by_horizon) - set(horizons)
+    if unknown:
+        raise ValueError(f"UNKNOWN_FORECAST_HORIZON:{sorted(unknown)}")
+    rows = []
     for horizon in horizons:
-        scenarios=scenarios_by_horizon.get(horizon,())
-        for target,attribute in (
-            ("R_IB","r_ib_minutes"),
-            ("D_OB","d_ob_minutes"),
-            ("D_TX","d_tx_minutes"),
-            ("D_TO","d_to_minutes"),
+        scenarios = scenarios_by_horizon.get(horizon, ())
+        for target, attribute in (
+            ("R_IB", "r_ib_minutes"),
+            ("D_OB", "d_ob_minutes"),
+            ("D_TX", "d_tx_minutes"),
+            ("D_TO", "d_to_minutes"),
         ):
-            values=[getattr(row,attribute) for row in scenarios if getattr(row,attribute) is not None]
-            rows.append({"target_name":target,"horizon_minutes":horizon,"count":len(values),
-                "mean_minutes":float(np.mean(values)) if values else None,
-                "delay_probability":{str(t):float(np.mean([value>=t for value in values])) if values else None for t in thresholds}})
+            values = [
+                getattr(row, attribute)
+                for row in scenarios
+                if getattr(row, attribute) is not None
+            ]
+            rows.append(
+                {
+                    "target_name": target,
+                    "horizon_minutes": horizon,
+                    "count": len(values),
+                    "mean_minutes": float(np.mean(values)) if values else None,
+                    "delay_probability": {
+                        str(t): (
+                            float(np.mean([value >= t for value in values]))
+                            if values
+                            else None
+                        )
+                        for t in thresholds
+                    },
+                }
+            )
     return tuple(rows)

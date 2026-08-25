@@ -38,6 +38,7 @@ aggregate table (one record per route: route id + fingerprint over the
 route aggregate). The raw coupon files themselves are pinned by
 data2/manifests/data2_bts_2019_sha256.csv and the canonical rule D2-DB1B.
 """
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -107,7 +108,9 @@ class Data2PassengerReference:
         """Fit-window label for quality flags: H1 for the D2-10 variant, Q1 otherwise."""
         return "H1" if self.rule_id == H1_RULE_ID else "Q1"
 
-    def lookup(self, origin_airport_id: str, destination_airport_id: str) -> SupportedValue:
+    def lookup(
+        self, origin_airport_id: str, destination_airport_id: str
+    ) -> SupportedValue:
         """Frozen-reference lookup at decision time by directed route.
 
         Routes present in the official sample (Q1 or H1/Q1+Q2 fit window,
@@ -116,9 +119,12 @@ class Data2PassengerReference:
         never fabricated from a global statistic.
         """
         cell = next(
-            (item for item in self.cells
-             if item.origin_airport_id == origin_airport_id
-             and item.destination_airport_id == destination_airport_id),
+            (
+                item
+                for item in self.cells
+                if item.origin_airport_id == origin_airport_id
+                and item.destination_airport_id == destination_airport_id
+            ),
             None,
         )
         period = self._period_label()
@@ -222,7 +228,7 @@ def build_data2_passenger_reference(
     manifest_records: list[dict[str, Any]] = []
     total_passengers = 0.0
     total_sample_count = 0
-    for (origin, destination) in sorted(aggregates):
+    for origin, destination in sorted(aggregates):
         raw_sum = sum(aggregates[(origin, destination)])
         scaled = raw_sum * scale_factor
         n = sum(record_counts[(origin, destination)])
@@ -345,22 +351,14 @@ def data2_passenger_reference_from_payload(
         fit_period=_require(payload, "fit_period"),
         statistic_id=payload.get("statistic_id", STATISTIC_ID),
         scale_factor=int(payload.get("scale_factor", SCALE_FACTOR)),
-        minimum_support_rule=payload.get(
-            "minimum_support_rule", MINIMUM_SUPPORT_RULE
-        ),
-        fallback_hierarchy=tuple(
-            payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)
-        ),
-        applicability_scope=payload.get(
-            "applicability_scope", APPLICABILITY_SCOPE
-        ),
+        minimum_support_rule=payload.get("minimum_support_rule", MINIMUM_SUPPORT_RULE),
+        fallback_hierarchy=tuple(payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)),
+        applicability_scope=payload.get("applicability_scope", APPLICABILITY_SCOPE),
         total_passengers=float(_require(payload, "total_passengers")),
         total_sample_count=int(_require(payload, "total_sample_count")),
         route_count=int(payload.get("route_count", len(cells))),
         cells=cells,
         manifest_freeze_id=_require(payload, "manifest_freeze_id"),
         support_state=SupportState(_require(payload, "support_state")),
-        reason_code=payload.get(
-            "reason_code", "DB1B_COUPON_OFFICIAL_10PCT_X10"
-        ),
+        reason_code=payload.get("reason_code", "DB1B_COUPON_OFFICIAL_10PCT_X10"),
     )

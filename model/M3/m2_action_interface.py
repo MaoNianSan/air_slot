@@ -26,9 +26,7 @@ class M3BaselineCUQuantity(FrozenModel):
     value_cu: float | None
     native_support_state: SupportState
     support_state: SupportState
-    cu_artifact_id: str | None = Field(
-        default=None, pattern=r"^sha256:[0-9a-f]{64}$"
-    )
+    cu_artifact_id: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
     reference_lineage_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     reason_code: str | None = None
 
@@ -76,9 +74,15 @@ class M3BaselineConsequenceInput(FrozenModel):
             == len(CONSEQUENCE_COMPONENTS)
         ):
             raise ValueError("M3_BASELINE_COMPONENT_ARTIFACT_COUNT_MISMATCH")
-        if tuple(item.component_id for item in self.component_quantities) != CONSEQUENCE_COMPONENTS:
+        if (
+            tuple(item.component_id for item in self.component_quantities)
+            != CONSEQUENCE_COMPONENTS
+        ):
             raise ValueError("M3_BASELINE_COMPONENT_QUANTITY_ORDER_MISMATCH")
-        if tuple(item.cu_artifact_id for item in self.component_quantities) != self.cu_artifact_ids:
+        if (
+            tuple(item.cu_artifact_id for item in self.component_quantities)
+            != self.cu_artifact_ids
+        ):
             raise ValueError("M3_BASELINE_CU_ARTIFACT_LINEAGE_MISMATCH")
         if any(
             item.scenario_id != self.scenario_id
@@ -114,14 +118,10 @@ class ActionConditionedCUQuantity(FrozenModel):
     response_rule_id: str = Field(min_length=1)
     response_rule_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     response_source_type: str = Field(min_length=1)
-    baseline_reference_lineage_hash: str = Field(
-        pattern=r"^sha256:[0-9a-f]{64}$"
-    )
+    baseline_reference_lineage_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     response_provenance: tuple[str, ...] = Field(min_length=1)
     response_intensity: float | None = None
-    response_draw_id: str | None = Field(
-        default=None, pattern=r"^sha256:[0-9a-f]{64}$"
-    )
+    response_draw_id: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
     reason_code: str | None = None
 
     @model_validator(mode="after")
@@ -181,7 +181,10 @@ class M3ActionConditionedConsequence(FrozenModel):
 
     @model_validator(mode="after")
     def exact_action_conditioned_vector(self):
-        if tuple(item.component_id for item in self.component_quantities) != CONSEQUENCE_COMPONENTS:
+        if (
+            tuple(item.component_id for item in self.component_quantities)
+            != CONSEQUENCE_COMPONENTS
+        ):
             raise ValueError("M3_ACTION_INTERFACE_REQUIRES_EXACT_SEVEN_COMPONENTS")
         if any(
             item.scenario_id != self.scenario_id

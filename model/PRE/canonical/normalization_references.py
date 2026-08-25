@@ -7,11 +7,16 @@ from .normalization_common import deterministic_id, missing, number, provenance
 
 
 def canonicalize_airport_row(
-    row: dict[str, Any], *, dataset_instance_id: str = "data1_2019",
-    rule_id: str = "D1-OURAIRPORTS", logical_source: str = "ourairports",
+    row: dict[str, Any],
+    *,
+    dataset_instance_id: str = "data1_2019",
+    rule_id: str = "D1-OURAIRPORTS",
+    logical_source: str = "ourairports",
 ) -> AirportReference:
     ident = str(row.get("ident", "")).strip().upper()
-    iata = None if missing(row.get("iata_code")) else str(row["iata_code"]).strip().upper()
+    iata = (
+        None if missing(row.get("iata_code")) else str(row["iata_code"]).strip().upper()
+    )
     if not ident:
         raise ContractError("AIRPORT_IDENTITY_MISSING")
     raw_id = deterministic_id("raw", {"source": logical_source, "ident": ident})
@@ -27,8 +32,11 @@ def canonicalize_airport_row(
         "iata_code": iata,
         "latitude_deg": number(row.get("latitude_deg")),
         "longitude_deg": number(row.get("longitude_deg")),
-        "elevation_m": None if missing(row.get("elevation_ft"))
-        else float(row["elevation_ft"]) * 0.3048,
+        "elevation_m": (
+            None
+            if missing(row.get("elevation_ft"))
+            else float(row["elevation_ft"]) * 0.3048
+        ),
         "airport_type": row.get("type"),
         "event_time": None,
         "availability_time": None,
@@ -47,29 +55,32 @@ def canonicalize_timezone_row(row: dict[str, Any]) -> AirportReference:
     if not iata or not row.get("timezone"):
         raise ContractError("TIMEZONE_REFERENCE_IDENTITY_MISSING")
     raw_id = deterministic_id(
-        "raw", {"source": "timezone_reference", "iata": iata, "timezone": row["timezone"]}
+        "raw",
+        {"source": "timezone_reference", "iata": iata, "timezone": row["timezone"]},
     )
-    return AirportReference.model_validate({
-        "canonical_object_type": "AirportReference",
-        "dataset_instance_id": "data2_2019",
-        "canonical_record_id": deterministic_id(
-            "timezone", {"iata": iata, "timezone": row["timezone"]}
-        ),
-        "airport_id": iata,
-        "airport_id_namespace": "IATA",
-        "icao_code": ident or None,
-        "iata_code": iata,
-        "timezone": row["timezone"],
-        "event_time": None,
-        "availability_time": None,
-        "availability_basis": "REFERENCE_PERIOD",
-        "decision_time_role": "FROZEN_REFERENCE",
-        "provenance_rule_id": "D2-TIMEZONE",
-        "provenance": provenance(
-            "data2_2019", "timezone_reference", raw_id, "D2-TIMEZONE"
-        ),
-        "quality_flags": (),
-    })
+    return AirportReference.model_validate(
+        {
+            "canonical_object_type": "AirportReference",
+            "dataset_instance_id": "data2_2019",
+            "canonical_record_id": deterministic_id(
+                "timezone", {"iata": iata, "timezone": row["timezone"]}
+            ),
+            "airport_id": iata,
+            "airport_id_namespace": "IATA",
+            "icao_code": ident or None,
+            "iata_code": iata,
+            "timezone": row["timezone"],
+            "event_time": None,
+            "availability_time": None,
+            "availability_basis": "REFERENCE_PERIOD",
+            "decision_time_role": "FROZEN_REFERENCE",
+            "provenance_rule_id": "D2-TIMEZONE",
+            "provenance": provenance(
+                "data2_2019", "timezone_reference", raw_id, "D2-TIMEZONE"
+            ),
+            "quality_flags": (),
+        }
+    )
 
 
 def canonicalize_aggregate_row(
@@ -99,69 +110,86 @@ def canonicalize_aggregate_row(
     else:
         raise ContractError("AGGREGATE_SOURCE_UNSUPPORTED")
     record_id = deterministic_id(
-        "aggregate", {"source": source_family, "period": period, "join": join, "value": value}
+        "aggregate",
+        {"source": source_family, "period": period, "join": join, "value": value},
     )
     rule_id = f"D2-{source_family.split('_')[-1].upper()}"
     raw_id = deterministic_id(
         "raw", {"source": source_family, "period": period, "join": join, "value": value}
     )
-    return AggregateReference.model_validate({
-        "canonical_object_type": "AggregateReference",
-        "dataset_instance_id": dataset_instance_id,
-        "canonical_record_id": record_id,
-        "reference_name": source_family,
-        "grain": "origin_destination_period",
-        "join_key": join,
-        "reference_period": period,
-        "value": value,
-        "unit": unit,
-        "event_time": None,
-        "availability_time": None,
-        "availability_basis": "REFERENCE_PERIOD",
-        "provenance_rule_id": rule_id,
-        "quality_flags": (),
-        "decision_time_role": "FROZEN_REFERENCE",
-        "provenance": provenance(dataset_instance_id, source_family, raw_id, rule_id),
-    })
+    return AggregateReference.model_validate(
+        {
+            "canonical_object_type": "AggregateReference",
+            "dataset_instance_id": dataset_instance_id,
+            "canonical_record_id": record_id,
+            "reference_name": source_family,
+            "grain": "origin_destination_period",
+            "join_key": join,
+            "reference_period": period,
+            "value": value,
+            "unit": unit,
+            "event_time": None,
+            "availability_time": None,
+            "availability_basis": "REFERENCE_PERIOD",
+            "provenance_rule_id": rule_id,
+            "quality_flags": (),
+            "decision_time_role": "FROZEN_REFERENCE",
+            "provenance": provenance(
+                dataset_instance_id, source_family, raw_id, rule_id
+            ),
+        }
+    )
 
 
 def canonicalize_eurostat_payload(payload: dict[str, Any]) -> AggregateReference:
     if payload.get("class") != "dataset" or "value" not in payload:
         raise ContractError("EUROSTAT_JSON_STAT_SCHEMA_MISMATCH")
     period = next(
-        iter(payload.get("dimension", {}).get("time", {}).get("category", {}).get("index", {})),
+        iter(
+            payload.get("dimension", {})
+            .get("time", {})
+            .get("category", {})
+            .get("index", {})
+        ),
         "UNKNOWN",
     )
     record_id = deterministic_id(
         "aggregate",
-        {"source": payload.get("source"), "period": period, "updated": payload.get("updated")},
+        {
+            "source": payload.get("source"),
+            "period": period,
+            "updated": payload.get("updated"),
+        },
     )
     raw_id = deterministic_id(
-        "raw", {"source": "eurostat", "period": period, "updated": payload.get("updated")}
+        "raw",
+        {"source": "eurostat", "period": period, "updated": payload.get("updated")},
     )
-    return AggregateReference.model_validate({
-        "canonical_object_type": "AggregateReference",
-        "dataset_instance_id": "data1_2019",
-        "canonical_record_id": record_id,
-        "reference_name": payload.get("extension", {}).get(
-            "id", payload.get("label", "EUROSTAT")
-        ),
-        "grain": "json_stat_cube",
-        "join_key": {"dataset": payload.get("extension", {}).get("id", "UNKNOWN")},
-        "reference_period": period,
-        "value": {
-            "observations": len(payload.get("value", {})),
-            "source_updated": payload.get("updated"),
-        },
-        "unit": "source_defined_counts",
-        "event_time": None,
-        "availability_time": None,
-        "availability_basis": "REFERENCE_PERIOD",
-        "decision_time_role": "FROZEN_REFERENCE",
-        "provenance_rule_id": "D1-EUROSTAT",
-        "provenance": provenance("data1_2019", "eurostat", raw_id, "D1-EUROSTAT"),
-        "quality_flags": (),
-    })
+    return AggregateReference.model_validate(
+        {
+            "canonical_object_type": "AggregateReference",
+            "dataset_instance_id": "data1_2019",
+            "canonical_record_id": record_id,
+            "reference_name": payload.get("extension", {}).get(
+                "id", payload.get("label", "EUROSTAT")
+            ),
+            "grain": "json_stat_cube",
+            "join_key": {"dataset": payload.get("extension", {}).get("id", "UNKNOWN")},
+            "reference_period": period,
+            "value": {
+                "observations": len(payload.get("value", {})),
+                "source_updated": payload.get("updated"),
+            },
+            "unit": "source_defined_counts",
+            "event_time": None,
+            "availability_time": None,
+            "availability_basis": "REFERENCE_PERIOD",
+            "decision_time_role": "FROZEN_REFERENCE",
+            "provenance_rule_id": "D1-EUROSTAT",
+            "provenance": provenance("data1_2019", "eurostat", raw_id, "D1-EUROSTAT"),
+            "quality_flags": (),
+        }
+    )
 
 
 _EUROSTAT_PASSENGER_SLICE = {
@@ -206,28 +234,30 @@ def _eurostat_airport_month_record(
             "value": value,
         },
     )
-    return AggregateReference.model_validate({
-        "canonical_object_type": "AggregateReference",
-        "dataset_instance_id": "data1_2019",
-        "canonical_record_id": record_id,
-        "reference_name": "passenger_reference",
-        "grain": "airport_month",
-        "join_key": join,
-        "reference_period": period,
-        "value": value,
-        "unit": "passengers",
-        "event_time": None,
-        "availability_time": None,
-        "availability_basis": "REFERENCE_PERIOD",
-        "decision_time_role": "FROZEN_REFERENCE",
-        "provenance_rule_id": "D1-EUROSTAT",
-        "provenance": provenance("data1_2019", "eurostat", raw_id, "D1-EUROSTAT"),
-        "quality_flags": (),
-    })
+    return AggregateReference.model_validate(
+        {
+            "canonical_object_type": "AggregateReference",
+            "dataset_instance_id": "data1_2019",
+            "canonical_record_id": record_id,
+            "reference_name": "passenger_reference",
+            "grain": "airport_month",
+            "join_key": join,
+            "reference_period": period,
+            "value": value,
+            "unit": "passengers",
+            "event_time": None,
+            "availability_time": None,
+            "availability_basis": "REFERENCE_PERIOD",
+            "decision_time_role": "FROZEN_REFERENCE",
+            "provenance_rule_id": "D1-EUROSTAT",
+            "provenance": provenance("data1_2019", "eurostat", raw_id, "D1-EUROSTAT"),
+            "quality_flags": (),
+        }
+    )
 
 
 def canonicalize_eurostat_passengers_payload(
-    payload: dict[str, Any]
+    payload: dict[str, Any],
 ) -> tuple[AggregateReference, ...]:
     """Materialize the frozen monthly airport passenger slice."""
     if payload.get("class") != "dataset" or "value" not in payload:
@@ -239,7 +269,9 @@ def canonicalize_eurostat_passengers_payload(
     dimensions = payload.get("dimension", {})
     slice_positions: dict[str, int] = {}
     for dim_id, label in _EUROSTAT_PASSENGER_SLICE.items():
-        position = dimensions.get(dim_id, {}).get("category", {}).get("index", {}).get(label)
+        position = (
+            dimensions.get(dim_id, {}).get("category", {}).get("index", {}).get(label)
+        )
         if position is None:
             raise ContractError(f"EUROSTAT_SLICE_MISSING:{dim_id}:{label}")
         slice_positions[dim_id] = position
@@ -267,13 +299,12 @@ def canonicalize_eurostat_passengers_payload(
         remaining = index
         for position, dim_id in enumerate(dim_ids):
             stride = 1
-            for size in sizes[position + 1:]:
+            for size in sizes[position + 1 :]:
                 stride *= size
             decoded[dim_id] = remaining // stride
             remaining %= stride
         if any(
-            decoded[dim_id] != position
-            for dim_id, position in slice_positions.items()
+            decoded[dim_id] != position for dim_id, position in slice_positions.items()
         ):
             continue
         airport = airport_labels.get(decoded["rep_airp"])
@@ -281,10 +312,12 @@ def canonicalize_eurostat_passengers_payload(
         if airport is None or period is None:
             continue
         records.append(_eurostat_airport_month_record(airport, period, raw_value))
-    return tuple(sorted(
-        records,
-        key=lambda record: (
-            record.reference_period,
-            record.join_key.get("rep_airp", ""),
-        ),
-    ))
+    return tuple(
+        sorted(
+            records,
+            key=lambda record: (
+                record.reference_period,
+                record.join_key.get("rep_airp", ""),
+            ),
+        )
+    )

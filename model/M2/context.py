@@ -41,7 +41,6 @@ from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel, SupportedValue
 
-
 _EXP2_FIXED_SCOPE = (
     "F_continuity",
     "F_execution",
@@ -216,9 +215,7 @@ def build_m2_context(
         ),
         expected_downstream_exposure=_reference_value(
             "DATA2_DOWNSTREAM_EXPOSURE@1.0.0",
-            bundle.downstream_exposure.lookup(
-                airport_keys.connection_airport_id
-            ),
+            bundle.downstream_exposure.lookup(airport_keys.connection_airport_id),
             bundle.downstream_exposure,
         ),
         passenger_exposure=_reference_value(
@@ -264,9 +261,7 @@ def build_node_exposure_references(
         "DATA2_DOWNSTREAM_EXPOSURE@1.0.0:AIRPORT",
         bundle.downstream_exposure.lookup(airport_keys.connection_airport_id),
         bundle.downstream_exposure,
-    ).model_copy(
-        update={"support_level": ExposureSupportLevel.AIRPORT_REFERENCE}
-    )
+    ).model_copy(update={"support_level": ExposureSupportLevel.AIRPORT_REFERENCE})
     global_reference = ScientificContextValue(
         object_id="DATA2_DOWNSTREAM_EXPOSURE@1.0.0:GLOBAL",
         value=float(bundle.downstream_exposure.global_value_legs),

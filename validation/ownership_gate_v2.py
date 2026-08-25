@@ -9,7 +9,6 @@ from pathlib import Path
 from validation.code_size import audit_python_sizes
 from validation.dependency_rules import scan_dependency_boundaries
 
-
 RAW_SCHEMA_TOKENS = (
     "FlightDate",
     "Reporting_Airline",
@@ -136,14 +135,20 @@ def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
                 ]
                 if raw_imports:
                     findings.append(
-                        _finding(rel, "RAW_PREPROCESSING_IMPORT_OUTSIDE_PRE", ",".join(raw_imports))
+                        _finding(
+                            rel,
+                            "RAW_PREPROCESSING_IMPORT_OUTSIDE_PRE",
+                            ",".join(raw_imports),
+                        )
                     )
             for node in ast.walk(tree):
                 if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     continue
                 calls = _call_names(node)
-                if rel.startswith(("validation/", "exp/")) \
-                        and rel not in READ_ONLY_PRE_AUDIT_CONSUMERS:
+                if (
+                    rel.startswith(("validation/", "exp/"))
+                    and rel not in READ_ONLY_PRE_AUDIT_CONSUMERS
+                ):
                     owned_calls = sorted(calls & PRE_IMPLEMENTATION_CALLS)
                     if owned_calls:
                         findings.append(
@@ -153,11 +158,17 @@ def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
                                 f"{node.name}:{','.join(owned_calls)}",
                             )
                         )
-                if rel.startswith(("validation/", "exp/")) and node.name in MODEL_IMPLEMENTATION_NAMES:
+                if (
+                    rel.startswith(("validation/", "exp/"))
+                    and node.name in MODEL_IMPLEMENTATION_NAMES
+                ):
                     findings.append(
                         _finding(rel, "MODEL_HISTORY_LOGIC_OUTSIDE_M1", node.name)
                     )
-                if rel.startswith("validation/") and node.name in EXPERIMENT_IMPLEMENTATION_NAMES:
+                if (
+                    rel.startswith("validation/")
+                    and node.name in EXPERIMENT_IMPLEMENTATION_NAMES
+                ):
                     findings.append(
                         _finding(rel, "EXPERIMENT_LOGIC_OUTSIDE_EXP", node.name)
                     )
@@ -165,11 +176,15 @@ def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
                 functions = [
                     node.name
                     for node in tree.body
-                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+                    if isinstance(
+                        node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+                    )
                 ]
                 if set(functions) - {"main"}:
                     findings.append(
-                        _finding(rel, "VALIDATION_WRAPPER_NOT_THIN", ",".join(functions))
+                        _finding(
+                            rel, "VALIDATION_WRAPPER_NOT_THIN", ",".join(functions)
+                        )
                     )
     dependency_failures = [
         item for item in scan_dependency_boundaries(root) if item["status"] == "FAIL"
@@ -214,7 +229,9 @@ def main(argv=None) -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=Path("artifacts/diagnostics/v5_development_freeze/PRE_OWNERSHIP_GATE_V2.json"),
+        default=Path(
+            "artifacts/diagnostics/v5_development_freeze/PRE_OWNERSHIP_GATE_V2.json"
+        ),
     )
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parents[1]

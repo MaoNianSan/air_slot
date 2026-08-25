@@ -131,4 +131,4 @@ The current manuscript evaluation draft is aligned with that narrow non-causal/n
 
 ## Verification
 
-The focused tests under `tests/experiment/test_exp2/`, `tests/experiment/test_exp2_execution/`, and `tests/experiment/test_exp2_pipeline/` cover registry metadata, representation transformations, source lineage, artifact blocking, variant switching, the identical M3-to-M4 binding, metric lineage, and common result-schema compatibility. They use test fixtures only; they are engineering checks and do not test scientific superiority.
+The focused tests under `tests/experiments/test_exp2/`, `tests/experiments/test_exp2_execution/`, and `tests/experiments/test_exp2_pipeline/` cover registry metadata, representation transformations, source lineage, artifact blocking, variant switching, the identical M3-to-M4 binding, metric lineage, and common result-schema compatibility. They use test fixtures only; they are engineering checks and do not test scientific superiority.

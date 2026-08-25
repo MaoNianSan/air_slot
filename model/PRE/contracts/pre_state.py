@@ -68,9 +68,13 @@ class DecisionNodeRecord(FrozenModel):
             raise ValueError("information cutoff exceeds decision time")
         if self.status == "ABSTAINED":
             if self.formal_eligible or not self.node_invalidation_reason:
-                raise ValueError("node-level ABSTAINED requires ineligibility and reason")
+                raise ValueError(
+                    "node-level ABSTAINED requires ineligibility and reason"
+                )
         elif self.node_invalidation_reason is not None:
-            raise ValueError("constructed/requested node cannot carry invalidation reason")
+            raise ValueError(
+                "constructed/requested node cannot carry invalidation reason"
+            )
         return self
 
 
@@ -133,11 +137,15 @@ class ReferenceState(FrozenModel):
     @classmethod
     def typed_airport_reference(cls, entries):
         item = entries.get("airport_reference")
-        if item is not None and isinstance(item.value, dict) \
-                and set(item.value) == {"origin", "destination", "connection"}:
+        if (
+            item is not None
+            and isinstance(item.value, dict)
+            and set(item.value) == {"origin", "destination", "connection"}
+        ):
             entries = dict(entries)
-            entries["airport_reference"] = item.model_copy(update={
-                "value": KeyedAirportReference.model_validate(item.value)})
+            entries["airport_reference"] = item.model_copy(
+                update={"value": KeyedAirportReference.model_validate(item.value)}
+            )
         return entries
 
 

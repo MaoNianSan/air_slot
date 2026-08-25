@@ -15,7 +15,6 @@ from pydantic import Field, model_validator
 
 from model.common.value_objects import FrozenModel
 
-
 TAIL_CLASS_ID = "OVERFLOW_TAIL"
 ZERO_CLASS_ID = "ZERO"
 ABSTAIN_CLASS_ID = "ABSTAIN"
@@ -49,11 +48,18 @@ class TargetScenarioEnvelope(FrozenModel):
     @model_validator(mode="after")
     def validate_class_and_scalar(self):
         if self.class_id == ABSTAIN_CLASS_ID:
-            if self.class_index is not None or self.conditioning_index is not None or self.overflow:
+            if (
+                self.class_index is not None
+                or self.conditioning_index is not None
+                or self.overflow
+            ):
                 raise ValueError("M1_SCENARIO_ABSTAIN_CLASS_INVALID")
             if self.scalar_minutes is not None:
                 raise ValueError("M1_SCENARIO_ABSTAIN_SCALAR_MUST_BE_NULL")
-            if self.support_state != "ABSTAIN" or self.scalar_support_state != "ABSTAIN_UNSUPPORTED":
+            if (
+                self.support_state != "ABSTAIN"
+                or self.scalar_support_state != "ABSTAIN_UNSUPPORTED"
+            ):
                 raise ValueError("M1_SCENARIO_ABSTAIN_SUPPORT_INVALID")
             if self.source_role != "ABSTAIN":
                 raise ValueError("M1_SCENARIO_ABSTAIN_SOURCE_ROLE_INVALID")
@@ -81,7 +87,10 @@ class TargetScenarioEnvelope(FrozenModel):
                 raise ValueError("M1_SCENARIO_TAIL_SCALAR_MUST_BE_NULL")
             if self.scalar_support_state != "ABSTAIN_TAIL_CLASS":
                 raise ValueError("M1_SCENARIO_TAIL_SCALAR_SUPPORT_INVALID")
-            if self.source_role == "FACTUAL_OBSERVED" and self.raw_model_candidate_minutes is not None:
+            if (
+                self.source_role == "FACTUAL_OBSERVED"
+                and self.raw_model_candidate_minutes is not None
+            ):
                 raise ValueError("M1_SCENARIO_FACTUAL_TAIL_MODEL_CANDIDATE_FORBIDDEN")
         else:
             if self.overflow:
@@ -92,7 +101,11 @@ class TargetScenarioEnvelope(FrozenModel):
                 raise ValueError("M1_SCENARIO_FINITE_CLASS_INTERVAL_INVALID")
             if self.scalar_minutes is None:
                 raise ValueError("M1_SCENARIO_FINITE_CLASS_SCALAR_REQUIRED")
-            if not (self.class_lower_minutes <= self.scalar_minutes < self.class_upper_minutes):
+            if not (
+                self.class_lower_minutes
+                <= self.scalar_minutes
+                < self.class_upper_minutes
+            ):
                 raise ValueError("M1_SCENARIO_FINITE_CLASS_SCALAR_OUTSIDE_INTERVAL")
             if self.scalar_support_state != "SUPPORTED":
                 raise ValueError("M1_SCENARIO_FINITE_SCALAR_SUPPORT_INVALID")
@@ -104,9 +117,16 @@ class TargetScenarioEnvelope(FrozenModel):
         if self.source_role == "ABSTAIN":
             raise ValueError("M1_SCENARIO_SUPPORTED_CLASS_CANNOT_ABSTAIN_SOURCE")
         if self.target_name == "T_IB_A00":
-            if self.event_time_utc is None and self.source_role == "MODEL_DRAW" and not self.overflow:
+            if (
+                self.event_time_utc is None
+                and self.source_role == "MODEL_DRAW"
+                and not self.overflow
+            ):
                 raise ValueError("M1_SCENARIO_T_IB_EVENT_TIME_REQUIRED")
-            if self.source_role == "FACTUAL_OBSERVED" and self.raw_observed_time_utc is None:
+            if (
+                self.source_role == "FACTUAL_OBSERVED"
+                and self.raw_observed_time_utc is None
+            ):
                 raise ValueError("M1_SCENARIO_T_IB_RAW_TIME_REQUIRED")
         if self.source_role == "FACTUAL_OBSERVED":
             if self.target_name == "T_IB_A00":
@@ -151,7 +171,9 @@ class JointScenarioEnvelope(FrozenModel):
         if self.d_to_support == "SUPPORTED":
             if self.d_to_minutes is None:
                 raise ValueError("M1_SCENARIO_D_TO_VALUE_REQUIRED")
-            if any(item.scalar_support_state != "SUPPORTED" for item in self.targets[1:]):
+            if any(
+                item.scalar_support_state != "SUPPORTED" for item in self.targets[1:]
+            ):
                 raise ValueError("M1_SCENARIO_D_TO_REQUIRES_FINITE_DELAY_SCALARS")
             expected = self.targets[1].scalar_minutes + self.targets[2].scalar_minutes
             if abs(self.d_to_minutes - expected) > 1e-6:

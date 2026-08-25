@@ -132,15 +132,27 @@ class RMBMappingRegistry(FrozenModel):
             raise ValueError("RMB_MONETARY_GROUND_TRUTH_CLAIM_FORBIDDEN")
         if self.final_test_access_count != 0 or self.paper_full_run:
             raise ValueError("RMB_MAPPING_SAFETY_VIOLATION")
-        executable = self.status in {RMBMappingStatus.FROZEN, RMBMappingStatus.TEST_ONLY}
-        if executable and (not self.component_mappings or not self.freeze_id or not self.reference_period or not self.provenance):
+        executable = self.status in {
+            RMBMappingStatus.FROZEN,
+            RMBMappingStatus.TEST_ONLY,
+        }
+        if executable and (
+            not self.component_mappings
+            or not self.freeze_id
+            or not self.reference_period
+            or not self.provenance
+        ):
             raise ValueError("RMB_EXECUTABLE_MAPPING_REQUIRES_LINEAGE")
         if not executable and self.component_mappings:
             raise ValueError("RMB_UNFROZEN_MAPPING_MUST_HAVE_NO_RULES")
         if set(self.component_mappings) - set(CONSEQUENCE_COMPONENTS):
             raise ValueError("RMB_MAPPING_UNKNOWN_COMPONENT")
         for component, rule in self.component_mappings.items():
-            if component != rule.component_id or rule.constructed_unit_id != "RMB" or rule.input_unit_id != "CU":
+            if (
+                component != rule.component_id
+                or rule.constructed_unit_id != "RMB"
+                or rule.input_unit_id != "CU"
+            ):
                 raise ValueError("RMB_MAPPING_RULE_COMPONENT_MISMATCH")
         if self.registry_hash and self.registry_hash != self.digest():
             raise ValueError("RMB_MAPPING_REGISTRY_HASH_MISMATCH")
@@ -162,7 +174,9 @@ class RMBMappingRegistry(FrozenModel):
     def digest(self) -> str:
         return content_id(self.registry_payload())
 
-    def to_component_rmb(self, cu_by_component: Mapping[str, float]) -> dict[str, float] | None:
+    def to_component_rmb(
+        self, cu_by_component: Mapping[str, float]
+    ) -> dict[str, float] | None:
         if not self.executable:
             return None
         if set(cu_by_component) - set(CONSEQUENCE_COMPONENTS):
@@ -180,7 +194,9 @@ class RMBMappingRegistry(FrozenModel):
         return None if mapped is None else sum(mapped.values())
 
     @classmethod
-    def not_frozen(cls, *, registry_id: str = "RMB_NOT_FROZEN_V1") -> "RMBMappingRegistry":
+    def not_frozen(
+        cls, *, registry_id: str = "RMB_NOT_FROZEN_V1"
+    ) -> "RMBMappingRegistry":
         return cls(registry_id=registry_id)
 
 

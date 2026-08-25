@@ -196,8 +196,8 @@ Before any Exp2 execution, all of the following must be supplied and approved:
 
 | Check | Result |
 | --- | --- |
-| `python -m pytest tests/experiment/test_exp2 -q` | `PASS: 7 passed in 0.19s` |
-| `python -m compileall -q exp/exp2 tests/experiment/test_exp2` | `PASS` |
+| `python -m pytest tests/experiments/test_exp2 -q` | `PASS: 7 passed in 0.19s` |
+| `python -m compileall -q exp/exp2 tests/experiments/test_exp2` | `PASS` |
 | `git diff --check` | `PASS` |
 | `git status --short -- model PRE` | `PASS: no model/PRE worktree changes` |
 

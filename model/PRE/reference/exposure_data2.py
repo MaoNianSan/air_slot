@@ -28,6 +28,7 @@ DATA2_DOWNSTREAM_EXPOSURE@1.0.0 -> expected_downstream_exposure
 (FROZEN_REFERENCE) -> M2 (reference), M1 (floor boundary). data1
 EXPECTED_DOWNSTREAM_EXPOSURE@1.0.0 is untouched.
 """
+
 from __future__ import annotations
 
 from bisect import bisect_right
@@ -106,7 +107,9 @@ class Data2ExposureReference:
         a cell below min support fall back to the global median. Airports with
         no train evidence at all ABSTAIN (value None), never fabricated.
         """
-        cell = next((item for item in self.cells if item.airport_id == airport_id), None)
+        cell = next(
+            (item for item in self.cells if item.airport_id == airport_id), None
+        )
         if cell is None:
             return SupportedValue(
                 value=None,
@@ -175,7 +178,9 @@ def _flight_id(row: dict[str, Any]) -> str:
     return str(row.get("canonical_record_id") or row["flight_id"])
 
 
-def _schedule_groups(training_rows: list[dict[str, Any]]) -> dict[tuple[str, str], list[dict[str, Any]]]:
+def _schedule_groups(
+    training_rows: list[dict[str, Any]],
+) -> dict[tuple[str, str], list[dict[str, Any]]]:
     """Rows grouped by (namespace, aircraft), each sorted by CRS departure."""
     groups: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for row in training_rows:
@@ -380,22 +385,14 @@ def data2_downstream_exposure_from_payload(
         rule_version=_require(payload, "rule_version"),
         fit_period=_require(payload, "fit_period"),
         statistic_id=payload.get("statistic_id", STATISTIC_ID),
-        minimum_support_rule=payload.get(
-            "minimum_support_rule", MINIMUM_SUPPORT_RULE
-        ),
-        fallback_hierarchy=tuple(
-            payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)
-        ),
-        applicability_scope=payload.get(
-            "applicability_scope", APPLICABILITY_SCOPE
-        ),
+        minimum_support_rule=payload.get("minimum_support_rule", MINIMUM_SUPPORT_RULE),
+        fallback_hierarchy=tuple(payload.get("fallback_hierarchy", FALLBACK_HIERARCHY)),
+        applicability_scope=payload.get("applicability_scope", APPLICABILITY_SCOPE),
         horizon_minutes=int(payload.get("horizon_minutes", HORIZON_MINUTES)),
         global_value_legs=float(_require(payload, "global_value_legs")),
         global_sample_count=int(_require(payload, "global_sample_count")),
         cells=cells,
         manifest_freeze_id=_require(payload, "manifest_freeze_id"),
         support_state=SupportState(_require(payload, "support_state")),
-        reason_code=payload.get(
-            "reason_code", "CRS_SCHEDULE_EXPECTED_EXPOSURE"
-        ),
+        reason_code=payload.get("reason_code", "CRS_SCHEDULE_EXPECTED_EXPOSURE"),
     )

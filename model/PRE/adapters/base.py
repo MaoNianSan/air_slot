@@ -44,12 +44,15 @@ class CanonicalReadRequest(FrozenModel):
 class DatasetAdapter(Protocol):
     def describe(self) -> AdapterDescription: ...
     def capabilities(self) -> dict[str, str]: ...
-    def validate_source(self, request: SourceValidationRequest) -> SourceValidationReport: ...
+    def validate_source(
+        self, request: SourceValidationRequest
+    ) -> SourceValidationReport: ...
     def iter_canonical(self, request: CanonicalReadRequest) -> Iterator[Any]: ...
 
 
 class InterfaceOnlyAdapter:
     def iter_canonical(self, request: CanonicalReadRequest) -> Iterator[Any]:
         raise NotImplementedByScopeError(
-            f"production raw reader is not implemented for {request.source_family}")
+            f"production raw reader is not implemented for {request.source_family}"
+        )
         yield  # pragma: no cover

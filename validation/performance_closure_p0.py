@@ -30,7 +30,6 @@ from model.PRE.profiling import (
 )
 from model.PRE.streaming.data2 import registry_hash
 
-
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "artifacts" / "diagnostics" / "performance"
 FLOAT_TOLERANCE = {"rtol": 1e-6, "atol": 1e-7}
@@ -236,10 +235,12 @@ def _equivalence_payload(bundle, rows, examples):
         ),
         "split": tuple("train" for _ in examples),
         "labels": tuple(
-            tuple((name, example.labels[name]) for name in TARGETS) for example in examples
+            tuple((name, example.labels[name]) for name in TARGETS)
+            for example in examples
         ),
         "active_masks": tuple(
-            tuple((name, example.active[name]) for name in TARGETS) for example in examples
+            tuple((name, example.active[name]) for name in TARGETS)
+            for example in examples
         ),
         "support_states": tuple(support_states),
         "evidence_states": tuple(evidence_states),
@@ -287,11 +288,17 @@ def _run_profile(*, optimized: bool) -> ProfileResult:
         scientific, root=ROOT, profiler=profiler, optimized=optimized
     )
     rows = profiler.capture(
-        "episode_sequence_construction", lambda: _sequences(bundle), input_rows=bundle.decision_node_count
+        "episode_sequence_construction",
+        lambda: _sequences(bundle),
+        input_rows=bundle.decision_node_count,
     )
-    rows = profiler.capture("label_construction", lambda: _label_audit(rows), input_rows=len(rows))
+    rows = profiler.capture(
+        "label_construction", lambda: _label_audit(rows), input_rows=len(rows)
+    )
     normalization, examples = profiler.capture(
-        "tensor_conversion", lambda: _encode_examples(rows, scientific), input_rows=len(rows)
+        "tensor_conversion",
+        lambda: _encode_examples(rows, scientific),
+        input_rows=len(rows),
     )
     equivalence = _equivalence_payload(bundle, rows, examples)
     cache_smoke = None
@@ -317,7 +324,9 @@ def _run_profile(*, optimized: bool) -> ProfileResult:
                 input_rows=len(examples),
             )
             logical_hash = profiler.capture(
-                "hashing", lambda: _stable_store_hash(cache.store), input_rows=len(examples)
+                "hashing",
+                lambda: _stable_store_hash(cache.store),
+                input_rows=len(examples),
             )
             loaded = M1DevelopmentBaseCache.load(
                 data_path, manifest_path, expected_cache_key=manifest["cache_key"]
@@ -327,7 +336,9 @@ def _run_profile(*, optimized: bool) -> ProfileResult:
                 and left.labels == right.labels
                 and left.active == right.active
                 and left.decision_node_id == right.decision_node_id
-                for left, right in zip(cache.partition("train"), loaded.partition("train"))
+                for left, right in zip(
+                    cache.partition("train"), loaded.partition("train")
+                )
             )
             cache_smoke = {
                 "schema_version": "AIR_SLOT_M1_BASE_CACHE_SMOKE_V1",
@@ -346,11 +357,17 @@ def _run_profile(*, optimized: bool) -> ProfileResult:
             )
     summary = profiler.summary()
     ranked = sorted(
-        summary["stages"].items(), key=lambda item: item[1]["wall_seconds"], reverse=True
+        summary["stages"].items(),
+        key=lambda item: item[1]["wall_seconds"],
+        reverse=True,
     )
     profile = {
         "schema_version": "AIR_SLOT_DATA_PREP_PROFILE_V3",
-        "profile_kind": "OPTIMIZED_P0_FIXED_REAL_SUBSET" if optimized else "BEFORE_P0_FIXED_REAL_SUBSET",
+        "profile_kind": (
+            "OPTIMIZED_P0_FIXED_REAL_SUBSET"
+            if optimized
+            else "BEFORE_P0_FIXED_REAL_SUBSET"
+        ),
         "paper_result": False,
         "profile_scope": f"{PROFILE_MONTH}:first_{ROW_LIMIT}_projected_rows:{bundle.airport}:{EPISODE_LIMIT}_episodes",
         "profile_input_hash": bundle.profile_input_hash,
@@ -416,7 +433,10 @@ def _training_smoke(examples, scientific, normalization) -> dict:
         normalization=normalization,
         hidden_size=16,
     )
-    initial = {name: value.detach().clone() for name, value in template.model.state_dict().items()}
+    initial = {
+        name: value.detach().clone()
+        for name, value in template.model.state_dict().items()
+    }
     full = M1Pipeline.from_scientific_config(
         scientific,
         input_size=selected[0].values.shape[1],
@@ -440,9 +460,14 @@ def _training_smoke(examples, scientific, normalization) -> dict:
     )
     parameter_max_abs = max(
         float((left - right).abs().max())
-        for left, right in zip(full.model.state_dict().values(), micro.model.state_dict().values())
+        for left, right in zip(
+            full.model.state_dict().values(), micro.model.state_dict().values()
+        )
     )
-    passed = abs(full_history[0]["loss"] - micro_history[0]["loss"]) <= 1e-5 and parameter_max_abs <= 1e-5
+    passed = (
+        abs(full_history[0]["loss"] - micro_history[0]["loss"]) <= 1e-5
+        and parameter_max_abs <= 1e-5
+    )
     return {
         "schema_version": "AIR_SLOT_M1_MICROBATCH_SMOKE_V1",
         "status": "PASS" if passed else "FAIL",

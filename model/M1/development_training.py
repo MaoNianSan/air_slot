@@ -53,7 +53,6 @@ from .preparation import (
 )
 from .scenarios import required_observations_v2
 
-
 ARTIFACT_ID = "DATA2_M1_V2_DEVELOPMENT_FAST"
 CHECKPOINT_NAME = f"{ARTIFACT_ID}.pt"
 MANIFEST_NAME = f"{ARTIFACT_ID}_MANIFEST.json"
@@ -73,7 +72,8 @@ def _write_json(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8",
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
     )
     temporary.replace(path)
 
@@ -122,71 +122,94 @@ def _load_pilot(root: Path, config: dict) -> tuple[dict, tuple[EpisodeRecord, ..
 def _load_references(root: Path):
     directory = root / REFERENCE_ROOT
     taxi_payload = json.loads(
-        (directory / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json")
-        .read_text(encoding="utf-8")
+        (directory / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json").read_text(
+            encoding="utf-8"
+        )
     )
     turnaround_payload = json.loads(
-        (directory / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json")
-        .read_text(encoding="utf-8")
+        (directory / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json").read_text(
+            encoding="utf-8"
+        )
     )
     taxi = data2_taxi_reference_from_payload(taxi_payload)
     turnaround = data2_turnaround_reference_from_payload(turnaround_payload)
-    return taxi, turnaround, {
-        "taxi_reference_id": taxi.reference_id,
-        "taxi_reference_hash": taxi.manifest_freeze_id,
-        "taxi_artifact_hash": taxi_payload.get("artifact_hash"),
-        "turnaround_reference_id": turnaround.reference_id,
-        "turnaround_reference_hash": turnaround.manifest_freeze_id,
-        "turnaround_artifact_hash": turnaround_payload.get("artifact_hash"),
-    }
+    return (
+        taxi,
+        turnaround,
+        {
+            "taxi_reference_id": taxi.reference_id,
+            "taxi_reference_hash": taxi.manifest_freeze_id,
+            "taxi_artifact_hash": taxi_payload.get("artifact_hash"),
+            "turnaround_reference_id": turnaround.reference_id,
+            "turnaround_reference_hash": turnaround.manifest_freeze_id,
+            "turnaround_artifact_hash": turnaround_payload.get("artifact_hash"),
+        },
+    )
 
 
 def _contract_hashes(root: Path, scientific) -> dict[str, str]:
-    episode_hash = content_id({
-        "builder": _hash_file(root / "model/PRE/episode/builder.py"),
-        "node_builder": _hash_file(root / "model/PRE/episode/node_builder.py"),
-    })
+    episode_hash = content_id(
+        {
+            "builder": _hash_file(root / "model/PRE/episode/builder.py"),
+            "node_builder": _hash_file(root / "model/PRE/episode/node_builder.py"),
+        }
+    )
     return {
-        "PRE_contract_hash": content_id({
-            "pipeline": _hash_file(root / "model/PRE/pipeline.py"),
-            "mapping": _hash_file(root / "model/PRE/mapping.py"),
-        }),
+        "PRE_contract_hash": content_id(
+            {
+                "pipeline": _hash_file(root / "model/PRE/pipeline.py"),
+                "mapping": _hash_file(root / "model/PRE/mapping.py"),
+            }
+        ),
         "episode_contract_hash": episode_hash,
         "episode_construction_hash": episode_hash,
-        "feature_contract_hash": content_id({
-            "encoder": _hash_file(root / "model/M1/data.py"),
-            "preparation": _hash_file(root / "model/M1/preparation.py"),
-            "feature_names": FEATURE_NAMES_V2,
-            "static_feature_names": STATIC_FEATURE_NAMES,
-        }),
-        "split_contract_hash": content_id({
-            "partitions": {
-                "train": ["2019-01-01", "2019-06-30"],
-                "calibration": ["2019-07-01", "2019-07-31"],
-                "development": ["2019-08-01", "2019-09-30"],
-            },
-        }),
-        "roll_contract_hash": content_id({
-            "roll_minutes": scientific.parameters["roll_minutes"].value,
-            "node_builder": _hash_file(root / "model/PRE/episode/node_builder.py"),
-        }),
-        "normalization_contract_hash": content_id({
-            "fit_code": _hash_file(root / "model/M1/data.py"),
-            "fitted_split": "train",
-            "normalized_names": tuple(sorted(FEATURE_NAMES_V2)),
-        }),
+        "feature_contract_hash": content_id(
+            {
+                "encoder": _hash_file(root / "model/M1/data.py"),
+                "preparation": _hash_file(root / "model/M1/preparation.py"),
+                "feature_names": FEATURE_NAMES_V2,
+                "static_feature_names": STATIC_FEATURE_NAMES,
+            }
+        ),
+        "split_contract_hash": content_id(
+            {
+                "partitions": {
+                    "train": ["2019-01-01", "2019-06-30"],
+                    "calibration": ["2019-07-01", "2019-07-31"],
+                    "development": ["2019-08-01", "2019-09-30"],
+                },
+            }
+        ),
+        "roll_contract_hash": content_id(
+            {
+                "roll_minutes": scientific.parameters["roll_minutes"].value,
+                "node_builder": _hash_file(root / "model/PRE/episode/node_builder.py"),
+            }
+        ),
+        "normalization_contract_hash": content_id(
+            {
+                "fit_code": _hash_file(root / "model/M1/data.py"),
+                "fitted_split": "train",
+                "normalized_names": tuple(sorted(FEATURE_NAMES_V2)),
+            }
+        ),
     }
 
 
-def _cache_equivalence(fresh: M1DevelopmentBaseCache, loaded: M1DevelopmentBaseCache) -> dict:
+def _cache_equivalence(
+    fresh: M1DevelopmentBaseCache, loaded: M1DevelopmentBaseCache
+) -> dict:
     left, right = fresh.store, loaded.store
-    tensors_equal = all(torch.equal(a, b) for a, b in (
-        (left.values_flat, right.values_flat),
-        (left.episode_offsets, right.episode_offsets),
-        (left.sample_episode_indices, right.sample_episode_indices),
-        (left.sample_start_offsets, right.sample_start_offsets),
-        (left.sample_end_offsets, right.sample_end_offsets),
-    ))
+    tensors_equal = all(
+        torch.equal(a, b)
+        for a, b in (
+            (left.values_flat, right.values_flat),
+            (left.episode_offsets, right.episode_offsets),
+            (left.sample_episode_indices, right.sample_episode_indices),
+            (left.sample_start_offsets, right.sample_start_offsets),
+            (left.sample_end_offsets, right.sample_end_offsets),
+        )
+    )
     static_equal = (
         left.static_values is not None
         and right.static_values is not None
@@ -238,21 +261,29 @@ def _build_or_load_cache(
     if data_path.is_file() and manifest_path.is_file():
         try:
             loaded = M1DevelopmentBaseCache.load(
-                data_path, manifest_path, expected_cache_key=key,
+                data_path,
+                manifest_path,
+                expected_cache_key=key,
             )
-            return loaded, None, {
-                "status": "HIT",
-                "cache_key": key,
-                "cache_hash": loaded.manifest["cache_hash"],
-                "cache_miss_to_hit_equivalence": loaded.manifest.get(
-                    "cache_miss_to_hit_equivalence", "PREVIOUSLY_VERIFIED"
-                ),
-            }
+            return (
+                loaded,
+                None,
+                {
+                    "status": "HIT",
+                    "cache_key": key,
+                    "cache_hash": loaded.manifest["cache_hash"],
+                    "cache_miss_to_hit_equivalence": loaded.manifest.get(
+                        "cache_miss_to_hit_equivalence", "PREVIOUSLY_VERIFIED"
+                    ),
+                },
+            )
         except ValueError:
             pass
 
     preparation_state = root / REFERENCE_ROOT / "M1_BASE_CACHE_PREPARATION_STATE.pt"
-    preparation_manifest = root / REFERENCE_ROOT / "M1_BASE_CACHE_PREPARATION_PROGRESS.json"
+    preparation_manifest = (
+        root / REFERENCE_ROOT / "M1_BASE_CACHE_PREPARATION_PROGRESS.json"
+    )
     state_mtime = preparation_state.stat().st_mtime_ns
     cohorts = build_sampled_pre_cohorts(
         scientific,
@@ -270,7 +301,8 @@ def _build_or_load_cache(
     stages = {}
     for split in ("train", "calibration", "development"):
         rows[split], stages[split] = active_rows(
-            getattr(cohorts, split), taxi_reference=taxi_reference,
+            getattr(cohorts, split),
+            taxi_reference=taxi_reference,
         )
     normalization = fit_train_normalization(
         normalization_rows([prefix for _, prefix, _ in rows["train"]]),
@@ -279,14 +311,17 @@ def _build_or_load_cache(
     static_normalization = fit_static_normalization_from_rows(rows["train"])
     partitions = {
         split: build_training_examples(
-            rows[split], normalization, None,
+            rows[split],
+            normalization,
+            None,
             static_normalization=static_normalization,
         )
         for split in rows
     }
     if any(
         row.static_values is None or row.static_context_lineage is None
-        for values in partitions.values() for row in values
+        for values in partitions.values()
+        for row in values
     ):
         raise ValueError("M1_V2_FAST_STATIC_CONTEXT_INCOMPLETE")
     audit = {
@@ -310,7 +345,9 @@ def _build_or_load_cache(
     )
     manifest = fresh.save(data_path, manifest_path)
     loaded = M1DevelopmentBaseCache.load(
-        data_path, manifest_path, expected_cache_key=key,
+        data_path,
+        manifest_path,
+        expected_cache_key=key,
     )
     equivalence = _cache_equivalence(fresh, loaded)
     if equivalence["status"] != "PASS":
@@ -318,14 +355,20 @@ def _build_or_load_cache(
     manifest = {**manifest, "cache_miss_to_hit_equivalence": equivalence}
     _write_json(manifest_path, manifest)
     loaded = M1DevelopmentBaseCache.load(
-        data_path, manifest_path, expected_cache_key=key,
+        data_path,
+        manifest_path,
+        expected_cache_key=key,
     )
-    return loaded, cohorts, {
-        "status": "MISS_BUILT_THEN_HIT",
-        "cache_key": key,
-        "cache_hash": manifest["cache_hash"],
-        "cache_miss_to_hit_equivalence": equivalence,
-    }
+    return (
+        loaded,
+        cohorts,
+        {
+            "status": "MISS_BUILT_THEN_HIT",
+            "cache_key": key,
+            "cache_hash": manifest["cache_hash"],
+            "cache_miss_to_hit_equivalence": equivalence,
+        },
+    )
 
 
 def _subset(cache, split: str, pilot_ids: set[str], representation: str):
@@ -333,15 +376,13 @@ def _subset(cache, split: str, pilot_ids: set[str], representation: str):
     if representation == "FIXED_HISTORY":
         kwargs["window_minutes"] = 30
     return tuple(
-        row for row in cache.partition(split, **kwargs)
-        if row.episode_id in pilot_ids
+        row for row in cache.partition(split, **kwargs) if row.episode_id in pilot_ids
     )
 
 
 def _logit_equivalence(before: dict, after: dict) -> dict:
     differences = {
-        name: float((before[name] - after[name]).abs().max())
-        for name in before
+        name: float((before[name] - after[name]).abs().max()) for name in before
     }
     passed = all(value <= 1e-5 for value in differences.values())
     return {
@@ -365,15 +406,28 @@ def _baseline_diagnostics(pipeline, train, calibration, pilot, config) -> dict:
         )
 
         def arrays(examples):
-            x = torch.stack([fast_features_from_sequence(
-                row.values.unsqueeze(0), torch.tensor([len(row.values)]),
-            )[0] for row in examples]).numpy()
+            x = torch.stack(
+                [
+                    fast_features_from_sequence(
+                        row.values.unsqueeze(0),
+                        torch.tensor([len(row.values)]),
+                    )[0]
+                    for row in examples
+                ]
+            ).numpy()
             static = torch.stack([row.static_values for row in examples]).numpy()
             targets = {
-                name: np.asarray([
-                    np.nan if row.targets.get(name) is None else float(row.targets[name])
-                    for row in examples
-                ], dtype=float)
+                name: np.asarray(
+                    [
+                        (
+                            np.nan
+                            if row.targets.get(name) is None
+                            else float(row.targets[name])
+                        )
+                        for row in examples
+                    ],
+                    dtype=float,
+                )
                 for name in V2_TARGETS
             }
             active = {
@@ -384,7 +438,8 @@ def _baseline_diagnostics(pipeline, train, calibration, pilot, config) -> dict:
 
         train_x, train_static, train_targets, _ = arrays(train)
         predictor.fit(
-            train_x, train_targets,
+            train_x,
+            train_targets,
             seed=int(config["training"]["seed"]),
             n_estimators=int(config["baselines"]["lightgbm_estimators"]),
             allow_test_only_surrogate=False,
@@ -400,16 +455,17 @@ def _baseline_diagnostics(pipeline, train, calibration, pilot, config) -> dict:
             split="calibration",
         )
         metrics = evaluate_fast_predictor(
-            predictor, pilot,
+            predictor,
+            pilot,
             batch_size=int(config["training"]["batch_size"]),
         )
         result["LIGHTGBM_FAST"] = {
             "status": "EXECUTED_DEVELOPMENT_FAST_DIAGNOSTIC",
             "metrics": {key: value for key, value in metrics.items() if key != "nodes"},
             "calibration_temperatures": predictor.calibration_temperatures,
-            "test_only_surrogates": predictor.models[
-                M1_V2_HAZARD_COORDINATE
-            ]["test_only_surrogates"],
+            "test_only_surrogates": predictor.models[M1_V2_HAZARD_COORDINATE][
+                "test_only_surrogates"
+            ],
         }
     except Exception as exc:
         result["LIGHTGBM_FAST"] = {
@@ -421,7 +477,11 @@ def _baseline_diagnostics(pipeline, train, calibration, pilot, config) -> dict:
 
 
 def _scenario_attempt(
-    lifecycle, cohorts, pilot_ids: set[str], config, artifact_root: Path,
+    lifecycle,
+    cohorts,
+    pilot_ids: set[str],
+    config,
+    artifact_root: Path,
     taxi_reference,
 ):
     if cohorts is None:
@@ -431,7 +491,8 @@ def _scenario_attempt(
             "attempt_scope": "FORMAL_V2_PATH_CONTRACT_CONFIRMED_CACHE_HIT",
         }
     prepared = {
-        item.episode.episode_id: item for item in cohorts.development
+        item.episode.episode_id: item
+        for item in cohorts.development
         if item.episode.episode_id in pilot_ids
     }
     rows, _ = active_rows(
@@ -448,15 +509,23 @@ def _scenario_attempt(
             observed = {}
             item = prepared[episode.episode_id]
             if "T_IB_A00" in required:
-                observed["T_IB_A00"] = item.predecessor_outcome.actual_arrival_utc.isoformat()
+                observed["T_IB_A00"] = (
+                    item.predecessor_outcome.actual_arrival_utc.isoformat()
+                )
             if "D_OB" in required:
-                observed["D_OB"] = max(0.0, (
-                    item.successor_outcome.actual_departure_utc
-                    - item.successor_schedule.scheduled_departure_utc
-                ).total_seconds() / 60.0)
+                observed["D_OB"] = max(
+                    0.0,
+                    (
+                        item.successor_outcome.actual_departure_utc
+                        - item.successor_schedule.scheduled_departure_utc
+                    ).total_seconds()
+                    / 60.0,
+                )
             values = encode_pre_sequence(prefix, lifecycle.pipeline.normalization)
             generated = lifecycle.sample(
-                state, values.unsqueeze(0), torch.tensor([len(values)]),
+                state,
+                values.unsqueeze(0),
+                torch.tensor([len(values)]),
                 observed=observed,
                 count=int(config["scenario_attempt"]["count_per_node"]),
                 seed=int(config["training"]["seed"]),
@@ -507,14 +576,23 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     )
     if hidden_size not in hidden_candidates:
         raise ValueError("M1_V2_FAST_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES")
-    torch.set_num_threads(min(
-        int(config["training"]["torch_threads"]), torch.get_num_threads(),
-    ))
+    torch.set_num_threads(
+        min(
+            int(config["training"]["torch_threads"]),
+            torch.get_num_threads(),
+        )
+    )
     pilot, pilot_episodes = _load_pilot(root, config)
     pilot_ids = set(pilot["episode_ids"])
     taxi, turnaround, references = _load_references(root)
     cache, cohorts, cache_status = _build_or_load_cache(
-        root, artifact_root, config, scientific, pilot_episodes, taxi, turnaround,
+        root,
+        artifact_root,
+        config,
+        scientific,
+        pilot_episodes,
+        taxi,
+        turnaround,
     )
     train = tuple(cache.partition("train"))
     calibration = tuple(cache.partition("calibration"))
@@ -538,7 +616,9 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     lifecycle = M1Lifecycle(pipeline, device=str(config["training"]["device"]))
     batch_size = int(config["training"]["batch_size"])
     batching = lifecycle.batching_diagnostics(
-        train, batch_size=batch_size, bucketed=True,
+        train,
+        batch_size=batch_size,
+        bucketed=True,
     )
     training_started = time.perf_counter()
     history = lifecycle.train(
@@ -557,13 +637,19 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
 
     predictive = {
         "ADAPTIVE_HISTORY": evaluate_lifecycle(
-            lifecycle, pilot_adaptive, batch_size=batch_size,
+            lifecycle,
+            pilot_adaptive,
+            batch_size=batch_size,
         ),
         "CURRENT": evaluate_lifecycle(
-            lifecycle, pilot_current, batch_size=batch_size,
+            lifecycle,
+            pilot_current,
+            batch_size=batch_size,
         ),
         "FIXED_HISTORY_30": evaluate_lifecycle(
-            lifecycle, pilot_fixed, batch_size=batch_size,
+            lifecycle,
+            pilot_fixed,
+            batch_size=batch_size,
         ),
     }
     predictive["CURRENT"]["paired_difference_from_adaptive_minutes"] = (
@@ -571,18 +657,25 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     )
     predictive["FIXED_HISTORY_30"]["paired_difference_from_adaptive_minutes"] = (
         paired_state_difference(
-            predictive["ADAPTIVE_HISTORY"], predictive["FIXED_HISTORY_30"],
+            predictive["ADAPTIVE_HISTORY"],
+            predictive["FIXED_HISTORY_30"],
         )
     )
     predictive["ADAPTIVE_HISTORY"]["paired_difference_from_adaptive_minutes"] = 0.0
     baselines = _baseline_diagnostics(
-        pipeline, train, calibration, pilot_adaptive, config,
+        pipeline,
+        train,
+        calibration,
+        pilot_adaptive,
+        config,
     )
 
     deterministic_batch = pilot_adaptive[: min(16, len(pilot_adaptive))]
     lifecycle.pipeline.model.eval()
     before, _, _, _ = lifecycle.batched_logits(
-        deterministic_batch, batch_size=batch_size, teacher_forcing=False,
+        deterministic_batch,
+        batch_size=batch_size,
+        teacher_forcing=False,
     )
     checkpoint_path = artifact_root / CHECKPOINT_NAME
     lifecycle.save(checkpoint_path)
@@ -590,14 +683,21 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     loaded = M1Lifecycle.load(checkpoint_path, device=str(lifecycle.device))
     loaded.pipeline.model.eval()
     after, _, _, _ = loaded.batched_logits(
-        deterministic_batch, batch_size=batch_size, teacher_forcing=False,
+        deterministic_batch,
+        batch_size=batch_size,
+        teacher_forcing=False,
     )
     save_load = _logit_equivalence(before, after)
     if save_load["status"] != "PASS":
         raise ValueError("M1_V2_FAST_CHECKPOINT_RELOAD_MISMATCH")
 
     scenario_status = _scenario_attempt(
-        loaded, cohorts, pilot_ids, config, artifact_root, taxi,
+        loaded,
+        cohorts,
+        pilot_ids,
+        config,
+        artifact_root,
+        taxi,
     )
     diagnostics_payload = {
         "schema_version": "AIR_SLOT_M1_V2_DEVELOPMENT_FAST_DIAGNOSTICS_V1",
@@ -620,13 +720,17 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     _write_json(diagnostics_path, diagnostics_payload)
 
     git_sha = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=root, text=True,
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        text=True,
     ).strip()
     input_schema_hash = content_id({"feature_names": FEATURE_NAMES_V2})
-    static_schema_hash = content_id({
-        "feature_names": STATIC_FEATURE_NAMES,
-        "context_schema": M1StaticReferenceContext.model_json_schema(),
-    })
+    static_schema_hash = content_id(
+        {
+            "feature_names": STATIC_FEATURE_NAMES,
+            "context_schema": M1StaticReferenceContext.model_json_schema(),
+        }
+    )
     normalization_hash = content_id(cache.normalization.model_dump(mode="json"))
     manifest = {
         "schema_version": "AIR_SLOT_M1_V2_DEVELOPMENT_FAST_MANIFEST_V1",
@@ -711,6 +815,9 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
 
 
 __all__ = [
-    "ARTIFACT_ID", "CHECKPOINT_NAME", "DIAGNOSTICS_NAME", "MANIFEST_NAME",
+    "ARTIFACT_ID",
+    "CHECKPOINT_NAME",
+    "DIAGNOSTICS_NAME",
+    "MANIFEST_NAME",
     "run_data2_development_fast",
 ]

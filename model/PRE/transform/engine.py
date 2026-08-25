@@ -85,7 +85,9 @@ def derive_scientific_object(
     evidence = _weakest_evidence((parent_evidence, rule.evidence_class))
     support = (
         SupportState.DEGRADED
-        if any(parent.support_state is SupportState.DEGRADED for parent in parents.values())
+        if any(
+            parent.support_state is SupportState.DEGRADED for parent in parents.values()
+        )
         else SupportState.SUPPORTED
     )
     reason = "PARENT_SUPPORT_DEGRADED" if support is SupportState.DEGRADED else None
@@ -113,7 +115,6 @@ def derive_scientific_object(
         availability_basis=rule.availability_basis,
         provenance=provenance,
     )
-
 
 
 def build_reference_fit_manifest(

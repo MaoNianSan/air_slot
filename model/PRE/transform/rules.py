@@ -8,6 +8,7 @@ from .contracts import (
     TransformationStatus,
 )
 
+
 def current_transformation_registry() -> TransformationRegistry:
     """Typed boundary for existing objects; candidate rules remain non-executable."""
     rules = (
@@ -107,9 +108,16 @@ def current_transformation_registry() -> TransformationRegistry:
             version="1.0.0",
             construction_type=ConstructionType.RELATIONAL_DERIVATION,
             input_object_types=("OperationalEventRecord", "FlightRecord"),
-            input_fields=("aircraft_id", "flight_id", "event_type", "event_time",
-                          "event_time_lower", "event_time_upper",
-                          "event_start_time", "event_end_time"),
+            input_fields=(
+                "aircraft_id",
+                "flight_id",
+                "event_type",
+                "event_time",
+                "event_time_lower",
+                "event_time_upper",
+                "event_start_time",
+                "event_end_time",
+            ),
             relation_keys=("flight_id", "aircraft_id"),
             temporal_rule="EVENT_WITHIN_FLIGHT_INTERVAL_ORDERED",
             formula_or_algorithm="TRAJECTORY_EVENT_PREFERRED_FLIGHTLIST_PROXY_FALLBACK",
@@ -117,7 +125,10 @@ def current_transformation_registry() -> TransformationRegistry:
             output_unit="UTC",
             evidence_rule="DERIVED_FROM_TRAJECTORY_OR_PROXY",
             support_rule="TRAJECTORY_PREFERRED_PROXY_DEGRADED",
-            consumer_roles=(DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME),
+            consumer_roles=(
+                DecisionTimeRole.TRAIN_LABEL,
+                DecisionTimeRole.EVAL_OUTCOME,
+            ),
             availability_basis=AvailabilityBasis.POSTHOC_ONLY,
             evidence_class=EvidenceClass.DERIVED,
             support_ceiling=EvidenceClass.DERIVED,
@@ -128,9 +139,16 @@ def current_transformation_registry() -> TransformationRegistry:
             version="1.0.0",
             construction_type=ConstructionType.RELATIONAL_DERIVATION,
             input_object_types=("OperationalEventRecord", "FlightRecord"),
-            input_fields=("aircraft_id", "flight_id", "event_type", "event_time",
-                          "event_time_lower", "event_time_upper",
-                          "event_start_time", "event_end_time"),
+            input_fields=(
+                "aircraft_id",
+                "flight_id",
+                "event_type",
+                "event_time",
+                "event_time_lower",
+                "event_time_upper",
+                "event_start_time",
+                "event_end_time",
+            ),
             relation_keys=("flight_id", "aircraft_id"),
             temporal_rule="EVENT_WITHIN_FLIGHT_INTERVAL_ORDERED",
             formula_or_algorithm="OUT_BLOCK_TAKEOFF_PAIR_ONLY",
@@ -138,13 +156,15 @@ def current_transformation_registry() -> TransformationRegistry:
             output_unit="minutes",
             evidence_rule="DERIVED_FROM_TRAJECTORY_PAIR",
             support_rule="TRAJECTORY_PAIR_REQUIRED_PROXY_UNSUPPORTED",
-            consumer_roles=(DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME),
+            consumer_roles=(
+                DecisionTimeRole.TRAIN_LABEL,
+                DecisionTimeRole.EVAL_OUTCOME,
+            ),
             availability_basis=AvailabilityBasis.POSTHOC_ONLY,
             evidence_class=EvidenceClass.DERIVED,
             support_ceiling=EvidenceClass.DERIVED,
             status=TransformationStatus.FROZEN,
         ),
-
         TransformationRule(
             transformation_rule_id="TURNAROUND_REFERENCE",
             version="0.1.0",
@@ -170,10 +190,19 @@ def current_transformation_registry() -> TransformationRegistry:
             version="1.0.0",
             construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
             input_object_types=("FlightRecord",),
-            input_fields=("aircraft_id", "aircraft_id_namespace", "origin_airport_id",
-                          "destination_airport_id", "first_seen_utc", "last_seen_utc"),
-            relation_keys=("aircraft_id", "aircraft_id_namespace",
-                           "predecessor.destination_airport_id=successor.origin_airport_id"),
+            input_fields=(
+                "aircraft_id",
+                "aircraft_id_namespace",
+                "origin_airport_id",
+                "destination_airport_id",
+                "first_seen_utc",
+                "last_seen_utc",
+            ),
+            relation_keys=(
+                "aircraft_id",
+                "aircraft_id_namespace",
+                "predecessor.destination_airport_id=successor.origin_airport_id",
+            ),
             group_by_keys=("connection_airport_id",),
             order_by_keys=(),
             join_on_keys=("aircraft_id", "aircraft_id_namespace"),
@@ -184,8 +213,8 @@ def current_transformation_registry() -> TransformationRegistry:
             missing_key_rule="REJECT_LINK",
             temporal_rule="TRAIN_PARTITION_ONLY",
             formula_or_algorithm="MEDIAN(successor.first_seen_utc - predecessor.last_seen_utc) "
-                                 "BY connection_airport_id; MIN_CELL_SIZE_50; "
-                                 "FALLBACK AIRPORT_CELL_TO_GLOBAL",
+            "BY connection_airport_id; MIN_CELL_SIZE_50; "
+            "FALLBACK AIRPORT_CELL_TO_GLOBAL",
             output_variable="turnaround_reference",
             output_unit="minutes",
             evidence_rule="EMPIRICAL_REFERENCE_FROM_FLIGHTLIST_PROXY_GAP",
@@ -221,8 +250,15 @@ def current_transformation_registry() -> TransformationRegistry:
             version="1.0.0",
             construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
             input_object_types=("FlightRecord", "OperationalEventRecord"),
-            input_fields=("aircraft_id", "origin_airport_id", "first_seen_utc",
-                          "last_seen_utc", "event_type", "event_time", "quality_flags"),
+            input_fields=(
+                "aircraft_id",
+                "origin_airport_id",
+                "first_seen_utc",
+                "last_seen_utc",
+                "event_type",
+                "event_time",
+                "quality_flags",
+            ),
             relation_keys=("aircraft_id",),
             group_by_keys=("origin_airport_id",),
             order_by_keys=(),
@@ -234,8 +270,8 @@ def current_transformation_registry() -> TransformationRegistry:
             missing_key_rule="NO_COVERAGE_ABSTAIN",
             temporal_rule="TRAIN_PARTITION_ONLY",
             formula_or_algorithm="MEDIAN(TAKEOFF - OUT_BLOCK_PROXY) BY origin_airport_id; "
-                                 "MIN_CELL_SIZE_50; FALLBACK AIRPORT_CELL_TO_GLOBAL; "
-                                 "ZERO_COVERAGE_ABSTAIN",
+            "MIN_CELL_SIZE_50; FALLBACK AIRPORT_CELL_TO_GLOBAL; "
+            "ZERO_COVERAGE_ABSTAIN",
             output_variable="taxi_reference",
             output_unit="minutes",
             evidence_rule="EMPIRICAL_REFERENCE_FROM_TRAJECTORY_PAIR",
@@ -251,9 +287,15 @@ def current_transformation_registry() -> TransformationRegistry:
             version="1.0.0",
             construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
             input_object_types=("FlightRecord",),
-            input_fields=("aircraft_id", "aircraft_id_namespace", "origin_airport_id",
-                          "destination_airport_id", "first_seen_utc",
-                          "event_start_time", "event_end_time"),
+            input_fields=(
+                "aircraft_id",
+                "aircraft_id_namespace",
+                "origin_airport_id",
+                "destination_airport_id",
+                "first_seen_utc",
+                "event_start_time",
+                "event_end_time",
+            ),
             relation_keys=("aircraft_id", "aircraft_id_namespace"),
             group_by_keys=("connection_airport_id",),
             order_by_keys=(),
@@ -265,9 +307,9 @@ def current_transformation_registry() -> TransformationRegistry:
             missing_key_rule="NO_COVERAGE_ABSTAIN",
             temporal_rule="TRAIN_PARTITION_ONLY",
             formula_or_algorithm="MEDIAN(N_down(H=360)) BY connection_airport_id; "
-                                 "N_down = #{chain successors with first_seen within 360 min}; "
-                                 "MIN_CELL_SIZE_50; FALLBACK AIRPORT_CELL_TO_GLOBAL; "
-                                 "ZERO_COVERAGE_ABSTAIN",
+            "N_down = #{chain successors with first_seen within 360 min}; "
+            "MIN_CELL_SIZE_50; FALLBACK AIRPORT_CELL_TO_GLOBAL; "
+            "ZERO_COVERAGE_ABSTAIN",
             output_variable="expected_downstream_exposure",
             output_unit="legs",
             evidence_rule="EMPIRICAL_REFERENCE_FROM_TRAIN_CHAIN",
@@ -333,8 +375,10 @@ def current_transformation_registry() -> TransformationRegistry:
             duplicate_rule="REJECT_EXACT_DUPLICATE_ORDERING_KEY",
             missing_key_rule="REJECT_LINK",
             temporal_rule="ORDER_BY_ACTUAL_GATE_TIMES_THEN_ADJACENT",
-            formula_or_algorithm=("SAME_AIRCRAFT_AND_AIRPORT_CONTINUITY_WITH_MAX_GAP_360_ON_ACTUAL_GATE_TIMES; "
-                             "EPISODE_ANCHORS=CRS_TURNAROUND_WINDOW"),
+            formula_or_algorithm=(
+                "SAME_AIRCRAFT_AND_AIRPORT_CONTINUITY_WITH_MAX_GAP_360_ON_ACTUAL_GATE_TIMES; "
+                "EPISODE_ANCHORS=CRS_TURNAROUND_WINDOW"
+            ),
             output_variable="predecessor_successor_episode",
             output_unit="episode",
             evidence_rule="DERIVED_FROM_DIRECT_GATE_EVENT_RECORDS",
@@ -374,9 +418,11 @@ def current_transformation_registry() -> TransformationRegistry:
             duplicate_rule="REJECT_EXACT_DUPLICATE_ORDERING_KEY",
             missing_key_rule="REJECT_LINK",
             temporal_rule="TRAIN_PARTITION_ONLY",
-            formula_or_algorithm=("MEDIAN(successor.actual_departure_utc - predecessor.actual_arrival_utc) "
-                                 "BY connection_airport_id; MIN_CELL_SIZE_50; "
-                                 "FALLBACK AIRPORT_CELL_TO_GLOBAL"),
+            formula_or_algorithm=(
+                "MEDIAN(successor.actual_departure_utc - predecessor.actual_arrival_utc) "
+                "BY connection_airport_id; MIN_CELL_SIZE_50; "
+                "FALLBACK AIRPORT_CELL_TO_GLOBAL"
+            ),
             output_variable="turnaround_reference",
             output_unit="minutes",
             evidence_rule="DIRECT_GATE_TURNAROUND_MEDIAN_FROM_ARCHIVE_ACTUALS",
@@ -404,7 +450,7 @@ def current_transformation_registry() -> TransformationRegistry:
             missing_key_rule="NO_COVERAGE_ABSTAIN",
             temporal_rule="TRAIN_PARTITION_ONLY",
             formula_or_algorithm="MEDIAN(TaxiOut) BY origin_airport_id; MIN_CELL_SIZE_50; "
-                                 "FALLBACK AIRPORT_CELL_TO_GLOBAL; ZERO_COVERAGE_ABSTAIN",
+            "FALLBACK AIRPORT_CELL_TO_GLOBAL; ZERO_COVERAGE_ABSTAIN",
             output_variable="taxi_reference",
             output_unit="minutes",
             evidence_rule="DIRECT_TAXI_OUT_MEDIAN_FROM_ARCHIVE_ACTUALS",
@@ -438,10 +484,12 @@ def current_transformation_registry() -> TransformationRegistry:
             duplicate_rule="REJECT_EXACT_DUPLICATE_SCIENTIFIC_KEY",
             missing_key_rule="NO_COVERAGE_ABSTAIN",
             temporal_rule="TRAIN_PARTITION_ONLY",
-            formula_or_algorithm=("MEDIAN(N_down) BY connection_airport_id; "
-                                 "N_down = #{same-aircraft CRS scheduled departures from connection airport "
-                                 "with CRSDep in (t0, t0+360min], t0 = pred.CRSArr}; "
-                                 "MIN_CELL_SIZE_50; FALLBACK AIRPORT_CELL_TO_GLOBAL; ZERO_COVERAGE_ABSTAIN"),
+            formula_or_algorithm=(
+                "MEDIAN(N_down) BY connection_airport_id; "
+                "N_down = #{same-aircraft CRS scheduled departures from connection airport "
+                "with CRSDep in (t0, t0+360min], t0 = pred.CRSArr}; "
+                "MIN_CELL_SIZE_50; FALLBACK AIRPORT_CELL_TO_GLOBAL; ZERO_COVERAGE_ABSTAIN"
+            ),
             output_variable="expected_downstream_exposure",
             output_unit="legs",
             evidence_rule="CRS_SCHEDULE_COUNT_WITHIN_HORIZON_TRAIN_FROZEN",
@@ -473,9 +521,11 @@ def current_transformation_registry() -> TransformationRegistry:
             duplicate_rule="SUM_PASSENGERS_WITHIN_ROUTE",
             missing_key_rule="NO_COVERAGE_ABSTAIN",
             temporal_rule="REFERENCE_PERIOD_ONLY",
-            formula_or_algorithm=("SUM(Passengers) x10 BY (origin, destination) OVER 2019-Q1; "
-                                 "OFFICIAL_BTS_10PCT_TICKET_SAMPLE_SCALE_FACTOR_10; "
-                                 "ZERO_COVERAGE_ABSTAIN"),
+            formula_or_algorithm=(
+                "SUM(Passengers) x10 BY (origin, destination) OVER 2019-Q1; "
+                "OFFICIAL_BTS_10PCT_TICKET_SAMPLE_SCALE_FACTOR_10; "
+                "ZERO_COVERAGE_ABSTAIN"
+            ),
             output_variable="passenger_reference",
             output_unit="passengers",
             evidence_rule="OFFICIAL_DB1B_10PCT_SAMPLE_QUARTER_SUM_X10",
@@ -486,7 +536,7 @@ def current_transformation_registry() -> TransformationRegistry:
             support_ceiling=EvidenceClass.DOMAIN_PROXY,
             status=TransformationStatus.FROZEN,
         ),
-                TransformationRule(
+        TransformationRule(
             transformation_rule_id="DATA2_PASSENGER_REFERENCE_H1",
             version="1.0.0",
             construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
@@ -507,9 +557,11 @@ def current_transformation_registry() -> TransformationRegistry:
             duplicate_rule="SUM_PASSENGERS_WITHIN_ROUTE",
             missing_key_rule="NO_COVERAGE_ABSTAIN",
             temporal_rule="REFERENCE_PERIOD_ONLY",
-            formula_or_algorithm=("SUM(Passengers) x10 BY (origin, destination) OVER 2019-H1 (Q1+Q2 coupon files); "
-                                 "OFFICIAL_BTS_10PCT_TICKET_SAMPLE_SCALE_FACTOR_10; "
-                                 "ZERO_COVERAGE_ABSTAIN"),
+            formula_or_algorithm=(
+                "SUM(Passengers) x10 BY (origin, destination) OVER 2019-H1 (Q1+Q2 coupon files); "
+                "OFFICIAL_BTS_10PCT_TICKET_SAMPLE_SCALE_FACTOR_10; "
+                "ZERO_COVERAGE_ABSTAIN"
+            ),
             output_variable="passenger_reference",
             output_unit="passengers",
             evidence_rule="OFFICIAL_DB1B_10PCT_SAMPLE_H1_SUM_X10",
@@ -520,7 +572,7 @@ def current_transformation_registry() -> TransformationRegistry:
             support_ceiling=EvidenceClass.DOMAIN_PROXY,
             status=TransformationStatus.FROZEN,
         ),
-TransformationRule(
+        TransformationRule(
             transformation_rule_id="DATA2_LABEL_R_IB",
             version="1.0.0",
             construction_type=ConstructionType.DETERMINISTIC_DERIVATION,
@@ -540,14 +592,19 @@ TransformationRule(
             duplicate_rule="REJECT_EXACT_DUPLICATE_DECISION_NODE",
             missing_key_rule="MISSING_OUTCOME_ABSTAIN",
             temporal_rule="POSTHOC_ONLY",
-            formula_or_algorithm=("R_IB = max(0, pred.actual_arrival_utc - decision_time); "
-                                 "m1_r_ib_max_finite_minutes=360; OVERFLOW bin, no clip; "
-                                 "STAGE_GATED"),
+            formula_or_algorithm=(
+                "R_IB = max(0, pred.actual_arrival_utc - decision_time); "
+                "m1_r_ib_max_finite_minutes=360; OVERFLOW bin, no clip; "
+                "STAGE_GATED"
+            ),
             output_variable="r_ib_label",
             output_unit="minutes",
             evidence_rule="DIRECT_GATE_ARRIVAL_MINUS_DECISION_TIME",
             support_rule="DIRECT_OUTCOME_STAGE_GATED_MISSING_ABSTAIN",
-            consumer_roles=(DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME),
+            consumer_roles=(
+                DecisionTimeRole.TRAIN_LABEL,
+                DecisionTimeRole.EVAL_OUTCOME,
+            ),
             availability_basis=AvailabilityBasis.POSTHOC_ONLY,
             evidence_class=EvidenceClass.DIRECT,
             support_ceiling=EvidenceClass.DIRECT,
@@ -557,7 +614,11 @@ TransformationRule(
             transformation_rule_id="DATA2_LABEL_DELTA_OB",
             version="1.0.0",
             construction_type=ConstructionType.DETERMINISTIC_DERIVATION,
-            input_object_types=("OperationalEventRecord", "FlightRecord", "DecisionNodeRecord"),
+            input_object_types=(
+                "OperationalEventRecord",
+                "FlightRecord",
+                "DecisionNodeRecord",
+            ),
             input_fields=(
                 "successor.actual_departure_utc",
                 "successor.scheduled_departure_utc",
@@ -573,14 +634,19 @@ TransformationRule(
             duplicate_rule="REJECT_EXACT_DUPLICATE_DECISION_NODE",
             missing_key_rule="MISSING_OUTCOME_ABSTAIN",
             temporal_rule="POSTHOC_ONLY",
-            formula_or_algorithm=("DELTA_OB = succ.actual_departure_utc - succ.scheduled_departure_utc; "
-                                 "signed finite starts -180..+180, UNDERFLOW and OVERFLOW bins, no clip; "
-                                 "STAGE_GATED"),
+            formula_or_algorithm=(
+                "DELTA_OB = succ.actual_departure_utc - succ.scheduled_departure_utc; "
+                "signed finite starts -180..+180, UNDERFLOW and OVERFLOW bins, no clip; "
+                "STAGE_GATED"
+            ),
             output_variable="delta_ob_label",
             output_unit="minutes",
             evidence_rule="DIRECT_GATE_DEPARTURE_MINUS_CRS_DEPARTURE",
             support_rule="DIRECT_OUTCOME_STAGE_GATED_MISSING_ABSTAIN",
-            consumer_roles=(DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME),
+            consumer_roles=(
+                DecisionTimeRole.TRAIN_LABEL,
+                DecisionTimeRole.EVAL_OUTCOME,
+            ),
             availability_basis=AvailabilityBasis.POSTHOC_ONLY,
             evidence_class=EvidenceClass.DIRECT,
             support_ceiling=EvidenceClass.DIRECT,
@@ -602,14 +668,19 @@ TransformationRule(
             duplicate_rule="REJECT_EXACT_DUPLICATE_DECISION_NODE",
             missing_key_rule="MISSING_OUTCOME_ABSTAIN",
             temporal_rule="POSTHOC_ONLY",
-            formula_or_algorithm=("T_TX = succ.taxi_out_minutes; "
-                                 "m1_t_tx_max_finite_minutes=60; OVERFLOW bin, no clip; "
-                                 "STAGE_GATED"),
+            formula_or_algorithm=(
+                "T_TX = succ.taxi_out_minutes; "
+                "m1_t_tx_max_finite_minutes=60; OVERFLOW bin, no clip; "
+                "STAGE_GATED"
+            ),
             output_variable="t_tx_label",
             output_unit="minutes",
             evidence_rule="DIRECT_TAXI_OUT_MINUTES",
             support_rule="DIRECT_OUTCOME_STAGE_GATED_MISSING_ABSTAIN",
-            consumer_roles=(DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME),
+            consumer_roles=(
+                DecisionTimeRole.TRAIN_LABEL,
+                DecisionTimeRole.EVAL_OUTCOME,
+            ),
             availability_basis=AvailabilityBasis.POSTHOC_ONLY,
             evidence_class=EvidenceClass.DIRECT,
             support_ceiling=EvidenceClass.DIRECT,
@@ -619,7 +690,11 @@ TransformationRule(
             transformation_rule_id="DATA2_M1_TRAINING_COVERAGE",
             version="1.0.0",
             construction_type=ConstructionType.DETERMINISTIC_DERIVATION,
-            input_object_types=("DecisionNodeRecord", "OperationalEventRecord", "FlightRecord"),
+            input_object_types=(
+                "DecisionNodeRecord",
+                "OperationalEventRecord",
+                "FlightRecord",
+            ),
             input_fields=(
                 "decision_time",
                 "node_index",
@@ -638,12 +713,14 @@ TransformationRule(
             duplicate_rule="ONE_EXAMPLE_PER_DECISION_NODE",
             missing_key_rule="MISSING_OUTCOME_ABSTAIN",
             temporal_rule="POSTHOC_ONLY",
-            formula_or_algorithm=("all rolling grid nodes -> one M1 training example per node; "
-                                 "D2-2 anchors unchanged; stage-gated labels "
-                                 "(R_IB:{PRE_IB}; DELTA_OB:{PRE_IB,POST_IB_PRE_OB}; "
-                                 "T_TX:{PRE_IB,POST_IB_PRE_OB,POST_OB_PRE_TO}); "
-                                 "node-level equal weight; "
-                                 "nodes with no active target (all realized) excluded"),
+            formula_or_algorithm=(
+                "all rolling grid nodes -> one M1 training example per node; "
+                "D2-2 anchors unchanged; stage-gated labels "
+                "(R_IB:{PRE_IB}; DELTA_OB:{PRE_IB,POST_IB_PRE_OB}; "
+                "T_TX:{PRE_IB,POST_IB_PRE_OB,POST_OB_PRE_TO}); "
+                "node-level equal weight; "
+                "nodes with no active target (all realized) excluded"
+            ),
             output_variable="m1_training_coverage",
             output_unit="sample",
             evidence_rule="STAGE_GATED_LABEL_ACTIVATION_ALL_NODES",
@@ -670,10 +747,12 @@ TransformationRule(
             duplicate_rule="ONE_SPLIT_PER_EPISODE",
             missing_key_rule="MISSING_SERVICE_DATE_ABSTAIN",
             temporal_rule="TRAIN_PARTITION_ONLY",
-            formula_or_algorithm=("temporal split by successor service_date: "
-                                 "train<=2019-06-30; calibration 2019-07-01..2019-07-31; "
-                                 "development 2019-08-01..2019-09-30; test>=2019-10-01; "
-                                 "cohort sampled per split; no cross-split leakage"),
+            formula_or_algorithm=(
+                "temporal split by successor service_date: "
+                "train<=2019-06-30; calibration 2019-07-01..2019-07-31; "
+                "development 2019-08-01..2019-09-30; test>=2019-10-01; "
+                "cohort sampled per split; no cross-split leakage"
+            ),
             output_variable="dataset_partition",
             output_unit="partition",
             evidence_rule="SUCCESSOR_SERVICE_DATE_WINDOW",
@@ -683,5 +762,6 @@ TransformationRule(
             evidence_class=EvidenceClass.DERIVED,
             support_ceiling=EvidenceClass.DERIVED,
             status=TransformationStatus.FROZEN,
-        ),    )
+        ),
+    )
     return TransformationRegistry(registry_version="1.0.0", rules=rules)

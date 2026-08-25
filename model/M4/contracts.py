@@ -35,7 +35,10 @@ class M4DecisionRequest(FrozenModel):
 
     @model_validator(mode="after")
     def aligned_chain(self):
-        if not self.monetary_mapping_registry_id or not self.monetary_mapping_registry_hash:
+        if (
+            not self.monetary_mapping_registry_id
+            or not self.monetary_mapping_registry_hash
+        ):
             raise ValueError("M4_MONETARY_MAPPING_REGISTRY_REQUIRED")
         episode = self.pre_state.decision_node.episode_id
         node = self.pre_state.decision_node.decision_node_id
@@ -50,12 +53,8 @@ class M4DecisionRequest(FrozenModel):
         m2_ids = tuple(row.scenario_id for row in self.m2_consequences)
         if len(m1_ids) != len(set(m1_ids)) or len(m2_ids) != len(set(m2_ids)):
             raise ValueError("M4_DUPLICATE_SCENARIO_ID")
-        m1 = {
-            (row.scenario_id, row.scenario_weight) for row in self.m1_scenarios
-        }
-        m2 = {
-            (row.scenario_id, row.scenario_weight) for row in self.m2_consequences
-        }
+        m1 = {(row.scenario_id, row.scenario_weight) for row in self.m1_scenarios}
+        m2 = {(row.scenario_id, row.scenario_weight) for row in self.m2_consequences}
         if m1 != m2 or any(
             row.decision_node_id != node for row in self.m2_consequences
         ):
@@ -64,9 +63,10 @@ class M4DecisionRequest(FrozenModel):
             raise ValueError("M4_M2_SCENARIO_ID_UNKNOWN")
         scopes = []
         for row in self.m2_consequences:
-            if tuple(
-                item.component_id for item in row.component_vector.rows
-            ) != COMPONENTS:
+            if (
+                tuple(item.component_id for item in row.component_vector.rows)
+                != COMPONENTS
+            ):
                 raise ValueError("M4_M2_SEVEN_COMPONENT_CONTRACT_REQUIRED")
             scopes.append(row.consequence_scope)
         if not any(candidate.template_id == "A00" for candidate in self.candidates):

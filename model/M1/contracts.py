@@ -18,7 +18,6 @@ from .semantics import (
     external_target_name,
 )
 
-
 TargetName = Literal["R_IB", "DELTA_OB", "T_TX"]
 STOCHASTIC_TARGETS: tuple[TargetName, ...] = ("R_IB", "DELTA_OB", "T_TX")
 # Internal auxiliary heads only: the formal successor contract is
@@ -38,7 +37,10 @@ class TargetBinContract(FrozenModel):
     @model_validator(mode="after")
     def validate_support(self):
         minimum = 0 if self.min_finite_minutes is None else self.min_finite_minutes
-        if minimum % self.bin_width_minutes or self.max_finite_minutes % self.bin_width_minutes:
+        if (
+            minimum % self.bin_width_minutes
+            or self.max_finite_minutes % self.bin_width_minutes
+        ):
             raise ValueError("finite support must align to bin width")
         if self.target_name == "DELTA_OB":
             if not self.signed or minimum >= 0:
@@ -56,7 +58,9 @@ class TargetBinContract(FrozenModel):
     @computed_field
     @property
     def class_count(self) -> int:
-        finite = (self.max_finite_minutes - self.finite_minimum_minutes) // self.bin_width_minutes + 1
+        finite = (
+            self.max_finite_minutes - self.finite_minimum_minutes
+        ) // self.bin_width_minutes + 1
         return finite + (2 if self.signed else 1)
 
     @property
@@ -104,9 +108,10 @@ class TargetBinContract(FrozenModel):
             return self.finite_minimum_minutes - self.bin_width_minutes / 2, True, False
         if tail == "OVERFLOW":
             return self.max_finite_minutes + self.bin_width_minutes, False, True
-        start = self.finite_minimum_minutes + (
-            index - self.finite_start_index
-        ) * self.bin_width_minutes
+        start = (
+            self.finite_minimum_minutes
+            + (index - self.finite_start_index) * self.bin_width_minutes
+        )
         return start + self.bin_width_minutes / 2, False, False
 
 
@@ -132,7 +137,9 @@ class TargetLabel(FrozenModel):
         exact = self.exact_minutes is not None
         interval = self.lower_minutes is not None and self.upper_minutes is not None
         if exact == interval:
-            raise ValueError("active target requires exactly one exact or interval label")
+            raise ValueError(
+                "active target requires exactly one exact or interval label"
+            )
         if interval and self.lower_minutes > self.upper_minutes:
             raise ValueError("invalid interval")
         return self
@@ -221,7 +228,9 @@ class AlignedScenario(FrozenModel):
         if self.d_tx_minutes is not None and self.d_tx_minutes < 0:
             raise ValueError("D_TX must be nonnegative")
         d_to = self.d_to_minutes
-        if d_to is not None and (d_to < 0 or abs(d_to - (self.d_ob_minutes + self.d_tx_minutes)) > 1e-6):
+        if d_to is not None and (
+            d_to < 0 or abs(d_to - (self.d_ob_minutes + self.d_tx_minutes)) > 1e-6
+        ):
             raise ValueError("D_TO must equal D_OB + D_TX per scenario")
         return self
 
@@ -256,7 +265,9 @@ class AlignedScenario(FrozenModel):
     def d_ob_support(self) -> str:
         if self.d_ob_minutes is None:
             return "ABSTAIN"
-        return self.delta_ob_support if self.delta_ob_support != "ABSTAIN" else "SUPPORTED"
+        return (
+            self.delta_ob_support if self.delta_ob_support != "ABSTAIN" else "SUPPORTED"
+        )
 
     @computed_field
     @property
@@ -280,9 +291,10 @@ class AlignedScenario(FrozenModel):
         if self.scheduled_ob_utc is None or self.delta_ob_minutes is None:
             return None
         try:
-            return (datetime.fromisoformat(self.scheduled_ob_utc) + timedelta(
-                minutes=self.delta_ob_minutes
-            )).isoformat()
+            return (
+                datetime.fromisoformat(self.scheduled_ob_utc)
+                + timedelta(minutes=self.delta_ob_minutes)
+            ).isoformat()
         except ValueError:
             return None
 
@@ -292,9 +304,10 @@ class AlignedScenario(FrozenModel):
         if self.t_ob_utc is None or self.t_tx_minutes is None:
             return None
         try:
-            return (datetime.fromisoformat(self.t_ob_utc) + timedelta(
-                minutes=self.t_tx_minutes
-            )).isoformat()
+            return (
+                datetime.fromisoformat(self.t_ob_utc)
+                + timedelta(minutes=self.t_tx_minutes)
+            ).isoformat()
         except ValueError:
             return None
 
@@ -314,9 +327,18 @@ class AlignedScenario(FrozenModel):
 
     @property
     def target_semantics(self) -> dict[str, str]:
-        names = ("R_IB", "D_OB", "D_TX", "D_TO", "DELTA_OB", "T_TX", "R_OB", "T_OB", "T_TO")
+        names = (
+            "R_IB",
+            "D_OB",
+            "D_TX",
+            "D_TO",
+            "DELTA_OB",
+            "T_TX",
+            "R_OB",
+            "T_OB",
+            "T_TO",
+        )
         return {name: external_target_name(name) for name in names}
-
 
 
 # ---------------------------------------------------------------------------
@@ -334,7 +356,9 @@ V2TargetName = Literal["T_IB_REMAINING_HAZARD", "D_OB", "D_TX"]
 # ISO UTC event time) is distinct from the internal remaining-time hazard
 # coordinate ``T_IB_REMAINING_HAZARD`` (minutes from the decision node).
 V2_TARGETS: tuple[V2TargetName, ...] = (
-    "T_IB_REMAINING_HAZARD", "D_OB", "D_TX",
+    "T_IB_REMAINING_HAZARD",
+    "D_OB",
+    "D_TX",
 )
 M1_V2_HAZARD_COORDINATE = M1_V2_HAZARD_COORDINATE_TARGET
 
@@ -483,10 +507,16 @@ class HurdleQuantileContract(FrozenModel):
             raise ValueError("quantile levels must lie strictly inside (0, 1)")
         if any(right <= left for left, right in zip(levels, levels[1:])):
             raise ValueError("quantile levels must be strictly increasing")
-        if self.upper_tail_policy == "DECLARED_FROZEN"                 and not self.upper_tail_policy_reference:
+        if (
+            self.upper_tail_policy == "DECLARED_FROZEN"
+            and not self.upper_tail_policy_reference
+        ):
             raise ValueError("declared tail rule requires a policy reference")
-        if self.upper_tail_policy in ("UNRESOLVED", "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS") \
-                and self.upper_tail_policy_reference is not None:
+        if (
+            self.upper_tail_policy
+            in ("UNRESOLVED", "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS")
+            and self.upper_tail_policy_reference is not None
+        ):
             raise ValueError("unresolved tail policy cannot carry a reference")
         return self
 
@@ -545,7 +575,10 @@ def cvar_support_status(contract: HurdleQuantileContract, alpha: float) -> str:
     q_max = contract.q_max
     if q_max < alpha - 1e-12:
         return "GATED"
-    if contract.upper_tail_policy in ("UNRESOLVED", "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"):
+    if contract.upper_tail_policy in (
+        "UNRESOLVED",
+        "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+    ):
         return "GATED"
     return "SUPPORTED"
 
@@ -649,22 +682,26 @@ class M1StaticReferenceContext(FrozenModel):
     """
 
     route_context: M1StaticReferenceField = Field(
-        default_factory=lambda: _static_reference_field("route_context"))
+        default_factory=lambda: _static_reference_field("route_context")
+    )
     carrier_context: M1StaticReferenceField = Field(
-        default_factory=lambda: _static_reference_field("carrier_context"))
+        default_factory=lambda: _static_reference_field("carrier_context")
+    )
     aircraft_identity: M1StaticReferenceField = Field(
-        default_factory=lambda: _static_reference_field("aircraft_identity"))
+        default_factory=lambda: _static_reference_field("aircraft_identity")
+    )
     schedule_reference: M1StaticReferenceField = Field(
-        default_factory=lambda: _static_reference_field("schedule_reference"))
+        default_factory=lambda: _static_reference_field("schedule_reference")
+    )
     turnaround_reference: M1StaticReferenceField = Field(
-        default_factory=lambda: _static_reference_field("turnaround_reference"))
+        default_factory=lambda: _static_reference_field("turnaround_reference")
+    )
     taxi_reference: M1StaticReferenceField = Field(
-        default_factory=lambda: _static_reference_field("taxi_reference"))
+        default_factory=lambda: _static_reference_field("taxi_reference")
+    )
     static_context_status: str = "STATIC_REFERENCE_CONTEXT_PENDING_PRE"
     fusion: str = "CONCAT_RECURRENT_FAST_PLUS_OPTIONAL_STATIC"
-    implementation_choice: str = (
-        "ROUND2_2_DETERMINISTIC_CURRENT_AR_BLOCK_NO_SEARCH"
-    )
+    implementation_choice: str = "ROUND2_2_DETERMINISTIC_CURRENT_AR_BLOCK_NO_SEARCH"
 
     @property
     def schedule_reference_context(self) -> M1StaticReferenceField:
@@ -677,7 +714,10 @@ class M1StaticReferenceContext(FrozenModel):
         if field in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
             return getattr(self, field).support_state
         if field in (
-            "live_aircraft_availability", "gate", "crew", "slot",
+            "live_aircraft_availability",
+            "gate",
+            "crew",
+            "slot",
             "standby_aircraft",
         ):
             raise ValueError(f"M1_STATIC_CONTEXT_FORBIDDEN:{field}")
@@ -693,7 +733,8 @@ class M1StaticReferenceContext(FrozenModel):
     def published_fields(self) -> tuple[str, ...]:
         """Fields PRE has published (``published=True``), in canonical order."""
         return tuple(
-            field for field in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE
+            field
+            for field in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE
             if getattr(self, field).published
         )
 
@@ -704,16 +745,25 @@ class M1StaticReferenceContext(FrozenModel):
         M1 input lineage only.
         """
         return tuple(
-            field for field in self.published_fields()
+            field
+            for field in self.published_fields()
             if getattr(self, field).model_feature_status == "MODEL_FEATURE"
         )
 
     def with_published_field(
-        self, field: str, *, publication_status: str = "PUBLISHED",
-        model_feature_status: str, provenance_reference_id: str | None = None,
-        freeze_id: str | None = None, reference_id: str | None = None,
-        value=None, unit: str | None = None, provenance: dict | None = None,
-        fallback_level: str | None = None, support_state: str = "SUPPORTED",
+        self,
+        field: str,
+        *,
+        publication_status: str = "PUBLISHED",
+        model_feature_status: str,
+        provenance_reference_id: str | None = None,
+        freeze_id: str | None = None,
+        reference_id: str | None = None,
+        value=None,
+        unit: str | None = None,
+        provenance: dict | None = None,
+        fallback_level: str | None = None,
+        support_state: str = "SUPPORTED",
     ) -> "M1StaticReferenceContext":
         """Return a copy with one field published (typed PRE interface)."""
         if field == "schedule_reference_context":
@@ -721,22 +771,25 @@ class M1StaticReferenceContext(FrozenModel):
         if field not in M1_STATIC_REFERENCE_FIELDS_REQUIRED_FROM_PRE:
             raise ValueError(f"M1_STATIC_CONTEXT_UNKNOWN:{field}")
         current = getattr(self, field)
-        updated = current.model_copy(update={
-            "support_state": support_state,
-            "pre_status": "AVAILABLE_ALREADY",
-            "publication_status": publication_status,
-            "model_feature_status": model_feature_status,
-            "provenance_reference_id": provenance_reference_id,
-            "freeze_id": freeze_id,
-            "reference_id": reference_id or provenance_reference_id,
-            "value": value,
-            "unit": unit,
-            "provenance": provenance,
-            "fallback_level": fallback_level,
-            "published": True,
-        })
-        return self.model_copy(update={field: updated,
-                                       "static_context_status": "PRE_PUBLISHED"})
+        updated = current.model_copy(
+            update={
+                "support_state": support_state,
+                "pre_status": "AVAILABLE_ALREADY",
+                "publication_status": publication_status,
+                "model_feature_status": model_feature_status,
+                "provenance_reference_id": provenance_reference_id,
+                "freeze_id": freeze_id,
+                "reference_id": reference_id or provenance_reference_id,
+                "value": value,
+                "unit": unit,
+                "provenance": provenance,
+                "fallback_level": fallback_level,
+                "published": True,
+            }
+        )
+        return self.model_copy(
+            update={field: updated, "static_context_status": "PRE_PUBLISHED"}
+        )
 
 
 def static_reference_context_from_pre(
@@ -761,7 +814,8 @@ def static_reference_context_from_pre(
             field,
             publication_status=meta.get("publication_status", "PUBLISHED"),
             model_feature_status=meta.get(
-                "model_feature_status", "MODEL_FEATURE_PENDING"),
+                "model_feature_status", "MODEL_FEATURE_PENDING"
+            ),
             provenance_reference_id=meta.get("provenance_reference_id"),
             freeze_id=meta.get("freeze_id"),
             reference_id=meta.get("reference_id"),

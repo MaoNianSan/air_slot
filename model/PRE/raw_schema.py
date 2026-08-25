@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 RAW_SCHEMA_TOKENS = {
     "icao24",
     "firstseen",

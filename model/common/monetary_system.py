@@ -184,7 +184,9 @@ class MonetaryMappingRegistry(FrozenModel):
     def authoritative(self) -> bool:
         return self.freeze_status is MonetaryMappingStatus.FROZEN
 
-    def to_component_money(self, cu_by_component: dict[str, float]) -> dict[str, float] | None:
+    def to_component_money(
+        self, cu_by_component: dict[str, float]
+    ) -> dict[str, float] | None:
         if not self.frozen:
             return None
         losses = {}

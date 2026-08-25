@@ -76,7 +76,7 @@ Stratified ConsequenceDistortion (point collapse, node mean): PRE_IB 3.182 (N=26
 Lineage corruption (frozen q budget 0/0.25/0.5/0.75/1.0): ConsequenceDistortion rises monotonically 0 → 0.042 → 0.069 → 0.090 → 0.114; point collapse (1.73) dominates any corruption level — the point approximation, not lineage noise, is the dominant distortion.
 
 - `EXP2_CONSEQUENCE_RESULTS = VALID_TEMPORARY`; `EXP2_FORMAL_RANKING_RESULTS = BLOCKED_BY_M4_MATERIAL_COVERAGE_UNFROZEN`; `EXP2_SCENARIO_CONDITIONED_ACTION_RESULTS` = SCENARIO_CONDITIONED / NON_AUTHORITATIVE / TEMPORARY_DEVELOPMENT_ONLY; `EXP2_LINEAGE_CORRUPTION_TEMP = COMPLETED_DEVELOPMENT_BUDGET`.
-- Full Exp2 temporary details: `artifacts/exp2/development_temp/EXP2_TEMPORARY_REPORT.md` (+ summary JSON and parquet tables).
+- Full Exp2 temporary details: `artifacts/_archive/2026-08-25/exp2_development_temp/EXP2_TEMPORARY_REPORT.md` (+ summary JSON and parquet tables).
 
 ## 4. Exp3 — evidence-supported decision boundary
 
@@ -115,7 +115,7 @@ Pilot: N=50, schema pass 0.98, parse failure 0.02, all error-detector gates 0.0.
 ## 6. Current limitations
 
 - **M4 material coverage is not frozen** (`M4_MATERIAL_COVERAGE_UNFROZEN`): all M4 decision lanes, formal multi-action ranking, Exp3 ablations and Exp2 authoritative ranking remain provisional/blocked. No interim rule invented.
-- Hard-case stratum: not frozen; not computed. Tight-turnaround / high-uncertainty strata are descriptive derivations from the frozen scenario artifact (definitions in `exp2_temp_consequence_summary.json`).
+- Hard-case stratum: not frozen; not computed. Tight-turnaround / high-uncertainty strata are descriptive derivations from the frozen scenario artifact (definitions in `artifacts/_archive/2026-08-25/exp2_development_temp/exp2_temp_consequence_summary.json`).
 - S=250 temporary Development budget (S=500 sensitivity subset reused from Exp1; S=1000 is final-run scale only).
 - Exp1 DWG is a Development operating-point result; ADAPTIVE does not beat FIXED; S500−S250 difference is not pre-registered materiality.
 - DeepSeek audit is auxiliary only; repeat agreement 0.45 reflects that most outputs carry reservations.
@@ -128,9 +128,9 @@ Pilot: N=50, schema pass 0.98, parse failure 0.02, all error-detector gates 0.0.
 2. Rerun M4-gated lanes: authoritative multi-action ranking, Exp3 ablations, Exp2 formal ranking claims.
 3. Final Exp2 additions if protocol requires (e.g., flight-scope collapse metrics, hard-case stratum).
 4. One full regression at the next major scientific closure (current baseline 508 passed / 1 skipped reused here).
-5. Publication-quality figures from the plot-ready tables in `artifacts/exp2/development_temp/figures/`.
+5. Publication-quality figures from the plot-ready tables in `artifacts/_archive/2026-08-25/exp2_development_temp/figures/`.
 
 ---
 
-Artifacts: `docs/TEMPORARY_DEVELOPMENT_REPORT_20260818.md` (this file) · `artifacts/exp2/development_temp/EXP2_TEMPORARY_REPORT.md` · `artifacts/exp2/development_temp/EXP2_TEMPORARY_MANIFEST.json` · `exp2_temp_consequence_summary.json` · parquet tables · `figures/*.csv`.
+Artifacts: `docs/TEMPORARY_DEVELOPMENT_REPORT_20260818.md` (this file) · `artifacts/_archive/2026-08-25/exp2_development_temp/EXP2_TEMPORARY_REPORT.md` · `artifacts/_archive/2026-08-25/exp2_development_temp/EXP2_TEMPORARY_MANIFEST.json` · `artifacts/_archive/2026-08-25/exp2_development_temp/exp2_temp_consequence_summary.json` · parquet tables · `figures/*.csv`.
 

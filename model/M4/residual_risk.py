@@ -24,7 +24,6 @@ from model.common.monetary_system import (
 )
 from model.common.value_objects import FrozenModel
 
-
 M1_POSITIVE_TAIL_DECISION_REQUIRED = "M1_POSITIVE_TAIL_DECISION_REQUIRED"
 
 
@@ -110,9 +109,7 @@ class ComponentMonetaryLoss(FrozenModel):
     baseline_cu_artifact_id: str | None = Field(
         default=None, pattern=r"^sha256:[0-9a-f]{64}$"
     )
-    baseline_reference_lineage_hash: str = Field(
-        pattern=r"^sha256:[0-9a-f]{64}$"
-    )
+    baseline_reference_lineage_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     reason_code: str | None = None
 
     @model_validator(mode="after")
@@ -141,15 +138,19 @@ class ScenarioMonetaryLoss(FrozenModel):
 
     @model_validator(mode="after")
     def exact_loss_vector(self):
-        if tuple(item.component_id for item in self.component_losses) != CONSEQUENCE_COMPONENTS:
+        if (
+            tuple(item.component_id for item in self.component_losses)
+            != CONSEQUENCE_COMPONENTS
+        ):
             raise ValueError("M4_LOSS_REQUIRES_EXACT_SEVEN_COMPONENTS")
         values = tuple(item.L_k_m for item in self.component_losses)
         if self.total_loss_m is None:
             if not self.reason_code:
                 raise ValueError("M4_NULL_SCENARIO_LOSS_REQUIRES_REASON")
-        elif any(value is None for value in values) or abs(
-            self.total_loss_m - sum(values)
-        ) > 1e-9:
+        elif (
+            any(value is None for value in values)
+            or abs(self.total_loss_m - sum(values)) > 1e-9
+        ):
             raise ValueError("M4_SCENARIO_TOTAL_LOSS_MISMATCH")
         payload = self.model_dump(mode="json", exclude={"loss_artifact_id"})
         if self.loss_artifact_id != content_id(payload):
@@ -188,22 +189,31 @@ class RiskEvaluationEnvelope(FrozenModel):
 
     @model_validator(mode="after")
     def coherent_risk_envelope(self):
-        if tuple(item.scenario_id for item in self.scenario_losses) != self.scenario_ids:
+        if (
+            tuple(item.scenario_id for item in self.scenario_losses)
+            != self.scenario_ids
+        ):
             raise ValueError("M4_RISK_SCENARIO_ID_MISMATCH")
-        if tuple(item.scenario_weight for item in self.scenario_losses) != self.scenario_weights:
+        if (
+            tuple(item.scenario_weight for item in self.scenario_losses)
+            != self.scenario_weights
+        ):
             raise ValueError("M4_RISK_SCENARIO_WEIGHT_MISMATCH")
         if len(self.reference_lineage_hashes) != len(self.scenario_ids) * len(
             CONSEQUENCE_COMPONENTS
         ):
             raise ValueError("M4_RISK_REFERENCE_LINEAGE_COUNT_MISMATCH")
-        if len(self.coverage_components) != len(set(self.coverage_components)) or not set(
-            self.coverage_components
-        ) <= set(CONSEQUENCE_COMPONENTS):
+        if len(self.coverage_components) != len(
+            set(self.coverage_components)
+        ) or not set(self.coverage_components) <= set(CONSEQUENCE_COMPONENTS):
             raise ValueError("M4_RISK_COVERAGE_COMPONENTS_INVALID")
-        if abs(
-            self.coverage_fraction
-            - len(self.coverage_components) / len(CONSEQUENCE_COMPONENTS)
-        ) > 1e-12:
+        if (
+            abs(
+                self.coverage_fraction
+                - len(self.coverage_components) / len(CONSEQUENCE_COMPONENTS)
+            )
+            > 1e-12
+        ):
             raise ValueError("M4_RISK_COVERAGE_FRACTION_MISMATCH")
         metrics = (
             self.expected_monetary_loss,
@@ -234,9 +244,7 @@ class RiskEvaluationEnvelope(FrozenModel):
     @computed_field
     @property
     def risk_envelope_hash(self) -> str:
-        return content_id(
-            self.model_dump(mode="json", exclude={"risk_envelope_hash"})
-        )
+        return content_id(self.model_dump(mode="json", exclude={"risk_envelope_hash"}))
 
 
 class RiskRankingEntry(FrozenModel):
@@ -280,7 +288,9 @@ def _validated_distribution(
     return values, tuple(weight / total for weight in weights)
 
 
-def weighted_expectation(values: tuple[float, ...], weights: tuple[float, ...]) -> float:
+def weighted_expectation(
+    values: tuple[float, ...], weights: tuple[float, ...]
+) -> float:
     values, weights = _validated_distribution(values, weights)
     return sum(value * weight for value, weight in zip(values, weights, strict=True))
 
@@ -397,7 +407,9 @@ def evaluate_residual_risk(
     if envelope.response_support is ResponseSupportClass.ABSTAIN:
         reasons.append("M3_ACTION_RESPONSE_ABSTAIN")
 
-    can_map = complete_mapping and all_cu_supported and mapping_executable and not reasons
+    can_map = (
+        complete_mapping and all_cu_supported and mapping_executable and not reasons
+    )
     scenario_losses = []
     if can_map:
         for scenario in envelope.scenario_consequences:
@@ -513,11 +525,7 @@ def rank_risk_evaluations(
 
     def ranked(authority: RankingAuthority) -> tuple[RiskRankingEntry, ...]:
         rows = sorted(
-            (
-                item
-                for item in evaluations
-                if item.ranking_authority is authority
-            ),
+            (item for item in evaluations if item.ranking_authority is authority),
             key=lambda item: (item.residual_risk_objective, item.action_id),
         )
         return tuple(

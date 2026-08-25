@@ -108,8 +108,11 @@ def fit_hazard_temperature(
         optimizer.zero_grad()
         temperature = log_temperature.exp().clamp(0.05, 20.0)
         loss = hazard_interval_nll(
-            logits / temperature, contract,
-            lower=lower, upper=upper, active=active,
+            logits / temperature,
+            contract,
+            lower=lower,
+            upper=upper,
+            active=active,
         )
         loss.backward()
         return loss
@@ -139,7 +142,8 @@ def fit_zero_mass_temperature(
         optimizer.zero_grad()
         temperature = log_temperature.exp().clamp(0.05, 20.0)
         loss = torch.nn.functional.binary_cross_entropy_with_logits(
-            logits[active] / temperature, labels[active])
+            logits[active] / temperature, labels[active]
+        )
         loss.backward()
         return loss
 

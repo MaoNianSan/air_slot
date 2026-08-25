@@ -51,16 +51,14 @@ def _entry_satisfied(entry, row: ConsequenceRow) -> bool:
         return False
     if _SUPPORT_RANK[row.support_state] > _SUPPORT_RANK[entry.required_support]:
         return False
-    if _EVIDENCE_RANK[row.evidence_class] > _EVIDENCE_RANK[
-        entry.required_evidence_class
-    ]:
-        return False
     if (
-        entry.coverage_requirement is CoverageRequirement.VALUED_COMPONENT
-        and (
-            row.constructed_value_cu is None
-            or row.cu_status is not CUNormalizationStatus.CU_FROZEN
-        )
+        _EVIDENCE_RANK[row.evidence_class]
+        > _EVIDENCE_RANK[entry.required_evidence_class]
+    ):
+        return False
+    if entry.coverage_requirement is CoverageRequirement.VALUED_COMPONENT and (
+        row.constructed_value_cu is None
+        or row.cu_status is not CUNormalizationStatus.CU_FROZEN
     ):
         return False
     if (
@@ -148,4 +146,3 @@ def evaluate_a00_baseline_gate(
             f"A00_BASELINE_COMPONENT_INVALID:{component}" for component in missing
         ),
     )
-

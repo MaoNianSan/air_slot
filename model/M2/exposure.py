@@ -141,9 +141,7 @@ def resolve_node_specific_exposure(
             source_type=SourceType.DATA,
             support_level=ExposureSupportLevel.SAME_AIRCRAFT_SUCCESSOR_CHAIN,
             reference_source="DECISION_VISIBLE_SCHEDULE_SNAPSHOT",
-            reference_id=content_id(
-                {"schedule_reference_ids": reference_ids}
-            ),
+            reference_id=content_id({"schedule_reference_ids": reference_ids}),
             reference_version="M2_NODE_SCHEDULE_EXPOSURE_V1",
             confidence=ExposureConfidence.HIGH,
         )

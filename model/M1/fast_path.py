@@ -65,7 +65,11 @@ from .calibration import (
     require_no_final_test,
     quantile_coverage_diagnostic,
 )
-from .contracts import M1_TEMPERATURE_D_OB_ZERO, M1_TEMPERATURE_D_TX_ZERO, M1_TEMPERATURE_HAZARD
+from .contracts import (
+    M1_TEMPERATURE_D_OB_ZERO,
+    M1_TEMPERATURE_D_TX_ZERO,
+    M1_TEMPERATURE_HAZARD,
+)
 from .pipeline import conditional_head_summary
 from .loss import monotone_positive_quantiles
 from .scenarios import ancestral_sample_v2
@@ -81,10 +85,8 @@ def fast_v2_distribution_schema() -> dict[str, object]:
     """Formal V2 output schema shared by FAST and STATE_AWARE paths."""
     return {
         "T_IB_A00": "hazard_pmf",
-        "D_OB": {"zero_probability": "scalar",
-                 "positive_quantiles_minutes": "vector"},
-        "D_TX": {"zero_probability": "scalar",
-                 "positive_quantiles_minutes": "vector"},
+        "D_OB": {"zero_probability": "scalar", "positive_quantiles_minutes": "vector"},
+        "D_TX": {"zero_probability": "scalar", "positive_quantiles_minutes": "vector"},
     }
 
 
@@ -143,8 +145,7 @@ class _ConstantHazardSurrogate:
         self.test_only_surrogate = True
 
     def predict(self, features: np.ndarray) -> np.ndarray:
-        return np.full(np.asarray(features).shape[0], self.probability,
-                       dtype=float)
+        return np.full(np.asarray(features).shape[0], self.probability, dtype=float)
 
 
 def _quantile_logits_from_values(values: np.ndarray) -> np.ndarray:
@@ -170,8 +171,7 @@ def _quantile_logits_from_values(values: np.ndarray) -> np.ndarray:
 
 def _classifier_logits(classifier, features: np.ndarray) -> torch.Tensor:
     probability = _clip_probability(classifier.predict(features))
-    return torch.tensor(np.log(probability / (1.0 - probability)),
-                        dtype=torch.float32)
+    return torch.tensor(np.log(probability / (1.0 - probability)), dtype=torch.float32)
 
 
 class LightGBMDistributionalPredictor:
@@ -283,15 +283,22 @@ class LightGBMDistributionalPredictor:
 
         def _classifier():
             return lgbm.LGBMClassifier(
-                n_estimators=int(n_estimators), num_leaves=7,
-                learning_rate=0.1, random_state=int(seed), verbose=-1,
+                n_estimators=int(n_estimators),
+                num_leaves=7,
+                learning_rate=0.1,
+                random_state=int(seed),
+                verbose=-1,
             )
 
         def _regressor(level: float):
             return lgbm.LGBMRegressor(
-                objective="quantile", alpha=float(level),
-                n_estimators=int(n_estimators), num_leaves=7,
-                learning_rate=0.1, random_state=int(seed), verbose=-1,
+                objective="quantile",
+                alpha=float(level),
+                n_estimators=int(n_estimators),
+                num_leaves=7,
+                learning_rate=0.1,
+                random_state=int(seed),
+                verbose=-1,
             )
 
         # --- T_IB hazard: per-bin risk-set binary models ---
@@ -310,9 +317,8 @@ class LightGBMDistributionalPredictor:
             if risk_size < 2:
                 degenerate = True
             else:
-                event = (
-                    (ib_target[risk_mask] >= bin_start)
-                    & (ib_target[risk_mask] < bin_start + width)
+                event = (ib_target[risk_mask] >= bin_start) & (
+                    ib_target[risk_mask] < bin_start + width
                 )
                 degenerate = bool(event.sum() < 1 or (1 - event).sum() < 1)
             if degenerate:
@@ -341,7 +347,9 @@ class LightGBMDistributionalPredictor:
         ob_features = np.concatenate([features, ib_parent[:, None]], axis=-1)
         ob_positive = ob_valid & (d_ob_target > 0)
         ob_zero_model = _classifier()
-        ob_zero_model.fit(ob_features[ob_valid], (d_ob_target[ob_valid] == 0).astype(np.int32))
+        ob_zero_model.fit(
+            ob_features[ob_valid], (d_ob_target[ob_valid] == 0).astype(np.int32)
+        )
         ob_quantile_models = []
         if ob_positive.sum() < 2:
             raise ContractError("M1_FAST_D_OB_POSITIVE_ROWS_INSUFFICIENT")
@@ -355,13 +363,17 @@ class LightGBMDistributionalPredictor:
         if tx_parent_ok.sum() < 4:
             raise ContractError("M1_FAST_D_TX_TRAINING_ROWS_INSUFFICIENT")
         tx_features = np.concatenate(
-            [ob_features, np.where(ob_valid, np.maximum(0.0, d_ob_target), 0.0)[:, None]],
+            [
+                ob_features,
+                np.where(ob_valid, np.maximum(0.0, d_ob_target), 0.0)[:, None],
+            ],
             axis=-1,
         )
         tx_positive = tx_parent_ok & (d_tx_target > 0)
         tx_zero_model = _classifier()
-        tx_zero_model.fit(tx_features[tx_parent_ok],
-                          (d_tx_target[tx_parent_ok] == 0).astype(np.int32))
+        tx_zero_model.fit(
+            tx_features[tx_parent_ok], (d_tx_target[tx_parent_ok] == 0).astype(np.int32)
+        )
         tx_quantile_models = []
         if tx_positive.sum() < 2:
             raise ContractError("M1_FAST_D_TX_POSITIVE_ROWS_INSUFFICIENT")
@@ -387,7 +399,9 @@ class LightGBMDistributionalPredictor:
         return fast_features_from_sequence(values, lengths)
 
     def hazard_risk_set_sizes(
-        self, ib_target, active=None,
+        self,
+        ib_target,
+        active=None,
     ) -> list[int]:
         """Risk-set sizes ``R_k = {n : active AND remaining >= start(B_k)}``.
 
@@ -407,9 +421,12 @@ class LightGBMDistributionalPredictor:
             for k in range(hazard.finite_class_count)
         ]
 
-    def state_representation(self, features: torch.Tensor,
-                             fast_features=None,
-                             static_features: torch.Tensor | None = None) -> torch.Tensor:
+    def state_representation(
+        self,
+        features: torch.Tensor,
+        fast_features=None,
+        static_features: torch.Tensor | None = None,
+    ) -> torch.Tensor:
         """FAST state = concat(r_fast, c_static) (no GRU recurrent hidden).
 
         ``features`` is the deterministic current/local block ``r_fast``; when
@@ -429,8 +446,9 @@ class LightGBMDistributionalPredictor:
         indices = torch.as_tensor(ib_index, dtype=torch.long).reshape(-1)
         if indices.numel() == 1 and batch > 1:
             indices = indices.expand(batch)
-        return np.asarray([hazard.representative(int(item))[0] for item in indices],
-                          dtype=float)
+        return np.asarray(
+            [hazard.representative(int(item))[0] for item in indices], dtype=float
+        )
 
     def hazard_logits(self, state: torch.Tensor) -> torch.Tensor:
         """Hazard logits over the internal remaining-time coordinate.
@@ -439,15 +457,18 @@ class LightGBMDistributionalPredictor:
         shared ``hazard_pmf`` turns these into
         ``pmf_k = h_k * prod_{j<k}(1-h_j)`` with survival tail.
         """
-        models = self.models.get(M1_V2_HAZARD_COORDINATE_TARGET, {}).get("hazard_models")
+        models = self.models.get(M1_V2_HAZARD_COORDINATE_TARGET, {}).get(
+            "hazard_models"
+        )
         if not models:
             raise ContractError("M1_FAST_HAZARD_MODELS_MISSING")
         features = np.asarray(state.detach().cpu(), dtype=float)
-        probabilities = np.column_stack([
-            _clip_probability(model.predict(features)) for model in models
-        ])
-        return torch.tensor(np.log(probabilities / (1.0 - probabilities)),
-                            dtype=torch.float32)
+        probabilities = np.column_stack(
+            [_clip_probability(model.predict(features)) for model in models]
+        )
+        return torch.tensor(
+            np.log(probabilities / (1.0 - probabilities)), dtype=torch.float32
+        )
 
     def _positive_quantile_values(self, regressors, features: np.ndarray) -> np.ndarray:
         return np.column_stack([model.predict(features) for model in regressors])
@@ -460,9 +481,11 @@ class LightGBMDistributionalPredictor:
         augmented = np.concatenate([features, ib_repr[:, None]], axis=-1)
         zero = _classifier_logits(self.models["D_OB"]["zero"], augmented)
         quantiles = self._positive_quantile_values(
-            self.models["D_OB"]["quantiles"], augmented)
+            self.models["D_OB"]["quantiles"], augmented
+        )
         quantile_logits = torch.tensor(
-            _quantile_logits_from_values(quantiles), dtype=torch.float32)
+            _quantile_logits_from_values(quantiles), dtype=torch.float32
+        )
         return zero, quantile_logits
 
     def d_tx_heads(self, state: torch.Tensor, ib_index, d_ob_index):
@@ -473,19 +496,27 @@ class LightGBMDistributionalPredictor:
         ob_indices = torch.as_tensor(d_ob_index, dtype=torch.long).reshape(-1)
         if ob_indices.numel() == 1 and features.shape[0] > 1:
             ob_indices = ob_indices.expand(features.shape[0])
-        ob_repr = np.asarray([d_ob.representative(int(item))[0] for item in ob_indices],
-                             dtype=float)
+        ob_repr = np.asarray(
+            [d_ob.representative(int(item))[0] for item in ob_indices], dtype=float
+        )
         augmented = np.concatenate(
-            [features, ib_repr[:, None], ob_repr[:, None]], axis=-1)
+            [features, ib_repr[:, None], ob_repr[:, None]], axis=-1
+        )
         zero = _classifier_logits(self.models["D_TX"]["zero"], augmented)
         quantiles = self._positive_quantile_values(
-            self.models["D_TX"]["quantiles"], augmented)
+            self.models["D_TX"]["quantiles"], augmented
+        )
         quantile_logits = torch.tensor(
-            _quantile_logits_from_values(quantiles), dtype=torch.float32)
+            _quantile_logits_from_values(quantiles), dtype=torch.float32
+        )
         return zero, quantile_logits
 
-    def _predict_heads(self, values: torch.Tensor, lengths=None,
-                       static_features: torch.Tensor | None = None):
+    def _predict_heads(
+        self,
+        values: torch.Tensor,
+        lengths=None,
+        static_features: torch.Tensor | None = None,
+    ):
         features = self._fast_features(values, lengths)
         state = torch.tensor(features, dtype=torch.float32)
         if static_features is not None:
@@ -497,11 +528,14 @@ class LightGBMDistributionalPredictor:
             # a missing static block is a width-contract violation (never a
             # silent zero substitution).
             raise ContractError("M1_FAST_STATIC_FEATURES_REQUIRED")
-        return conditional_head_summary(self, state, self.contracts,
-                                        temperatures=self.calibration_temperatures)
+        return conditional_head_summary(
+            self, state, self.contracts, temperatures=self.calibration_temperatures
+        )
 
     def predict_development(
-        self, values: torch.Tensor, lengths: torch.Tensor | None = None,
+        self,
+        values: torch.Tensor,
+        lengths: torch.Tensor | None = None,
         static_features: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor | dict[str, torch.Tensor]]:
         """Execute the fitted architecture for synthetic/unit smoke only.
@@ -515,7 +549,9 @@ class LightGBMDistributionalPredictor:
         return self._predict_heads(values, lengths, static_features)
 
     def predict_from_pre(
-        self, pre_state, values: torch.Tensor,
+        self,
+        pre_state,
+        values: torch.Tensor,
         lengths: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor | dict[str, torch.Tensor]]:
         """FAST production forecast over a PRE state (same PRE interface).
@@ -526,15 +562,20 @@ class LightGBMDistributionalPredictor:
         provenance enter ``c_static``.
         """
         from .contracts import static_reference_context_from_pre
+
         publication = getattr(pre_state, "static_reference_publication", None)
-        context = (static_reference_context_from_pre(publication)
-                   if publication else None)
+        context = (
+            static_reference_context_from_pre(publication) if publication else None
+        )
         if self._static_input_size == 0:
             return self.predict_development(values, lengths)
         if self.static_normalization is None:
-            raise ContractError("M1_FAST_STATIC_NORMALIZATION_REQUIRED_FOR_PRE_INFERENCE")
+            raise ContractError(
+                "M1_FAST_STATIC_NORMALIZATION_REQUIRED_FOR_PRE_INFERENCE"
+            )
         static_features, _ = static_reference_features_from_pre(
-            pre_state, context, self.static_normalization)
+            pre_state, context, self.static_normalization
+        )
         return self.predict_development(values, lengths, static_features)
 
     def calibration_policy(self):
@@ -570,7 +611,10 @@ class LightGBMDistributionalPredictor:
             act_ob = ~np.isnan(np.asarray(d_ob_target, dtype=float))
             act_tx = ~np.isnan(np.asarray(d_tx_target, dtype=float))
         else:
-            act_ib = np.asarray(active.get(M1_V2_HAZARD_COORDINATE_TARGET, np.zeros(len(ib))), dtype=bool)
+            act_ib = np.asarray(
+                active.get(M1_V2_HAZARD_COORDINATE_TARGET, np.zeros(len(ib))),
+                dtype=bool,
+            )
             act_ob = np.asarray(active.get("D_OB", np.zeros(len(ib))), dtype=bool)
             act_tx = np.asarray(active.get("D_TX", np.zeros(len(ib))), dtype=bool)
         features = torch.tensor(np.asarray(X, dtype=float), dtype=torch.float32)
@@ -592,19 +636,30 @@ class LightGBMDistributionalPredictor:
                 split=split,
             )
         for name, key, targets, act in (
-            ("D_OB", M1_TEMPERATURE_D_OB_ZERO,
-             np.asarray(d_ob_target, dtype=float), act_ob),
-            ("D_TX", M1_TEMPERATURE_D_TX_ZERO,
-             np.asarray(d_tx_target, dtype=float), act_tx),
+            (
+                "D_OB",
+                M1_TEMPERATURE_D_OB_ZERO,
+                np.asarray(d_ob_target, dtype=float),
+                act_ob,
+            ),
+            (
+                "D_TX",
+                M1_TEMPERATURE_D_TX_ZERO,
+                np.asarray(d_tx_target, dtype=float),
+                act_tx,
+            ),
         ):
             if not bool(act.any()):
                 continue
-            parent_ib = np.asarray([hazard.encode(float(ib[i]))
-                                    for i in np.nonzero(act)[0]], dtype=np.int64)
+            parent_ib = np.asarray(
+                [hazard.encode(float(ib[i])) for i in np.nonzero(act)[0]],
+                dtype=np.int64,
+            )
             rows = features[np.nonzero(act)[0]]
             if name == "D_OB":
                 zero_logit, quantile_logit = self.d_ob_heads(
-                    rows, torch.tensor(parent_ib))
+                    rows, torch.tensor(parent_ib)
+                )
             else:
                 # D_TX conditions on the FORMAL D_OB parent (its own D_TX
                 # minute value is never a proxy): encode each active row's
@@ -617,20 +672,27 @@ class LightGBMDistributionalPredictor:
                     if np.isnan(parent_minutes) or parent_minutes < 0:
                         raise ContractError("M1_FAST_D_TX_CALIBRATION_PARENT_MISSING")
                     parent_ob[row_position] = self.contracts["D_OB"].encode(
-                        parent_minutes)
+                        parent_minutes
+                    )
                 zero_logit, quantile_logit = self.d_tx_heads(
-                    rows, torch.tensor(parent_ib), torch.tensor(parent_ob))
-            zero_label = np.asarray([float(targets[i]) == 0.0
-                                     for i in np.nonzero(act)[0]], dtype=float)
+                    rows, torch.tensor(parent_ib), torch.tensor(parent_ob)
+                )
+            zero_label = np.asarray(
+                [float(targets[i]) == 0.0 for i in np.nonzero(act)[0]], dtype=float
+            )
             temperatures[key] = fit_zero_mass_temperature(
-                zero_logit, torch.tensor(zero_label, dtype=torch.float32),
-                torch.ones(len(zero_label), dtype=torch.bool), split=split,
+                zero_logit,
+                torch.tensor(zero_label, dtype=torch.float32),
+                torch.ones(len(zero_label), dtype=torch.bool),
+                split=split,
             )
             actual = torch.tensor(targets[np.nonzero(act)[0]], dtype=torch.float32)
             positive_active = torch.isfinite(actual) & (actual > 0)
             coverage[name] = quantile_coverage_diagnostic(
-                monotone_positive_quantiles(quantile_logit), actual,
-                tuple(self.contracts[name].quantile_levels), positive_active,
+                monotone_positive_quantiles(quantile_logit),
+                actual,
+                tuple(self.contracts[name].quantile_levels),
+                positive_active,
                 split=split,
             )
         self.calibration_temperatures = temperatures
@@ -675,7 +737,9 @@ class LightGBMDistributionalPredictor:
         if self.status is M1FastPathStatus.ABSTAIN:
             raise ContractError("M1_FAST_PATH_ABSTAIN_NO_FITTED_MODELS")
         return ancestral_sample_v2(
-            self, features, self.contracts,
+            self,
+            features,
+            self.contracts,
             episode_id=episode_id,
             decision_node_id=decision_node_id,
             stage=stage,

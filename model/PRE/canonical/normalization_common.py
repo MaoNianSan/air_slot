@@ -5,7 +5,6 @@ from typing import Any
 
 from model.common.value_objects import ProvenanceRef
 
-
 _MISSING = {"", "M", "NA", "N/A", "NAN", "NONE", "NULL"}
 
 
@@ -28,7 +27,10 @@ def deterministic_id(prefix: str, parts: dict[str, Any]) -> str:
 def parse_utc(value: object) -> datetime:
     if isinstance(value, datetime):
         parsed = value
-    elif isinstance(value, (int, float)) or str(value).strip().replace(".", "", 1).isdigit():
+    elif (
+        isinstance(value, (int, float))
+        or str(value).strip().replace(".", "", 1).isdigit()
+    ):
         parsed = datetime.fromtimestamp(float(value), timezone.utc)
     else:
         parsed = datetime.fromisoformat(str(value).strip().replace("Z", "+00:00"))
@@ -37,8 +39,9 @@ def parse_utc(value: object) -> datetime:
     return parsed.astimezone(timezone.utc)
 
 
-def provenance(dataset: str, logical_source: str, source_record_id: str,
-               rule_id: str) -> ProvenanceRef:
+def provenance(
+    dataset: str, logical_source: str, source_record_id: str, rule_id: str
+) -> ProvenanceRef:
     return ProvenanceRef(
         dataset_instance_id=dataset,
         logical_source=logical_source,

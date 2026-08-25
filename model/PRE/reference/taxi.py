@@ -18,6 +18,7 @@ Construction rule (data1):
     proxy-named detector event (never BTS DIRECT equivalent, D1-3/D1-4 closure),
     so support is DEGRADED with an explicit reason.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -92,7 +93,9 @@ class TaxiReference:
     reason_code: str
 
     def lookup(self, airport_id: str) -> SupportedValue:
-        cell = next((item for item in self.cells if item.airport_id == airport_id), None)
+        cell = next(
+            (item for item in self.cells if item.airport_id == airport_id), None
+        )
         if cell is None:
             return SupportedValue(
                 value=None,
@@ -159,7 +162,9 @@ def _flight_id(flight: dict[str, Any]) -> str:
 
 
 def _taxi_minutes(out_block: Any, takeoff: Any) -> float:
-    minutes = (_get(takeoff, "event_time") - _get(out_block, "event_time")).total_seconds() / 60.0
+    minutes = (
+        _get(takeoff, "event_time") - _get(out_block, "event_time")
+    ).total_seconds() / 60.0
     if minutes <= 0:
         raise ContractError("TAXI_PAIR_EVENT_ORDER_INVALID")
     return minutes

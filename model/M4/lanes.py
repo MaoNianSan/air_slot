@@ -45,4 +45,3 @@ def assign_lane(
         # Contract absent/unsupported: cannot form a supported model comparison.
         return "SCENARIO"
     return "FORMAL"
-

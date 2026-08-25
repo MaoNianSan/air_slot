@@ -20,7 +20,6 @@ from .normalization_weather import (
     canonicalize_metar_row,
 )
 
-
 __all__ = [
     "_normalize_isd_station_id",
     "canonicalize_aggregate_row",

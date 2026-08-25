@@ -44,12 +44,23 @@ class M1NormalizationArtifact(FrozenModel):
 
 
 MOTION_FIELDS = (
-    "latitude_deg", "longitude_deg", "velocity_mps", "on_ground",
-    "baro_altitude_m", "geo_altitude_m", "heading_deg", "vertical_rate_mps",
+    "latitude_deg",
+    "longitude_deg",
+    "velocity_mps",
+    "on_ground",
+    "baro_altitude_m",
+    "geo_altitude_m",
+    "heading_deg",
+    "vertical_rate_mps",
 )
 WEATHER_FIELDS = (
-    "temperature_c", "dewpoint_c", "wind_direction_deg", "wind_speed_mps",
-    "wind_gust_mps", "qnh_hpa", "visibility_m",
+    "temperature_c",
+    "dewpoint_c",
+    "wind_direction_deg",
+    "wind_speed_mps",
+    "wind_gust_mps",
+    "qnh_hpa",
+    "visibility_m",
 )
 SCIENTIFIC_OBJECTS = ("predecessor_motion", "current_weather", "schedule_reference")
 EVIDENCE_LEVELS = tuple(item.value for item in EvidenceClass)
@@ -60,39 +71,64 @@ STAGE_LEVELS = tuple(item.value for item in OperationalStage)
 def _x_names() -> tuple[str, ...]:
     result = []
     for field in MOTION_FIELDS:
-        result.extend((f"motion.{field}.sin", f"motion.{field}.cos")) if field == "heading_deg" \
+        (
+            result.extend((f"motion.{field}.sin", f"motion.{field}.cos"))
+            if field == "heading_deg"
             else result.append(f"motion.{field}")
+        )
     for field in WEATHER_FIELDS:
-        result.extend((f"weather.{field}.sin", f"weather.{field}.cos")) \
-            if field == "wind_direction_deg" else result.append(f"weather.{field}")
+        (
+            result.extend((f"weather.{field}.sin", f"weather.{field}.cos"))
+            if field == "wind_direction_deg"
+            else result.append(f"weather.{field}")
+        )
     result.append("schedule.signed_minutes_to_crs_departure")
     return tuple(result)
 
 
 X_NAMES = _x_names()
-MASK_FIELDS = tuple([f"motion.{name}" for name in MOTION_FIELDS]
-                    + [f"weather.{name}" for name in WEATHER_FIELDS]
-                    + ["schedule.signed_minutes_to_crs_departure"])
-M_NAMES = tuple(f"{name}.{kind}_mask" for name in MASK_FIELDS
-                for kind in ("missing", "stale", "fallback"))
-DELTA_NAMES = ("motion.observation_age_minutes", "weather.observation_age_minutes",
-               "node.spacing_minutes")
-E_NAMES = tuple(f"{obj}.evidence.{level}" for obj in SCIENTIFIC_OBJECTS
-                for level in EVIDENCE_LEVELS) + tuple(
-                f"{obj}.support.{level}" for obj in SCIENTIFIC_OBJECTS
-                for level in SUPPORT_LEVELS)
+MASK_FIELDS = tuple(
+    [f"motion.{name}" for name in MOTION_FIELDS]
+    + [f"weather.{name}" for name in WEATHER_FIELDS]
+    + ["schedule.signed_minutes_to_crs_departure"]
+)
+M_NAMES = tuple(
+    f"{name}.{kind}_mask"
+    for name in MASK_FIELDS
+    for kind in ("missing", "stale", "fallback")
+)
+DELTA_NAMES = (
+    "motion.observation_age_minutes",
+    "weather.observation_age_minutes",
+    "node.spacing_minutes",
+)
+E_NAMES = tuple(
+    f"{obj}.evidence.{level}" for obj in SCIENTIFIC_OBJECTS for level in EVIDENCE_LEVELS
+) + tuple(
+    f"{obj}.support.{level}" for obj in SCIENTIFIC_OBJECTS for level in SUPPORT_LEVELS
+)
 S_NAMES = tuple(f"stage.{name}" for name in STAGE_LEVELS)
 FEATURE_NAMES = X_NAMES + M_NAMES + DELTA_NAMES + E_NAMES + S_NAMES
 GROUP_SLICES = {
     "X": slice(0, len(X_NAMES)),
     "M": slice(len(X_NAMES), len(X_NAMES) + len(M_NAMES)),
-    "Delta": slice(len(X_NAMES) + len(M_NAMES), len(X_NAMES) + len(M_NAMES) + len(DELTA_NAMES)),
-    "E": slice(len(X_NAMES) + len(M_NAMES) + len(DELTA_NAMES),
-               len(X_NAMES) + len(M_NAMES) + len(DELTA_NAMES) + len(E_NAMES)),
+    "Delta": slice(
+        len(X_NAMES) + len(M_NAMES), len(X_NAMES) + len(M_NAMES) + len(DELTA_NAMES)
+    ),
+    "E": slice(
+        len(X_NAMES) + len(M_NAMES) + len(DELTA_NAMES),
+        len(X_NAMES) + len(M_NAMES) + len(DELTA_NAMES) + len(E_NAMES),
+    ),
     "S": slice(len(FEATURE_NAMES) - len(S_NAMES), len(FEATURE_NAMES)),
 }
-NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", ".cos"))
-                         and name != "motion.on_ground") + DELTA_NAMES
+NORMALIZED_NAMES = (
+    tuple(
+        name
+        for name in X_NAMES
+        if not name.endswith((".sin", ".cos")) and name != "motion.on_ground"
+    )
+    + DELTA_NAMES
+)
 
 # ---------------------------------------------------------------------------
 # V2 principal input groups (Round-2 M1 V2).
@@ -116,8 +152,13 @@ NORMALIZED_NAMES = tuple(name for name in X_NAMES if not name.endswith((".sin", 
 #                     removed in Round 2.2).
 # ---------------------------------------------------------------------------
 V2_WEATHER_FIELDS = (
-    "temperature_c", "dewpoint_c", "wind_direction_deg", "wind_speed_mps",
-    "qnh_hpa", "visibility_m", "ceiling_base_m",
+    "temperature_c",
+    "dewpoint_c",
+    "wind_direction_deg",
+    "wind_speed_mps",
+    "qnh_hpa",
+    "visibility_m",
+    "ceiling_base_m",
 )
 V2_STATE_FIELDS = ("ib_realized", "ob_realized", "to_realized")
 V2_OBJECTS = ("current_weather", "schedule_reference", "current_state")
@@ -127,7 +168,8 @@ V2_STATE_REALIZED_BY_STAGE = {
     "to_realized": frozenset({"COMPLETED"}),
 }
 V2_DELTA_X_FIELDS = tuple(
-    f"delta.weather.{name}" for name in V2_WEATHER_FIELDS
+    f"delta.weather.{name}"
+    for name in V2_WEATHER_FIELDS
     if name != "wind_direction_deg"
 )
 V2_AR_FIELDS: tuple[str, ...] = ()
@@ -146,7 +188,9 @@ def _v2_x_names() -> tuple[str, ...]:
     result.append("schedule.signed_minutes_to_crs_departure")
     for field in V2_WEATHER_FIELDS:
         if field == "wind_direction_deg":
-            result.extend(("weather.wind_direction_deg.sin", "weather.wind_direction_deg.cos"))
+            result.extend(
+                ("weather.wind_direction_deg.sin", "weather.wind_direction_deg.cos")
+            )
         else:
             result.append(f"weather.{field}")
     result.extend(V2_DELTA_X_FIELDS)
@@ -171,19 +215,29 @@ FEATURE_NAMES_V2 = X_NAMES_V2 + M_NAMES_V2 + DELTA_NAMES_V2 + E_NAMES_V2 + S_NAM
 GROUP_SLICES_V2 = {
     "X": slice(0, len(X_NAMES_V2)),
     "M": slice(len(X_NAMES_V2), len(X_NAMES_V2) + len(M_NAMES_V2)),
-    "Delta": slice(len(X_NAMES_V2) + len(M_NAMES_V2),
-                   len(X_NAMES_V2) + len(M_NAMES_V2) + len(DELTA_NAMES_V2)),
-    "E": slice(len(X_NAMES_V2) + len(M_NAMES_V2) + len(DELTA_NAMES_V2),
-               len(FEATURE_NAMES_V2) - len(S_NAMES_V2)),
+    "Delta": slice(
+        len(X_NAMES_V2) + len(M_NAMES_V2),
+        len(X_NAMES_V2) + len(M_NAMES_V2) + len(DELTA_NAMES_V2),
+    ),
+    "E": slice(
+        len(X_NAMES_V2) + len(M_NAMES_V2) + len(DELTA_NAMES_V2),
+        len(FEATURE_NAMES_V2) - len(S_NAMES_V2),
+    ),
     "S": slice(len(FEATURE_NAMES_V2) - len(S_NAMES_V2), len(FEATURE_NAMES_V2)),
 }
-NORMALIZED_NAMES_V2 = tuple(
-    name for name in X_NAMES_V2
-    if name.startswith(("weather.", "schedule.")) and not name.endswith((".sin", ".cos"))
-) + V2_DELTA_T_FIELDS
+NORMALIZED_NAMES_V2 = (
+    tuple(
+        name
+        for name in X_NAMES_V2
+        if name.startswith(("weather.", "schedule."))
+        and not name.endswith((".sin", ".cos"))
+    )
+    + V2_DELTA_T_FIELDS
+)
 
 
 V2_FAST_FEATURE_COUNT = len(FEATURE_NAMES_V2)
+
 
 def fast_features_from_sequence(
     values: torch.Tensor, lengths: torch.Tensor | None = None
@@ -210,8 +264,9 @@ def fast_features_from_sequence(
     return values[rows, indices]
 
 
-def fit_train_normalization(rows: list[dict[str, float]], *, split: str,
-                                names: Sequence[str] | None = None) -> M1NormalizationArtifact:
+def fit_train_normalization(
+    rows: list[dict[str, float]], *, split: str, names: Sequence[str] | None = None
+) -> M1NormalizationArtifact:
     """Train-only normalization over the V2 principal feature names."""
     if split != "train":
         raise ContractError("M1_NORMALIZATION_MUST_BE_TRAIN_ONLY")
@@ -224,7 +279,7 @@ def fit_train_normalization(rows: list[dict[str, float]], *, split: str,
             continue
         mean = sum(observed) / len(observed)
         variance = sum((value - mean) ** 2 for value in observed) / len(observed)
-        values[name] = NormalizationValue(mean=mean, std=max(variance ** .5, 1e-12))
+        values[name] = NormalizationValue(mean=mean, std=max(variance**0.5, 1e-12))
     return M1NormalizationArtifact(fitted_split="train", values=values)
 
 
@@ -233,16 +288,21 @@ def episode_normalized_weights(
     active: list[bool] | tuple[bool, ...] | torch.Tensor | None = None,
 ) -> torch.Tensor:
     """Inverse eligible-node counts so each active episode sums to one."""
-    enabled = [True] * len(episode_ids) if active is None else [bool(item) for item in active]
+    enabled = (
+        [True] * len(episode_ids) if active is None else [bool(item) for item in active]
+    )
     if len(enabled) != len(episode_ids):
         raise ValueError("M1_EPISODE_WEIGHT_MASK_LENGTH_MISMATCH")
     counts = Counter(
         episode_id for episode_id, is_active in zip(episode_ids, enabled) if is_active
     )
-    return torch.tensor([
-        1.0 / counts[episode_id] if is_active else 0.0
-        for episode_id, is_active in zip(episode_ids, enabled)
-    ], dtype=torch.float32)
+    return torch.tensor(
+        [
+            1.0 / counts[episode_id] if is_active else 0.0
+            for episode_id, is_active in zip(episode_ids, enabled)
+        ],
+        dtype=torch.float32,
+    )
 
 
 def _find(pre: PREState, family: str, variable: str) -> SupportedValue:
@@ -250,15 +310,21 @@ def _find(pre: PREState, family: str, variable: str) -> SupportedValue:
     value = container.get(variable)
     if value is not None:
         return value
-    return SupportedValue(value=None, unit="canonical",
+    return SupportedValue(
+        value=None,
+        unit="canonical",
         evidence_class=EvidenceClass.UNSUPPORTED,
         support_ceiling=EvidenceClass.UNSUPPORTED,
-        support_state=SupportState.ABSTAIN, reason_code=f"MISSING_{variable.upper()}")
+        support_state=SupportState.ABSTAIN,
+        reason_code=f"MISSING_{variable.upper()}",
+    )
 
 
 def _lineage(pre: PREState, variable: str):
-    return next((item for item in pre.variable_lineage
-                 if item.scientific_variable == variable), None)
+    return next(
+        (item for item in pre.variable_lineage if item.scientific_variable == variable),
+        None,
+    )
 
 
 def _field(value: SupportedValue, field: str):
@@ -268,7 +334,9 @@ def _field(value: SupportedValue, field: str):
 
 
 def _quality_masks(value: SupportedValue, lineage) -> tuple[float, float]:
-    flags = set(value.quality_flags) | (set(lineage.quality_flags) if lineage else set())
+    flags = set(value.quality_flags) | (
+        set(lineage.quality_flags) if lineage else set()
+    )
     stale = float(any(flag.startswith("STALE") for flag in flags))
     fallback = float(bool(lineage and lineage.fallback_used))
     return stale, fallback
@@ -278,8 +346,9 @@ def _scaled(normalization: M1NormalizationArtifact, name: str, value) -> float:
     return normalization.normalize(name, float(value))
 
 
-def validate_history_sequence(states: list[PREState] | tuple[PREState, ...], *,
-                              require_episode_start: bool) -> None:
+def validate_history_sequence(
+    states: list[PREState] | tuple[PREState, ...], *, require_episode_start: bool
+) -> None:
     """Validate one contiguous causal sequence on the frozen five-minute grid.
 
     ADAPTIVE history starts at episode node zero. CURRENT and FIXED history are
@@ -314,7 +383,8 @@ def validate_full_history_prefix(states: list[PREState] | tuple[PREState, ...]) 
 def _state_support_value() -> SupportedValue:
     """Decision-time operational stage as a supported current-state object."""
     return SupportedValue(
-        value=None, unit="canonical",
+        value=None,
+        unit="canonical",
         evidence_class=EvidenceClass.DIRECT,
         support_ceiling=EvidenceClass.DIRECT,
         support_state=SupportState.SUPPORTED,
@@ -322,9 +392,12 @@ def _state_support_value() -> SupportedValue:
     )
 
 
-def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
-                        normalization: M1NormalizationArtifact, *,
-                        require_episode_start: bool = True) -> torch.Tensor:
+def encode_pre_sequence(
+    states: list[PREState] | tuple[PREState, ...],
+    normalization: M1NormalizationArtifact,
+    *,
+    require_episode_start: bool = True,
+) -> torch.Tensor:
     """Encode the V2 principal feature vector for one causal PRE prefix.
 
     The V2 encoder never requires predecessor_motion trajectory fields
@@ -341,18 +414,23 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
         schedule = _find(pre, "successor_state", "schedule_reference")
         stage = pre.decision_node.operational_stage.value
         x: list[float] = [
-            float(stage in V2_STATE_REALIZED_BY_STAGE[name])
-            for name in V2_STATE_FIELDS
+            float(stage in V2_STATE_REALIZED_BY_STAGE[name]) for name in V2_STATE_FIELDS
         ]
         schedule_time = _field(schedule, "scheduled_departure_utc")
         schedule_minutes = (
             None
             if schedule_time is None
-            else (schedule_time - pre.decision_node.decision_time).total_seconds() / 60.0
+            else (schedule_time - pre.decision_node.decision_time).total_seconds()
+            / 60.0
         )
         schedule_scaled = (
-            _scaled(normalization, "schedule.signed_minutes_to_crs_departure", schedule_minutes)
-            if schedule_minutes is not None else 0.0
+            _scaled(
+                normalization,
+                "schedule.signed_minutes_to_crs_departure",
+                schedule_minutes,
+            )
+            if schedule_minutes is not None
+            else 0.0
         )
         x.append(schedule_scaled)
         current_values: dict[str, float] = {}
@@ -401,7 +479,9 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
         masks.append(float(ceiling_status == "UNLIMITED"))
         for field in V2_DERIVED_FIELDS:
             source = field.removeprefix("delta.weather.")
-            valid = current_observed.get(source, False) and previous_observed.get(source, False)
+            valid = current_observed.get(source, False) and previous_observed.get(
+                source, False
+            )
             masks.append(float(not valid))
         age = (
             None
@@ -409,8 +489,11 @@ def encode_pre_sequence(states: list[PREState] | tuple[PREState, ...],
             else weather_lineage.age_seconds / 60.0
         )
         delta = [
-            _scaled(normalization, "weather.observation_age_minutes", age)
-            if age is not None else 0.0
+            (
+                _scaled(normalization, "weather.observation_age_minutes", age)
+                if age is not None
+                else 0.0
+            )
         ]
         support = [float(weather.support_state is SupportState.ABSTAIN)]
         rows.append(x + masks + delta + support)

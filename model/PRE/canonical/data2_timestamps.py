@@ -43,9 +43,7 @@ def _date_resolved_direct(
         raise ValueError("BTS_DIRECT_CLOCK_EXPECTED")
     return min(
         available,
-        key=lambda item: (
-            abs((item - signed_target_utc).total_seconds()), item
-        ),
+        key=lambda item: (abs((item - signed_target_utc).total_seconds()), item),
     )
 
 
@@ -67,9 +65,7 @@ def resolve_bts_actual_timestamp(
         None if parsed_direct is None else infer_rollover(schedule_utc, parsed_direct)
     )
     signed_target = (
-        None
-        if signed_delay is None
-        else schedule_utc + timedelta(minutes=signed_delay)
+        None if signed_delay is None else schedule_utc + timedelta(minutes=signed_delay)
     )
     flags = {"BTS_DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION"}
 
@@ -99,10 +95,12 @@ def resolve_bts_actual_timestamp(
         if date_offset_resolved:
             flags.add(f"BTS_SIGNED_DELAY_DATE_OFFSET_RESOLVED_{label}")
         if difference > 1.0:
-            flags.update({
-                "BTS_SIGNED_DELAY_DIRECT_CLOCK_INCONSISTENCY",
-                f"BTS_SIGNED_DELAY_DIRECT_CLOCK_INCONSISTENCY_{label}",
-            })
+            flags.update(
+                {
+                    "BTS_SIGNED_DELAY_DIRECT_CLOCK_INCONSISTENCY",
+                    f"BTS_SIGNED_DELAY_DIRECT_CLOCK_INCONSISTENCY_{label}",
+                }
+            )
     elif parsed_direct is not None:
         flags.add("SIGNED_DELAY_DATE_DISAMBIGUATION_UNAVAILABLE")
     elif signed_target is not None:

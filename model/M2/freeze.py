@@ -52,7 +52,6 @@ from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 
-
 REGISTRY_ID = "M2_DATA2_FORMAL_CU_V1"
 SCHEMA_VERSION = "M2_DATA2_FORMAL_CU_V1"
 FORMAL_SCOPE = M2_FORMAL_SCOPE
@@ -91,7 +90,9 @@ class M2Data2FormalCuRegistry(FrozenModel):
             if tuple(self.formal_scope) != FORMAL_SCOPE:
                 raise ContractError("M2_FORMAL_SCOPE_MISMATCH")
         elif self.registry_id == "M2_DATA2_FORMAL_CU_V2":
-            if set(self.formal_scope) != set(SEVEN_SCOPE) or len(self.formal_scope) != len(set(self.formal_scope)):
+            if set(self.formal_scope) != set(SEVEN_SCOPE) or len(
+                self.formal_scope
+            ) != len(set(self.formal_scope)):
                 raise ContractError("M2_V2_FORMAL_SCOPE_MISMATCH")
             if not self.assumption_grounded or not self.assumption_scale_artifact:
                 raise ContractError("M2_V2_ASSUMPTION_GROUNDED_MISSING")
@@ -306,7 +307,9 @@ def build_m2_data2_formal_registry(
     references = fit_train_references(rows, root=root, fit_period=fit_period)
     turnaround_ref = data2_turnaround_reference_from_payload(references["turnaround"])
     taxi_ref = data2_taxi_reference_from_payload(references["taxi"])
-    exposure_ref = data2_downstream_exposure_from_payload(references["downstream_exposure"])
+    exposure_ref = data2_downstream_exposure_from_payload(
+        references["downstream_exposure"]
+    )
     passenger_ref = data2_passenger_reference_from_payload(references["passenger"])
 
     written: dict[str, Path] = {}
@@ -322,10 +325,13 @@ def build_m2_data2_formal_registry(
         _write_json_atomic(path, references[name])
         written[name] = path
         reference = (
-            turnaround_ref if name == "turnaround"
-            else taxi_ref if name == "taxi"
-            else passenger_ref if name == "passenger"
-            else exposure_ref
+            turnaround_ref
+            if name == "turnaround"
+            else (
+                taxi_ref
+                if name == "taxi"
+                else passenger_ref if name == "passenger" else exposure_ref
+            )
         )
         reference_artifacts[name] = {
             "path": str(path.relative_to(root)),

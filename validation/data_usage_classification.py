@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
-
 PASS_STATUSES = (
     "COVERED_ACTIVE",
     "EXPLICITLY_UNUSED",
@@ -59,7 +58,9 @@ def classify_source_column(
         if not matched:
             return "RUNTIME_USED_NO_CONTRACT", ["RUNTIME_COLUMN_WITHOUT_RULE"]
         if not matched & primary:
-            return "ACTIVE_REGISTRY_CONFLICT", ["PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN"]
+            return "ACTIVE_REGISTRY_CONFLICT", [
+                "PRIMARY_CANONICALIZER_RULE_OMITS_USED_COLUMN"
+            ]
         return _ACTIVE_ROLE_MAP.get(declared_role, "COVERED_ACTIVE"), []
 
     if matched:

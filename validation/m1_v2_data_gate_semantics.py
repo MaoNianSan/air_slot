@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from model.M1.data import FEATURE_NAMES_V2, encode_pre_sequence
 
-
 SPLITS = ("train", "calibration", "development")
 
 
@@ -165,9 +164,7 @@ def unresolved_column_queue(cohorts) -> list[dict]:
 def upstream_trace_cases(cohorts, normalization) -> list[dict]:
     feature_index = {name: index for index, name in enumerate(FEATURE_NAMES_V2)}
     traced_features = tuple(
-        name
-        for name in FEATURE_NAMES_V2
-        if name.startswith("state.")
+        name for name in FEATURE_NAMES_V2 if name.startswith("state.")
     )
     traces = []
     for split in SPLITS:
@@ -213,9 +210,12 @@ def upstream_trace_cases(cohorts, normalization) -> list[dict]:
                         "successor": successor.availability_basis.value,
                     },
                     "declared_availability_checks": {
-                        "predecessor_ib": predecessor.actual_arrival_utc <= state.decision_node.information_cutoff,
-                        "successor_ob": successor.actual_departure_utc <= state.decision_node.information_cutoff,
-                        "successor_to": successor.wheels_off_utc <= state.decision_node.information_cutoff,
+                        "predecessor_ib": predecessor.actual_arrival_utc
+                        <= state.decision_node.information_cutoff,
+                        "successor_ob": successor.actual_departure_utc
+                        <= state.decision_node.information_cutoff,
+                        "successor_to": successor.wheels_off_utc
+                        <= state.decision_node.information_cutoff,
                     },
                 },
                 "model encoded value": {

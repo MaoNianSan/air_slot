@@ -16,7 +16,6 @@ from model.M1.static_features import (
 )
 from validation.m1_v2_feature_semantics import semantic_group
 
-
 SPLITS = ("train", "calibration", "development")
 QUANTILES = (0.01, 0.05, 0.25, 0.50, 0.75, 0.95, 0.99)
 
@@ -32,7 +31,9 @@ def current_rows(cache: M1DevelopmentBaseCache) -> tuple[np.ndarray, np.ndarray]
     return np.asarray(rows, dtype=np.float64), np.asarray(store.sample_splits)
 
 
-def static_rows(cache: M1DevelopmentBaseCache) -> tuple[np.ndarray, np.ndarray, list[dict]]:
+def static_rows(
+    cache: M1DevelopmentBaseCache,
+) -> tuple[np.ndarray, np.ndarray, list[dict]]:
     store = cache.store
     if store.static_values is None:
         values = np.full((len(store.sample_splits), len(STATIC_FEATURE_NAMES)), np.nan)
@@ -80,7 +81,9 @@ def static_rows(cache: M1DevelopmentBaseCache) -> tuple[np.ndarray, np.ndarray, 
                         "cached_mask": mask,
                     }
                 )
-            if observed and (mask != 0.0 or abs(numeric - float(expected[column])) > 1e-6):
+            if observed and (
+                mask != 0.0 or abs(numeric - float(expected[column])) > 1e-6
+            ):
                 violations.append(
                     {
                         "sample_index": row_index,
@@ -129,14 +132,16 @@ def _skewness(values: np.ndarray) -> float | None:
     if std <= 1e-12:
         return 0.0
     centered = (values - float(np.mean(values))) / std
-    return float(np.mean(centered ** 3))
+    return float(np.mean(centered**3))
 
 
 def _profile_column(name: str, column: np.ndarray, invalid: np.ndarray) -> dict:
     finite = np.isfinite(column)
     observed_mask = finite & ~invalid
     observed = column[observed_mask]
-    quantiles = np.quantile(observed, QUANTILES).tolist() if len(observed) else [None] * 7
+    quantiles = (
+        np.quantile(observed, QUANTILES).tolist() if len(observed) else [None] * 7
+    )
     values, counts = np.unique(column[finite], return_counts=True)
     dominant_fraction = float(counts.max() / finite.sum()) if len(counts) else None
     unique = set(float(value) for value in values)
@@ -150,7 +155,9 @@ def _profile_column(name: str, column: np.ndarray, invalid: np.ndarray) -> dict:
         "semantic_group": semantic_group(name),
         "count": int(len(column)),
         "observed_count": int(observed_mask.sum()),
-        "missing_invalid_pct": float(100.0 * (1.0 - observed_mask.sum() / max(len(column), 1))),
+        "missing_invalid_pct": float(
+            100.0 * (1.0 - observed_mask.sum() / max(len(column), 1))
+        ),
         "mean": float(np.mean(observed)) if len(observed) else None,
         "std": std,
         "min": float(np.min(observed)) if len(observed) else None,
@@ -166,29 +173,30 @@ def _profile_column(name: str, column: np.ndarray, invalid: np.ndarray) -> dict:
         "zero_fraction": float(zero_count / max(int(finite.sum()), 1)),
         "one_fraction": float(one_count / max(int(finite.sum()), 1)),
         "constant": bool(std is not None and std <= 1e-12),
-        "near_constant": bool(dominant_fraction is not None and dominant_fraction >= 0.995),
+        "near_constant": bool(
+            dominant_fraction is not None and dominant_fraction >= 0.995
+        ),
         "dominant_fraction": dominant_fraction,
         "binary": binary,
         "zero_count": zero_count if binary else None,
         "one_count": one_count if binary else None,
         "minority_fraction": (
             float(min(zero_count, one_count) / max(zero_count + one_count, 1))
-            if binary else None
+            if binary
+            else None
         ),
         "normalization": normalization,
         "skewness": _skewness(observed),
         "abs_z_gt_5_fraction": (
             float(np.mean(np.abs(observed) > 5.0))
-            if len(observed) and normalization in {
-                "TRAIN_STANDARDIZED", "DERIVED_FROM_STANDARDIZED"
-            }
+            if len(observed)
+            and normalization in {"TRAIN_STANDARDIZED", "DERIVED_FROM_STANDARDIZED"}
             else None
         ),
         "abs_z_gt_10_fraction": (
             float(np.mean(np.abs(observed) > 10.0))
-            if len(observed) and normalization in {
-                "TRAIN_STANDARDIZED", "DERIVED_FROM_STANDARDIZED"
-            }
+            if len(observed)
+            and normalization in {"TRAIN_STANDARDIZED", "DERIVED_FROM_STANDARDIZED"}
             else None
         ),
         "non_finite_count": int((~finite).sum()),
@@ -198,10 +206,19 @@ def _profile_column(name: str, column: np.ndarray, invalid: np.ndarray) -> dict:
 def _normalization_class(name: str) -> str:
     group = semantic_group(name)
     if group == "STATIC_REFERENCE":
-        return "BINARY_NO_SCALE" if name in STATIC_MISSING_MASK_NAMES else "TRAIN_STANDARDIZED"
+        return (
+            "BINARY_NO_SCALE"
+            if name in STATIC_MISSING_MASK_NAMES
+            else "TRAIN_STANDARDIZED"
+        )
     if group in {
-        "CURRENT_STATE", "RAW_MISSING_MASK", "STALE_MASK", "FALLBACK_MASK",
-        "DERIVED_MISSING_MASK", "CEILING_STATUS", "EVIDENCE_ENCODING",
+        "CURRENT_STATE",
+        "RAW_MISSING_MASK",
+        "STALE_MASK",
+        "FALLBACK_MASK",
+        "DERIVED_MISSING_MASK",
+        "CEILING_STATUS",
+        "EVIDENCE_ENCODING",
         "SUPPORT_ENCODING",
     }:
         return "BINARY_NO_SCALE"
@@ -222,11 +239,15 @@ def feature_profiles(cache: M1DevelopmentBaseCache) -> dict:
         records = []
         for column, name in enumerate(FEATURE_NAMES_V2):
             records.append(
-                _profile_column(name, dynamic[selected, column], dynamic_invalid[name][selected])
+                _profile_column(
+                    name, dynamic[selected, column], dynamic_invalid[name][selected]
+                )
             )
         for column, name in enumerate(STATIC_FEATURE_NAMES):
             records.append(
-                _profile_column(name, static[selected, column], ~static_valid[selected, column])
+                _profile_column(
+                    name, static[selected, column], ~static_valid[selected, column]
+                )
             )
         output[split] = records
     return {"profiles": output, "static_contract_violations": static_violations}
@@ -239,8 +260,13 @@ def missing_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
     violations = []
     violation_counts: Counter[str] = Counter()
 
-    def record_check(numeric_name: str, mask_name: str, bad: np.ndarray,
-                     masked: np.ndarray, kind: str) -> None:
+    def record_check(
+        numeric_name: str,
+        mask_name: str,
+        bad: np.ndarray,
+        masked: np.ndarray,
+        kind: str,
+    ) -> None:
         checks.append(
             {
                 "numeric": numeric_name,
@@ -254,18 +280,29 @@ def missing_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
         )
         violation_counts[kind] += int(len(bad))
         violations.extend(
-            {"kind": kind, "feature": numeric_name, "row": int(row),
-             "split": str(splits[row])}
+            {
+                "kind": kind,
+                "feature": numeric_name,
+                "row": int(row),
+                "split": str(splits[row]),
+            }
             for row in bad[:20]
         )
 
     current_pairs = [
-        ("schedule.signed_minutes_to_crs_departure", "schedule.signed_minutes_to_crs_departure.missing_mask"),
+        (
+            "schedule.signed_minutes_to_crs_departure",
+            "schedule.signed_minutes_to_crs_departure.missing_mask",
+        ),
         *[
             (f"weather.{field}", f"weather.{field}.missing_mask")
             for field in (
-                "temperature_c", "dewpoint_c", "wind_speed_mps", "qnh_hpa",
-                "visibility_m", "ceiling_base_m",
+                "temperature_c",
+                "dewpoint_c",
+                "wind_speed_mps",
+                "qnh_hpa",
+                "visibility_m",
+                "ceiling_base_m",
             )
         ],
     ]
@@ -275,11 +312,17 @@ def missing_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
         record_check(numeric_name, mask_name, bad, missing, "MISSING_NUMERIC_NOT_ZERO")
 
     wind_missing = matrix[:, index["weather.wind_direction_deg.missing_mask"]] > 0.5
-    for numeric_name in ("weather.wind_direction_deg.sin", "weather.wind_direction_deg.cos"):
+    for numeric_name in (
+        "weather.wind_direction_deg.sin",
+        "weather.wind_direction_deg.cos",
+    ):
         bad = np.flatnonzero(wind_missing & (matrix[:, index[numeric_name]] != 0.0))
         record_check(
-            numeric_name, "weather.wind_direction_deg.missing_mask", bad,
-            wind_missing, "MISSING_NUMERIC_NOT_ZERO",
+            numeric_name,
+            "weather.wind_direction_deg.missing_mask",
+            bad,
+            wind_missing,
+            "MISSING_NUMERIC_NOT_ZERO",
         )
 
     unlimited = matrix[:, index["weather.ceiling_base_m.unlimited_mask"]] > 0.5
@@ -287,25 +330,30 @@ def missing_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
         unlimited & (matrix[:, index["weather.ceiling_base_m"]] != 0.0)
     )
     record_check(
-        "weather.ceiling_base_m", "weather.ceiling_base_m.unlimited_mask",
-        bad_unlimited, unlimited, "UNLIMITED_CEILING_NUMERIC_NOT_ZERO",
+        "weather.ceiling_base_m",
+        "weather.ceiling_base_m.unlimited_mask",
+        bad_unlimited,
+        unlimited,
+        "UNLIMITED_CEILING_NUMERIC_NOT_ZERO",
     )
 
     for numeric_name in FEATURE_NAMES_V2:
-        if not numeric_name.startswith(("delta.", "ar.")) or numeric_name.endswith("_mask"):
+        if not numeric_name.startswith(("delta.", "ar.")) or numeric_name.endswith(
+            "_mask"
+        ):
             continue
         mask_name = f"{numeric_name}.derived_missing_mask"
         invalid = matrix[:, index[mask_name]] > 0.5
         bad = np.flatnonzero(invalid & (matrix[:, index[numeric_name]] != 0.0))
         record_check(
-            numeric_name, mask_name, bad, invalid, "DERIVED_INVALID_NUMERIC_NOT_ZERO",
+            numeric_name,
+            mask_name,
+            bad,
+            invalid,
+            "DERIVED_INVALID_NUMERIC_NOT_ZERO",
         )
-    mask_columns = [
-        index[name] for name in FEATURE_NAMES_V2 if name.endswith("_mask")
-    ]
-    non_binary_masks = int(np.sum(
-        ~np.isin(matrix[:, mask_columns], (0.0, 1.0))
-    ))
+    mask_columns = [index[name] for name in FEATURE_NAMES_V2 if name.endswith("_mask")]
+    non_binary_masks = int(np.sum(~np.isin(matrix[:, mask_columns], (0.0, 1.0))))
     ceiling_missing = matrix[:, index["weather.ceiling_base_m.missing_mask"]] > 0.5
     ceiling_unlimited = matrix[:, index["weather.ceiling_base_m.unlimited_mask"]] > 0.5
     ceiling_mask_overlap = int(np.sum(ceiling_missing & ceiling_unlimited))
@@ -339,7 +387,9 @@ def static_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
         missing = [name for name in STATIC_NUMERIC_FEATURE_NAMES if raw[name] is None]
         if len(missing) != 1:
             continue
-        observed = next(name for name in STATIC_NUMERIC_FEATURE_NAMES if raw[name] is not None)
+        observed = next(
+            name for name in STATIC_NUMERIC_FEATURE_NAMES if raw[name] is not None
+        )
         observed_index = STATIC_NUMERIC_FEATURE_NAMES.index(observed)
         mask_index = len(STATIC_NUMERIC_FEATURE_NAMES) + observed_index
         partial_cases.append(
@@ -374,10 +424,11 @@ def static_encoding_audit(cache: M1DevelopmentBaseCache) -> dict:
     }
 
 
-def shift_diagnostics(profiles: dict[str, list[dict]], keep_features: list[str]) -> dict:
+def shift_diagnostics(
+    profiles: dict[str, list[dict]], keep_features: list[str]
+) -> dict:
     by_split = {
-        split: {row["feature"]: row for row in profiles[split]}
-        for split in SPLITS
+        split: {row["feature"]: row for row in profiles[split]} for split in SPLITS
     }
     output = {}
     for split in ("calibration", "development"):
@@ -388,9 +439,12 @@ def shift_diagnostics(profiles: dict[str, list[dict]], keep_features: list[str])
             train_std = train["std"] or 0.0
             mean_shift = None
             if train["mean"] is not None and other["mean"] is not None:
-                mean_shift = float((other["mean"] - train["mean"]) / max(train_std, 1e-12))
+                mean_shift = float(
+                    (other["mean"] - train["mean"]) / max(train_std, 1e-12)
+                )
             range_shift = bool(
-                train["min"] is not None and other["min"] is not None
+                train["min"] is not None
+                and other["min"] is not None
                 and (other["min"] < train["min"] or other["max"] > train["max"])
             )
             rows.append(
@@ -401,11 +455,14 @@ def shift_diagnostics(profiles: dict[str, list[dict]], keep_features: list[str])
                     ),
                     "mean_shift_in_train_std": mean_shift,
                     "std_ratio_to_train": (
-                        None if other["std"] is None else float(other["std"] / max(train_std, 1e-12))
+                        None
+                        if other["std"] is None
+                        else float(other["std"] / max(train_std, 1e-12))
                     ),
                     "extreme_range_shift": range_shift,
                     "unseen_binary_state": bool(
-                        train["binary"] and other["binary"]
+                        train["binary"]
+                        and other["binary"]
                         and other["unique_count"] > train["unique_count"]
                     ),
                 }
@@ -442,9 +499,9 @@ def support_state_counts(cache: M1DevelopmentBaseCache) -> dict:
     output = {}
     for split in SPLITS:
         selected = splits == split
-        abstain = int(np.sum(
-            matrix[selected, index["current_weather.support.ABSTAIN"]] > 0.5
-        ))
+        abstain = int(
+            np.sum(matrix[selected, index["current_weather.support.ABSTAIN"]] > 0.5)
+        )
         total = int(selected.sum())
         output[split] = {
             "current_weather": {

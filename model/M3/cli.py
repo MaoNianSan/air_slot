@@ -10,7 +10,9 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("validate")
     manifest = commands.add_parser("manifest")
-    manifest.add_argument("--registry", type=Path, default=Path("registries/action_templates.yaml"))
+    manifest.add_argument(
+        "--registry", type=Path, default=Path("registries/action_templates.yaml")
+    )
     manifest.add_argument("--output", type=Path, required=True)
     manifest.add_argument("--overwrite", action="store_true")
     args = parser.parse_args(argv)

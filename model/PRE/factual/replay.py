@@ -17,7 +17,12 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from model.common.enums import AvailabilityBasis, DecisionTimeRole, EvidenceClass, SupportState
+from model.common.enums import (
+    AvailabilityBasis,
+    DecisionTimeRole,
+    EvidenceClass,
+    SupportState,
+)
 from model.common.value_objects import SupportedValue
 from model.PRE.contracts.canonical import OperationalEventRecord
 from model.PRE.factual.availability import (
@@ -30,10 +35,14 @@ _REALIZED_ROLES = {DecisionTimeRole.TRAIN_LABEL, DecisionTimeRole.EVAL_OUTCOME}
 _OUTCOME_EVENT_TYPE = "COMPLETED_OPERATIONAL_OUTCOME"
 
 
-def _outcome_value(record: OperationalEventRecord, *, replay_event_time: datetime,
-                   availability_time: datetime,
-                   policy: Data2FactualReplayAvailabilityPolicy,
-                   declared_lag_minutes: float):
+def _outcome_value(
+    record: OperationalEventRecord,
+    *,
+    replay_event_time: datetime,
+    availability_time: datetime,
+    policy: Data2FactualReplayAvailabilityPolicy,
+    declared_lag_minutes: float,
+):
     field_times = {
         "actual_departure_utc": record.actual_departure_utc,
         "wheels_off_utc": record.wheels_off_utc,
@@ -90,7 +99,8 @@ def publish_factual_replay(
     copied into inference).
     """
     candidates = [
-        item for item in records
+        item
+        for item in records
         if isinstance(item, OperationalEventRecord)
         and item.event_type == _OUTCOME_EVENT_TYPE
         and item.decision_time_role in _REALIZED_ROLES
@@ -108,8 +118,8 @@ def publish_factual_replay(
         if role is None or candidate_time is None:
             continue
         availability_time = factual_availability_time(
-            candidate_time, policy,
-            declared_lag_minutes=declared_lag_minutes)
+            candidate_time, policy, declared_lag_minutes=declared_lag_minutes
+        )
         if not factual_replay_legal(
             event_time=candidate_time,
             availability_time=availability_time,

@@ -5,19 +5,35 @@ from typing import Any
 from model.common.errors import ContractError
 from model.PRE.contracts.canonical import WeatherObservation
 
-from .normalization_common import deterministic_id, missing, number, parse_utc, provenance
-from .units import fahrenheit_to_celsius, hundreds_feet_to_m, knots_to_mps, statute_miles_to_m
+from .normalization_common import (
+    deterministic_id,
+    missing,
+    number,
+    parse_utc,
+    provenance,
+)
+from .units import (
+    fahrenheit_to_celsius,
+    hundreds_feet_to_m,
+    knots_to_mps,
+    statute_miles_to_m,
+)
 
 
-def canonicalize_metar_row(row: dict[str, Any], *,
-                           replay_lag_minutes: int | None) -> WeatherObservation:
+def canonicalize_metar_row(
+    row: dict[str, Any], *, replay_lag_minutes: int | None
+) -> WeatherObservation:
     if replay_lag_minutes is None:
         raise ContractError("REPLAY_LAG_NOT_FROZEN")
     event_time = parse_utc(row["valid"])
     match = re.search(r"(?:^|\s)Q(\d{4})(?:\s|$)", str(row.get("metar", "")))
     raw_id = deterministic_id(
         "raw",
-        {"source": "iem_metar", "station": row.get("station"), "valid": row.get("valid")},
+        {
+            "source": "iem_metar",
+            "station": row.get("station"),
+            "valid": row.get("valid"),
+        },
     )
     sky_codes = (row.get("skyc1"), row.get("skyc2"), row.get("skyc3"))
     sky_bases = (row.get("skyl1"), row.get("skyl2"), row.get("skyl3"))
@@ -39,13 +55,29 @@ def canonicalize_metar_row(row: dict[str, Any], *,
         if code in ceiling_codes and not missing(base)
     ]
     if not cloud_layers:
-        ceiling_base_m, ceiling_status, cloud_flag = None, "MISSING", "CLOUD_LAYERS_MISSING"
+        ceiling_base_m, ceiling_status, cloud_flag = (
+            None,
+            "MISSING",
+            "CLOUD_LAYERS_MISSING",
+        )
     elif ceiling_layers and len(ceiling_bases) != len(ceiling_layers):
-        ceiling_base_m, ceiling_status, cloud_flag = None, "MISSING", "CEILING_BASE_MISSING_MASKED"
+        ceiling_base_m, ceiling_status, cloud_flag = (
+            None,
+            "MISSING",
+            "CEILING_BASE_MISSING_MASKED",
+        )
     elif ceiling_bases:
-        ceiling_base_m, ceiling_status, cloud_flag = min(ceiling_bases), "FINITE", "CEILING_DERIVED_MIN_BKN_OVC"
+        ceiling_base_m, ceiling_status, cloud_flag = (
+            min(ceiling_bases),
+            "FINITE",
+            "CEILING_DERIVED_MIN_BKN_OVC",
+        )
     else:
-        ceiling_base_m, ceiling_status, cloud_flag = None, "UNLIMITED", "CEILING_UNLIMITED"
+        ceiling_base_m, ceiling_status, cloud_flag = (
+            None,
+            "UNLIMITED",
+            "CEILING_UNLIMITED",
+        )
     converted = {
         "canonical_object_type": "WeatherObservation",
         "dataset_instance_id": "data1_2019",
@@ -56,32 +88,46 @@ def canonicalize_metar_row(row: dict[str, Any], *,
         "provenance_rule_id": "D1-METAR",
         "decision_time_role": "INFERENCE_EVIDENCE",
         "provenance": provenance("data1_2019", "iem_metar", raw_id, "D1-METAR"),
-        "temperature_c": None if missing(row.get("tmpf"))
-        else fahrenheit_to_celsius(float(row["tmpf"])),
-        "dewpoint_c": None if missing(row.get("dwpf"))
-        else fahrenheit_to_celsius(float(row["dwpf"])),
+        "temperature_c": (
+            None
+            if missing(row.get("tmpf"))
+            else fahrenheit_to_celsius(float(row["tmpf"]))
+        ),
+        "dewpoint_c": (
+            None
+            if missing(row.get("dwpf"))
+            else fahrenheit_to_celsius(float(row["dwpf"]))
+        ),
         "wind_direction_deg": number(row.get("drct")),
-        "wind_speed_mps": None if missing(row.get("sknt"))
-        else knots_to_mps(float(row["sknt"])),
-        "wind_gust_mps": None if missing(row.get("gust"))
-        else knots_to_mps(float(row["gust"])),
-        "visibility_m": None if missing(row.get("vsby"))
-        else statute_miles_to_m(float(row["vsby"])),
+        "wind_speed_mps": (
+            None if missing(row.get("sknt")) else knots_to_mps(float(row["sknt"]))
+        ),
+        "wind_gust_mps": (
+            None if missing(row.get("gust")) else knots_to_mps(float(row["gust"]))
+        ),
+        "visibility_m": (
+            None if missing(row.get("vsby")) else statute_miles_to_m(float(row["vsby"]))
+        ),
         "qnh_hpa": int(match.group(1)) if match else None,
         "mslp_hpa": None,
         "cloud_cover_codes": cloud_cover_codes,
         "cloud_base_m": cloud_base_m,
         "ceiling_base_m": ceiling_base_m,
         "ceiling_status": ceiling_status,
-        "present_weather_codes": None if missing(row.get("wxcodes"))
-        else str(row["wxcodes"]),
-        "quality_flags": tuple(sorted(
-            flag for flag, condition in (
-                ("QNH_DERIVED_FROM_METAR", bool(match)),
-                ("MSLP_UNSUPPORTED", True),
-                (cloud_flag, True),
-            ) if condition
-        )),
+        "present_weather_codes": (
+            None if missing(row.get("wxcodes")) else str(row["wxcodes"])
+        ),
+        "quality_flags": tuple(
+            sorted(
+                flag
+                for flag, condition in (
+                    ("QNH_DERIVED_FROM_METAR", bool(match)),
+                    ("MSLP_UNSUPPORTED", True),
+                    (cloud_flag, True),
+                )
+                if condition
+            )
+        ),
     }
     converted["canonical_record_id"] = deterministic_id(
         "weather",
@@ -176,7 +222,9 @@ _WX_TOKEN = re.compile(
 )
 
 
-def _metar_sky_groups(metar_text: str) -> tuple[list[str], list[float], float | None, str, str]:
+def _metar_sky_groups(
+    metar_text: str,
+) -> tuple[list[str], list[float], float | None, str, str]:
     layers = [(code, int(base)) for code, base, _tcu in _SKY_GROUP.findall(metar_text)]
     cover_codes = tuple(code for code, _base in layers)
     base_m = tuple(hundreds_feet_to_m(float(base)) for _code, base in layers)
@@ -192,8 +240,9 @@ def _metar_sky_groups(metar_text: str) -> tuple[list[str], list[float], float | 
     return cover_codes, base_m, ceiling, status, flag
 
 
-def canonicalize_isd_row(row: dict[str, Any], *, station_map: dict[str, str],
-                         replay_lag_minutes: int | None) -> WeatherObservation:
+def canonicalize_isd_row(
+    row: dict[str, Any], *, station_map: dict[str, str], replay_lag_minutes: int | None
+) -> WeatherObservation:
     if replay_lag_minutes is None:
         raise ContractError("REPLAY_LAG_NOT_FROZEN")
     if missing(row.get("DATE")) or missing(row.get("STATION")):
@@ -217,9 +266,15 @@ def canonicalize_isd_row(row: dict[str, Any], *, station_map: dict[str, str],
         qnh_flag = "QNH_DERIVED_FROM_METAR"
     else:
         qnh_hpa, qnh_flag = None, "QNH_ABSENT"
-    cover_codes, cloud_base_m, metar_ceiling, metar_status, metar_flag = _metar_sky_groups(metar_text)
+    cover_codes, cloud_base_m, metar_ceiling, metar_status, metar_flag = (
+        _metar_sky_groups(metar_text)
+    )
     if metar_text and ceiling_status != "FINITE" and metar_ceiling is not None:
-        ceiling_m, ceiling_status, ceiling_flag = metar_ceiling, metar_status, "CEILING_FROM_METAR_TEXT"
+        ceiling_m, ceiling_status, ceiling_flag = (
+            metar_ceiling,
+            metar_status,
+            "CEILING_FROM_METAR_TEXT",
+        )
     if not metar_text:
         cover_codes, cloud_base_m = (), ()
         metar_flag = "METAR_TEXT_ABSENT"
@@ -229,17 +284,30 @@ def canonicalize_isd_row(row: dict[str, Any], *, station_map: dict[str, str],
     raw_id = deterministic_id(
         "raw", {"source": "noaa_isd", "station": station, "valid": str(row.get("DATE"))}
     )
-    flags = tuple(sorted({
-        flag for flag in (
-            qnh_flag,
-            ceiling_flag,
-            metar_flag,
-            "SLP_ISD_UNMAPPED",
-            "REPORT_TYPE=" + str(row.get("REPORT_TYPE", ""))
-            if row.get("REPORT_TYPE") else None,
-            "PRESENT_WEATHER_FROM_METAR_TEXT" if present_weather_codes else None,
-        ) if flag
-    }))
+    flags = tuple(
+        sorted(
+            {
+                flag
+                for flag in (
+                    qnh_flag,
+                    ceiling_flag,
+                    metar_flag,
+                    "SLP_ISD_UNMAPPED",
+                    (
+                        "REPORT_TYPE=" + str(row.get("REPORT_TYPE", ""))
+                        if row.get("REPORT_TYPE")
+                        else None
+                    ),
+                    (
+                        "PRESENT_WEATHER_FROM_METAR_TEXT"
+                        if present_weather_codes
+                        else None
+                    ),
+                )
+                if flag
+            }
+        )
+    )
     converted = {
         "canonical_object_type": "WeatherObservation",
         "dataset_instance_id": "data2_2019",

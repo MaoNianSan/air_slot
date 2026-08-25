@@ -25,13 +25,19 @@ class CanonicalSourceRecord(FrozenModel):
     @model_validator(mode="after")
     def canonical_time(self):
         for value in (self.event_time, self.availability_time):
-            if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+            if value is not None and (
+                value.tzinfo is None or value.utcoffset() is None
+            ):
                 raise ValueError("canonical timestamps require timezone")
-        if self.availability_basis in {
-            AvailabilityBasis.OBSERVED_AVAILABILITY,
-            AvailabilityBasis.REPLAY_EVENT_TIME,
-            AvailabilityBasis.FACTUAL_REPLAY_RULE,
-        } and self.availability_time is None:
+        if (
+            self.availability_basis
+            in {
+                AvailabilityBasis.OBSERVED_AVAILABILITY,
+                AvailabilityBasis.REPLAY_EVENT_TIME,
+                AvailabilityBasis.FACTUAL_REPLAY_RULE,
+            }
+            and self.availability_time is None
+        ):
             raise ValueError("admissible basis requires availability_time")
         if self.provenance.dataset_instance_id != self.dataset_instance_id:
             raise ValueError("provenance dataset mismatch")

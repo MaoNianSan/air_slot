@@ -28,12 +28,15 @@ def compatible_formal_ranking(evaluations):
         for item in formal
     ):
         raise ContractError("FORMAL_RANKING_AGGREGATE_INVALID")
-    return sorted(formal, key=lambda item: (
-        item.residual_risk_j,
-        item.action_index,
-        item.candidate_index,
-        item.candidate_action_id,
-    ))
+    return sorted(
+        formal,
+        key=lambda item: (
+            item.residual_risk_j,
+            item.action_index,
+            item.candidate_index,
+            item.candidate_action_id,
+        ),
+    )
 
 
 def finalize_ranking(evaluations, *, baseline_valid: bool):
@@ -41,8 +44,12 @@ def finalize_ranking(evaluations, *, baseline_valid: bool):
         return tuple(evaluations), (), "AUTHORITATIVE_DECISION_UNAVAILABLE", False
     formal = compatible_formal_ranking(evaluations)
     ranks = {item.candidate_action_id: index + 1 for index, item in enumerate(formal)}
-    ranked = tuple(item.model_copy(update={"ranking_position": ranks.get(item.candidate_action_id)})
-                   for item in evaluations)
+    ranked = tuple(
+        item.model_copy(
+            update={"ranking_position": ranks.get(item.candidate_action_id)}
+        )
+        for item in evaluations
+    )
     ranking = tuple(item.candidate_action_id for item in formal)
     a00 = next((item for item in formal if item.template_id == "A00"), None)
     if not formal:
@@ -52,5 +59,8 @@ def finalize_ranking(evaluations, *, baseline_valid: bool):
     elif formal[0].template_id == "A00":
         outcome, authoritative = "FORMAL_A00_PREFERRED_WITHIN_DECLARED_ESTIMAND", True
     else:
-        outcome, authoritative = "FORMAL_ACTION_PREFERRED_WITHIN_DECLARED_ESTIMAND", True
+        outcome, authoritative = (
+            "FORMAL_ACTION_PREFERRED_WITHIN_DECLARED_ESTIMAND",
+            True,
+        )
     return ranked, ranking, outcome, authoritative

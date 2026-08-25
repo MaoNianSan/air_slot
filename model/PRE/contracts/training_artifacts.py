@@ -80,7 +80,9 @@ def build_m1_training_coverage_row(
         "decision_time": node.decision_time,
         "node_index": node.node_index,
         "operational_stage": node.operational_stage.value,
-        "target_support": tuple(item.model_dump(mode="json") for item in target_support),
+        "target_support": tuple(
+            item.model_dump(mode="json") for item in target_support
+        ),
         "split": split,
         "lineage": (
             "PRE_DECISION_NODE",

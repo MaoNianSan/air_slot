@@ -36,10 +36,12 @@ def _uniform(seed: int, episode: str, scenario: int, target: str):
 
 def _sample_index(probabilities, seed, episode, scenario_id, target):
     uniform, key = _uniform(seed, episode, scenario_id, target)
-    index = int(torch.searchsorted(
-        torch.cumsum(probabilities, 0),
-        torch.tensor(uniform, device=probabilities.device),
-    ).clamp_max(len(probabilities) - 1))
+    index = int(
+        torch.searchsorted(
+            torch.cumsum(probabilities, 0),
+            torch.tensor(uniform, device=probabilities.device),
+        ).clamp_max(len(probabilities) - 1)
+    )
     return index, key
 
 
@@ -55,12 +57,24 @@ def _required_observations(stage: str) -> set[str]:
     return required[stage]
 
 
-def aligned_sample(distributions: dict[str, torch.Tensor], bins: dict[str, TargetBinContract], *, episode_id: str,
-                   decision_node_id: str, stage: str, observed: dict[str, float], count: int, seed: int,
-                   target_support: dict[str, str] | None = None, scheduled_ob_utc: str | None = None,
-                   tx_reference_minutes: float | None = None, taxi_reference_id: str | None = None,
-                   taxi_reference_hash: str | None = None, taxi_reference_fallback_level: str | None = None,
-                   taxi_reference_support_state: str | None = None):
+def aligned_sample(
+    distributions: dict[str, torch.Tensor],
+    bins: dict[str, TargetBinContract],
+    *,
+    episode_id: str,
+    decision_node_id: str,
+    stage: str,
+    observed: dict[str, float],
+    count: int,
+    seed: int,
+    target_support: dict[str, str] | None = None,
+    scheduled_ob_utc: str | None = None,
+    tx_reference_minutes: float | None = None,
+    taxi_reference_id: str | None = None,
+    taxi_reference_hash: str | None = None,
+    taxi_reference_fallback_level: str | None = None,
+    taxi_reference_support_state: str | None = None,
+):
     required = _required_observations(stage)
     if not required <= set(observed):
         raise ContractError("M1_STAGE_OBSERVATION_MISSING")
@@ -68,64 +82,98 @@ def aligned_sample(distributions: dict[str, torch.Tensor], bins: dict[str, Targe
     scenarios = []
     for scenario_id in range(count):
         values, underflow, overflow = {}, {}, {}
-        keys = [_uniform(seed, episode_id, scenario_id, target)[1] for target in STOCHASTIC_TARGETS]
+        keys = [
+            _uniform(seed, episode_id, scenario_id, target)[1]
+            for target in STOCHASTIC_TARGETS
+        ]
         for target in STOCHASTIC_TARGETS:
             if support.get(target) == "ABSTAIN":
                 values[target], underflow[target], overflow[target] = None, False, False
             elif target in observed:
-                values[target], underflow[target], overflow[target] = float(observed[target]), False, False
+                values[target], underflow[target], overflow[target] = (
+                    float(observed[target]),
+                    False,
+                    False,
+                )
             else:
-                index, _ = _sample_index(distributions[target][0], seed, episode_id, scenario_id, target)
-                values[target], underflow[target], overflow[target] = bins[target].representative(index)
-        scenarios.append(AlignedScenario(
-            episode_id=episode_id,
-            decision_node_id=decision_node_id,
-            scenario_id=scenario_id,
-            scenario_weight=1 / count,
-            operational_stage=stage,
-            r_ib_minutes=values["R_IB"],
-            delta_ob_minutes=values["DELTA_OB"],
-            t_tx_minutes=values["T_TX"],
-            scheduled_ob_utc=scheduled_ob_utc,
-            tx_reference_minutes=tx_reference_minutes,
-            taxi_reference_id=taxi_reference_id,
-            taxi_reference_hash=taxi_reference_hash,
-            taxi_reference_fallback_level=taxi_reference_fallback_level,
-            taxi_reference_support_state=taxi_reference_support_state,
-            ib_observed="R_IB" in observed,
-            delta_ob_observed="DELTA_OB" in observed,
-            ib_support=support.get("R_IB", "ABSTAIN"),
-            delta_ob_support=support.get("DELTA_OB", "ABSTAIN"),
-            tx_support=support.get("T_TX", "ABSTAIN"),
-            overflow_ib=overflow["R_IB"],
-            underflow_delta_ob=underflow["DELTA_OB"],
-            overflow_delta_ob=overflow["DELTA_OB"],
-            overflow_tx=overflow["T_TX"],
-            scenario_seed_key="|".join(keys) or f"observed:{episode_id}:{scenario_id}",
-        ))
+                index, _ = _sample_index(
+                    distributions[target][0], seed, episode_id, scenario_id, target
+                )
+                values[target], underflow[target], overflow[target] = bins[
+                    target
+                ].representative(index)
+        scenarios.append(
+            AlignedScenario(
+                episode_id=episode_id,
+                decision_node_id=decision_node_id,
+                scenario_id=scenario_id,
+                scenario_weight=1 / count,
+                operational_stage=stage,
+                r_ib_minutes=values["R_IB"],
+                delta_ob_minutes=values["DELTA_OB"],
+                t_tx_minutes=values["T_TX"],
+                scheduled_ob_utc=scheduled_ob_utc,
+                tx_reference_minutes=tx_reference_minutes,
+                taxi_reference_id=taxi_reference_id,
+                taxi_reference_hash=taxi_reference_hash,
+                taxi_reference_fallback_level=taxi_reference_fallback_level,
+                taxi_reference_support_state=taxi_reference_support_state,
+                ib_observed="R_IB" in observed,
+                delta_ob_observed="DELTA_OB" in observed,
+                ib_support=support.get("R_IB", "ABSTAIN"),
+                delta_ob_support=support.get("DELTA_OB", "ABSTAIN"),
+                tx_support=support.get("T_TX", "ABSTAIN"),
+                overflow_ib=overflow["R_IB"],
+                underflow_delta_ob=underflow["DELTA_OB"],
+                overflow_delta_ob=overflow["DELTA_OB"],
+                overflow_tx=overflow["T_TX"],
+                scenario_seed_key="|".join(keys)
+                or f"observed:{episode_id}:{scenario_id}",
+            )
+        )
     return tuple(scenarios)
 
 
-def ancestral_sample(model, history: torch.Tensor, bins: dict[str, TargetBinContract], *,
-                     episode_id: str, decision_node_id: str, stage: str,
-                     observed: dict[str, float], count: int, seed: int,
-                     target_support: dict[str, str], scheduled_ob_utc: str | None = None,
-                     tx_reference_minutes: float | None = None, taxi_reference_id: str | None = None,
-                     taxi_reference_hash: str | None = None, taxi_reference_fallback_level: str | None = None,
-                     taxi_reference_support_state: str | None = None,
-                     temperatures: dict[str, float] | None = None):
+def ancestral_sample(
+    model,
+    history: torch.Tensor,
+    bins: dict[str, TargetBinContract],
+    *,
+    episode_id: str,
+    decision_node_id: str,
+    stage: str,
+    observed: dict[str, float],
+    count: int,
+    seed: int,
+    target_support: dict[str, str],
+    scheduled_ob_utc: str | None = None,
+    tx_reference_minutes: float | None = None,
+    taxi_reference_id: str | None = None,
+    taxi_reference_hash: str | None = None,
+    taxi_reference_fallback_level: str | None = None,
+    taxi_reference_support_state: str | None = None,
+    temperatures: dict[str, float] | None = None,
+):
     required = _required_observations(stage)
     if not required <= set(observed):
         raise ContractError("M1_STAGE_OBSERVATION_MISSING")
     rows = []
     for scenario_id in range(count):
         values, indices, underflow, overflow = {}, {}, {}, {}
-        keys = [_uniform(seed, episode_id, scenario_id, target)[1] for target in STOCHASTIC_TARGETS]
+        keys = [
+            _uniform(seed, episode_id, scenario_id, target)[1]
+            for target in STOCHASTIC_TARGETS
+        ]
         supports = dict(target_support)
         for target in STOCHASTIC_TARGETS:
             target_state = supports.get(target, "ABSTAIN")
             if target_state == "ABSTAIN":
-                values[target], indices[target], underflow[target], overflow[target] = None, None, False, False
+                values[target], indices[target], underflow[target], overflow[target] = (
+                    None,
+                    None,
+                    False,
+                    False,
+                )
                 continue
             if target in observed:
                 values[target] = float(observed[target])
@@ -136,46 +184,58 @@ def ancestral_sample(model, history: torch.Tensor, bins: dict[str, TargetBinCont
             if target == "DELTA_OB" and ib_index is None:
                 raise ContractError("M1_PARENT_TARGET_UNSUPPORTED:R_IB->DELTA_OB")
             if target == "T_TX" and ib_index is None:
-                values[target], indices[target], underflow[target], overflow[target] = None, None, False, False
+                values[target], indices[target], underflow[target], overflow[target] = (
+                    None,
+                    None,
+                    False,
+                    False,
+                )
                 supports[target] = "ABSTAIN"
                 continue
             logits = model.conditioned_logits(
                 history, target, ib_index=ib_index, delta_ob_index=delta_ob_index
             )
-            temperature = 1.0 if temperatures is None else float(temperatures.get(target, 1.0))
+            temperature = (
+                1.0 if temperatures is None else float(temperatures.get(target, 1.0))
+            )
             probabilities = torch.softmax(logits[0] / temperature, -1)
-            index, _ = _sample_index(probabilities, seed, episode_id, scenario_id, target)
+            index, _ = _sample_index(
+                probabilities, seed, episode_id, scenario_id, target
+            )
             indices[target] = index
-            values[target], underflow[target], overflow[target] = bins[target].representative(index)
-        rows.append(AlignedScenario(
-            episode_id=episode_id,
-            decision_node_id=decision_node_id,
-            scenario_id=scenario_id,
-            scenario_weight=1 / count,
-            operational_stage=stage,
-            r_ib_minutes=values["R_IB"],
-            delta_ob_minutes=values["DELTA_OB"],
-            t_tx_minutes=values["T_TX"],
-            scheduled_ob_utc=scheduled_ob_utc,
-            tx_reference_minutes=tx_reference_minutes,
-            taxi_reference_id=taxi_reference_id,
-            taxi_reference_hash=taxi_reference_hash,
-            taxi_reference_fallback_level=taxi_reference_fallback_level,
-            taxi_reference_support_state=taxi_reference_support_state,
-            ib_observed="R_IB" in observed,
-            delta_ob_observed="DELTA_OB" in observed,
-            ib_support=supports.get("R_IB", "ABSTAIN"),
-            delta_ob_support=supports.get("DELTA_OB", "ABSTAIN"),
-            tx_support=supports.get("T_TX", "ABSTAIN"),
-            overflow_ib=overflow["R_IB"],
-            underflow_delta_ob=underflow["DELTA_OB"],
-            overflow_delta_ob=overflow["DELTA_OB"],
-            overflow_tx=overflow["T_TX"],
-            scenario_seed_key="|".join(keys) or f"observed:{episode_id}:{scenario_id}",
-        ))
+            values[target], underflow[target], overflow[target] = bins[
+                target
+            ].representative(index)
+        rows.append(
+            AlignedScenario(
+                episode_id=episode_id,
+                decision_node_id=decision_node_id,
+                scenario_id=scenario_id,
+                scenario_weight=1 / count,
+                operational_stage=stage,
+                r_ib_minutes=values["R_IB"],
+                delta_ob_minutes=values["DELTA_OB"],
+                t_tx_minutes=values["T_TX"],
+                scheduled_ob_utc=scheduled_ob_utc,
+                tx_reference_minutes=tx_reference_minutes,
+                taxi_reference_id=taxi_reference_id,
+                taxi_reference_hash=taxi_reference_hash,
+                taxi_reference_fallback_level=taxi_reference_fallback_level,
+                taxi_reference_support_state=taxi_reference_support_state,
+                ib_observed="R_IB" in observed,
+                delta_ob_observed="DELTA_OB" in observed,
+                ib_support=supports.get("R_IB", "ABSTAIN"),
+                delta_ob_support=supports.get("DELTA_OB", "ABSTAIN"),
+                tx_support=supports.get("T_TX", "ABSTAIN"),
+                overflow_ib=overflow["R_IB"],
+                underflow_delta_ob=underflow["DELTA_OB"],
+                overflow_delta_ob=overflow["DELTA_OB"],
+                overflow_tx=overflow["T_TX"],
+                scenario_seed_key="|".join(keys)
+                or f"observed:{episode_id}:{scenario_id}",
+            )
+        )
     return tuple(rows)
-
-
 
 
 # ---------------------------------------------------------------------------
@@ -201,9 +261,7 @@ def required_observations_v2(stage: str) -> frozenset[str]:
     return required[stage]
 
 
-def _remaining_from_observed(
-    t_ib_a00_utc: str, decision_time_utc: str | None
-) -> float:
+def _remaining_from_observed(t_ib_a00_utc: str, decision_time_utc: str | None) -> float:
     """Internal hazard coordinate = max(0, T_IB_A00 - t) minutes.
 
     The public absolute event time is converted to the internal remaining-time
@@ -211,6 +269,7 @@ def _remaining_from_observed(
     events with R_IB == 0 remain distinguishable.
     """
     from .semantics import remaining_hazard_coordinate_minutes
+
     if decision_time_utc is None:
         raise ContractError("M1_V2_DECISION_TIME_REQUIRED")
     remaining = remaining_hazard_coordinate_minutes(t_ib_a00_utc, decision_time_utc)
@@ -249,7 +308,9 @@ def _sample_hurdle_quantile(
     positive_uniform = (uniform - zero_probability) / max(1.0 - zero_probability, 1e-12)
     value = float(
         quantile_value(
-            quantiles.unsqueeze(0), contract.quantile_levels, positive_uniform,
+            quantiles.unsqueeze(0),
+            contract.quantile_levels,
+            positive_uniform,
             upper_tail_policy=contract.upper_tail_policy,
         )[0]
     )
@@ -296,9 +357,11 @@ def ancestral_sample_v2(
     hazard = contracts[M1_V2_HAZARD_COORDINATE_TARGET]
     d_ob_contract = contracts["D_OB"]
     d_tx_contract = contracts["D_TX"]
-    if not isinstance(hazard, HazardBinContract) or not isinstance(
-        d_ob_contract, HurdleQuantileContract
-    ) or not isinstance(d_tx_contract, HurdleQuantileContract):
+    if (
+        not isinstance(hazard, HazardBinContract)
+        or not isinstance(d_ob_contract, HurdleQuantileContract)
+        or not isinstance(d_tx_contract, HurdleQuantileContract)
+    ):
         raise ContractError("M1_V2_CONTRACT_TYPES_INVALID")
     required = required_observations_v2(stage)
     if not required <= set(observed):
@@ -332,16 +395,19 @@ def ancestral_sample_v2(
             if decision_time_utc is None:
                 raise ContractError("M1_V2_DECISION_TIME_REQUIRED")
             logits = model.hazard_logits(state)
-            temperature = 1.0 if temperatures is None else float(
-                temperatures.get(M1_V2_HAZARD_COORDINATE, 1.0))
+            temperature = (
+                1.0
+                if temperatures is None
+                else float(temperatures.get(M1_V2_HAZARD_COORDINATE, 1.0))
+            )
             pmf = hazard_pmf(logits[0].detach() / temperature, hazard)
-            uniform, _ = _uniform_v2(seed, episode_id, scenario_id,
-                                     M1_V2_HAZARD_COORDINATE)
+            uniform, _ = _uniform_v2(
+                seed, episode_id, scenario_id, M1_V2_HAZARD_COORDINATE
+            )
             ib_bin = _sample_categorical(pmf, uniform)
             overflow_t_ib = bool(hazard.tail_state(ib_bin) == "OVERFLOW")
             remaining = float(hazard.representative(ib_bin)[0])
-            t_ib_a00_utc = t_ib_a00_from_remaining_minutes(
-                decision_time_utc, remaining)
+            t_ib_a00_utc = t_ib_a00_from_remaining_minutes(decision_time_utc, remaining)
 
         # --- D_OB (hurdle + conditional quantile, parent T_IB_A00) ---
         d_ob_minutes: float | None = None
@@ -364,12 +430,17 @@ def ancestral_sample_v2(
             # Tranche 3 calibration discipline: the zero-mass temperature
             # scales ONLY the hurdle Bernoulli zero logit; positive quantile
             # values/logits are never scaled by it.
-            zero_temperature = 1.0 if temperatures is None else float(
-                temperatures.get(M1_TEMPERATURE_D_OB_ZERO, 1.0))
+            zero_temperature = (
+                1.0
+                if temperatures is None
+                else float(temperatures.get(M1_TEMPERATURE_D_OB_ZERO, 1.0))
+            )
             uniform, _ = _uniform_v2(seed, episode_id, scenario_id, "D_OB")
             d_ob_minutes, d_ob_bin, overflow_d_ob = _sample_hurdle_quantile(
-                zero_logit / zero_temperature, quantile_logits,
-                d_ob_contract, uniform,
+                zero_logit / zero_temperature,
+                quantile_logits,
+                d_ob_contract,
+                uniform,
             )
 
         # --- D_TX (hurdle + conditional quantile, parents T_IB_A00, D_OB) ---
@@ -387,38 +458,46 @@ def ancestral_sample_v2(
             supports["D_TX"] = "ABSTAIN"
         else:
             zero_logit, quantile_logits = model.d_tx_heads(state, ib_bin, d_ob_bin)
-            zero_temperature = 1.0 if temperatures is None else float(
-                temperatures.get(M1_TEMPERATURE_D_TX_ZERO, 1.0))
+            zero_temperature = (
+                1.0
+                if temperatures is None
+                else float(temperatures.get(M1_TEMPERATURE_D_TX_ZERO, 1.0))
+            )
             uniform, _ = _uniform_v2(seed, episode_id, scenario_id, "D_TX")
             d_tx_minutes, d_tx_bin, overflow_d_tx = _sample_hurdle_quantile(
-                zero_logit / zero_temperature, quantile_logits,
-                d_tx_contract, uniform,
+                zero_logit / zero_temperature,
+                quantile_logits,
+                d_tx_contract,
+                uniform,
             )
 
-        rows.append(M1V2Scenario(
-            episode_id=episode_id,
-            decision_node_id=decision_node_id,
-            scenario_id=scenario_id,
-            scenario_weight=1 / count,
-            operational_stage=stage,
-            decision_time_utc=decision_time_utc,
-            t_ib_a00_utc=t_ib_a00_utc,
-            d_ob_minutes=d_ob_minutes,
-            d_tx_minutes=d_tx_minutes,
-            scheduled_ob_utc=scheduled_ob_utc,
-            t_ib_observed=t_ib_observed,
-            d_ob_observed=d_ob_observed,
-            d_tx_observed=d_tx_observed,
-            t_ib_support=supports.get(PUBLIC_T_IB_A00, "ABSTAIN"),
-            d_ob_support=supports.get("D_OB", "ABSTAIN"),
-            d_tx_support=supports.get("D_TX", "ABSTAIN"),
-            overflow_t_ib=overflow_t_ib,
-            overflow_d_ob=overflow_d_ob,
-            overflow_d_tx=overflow_d_tx,
-            scenario_seed_key="|".join(keys) or f"observed:{episode_id}:{scenario_id}",
-            taxi_reference_id=taxi_reference_id,
-            taxi_reference_hash=taxi_reference_hash,
-            taxi_reference_fallback_level=taxi_reference_fallback_level,
-            taxi_reference_support_state=taxi_reference_support_state,
-        ))
+        rows.append(
+            M1V2Scenario(
+                episode_id=episode_id,
+                decision_node_id=decision_node_id,
+                scenario_id=scenario_id,
+                scenario_weight=1 / count,
+                operational_stage=stage,
+                decision_time_utc=decision_time_utc,
+                t_ib_a00_utc=t_ib_a00_utc,
+                d_ob_minutes=d_ob_minutes,
+                d_tx_minutes=d_tx_minutes,
+                scheduled_ob_utc=scheduled_ob_utc,
+                t_ib_observed=t_ib_observed,
+                d_ob_observed=d_ob_observed,
+                d_tx_observed=d_tx_observed,
+                t_ib_support=supports.get(PUBLIC_T_IB_A00, "ABSTAIN"),
+                d_ob_support=supports.get("D_OB", "ABSTAIN"),
+                d_tx_support=supports.get("D_TX", "ABSTAIN"),
+                overflow_t_ib=overflow_t_ib,
+                overflow_d_ob=overflow_d_ob,
+                overflow_d_tx=overflow_d_tx,
+                scenario_seed_key="|".join(keys)
+                or f"observed:{episode_id}:{scenario_id}",
+                taxi_reference_id=taxi_reference_id,
+                taxi_reference_hash=taxi_reference_hash,
+                taxi_reference_fallback_level=taxi_reference_fallback_level,
+                taxi_reference_support_state=taxi_reference_support_state,
+            )
+        )
     return tuple(rows)

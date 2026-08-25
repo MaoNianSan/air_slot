@@ -27,7 +27,10 @@ class SourceAdapterDefinition(FrozenModel):
 
     @model_validator(mode="after")
     def canonical_types_include_primary(self):
-        if self.canonical_objects and self.canonical_object not in self.canonical_objects:
+        if (
+            self.canonical_objects
+            and self.canonical_object not in self.canonical_objects
+        ):
             raise ValueError("primary canonical object missing from canonical_objects")
         if not set(self.optional_projected_columns) <= set(self.projected_columns):
             raise ValueError("optional projected column is not projected")
@@ -45,9 +48,15 @@ class SourceAdapterRegistry(FrozenModel):
     def load(cls, path: Path) -> "SourceAdapterRegistry":
         return cls.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
 
-    def get(self, dataset_instance_id: str, source_family: str) -> SourceAdapterDefinition:
-        matches = [item for item in self.sources if item.dataset_instance_id == dataset_instance_id
-                   and item.source_family == source_family]
+    def get(
+        self, dataset_instance_id: str, source_family: str
+    ) -> SourceAdapterDefinition:
+        matches = [
+            item
+            for item in self.sources
+            if item.dataset_instance_id == dataset_instance_id
+            and item.source_family == source_family
+        ]
         if len(matches) != 1:
             raise ContractError("SOURCE_ADAPTER_NOT_REGISTERED")
         return matches[0]

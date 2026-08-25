@@ -19,8 +19,11 @@ class ScientificParameter(StrictModel):
 
     @model_validator(mode="after")
     def unresolved_has_no_value(self):
-        if self.freeze_state in {FreezeState.DEVELOPMENT_FROZEN, FreezeState.UNSUPPORTED} \
-                and self.value is not None:
+        if (
+            self.freeze_state
+            in {FreezeState.DEVELOPMENT_FROZEN, FreezeState.UNSUPPORTED}
+            and self.value is not None
+        ):
             raise ValueError("unresolved scientific parameter cannot have a value")
         return self
 
@@ -50,8 +53,9 @@ class ConfigLayers(StrictModel):
     engineering: EngineeringConfig
 
 
-def resolve_raw_roots(config: EngineeringConfig,
-                      project_root: Path = PROJECT_ROOT) -> dict[str, Path | None]:
+def resolve_raw_roots(
+    config: EngineeringConfig, project_root: Path = PROJECT_ROOT
+) -> dict[str, Path | None]:
     """Resolve engineering-only raw roots relative to the project checkout."""
     resolved: dict[str, Path | None] = {}
     for name, configured in config.raw_roots.items():
@@ -69,9 +73,13 @@ def _load(path: Path) -> dict[str, Any]:
 
 def load_config_layers(root: Path) -> ConfigLayers:
     return ConfigLayers(
-        scientific=ScientificConfig.model_validate(_load(root / "scientific/foundation.yaml")),
+        scientific=ScientificConfig.model_validate(
+            _load(root / "scientific/foundation.yaml")
+        ),
         reproducibility=ReproducibilityConfig.model_validate(
-            _load(root / "reproducibility/smoke.yaml")),
+            _load(root / "reproducibility/smoke.yaml")
+        ),
         engineering=EngineeringConfig.model_validate(
-            _load(root / "engineering/local.example.yaml")),
+            _load(root / "engineering/local.example.yaml")
+        ),
     )

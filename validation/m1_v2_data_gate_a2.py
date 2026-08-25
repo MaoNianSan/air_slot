@@ -36,7 +36,6 @@ from validation.m1_v2_data_gate_a1 import _replay_leakage
 from validation.m1_v2_data_gate_a2_source import scan_bts_signed_delay_semantics
 from validation.m1_v2_data_gate_statistics import SPLITS, label_statistics
 
-
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_data_gate_a2"
 PREPARATION_ROOT = ROOT / "artifacts" / "diagnostics" / "v5_development_freeze"
@@ -100,7 +99,9 @@ class ReferenceCollector:
             self.taxi_global[minutes] += 1
             self.taxi_airports[airport][minutes] += 1
 
-    def observe_episode(self, split: str, episode: object, rows: dict[str, dict]) -> None:
+    def observe_episode(
+        self, split: str, episode: object, rows: dict[str, dict]
+    ) -> None:
         if split != "train":
             return
         predecessor = rows[episode.predecessor_flight_id]
@@ -128,19 +129,21 @@ def _reference_payload(
         count = sum(histogram.values())
         fallback = "AIRPORT_CELL" if count >= 50 else "GLOBAL"
         value = _hist_median(histogram) if fallback == "AIRPORT_CELL" else global_value
-        cells.append({
-            "airport_id": airport,
-            "value_minutes": value,
-            "sample_count": count,
-            "fallback_level": fallback,
-            "provenance": [
-                f"airport={airport}",
-                f"n={count}",
-                f"fallback_level={fallback}",
-                f"{template['rule_id']}@{template['rule_version']}",
-                SEMANTIC_TOKEN,
-            ],
-        })
+        cells.append(
+            {
+                "airport_id": airport,
+                "value_minutes": value,
+                "sample_count": count,
+                "fallback_level": fallback,
+                "provenance": [
+                    f"airport={airport}",
+                    f"n={count}",
+                    f"fallback_level={fallback}",
+                    f"{template['rule_id']}@{template['rule_version']}",
+                    SEMANTIC_TOKEN,
+                ],
+            }
+        )
     identity_basis = {
         "scope": scope,
         "semantic_token": SEMANTIC_TOKEN,
@@ -216,13 +219,15 @@ def _build_cache(
     examples: dict[str, tuple], normalization, static_normalization, source_hash: str
 ) -> dict[str, Any]:
     contract_hashes = {
-        name: content_id({
-            "gate": "A2",
-            "contract": name,
-            "semantic_token": SEMANTIC_TOKEN,
-            "feature_schema": "AIR_SLOT_M1_V2_DATA_GATE_A2_V1",
-            "feature_names": list(FEATURE_NAMES_V2),
-        })
+        name: content_id(
+            {
+                "gate": "A2",
+                "contract": name,
+                "semantic_token": SEMANTIC_TOKEN,
+                "feature_schema": "AIR_SLOT_M1_V2_DATA_GATE_A2_V1",
+                "feature_names": list(FEATURE_NAMES_V2),
+            }
+        )
         for name in REQUIRED_CONTRACT_HASHES
     }
     key = cache_key(
@@ -326,9 +331,7 @@ def run() -> dict[str, Any]:
         (A1_ROOT / "AIR_SLOT_M1_V2_DATA_GATE_A1.json").read_text(encoding="utf-8")
     )
     old_cache = json.loads(
-        (A1_ROOT / "M1_V2_DATA_GATE_A1_CACHE_MANIFEST.json").read_text(
-            encoding="utf-8"
-        )
+        (A1_ROOT / "M1_V2_DATA_GATE_A1_CACHE_MANIFEST.json").read_text(encoding="utf-8")
     )
     old_progress = json.loads(
         (PREPARATION_ROOT / "M1_BASE_CACHE_PREPARATION_PROGRESS.json").read_text(
@@ -393,7 +396,10 @@ def run() -> dict[str, Any]:
     turnaround_reference = data2_turnaround_reference_from_payload(new_turnaround)
 
     scientific = load_config_layers(ROOT / "configs").scientific
-    if scientific.parameters["data2_factual_replay_availability"].value != "DECLARED_EVENT_TIME_REPLAY":
+    if (
+        scientific.parameters["data2_factual_replay_availability"].value
+        != "DECLARED_EVENT_TIME_REPLAY"
+    ):
         raise RuntimeError("DATA_GATE_A2_EXPECTED_DECLARED_EVENT_TIME_REPLAY")
     selection_audit = {
         "selection_schema": "M1_V2_DATA_GATE_A2_PREPARATION_V1",
@@ -428,12 +434,16 @@ def run() -> dict[str, Any]:
     static_normalization = fit_static_normalization_from_rows(rows["train"])
     for split in SPLITS:
         examples[split] = build_training_examples(
-            rows[split], normalization, None,
+            rows[split],
+            normalization,
+            None,
             static_normalization=static_normalization,
         )
     cache = _build_cache(
-        examples, normalization, static_normalization,
-        selection_audit["source_manifest_hash"]
+        examples,
+        normalization,
+        static_normalization,
+        selection_audit["source_manifest_hash"],
     )
     new_labels = label_statistics(rows)
     replay = _replay_leakage(cohorts)
@@ -504,9 +514,7 @@ def run() -> dict[str, Any]:
             "sampled_episode_counts": {
                 split: len(partitions[split]) for split in SPLITS
             },
-            "active_example_counts": {
-                split: len(examples[split]) for split in SPLITS
-            },
+            "active_example_counts": {split: len(examples[split]) for split in SPLITS},
         },
         "factual_replay": {
             "policy": "DECLARED_EVENT_TIME_REPLAY",

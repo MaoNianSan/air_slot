@@ -12,5 +12,9 @@ def runtime_fingerprint() -> dict[str, object]:
     packages = {}
     for name in ("pydantic", "PyYAML", "pytest"):
         packages[name] = importlib.metadata.version(name)
-    return {"python_version": platform.python_version(), "package_versions": packages,
-            "platform": platform.platform(), "device": "cpu"}
+    return {
+        "python_version": platform.python_version(),
+        "package_versions": packages,
+        "platform": platform.platform(),
+        "device": "cpu",
+    }

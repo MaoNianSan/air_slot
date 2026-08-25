@@ -20,6 +20,7 @@ Lineage: RAW flightlist rows -> FlightRecord (D1-OPENSKY-FLIGHT) ->
 EpisodeRecord (SAME_AIRCRAFT_AIRPORT_GAP@1.0.0) -> TURNAROUND_REFERENCE@1.0.0 ->
 turnaround_reference (FROZEN_REFERENCE) -> M2 (reference), M1 (floor boundary).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -97,14 +98,23 @@ class TurnaroundReference:
         min-support met resolves to the cell median. data1 proxy basis keeps
         support DEGRADED with an explicit reason (never zero-fabricated).
         """
-        cell = next((item for item in self.cells if item.airport_id == airport_id), None)
+        cell = next(
+            (item for item in self.cells if item.airport_id == airport_id), None
+        )
         if cell is not None and cell.fallback_level == _LEVEL_CELL:
-            value, level, count, reason = cell.value_minutes, _LEVEL_CELL, cell.sample_count, (
-                "FLIGHTLIST_PROXY_GAP_REFERENCE;CELL_MEDIAN"
+            value, level, count, reason = (
+                cell.value_minutes,
+                _LEVEL_CELL,
+                cell.sample_count,
+                ("FLIGHTLIST_PROXY_GAP_REFERENCE;CELL_MEDIAN"),
             )
             flags = ("REFERENCE_LEVEL_CELL", "REFERENCE_SOURCE_FLIGHTLIST_PROXY")
         else:
-            value, level, count = self.global_value_minutes, _LEVEL_GLOBAL, self.global_sample_count
+            value, level, count = (
+                self.global_value_minutes,
+                _LEVEL_GLOBAL,
+                self.global_sample_count,
+            )
             reason = "FLIGHTLIST_PROXY_GAP_REFERENCE;FALLBACK_GLOBAL"
             flags = ("REFERENCE_LEVEL_GLOBAL", "REFERENCE_SOURCE_FLIGHTLIST_PROXY")
             if cell is not None:
@@ -284,4 +294,3 @@ def build_turnaround_reference(
         support_state=SupportState.DEGRADED,
         reason_code="FLIGHTLIST_PROXY_GAP_REFERENCE",
     )
-

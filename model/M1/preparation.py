@@ -25,8 +25,14 @@ from model.M1.static_features import (
 )
 
 
-def active_rows(partition, *, taxi_reference=None, taxi_reference_minutes=None,
-                taxi_reference_id=None, taxi_reference_hash=None) -> tuple[tuple, dict[str, int]]:
+def active_rows(
+    partition,
+    *,
+    taxi_reference=None,
+    taxi_reference_minutes=None,
+    taxi_reference_id=None,
+    taxi_reference_hash=None,
+) -> tuple[tuple, dict[str, int]]:
     """Construct legal adaptive M1 V2 histories and labels from PRE episodes."""
     output = []
     stages = Counter()
@@ -39,16 +45,19 @@ def active_rows(partition, *, taxi_reference=None, taxi_reference_minutes=None,
             reference_minutes = (
                 float(lookup.value)
                 if getattr(lookup, "value", None) is not None
-                and getattr(getattr(lookup, "support_state", None), "value", None) == "SUPPORTED"
+                and getattr(getattr(lookup, "support_state", None), "value", None)
+                == "SUPPORTED"
                 else None
             )
             reference_id = (
                 getattr(taxi_reference, "reference_id", None)
-                if reference_minutes is not None else None
+                if reference_minutes is not None
+                else None
             )
             reference_hash = (
                 getattr(taxi_reference, "manifest_freeze_id", None)
-                if reference_minutes is not None else None
+                if reference_minutes is not None
+                else None
             )
         for _, prefix, labels in active_node_prefixes(
             episode=prepared.episode,
@@ -73,7 +82,8 @@ def build_training_examples(rows, normalization, bins, *, static_normalization):
         raise ValueError("M1_STATIC_NORMALIZATION_REQUIRED")
     return tuple(
         M1TrainingExample.from_v2_target_labels(
-            values=encode_pre_sequence(prefix, normalization), labels=labels,
+            values=encode_pre_sequence(prefix, normalization),
+            labels=labels,
             static_values=_static_values(prefix, static_normalization),
             static_context_lineage=_static_lineage(prefix),
         )
@@ -83,9 +93,7 @@ def build_training_examples(rows, normalization, bins, *, static_normalization):
 
 def _static_values(prefix, normalization):
     context = static_reference_context_from_pre(prefix[-1].static_reference_publication)
-    values, _ = static_reference_features_from_pre(
-        prefix[-1], context, normalization
-    )
+    values, _ = static_reference_features_from_pre(prefix[-1], context, normalization)
     return values.reshape(-1)
 
 
@@ -134,7 +142,9 @@ def normalization_rows(prefixes):
                 None,
             )
             if weather_lineage and weather_lineage.age_seconds is not None:
-                row["weather.observation_age_minutes"] = weather_lineage.age_seconds / 60
+                row["weather.observation_age_minutes"] = (
+                    weather_lineage.age_seconds / 60
+                )
             weather = state.current_state.get("current_weather")
             if weather and isinstance(weather.value, dict):
                 for field in V2_WEATHER_FIELDS:

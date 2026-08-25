@@ -72,4 +72,4 @@ No decision above may be closed with a registry name alone, a test fixture, a hi
 
 ## Validation scope
 
-The tests under `tests/experiment/test_exp2_scientific_manifest/` cover manifest shape, registry hash consistency, required M1 checkpoint reporting, M4 `TEST_ONLY` rejection, and action-freeze blocking. They create no scientific artifact and consume no real-data rows.
+The tests under `tests/experiments/test_exp2_scientific_manifest/` cover manifest shape, registry hash consistency, required M1 checkpoint reporting, M4 `TEST_ONLY` rejection, and action-freeze blocking. They create no scientific artifact and consume no real-data rows.

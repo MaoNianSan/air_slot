@@ -11,7 +11,6 @@ from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.enums import EvidenceClass, SupportState
 from model.common.value_objects import FrozenModel
 
-
 ACTION_FAMILIES = {
     "null",
     "timing_passenger_coordination",
@@ -105,11 +104,17 @@ class ActionResponseSupport(FrozenModel):
     ) -> "ActionResponseSupport":
         value = ResponseProvenance(provenance)
         mapping = {
-            ResponseProvenance.EMPIRICAL_ACTION_LOG: (EvidenceBasis.EMPIRICAL_ACTION_EVIDENCE,),
+            ResponseProvenance.EMPIRICAL_ACTION_LOG: (
+                EvidenceBasis.EMPIRICAL_ACTION_EVIDENCE,
+            ),
             ResponseProvenance.OPERATOR_INDUSTRY: (EvidenceBasis.OPERATIONAL_RULE,),
-            ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO: (EvidenceBasis.SCENARIO_ASSUMPTION,),
+            ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO: (
+                EvidenceBasis.SCENARIO_ASSUMPTION,
+            ),
             ResponseProvenance.PURE_SCENARIO: (EvidenceBasis.SCENARIO_ASSUMPTION,),
-            ResponseProvenance.ASSUMPTION_GROUNDED: (EvidenceBasis.SCENARIO_ASSUMPTION,),
+            ResponseProvenance.ASSUMPTION_GROUNDED: (
+                EvidenceBasis.SCENARIO_ASSUMPTION,
+            ),
             ResponseProvenance.UNSUPPORTED: (EvidenceBasis.UNSUPPORTED,),
         }
         bases = mapping[value]
@@ -172,7 +177,9 @@ class ActionTemplate(FrozenModel):
     response_parameters: dict[str, Any] = {}
     response_provenance: ResponseProvenance = ResponseProvenance.PURE_SCENARIO
     response_support: ActionResponseSupport | None = None
-    response_parameter_status: ResponseParameterStatus = ResponseParameterStatus.NOT_FROZEN
+    response_parameter_status: ResponseParameterStatus = (
+        ResponseParameterStatus.NOT_FROZEN
+    )
     coverage: str = "PARTIAL"
     preparation_time_minutes: float = Field(default=0, ge=0)
     deadline_semantics: str = "scenario_deadline"
@@ -202,7 +209,10 @@ class ActionTemplate(FrozenModel):
         if not self.deadline_semantics:
             raise ValueError("DEADLINE_SEMANTICS_REQUIRED")
         if self.template_id == "A00":
-            if self.response_parameter_status is not ResponseParameterStatus.NOT_REQUIRED:
+            if (
+                self.response_parameter_status
+                is not ResponseParameterStatus.NOT_REQUIRED
+            ):
                 raise ValueError("A00_RESPONSE_PARAMETERS_NOT_REQUIRED")
         elif (
             self.response_parameter_status is ResponseParameterStatus.FROZEN

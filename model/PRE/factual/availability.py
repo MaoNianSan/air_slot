@@ -56,8 +56,11 @@ def factual_availability_time(
     nonnegative lag).  The caller must still verify
     ``availability_time <= information_cutoff`` before publication.
     """
-    resolved = (policy.value if isinstance(policy, Data2FactualReplayAvailabilityPolicy)
-                else str(policy))
+    resolved = (
+        policy.value
+        if isinstance(policy, Data2FactualReplayAvailabilityPolicy)
+        else str(policy)
+    )
     if resolved == Data2FactualReplayAvailabilityPolicy.UNRESOLVED.value:
         return None
     declared_rules = {
@@ -88,8 +91,11 @@ def factual_replay_legal(
     blocked even if the database already contains it; only
     ``availability_time <= information_cutoff`` makes the fact legal.
     """
-    resolved = (policy.value if isinstance(policy, Data2FactualReplayAvailabilityPolicy)
-                else str(policy))
+    resolved = (
+        policy.value
+        if isinstance(policy, Data2FactualReplayAvailabilityPolicy)
+        else str(policy)
+    )
     if resolved == Data2FactualReplayAvailabilityPolicy.UNRESOLVED.value:
         return False
     if availability_time is None or event_time is None:

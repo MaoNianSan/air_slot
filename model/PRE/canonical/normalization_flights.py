@@ -10,7 +10,13 @@ from model.PRE.contracts.canonical import (
 from model.PRE.episode.event_detection import TrajectoryEventRecord
 
 from .data2_timestamps import resolve_bts_actual_timestamp, resolve_bts_event_clock
-from .normalization_common import deterministic_id, missing, number, parse_utc, provenance
+from .normalization_common import (
+    deterministic_id,
+    missing,
+    number,
+    parse_utc,
+    provenance,
+)
 from .timezone import infer_rollover, local_hhmm_to_utc
 
 
@@ -41,34 +47,44 @@ def canonicalize_ontime_row(
         "raw", {"source": "bts_ontime", **flight_parts, "tail": row.get("Tail_Number")}
     )
     flight_id = deterministic_id("flight", flight_parts)
-    schedule = FlightRecord.model_validate({
-        "canonical_object_type": "FlightRecord",
-        "dataset_instance_id": "data2_2019",
-        "canonical_record_id": deterministic_id(
-            "canonical-flight", {"raw": raw_id, "role": "schedule"}
-        ),
-        "flight_id": flight_id,
-        "service_date": day,
-        "source_flight_id": "|".join(str(value) for value in flight_parts.values()),
-        "aircraft_id": None if missing(row.get("Tail_Number"))
-        else str(row["Tail_Number"]).strip(),
-        "aircraft_id_namespace": "REGISTRATION",
-        "carrier_id": None if missing(row.get("Reporting_Airline"))
-        else str(row["Reporting_Airline"]).strip(),
-        "origin_airport_id": origin,
-        "destination_airport_id": dest,
-        "scheduled_departure_utc": schedule_dep,
-        "scheduled_arrival_utc": schedule_arr,
-        "event_time": schedule_dep,
-        "availability_time": None,
-        "event_start_time": schedule_dep,
-        "event_end_time": schedule_arr,
-        "schedule_semantics": "CRS_DEPARTURE",
-        "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
-        "decision_time_role": "FROZEN_REFERENCE",
-        "provenance_rule_id": "D2-BTS-SCHEDULE",
-        "provenance": provenance("data2_2019", "bts_ontime", raw_id, "D2-BTS-SCHEDULE"),
-    })
+    schedule = FlightRecord.model_validate(
+        {
+            "canonical_object_type": "FlightRecord",
+            "dataset_instance_id": "data2_2019",
+            "canonical_record_id": deterministic_id(
+                "canonical-flight", {"raw": raw_id, "role": "schedule"}
+            ),
+            "flight_id": flight_id,
+            "service_date": day,
+            "source_flight_id": "|".join(str(value) for value in flight_parts.values()),
+            "aircraft_id": (
+                None
+                if missing(row.get("Tail_Number"))
+                else str(row["Tail_Number"]).strip()
+            ),
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": (
+                None
+                if missing(row.get("Reporting_Airline"))
+                else str(row["Reporting_Airline"]).strip()
+            ),
+            "origin_airport_id": origin,
+            "destination_airport_id": dest,
+            "scheduled_departure_utc": schedule_dep,
+            "scheduled_arrival_utc": schedule_arr,
+            "event_time": schedule_dep,
+            "availability_time": None,
+            "event_start_time": schedule_dep,
+            "event_end_time": schedule_arr,
+            "schedule_semantics": "CRS_DEPARTURE",
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "decision_time_role": "FROZEN_REFERENCE",
+            "provenance_rule_id": "D2-BTS-SCHEDULE",
+            "provenance": provenance(
+                "data2_2019", "bts_ontime", raw_id, "D2-BTS-SCHEDULE"
+            ),
+        }
+    )
     departure = resolve_bts_actual_timestamp(
         service_day=day,
         schedule_utc=schedule_dep,
@@ -123,46 +139,50 @@ def canonicalize_ontime_row(
         consistency_flags.add("DIRECT_WHEELSOFF_MISSING_TAXI_FALLBACK")
     if wheels_on_direct is None and wheels_on_derived is not None:
         consistency_flags.add("DIRECT_WHEELSON_MISSING_TAXI_FALLBACK")
-    outcome = OperationalEventRecord.model_validate({
-        "canonical_object_type": "OperationalEventRecord",
-        "dataset_instance_id": "data2_2019",
-        "canonical_record_id": deterministic_id(
-            "canonical-event", {"raw": raw_id, "role": "actual"}
-        ),
-        "flight_id": flight_id,
-        "event_type": "COMPLETED_OPERATIONAL_OUTCOME",
-        "event_time": min(actual_times) if actual_times else None,
-        "availability_time": None,
-        "event_time_lower": min(actual_times) if actual_times else None,
-        "event_time_upper": max(actual_times) if actual_times else None,
-        "actual_departure_utc": actual["DepTime"],
-        "actual_departure_direct_utc": departure.direct_utc,
-        "actual_departure_derived_utc": departure.signed_target_utc,
-        "wheels_off_utc": actual["WheelsOff"],
-        "wheels_off_direct_utc": wheels_off_direct,
-        "wheels_off_derived_utc": wheels_off_derived,
-        "wheels_on_utc": actual["WheelsOn"],
-        "wheels_on_direct_utc": wheels_on_direct,
-        "wheels_on_derived_utc": wheels_on_derived,
-        "actual_arrival_utc": actual["ArrTime"],
-        "actual_arrival_direct_utc": arrival.direct_utc,
-        "actual_arrival_derived_utc": arrival.signed_target_utc,
-        "taxi_out_minutes": taxi_out,
-        "taxi_in_minutes": taxi_in,
-        "cancelled": bool(number(row.get("Cancelled")) or 0),
-        "diverted": bool(number(row.get("Diverted")) or 0),
-        "reconstruction_rule_id": "DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION",
-        "decision_time_role": "EVAL_OUTCOME",
-        "availability_basis": "POSTHOC_ONLY",
-        "provenance_rule_id": "D2-BTS-ACTUAL",
-        "quality_flags": tuple(sorted(consistency_flags)),
-        "provenance": provenance("data2_2019", "bts_ontime", raw_id, "D2-BTS-ACTUAL"),
-    })
+    outcome = OperationalEventRecord.model_validate(
+        {
+            "canonical_object_type": "OperationalEventRecord",
+            "dataset_instance_id": "data2_2019",
+            "canonical_record_id": deterministic_id(
+                "canonical-event", {"raw": raw_id, "role": "actual"}
+            ),
+            "flight_id": flight_id,
+            "event_type": "COMPLETED_OPERATIONAL_OUTCOME",
+            "event_time": min(actual_times) if actual_times else None,
+            "availability_time": None,
+            "event_time_lower": min(actual_times) if actual_times else None,
+            "event_time_upper": max(actual_times) if actual_times else None,
+            "actual_departure_utc": actual["DepTime"],
+            "actual_departure_direct_utc": departure.direct_utc,
+            "actual_departure_derived_utc": departure.signed_target_utc,
+            "wheels_off_utc": actual["WheelsOff"],
+            "wheels_off_direct_utc": wheels_off_direct,
+            "wheels_off_derived_utc": wheels_off_derived,
+            "wheels_on_utc": actual["WheelsOn"],
+            "wheels_on_direct_utc": wheels_on_direct,
+            "wheels_on_derived_utc": wheels_on_derived,
+            "actual_arrival_utc": actual["ArrTime"],
+            "actual_arrival_direct_utc": arrival.direct_utc,
+            "actual_arrival_derived_utc": arrival.signed_target_utc,
+            "taxi_out_minutes": taxi_out,
+            "taxi_in_minutes": taxi_in,
+            "cancelled": bool(number(row.get("Cancelled")) or 0),
+            "diverted": bool(number(row.get("Diverted")) or 0),
+            "reconstruction_rule_id": "DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION",
+            "decision_time_role": "EVAL_OUTCOME",
+            "availability_basis": "POSTHOC_ONLY",
+            "provenance_rule_id": "D2-BTS-ACTUAL",
+            "quality_flags": tuple(sorted(consistency_flags)),
+            "provenance": provenance(
+                "data2_2019", "bts_ontime", raw_id, "D2-BTS-ACTUAL"
+            ),
+        }
+    )
     return schedule, outcome
 
 
 def canonicalize_flightlist_row(
-    row: dict[str, Any]
+    row: dict[str, Any],
 ) -> tuple[FlightRecord, OperationalEventRecord]:
     parts = {
         key: row.get(key)
@@ -179,52 +199,59 @@ def canonicalize_flightlist_row(
         },
     )
     flight_id = deterministic_id("flight", parts)
-    flight = FlightRecord.model_validate({
-        "canonical_object_type": "FlightRecord",
-        "dataset_instance_id": "data1_2019",
-        "canonical_record_id": deterministic_id(
-            "canonical-flight", {"raw": raw_id, "role": "episode"}
-        ),
-        "flight_id": flight_id,
-        "source_flight_id": str(row.get("callsign", "")).strip(),
-        "aircraft_id": str(row.get("icao24", "")).lower(),
-        "aircraft_id_namespace": "ICAO24",
-        "origin_airport_id": None if missing(row.get("origin")) else row.get("origin"),
-        "destination_airport_id": None if missing(row.get("destination"))
-        else row.get("destination"),
-        "event_time": first_seen,
-        "availability_time": None,
-        "first_seen_utc": first_seen,
-        "last_seen_utc": last_seen,
-        "event_start_time": first_seen,
-        "event_end_time": last_seen,
-        "decision_time_role": "EPISODE_CONSTRUCTION",
-        "availability_basis": "ARCHIVE_PUBLICATION_RULE",
-        "provenance_rule_id": "D1-OPENSKY-FLIGHT",
-        "provenance": provenance(
-            "data1_2019", "opensky_flightlist", raw_id, "D1-OPENSKY-FLIGHT"
-        ),
-    })
-    event = OperationalEventRecord.model_validate({
-        "canonical_object_type": "OperationalEventRecord",
-        "dataset_instance_id": "data1_2019",
-        "canonical_record_id": deterministic_id(
-            "canonical-event", {"raw": raw_id, "role": "proxy-outcome"}
-        ),
-        "flight_id": flight_id,
-        "event_type": "ARCHIVE_FLIGHT_INTERVAL_PROXY",
-        "event_time": first_seen,
-        "availability_time": None,
-        "event_time_lower": first_seen,
-        "event_time_upper": last_seen,
-        "reconstruction_rule_id": "interval_event_proxy",
-        "decision_time_role": "EVAL_OUTCOME",
-        "availability_basis": "POSTHOC_ONLY",
-        "provenance_rule_id": "D1-OPENSKY-FLIGHT-EVENT",
-        "provenance": provenance(
-            "data1_2019", "opensky_flightlist", raw_id, "D1-OPENSKY-FLIGHT-EVENT"
-        ),
-    })
+    flight = FlightRecord.model_validate(
+        {
+            "canonical_object_type": "FlightRecord",
+            "dataset_instance_id": "data1_2019",
+            "canonical_record_id": deterministic_id(
+                "canonical-flight", {"raw": raw_id, "role": "episode"}
+            ),
+            "flight_id": flight_id,
+            "source_flight_id": str(row.get("callsign", "")).strip(),
+            "aircraft_id": str(row.get("icao24", "")).lower(),
+            "aircraft_id_namespace": "ICAO24",
+            "origin_airport_id": (
+                None if missing(row.get("origin")) else row.get("origin")
+            ),
+            "destination_airport_id": (
+                None if missing(row.get("destination")) else row.get("destination")
+            ),
+            "event_time": first_seen,
+            "availability_time": None,
+            "first_seen_utc": first_seen,
+            "last_seen_utc": last_seen,
+            "event_start_time": first_seen,
+            "event_end_time": last_seen,
+            "decision_time_role": "EPISODE_CONSTRUCTION",
+            "availability_basis": "ARCHIVE_PUBLICATION_RULE",
+            "provenance_rule_id": "D1-OPENSKY-FLIGHT",
+            "provenance": provenance(
+                "data1_2019", "opensky_flightlist", raw_id, "D1-OPENSKY-FLIGHT"
+            ),
+        }
+    )
+    event = OperationalEventRecord.model_validate(
+        {
+            "canonical_object_type": "OperationalEventRecord",
+            "dataset_instance_id": "data1_2019",
+            "canonical_record_id": deterministic_id(
+                "canonical-event", {"raw": raw_id, "role": "proxy-outcome"}
+            ),
+            "flight_id": flight_id,
+            "event_type": "ARCHIVE_FLIGHT_INTERVAL_PROXY",
+            "event_time": first_seen,
+            "availability_time": None,
+            "event_time_lower": first_seen,
+            "event_time_upper": last_seen,
+            "reconstruction_rule_id": "interval_event_proxy",
+            "decision_time_role": "EVAL_OUTCOME",
+            "availability_basis": "POSTHOC_ONLY",
+            "provenance_rule_id": "D1-OPENSKY-FLIGHT-EVENT",
+            "provenance": provenance(
+                "data1_2019", "opensky_flightlist", raw_id, "D1-OPENSKY-FLIGHT-EVENT"
+            ),
+        }
+    )
     return flight, event
 
 
@@ -263,12 +290,21 @@ def canonicalize_state_vector_row(
         "velocity_mps": number(row.get("velocity")),
         "heading_deg": number(row.get("heading")),
         "vertical_rate_mps": number(row.get("vertrate")),
-        "on_ground": None if missing(row.get("onground"))
-        else str(row["onground"]).strip().lower() in {"true", "1"},
-        "position_time": None if missing(row.get("lastposupdate"))
-        else datetime.fromtimestamp(float(row["lastposupdate"]), timezone.utc),
-        "contact_time": None if missing(row.get("lastcontact"))
-        else datetime.fromtimestamp(float(row["lastcontact"]), timezone.utc),
+        "on_ground": (
+            None
+            if missing(row.get("onground"))
+            else str(row["onground"]).strip().lower() in {"true", "1"}
+        ),
+        "position_time": (
+            None
+            if missing(row.get("lastposupdate"))
+            else datetime.fromtimestamp(float(row["lastposupdate"]), timezone.utc)
+        ),
+        "contact_time": (
+            None
+            if missing(row.get("lastcontact"))
+            else datetime.fromtimestamp(float(row["lastcontact"]), timezone.utc)
+        ),
     }
     values["canonical_record_id"] = deterministic_id(
         "trajectory",
@@ -289,25 +325,27 @@ def canonicalize_trajectory_event(
             "event_time": record.event_time.isoformat(),
         },
     )
-    return OperationalEventRecord.model_validate({
-        "canonical_object_type": "OperationalEventRecord",
-        "dataset_instance_id": "data1_2019",
-        "canonical_record_id": deterministic_id(
-            "canonical-event", {"raw": raw_id, "role": "trajectory"}
-        ),
-        "flight_id": flight_id,
-        "aircraft_id": record.aircraft_id,
-        "event_type": f"TRAJECTORY_{record.event_type}",
-        "event_time": record.event_time,
-        "availability_time": None,
-        "event_time_lower": record.event_time,
-        "event_time_upper": record.event_time,
-        "reconstruction_rule_id": "trajectory_event_detection",
-        "decision_time_role": "EVAL_OUTCOME",
-        "availability_basis": "POSTHOC_ONLY",
-        "provenance_rule_id": "D1-TRAJECTORY-EVENT",
-        "quality_flags": record.quality_flags,
-        "provenance": provenance(
-            "data1_2019", "opensky_state_vectors", raw_id, "D1-TRAJECTORY-EVENT"
-        ),
-    })
+    return OperationalEventRecord.model_validate(
+        {
+            "canonical_object_type": "OperationalEventRecord",
+            "dataset_instance_id": "data1_2019",
+            "canonical_record_id": deterministic_id(
+                "canonical-event", {"raw": raw_id, "role": "trajectory"}
+            ),
+            "flight_id": flight_id,
+            "aircraft_id": record.aircraft_id,
+            "event_type": f"TRAJECTORY_{record.event_type}",
+            "event_time": record.event_time,
+            "availability_time": None,
+            "event_time_lower": record.event_time,
+            "event_time_upper": record.event_time,
+            "reconstruction_rule_id": "trajectory_event_detection",
+            "decision_time_role": "EVAL_OUTCOME",
+            "availability_basis": "POSTHOC_ONLY",
+            "provenance_rule_id": "D1-TRAJECTORY-EVENT",
+            "quality_flags": record.quality_flags,
+            "provenance": provenance(
+                "data1_2019", "opensky_state_vectors", raw_id, "D1-TRAJECTORY-EVENT"
+            ),
+        }
+    )

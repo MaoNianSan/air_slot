@@ -32,47 +32,78 @@ def _uniform(key_payload: tuple[str, ...]) -> float:
     return (integer + 0.5) / 2**64
 
 
-def response_uniform(*, seed, episode_id, decision_node_id, scenario_id,
-                     action_template_id, response_dimension, sensitivity_level,
-                     response_registry_hash) -> float:
-    return _uniform((
-        "m3_response",
-        str(seed),
-        str(episode_id),
-        str(decision_node_id),
-        str(scenario_id),
-        str(action_template_id),
-        str(response_dimension),
-        str(sensitivity_level),
-        str(response_registry_hash),
-    ))
+def response_uniform(
+    *,
+    seed,
+    episode_id,
+    decision_node_id,
+    scenario_id,
+    action_template_id,
+    response_dimension,
+    sensitivity_level,
+    response_registry_hash,
+) -> float:
+    return _uniform(
+        (
+            "m3_response",
+            str(seed),
+            str(episode_id),
+            str(decision_node_id),
+            str(scenario_id),
+            str(action_template_id),
+            str(response_dimension),
+            str(sensitivity_level),
+            str(response_registry_hash),
+        )
+    )
 
 
-def response_draw(*, seed, episode_id, decision_node_id, scenario_id,
-                  action_template_id, parameters, response_registry_hash,
-                  sensitivity_level: str = "BASE") -> float:
+def response_draw(
+    *,
+    seed,
+    episode_id,
+    decision_node_id,
+    scenario_id,
+    action_template_id,
+    parameters,
+    response_registry_hash,
+    sensitivity_level: str = "BASE",
+) -> float:
     """Realized mitigation intensity rho in [0, 1] for one action/scenario."""
     if parameters.get("response_model") == "DETERMINISTIC":
         return float(parameters.get("value", 0.0))
     if parameters.get("response_model") != "BERNOULLI_BETA":
-        raise ContractError(f"M3_RESPONSE_MODEL_NOT_IMPLEMENTED:{parameters.get('response_model')}")
+        raise ContractError(
+            f"M3_RESPONSE_MODEL_NOT_IMPLEMENTED:{parameters.get('response_model')}"
+        )
     probability = float(parameters["success_probability"])
     mean = float(parameters["mean_intensity"])
     concentration = float(parameters["concentration"])
     if not 0 <= probability <= 1 or not 0 < mean < 1 or concentration <= 0:
         raise ContractError("M3_RESPONSE_PARAMETERS_INVALID")
-    implemented = response_uniform(
-        seed=seed, episode_id=episode_id, decision_node_id=decision_node_id,
-        scenario_id=scenario_id, action_template_id=action_template_id,
-        response_dimension="BERNOULLI", sensitivity_level=sensitivity_level,
-        response_registry_hash=response_registry_hash,
-    ) <= probability
+    implemented = (
+        response_uniform(
+            seed=seed,
+            episode_id=episode_id,
+            decision_node_id=decision_node_id,
+            scenario_id=scenario_id,
+            action_template_id=action_template_id,
+            response_dimension="BERNOULLI",
+            sensitivity_level=sensitivity_level,
+            response_registry_hash=response_registry_hash,
+        )
+        <= probability
+    )
     if not implemented:
         return 0.0
     uniform = response_uniform(
-        seed=seed, episode_id=episode_id, decision_node_id=decision_node_id,
-        scenario_id=scenario_id, action_template_id=action_template_id,
-        response_dimension="BETA_INTENSITY", sensitivity_level=sensitivity_level,
+        seed=seed,
+        episode_id=episode_id,
+        decision_node_id=decision_node_id,
+        scenario_id=scenario_id,
+        action_template_id=action_template_id,
+        response_dimension="BETA_INTENSITY",
+        sensitivity_level=sensitivity_level,
         response_registry_hash=response_registry_hash,
     )
     alpha = mean * concentration
@@ -80,9 +111,14 @@ def response_draw(*, seed, episode_id, decision_node_id, scenario_id,
     return float(betaincinv(alpha, beta, uniform))
 
 
-def scenario_update(*, pre_cu: float, mitigation_coefficient: float,
-                    rho: float, induced_score: float,
-                    induced_score_to_cu: float) -> float:
+def scenario_update(
+    *,
+    pre_cu: float,
+    mitigation_coefficient: float,
+    rho: float,
+    induced_score: float,
+    induced_score_to_cu: float,
+) -> float:
     """Frozen post-action consequence update per component.
 
     ``induced_score_to_cu`` (gamma) must come from the frozen response/action
@@ -96,12 +132,15 @@ def scenario_update(*, pre_cu: float, mitigation_coefficient: float,
     return mitigated + float(induced_score_to_cu) * float(induced_score)
 
 
-def action_post_consequences(*, pre_by_component: Mapping[str, float],
-                             mitigation: Mapping[str, float],
-                             induced: Mapping[str, float],
-                             rho: float,
-                             induced_score_to_cu: float,
-                             included_components) -> dict[str, float]:
+def action_post_consequences(
+    *,
+    pre_by_component: Mapping[str, float],
+    mitigation: Mapping[str, float],
+    induced: Mapping[str, float],
+    rho: float,
+    induced_score_to_cu: float,
+    included_components,
+) -> dict[str, float]:
     """Frozen per-component U_post for one action realization.
 
     Missing mitigation/induced entries are treated as zero (spec 11) but no

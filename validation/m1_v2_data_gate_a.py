@@ -53,7 +53,6 @@ from validation.m1_v2_data_gate_statistics import (
     time_diagnostics,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_data_gate_a"
 PREPARATION_ROOT = ROOT / "artifacts" / "diagnostics" / "v5_development_freeze"
@@ -72,17 +71,21 @@ def _json_serialized_payload(payload):
 
 
 def _heartbeat(phase: str, **values) -> None:
-    print(json.dumps({"phase": phase, **values}, sort_keys=True, default=str), flush=True)
+    print(
+        json.dumps({"phase": phase, **values}, sort_keys=True, default=str), flush=True
+    )
 
 
 def _load_references():
     taxi_payload = json.loads(
-        (PREPARATION_ROOT / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json")
-        .read_text(encoding="utf-8")
+        (PREPARATION_ROOT / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json").read_text(
+            encoding="utf-8"
+        )
     )
     turnaround_payload = json.loads(
-        (PREPARATION_ROOT / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json")
-        .read_text(encoding="utf-8")
+        (
+            PREPARATION_ROOT / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json"
+        ).read_text(encoding="utf-8")
     )
     return (
         data2_taxi_reference_from_payload(taxi_payload),
@@ -126,11 +129,21 @@ def _load_frozen_partitions() -> tuple[dict[str, tuple], dict]:
     return partitions, audit
 
 
-def _static_and_cache(examples, normalization, static_normalization, source_hash) -> dict:
+def _static_and_cache(
+    examples, normalization, static_normalization, source_hash
+) -> dict:
     static = {}
     for split in SPLITS:
-        values = [row.static_values for row in examples[split] if row.static_values is not None]
-        matrix = torch.stack(values) if values else torch.empty((0, len(STATIC_FEATURE_NAMES)))
+        values = [
+            row.static_values
+            for row in examples[split]
+            if row.static_values is not None
+        ]
+        matrix = (
+            torch.stack(values)
+            if values
+            else torch.empty((0, len(STATIC_FEATURE_NAMES)))
+        )
         static[split] = {
             "row_count": len(examples[split]),
             "available_count": len(values),
@@ -164,10 +177,11 @@ def _static_and_cache(examples, normalization, static_normalization, source_hash
     data_path = OUTPUT / "M1_V2_DATA_GATE_A_CACHE.npz"
     manifest_path = OUTPUT / "M1_V2_DATA_GATE_A_CACHE_MANIFEST.json"
     cache.save(data_path, manifest_path)
-    loaded = M1DevelopmentBaseCache.load(data_path, manifest_path, expected_cache_key=key)
+    loaded = M1DevelopmentBaseCache.load(
+        data_path, manifest_path, expected_cache_key=key
+    )
     static_equal = (
-        cache.store.static_values is None
-        and loaded.store.static_values is None
+        cache.store.static_values is None and loaded.store.static_values is None
     ) or (
         cache.store.static_values is not None
         and loaded.store.static_values is not None
@@ -230,7 +244,9 @@ def run() -> dict:
     static_normalization = fit_static_normalization_from_rows(rows["train"])
     for split in SPLITS:
         examples[split] = build_training_examples(
-            rows[split], normalization, None,
+            rows[split],
+            normalization,
+            None,
             static_normalization=static_normalization,
         )
     matrices = {
@@ -241,8 +257,10 @@ def run() -> dict:
     lineage = lineage_rows(feature_stats["train"])
     lineage_path = _write_lineage(lineage)
     static = _static_and_cache(
-        examples, normalization, static_normalization,
-        selection_audit["source_manifest_hash"]
+        examples,
+        normalization,
+        static_normalization,
+        selection_audit["source_manifest_hash"],
     )
     time_checks = time_diagnostics(cohorts)
     unresolved = unresolved_column_queue(cohorts)
@@ -255,7 +273,9 @@ def run() -> dict:
         "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
         "counts": {
             "raw_candidate_source_column_pairs": 28,
-            "pre_published_expanded_fields": len({row["PRE_OUTPUT"] for row in lineage}),
+            "pre_published_expanded_fields": len(
+                {row["PRE_OUTPUT"] for row in lineage}
+            ),
             "m1_dynamic": len(FEATURE_NAMES_V2),
             "m1_static": len(STATIC_FEATURE_NAMES),
             "context_only": 4,

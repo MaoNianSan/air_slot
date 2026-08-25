@@ -5,36 +5,53 @@ from model.common.errors import ContractError
 from .contracts import TargetBinContract
 
 
-def interval_nll(logits: torch.Tensor, bins: TargetBinContract, *, lower: torch.Tensor,
-                 upper: torch.Tensor, active: torch.Tensor, weights: torch.Tensor | None = None):
-    logp = torch.log_softmax(logits, -1); losses=[]; selected=[]
+def interval_nll(
+    logits: torch.Tensor,
+    bins: TargetBinContract,
+    *,
+    lower: torch.Tensor,
+    upper: torch.Tensor,
+    active: torch.Tensor,
+    weights: torch.Tensor | None = None,
+):
+    logp = torch.log_softmax(logits, -1)
+    losses = []
+    selected = []
     for index in range(logits.shape[0]):
-        if not bool(active[index]): continue
+        if not bool(active[index]):
+            continue
         lo, hi = float(lower[index]), float(upper[index])
         indices = []
         for bin_index in range(bins.finite_start_index, bins.overflow_index):
-            start = bins.finite_minimum_minutes + (
-                bin_index - bins.finite_start_index
-            ) * bins.bin_width_minutes
+            start = (
+                bins.finite_minimum_minutes
+                + (bin_index - bins.finite_start_index) * bins.bin_width_minutes
+            )
             if start < hi and start + bins.bin_width_minutes > lo:
                 indices.append(bin_index)
         if bins.signed and lo < bins.finite_minimum_minutes:
             indices.append(bins.underflow_index)
-        if not indices: indices=[bins.encode(lo)]
-        if hi >= bins.max_finite_minutes + bins.bin_width_minutes: indices.append(bins.class_count-1)
-        losses.append(-torch.logsumexp(logp[index, indices], 0)); selected.append(index)
-    if not losses: return logits.sum() * 0
-    stack=torch.stack(losses)
-    if weights is not None: stack=stack*weights[torch.tensor(selected,device=weights.device)]
+        if not indices:
+            indices = [bins.encode(lo)]
+        if hi >= bins.max_finite_minutes + bins.bin_width_minutes:
+            indices.append(bins.class_count - 1)
+        losses.append(-torch.logsumexp(logp[index, indices], 0))
+        selected.append(index)
+    if not losses:
+        return logits.sum() * 0
+    stack = torch.stack(losses)
+    if weights is not None:
+        stack = stack * weights[torch.tensor(selected, device=weights.device)]
     return stack.mean()
 
 
 def exact_nll(logits, labels, active, weights=None):
-    losses=torch.nn.functional.cross_entropy(logits, labels, reduction="none")
-    mask=active.float(); losses=losses*mask
-    if weights is not None: losses=losses*weights
-    return losses.sum()/mask.sum().clamp_min(1)
-
+    losses = torch.nn.functional.cross_entropy(logits, labels, reduction="none")
+    mask = active.float()
+    losses = losses * mask
+    if weights is not None:
+        losses = losses * weights
+    return losses.sum() / mask.sum().clamp_min(1)
 
 
 # ---------------------------------------------------------------------------
@@ -175,8 +192,8 @@ def hurdle_quantile_loss(
     if zero_denominator is not None:
         zero_term = (
             (zero_losses * mask).sum() / float(zero_denominator)
-            if zero_denominator else torch.zeros((), dtype=zero_logit.dtype,
-                                                 device=zero_logit.device)
+            if zero_denominator
+            else torch.zeros((), dtype=zero_logit.dtype, device=zero_logit.device)
         )
     else:
         zero_term = (zero_losses * mask).sum() / mask.sum().clamp_min(1)
@@ -184,13 +201,16 @@ def hurdle_quantile_loss(
     quantiles = monotone_positive_quantiles(quantile_logits)
     positive_mask = mask * (value > 0).float()
     if positive_mask.sum() == 0:
-        positive_term = torch.zeros((), dtype=zero_logit.dtype, device=zero_logit.device)
+        positive_term = torch.zeros(
+            (), dtype=zero_logit.dtype, device=zero_logit.device
+        )
     else:
         # Pinball is evaluated only on active positive rows so that inactive
         # (NaN-valued) rows never poison the mean.
         active_positive = positive_mask.bool()
         positive_losses = pinball_loss(
-            value[active_positive], quantiles[active_positive],
+            value[active_positive],
+            quantiles[active_positive],
             contract.quantile_levels,
         )
         if positive_row_weights is not None:
@@ -198,14 +218,14 @@ def hurdle_quantile_loss(
         if positive_denominator is not None:
             positive_term = (
                 positive_losses.sum() / float(positive_denominator)
-                if positive_denominator else torch.zeros(
-                    (), dtype=positive_losses.dtype, device=positive_losses.device)
+                if positive_denominator
+                else torch.zeros(
+                    (), dtype=positive_losses.dtype, device=positive_losses.device
+                )
             )
         else:
             positive_term = positive_losses.sum() / positive_mask.sum().clamp_min(1)
     return zero_term + positive_term
-
-
 
 
 def _quantile_tail_values(
@@ -255,7 +275,9 @@ def _apply_quantile_piecewise(
     if upper_tail_policy == "DECLARED_FROZEN":
         raise ContractError("M1_QUANTILE_UPPER_TAIL_RULE_NOT_IMPLEMENTED")
     if upper_tail_policy != "TEST_ONLY_LINEAR":
-        raise ContractError(f"M1_QUANTILE_UPPER_TAIL_POLICY_UNKNOWN:{upper_tail_policy}")
+        raise ContractError(
+            f"M1_QUANTILE_UPPER_TAIL_POLICY_UNKNOWN:{upper_tail_policy}"
+        )
     tail = tail_anchor + (flat_uu - q_max) * slope
     return torch.where(tail_mask, tail, base)
 
@@ -294,20 +316,36 @@ def quantile_value(
     if quantile_count != len(levels):
         raise ValueError("quantile tensor width must match declared levels")
     levels_t = torch.as_tensor(levels, dtype=quantiles.dtype, device=quantiles.device)
-    grid = torch.cat([torch.zeros(1, dtype=levels_t.dtype, device=levels_t.device), levels_t])
-    values = torch.cat([torch.zeros(batch, 1, dtype=quantiles.dtype, device=quantiles.device), quantiles], dim=-1)
+    grid = torch.cat(
+        [torch.zeros(1, dtype=levels_t.dtype, device=levels_t.device), levels_t]
+    )
+    values = torch.cat(
+        [
+            torch.zeros(batch, 1, dtype=quantiles.dtype, device=quantiles.device),
+            quantiles,
+        ],
+        dim=-1,
+    )
     uu = torch.as_tensor(u, dtype=quantiles.dtype, device=quantiles.device)
     q_max, tail_anchor, slope = _quantile_tail_values(quantiles, levels)
 
     def _resolve(flat_uu, lo, hi, vlo, vhi, per_row_anchor, per_row_slope):
         return _apply_quantile_piecewise(
-            flat_uu, lo, hi, vlo, vhi,
-            q_max=q_max, tail_anchor=per_row_anchor, slope=per_row_slope,
+            flat_uu,
+            lo,
+            hi,
+            vlo,
+            vhi,
+            q_max=q_max,
+            tail_anchor=per_row_anchor,
+            slope=per_row_slope,
             upper_tail_policy=upper_tail_policy,
         )
 
     if uu.dim() == 0:
-        index = int(torch.searchsorted(grid, uu, right=False).clamp(1, quantile_count)) - 1
+        index = (
+            int(torch.searchsorted(grid, uu, right=False).clamp(1, quantile_count)) - 1
+        )
         lo = grid[index].expand(batch)
         hi = grid[index + 1].expand(batch)
         vlo = values[:, index]
@@ -315,12 +353,20 @@ def quantile_value(
         return _resolve(uu.expand(batch), lo, hi, vlo, vhi, tail_anchor, slope)
     if uu.dim() == 1:
         if uu.shape[0] != batch:
-            raise ValueError("one uniform per row required for 1-D quantile interpolation")
+            raise ValueError(
+                "one uniform per row required for 1-D quantile interpolation"
+            )
         index = torch.searchsorted(grid, uu, right=False).clamp(1, quantile_count) - 1
         rows = torch.arange(batch, device=uu.device)
-        return _resolve(uu, grid[index], grid[index + 1],
-                        values[rows, index], values[rows, index + 1],
-                        tail_anchor, slope)
+        return _resolve(
+            uu,
+            grid[index],
+            grid[index + 1],
+            values[rows, index],
+            values[rows, index + 1],
+            tail_anchor,
+            slope,
+        )
     if uu.dim() == 2:
         rows_count, scenarios = uu.shape
         if rows_count != batch:
@@ -338,6 +384,13 @@ def quantile_value(
         flat_values = values.reshape(-1)
         vlo = flat_values[rows * (quantile_count + 1) + index]
         vhi = flat_values[rows * (quantile_count + 1) + index + 1]
-        return _resolve(flat_u, grid[index], grid[index + 1], vlo, vhi,
-                        tail_anchor[rows], slope[rows]).reshape(uu.shape)
+        return _resolve(
+            flat_u,
+            grid[index],
+            grid[index + 1],
+            vlo,
+            vhi,
+            tail_anchor[rows],
+            slope[rows],
+        ).reshape(uu.shape)
     raise ValueError("quantile interpolation supports scalar, (B,), or (B, S) uniforms")

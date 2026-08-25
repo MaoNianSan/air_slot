@@ -28,7 +28,6 @@ from validation.m1_v2_feature_semantics import (
 )
 from validation.ownership_gate_v2 import build_gate_result
 
-
 ROOT = Path(__file__).resolve().parents[1]
 A2_ROOT = ROOT / "artifacts" / "diagnostics" / "m1_v2_data_gate_a2"
 DEFAULT_OUTPUT = ROOT / "artifacts" / "diagnostics" / "m1_v2_feature_gate_b1"
@@ -40,7 +39,9 @@ def _read_json(path: Path) -> dict:
 
 def _write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
 
 
 def _head() -> str:
@@ -93,7 +94,9 @@ def _recommendations(train_profile: list[dict], static_scan: dict) -> list[dict]
             recommendation = "REMOVE"
             evidence.append("TRAIN_CONSTANT")
         elif row["near_constant"] and group not in {
-            "CURRENT_STATE", "CURRENT_WEATHER", "CEILING_STATUS"
+            "CURRENT_STATE",
+            "CURRENT_WEATHER",
+            "CEILING_STATUS",
         }:
             recommendation = "REVIEW_NEAR_CONSTANT"
             evidence.append("TRAIN_NEAR_CONSTANT")
@@ -117,7 +120,8 @@ def _decision_packet(
         if ".support." in name
     }
     evidence_constants = [
-        name for name in FEATURE_NAMES_V2
+        name
+        for name in FEATURE_NAMES_V2
         if ".evidence." in name and profile[name]["constant"]
     ]
     return [
@@ -172,7 +176,11 @@ def _decision_packet(
         {
             "decision_id": "B1-D07",
             "question": "What static missingness contract should replace unmasked whole-block zero fill?",
-            "options": ["REQUIRE_COMPLETE_BLOCK", "PER_FEATURE_MASKED_BLOCK", "ABSTAIN_SAMPLE"],
+            "options": [
+                "REQUIRE_COMPLETE_BLOCK",
+                "PER_FEATURE_MASKED_BLOCK",
+                "ABSTAIN_SAMPLE",
+            ],
             "recommendation": "PER_FEATURE_MASKED_BLOCK",
             "evidence": {
                 "affected_samples": len(static_violations),
@@ -189,14 +197,14 @@ def _keep_candidates(recommendations: list[dict]) -> list[str]:
         "REDUCE_PENDING_B1_D04",
         "REVIEW_NEAR_CONSTANT",
     )
-    return [row["feature"] for row in recommendations if row["recommendation"] in accepted]
+    return [
+        row["feature"] for row in recommendations if row["recommendation"] in accepted
+    ]
 
 
 def _markdown(report: dict) -> str:
     counts = report["inventory"]
-    group_counts = {
-        name: len(rows) for name, rows in counts["groups"].items()
-    }
+    group_counts = {name: len(rows) for name, rows in counts["groups"].items()}
     recommendation_counts = Counter(
         row["recommendation"] for row in report["recommendations_train_only"]
     )
@@ -326,7 +334,9 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict:
         profiles["train"], redundancy, profiles_payload["static_contract_violations"]
     )
 
-    issue_counts = Counter(row["kind"] for row in profiles_payload["static_contract_violations"])
+    issue_counts = Counter(
+        row["kind"] for row in profiles_payload["static_contract_violations"]
+    )
     issue_counts.update(missing["violation_counts"])
     data_inconsistencies = [
         {"kind": kind, "count": count}
@@ -347,9 +357,11 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict:
     status = (
         "FEATURE_GATE_B1_CONTRACT_FAILURE"
         if not a2_ready or not contract_gates_pass
-        else "FEATURE_GATE_B1_DATA_INCONSISTENCY"
-        if data_inconsistencies
-        else "FEATURE_GATE_B1_REVIEW_PACKET_READY"
+        else (
+            "FEATURE_GATE_B1_DATA_INCONSISTENCY"
+            if data_inconsistencies
+            else "FEATURE_GATE_B1_REVIEW_PACKET_READY"
+        )
     )
     report = {
         "schema_version": "AIR_SLOT_M1_V2_FEATURE_GATE_B1_V1",
@@ -393,7 +405,8 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict:
         "target_support": target_support,
         "human_decisions": decisions,
         "data_inconsistencies": data_inconsistencies,
-        "data_inconsistency_details": profiles_payload["static_contract_violations"] + missing["violations"],
+        "data_inconsistency_details": profiles_payload["static_contract_violations"]
+        + missing["violations"],
         "safety": {
             "M1_TRAINING_RUNS": 0,
             "TUNING_RUNS": 0,
@@ -408,20 +421,34 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict:
     hash_basis = json.dumps(report, sort_keys=True, separators=(",", ":"))
     report["artifact_hash"] = f"sha256:{sha256(hash_basis.encode('utf-8')).hexdigest()}"
 
-    _write_json(output_dir / "FEATURE_INVENTORY_AND_SEMANTICS.json", {
-        "inventory": inventory, "semantics": semantics,
-        "encoder_static_scan": static_scan, "history": history,
-    })
-    _write_json(output_dir / "FEATURE_PROFILE_AND_SHIFT.json", {
-        "profiles": profiles, "shift_keep_candidates_only": shifts,
-        "support_state_counts": support_counts,
-    })
+    _write_json(
+        output_dir / "FEATURE_INVENTORY_AND_SEMANTICS.json",
+        {
+            "inventory": inventory,
+            "semantics": semantics,
+            "encoder_static_scan": static_scan,
+            "history": history,
+        },
+    )
+    _write_json(
+        output_dir / "FEATURE_PROFILE_AND_SHIFT.json",
+        {
+            "profiles": profiles,
+            "shift_keep_candidates_only": shifts,
+            "support_state_counts": support_counts,
+        },
+    )
     _write_json(output_dir / "FEATURE_REDUNDANCY.json", redundancy)
-    _write_json(output_dir / "FEATURE_MISSING_AND_TARGET_SUPPORT.json", {
-        "missing_encoding": missing,
-        "static_contract_violations": profiles_payload["static_contract_violations"],
-        "target_support": target_support,
-    })
+    _write_json(
+        output_dir / "FEATURE_MISSING_AND_TARGET_SUPPORT.json",
+        {
+            "missing_encoding": missing,
+            "static_contract_violations": profiles_payload[
+                "static_contract_violations"
+            ],
+            "target_support": target_support,
+        },
+    )
     _write_json(output_dir / "PRE_OWNERSHIP_GATE_B1.json", ownership)
     _write_json(output_dir / "AIR_SLOT_M1_V2_FEATURE_GATE_B1.json", report)
     (output_dir / "FEATURE_DECISION_PACKET.md").write_text(
@@ -432,12 +459,18 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict:
 
 def main() -> None:
     report = run()
-    print(json.dumps({
-        "FEATURE_GATE_STATUS": report["FEATURE_GATE_STATUS"],
-        "artifact_hash": report["artifact_hash"],
-        "data_inconsistencies": report["data_inconsistencies"],
-        "safety": report["safety"],
-    }, indent=2, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "FEATURE_GATE_STATUS": report["FEATURE_GATE_STATUS"],
+                "artifact_hash": report["artifact_hash"],
+                "data_inconsistencies": report["data_inconsistencies"],
+                "safety": report["safety"],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

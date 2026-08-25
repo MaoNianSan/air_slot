@@ -31,7 +31,6 @@ from model.PRE.streaming.data2 import (
     weather_index,
 )
 
-
 DEVELOPMENT_START = date(2019, 8, 1)
 DEVELOPMENT_END = date(2019, 9, 30)
 FINAL_TEST_START = date(2019, 10, 1)
@@ -55,9 +54,7 @@ def pre_contract_hash(root: Path) -> str:
         root / "model" / "PRE" / "streaming" / "data2.py",
         root / "model" / "PRE" / "streaming" / "development.py",
     )
-    return content_id(
-        {str(path.relative_to(root)): _file_hash(path) for path in paths}
-    )
+    return content_id({str(path.relative_to(root)): _file_hash(path) for path in paths})
 
 
 def source_hashes(root: Path) -> dict[str, str]:
@@ -70,10 +67,7 @@ def source_hashes(root: Path) -> dict[str, str]:
         data2_root / "refs" / "weather_station_map.csv",
         data2_root / "refs" / "us_airport_timezones.csv",
     )
-    return {
-        str(path.relative_to(root)): _file_hash(path)
-        for path in paths
-    }
+    return {str(path.relative_to(root)): _file_hash(path) for path in paths}
 
 
 @dataclass
@@ -130,7 +124,8 @@ class StreamCounts:
             "evidence_class_counts": dict(self.evidence_class_counts),
             "abstention_reason_counts": dict(self.abstention_reason_counts),
             "history_length_counts": {
-                str(key): value for key, value in sorted(self.history_length_counts.items())
+                str(key): value
+                for key, value in sorted(self.history_length_counts.items())
             },
             "weather_freshness_minutes": {
                 "count": self.weather_freshness_count,
@@ -170,13 +165,18 @@ class StreamCounts:
         ):
             setattr(counts, name, Counter(payload.get(name, {})))
         counts.history_length_counts = Counter(
-            {int(key): value for key, value in payload.get("history_length_counts", {}).items()}
+            {
+                int(key): value
+                for key, value in payload.get("history_length_counts", {}).items()
+            }
         )
         freshness = payload.get("weather_freshness_minutes", {})
         counts.weather_freshness_count = int(freshness.get("count", 0))
         counts.weather_freshness_sum_minutes = float(freshness.get("sum", 0.0))
         if not counts.weather_freshness_sum_minutes and counts.weather_freshness_count:
-            counts.weather_freshness_sum_minutes = float(freshness.get("mean", 0.0)) * counts.weather_freshness_count
+            counts.weather_freshness_sum_minutes = (
+                float(freshness.get("mean", 0.0)) * counts.weather_freshness_count
+            )
         counts.weather_freshness_min_minutes = freshness.get("min")
         counts.weather_freshness_max_minutes = freshness.get("max")
         return counts
@@ -257,17 +257,17 @@ def _merge_episode(
             f"{item.target_name}:{item.support_state.value}"
         ] += node_count
     counts.variable_support_counts["schedule_reference:SUPPORTED"] += node_count
-    counts.variable_support_counts[
-        "current_weather:SUPPORTED"
-    ] += summary["weather_supported_nodes"]
-    counts.variable_support_counts[
-        "current_weather:ABSTAIN"
-    ] += summary["weather_abstain_nodes"]
+    counts.variable_support_counts["current_weather:SUPPORTED"] += summary[
+        "weather_supported_nodes"
+    ]
+    counts.variable_support_counts["current_weather:ABSTAIN"] += summary[
+        "weather_abstain_nodes"
+    ]
     counts.variable_support_counts["predecessor_motion:ABSTAIN"] += node_count
     counts.evidence_class_counts["schedule_reference:DIRECT"] += node_count
-    counts.evidence_class_counts[
-        "current_weather:DIRECT"
-    ] += summary["weather_supported_nodes"]
+    counts.evidence_class_counts["current_weather:DIRECT"] += summary[
+        "weather_supported_nodes"
+    ]
     counts.abstention_reason_counts[
         "current_weather:NO_LEGAL_RECORD_AT_DECISION_TIME_OR_STALE"
     ] += summary["weather_abstain_nodes"]
@@ -310,7 +310,9 @@ def _heartbeat(started: float, *, month: int, episodes: int, nodes: int) -> None
 def _write_manifest(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    temporary.write_text(
+        json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+    )
     temporary.replace(path)
 
 
@@ -324,7 +326,10 @@ def run_development_pre_stream(
     heartbeat_seconds: float = 45.0,
     max_episodes: int | None = None,
 ) -> dict:
-    if max_episodes is not None and manifest_path.name == "PRE_DEVELOPMENT_STREAM_MANIFEST.json":
+    if (
+        max_episodes is not None
+        and manifest_path.name == "PRE_DEVELOPMENT_STREAM_MANIFEST.json"
+    ):
         raise RuntimeError("OFFICIAL_PRE_STREAM_MANIFEST_REJECTS_SAMPLED_RUN")
     started = time.perf_counter()
     process = psutil.Process()
@@ -360,7 +365,9 @@ def run_development_pre_stream(
             elapsed_before = float(payload.get("elapsed_seconds", 0.0))
             prior_peak_rss_mb = float(payload.get("peak_rss_mb", 0.0))
             peak_rss_mb = max(peak_rss_mb, prior_peak_rss_mb)
-    paths = {month: path for month, path in zip((7, 8, 9), ontime_paths(root, (7, 8, 9)))}
+    paths = {
+        month: path for month, path in zip((7, 8, 9), ontime_paths(root, (7, 8, 9)))
+    }
     zones = load_timezones(root / "data2" / "refs" / "us_airport_timezones.csv")
     replay_lag = int(scientific.parameters["data2_weather_replay_lag_minutes"].value)
     weather_max_age = int(scientific.parameters["weather_max_age_minutes"].value)
@@ -389,7 +396,10 @@ def run_development_pre_stream(
             month_key = f"2019-{month:02d}"
             episodes = []
             for episode in build_data2_episode_records(chunk):
-                if by_id[episode.successor_flight_id].get("service_date", "")[:7] != month_key:
+                if (
+                    by_id[episode.successor_flight_id].get("service_date", "")[:7]
+                    != month_key
+                ):
                     continue
                 counts.candidate_episodes += 1
                 containment = episode_containment_from_rows(episode, by_id)
@@ -418,7 +428,10 @@ def run_development_pre_stream(
                         nodes=counts.decision_nodes,
                     )
                     last_heartbeat = now
-                if max_episodes is not None and counts.pre_published_episodes >= max_episodes:
+                if (
+                    max_episodes is not None
+                    and counts.pre_published_episodes >= max_episodes
+                ):
                     stopped_early = True
                     break
             previous_rows = aircraft_tail(current_rows)

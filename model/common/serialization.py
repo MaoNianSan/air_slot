@@ -30,5 +30,10 @@ def _normalize(value: Any) -> Any:
 
 
 def canonical_json_bytes(value: Any) -> bytes:
-    return json.dumps(_normalize(value), sort_keys=True, separators=(",", ":"),
-                      ensure_ascii=False, allow_nan=False).encode("utf-8")
+    return json.dumps(
+        _normalize(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    ).encode("utf-8")

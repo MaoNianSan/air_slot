@@ -4,7 +4,10 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .enums import (
-    AvailabilityBasis, DecisionTimeRole, EvidenceClass, SupportState,
+    AvailabilityBasis,
+    DecisionTimeRole,
+    EvidenceClass,
+    SupportState,
     weaker_or_equal,
 )
 
@@ -33,19 +36,32 @@ class TimeContext(FrozenModel):
     @model_validator(mode="after")
     def validate_time_semantics(self):
         for value in (self.event_time, self.availability_time, self.schedule_time):
-            if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+            if value is not None and (
+                value.tzinfo is None or value.utcoffset() is None
+            ):
                 raise ValueError("timestamps must be timezone-aware UTC")
             if value is not None and value.astimezone(timezone.utc).utcoffset() is None:
                 raise ValueError("invalid timestamp")
-        if self.availability_basis in {
-            AvailabilityBasis.OBSERVED_AVAILABILITY,
-            AvailabilityBasis.REPLAY_EVENT_TIME,
-        } and self.availability_time is None:
+        if (
+            self.availability_basis
+            in {
+                AvailabilityBasis.OBSERVED_AVAILABILITY,
+                AvailabilityBasis.REPLAY_EVENT_TIME,
+            }
+            and self.availability_time is None
+        ):
             raise ValueError("availability_time required for observed/replay evidence")
-        if self.availability_basis in {
-            AvailabilityBasis.POSTHOC_ONLY, AvailabilityBasis.UNAVAILABLE,
-        } and self.decision_time_role is DecisionTimeRole.INFERENCE_EVIDENCE:
-            raise ValueError("post-hoc/unavailable records cannot be inference evidence")
+        if (
+            self.availability_basis
+            in {
+                AvailabilityBasis.POSTHOC_ONLY,
+                AvailabilityBasis.UNAVAILABLE,
+            }
+            and self.decision_time_role is DecisionTimeRole.INFERENCE_EVIDENCE
+        ):
+            raise ValueError(
+                "post-hoc/unavailable records cannot be inference evidence"
+            )
         return self
 
 

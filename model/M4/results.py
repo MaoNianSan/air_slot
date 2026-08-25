@@ -36,7 +36,9 @@ class ActionEvaluation(FrozenModel):
     @model_validator(mode="after")
     def post_total_label_contract(self):
         if self.post_total_status not in {
-            "FORMAL_ESTIMAND", "SCENARIO_CONDITIONED", "NOT_COMPUTED",
+            "FORMAL_ESTIMAND",
+            "SCENARIO_CONDITIONED",
+            "NOT_COMPUTED",
         }:
             raise ValueError("UNKNOWN_POST_TOTAL_STATUS")
         if self.scenario_conditioned and self.post_total_status == "FORMAL_ESTIMAND":

@@ -12,7 +12,6 @@ from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 from model.PRE.contracts.pre_state import PREState
 
-
 STATIC_NUMERIC_FEATURE_NAMES: tuple[str, ...] = (
     "turnaround_reference_minutes",
     "taxi_reference_minutes",
@@ -82,7 +81,9 @@ def _legal_reference_value(payload) -> float | None:
     return None if raw is None else float(raw)
 
 
-def raw_static_values_from_lineage(lineage: Mapping[str, object] | None) -> dict[str, float | None]:
+def raw_static_values_from_lineage(
+    lineage: Mapping[str, object] | None,
+) -> dict[str, float | None]:
     payload = lineage or {}
     return {
         name: _legal_reference_value(payload.get(field))
@@ -95,7 +96,9 @@ def raw_static_values_from_pre(
     static_context=None,
 ) -> tuple[dict[str, float | None], dict[str, object]]:
     model_feature_fields = (
-        set(static_context.model_feature_fields()) if static_context is not None else set()
+        set(static_context.model_feature_fields())
+        if static_context is not None
+        else set()
     )
     raw = {}
     for field, name in _REFERENCE_FIELDS:
@@ -128,7 +131,9 @@ def fit_static_normalization(
         )
         previous = by_episode.get(episode_id)
         if previous is not None and previous != values:
-            raise ContractError(f"M1_STATIC_REFERENCE_VARIES_WITHIN_EPISODE:{episode_id}")
+            raise ContractError(
+                f"M1_STATIC_REFERENCE_VARIES_WITHIN_EPISODE:{episode_id}"
+            )
         by_episode[episode_id] = values
     if not by_episode:
         raise ContractError("M1_STATIC_NORMALIZATION_EMPTY_TRAIN")
@@ -143,7 +148,7 @@ def fit_static_normalization(
             raise ContractError(f"M1_STATIC_NORMALIZATION_NO_OBSERVED_VALUES:{name}")
         mean = sum(observed) / len(observed)
         variance = sum((value - mean) ** 2 for value in observed) / len(observed)
-        std = variance ** 0.5
+        std = variance**0.5
         if std <= 1e-12:
             raise ContractError(f"M1_STATIC_FEATURE_CONSTANT_ON_TRAIN:{name}")
         fitted[name] = StaticNormalizationValue(

@@ -26,7 +26,6 @@ from .loss import hazard_pmf, monotone_positive_quantiles, quantile_value
 from .scenarios import _uniform_v2, required_observations_v2
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 
-
 PRINCIPAL_WARNING_EVENT = "D_TO_POST_GT_30"
 PRINCIPAL_WARNING_THRESHOLD_MINUTES = 30.0
 # Seed-key targets follow the internal V2 target names so the vectorized path
@@ -51,7 +50,9 @@ class WarningProbability(FrozenModel):
     estimator: Literal["WEIGHTED_ALIGNED_SCENARIO_FREQUENCY"] = (
         "WEIGHTED_ALIGNED_SCENARIO_FREQUENCY"
     )
-    tail_value_policy: Literal["TARGET_BIN_REPRESENTATIVE"] = "TARGET_BIN_REPRESENTATIVE"
+    tail_value_policy: Literal["TARGET_BIN_REPRESENTATIVE"] = (
+        "TARGET_BIN_REPRESENTATIVE"
+    )
     tail_representative_used: bool = False
     taxi_reference_id: str | None = None
     taxi_reference_hash: str | None = None
@@ -73,7 +74,9 @@ class BatchedWarningResult:
     sampled_indices: dict[str, torch.Tensor] | None = None
 
 
-def scenario_uniforms(episode_ids: Sequence[str], *, count: int, seed: int) -> torch.Tensor:
+def scenario_uniforms(
+    episode_ids: Sequence[str], *, count: int, seed: int
+) -> torch.Tensor:
     """V2 target-keyed uniforms, reusing rows for repeated episodes."""
     if count <= 0:
         raise ValueError("M1_SCENARIO_COUNT_MUST_BE_POSITIVE")
@@ -83,10 +86,12 @@ def scenario_uniforms(episode_ids: Sequence[str], *, count: int, seed: int) -> t
             continue
         values = []
         for scenario_id in range(count):
-            values.append([
-                _uniform_v2(seed, episode_id, scenario_id, target)[0]
-                for target in V2_WARNING_TARGETS
-            ])
+            values.append(
+                [
+                    _uniform_v2(seed, episode_id, scenario_id, target)[0]
+                    for target in V2_WARNING_TARGETS
+                ]
+            )
         unique[episode_id] = torch.tensor(values, dtype=torch.float32)
     return torch.stack([unique[item] for item in episode_ids], dim=0)
 
@@ -97,15 +102,23 @@ def _sample_from_pmf(pmf: torch.Tensor, uniforms: torch.Tensor) -> torch.Tensor:
     if pmf.shape[:-1] != uniforms.shape:
         pmf = pmf.expand(*uniforms.shape, pmf.shape[-1])
     cumulative = torch.cumsum(pmf, dim=-1)
-    flat = torch.searchsorted(
-        cumulative.reshape(-1, cumulative.shape[-1]),
-        uniforms.reshape(-1, 1).contiguous(),
-    ).clamp_max(cumulative.shape[-1] - 1).reshape(-1)
+    flat = (
+        torch.searchsorted(
+            cumulative.reshape(-1, cumulative.shape[-1]),
+            uniforms.reshape(-1, 1).contiguous(),
+        )
+        .clamp_max(cumulative.shape[-1] - 1)
+        .reshape(-1)
+    )
     return flat.reshape(uniforms.shape).to(dtype=torch.long)
 
 
-def _gather_heads(zero: torch.Tensor, quantile: torch.Tensor,
-                  ib_bin: torch.Tensor, d_ob_bin: torch.Tensor | None):
+def _gather_heads(
+    zero: torch.Tensor,
+    quantile: torch.Tensor,
+    ib_bin: torch.Tensor,
+    d_ob_bin: torch.Tensor | None,
+):
     """Gather (K, ...)/(K, G, ...) head tables by sampled parent bins."""
     if d_ob_bin is None:
         zero_g = zero[ib_bin]
@@ -116,11 +129,13 @@ def _gather_heads(zero: torch.Tensor, quantile: torch.Tensor,
     return zero_g, quant_g
 
 
-def _sample_hurdle_quantile_batch(zero_logit: torch.Tensor,
-                                  quantile_logits: torch.Tensor,
-                                  contract: HurdleQuantileContract,
-                                  uniforms: torch.Tensor,
-                                  device: torch.device):
+def _sample_hurdle_quantile_batch(
+    zero_logit: torch.Tensor,
+    quantile_logits: torch.Tensor,
+    contract: HurdleQuantileContract,
+    uniforms: torch.Tensor,
+    device: torch.device,
+):
     zero_probability = torch.sigmoid(zero_logit)
     quantiles = monotone_positive_quantiles(quantile_logits)
     value = torch.zeros_like(uniforms, dtype=torch.float32, device=device)
@@ -130,7 +145,9 @@ def _sample_hurdle_quantile_batch(zero_logit: torch.Tensor,
             (1.0 - zero_probability[positive]).clamp_min(1e-12)
         )
         value[positive] = quantile_value(
-            quantiles[positive], contract.quantile_levels, positive_uniform,
+            quantiles[positive],
+            contract.quantile_levels,
+            positive_uniform,
             upper_tail_policy=contract.upper_tail_policy,
         )
     index = torch.clamp(
@@ -168,8 +185,19 @@ def batched_warning_probability(
     # Fused state representation consumed by every head call in this bundle.
     state = model.state_representation(histories)
     n = histories.shape[0]
-    if len({len(episode_ids), len(stages), len(decision_times_utc),
-            len(observed_t_ib), len(observed_d_ob), len(observed_d_tx)}) != 1:
+    if (
+        len(
+            {
+                len(episode_ids),
+                len(stages),
+                len(decision_times_utc),
+                len(observed_t_ib),
+                len(observed_d_ob),
+                len(observed_d_tx),
+            }
+        )
+        != 1
+    ):
         raise ValueError("M1_V2_BATCHED_WARNING_SEQUENCE_LENGTH_MISMATCH")
     if n != len(episode_ids):
         raise ValueError("M1_V2_BATCHED_WARNING_NODE_COUNT_MISMATCH")
@@ -180,8 +208,8 @@ def batched_warning_probability(
 
     # ---- T_IB_A00 (discrete hazard over the internal remaining-time coord) ----
     hazard_pmfs = hazard_pmf(
-        model.hazard_logits(state) / float(
-            temperature.get(M1_V2_HAZARD_COORDINATE, 1.0)),
+        model.hazard_logits(state)
+        / float(temperature.get(M1_V2_HAZARD_COORDINATE, 1.0)),
         hazard,
     )  # (n, K)
     ib_bin = torch.full((n, count), -1, dtype=torch.long, device=device)
@@ -189,10 +217,13 @@ def batched_warning_probability(
     for i in range(n):
         stage = stages[i]
         required = required_observations_v2(stage)
-        missing = [target for target in required
-                   if (target == "T_IB_A00" and observed_t_ib[i] is None)
-                   or (target == "D_OB" and observed_d_ob[i] is None)
-                   or (target == "D_TX" and observed_d_tx[i] is None)]
+        missing = [
+            target
+            for target in required
+            if (target == "T_IB_A00" and observed_t_ib[i] is None)
+            or (target == "D_OB" and observed_d_ob[i] is None)
+            or (target == "D_TX" and observed_d_tx[i] is None)
+        ]
         if missing:
             supported[i] = False
             continue
@@ -200,10 +231,14 @@ def batched_warning_probability(
             if decision_times_utc[i] is None:
                 supported[i] = False
                 continue
-            remaining = max(0.0, (
-                datetime.fromisoformat(observed_t_ib[i])
-                - datetime.fromisoformat(decision_times_utc[i])
-            ).total_seconds() / 60.0)
+            remaining = max(
+                0.0,
+                (
+                    datetime.fromisoformat(observed_t_ib[i])
+                    - datetime.fromisoformat(decision_times_utc[i])
+                ).total_seconds()
+                / 60.0,
+            )
             index = hazard.encode(remaining)
             ib_bin[i] = index
             overflow_ib[i] = hazard.tail_state(index) == "OVERFLOW"
@@ -211,12 +246,14 @@ def batched_warning_probability(
             if decision_times_utc[i] is None:
                 supported[i] = False
                 continue
-            index = _sample_from_pmf(hazard_pmfs[i:i + 1], uniforms[i:i + 1, :, 0])
+            index = _sample_from_pmf(hazard_pmfs[i : i + 1], uniforms[i : i + 1, :, 0])
             ib_bin[i] = index
             overflow_ib[i] = index == hazard.overflow_index
 
     # ---- D_OB (hurdle + conditional quantile, parent T_IB_A00) ----
-    d_ob_value = torch.full((n, count), float("nan"), dtype=torch.float32, device=device)
+    d_ob_value = torch.full(
+        (n, count), float("nan"), dtype=torch.float32, device=device
+    )
     d_ob_bin = torch.full((n, count), -1, dtype=torch.long, device=device)
     overflow_ob = torch.zeros((n, count), dtype=torch.bool, device=device)
     for i in range(n):
@@ -234,7 +271,7 @@ def batched_warning_probability(
             continue
         # Evaluate the D_OB heads for every hazard bin once per node.
         all_bins = torch.arange(hazard.class_count, device=device)
-        hist = state[i:i + 1].expand(hazard.class_count, -1)
+        hist = state[i : i + 1].expand(hazard.class_count, -1)
         zero, quant = model.d_ob_heads(hist, all_bins)
         zero = zero.squeeze(-1) / float(temperature.get("D_OB", 1.0))
         quant = quant / float(temperature.get("D_OB", 1.0))
@@ -247,7 +284,9 @@ def batched_warning_probability(
         overflow_ob[i] = overflow
 
     # ---- D_TX (hurdle + conditional quantile, parents T_IB_A00, D_OB) ----
-    d_tx_value = torch.full((n, count), float("nan"), dtype=torch.float32, device=device)
+    d_tx_value = torch.full(
+        (n, count), float("nan"), dtype=torch.float32, device=device
+    )
     overflow_tx = torch.zeros((n, count), dtype=torch.bool, device=device)
     for i in range(n):
         if not supported[i]:
@@ -262,19 +301,26 @@ def batched_warning_probability(
         hazard_count = hazard.class_count
         ob_count = d_ob_contract.class_count
         all_ib = torch.arange(hazard_count, device=device)
-        hist = state[i:i + 1].expand(hazard_count, -1)
+        hist = state[i : i + 1].expand(hazard_count, -1)
         ibc = model.ib_embedding(all_ib)
         features = torch.cat([hist, ibc, torch.zeros_like(ibc)], dim=-1)
-        zero_base = model.d_tx_zero_head(features).squeeze(-1)   # (K,)
-        quant_base = model.d_tx_quantile_head(features)          # (K, Q)
-        ob_emb = model.d_ob_embedding.weight                     # (G, H)
+        zero_base = model.d_tx_zero_head(features).squeeze(-1)  # (K,)
+        quant_base = model.d_tx_quantile_head(features)  # (K, Q)
+        ob_emb = model.d_ob_embedding.weight  # (G, H)
         # The D_OB parent block is the trailing ``hidden_size`` columns of the
         # D_TX head input regardless of the fused state width.
-        zero_contrib = model.d_tx_zero_head.weight[:, -hidden:] @ ob_emb.t()   # (1, G)
-        quant_contrib = model.d_tx_quantile_head.weight[:, -hidden:] @ ob_emb.t()  # (Q, G)
-        zero = (zero_base[:, None] + zero_contrib) / float(temperature.get("D_TX", 1.0))  # (K, G)
-        quant = (quant_base[:, None, :] + quant_contrib.permute(1, 0)[None, :, :]) \
-            / float(temperature.get("D_TX", 1.0))                # (K, G, Q)
+        zero_contrib = model.d_tx_zero_head.weight[:, -hidden:] @ ob_emb.t()  # (1, G)
+        quant_contrib = (
+            model.d_tx_quantile_head.weight[:, -hidden:] @ ob_emb.t()
+        )  # (Q, G)
+        zero = (zero_base[:, None] + zero_contrib) / float(
+            temperature.get("D_TX", 1.0)
+        )  # (K, G)
+        quant = (
+            quant_base[:, None, :] + quant_contrib.permute(1, 0)[None, :, :]
+        ) / float(
+            temperature.get("D_TX", 1.0)
+        )  # (K, G, Q)
         zero_g, quant_g = _gather_heads(zero, quant, ib_bin[i], d_ob_bin[i])
         value, _, overflow = _sample_hurdle_quantile_batch(
             zero_g, quant_g, d_tx_contract, uniforms[i, :, 2], device
@@ -286,21 +332,21 @@ def batched_warning_probability(
     probabilities = torch.full((n,), float("nan"), dtype=torch.float64, device=device)
     tails = torch.zeros(n, dtype=torch.bool, device=device)
     probabilities[supported] = (
-        (d_to[supported] > PRINCIPAL_WARNING_THRESHOLD_MINUTES)
-        .sum(dim=1, dtype=torch.int64)
-        .to(dtype=torch.float64)
-        / count
-    )
-    tails[supported] = (overflow_ib[supported] | overflow_ob[supported]
-                        | overflow_tx[supported]).any(dim=1)
+        d_to[supported] > PRINCIPAL_WARNING_THRESHOLD_MINUTES
+    ).sum(dim=1, dtype=torch.int64).to(dtype=torch.float64) / count
+    tails[supported] = (
+        overflow_ib[supported] | overflow_ob[supported] | overflow_tx[supported]
+    ).any(dim=1)
     indices = None
     if return_indices:
         indices = {
             "T_IB_A00": ib_bin,
             "D_OB": d_ob_bin,
-            "D_TX": torch.where(d_tx_value >= 0,
-                                (d_tx_value / d_tx_contract.bin_width_minutes).long(),
-                                torch.tensor(-1, device=device)),
+            "D_TX": torch.where(
+                d_tx_value >= 0,
+                (d_tx_value / d_tx_contract.bin_width_minutes).long(),
+                torch.tensor(-1, device=device),
+            ),
         }
     return BatchedWarningResult(
         probability=probabilities,
@@ -351,8 +397,7 @@ def warning_probability(
     derived = tuple(row.d_to_minutes for row in rows)
     supports = {row.d_to_support for row in rows}
     tail_used = any(
-        row.overflow_t_ib or row.overflow_d_ob or row.overflow_d_tx
-        for row in rows
+        row.overflow_t_ib or row.overflow_d_ob or row.overflow_d_tx for row in rows
     )
     reference_ids = {row.taxi_reference_id for row in rows}
     reference_hashes = {row.taxi_reference_hash for row in rows}
@@ -368,8 +413,12 @@ def warning_probability(
             scenario_weight_sum=weight_sum,
             exceedance_weight=0.0,
             tail_representative_used=tail_used,
-            taxi_reference_id=next(iter(reference_ids)) if len(reference_ids) == 1 else None,
-            taxi_reference_hash=next(iter(reference_hashes)) if len(reference_hashes) == 1 else None,
+            taxi_reference_id=(
+                next(iter(reference_ids)) if len(reference_ids) == 1 else None
+            ),
+            taxi_reference_hash=(
+                next(iter(reference_hashes)) if len(reference_hashes) == 1 else None
+            ),
         )
 
     exceedance_weight = float(
@@ -391,6 +440,10 @@ def warning_probability(
         scenario_weight_sum=weight_sum,
         exceedance_weight=exceedance_weight,
         tail_representative_used=tail_used,
-        taxi_reference_id=next(iter(reference_ids)) if len(reference_ids) == 1 else None,
-        taxi_reference_hash=next(iter(reference_hashes)) if len(reference_hashes) == 1 else None,
+        taxi_reference_id=(
+            next(iter(reference_ids)) if len(reference_ids) == 1 else None
+        ),
+        taxi_reference_hash=(
+            next(iter(reference_hashes)) if len(reference_hashes) == 1 else None
+        ),
     )

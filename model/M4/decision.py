@@ -8,13 +8,21 @@ from model.M4.ranking import compatible_formal_ranking, finalize_ranking
 from model.M4.results import ActionEvaluation, EpisodeDecision
 from model.common.monetary_system import MonetaryMappingRegistry
 
-
 _compatible_formal_ranking = compatible_formal_ranking
 
 
-def evaluate_decision(episode_id, m1_scenarios, m2_consequences, candidates, *,
-                      material_coverage_contract, lambda_risk=0.25, alpha=0.9, seed=0,
-                      monetary_mapping=None):
+def evaluate_decision(
+    episode_id,
+    m1_scenarios,
+    m2_consequences,
+    candidates,
+    *,
+    material_coverage_contract,
+    lambda_risk=0.25,
+    alpha=0.9,
+    seed=0,
+    monetary_mapping=None,
+):
     """Evaluate one episode decision under a monetary mapping.
 
     ``monetary_mapping`` defaults to a NOT_FROZEN RMB registry: without a
@@ -25,21 +33,27 @@ def evaluate_decision(episode_id, m1_scenarios, m2_consequences, candidates, *,
         monetary_mapping = MonetaryMappingRegistry.not_frozen()
     elif not isinstance(monetary_mapping, MonetaryMappingRegistry):
         monetary_mapping = MonetaryMappingRegistry.model_validate(monetary_mapping)
-    baseline_gate = aggregate_a00_baseline_gate(m2_consequences, material_coverage_contract)
-    evaluations = tuple(evaluate_candidate(
-        candidate,
-        episode_id=episode_id,
-        m1_scenarios=m1_scenarios,
-        m2_consequences=m2_consequences,
-        material_coverage_contract=material_coverage_contract,
-        baseline_gate=baseline_gate,
-        monetary_mapping=monetary_mapping,
-        lambda_risk=lambda_risk,
-        alpha=alpha,
-        seed=seed,
-    ) for candidate in candidates)
+    baseline_gate = aggregate_a00_baseline_gate(
+        m2_consequences, material_coverage_contract
+    )
+    evaluations = tuple(
+        evaluate_candidate(
+            candidate,
+            episode_id=episode_id,
+            m1_scenarios=m1_scenarios,
+            m2_consequences=m2_consequences,
+            material_coverage_contract=material_coverage_contract,
+            baseline_gate=baseline_gate,
+            monetary_mapping=monetary_mapping,
+            lambda_risk=lambda_risk,
+            alpha=alpha,
+            seed=seed,
+        )
+        for candidate in candidates
+    )
     actions, ranking, outcome, authoritative = finalize_ranking(
-        evaluations, baseline_valid=baseline_gate.valid)
+        evaluations, baseline_valid=baseline_gate.valid
+    )
     return EpisodeDecision(
         episode_id=episode_id,
         actions=actions,
@@ -53,8 +67,9 @@ def evaluate_decision(episode_id, m1_scenarios, m2_consequences, candidates, *,
     )
 
 
-def evaluate_request(request: M4DecisionRequest,
-                     monetary_mapping: MonetaryMappingRegistry | None = None) -> EpisodeDecision:
+def evaluate_request(
+    request: M4DecisionRequest, monetary_mapping: MonetaryMappingRegistry | None = None
+) -> EpisodeDecision:
     scenarios = [row.model_dump(mode="json") for row in request.m1_scenarios]
     if monetary_mapping is None:
         monetary_mapping = MonetaryMappingRegistry.not_frozen(
@@ -63,9 +78,11 @@ def evaluate_request(request: M4DecisionRequest,
         )
     if monetary_mapping.registry_id != request.monetary_mapping_registry_id:
         raise ValueError("M4_REQUEST_MONETARY_REGISTRY_MISMATCH")
-    if request.monetary_mapping_registry_hash and (
-        monetary_mapping.registry_hash or monetary_mapping.digest()
-    ) != request.monetary_mapping_registry_hash:
+    if (
+        request.monetary_mapping_registry_hash
+        and (monetary_mapping.registry_hash or monetary_mapping.digest())
+        != request.monetary_mapping_registry_hash
+    ):
         raise ValueError("M4_REQUEST_MONETARY_REGISTRY_HASH_MISMATCH")
     return evaluate_decision(
         request.pre_state.decision_node.episode_id,

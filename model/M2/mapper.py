@@ -38,9 +38,7 @@ class M2Mapper:
         by_node: dict[tuple[str, str], float] = {}
         for item in scenarios:
             node_key = (item.episode_id, item.decision_node_id)
-            by_node[node_key] = (
-                by_node.get(node_key, 0.0) + item.scenario_weight
-            )
+            by_node[node_key] = by_node.get(node_key, 0.0) + item.scenario_weight
         if any(abs(total - 1.0) > 1e-6 for total in by_node.values()):
             raise ValueError("M2_SCENARIO_WEIGHTS_MUST_SUM_TO_ONE_PER_NODE")
         return self._map_scenarios(scenarios, context)
@@ -90,8 +88,7 @@ class M2Mapper:
                 value = None
                 reason = "INCLUDED_COMPONENT_ABSTAIN"
             elif any(
-                row.cu_status is not CUNormalizationStatus.CU_FROZEN
-                for row in selected
+                row.cu_status is not CUNormalizationStatus.CU_FROZEN for row in selected
             ):
                 status = FormalEstimandStatus.VALUATION_NOT_FROZEN
                 value = None

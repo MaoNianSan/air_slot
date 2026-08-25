@@ -15,7 +15,6 @@ from model.PRE.canonical.normalization_common import number
 from model.PRE.canonical.timezone import infer_rollover, local_hhmm_to_utc
 from model.PRE.streaming.data2 import load_timezones, ontime_paths
 
-
 SIGNED_REPORTING_FIELDS = {
     "departure": ("DepDelay", "DepDelayMinutes"),
     "arrival": ("ArrDelay", "ArrDelayMinutes"),
@@ -63,7 +62,9 @@ class RelationshipAccumulator:
     violations: int = 0
     samples: list[dict[str, Any]] = field(default_factory=list)
 
-    def add(self, signed: float | None, reporting: float | None, context: dict[str, Any]) -> None:
+    def add(
+        self, signed: float | None, reporting: float | None, context: dict[str, Any]
+    ) -> None:
         if signed is None or reporting is None:
             return
         self.both_available += 1
@@ -74,13 +75,15 @@ class RelationshipAccumulator:
         if difference > 1:
             self.violations += 1
             if len(self.samples) < 10:
-                self.samples.append({
-                    **context,
-                    "signed_delay": signed,
-                    "reporting_delay_minutes": reporting,
-                    "expected_reporting_delay_minutes": max(signed, 0.0),
-                    "absolute_difference_minutes": difference,
-                })
+                self.samples.append(
+                    {
+                        **context,
+                        "signed_delay": signed,
+                        "reporting_delay_minutes": reporting,
+                        "expected_reporting_delay_minutes": max(signed, 0.0),
+                        "absolute_difference_minutes": difference,
+                    }
+                )
 
     def payload(self) -> dict[str, Any]:
         denominator = self.both_available
@@ -88,7 +91,9 @@ class RelationshipAccumulator:
             "both_available": denominator,
             "negative_signed_count": self.negative_signed,
             "exact_relation_rate": self.exact / denominator if denominator else None,
-            "within_1min_relation_rate": self.within_1min / denominator if denominator else None,
+            "within_1min_relation_rate": (
+                self.within_1min / denominator if denominator else None
+            ),
             "violation_count": self.violations,
             "deterministic_violation_samples": self.samples,
         }
@@ -220,7 +225,9 @@ class ConsistencyAccumulator:
 
 
 def _local(value: datetime | None, timezone_name: str) -> str | None:
-    return None if value is None else value.astimezone(ZoneInfo(timezone_name)).isoformat()
+    return (
+        None if value is None else value.astimezone(ZoneInfo(timezone_name)).isoformat()
+    )
 
 
 def _gate_status(consistency: dict[str, dict[str, dict[str, Any]]]) -> str:
@@ -300,7 +307,10 @@ def scan_bts_signed_delay_semantics(
                     "Origin": row.get("Origin"),
                     "Dest": row.get("Dest"),
                 }
-                for side, (signed_name, reporting_name) in SIGNED_REPORTING_FIELDS.items():
+                for side, (
+                    signed_name,
+                    reporting_name,
+                ) in SIGNED_REPORTING_FIELDS.items():
                     relationships[split][side].add(
                         _number(row.get(signed_name)),
                         _number(row.get(reporting_name)),
@@ -325,14 +335,32 @@ def scan_bts_signed_delay_semantics(
                 except Exception:
                     continue
 
-                for side, schedule, direct_name, signed_name, reporting_name, airport, zone in (
+                for (
+                    side,
+                    schedule,
+                    direct_name,
+                    signed_name,
+                    reporting_name,
+                    airport,
+                    zone,
+                ) in (
                     (
-                        "departure", scheduled_departure, "DepTime", "DepDelay",
-                        "DepDelayMinutes", origin, zones[origin],
+                        "departure",
+                        scheduled_departure,
+                        "DepTime",
+                        "DepDelay",
+                        "DepDelayMinutes",
+                        origin,
+                        zones[origin],
                     ),
                     (
-                        "arrival", scheduled_arrival, "ArrTime", "ArrDelay",
-                        "ArrDelayMinutes", destination, zones[destination],
+                        "arrival",
+                        scheduled_arrival,
+                        "ArrTime",
+                        "ArrDelay",
+                        "ArrDelayMinutes",
+                        destination,
+                        zones[destination],
                     ),
                 ):
                     signed_delay = _number(row.get(signed_name))
@@ -355,7 +383,9 @@ def scan_bts_signed_delay_semantics(
                     )
                     detailed = {
                         **context,
-                        "CRS_time": row.get("CRSDepTime" if side == "departure" else "CRSArrTime"),
+                        "CRS_time": row.get(
+                            "CRSDepTime" if side == "departure" else "CRSArrTime"
+                        ),
                         "direct_actual_clock": row.get(direct_name),
                         "signed_delay": signed_delay,
                         "reporting_delay_minutes": _number(row.get(reporting_name)),
@@ -379,15 +409,17 @@ def scan_bts_signed_delay_semantics(
                             if reporting is None
                             else schedule + timedelta(minutes=reporting)
                         )
-                        early_examples[side].append({
-                            **detailed,
-                            "scheduled_timestamp": _local(schedule, zone),
-                            "old_derived_timestamp": _local(old_target, zone),
-                            "new_derived_timestamp": _local(target, zone),
-                            "canonical_actual_timestamp": _local(
-                                resolution.canonical_utc, zone
-                            ),
-                        })
+                        early_examples[side].append(
+                            {
+                                **detailed,
+                                "scheduled_timestamp": _local(schedule, zone),
+                                "old_derived_timestamp": _local(old_target, zone),
+                                "new_derived_timestamp": _local(target, zone),
+                                "canonical_actual_timestamp": _local(
+                                    resolution.canonical_utc, zone
+                                ),
+                            }
+                        )
         if heartbeat is not None:
             heartbeat(
                 "SOURCE_SEMANTICS_MONTH_COMPLETE",
@@ -398,10 +430,12 @@ def scan_bts_signed_delay_semantics(
                 final_test_access_count=0,
             )
 
-    status = _gate_status({
-        split: {side: value.payload() for side, value in sides.items()}
-        for split, sides in consistency.items()
-    })
+    status = _gate_status(
+        {
+            split: {side: value.payload() for side, value in sides.items()}
+            for split, sides in consistency.items()
+        }
+    )
     return {
         "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
         "source_paths": list(header_checks),
