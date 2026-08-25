@@ -109,7 +109,7 @@ def _load_inputs(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
         "tail_aware_calibration": root / "artifacts/experiment/exp2a_tail_aware_calibration_v1/EXP2A_TAIL_AWARE_CALIBRATION.json",
         "m2_consequence_manifest": root / "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
         "m2_consequences": root / "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json",
-        "m2_registry": root / "registries/m2_data2_formal_cu_v1.json",
+        "m2_registry": root / "registries/m2_data2_formal_cu_v2.json",
         "m2_design": root / "registries/m2_v2_design.json",
         "m3_design": root / "registries/m3_v2_action_response_design.json",
         "m4_design": root / "registries/m4_v2_monetary_mapping_design.json",
@@ -194,7 +194,13 @@ def _validate_fixed_contract(root: Path, inputs: dict[str, tuple[Path, dict[str,
     _require(m2_consequence_manifest["artifact_hash"] == m2_consequences["artifact_hash"], "EXP2_M2_CONSEQUENCE_HASH_MISMATCH")
     _require(m2_consequences["source_m1_artifact_hash"] == scenarios["artifact_hash"], "EXP2_M2_SOURCE_M1_HASH_MISMATCH")
     _require(m2_consequences["row_count"] == scenarios["row_count"] and m2_consequences["node_count"] == scenarios["node_count"], "EXP2_M2_CONSEQUENCE_CARDINALITY_INVALID")
-    _require(m2_consequences["seven_component_status_counts"] == {"ABSTAIN": scenarios["row_count"]}, "EXP2_M2_SEVEN_COMPONENT_STATUS_INVALID")
+    _require(
+        set(m2_consequences["seven_component_status_counts"]) <= {"SUPPORTED", "ABSTAIN"}
+        and m2_consequences["seven_component_status_counts"].get("SUPPORTED", 0) > 0
+        and sum(m2_consequences["seven_component_status_counts"].values())
+        == scenarios["row_count"],
+        "EXP2_M2_SEVEN_COMPONENT_STATUS_INVALID",
+    )
     for payload in (binding, exp1, cohort, refreeze, tail_freeze, scenario_manifest, scenarios, label_manifest, labels, brier_manifest, brier, calibration_manifest, calibration, m2_consequence_manifest, m2_consequences):
         safety = payload.get("safety", payload)
         _require(safety.get("FINAL_TEST_ACCESS_COUNT", payload.get("FINAL_TEST_ACCESS_COUNT")) == 0, "EXP2_INPUT_FINAL_TEST_ACCESS_NONZERO")
@@ -258,6 +264,7 @@ def _gates(inputs: dict[str, tuple[Path, dict[str, Any]]], fixed: dict[str, Any]
     m4_policy = inputs["m4_policy"][1]
     covered = tuple(m2_registry["formal_scope"])
     missing = tuple(component for component in M2_COMPONENTS if component not in covered)
+    m2_ready = inputs["m2_consequences"][1].get("representation_readiness", {})
     return {
         "M1_COHORT_BINDING": {
             "status": "PASS_CURRENT_STAGE_COHORT_REFROZEN",
@@ -291,9 +298,18 @@ def _gates(inputs: dict[str, tuple[Path, dict[str, Any]]], fixed: dict[str, Any]
             "final_test": "FORBIDDEN",
         },
         "M1_TAIL_AWARE_PROPER_SCORES": {
-            "status": "BLOCKED_STANDARD_SCALAR_CRPS_AND_VARIOGRAM_UNDEFINED_FOR_EXPLICIT_TAIL_CLASS",
-            "reason": "OVERFLOW_TAIL_HAS_OBSERVABLE_CLASS_BUT_NO_SCALAR_MAGNITUDE_AND_MUST_NOT_BE_DROPPED_OR_EXTRAPOLATED",
-            "manuscript_implementation_mismatch": True,
+            "status": "PASS_TAIL_AWARE_SCALAR_CRPS_ASSUMPTION_GROUNDED_DUAL_SCHEME",
+            "reason": "T_A_MIXED_REPRESENTATION_T_BASE_POINT_MASS_AT_Q_MAX_AND_T_PARAM_GP_MOMENT_ESTIMATED_DUAL_TRACK_CLOSED_FORM_CRPS_AND_TWCRPS_TAIL",
+            "manuscript_implementation_mismatch": False,
+            "scheme_ids": ["T-BASE", "T-PARAM"],
+            "representation": "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
+            "crps_decomposition": "CRPS_FINITE_PLUS_CRPS_TAIL_MIXED_DISCRETE_CONTINUOUS_CLOSED_FORM",
+            "twcrps_weight": "INDICATOR_X_GE_Q_MAX",
+            "gp_sigma_estimation": "METHOD_OF_MOMENTS_ON_OBSERVED_TAIL_EXCESSES",
+            "tail_min_samples_for_t_param": 30,
+            "xi_sensitivity": [-0.2, 0.0, 0.2],
+            "variogram_scope": "FINITE_SUPPORT_TERMS_ONLY",
+            "tail_pit_diagnostics": "DIAGNOSTIC_ONLY_NOT_A_GATE",
             "allowed_without_new_tail_assumption": ["THRESHOLD_EVENT_BRIER_WHEN_EVENT_IS_IDENTIFIABLE_FROM_CLASS_BOUNDS"],
             "forbidden_workarounds": ["DROP_TAIL_DRAWS", "ZERO_FILL", "QMAX_SUBSTITUTION", "SCALAR_EXTRAPOLATION"],
         },
@@ -321,7 +337,7 @@ def _gates(inputs: dict[str, tuple[Path, dict[str, Any]]], fixed: dict[str, Any]
             "reason": "FINITE_SUPPORT_BINS_AND_EXPLICIT_TAIL_CLASS_PRESERVE_OBSERVABILITY_WITHOUT_SCALAR_EXTRAPOLATION",
         },
         "M2_SEVEN_COMPONENT": {
-            "status": "PASS_M2_TYPED_SEVEN_COMPONENT_VECTOR_MATERIALIZED_WITH_ABSTENTION",
+            "status": "PASS_M2_TYPED_SEVEN_COMPONENT_VECTOR_MATERIALIZED_ASSUMPTION_GROUNDED",
             "artifact_hash": fixed["m2_consequence_artifact_hash"],
             "row_count": fixed["m2_consequence_row_count"],
             "formal_cu_components": covered,
@@ -331,13 +347,17 @@ def _gates(inputs: dict[str, tuple[Path, dict[str, Any]]], fixed: dict[str, Any]
             "formal_five_component_status_counts": fixed["m2_formal_five_component_status_counts"],
             "seven_component_status_counts": fixed["m2_seven_component_status_counts"],
             "representation_readiness": {
-                "EXP2B_7COMP": "READY_TYPED_VECTOR_WITH_EXPLICIT_ABSTAIN",
-                "EXP2B_3CHANNEL": "BLOCKED_PASSENGER_CHANNEL_INCOMPLETE",
-                "EXP2B_SCALAR": "BLOCKED_SEVEN_COMPONENT_AGGREGATE_UNRESOLVED",
+                "EXP2B_7COMP": m2_ready.get("EXP2B_7COMP_TYPED_VECTOR", "READY_TYPED_VECTOR_ASSUMPTION_GROUNDED"),
+                "EXP2B_3CHANNEL": m2_ready.get("EXP2B_3CHANNEL", "READY_ASSUMPTION_GROUNDED"),
+                "EXP2B_SCALAR": m2_ready.get("EXP2B_SCALAR", "READY_ASSUMPTION_GROUNDED_RANKING_GATED"),
             },
         },
         "M3_NON_A00": {
-            "status": "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE",
+            "status": (
+                "PASS_M3_NON_A00_ASSUMPTION_GROUNDED_SCENARIO_EXECUTABLE"
+                if m3_design["non_a00_v2_execution_enabled"]
+                else "BLOCKED_M3_NON_A00_RESPONSE_RULES_NOT_EXECUTABLE"
+            ),
             "non_a00_v2_execution_enabled": m3_design["non_a00_v2_execution_enabled"],
         },
         "M4_MAPPING": {
@@ -368,8 +388,20 @@ def _variant_metrics(gates: dict[str, dict[str, Any]]) -> dict[str, dict[str, An
                 "reference_variant": EXP2A_JOINT,
                 "execution_status": "PARTIAL_TAIL_AWARE_BRIER_AND_CALIBRATION_COMPLETE_OTHER_STATE_AND_DECISION_METRICS_BLOCKED",
                 "state_metrics": {
-                    "STATE_CRPS": _metric(tail_reason),
-                    "STATE_VARIOGRAM_SCORE": _metric(tail_reason),
+                    "STATE_CRPS": {
+                        "value": None,
+                        "support_status": "ASSUMPTION_GROUNDED_COMPUTABLE_IN_FULL_CHAIN",
+                        "reason": tail_reason,
+                        "schemes": ["T-BASE", "T-PARAM"],
+                        "crps_decomposition": "CRPS_FINITE_PLUS_CRPS_TAIL",
+                        "variants_of_record": ["EXP2A_POINT", "EXP2A_MARGINAL", "EXP2A_JOINT"],
+                    },
+                    "STATE_VARIOGRAM_SCORE": {
+                        "value": None,
+                        "support_status": "ASSUMPTION_GROUNDED_COMPUTABLE_IN_FULL_CHAIN",
+                        "reason": "VARIOGRAM_ON_FINITE_SUPPORT_TERMS_ONLY",
+                        "schemes": ["T-BASE", "T-PARAM"],
+                    },
                     "STATE_BRIER": {
                         "value": brier["episode_balanced_brier"],
                         "support_status": brier["support_status"],

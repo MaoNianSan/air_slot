@@ -46,7 +46,7 @@ materialized_artifacts:
     path: artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json
     policy_hash: sha256:158a09bb47d4b715e0a97a1da74d6b64b2dd4ab5c99eb1cba1f00475f016a2dc
     tail_support: M1_POSITIVE_TAIL_DECISION_REQUIRED
-    monetary_mapping: MONETARY_MAPPING_BLOCKED
+    monetary_mapping: FROZEN_ASSUMPTION_GROUNDED
 execution_gate:
   status: M1_M2_REAL_ARTIFACT_BLOCKED
   pilot_only: true

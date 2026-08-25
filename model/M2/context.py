@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from dataclasses import dataclass
 from typing import Any, Mapping
 
@@ -232,6 +234,11 @@ def build_m2_context(
             "events",
             "NO_ITINERARY_DISRUPTION_EVIDENCE_FROZEN",
         ),
+        itinerary_buffer_reference=_abstain(
+            "itinerary_buffer_reference",
+            "classes",
+            "NO_ITINERARY_BUFFER_REFERENCE_FROZEN",
+        ),
         service_policy_reference=_abstain(
             "service_policy_reference",
             "minutes",
@@ -257,6 +264,8 @@ def build_node_exposure_references(
         "DATA2_DOWNSTREAM_EXPOSURE@1.0.0:AIRPORT",
         bundle.downstream_exposure.lookup(airport_keys.connection_airport_id),
         bundle.downstream_exposure,
+    ).model_copy(
+        update={"support_level": ExposureSupportLevel.AIRPORT_REFERENCE}
     )
     global_reference = ScientificContextValue(
         object_id="DATA2_DOWNSTREAM_EXPOSURE@1.0.0:GLOBAL",
@@ -317,6 +326,82 @@ def build_m2_v2_context(
     )
 
 
+def build_assumption_grounded_context(
+    bundle: M2ReferenceBundle,
+    airport_keys: AirportReferenceKeys,
+    *,
+    node_specific_exposure: ScientificContextValue,
+    tau_service_minutes: float = 180.0,
+    itinerary_buffer_minutes: float = 45.0,
+    assumption_freeze_id: str = (
+        "sha256:0fcb524c808d56f0bb44f0d29bd4f2ec237a0674b159086ffdc835e0abe46580"
+    ),
+) -> M2ScientificContext:
+    """Path-B seven-component context under ASSUMPTION_GROUNDED inputs.
+
+    ``itinerary_buffer_reference`` carries itinerary classes (passenger count,
+    connection buffer) built from the frozen route passenger reference;
+    ``service_policy_reference`` carries the frozen service-policy threshold.
+    Both are literature-parameterized assumptions, not empirical evidence;
+    ``assumption_freeze_id`` equals the frozen M2 V2 freeze closure
+    registry hash (M2_FORMAL_FREEZE_CLOSURE_V2.json) and must not be edited.
+    """
+    legacy = build_m2_v2_context(
+        bundle,
+        airport_keys,
+        node_specific_exposure=node_specific_exposure,
+    )
+    pax = float(legacy.passenger_exposure.value)
+    classes = json.dumps(
+        [{"passenger_count": pax, "buffer_minutes": float(itinerary_buffer_minutes)}],
+        sort_keys=True,
+    )
+    itinerary_buffer_reference = ScientificContextValue(
+        object_id="M2_ITINERARY_BUFFER_ASSUMPTION_V1",
+        value=classes,
+        unit="classes",
+        support_state=SupportState.SUPPORTED,
+        evidence_class=EvidenceClass.SCENARIO_PARAMETER,
+        construction_type=ConstructionType.SCENARIO_ASSUMPTION,
+        freeze_id=assumption_freeze_id,
+        reason_code="ASSUMPTION_GROUNDED",
+        provenance=(
+            "ASSUMPTION_GROUNDED_ITINERARY_CLASSES",
+            "connection_buffer_threshold_missed_connection",
+            "literature=Theis2006_TRR1951_DOI_10.3141/1951-04",
+            "literature=BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
+            "passenger_reference_reused_for_itinerary_split",
+        ),
+        source_type=SourceType.LITERATURE,
+        confidence=ExposureConfidence.MEDIUM,
+        assumption_scope="MISSED_CONNECTION_ITINERARY_CLASSES_BASE",
+    )
+    service_policy_reference = ScientificContextValue(
+        object_id="M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
+        value=float(tau_service_minutes),
+        unit="minutes",
+        support_state=SupportState.SUPPORTED,
+        evidence_class=EvidenceClass.EXTERNAL_STANDARD,
+        construction_type=ConstructionType.EXTERNAL_OR_POLICY_REFERENCE,
+        freeze_id=assumption_freeze_id,
+        reason_code="ASSUMPTION_GROUNDED",
+        provenance=(
+            "ASSUMPTION_GROUNDED_SERVICE_POLICY_THRESHOLD",
+            "EU261_style_long_delay_threshold",
+            "literature=CookTanner2015_EUROCONTROL",
+        ),
+        source_type=SourceType.LITERATURE,
+        confidence=ExposureConfidence.MEDIUM,
+        assumption_scope="SERVICE_POLICY_THRESHOLD_BASE",
+    )
+    return legacy.model_copy(
+        update={
+            "itinerary_buffer_reference": itinerary_buffer_reference,
+            "service_policy_reference": service_policy_reference,
+        }
+    )
+
+
 def build_exp2_fixed_scope_pending(
     config: Mapping[str, Any] | None = None,
 ) -> ConsequenceScope:
@@ -332,11 +417,10 @@ def build_m2_frozen_scope(
     Exactly the five principal components; P_itinerary/P_service stay
     outside the principal aggregate; the support rule is UNAVAILABLE/ABSTAIN.
     """
-    components = tuple(
-        config.get("formal_scope") or _EXP2_FIXED_SCOPE
-        if config is not None
-        else _EXP2_FIXED_SCOPE
-    )
+    configured = tuple(config.get("formal_scope")) if config is not None else ()
+    if configured == tuple(COMPONENTS):
+        return build_m2_seven_component_scope()
+    components = configured or _EXP2_FIXED_SCOPE
     if not components or not set(components) <= set(COMPONENTS):
         raise ContractError("M2_EXP2_FIXED_SCOPE_INVALID")
     if tuple(components) != _EXP2_FIXED_SCOPE:
@@ -348,6 +432,23 @@ def build_m2_frozen_scope(
         aggregation_rule_id="SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED",
         cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V1",
         material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V1",
+        scope_status=ScopeStatus.FORMAL_READY,
+    )
+
+
+def build_m2_seven_component_scope() -> ConsequenceScope:
+    """Path-B assumption-grounded seven-component formal scope (V2.1).
+
+    Seven components are formal-ready only with ASSUMPTION_GROUNDED inputs for
+    P_itinerary/P_service and the M2_DATA2_FORMAL_CU_V2 registry.
+    """
+    return ConsequenceScope.create(
+        estimand_id="M2_DATA2_FORMAL_CU",
+        estimand_version="V2.1",
+        included_components=tuple(COMPONENTS),
+        aggregation_rule_id="SUM_OVER_SEVEN_ONLY_IF_ALL_SUPPORTED",
+        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V2",
+        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V2",
         scope_status=ScopeStatus.FORMAL_READY,
     )
 
@@ -482,9 +583,11 @@ def smoke_reference_payloads() -> dict[str, Any]:
 __all__ = [
     "AirportReferenceKeys",
     "M2ReferenceBundle",
+    "build_assumption_grounded_context",
     "build_exp2_fixed_scope_pending",
     "build_m2_context",
     "build_m2_frozen_scope",
+    "build_m2_seven_component_scope",
     "load_data2_reference_bundle",
     "smoke_reference_payloads",
 ]

@@ -10,9 +10,9 @@ from typing import Any
 
 from model.common.identity import content_id
 
-CONDITIONAL = Path("artifacts/diagnostics/m3_conditional_action_support_v1/M3_CONDITIONAL_ACTION_SUPPORT.json")
-EXP3 = Path("artifacts/diagnostics/exp3_formal_execution_preparation_v10/EXP3_FORMAL_EXECUTION_MANIFEST.json")
-LIBRARY = Path("artifacts/diagnostics/m3_action_library_scientific_materialization_v2/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json")
+CONDITIONAL = Path("artifacts/diagnostics/m3_conditional_action_support_v2/M3_CONDITIONAL_ACTION_SUPPORT.json")
+EXP3 = Path("artifacts/diagnostics/exp3_formal_execution_preparation_v11/EXP3_FORMAL_EXECUTION_MANIFEST.json")
+LIBRARY = Path("artifacts/diagnostics/m3_action_library_scientific_materialization_v3/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json")
 RESPONSE = Path("registries/m3_v2_action_response_design.json")
 M2 = Path("artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json")
 RMB_INTERFACE = Path("artifacts/diagnostics/m2_cu_rmb_interface_correction_v2/M2_CU_RMB_INTERFACE.json")
@@ -37,7 +37,7 @@ def _write(path: Path, payload: dict[str, Any]) -> None:
 
 def bind(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp3_conditional_support_binding_v4").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp3_conditional_support_binding_v5").resolve()
     paths = {"conditional_support": root / CONDITIONAL, "exp3_manifest": root / EXP3, "action_library": root / LIBRARY, "response_registry": root / RESPONSE, "m2_manifest": root / M2, "rmb_interface": root / RMB_INTERFACE}
     if not all(path.is_file() for path in paths.values()):
         raise RuntimeError("M3_CONDITIONAL_BINDING_INPUT_MISSING")
@@ -61,7 +61,7 @@ def bind(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
         "conditional_support_artifact_hash": conditional["artifact_hash"],
         "conditional_action_count": conditional["conditional_action_count"],
         "interpretation_scope": "SCENARIO_CONDITIONED_NON_AUTHORITATIVE",
-        "formal_multi_action_status": "BLOCKED_UNCHANGED",
+        "formal_multi_action_status": "READY_SCENARIO_CONDITIONAL_AUTHORITATIVE_RANKING_GATED",
         "authoritative_ranking_allowed": False,
         "causal_effect_claim_allowed": False,
         "monetary_chain": "C^a -> CU^a -> RMB^a -> risk",
@@ -72,7 +72,7 @@ def bind(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     payload["artifact_hash"] = content_id(payload)
     artifact_path = output_root / "EXP3_CONDITIONAL_SUPPORT_BINDING.json"
     _write(artifact_path, payload)
-    manifest = {"schema_version": "EXP3_CONDITIONAL_SUPPORT_BINDING_MANIFEST_V2", "status": payload["status"], "artifact": str(artifact_path.resolve()), "artifact_hash": payload["artifact_hash"], "conditional_action_count": 22, "formal_multi_action_status": "BLOCKED_UNCHANGED", "monetary_chain": "C^a -> CU^a -> RMB^a -> risk", "safety": dict(SAFETY)}
+    manifest = {"schema_version": "EXP3_CONDITIONAL_SUPPORT_BINDING_MANIFEST_V2", "status": payload["status"], "artifact": str(artifact_path.resolve()), "artifact_hash": payload["artifact_hash"], "conditional_action_count": 22, "formal_multi_action_status": "READY_SCENARIO_CONDITIONAL_AUTHORITATIVE_RANKING_GATED", "monetary_chain": "C^a -> CU^a -> RMB^a -> risk", "safety": dict(SAFETY)}
     manifest_path = output_root / "EXP3_CONDITIONAL_SUPPORT_BINDING_MANIFEST.json"
     _write(manifest_path, manifest)
     return {"artifact": artifact_path, "manifest": manifest_path}

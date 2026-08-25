@@ -31,7 +31,9 @@ def assert_real_fast_context(context: ExperimentContext) -> None:
 def blocked_gate(context: ExperimentContext, *keys: str) -> str | None:
     for key in keys:
         value = context.shared_gates.get(key)
-        if value and not value.startswith(("READY", "FROZEN", "SUPPORTED")):
+        # PASS_* values are pass/materialized states (e.g.
+        # PASS_FROZEN_M1_ARTIFACT_VALID_FOR_CURRENT_STAGE_INPUTS), not blockers.
+        if value and not value.startswith(("READY", "FROZEN", "SUPPORTED", "PASS")):
             return f"{key}:{value}"
     return None
 
@@ -131,3 +133,4 @@ __all__ = [
     "assert_real_fast_context", "blocked_gate", "m4_result_unit", "replay_latency_seconds",
     "replay_registry", "select_replay", "state_vintage_bindings",
 ]
+

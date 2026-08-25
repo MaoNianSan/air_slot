@@ -1,0 +1,34 @@
+{
+  "artifact_hash": "sha256:d279f65dee8b4c8828f1ecaebb3fc87e77ba5af774f4b7eb04c1832f989de2a2",
+  "audit_artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m4_cu_rmb_readiness_audit_v2\\M4_CU_RMB_READINESS_AUDIT.json",
+  "audit_artifact_hash": "sha256:4ced8e4340548e8c04125909f924ffe28b1045f60ec2b61f48f5795498bf1bee",
+  "claim_boundary": "CU and RMB are constructed representations; RMB is not observed currency or monetary ground truth.",
+  "decision_required": {
+    "prohibited_automatic_actions": [
+      "synthesize_rmb_parameters",
+      "fit_mapping_from_development_outcomes",
+      "freeze_mapping_without_scientific_authorization",
+      "emit_authoritative_m4_ranking"
+    ],
+    "required_decisions": [
+      "mapping_function_per_component",
+      "rmb_per_cu_or_explicit_function_parameters",
+      "source_reference_and_provenance",
+      "parameter_version_and_freeze_id",
+      "scenario_dependence_policy"
+    ],
+    "status": "HUMAN_SCIENTIFIC_DECISION_REQUIRED"
+  },
+  "safety": {
+    "EXP2_RUNS": 0,
+    "EXP3_RUNS": 0,
+    "EXP4_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "M4_CU_RMB_SCIENTIFIC_DECISION_PACKET_V1",
+  "status": "BLOCKED_M4_RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"
+}

@@ -39,6 +39,27 @@ def _write(path: Path, payload: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
+def _fitted_lightgbm_registered(root: Path) -> bool:
+    fitted_names = [
+        path.name.lower() for path in (root / "artifacts").rglob("*") if path.is_file()
+    ]
+    return any(
+        "lightgbm" in name and name.endswith((".pkl", ".joblib", ".txt"))
+        for name in fitted_names
+    )
+
+
+def _random_forest_artifact_found(root: Path) -> bool:
+    return any(
+        ("random_forest" in name or "randomforest" in name)
+        and path.suffix.lower() in {".pt", ".pkl", ".joblib", ".json"}
+        for path, name in (
+            (path, path.name.lower())
+            for path in (root / "artifacts").rglob("*") if path.is_file()
+        )
+    )
+
+
 def _profile(registry: dict[str, Any], dataset_id: str) -> dict[str, Any]:
     matches = [row for row in registry["profiles"] if row["dataset_instance_id"] == dataset_id]
     if len(matches) != 1:
@@ -61,12 +82,12 @@ def audit(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     data1, data2 = _profile(registry, "data1_2019"), _profile(registry, "data2_2019")
     data1_caps = {row["scientific_object"]: row for row in data1["capabilities"]}
     data2_caps = {row["scientific_object"]: row for row in data2["capabilities"]}
-    fitted_candidates = list((root / "artifacts").rglob("*"))
-    fitted_names = [path.name.lower() for path in fitted_candidates if path.is_file()]
+    fitted_names = [
+        path.name.lower() for path in (root / "artifacts").rglob("*") if path.is_file()
+    ]
     historical_found = any("historical" in name and "baseline" in name for name in fitted_names)
-    rf_found = any(("random_forest" in name or "randomforest" in name) and path.suffix.lower() in {".pt", ".pkl", ".joblib", ".json"}
-                   for path, name in ((path, path.name.lower()) for path in fitted_candidates if path.is_file()))
-    lightgbm_registered = any("lightgbm" in name and name.endswith((".pkl", ".joblib", ".txt")) for name in fitted_names)
+    rf_found = _random_forest_artifact_found(root)
+    lightgbm_registered = _fitted_lightgbm_registered(root)
 
     payload = {
         "schema_version": "EXP4_PREDICTIVE_CAPABILITY_AUDIT_V1",

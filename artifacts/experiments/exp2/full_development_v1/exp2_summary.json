@@ -1,0 +1,121 @@
+{
+  "artifact_hash": "sha256:bb6aaa79fd19e184463a0bc1e88c2d6b546559f29a66391df69138ab6a005c92",
+  "contract_version": "AIR_SLOT_EXP_OUTPUT_CONTRACT_20260823",
+  "dataset_id": "DATA2",
+  "episode_count": 128,
+  "experiment_id": "EXP2",
+  "headline": [
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": null,
+      "metric_id": "CRPS",
+      "n_episodes": 127,
+      "reason": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL_TAIL_CALIBRATION",
+      "support_status": "ASSUMPTION_GROUNDED",
+      "variant_id": "EXP2A_JOINT"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": 6.543466265183308,
+      "metric_id": "VARIOGRAM_SCORE",
+      "n_episodes": 124,
+      "reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+      "support_status": "SUPPORTED",
+      "variant_id": "EXP2A_JOINT"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": null,
+      "metric_id": "CRPS",
+      "n_episodes": 127,
+      "reason": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL_TAIL_CALIBRATION",
+      "support_status": "ASSUMPTION_GROUNDED",
+      "variant_id": "EXP2A_MARGINAL"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": 6.543466265183308,
+      "metric_id": "VARIOGRAM_SCORE",
+      "n_episodes": 124,
+      "reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+      "support_status": "SUPPORTED",
+      "variant_id": "EXP2A_MARGINAL"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": null,
+      "metric_id": "CRPS",
+      "n_episodes": 127,
+      "reason": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL_TAIL_CALIBRATION",
+      "support_status": "ASSUMPTION_GROUNDED",
+      "variant_id": "EXP2A_POINT"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": 6.543466265183308,
+      "metric_id": "VARIOGRAM_SCORE",
+      "n_episodes": 124,
+      "reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+      "support_status": "SUPPORTED",
+      "variant_id": "EXP2A_POINT"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": null,
+      "metric_id": "TOP1_ACTION_DISAGREEMENT",
+      "n_episodes": null,
+      "reason": "PASSENGER_CHANNEL_INCOMPLETE",
+      "support_status": "NOT_RUN",
+      "variant_id": "EXP2B_3CHANNEL"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": null,
+      "metric_id": "TOP1_ACTION_DISAGREEMENT",
+      "n_episodes": null,
+      "reason": "TYPED_VECTOR_READY_WITH_P_ITINERARY_AND_P_SERVICE_ABSTAIN",
+      "support_status": "NOT_RUN",
+      "variant_id": "EXP2B_7COMP"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": null,
+      "metric_id": "TOP1_ACTION_DISAGREEMENT",
+      "n_episodes": null,
+      "reason": "SEVEN_COMPONENT_AGGREGATE_UNRESOLVED",
+      "support_status": "NOT_RUN",
+      "variant_id": "EXP2B_SCALAR"
+    },
+    {
+      "ci_lower": null,
+      "ci_upper": null,
+      "estimate": null,
+      "metric_id": "TOP1_ACTION_DISAGREEMENT",
+      "n_episodes": null,
+      "reason": "FIVE_ANCHOR_SUBSET_RANKING_CONTRACT_READY_VALUE_MATERIALIZED_AT_FULL_CHAIN_EXECUTION",
+      "support_status": "ASSUMPTION_GROUNDED",
+      "variant_id": "M4_RANKING"
+    }
+  ],
+  "node_count": 1769,
+  "paper_result": false,
+  "safety": {
+    "AUTHORITATIVE_RANKING": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false
+  },
+  "scenario_count_per_node": 250,
+  "schema_version": "AIR_SLOT_EXP_SUMMARY_V1",
+  "seed": 0,
+  "split": "DEVELOPMENT",
+  "status": "COMPLETE_WITH_EXPLICIT_GATES"
+}

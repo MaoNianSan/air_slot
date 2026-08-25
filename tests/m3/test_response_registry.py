@@ -64,8 +64,9 @@ def test_a00_and_frozen_contract(registry):
         if template_id == "A00":
             continue
         assert action.response_parameter_status == "FROZEN"
-        assert action.response_provenance == "PURE_SCENARIO"
+        assert action.response_provenance == "ASSUMPTION_GROUNDED"
         assert action.response_model == "BERNOULLI_BETA"
+        assert action.assumption_grounded is not None
 
 
 def test_tiers_match_spec_table(registry):
@@ -91,7 +92,8 @@ def test_sensitivity_materialization_bounds(registry):
         high = registry.parameters(template_id, sensitivity="HIGH")
         for level, params in (("BASE", base), ("LOW", low), ("HIGH", high)):
             assert params["response_parameter_status"] == "FROZEN"
-            assert params["response_provenance"] == "PURE_SCENARIO"
+            assert params["response_provenance"] == "ASSUMPTION_GROUNDED"
+            assert params["assumption_grounded"] is not None
             assert 0.05 <= params["success_probability"] <= 0.95
             assert 0.20 <= params["mean_intensity"] <= 0.95
             assert params["concentration"] == 12.0

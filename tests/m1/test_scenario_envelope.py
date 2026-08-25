@@ -1,6 +1,6 @@
 from model.M1.contracts import HazardBinContract, HurdleQuantileContract
 from model.M1.scenario_envelope import JointScenarioEnvelope, TargetScenarioEnvelope
-from exp.m1_v2_current_stage_scenario_envelope import _class_envelope
+from exp.workflows.m1_v2_current_stage_scenario_envelope import _class_envelope
 
 
 LINEAGE = ("test:lineage",)

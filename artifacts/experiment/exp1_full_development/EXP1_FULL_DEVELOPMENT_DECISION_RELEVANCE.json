@@ -1,18 +1,11 @@
 {
-  "FINAL_TEST_ACCESS_COUNT": 0,
-  "PAPER_FULL_RUN": false,
-  "metrics": {
-    "EXPOST_MODEL_IMPLIED_RESIDUAL_RISK": {
-      "reason": "M4_MAPPING_AND_RISK_POLICY_REQUIRED",
-      "status": "NOT_RUN",
-      "unit": "CONSTRUCTED_LOSS_UNIT"
-    },
-    "TOP1_ACTION_DISAGREEMENT": {
-      "reason": "M2_M3_M4_MULTI_ACTION_OUTPUT_REQUIRED",
-      "status": "NOT_RUN"
-    }
+  "decision_metrics_status": "NOT_RUN_SHARED_M4_MAPPING_AND_REPLAY_GATE",
+  "safety": {
+    "EXP1_RUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "FULL": false,
+    "PAPER_FULL_RUN": false
   },
-  "no_zero_fill": true,
   "schema_version": "EXP1_FULL_DEVELOPMENT_DECISION_RELEVANCE_V1",
-  "status": "NOT_RUN_BLOCKED_SHARED_M2_M3_M4_ARTIFACTS"
+  "status": "DECISION_RELEVANCE_NOT_RUN"
 }

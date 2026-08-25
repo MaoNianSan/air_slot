@@ -123,7 +123,7 @@ def materialize_development_pre_m4(root: Path) -> dict:
             "path": str((artifact_root / "DATA2_DEV_PILOT_M4_RISK_POLICY.json").relative_to(root)),
             "policy_hash": m4_policy["policy"]["policy_hash"],
             "tail_support": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
-            "monetary_mapping": "MONETARY_MAPPING_BLOCKED",
+            "monetary_mapping": "FROZEN_ASSUMPTION_GROUNDED",
         },
         "MANUSCRIPT_EXPERIMENT_INTERPRETATION_NOTE": (
             "The current manuscript's monetary language cannot be claimed by this Exp2 "

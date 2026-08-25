@@ -59,6 +59,7 @@ FORMAL_SCOPE = M2_FORMAL_SCOPE
 AGGREGATION_RULE = "SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED"
 SUPPORT_RULE = "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY"
 OUTSIDE_SCOPE = ("P_itinerary", "P_service")
+SEVEN_SCOPE = (*FORMAL_SCOPE, *OUTSIDE_SCOPE)
 
 _NATIVE_DEFINITIONS = M2_NATIVE_DEFINITIONS
 
@@ -67,7 +68,7 @@ class M2Data2FormalCuRegistry(FrozenModel):
     registry_id: str = REGISTRY_ID
     schema_version: str = SCHEMA_VERSION
     formal_scope: tuple[str, ...] = FORMAL_SCOPE
-    outside_principal_scope: tuple[str, ...] = OUTSIDE_SCOPE
+    outside_principal_scope: tuple[str, ...] = ()
     native_quantity_definitions: dict[str, dict[str, str]] = Field(default_factory=dict)
     train_scale_artifact: dict[str, dict[str, Any]] = Field(default_factory=dict)
     reference_artifacts: dict[str, dict[str, str]] = Field(default_factory=dict)
@@ -76,6 +77,8 @@ class M2Data2FormalCuRegistry(FrozenModel):
     support_rule: str = SUPPORT_RULE
     final_test_access_count: int = 0
     paper_full_run: bool = False
+    assumption_grounded: dict[str, Any] | None = None
+    assumption_scale_artifact: dict[str, dict[str, Any]] | None = None
     registry_hash: str = ""
 
     @model_validator(mode="after")
@@ -84,13 +87,26 @@ class M2Data2FormalCuRegistry(FrozenModel):
             raise ContractError("M2_REGISTRY_FINAL_TEST_ACCESS_VIOLATION")
         if self.paper_full_run:
             raise ContractError("M2_REGISTRY_PAPER_FULL_VIOLATION")
-        if tuple(self.formal_scope) != FORMAL_SCOPE:
-            raise ContractError("M2_FORMAL_SCOPE_MISMATCH")
-        if set(self.component_weights) != set(FORMAL_SCOPE):
+        if self.registry_id == "M2_DATA2_FORMAL_CU_V1":
+            if tuple(self.formal_scope) != FORMAL_SCOPE:
+                raise ContractError("M2_FORMAL_SCOPE_MISMATCH")
+        elif self.registry_id == "M2_DATA2_FORMAL_CU_V2":
+            if set(self.formal_scope) != set(SEVEN_SCOPE) or len(self.formal_scope) != len(set(self.formal_scope)):
+                raise ContractError("M2_V2_FORMAL_SCOPE_MISMATCH")
+            if not self.assumption_grounded or not self.assumption_scale_artifact:
+                raise ContractError("M2_V2_ASSUMPTION_GROUNDED_MISSING")
+        else:
+            raise ContractError("M2_REGISTRY_IDENTITY_UNKNOWN")
+        if set(self.component_weights) != set(self.formal_scope):
             raise ContractError("M2_COMPONENT_WEIGHT_SET_MISMATCH")
         if any(weight != 1.0 for weight in self.component_weights.values()):
             raise ContractError("M2_COMPONENT_WEIGHT_NOT_UNITY")
-        missing = set(FORMAL_SCOPE) - set(self.train_scale_artifact)
+        assumption_components = set(self.assumption_scale_artifact or {})
+        missing = (
+            set(self.formal_scope)
+            - set(self.train_scale_artifact)
+            - assumption_components
+        )
         if missing:
             raise ContractError(f"M2_TRAIN_SCALE_ARTIFACT_MISSING:{sorted(missing)}")
         required = {"turnaround", "taxi", "downstream_exposure", "passenger"}
@@ -103,16 +119,31 @@ class M2Data2FormalCuRegistry(FrozenModel):
     def registry_payload(self) -> dict:
         payload = self.model_dump(mode="json")
         payload.pop("registry_hash", None)
+        if self.registry_id == "M2_DATA2_FORMAL_CU_V2":
+            payload.pop("outside_principal_scope", None)
+        if payload.get("assumption_grounded") is None:
+            payload.pop("assumption_grounded", None)
+        if payload.get("assumption_scale_artifact") is None:
+            payload.pop("assumption_scale_artifact", None)
         return payload
 
     def digest(self) -> str:
         return content_id(self.registry_payload())
 
     def scale(self, component: str) -> float:
-        value = float(self.train_scale_artifact[component]["median"])
+        assumption = (self.assumption_scale_artifact or {}).get(component)
+        if assumption is not None:
+            value = float(assumption["scale"])
+        else:
+            value = float(self.train_scale_artifact[component]["median"])
         if not value > 0:
             raise ContractError(f"M2_TRAIN_SCALE_NOT_POSITIVE:{component}")
         return value
+
+    def component_definition(self, component: str) -> str:
+        if component in self.train_scale_artifact:
+            return self.train_scale_artifact[component]["definition"]
+        return self.native_quantity_definitions[component]["definition"]
 
 
 def _write_json_atomic(path: Path, payload: dict) -> None:
@@ -388,10 +419,13 @@ class FrozenData2CUNormalizationRegistry(M2CUNormalizationAdapter):
             version=registry.schema_version,
             freeze_id=registry.registry_id,
             reference_period="2019-H1",
-            scales={component: registry.scale(component) for component in FORMAL_SCOPE},
+            scales={
+                component: registry.scale(component)
+                for component in registry.formal_scope
+            },
             provenance=tuple(
-                f"{component}={registry.train_scale_artifact[component]['definition']}"
-                for component in FORMAL_SCOPE
+                f"{component}={registry.component_definition(component)}"
+                for component in registry.formal_scope
             ),
         )
         super().__init__(cu_registry)

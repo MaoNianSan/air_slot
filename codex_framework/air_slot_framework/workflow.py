@@ -171,12 +171,12 @@ def build_phase0_consistency_audit(root: str | Path = ".") -> dict[str, Any]:
     artifact_paths = {
         "m1_binding": root / "artifacts/diagnostics/exp1_formal_execution_preparation/EXP1_M1_V2_ARTIFACT_BINDING.json",
         "m2_consequence": root / "artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json",
-        "m3_materialization": root / "artifacts/diagnostics/m3_action_library_scientific_materialization_v2/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json",
+        "m3_materialization": root / "artifacts/diagnostics/m3_action_library_scientific_materialization_v3/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json",
         "m4_policy": root / "artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json",
         "exp1_development": root / "artifacts/experiment/exp1_full_development/EXP1_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json",
         "exp2_formal": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_EXECUTION_MANIFEST.json",
-        "exp3_preparation": root / "artifacts/diagnostics/exp3_formal_execution_preparation_v10/EXP3_FORMAL_EXECUTION_MANIFEST.json",
-        "exp4_preparation": root / "artifacts/diagnostics/exp4_formal_execution_preparation_v10/EXP4_FORMAL_EXECUTION_MANIFEST.json",
+        "exp3_preparation": root / "artifacts/diagnostics/exp3_formal_execution_preparation_v11/EXP3_FORMAL_EXECUTION_MANIFEST.json",
+        "exp4_preparation": root / "artifacts/diagnostics/exp4_formal_execution_preparation_v11/EXP4_FORMAL_EXECUTION_MANIFEST.json",
     }
     artifacts = {name: file_record(path) for name, path in artifact_paths.items()}
     return {

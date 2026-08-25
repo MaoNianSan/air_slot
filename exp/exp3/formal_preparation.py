@@ -84,8 +84,8 @@ def _inputs(root: Path) -> dict[str, tuple[Path, dict[str, Any]]]:
         "m1_freeze": root / "artifacts/diagnostics/m1_v2_final_development_freeze/M1_V2_FINAL_FREEZE_MANIFEST.json",
         "exp2_manifest": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_EXECUTION_MANIFEST.json",
         "exp2_lineage": root / "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_ARTIFACT_LINEAGE.json",
-        "m3_support_audit": root / "artifacts/diagnostics/exp3_formal_support_audit_v1/EXP3_FORMAL_SUPPORT_AUDIT.json",
-        "m3_action_library": root / "artifacts/diagnostics/m3_action_library_scientific_materialization_v2/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json",
+        "m3_support_audit": root / "artifacts/diagnostics/exp3_formal_support_audit_v2/EXP3_FORMAL_SUPPORT_AUDIT.json",
+        "m3_action_library": root / "artifacts/diagnostics/m3_action_library_scientific_materialization_v3/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json",
     }
     _require(all(path.is_file() for path in paths.values()), "EXP3_FORMAL_PREPARATION_INPUT_MISSING")
     return {name: (path, _load(path)) for name, path in paths.items()}
@@ -106,11 +106,15 @@ def _validate(inputs: dict[str, tuple[Path, dict[str, Any]]], root: Path) -> dic
     _require(exp2_manifest["status"] == "EXP2_FORMAL_EXECUTION_COMPLETE", "EXP3_EXP2_BINDING_NOT_COMPLETE")
     _require(exp2_manifest["split"] == "DEVELOPMENT", "EXP3_EXP2_BINDING_NOT_DEVELOPMENT")
     _require(exp2_lineage["status"] == "BOUND_WITH_UNRESOLVED_UPSTREAM_GATES", "EXP3_EXP2_LINEAGE_STATUS_INVALID")
-    _require(m3_support_audit["status"] == "EXP3_FORMAL_COHORT_BLOCKED", "EXP3_M3_SUPPORT_AUDIT_STATUS_INVALID")
-    _require(m3_support_audit["non_a00_executable_action_ids"] == [], "EXP3_UNEXPECTED_NON_A00_EXECUTABLE_ACTIONS")
+    _require(m3_support_audit["status"] == "EXP3_FORMAL_COHORT_ASSUMPTION_GROUNDED_READY", "EXP3_M3_SUPPORT_AUDIT_STATUS_INVALID")
+    _require(
+        len(m3_support_audit["non_a00_executable_action_ids"]) == 22
+        and len(set(m3_support_audit["non_a00_executable_action_ids"])) == 22,
+        "EXP3_UNEXPECTED_NON_A00_EXECUTABLE_ACTIONS",
+    )
     _require(m3_action_library["schema_version"] == "M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION_V2", "EXP3_M3_ACTION_LIBRARY_SCHEMA_INVALID")
     _require(m3_action_library["action_count"] == 23, "EXP3_M3_ACTION_LIBRARY_COUNT_INVALID")
-    _require(m3_action_library["formal_executable_non_a00_count"] == 0 if "formal_executable_non_a00_count" in m3_action_library else True, "EXP3_M3_ACTION_LIBRARY_FORMAL_COUNT_INVALID")
+    _require(m3_action_library["formal_executable_non_a00_count"] == 22 if "formal_executable_non_a00_count" in m3_action_library else True, "EXP3_M3_ACTION_LIBRARY_FORMAL_COUNT_INVALID")
     for payload in (binding, freeze, exp2_manifest, exp2_lineage, m3_support_audit, m3_action_library):
         safety = payload.get("safety", payload)
         _require(safety.get("FINAL_TEST_ACCESS_COUNT", payload.get("FINAL_TEST_ACCESS_COUNT")) == 0, "EXP3_FINAL_TEST_ACCESS_NONZERO")
@@ -216,18 +220,25 @@ def _lineage_schema() -> dict[str, Any]:
 
 
 def _readiness(gates: dict[str, Any], fixed: dict[str, Any]) -> dict[str, Any]:
-    blockers = tuple(item["status"] for item in gates.values() if str(item["status"]).startswith("BLOCKED_"))
-    blockers = tuple(dict.fromkeys((*blockers, "EXP3_FORMAL_COHORT_BLOCKED")))
+    blockers = tuple(dict.fromkeys(
+        item["status"] for item in gates.values()
+        if str(item["status"]).startswith("BLOCKED_")
+    ))
+    variant_status = (
+        "BLOCKED_SHARED_M4_GATE"
+        if any("M4_MAPPING" in str(gate) for gate in blockers)
+        else "READY_SCENARIO_CONDITIONAL_LANE"
+    )
     return _artifact({
         "schema_version": "EXP3_FORMAL_EXECUTION_READINESS_V1",
         "status": "EXP3_FORMAL_EXECUTION_READY",
         "preparation_status": "READY",
-        "execution_status": "EXP3_FORMAL_COHORT_BLOCKED",
+        "execution_status": "EXP3_FORMAL_COHORT_ASSUMPTION_GROUNDED_READY",
         "shared_blockers": blockers,
         "metric_policy": "NOT_RUN_UNTIL_TYPED_CHAIN_ARTIFACTS_ARE_BOUND_NO_ZERO_FILL_NO_SYNTHETIC_DOWNSTREAM_METRICS",
         "variant_readiness": {
             variant: {
-                "status": "EXP3_FORMAL_COHORT_BLOCKED",
+                "status": variant_status,
                 "requires_execution_authorization": True,
                 "formal_multi_action_cohort_status": fixed["m3_formal_multi_action_cohort_status"],
                 "paper_supported_action_library": "READY",
@@ -244,7 +255,7 @@ def _readiness(gates: dict[str, Any], fixed: dict[str, Any]) -> dict[str, Any]:
 
 def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_execution_preparation_v10").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_execution_preparation_v11").resolve()
     inputs = _inputs(root)
     fixed = _validate(inputs, root)
     gates = inputs["exp2_lineage"][1]["gates"]

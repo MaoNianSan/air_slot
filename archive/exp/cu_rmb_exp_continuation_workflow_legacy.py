@@ -49,11 +49,11 @@ EXP2_MANIFEST = Path(
     "artifacts/experiment/exp2_formal_development_v9/EXP2_FORMAL_EXECUTION_MANIFEST.json"
 )
 EXP3_READINESS = Path(
-    "artifacts/diagnostics/exp3_formal_execution_preparation_v10/"
+    "artifacts/diagnostics/exp3_formal_execution_preparation_v11/"
     "EXP3_FORMAL_EXECUTION_READINESS_REPORT.json"
 )
 EXP4_READINESS = Path(
-    "artifacts/diagnostics/exp4_formal_execution_preparation_v10/"
+    "artifacts/diagnostics/exp4_formal_execution_preparation_v11/"
     "EXP4_FORMAL_EXECUTION_READINESS_REPORT.json"
 )
 

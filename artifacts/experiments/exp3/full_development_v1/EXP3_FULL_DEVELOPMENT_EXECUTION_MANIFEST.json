@@ -1,0 +1,35 @@
+{
+  "action_count": 23,
+  "artifact_hash": "sha256:375cc9495224395135cfff1a2c09e730187117183fad11f86897fa38c4df151b",
+  "artifact_hashes": {
+    "action_risk": "sha256:b526289931062818c0bd7c9507865cbcbfc08fa54c1b4db0710a0f48653ff414",
+    "metrics": "sha256:49dc553e52e08ba20728d20a7defc9627e7354fbf544d7ef27df8ea7759d860f"
+  },
+  "dataset": "DATA2",
+  "episode_count": 128,
+  "frozen_hashes": {
+    "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+    "m2_registry_hash": "sha256:6a671e677835a73e80689f50cc16c2512e69fd43226d1fa36df33b834b139876",
+    "mapping_hash": "sha256:4b18b02223c9989f8c203aa1638ddf6728736e64aa2bb1199df3a08ae515d67e",
+    "mapping_registry": "registries/m4_eur_mapping_assumption_grounded_v1.json",
+    "response_registry_hash": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+    "risk_policy_hash": "sha256:8e451495417665b51d2de6d48235393af752310fb34a5059c9a952bf15e9ca5a"
+  },
+  "node_count": 1769,
+  "outputs": {
+    "action_risk": "artifacts/experiments/exp3/full_development_v1/EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet",
+    "interpretation": "artifacts/experiments/exp3/full_development_v1/EXP3_FULL_DEVELOPMENT_INTERPRETATION.md",
+    "metrics": "artifacts/experiments/exp3/full_development_v1/EXP3_FULL_DEVELOPMENT_METRICS.json",
+    "table": "artifacts/experiments/exp3/full_development_v1/EXP3_FULL_DEVELOPMENT_TABLE.csv"
+  },
+  "safety": {
+    "AUTHORITATIVE_RANKING": false,
+    "DEVELOPMENT_TUNING": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false
+  },
+  "schema_version": "EXP3_FULL_DEVELOPMENT_EXECUTION_MANIFEST_V1",
+  "source_exp2_manifest_hash": "sha256:2fd8b6a2d6eabd5ae208eb3c9740bd06396035f7feae4457cdaa9b947e3657d1",
+  "split": "DEVELOPMENT",
+  "status": "COMPLETE_WITH_CONDITIONAL_5_ANCHOR_RANKING_AND_FORMAL_NOT_RUN"
+}

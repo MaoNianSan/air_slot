@@ -329,7 +329,8 @@ def test_action_response_design_registry_covers_exact_current_action_order():
     assert all(required <= set(row) for row in design["responses"])
     assert all(
         row["support_state"] == "SCENARIO_ASSUMPTION"
-        and row["executable_v2"] is False
+        and row["executable_v2"] is True
+        and row.get("assumption_grounded") is not None
         for row in design["responses"]
         if row["action_id"] != "A00"
     )

@@ -219,6 +219,7 @@ class M2ScientificContext(FrozenModel):
     expected_downstream_exposure: ScientificContextValue
     passenger_exposure: ScientificContextValue
     itinerary_disruption_events: ScientificContextValue
+    itinerary_buffer_reference: ScientificContextValue | None = None
     service_policy_reference: ScientificContextValue
     taxi_reference: ScientificContextValue
 

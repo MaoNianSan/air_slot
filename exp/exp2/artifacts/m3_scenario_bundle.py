@@ -26,7 +26,7 @@ class ScenarioResponseRule(BaseModel):
     response_rule_id: str = Field(min_length=1)
     rule_hash: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
     parameters: dict[str, object]
-    source_type: Literal["BASELINE_IDENTITY", "PURE_SCENARIO"]
+    source_type: Literal["BASELINE_IDENTITY", "PURE_SCENARIO", "ASSUMPTION_GROUNDED"]
     support_state: Literal["BASELINE_IDENTITY", "SCENARIO_ASSUMPTION"]
     formal_support_upgrade: bool = False
     parameter_version: str = Field(min_length=1)
@@ -40,7 +40,10 @@ class ScenarioResponseRule(BaseModel):
         if self.action_id == "A00":
             if self.source_type != "BASELINE_IDENTITY" or self.support_state != "BASELINE_IDENTITY":
                 raise ValueError("EXP2_M3_A00_BASELINE_IDENTITY_REQUIRED")
-        elif self.source_type != "PURE_SCENARIO" or self.support_state != "SCENARIO_ASSUMPTION":
+        elif (
+            self.source_type not in {"PURE_SCENARIO", "ASSUMPTION_GROUNDED"}
+            or self.support_state != "SCENARIO_ASSUMPTION"
+        ):
             raise ValueError("EXP2_M3_NON_A00_SCENARIO_ASSUMPTION_REQUIRED")
         payload = self.model_dump(mode="json", exclude={"rule_hash"})
         if self.rule_hash != content_id(payload):
@@ -114,7 +117,9 @@ def materialize_m3_scenario_bundle(*, root: Path, output_path: Path | None = Non
             "action_id": action_id,
             "response_rule_id": f"{response_registry.registry_id}:{action_id}:BASE",
             "parameters": parameters,
-            "source_type": "BASELINE_IDENTITY" if action_id == "A00" else "PURE_SCENARIO",
+            "source_type": (
+                "BASELINE_IDENTITY" if action_id == "A00" else "ASSUMPTION_GROUNDED"
+            ),
             "support_state": "BASELINE_IDENTITY" if action_id == "A00" else "SCENARIO_ASSUMPTION",
             "formal_support_upgrade": False,
             "parameter_version": response_registry.schema_version,

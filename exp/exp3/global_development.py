@@ -1,8 +1,11 @@
 """Global Development materialization for conditional M3 action responses.
 
-The complete seven-component RMB decision remains fail-closed.  A separate,
-explicit finite-support conditional diagnostic is produced for Exp3 scenario
-analysis; it is never promoted to an authoritative recommendation.
+Ranking uses the frozen five-anchor constructed-EUR subset
+(F_continuity/F_execution/F_propagation/P_time/R_operating; registry
+m4_eur_mapping_assumption_grounded_v1.json). P_itinerary and P_service
+remain HUMAN_DECISION_REQUIRED for monetary anchors: they are output as
+event counts only (monetary=NOT_ANCHORED) and never enter the ranking.
+The complete seven-component monetary decision remains fail-closed.
 """
 
 from __future__ import annotations
@@ -31,11 +34,47 @@ from model.common.identity import content_id
 EXP2_ROOT = Path("artifacts/experiments/exp2/full_development_v1")
 INPUT_ROOT = Path("artifacts/experiment/full_development_inputs_v1")
 DEFAULT_OUTPUT = Path("artifacts/experiments/exp3/full_development_v1")
+# Fixed action-risk schema: conditional_* columns are nullable doubles so
+# all-ABSTAIN node batches stay schema-consistent with supported batches.
+ACTION_RISK_SCHEMA = pa.schema([
+    pa.field("episode_id", pa.string()),
+    pa.field("decision_node_id", pa.string()),
+    pa.field("action_id", pa.string()),
+    pa.field("action_family", pa.string()),
+    pa.field("response_sensitivity", pa.string()),
+    pa.field("eligibility_state", pa.string()),
+    pa.field("eligibility_interpretation", pa.string()),
+    pa.field("response_support", pa.string()),
+    pa.field("response_registry_hash", pa.string()),
+    pa.field("scenario_count", pa.int64()),
+    pa.field("finite_support_scenario_count", pa.int64()),
+    pa.field("finite_support_rate", pa.float64()),
+    pa.field("diagnostic_support_status", pa.string()),
+    pa.field("conditional_expected_constructed_eur", pa.float64()),
+    pa.field("conditional_constructed_eur_variance", pa.float64()),
+    pa.field("conditional_constructed_eur_var_alpha", pa.float64()),
+    pa.field("conditional_constructed_eur_cvar_alpha", pa.float64()),
+    pa.field("conditional_residual_risk", pa.float64()),
+    pa.field("complete_seven_component_supported_scenarios", pa.int64()),
+    pa.field("complete_seven_component_risk_status", pa.string()),
+    pa.field("complete_seven_component_risk_reason", pa.string()),
+    pa.field("p_itinerary_event_count", pa.float64()),
+    pa.field("p_service_event_count", pa.float64()),
+    pa.field("pending_monetary_event_status", pa.string()),
+    pa.field("ranking_authority", pa.string()),
+    pa.field("monetary_ground_truth_claim", pa.bool_()),
+    pa.field("causal_action_effect_claim", pa.bool_()),
+    pa.field("conditional_diagnostic_rank", pa.int64()),
+])
 ACTION_REGISTRY = Path("registries/action_templates.yaml")
 RESPONSE_REGISTRY = Path("registries/m3_response_scenarios.yaml")
-M2_REGISTRY = Path("registries/m2_data2_formal_cu_v1.json")
-MAPPING_REGISTRY = Path("registries/m4_cu_rmb_mapping_candidate_v1.json")
+M2_REGISTRY = Path("registries/m2_data2_formal_cu_v2.json")
+MAPPING_REGISTRY = Path("registries/m4_eur_mapping_assumption_grounded_v1.json")
 RISK_POLICY = Path("artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json")
+FIVE_ANCHOR_COMPONENTS = (
+    "F_continuity", "F_execution", "F_propagation", "P_time", "R_operating",
+)
+PENDING_MONETARY_COMPONENTS = ("P_itinerary", "P_service")
 SEED = 20260823
 SAFETY = {
     "FINAL_TEST_ACCESS_COUNT": 0,
@@ -63,10 +102,10 @@ def _conditional_risk(
     variance = weighted_variance(samples, normalized)
     var, cvar = weighted_var_cvar(samples, normalized, alpha)
     return {
-        "expected_rmb": expected,
-        "rmb_variance": variance,
-        "rmb_var_alpha": var,
-        "rmb_cvar_alpha": cvar,
+        "expected_constructed_eur": expected,
+        "constructed_eur_variance": variance,
+        "constructed_eur_var_alpha": var,
+        "constructed_eur_cvar_alpha": cvar,
         "residual_risk_objective": expected_coefficient * expected + cvar_coefficient * cvar,
     }
 
@@ -100,12 +139,33 @@ def run(
     _require(exp2_manifest["episode_count"] == 128 and exp2_manifest["node_count"] == 1769, "EXP3_GLOBAL_EXP2_CARDINALITY_INVALID")
     _require(file_sha256(paths["consequences"]) == exp2_manifest["artifact_hashes"]["consequences"], "EXP3_GLOBAL_EXP2_HASH_MISMATCH")
     formal_scope = tuple(m2_registry["formal_scope"])
-    _require(len(formal_scope) == 5, "EXP3_GLOBAL_FORMAL_SCOPE_INVALID")
-    _require(len(mapping.get("component_mappings", {})) == 7, "EXP3_GLOBAL_MAPPING_INVALID")
-    _require(all(
-        next(parameter["value"] for parameter in item["parameters"] if parameter["parameter_name"] == "rmb_per_cu") == 1.0
-        for item in mapping["component_mappings"].values()
-    ), "EXP3_GLOBAL_MAPPING_BASELINE_DRIFT")
+    _require(len(formal_scope) == 7, "EXP3_GLOBAL_FORMAL_SCOPE_INVALID")
+    _require(
+        mapping.get("registry_hash") == "sha256:88beec332b885baf90cef90e3cc8091c8679f4ea93628c0e9227cd919c76d6a3",
+        "EXP3_GLOBAL_EUR_MAPPING_REGISTRY_DRIFT",
+    )
+    components = mapping.get("ops_components")
+    _require(isinstance(components, list) and len(components) == 7, "EXP3_GLOBAL_MAPPING_INVALID")
+    anchor_status = {item["component_id"]: item["anchor_status"] for item in components}
+    _require(
+        tuple(sorted(name for name, status in anchor_status.items() if status == "FROZEN_ASSUMPTION_GROUNDED"))
+        == tuple(sorted(FIVE_ANCHOR_COMPONENTS)),
+        "EXP3_GLOBAL_MAPPING_FIVE_ANCHOR_DRIFT",
+    )
+    _require(
+        tuple(sorted(name for name, status in anchor_status.items() if status == "HUMAN_DECISION_REQUIRED"))
+        == tuple(sorted(PENDING_MONETARY_COMPONENTS)),
+        "EXP3_GLOBAL_MAPPING_PENDING_ANCHOR_DRIFT",
+    )
+    money_rates: dict[str, dict[str, float | None]] = {}
+    for item in components:
+        money_rates[item["component_id"]] = {
+            band["band_id"]: band["per_cu_money"] for band in item["bands"]
+        }
+    _require(
+        all(money_rates[component][level] is not None for component in FIVE_ANCHOR_COMPONENTS for level in SENSITIVITY_LEVELS),
+        "EXP3_GLOBAL_MAPPING_FROZEN_RATE_MISSING",
+    )
 
     policy = policy_payload["policy"]
     alpha = float(policy["alpha"])
@@ -159,6 +219,8 @@ def run(
                     )
                     diagnostic_values: list[float] = []
                     diagnostic_weights: list[float] = []
+                    itinerary_events: list[float] = []
+                    service_events: list[float] = []
                     complete_supported = 0
                     for row in source_rows:
                         components = json.loads(row["components_json"])
@@ -169,7 +231,7 @@ def run(
                         }
                         if len(supported) == 7:
                             complete_supported += 1
-                        if not all(component in supported for component in formal_scope):
+                        if not all(component in supported for component in FIVE_ANCHOR_COMPONENTS):
                             continue
                         rho = response_draw(
                             seed=SEED,
@@ -194,8 +256,13 @@ def run(
                             ),
                             included_components=tuple(supported),
                         )
-                        diagnostic_values.append(sum(post[name] for name in formal_scope))
+                        diagnostic_values.append(sum(
+                            post[name] * float(money_rates[name][sensitivity])
+                            for name in FIVE_ANCHOR_COMPONENTS
+                        ))
                         diagnostic_weights.append(float(row["scenario_weight"]))
+                        itinerary_events.append(post["P_itinerary"])
+                        service_events.append(post["P_service"])
                     conditional = _conditional_risk(
                         diagnostic_values, diagnostic_weights, alpha=alpha,
                         expected_coefficient=expected_coefficient,
@@ -204,6 +271,15 @@ def run(
                     support_rate = sum(diagnostic_weights) / total_weight
                     support_rates.append(support_rate)
                     eligibility_counts[candidate.precondition_state] += 1
+                    total_weight_supported = sum(diagnostic_weights) if diagnostic_weights else 0.0
+                    itinerary_event_count = (
+                        sum(value * weight for value, weight in zip(itinerary_events, diagnostic_weights))
+                        / total_weight_supported if total_weight_supported > 0 else None
+                    )
+                    service_event_count = (
+                        sum(value * weight for value, weight in zip(service_events, diagnostic_weights))
+                        / total_weight_supported if total_weight_supported > 0 else None
+                    )
                     node_rows.append({
                         "episode_id": pre.decision_node.episode_id,
                         "decision_node_id": node_id,
@@ -226,15 +302,28 @@ def run(
                         "diagnostic_support_status": (
                             "PARTIAL_DIAGNOSTIC" if conditional is not None else "NOT_RUN"
                         ),
-                        "conditional_expected_rmb": None if conditional is None else conditional["expected_rmb"],
-                        "conditional_rmb_variance": None if conditional is None else conditional["rmb_variance"],
-                        "conditional_rmb_var_alpha": None if conditional is None else conditional["rmb_var_alpha"],
-                        "conditional_rmb_cvar_alpha": None if conditional is None else conditional["rmb_cvar_alpha"],
+                        "conditional_expected_constructed_eur": (
+                            None if conditional is None else conditional["expected_constructed_eur"]
+                        ),
+                        "conditional_constructed_eur_variance": (
+                            None if conditional is None else conditional["constructed_eur_variance"]
+                        ),
+                        "conditional_constructed_eur_var_alpha": (
+                            None if conditional is None else conditional["constructed_eur_var_alpha"]
+                        ),
+                        "conditional_constructed_eur_cvar_alpha": (
+                            None if conditional is None else conditional["constructed_eur_cvar_alpha"]
+                        ),
                         "conditional_residual_risk": None if conditional is None else conditional["residual_risk_objective"],
                         "complete_seven_component_supported_scenarios": complete_supported,
-                        "complete_rmb_risk_status": "NOT_RUN",
-                        "complete_rmb_risk_reason": "P_ITINERARY_P_SERVICE_ABSTAIN_AND_POSITIVE_TAIL_MAGNITUDE_UNAVAILABLE",
-                        "ranking_authority": "CONDITIONAL_DIAGNOSTIC_NOT_PRINCIPAL",
+                        "complete_seven_component_risk_status": "NOT_RUN",
+                        "complete_seven_component_risk_reason": (
+                            "P_ITINERARY_P_SERVICE_MONETARY_ANCHORS_HUMAN_DECISION_REQUIRED"
+                        ),
+                        "p_itinerary_event_count": itinerary_event_count,
+                        "p_service_event_count": service_event_count,
+                        "pending_monetary_event_status": "EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED",
+                        "ranking_authority": "CONDITIONAL_DIAGNOSTIC_5_ANCHOR_SUBSET_NOT_PRINCIPAL",
                         "monetary_ground_truth_claim": False,
                         "causal_action_effect_claim": False,
                     })
@@ -251,9 +340,9 @@ def run(
                     top_by_sensitivity[sensitivity][node_id] = comparable[0]["action_id"]
             for row in node_rows:
                 row.setdefault("conditional_diagnostic_rank", None)
-            table = pa.Table.from_pylist(node_rows)
+            table = pa.Table.from_pylist(node_rows).cast(ACTION_RISK_SCHEMA)
             if writer is None:
-                writer = pq.ParquetWriter(temporary, table.schema, compression="zstd")
+                writer = pq.ParquetWriter(temporary, ACTION_RISK_SCHEMA, compression="zstd")
             writer.write_table(table)
             node_count += 1
             output_rows += len(node_rows)
@@ -273,25 +362,43 @@ def run(
         )
     metrics = {
         "schema_version": "EXP3_FULL_DEVELOPMENT_METRICS_V1",
-        "status": "COMPLETE_WITH_CONDITIONAL_DIAGNOSTIC_AND_FORMAL_NOT_RUN",
+        "status": "COMPLETE_WITH_CONDITIONAL_5_ANCHOR_RANKING_AND_FORMAL_NOT_RUN",
         "dataset": "DATA2", "split": "DEVELOPMENT",
         "episode_count": 128, "node_count": node_count, "action_count": 23,
         "output_row_count": output_rows,
         "eligibility_counts": dict(eligibility_counts),
         "finite_support_rate_mean": mean(support_rates) if support_rates else None,
         "conditional_top1_response_sensitivity_agreement": agreement,
-        "global_rmb_scale_sensitivity": {
+        "global_constructed_eur_scale_sensitivity": {
             "scales": [0.5, 1.0, 2.0],
             "ranking_invariance": "MATHEMATICALLY_INVARIANT_UNDER_COMMON_POSITIVE_SCALE",
             "development_selection": False,
         },
+        "ranking_definition": {
+            "subset": "5-ANCHOR SUBSET",
+            "components": list(FIVE_ANCHOR_COMPONENTS),
+            "units": "constructed_EUR",
+            "registry": "registries/m4_eur_mapping_assumption_grounded_v1.json",
+            "registry_hash": mapping["registry_hash"],
+            "base_rates_per_cu": {
+                component: money_rates[component]["BASE"] for component in FIVE_ANCHOR_COMPONENTS
+            },
+            "sensitivity_bands": {
+                level: {component: money_rates[component][level] for component in FIVE_ANCHOR_COMPONENTS}
+                for level in SENSITIVITY_LEVELS
+            },
+            "semantics": "CONSTRUCTED_INTERNAL_LOSS_NOT_CAUSAL_NOT_REGRET_NOT_OPTIMAL",
+            "top1_level": "ASSUMPTION_GROUNDED",
+            "excluded_components": list(PENDING_MONETARY_COMPONENTS),
+            "excluded_reason": "MONETARY_ANCHOR_HUMAN_DECISION_REQUIRED_EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED",
+        },
         "formal_complete_chain": {
             "support_status": "NOT_RUN",
-            "reason": "COMPLETE_SEVEN_COMPONENT_RMB_AND_TAIL_MAGNITUDE_UNAVAILABLE",
+            "reason": "COMPLETE_SEVEN_COMPONENT_MONETARY_ANCHORS_HUMAN_DECISION_REQUIRED",
             "authoritative_ranking": False,
             "decision_selection": "NOT_RUN",
         },
-        "diagnostic_scope": "FINITE_SUPPORT_CONDITIONAL_FIVE_COMPONENT_RMB_NOT_PRINCIPAL",
+        "diagnostic_scope": "FINITE_SUPPORT_CONDITIONAL_5_ANCHOR_CONSTRUCTED_EUR_NOT_PRINCIPAL",
         "support_policy": "EXPLICIT_CONDITIONING_NO_ZERO_FILL_NO_SILENT_RENORMALIZATION",
         "safety": dict(SAFETY),
     }
@@ -306,14 +413,20 @@ def run(
         csv_writer.writerow({"metric": "node_count", "value": node_count, "support_status": "SUPPORTED"})
         csv_writer.writerow({"metric": "action_count", "value": 23, "support_status": "SUPPORTED"})
         csv_writer.writerow({"metric": "formal_authoritative_ranking", "value": None, "support_status": "NOT_RUN"})
+        csv_writer.writerow({"metric": "conditional_5_anchor_constructed_eur_ranking", "value": "ASSUMPTION_GROUNDED_NOT_PRINCIPAL", "support_status": "ASSUMPTION_GROUNDED"})
         csv_writer.writerow({"metric": "finite_support_rate_mean", "value": metrics["finite_support_rate_mean"], "support_status": "PARTIAL_DIAGNOSTIC"})
     interpretation_path = output_root / "EXP3_FULL_DEVELOPMENT_INTERPRETATION.md"
     interpretation_path.write_text(
         "# Exp3 Development Interpretation\n\n"
         "All 23 action identities are evaluated as identity or versioned scenario-response assumptions. "
-        "The finite-support five-component ranking is a conditional diagnostic only. Complete RMB risk and "
-        "authoritative decision selection remain NOT_RUN because unsupported passenger components and "
-        "positive-tail magnitudes are not fabricated. No causal action-effect claim is made.\n",
+        "The ranking is a conditional diagnostic over the frozen five-anchor subset "
+        "(F_continuity/F_execution/F_propagation/P_time/R_operating) in constructed EUR "
+        "(EUROCONTROL 2004 EUR-basis anchor; LOW/BASE/HIGH = 0.5x/1.0x/2.0x). It is an internal "
+        "constructed-loss comparison: not causal, not regret, not optimal, and not an empirical cost. "
+        "P_itinerary and P_service are reported as event counts only (monetary=NOT_ANCHORED): their "
+        "per-event monetary anchors remain HUMAN_DECISION_REQUIRED and they never enter the ranking. "
+        "The complete seven-component monetary ranking and authoritative decision selection remain "
+        "NOT_RUN; no zero-fill and no causal action-effect claim is made.\n",
         encoding="utf-8",
     )
     manifest = {
@@ -326,7 +439,8 @@ def run(
             "action_registry_hash": action_registry.registry_hash,
             "response_registry_hash": response_registry.registry_hash,
             "m2_registry_hash": m2_registry["registry_hash"],
-            "mapping_hash": mapping["registry_hash"],
+            "mapping_hash": file_sha256(paths["mapping_registry"]),
+            "mapping_registry": str(MAPPING_REGISTRY).replace("\\", "/"),
             "risk_policy_hash": policy["policy_hash"],
         },
         "outputs": {
@@ -349,6 +463,33 @@ def run(
         "action_risk": result_path, "table": table_path,
         "interpretation": interpretation_path,
     }
+
+
+def annotate_pending_monetary_event_status(action_risk_path: Path) -> None:
+    """Add the explicit NOT_ANCHORED annotation column to an existing parquet.
+
+    Display-only pass (D2, 2026-08-24): every row gains the constant string
+    column ``pending_monetary_event_status=EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED``.
+    All numeric columns are preserved byte-for-byte.
+    """
+    source = Path(action_risk_path)
+    _require(source.is_file(), "EXP3_ANNOTATE_ACTION_RISK_MISSING")
+    reader = pq.ParquetFile(source)
+    temporary = source.with_name(source.name + ".annotated.tmp")
+    writer = pq.ParquetWriter(temporary, ACTION_RISK_SCHEMA, compression="zstd")
+    total = 0
+    try:
+        for row_group in range(reader.num_row_groups):
+            rows = reader.read_row_group(row_group).to_pylist()
+            for row in rows:
+                row["pending_monetary_event_status"] = "EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED"
+            writer.write_table(pa.Table.from_pylist(rows, schema=ACTION_RISK_SCHEMA))
+            total += len(rows)
+    finally:
+        writer.close()
+        reader.close()
+    _require(total == reader.metadata.num_rows, "EXP3_ANNOTATE_ROW_COUNT_DRIFT")
+    temporary.replace(source)
 
 
 def main(argv: list[str] | None = None) -> int:

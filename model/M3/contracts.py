@@ -40,6 +40,7 @@ class ResponseProvenance(str, Enum):
     OPERATOR_INDUSTRY = "OPERATOR_INDUSTRY"
     STRUCTURAL_BOUNDED_SCENARIO = "STRUCTURAL_BOUNDED_SCENARIO"
     PURE_SCENARIO = "PURE_SCENARIO"
+    ASSUMPTION_GROUNDED = "ASSUMPTION_GROUNDED"
     UNSUPPORTED = "UNSUPPORTED"
 
 
@@ -108,6 +109,7 @@ class ActionResponseSupport(FrozenModel):
             ResponseProvenance.OPERATOR_INDUSTRY: (EvidenceBasis.OPERATIONAL_RULE,),
             ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO: (EvidenceBasis.SCENARIO_ASSUMPTION,),
             ResponseProvenance.PURE_SCENARIO: (EvidenceBasis.SCENARIO_ASSUMPTION,),
+            ResponseProvenance.ASSUMPTION_GROUNDED: (EvidenceBasis.SCENARIO_ASSUMPTION,),
             ResponseProvenance.UNSUPPORTED: (EvidenceBasis.UNSUPPORTED,),
         }
         bases = mapping[value]

@@ -69,7 +69,7 @@ class Exp4Runner(BaseRunner):
             "FORMAL_RECOMMENDATION_AVAILABILITY": MetricObservation(
                 metric_id="FORMAL_RECOMMENDATION_AVAILABILITY", level=MetricLevel.DECISION, value=None,
                 unit="rate", support_status=SupportStatus.NOT_RUN,
-                metadata={"reason": "M4_MATERIAL_COVERAGE_UNFROZEN"},
+                metadata={"reason": "M4_MAPPING_AND_TAIL_GATED"},
             ),
             "E2E_P95_SECONDS": MetricObservation(
                 metric_id="E2E_P95_SECONDS", level=MetricLevel.SYSTEM, value=None,

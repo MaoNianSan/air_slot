@@ -39,7 +39,7 @@ def _write(path: Path, payload: dict[str, Any]) -> None:
 
 def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/m3_action_consequence_literature_mapping_v1").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/m3_action_consequence_literature_mapping_v2").resolve()
     mapping_path, action_path, evidence_path, design_path = (root / item for item in (MAPPING_PATH, ACTION_PATH, EVIDENCE_PATH, DESIGN_PATH))
     for path in (mapping_path, action_path, evidence_path, design_path):
         if not path.is_file():
@@ -62,7 +62,7 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
             raise RuntimeError(f"M3_CONSEQUENCE_MAPPING_REFERENCE_UNRESOLVED:{action_id}")
         if action_id not in response_ids:
             raise RuntimeError(f"M3_CONSEQUENCE_MAPPING_RESPONSE_MISSING:{action_id}")
-        rows.append({"action_id": action_id, **record, "response_registry_support": "EXECUTABLE_IDENTITY" if action_id == "A00" else "SCENARIO_ASSUMPTION", "effect_size_status": "IDENTIFIED" if action_id == "A00" else "NOT_IDENTIFIED"})
+        rows.append({"action_id": action_id, **record, "response_registry_support": "EXECUTABLE_IDENTITY" if action_id == "A00" else "EXECUTABLE_SCENARIO_ASSUMPTION", "effect_size_status": "IDENTIFIED" if action_id == "A00" else "ASSUMPTION_GROUNDED_NOT_EMPIRICAL"})
     payload = {
         "schema_version": "M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING_ARTIFACT_V1",
         "status": "M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING_MATERIALIZED",
@@ -77,14 +77,14 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
             "current_status": "SCHEMA_BOUND_BUT_AUTHORITATIVE_RANKING_BLOCKED",
             "requires": ["typed M2 component support", "versioned P(a) response parameters", "frozen M4 mapping", "no monetary overclaim"],
         },
-        "remaining_blockers": ["non-A00 effect magnitudes are not empirically identified", "M2 passenger components remain ABSTAIN", "M4 mapping is not frozen"],
+        "remaining_blockers": ["non-A00 effect magnitudes remain assumption-grounded mechanism responses with sensitivity bands, not empirical effects", "M2 passenger components are assumption-grounded, not empirical", "M4 mapping is not frozen"],
         "inputs": {"mapping_registry": {"path": MAPPING_PATH.as_posix(), "sha256": _hash(mapping_path)}, "action_registry": {"path": ACTION_PATH.as_posix(), "sha256": _hash(action_path)}, "evidence_registry": {"path": EVIDENCE_PATH.as_posix(), "sha256": _hash(evidence_path)}, "response_design": {"path": DESIGN_PATH.as_posix(), "sha256": _hash(design_path)}},
         "safety": SAFETY,
     }
     payload["artifact_hash"] = content_id(payload)
     artifact_path = output_root / "M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING.json"
     _write(artifact_path, payload)
-    manifest = {"schema_version": "M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING_MANIFEST_V1", "status": payload["status"], "artifact": str(artifact_path.resolve()), "artifact_hash": payload["artifact_hash"], "action_count": len(rows), "non_a00_effect_size_status": "NOT_IDENTIFIED", "safety": SAFETY}
+    manifest = {"schema_version": "M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING_MANIFEST_V1", "status": payload["status"], "artifact": str(artifact_path.resolve()), "artifact_hash": payload["artifact_hash"], "action_count": len(rows), "non_a00_effect_size_status": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL", "safety": SAFETY}
     manifest_path = output_root / "M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING_MANIFEST.json"
     _write(manifest_path, manifest)
     return {"artifact": artifact_path, "manifest": manifest_path}

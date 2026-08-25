@@ -38,6 +38,20 @@ class ResponseSensitivity(str, Enum):
     HIGH = "HIGH"
 
 
+class AssumptionGroundedBlock(FrozenModel):
+    """Path-B literature-parameterized mechanism response provenance (G2).
+
+    ``ASSUMPTION_GROUNDED`` marks a non-A00 response whose BASE parameters are
+    scenario values justified by a mechanism formula and literature; it never
+    upgrades the response to an empirical effect or FORMAL authority.
+    """
+
+    mechanism: str
+    formula: str
+    literature: tuple[str, ...]
+    sensitivity_band: dict[str, dict[str, float]]
+
+
 class ResponseScenarioAction(FrozenModel):
     template_id: str
     tier: str = ""
@@ -45,6 +59,7 @@ class ResponseScenarioAction(FrozenModel):
     response_provenance: str = "PURE_SCENARIO"
     response_model: str = "BERNOULLI_BETA"
     value: float | None = None
+    assumption_grounded: AssumptionGroundedBlock | None = None
 
     @model_validator(mode="after")
     def frozen_contract(self):
@@ -55,8 +70,15 @@ class ResponseScenarioAction(FrozenModel):
                 raise RegistryError("M3_RESPONSE_A00_DETERMINISTIC_REQUIRED")
         elif self.response_parameter_status not in {"FROZEN", "NOT_FROZEN"}:
             raise RegistryError("M3_RESPONSE_NON_A00_MUST_BE_FROZEN_OR_NOT_FROZEN")
+        if (
+            self.template_id != "A00"
+            and self.response_parameter_status == "FROZEN"
+            and self.assumption_grounded is None
+        ):
+            raise RegistryError("M3_RESPONSE_NON_A00_ASSUMPTION_BLOCK_REQUIRED")
         if self.response_provenance not in {
             "PURE_SCENARIO", "OPERATOR_INDUSTRY", "STRUCTURAL_BOUNDED_SCENARIO",
+            "ASSUMPTION_GROUNDED",
         }:
             raise RegistryError("M3_RESPONSE_INVALID_PROVENANCE")
         if self.response_model not in {"BERNOULLI_BETA", "DETERMINISTIC"}:
@@ -147,6 +169,11 @@ class ResponseScenarioRegistry(FrozenModel):
                 "success_probability_delta", "response_mean_delta",
             }:
                 raise RegistryError("M3_RESPONSE_SENSITIVITY_SPEC_INVALID")
+        for name, item in self.actions.items():
+            if name == "A00" or item.assumption_grounded is None:
+                continue
+            if item.assumption_grounded.sensitivity_band != self.sensitivity:
+                raise RegistryError("M3_RESPONSE_ASSUMPTION_BAND_MISMATCH")
         return self
 
     def validate_against_structural(self, structural: ActionRegistry) -> None:
@@ -209,6 +236,10 @@ class ResponseScenarioRegistry(FrozenModel):
             # gamma single source of truth (Round 2, spec 9.2): frozen registry
             # value; sensitivity never perturbs the principal frozen parameter.
             "induced_score_to_cu": float(self.induced_score_to_cu),
+            "assumption_grounded": (
+                action.assumption_grounded.model_dump(mode="json")
+                if action.assumption_grounded is not None else None
+            ),
         }
 
     def tier_for(self, template_id: str) -> str:

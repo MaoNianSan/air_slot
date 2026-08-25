@@ -1,0 +1,3 @@
+# Exp4D Development E2E Runtime Interpretation
+
+These repeats are an engineering adequacy (operational adequacy) diagnostic of the decision-node chain: PRE state load -> M1 scenario read (materialized offline) -> M2 consequence read (materialized offline) -> M3 action risk -> ranking -> output serialization. They are NOT scientific evidence: no novelty, no predictive performance, no causal/regret/optimal claim, no Final Test. The 300-second budget is the formal hard budget (roll = 5 minutes); 60/120 seconds are descriptive references only. M1 scenario generation and M2 consequence materialization are offline batch products of the frozen development chain and are excluded from the repeats; their reads are included.

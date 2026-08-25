@@ -14,8 +14,15 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from exp.exp2.tail_aware_brier import _event, _observed, _source_pairs
-from exp.m2_v2_current_stage_consequence_materialization import (
+from exp.common.metrics_v2 import variogram_score
+from exp.exp2.tail_aware_brier import _event, _observed, _point_index, _source_pairs
+from exp.exp2.tail_scores import (
+    Q_MAX_MINUTES,
+    build_node_target_distribution,
+    node_scalar_tail_scores,
+    pooled_tail_sigma,
+)
+from exp.workflows.m2_v2_current_stage_consequence_materialization import (
     M2_DESIGN,
     M2_REGISTRY,
     REFERENCE_FILES,
@@ -23,8 +30,14 @@ from exp.m2_v2_current_stage_consequence_materialization import (
     _compact,
     _m2_input,
     _node_airports,
+    load_assumption_freeze_id,
 )
-from model.M2.context import build_m2_context, build_m2_frozen_scope, load_data2_reference_bundle
+from model.M2.context import (
+    build_assumption_grounded_context,
+    build_m2_frozen_scope,
+    build_node_exposure_references,
+    load_data2_reference_bundle,
+)
 from model.M2.freeze import FrozenData2CUNormalizationRegistry, load_m2_registry
 from model.M2.mapper import M2Mapper
 from model.common.identity import content_id
@@ -34,6 +47,31 @@ SCENARIO_ROOT = Path("artifacts/experiments/exp2/full_development_scenarios_v1")
 INPUT_ROOT = Path("artifacts/experiment/full_development_inputs_v1")
 DEFAULT_OUTPUT = Path("artifacts/experiments/exp2/full_development_v1")
 VARIANTS = ("EXP2A_POINT", "EXP2A_MARGINAL", "EXP2A_JOINT")
+FIVE_ANCHOR_COMPONENTS = (
+    "F_continuity", "F_execution", "F_propagation", "P_time", "R_operating",
+)
+PENDING_MONETARY_COMPONENTS = ("P_itinerary", "P_service")
+EUR_MAPPING_REGISTRY = Path("registries/m4_eur_mapping_assumption_grounded_v1.json")
+
+# Fixed consequence schema: value columns are double (nullable) so that
+# all-ABSTAIN node batches (null columns) stay schema-consistent with
+# supported batches. Writer schema is pinned to this contract.
+CONSEQUENCE_SCHEMA = pa.schema([
+    pa.field("episode_id", pa.string()),
+    pa.field("decision_node_id", pa.string()),
+    pa.field("scenario_id", pa.int64()),
+    pa.field("scenario_weight", pa.float64()),
+    pa.field("components_json", pa.string()),
+    pa.field("channels_json", pa.string()),
+    pa.field("formal_five_component_value_cu", pa.float64()),
+    pa.field("formal_five_component_status", pa.string()),
+    pa.field("formal_five_component_reason", pa.string()),
+    pa.field("seven_component_value_cu", pa.float64()),
+    pa.field("seven_component_status", pa.string()),
+    pa.field("seven_component_reason", pa.string()),
+    pa.field("consequence_artifact_id", pa.string()),
+    pa.field("m1_scenario_seed_key", pa.string()),
+])
 SAFETY = {"FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": False, "DEVELOPMENT_TUNING": False}
 
 
@@ -61,6 +99,69 @@ def _require(condition: bool, code: str) -> None:
         raise RuntimeError(code)
 
 
+def _annotated_components_json(components: list[dict[str, Any]]) -> str:
+    """Serialize component rows with event-level NOT_ANCHORED monetary labels.
+
+    P_itinerary/P_service carry event counts (CU = events) but their per-event
+    monetary anchors are HUMAN_DECISION_REQUIRED (D2 decision 2026-08-24):
+    each such component row is annotated monetary=NOT_ANCHORED.
+    """
+    annotated = []
+    for item in components:
+        row = dict(item)
+        if row.get("component_id") in PENDING_MONETARY_COMPONENTS:
+            row["monetary_status"] = "NOT_ANCHORED"
+        annotated.append(row)
+    return json.dumps(annotated, sort_keys=True)
+
+
+def _ranking_metrics_entry() -> dict[str, Any]:
+    """M4_RANKING assumption-grounded 5-ANCHOR SUBSET contract (D2)."""
+    registry = json.loads(EUR_MAPPING_REGISTRY.read_text(encoding="utf-8"))
+    rates = {
+        item["component_id"]: {
+            band["band_id"]: band["per_cu_money"] for band in item["bands"]
+        }
+        for item in registry["ops_components"]
+    }
+    return {
+        "support_status": "ASSUMPTION_GROUNDED",
+        "reason": "FIVE_ANCHOR_SUBSET_RANKING_CONTRACT_READY_VALUE_MATERIALIZED_AT_FULL_CHAIN_EXECUTION",
+        "subset": "5-ANCHOR SUBSET",
+        "components": list(FIVE_ANCHOR_COMPONENTS),
+        "units": "constructed_EUR",
+        "registry": "registries/m4_eur_mapping_assumption_grounded_v1.json",
+        "registry_hash": registry["registry_hash"],
+        "base_rates_per_cu": {
+            component: rates[component]["BASE"] for component in FIVE_ANCHOR_COMPONENTS
+        },
+        "sensitivity_bands": {"LOW": 0.5, "BASE": 1.0, "HIGH": 2.0},
+        "semantics": "CONSTRUCTED_INTERNAL_LOSS_NOT_CAUSAL_NOT_REGRET_NOT_OPTIMAL",
+        "top1_level": "ASSUMPTION_GROUNDED",
+        "expost_level": "ASSUMPTION_GROUNDED",
+        "formal_recommendation_level": "ASSUMPTION_GROUNDED",
+        "excluded_components": list(PENDING_MONETARY_COMPONENTS),
+        "excluded_reason": "MONETARY_ANCHOR_HUMAN_DECISION_REQUIRED_EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED",
+    }
+
+
+def _interpretation_text() -> str:
+    return (
+        "# Exp2 Development Interpretation\n\n"
+        "Tail-aware event metrics evaluate point, marginal, and joint representations on supported nodes. "
+        "Scalar CRPS and twCRPS_tail follow the frozen T-A/T-B/T-C assumption-grounded dual scheme "
+        "(T-BASE point mass at q_max; T-PARAM GP with moment-estimated sigma, tail >= 30 samples): "
+        "they are not empirical tail calibration. Variogram uses finite-support terms only. "
+        "The M4_RANKING contract is the frozen five-anchor subset "
+        "(F_continuity/F_execution/F_propagation/P_time/R_operating) in constructed EUR "
+        "(EUROCONTROL 2004 EUR-basis anchor; LOW/BASE/HIGH = 0.5x/1.0x/2.0x); TOP1/EXPOST/FORMAL "
+        "recommendation levels are ASSUMPTION_GROUNDED and never claim causal/regret/optimal semantics. "
+        "P_itinerary and P_service event counts (n_pax x 1[D_TO >= tau]) are annotated "
+        "monetary=NOT_ANCHORED in the consequences parquet; their per-event monetary anchors remain "
+        "HUMAN_DECISION_REQUIRED and the complete seven-component monetary ranking stays NOT_RUN.\n"
+    )
+
+
 def _scenario_rows(batch: pa.RecordBatch) -> list[dict[str, Any]]:
     rows = batch.to_pylist()
     for row in rows:
@@ -86,6 +187,100 @@ def _calibration(rows: list[dict[str, Any]]) -> dict[str, Any]:
         gap += len(selected) / len(rows) * absolute
         bins.append({"bin": index, "count": len(selected), "forecast": forecast, "observed": observed, "gap": absolute})
     return {"fixed_bin_calibration_gap": None if not rows else gap, "bins": bins}
+
+
+def _episode_balanced_aggregate(rows, key, scheme=None):
+    by_episode: dict[str, list[float]] = defaultdict(list)
+    for row in rows:
+        value = row.get(key) if scheme is None else row.get("schemes", {}).get(scheme, {}).get(key)
+        if value is not None:
+            by_episode[row["episode_id"]].append(float(value))
+    return None if not by_episode else mean(mean(values) for values in by_episode.values())
+
+
+def _tail_scalar_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    by_target: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        by_target[row["target"]].append(row)
+    schemes: dict[str, Any] = {}
+    for scheme in ("T-BASE", "T-PARAM"):
+        per_target: dict[str, Any] = {}
+        for target, target_rows in sorted(by_target.items()):
+            available = [row for row in target_rows if scheme in row["schemes"]]
+            per_target[target] = {
+                "crps": _episode_balanced_aggregate(available, "crps", scheme),
+                "crps_finite": _episode_balanced_aggregate(available, "crps_finite", scheme),
+                "crps_tail": _episode_balanced_aggregate(available, "crps_tail", scheme),
+                "twcrps_tail": _episode_balanced_aggregate(available, "twcrps_tail", scheme),
+                "j_tail": _episode_balanced_aggregate(available, "j_tail", scheme),
+                "supported_nodes": len(available),
+                "supported_episodes": len({row["episode_id"] for row in available}),
+            }
+        schemes[scheme] = per_target
+    pit_values = [row["tail_pit"] for row in rows if row.get("tail_pit") is not None]
+    pooled_n = rows[0]["tail_pooled_n"] if rows else 0
+    pooled_enabled = rows[0]["tail_pooled_enabled"] if rows else False
+    return {
+        "support_status": "ASSUMPTION_GROUNDED",
+        "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_SCORES",
+        "targets": ["D_OB", "D_TX"],
+        "schemes": schemes,
+        "tail_pooled": {"n_tail_samples": pooled_n, "enabled": pooled_enabled},
+        "tail_pit_diagnostic": {
+            "count": len(pit_values),
+            "mean_pit": None if not pit_values else mean(pit_values),
+            "status": "DIAGNOSTIC_ONLY_NOT_A_GATE",
+        },
+        "claim": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL_TAIL_CALIBRATION",
+        "variants_of_record": ["EXP2A_POINT", "EXP2A_MARGINAL", "EXP2A_JOINT"],
+    }
+
+
+def _variogram_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    by_episode: dict[str, list[float]] = defaultdict(list)
+    for row in rows:
+        if row["value"] is not None:
+            by_episode[row["episode_id"]].append(float(row["value"]))
+    episode_means = [mean(values) for values in by_episode.values()]
+    return {
+        "value": None if not episode_means else mean(episode_means),
+        "support_status": "SUPPORTED_FINITE_TERMS_ONLY",
+        "scope": "FINITE_SUPPORT_PREDICTIVE_AND_OBSERVED_TERMS_ONLY",
+        "supported_nodes": len(rows),
+        "supported_episodes": len(by_episode),
+        "abstain_reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+    }
+
+
+def _build_manifest(
+    *, root: Path, input_manifest: dict[str, Any], scenario_manifest: dict[str, Any],
+    node_count: int, consequence_path: Path, metrics_path: Path, table_path: Path,
+    interpretation_path: Path, metrics_payload: dict[str, Any],
+) -> dict[str, Any]:
+    manifest = {
+        "schema_version": "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST_V1",
+        "status": metrics_payload["status"],
+        "dataset": "DATA2", "split": "DEVELOPMENT",
+        "episode_count": input_manifest["episode_count"], "node_count": node_count,
+        "frozen_hashes": {
+            **scenario_manifest["frozen_hashes"],
+            "cohort_hash": scenario_manifest["cohort_hash"],
+            "scenario_hash": scenario_manifest["artifact_hash"],
+            "mapping_hash": _sha(root / EUR_MAPPING_REGISTRY),
+            "mapping_registry": str(EUR_MAPPING_REGISTRY).replace("\\", "/"),
+        },
+        "consequence_annotation": "P_ITINERARY_P_SERVICE_EVENT_COUNTS_MONETARY_NOT_ANCHORED",
+        "outputs": {
+            "consequences": str(consequence_path.relative_to(root)).replace("\\", "/"),
+            "metrics": str(metrics_path.relative_to(root)).replace("\\", "/"),
+            "table": str(table_path.relative_to(root)).replace("\\", "/"),
+            "interpretation": str(interpretation_path.relative_to(root)).replace("\\", "/"),
+        },
+        "artifact_hashes": {"consequences": _sha(consequence_path), "metrics": metrics_payload["artifact_hash"]},
+        "safety": dict(SAFETY),
+    }
+    manifest["artifact_hash"] = content_id(manifest)
+    return manifest
 
 
 def run(
@@ -127,6 +322,15 @@ def run(
     for row in labels["labels"]:
         labels_by_node[row["decision_node_id"]].append(row)
 
+    tail_excesses: dict[str, list[float]] = {target: [] for target in ("D_OB", "D_TX")}
+    for row in labels["labels"]:
+        if row["target_name"] not in tail_excesses or row["exact_minutes"] is None:
+            continue
+        raw = float(row["exact_minutes"])
+        if raw >= Q_MAX_MINUTES[row["target_name"]]:
+            tail_excesses[row["target_name"]].append(raw - Q_MAX_MINUTES[row["target_name"]])
+    pooled_tails = {target: pooled_tail_sigma(values) for target, values in tail_excesses.items()}
+
     consequence_path = output_root / "M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet"
     temporary = consequence_path.with_suffix(".parquet.tmp")
     output_root.mkdir(parents=True, exist_ok=True)
@@ -135,6 +339,8 @@ def run(
     formal_status: Counter[str] = Counter()
     seven_status: Counter[str] = Counter()
     brier_rows: dict[str, list[dict[str, Any]]] = {variant: [] for variant in VARIANTS}
+    crps_rows: dict[str, list[dict[str, Any]]] = {variant: [] for variant in VARIANTS}
+    variogram_rows: list[dict[str, Any]] = []
     node_count = 0
     row_count = 0
     reference_lineage = tuple(bundle.reference_ids.values())
@@ -146,7 +352,15 @@ def run(
             node_ids = {row["decision_node_id"] for row in source_rows}
             _require(len(source_rows) == per_node and len(node_ids) == 1, "EXP2_GLOBAL_SCENARIO_NODE_BATCH_INVALID")
             node_id = next(iter(node_ids))
-            context = build_m2_context(bundle, airports[node_id])
+            airport_keys = airports[node_id]
+            context = build_assumption_grounded_context(
+                bundle,
+                airport_keys,
+                node_specific_exposure=build_node_exposure_references(
+                    bundle, airport_keys
+                ).airport,
+                assumption_freeze_id=load_assumption_freeze_id(root),
+            )
             mapped = mapper.map_m1_scenarios(
                 tuple(_m2_input(row, reference_lineage) for row in source_rows), context,
             )
@@ -162,7 +376,7 @@ def run(
                     "decision_node_id": compact["decision_node_id"],
                     "scenario_id": compact["scenario_id"],
                     "scenario_weight": compact["scenario_weight"],
-                    "components_json": json.dumps(compact["components"], sort_keys=True),
+                    "components_json": _annotated_components_json(compact["components"]),
                     "channels_json": json.dumps(compact["channels"], sort_keys=True),
                     "formal_five_component_value_cu": compact["formal_five_component_value_cu"],
                     "formal_five_component_status": compact["formal_five_component_status"],
@@ -173,9 +387,9 @@ def run(
                     "consequence_artifact_id": compact["consequence_artifact_id"],
                     "m1_scenario_seed_key": compact["m1_scenario_seed_key"],
                 })
-            table = pa.Table.from_pylist(parquet_rows)
+            table = pa.Table.from_pylist(parquet_rows).cast(CONSEQUENCE_SCHEMA)
             if writer is None:
-                writer = pq.ParquetWriter(temporary, table.schema, compression="zstd")
+                writer = pq.ParquetWriter(temporary, CONSEQUENCE_SCHEMA, compression="zstd")
             writer.write_table(table)
 
             observed = _observed(labels_by_node.get(node_id, []))
@@ -191,6 +405,63 @@ def run(
                         "observed_event": observed,
                         "brier": (probability - float(observed)) ** 2,
                     })
+            label_map = {row["target_name"]: row for row in labels_by_node.get(node_id, [])}
+            for variant in VARIANTS:
+                selected = source_rows if variant != "EXP2A_POINT" else [source_rows[_point_index(source_rows)]]
+                for target in ("D_OB", "D_TX"):
+                    envelopes = [
+                        next(item for item in row["target_envelopes"] if item["target_name"] == target)
+                        for row in selected
+                    ]
+                    observed_row = label_map.get(target)
+                    observation = None if observed_row is None else observed_row.get("exact_minutes")
+                    distribution = build_node_target_distribution(
+                        envelopes, target=target, q_max=Q_MAX_MINUTES[target],
+                    )
+                    scores = node_scalar_tail_scores(
+                        distribution, observation=observation, pooled=pooled_tails[target],
+                    )
+                    if scores is not None:
+                        crps_rows[variant].append({
+                            "episode_id": source_rows[0]["episode_id"],
+                            "decision_node_id": node_id,
+                            "target": target,
+                            **scores,
+                        })
+            finite_draws = []
+            for row in source_rows:
+                envs = {item["target_name"]: item for item in row["target_envelopes"]}
+                ob_env, tx_env = envs.get("D_OB"), envs.get("D_TX")
+                if (
+                    ob_env is not None and tx_env is not None
+                    and ob_env.get("class_id") != "OVERFLOW_TAIL"
+                    and tx_env.get("class_id") != "OVERFLOW_TAIL"
+                    and ob_env.get("scalar_minutes") is not None
+                    and tx_env.get("scalar_minutes") is not None
+                ):
+                    finite_draws.append({
+                        "D_OB": float(ob_env["scalar_minutes"]),
+                        "D_TX": float(tx_env["scalar_minutes"]),
+                    })
+            ob_observed = label_map.get("D_OB")
+            tx_observed = label_map.get("D_TX")
+            ob_value = None if ob_observed is None else ob_observed.get("exact_minutes")
+            tx_value = None if tx_observed is None else tx_observed.get("exact_minutes")
+            if (
+                finite_draws and ob_value is not None and tx_value is not None
+                and float(ob_value) < Q_MAX_MINUTES["D_OB"]
+                and float(tx_value) < Q_MAX_MINUTES["D_TX"]
+            ):
+                variogram_value = variogram_score(
+                    finite_draws, {"D_OB": float(ob_value), "D_TX": float(tx_value)},
+                )
+            else:
+                variogram_value = None
+            variogram_rows.append({
+                "episode_id": source_rows[0]["episode_id"],
+                "decision_node_id": node_id,
+                "value": variogram_value,
+            })
             node_count += 1
             row_count += len(parquet_rows)
     finally:
@@ -205,20 +476,21 @@ def run(
         for row in rows:
             by_episode[row["episode_id"]].append(float(row["brier"]))
         episode_means = [mean(values) for values in by_episode.values()]
+        variogram = _variogram_metrics(variogram_rows)
         metrics[variant] = {
             "tail_aware_brier": None if not episode_means else mean(episode_means),
             "supported_node_count": len(rows),
             "abstain_node_count": node_count - len(rows),
             "supported_episode_count": len(by_episode),
             "calibration": _calibration(rows),
-            "state_crps": {"value": None, "support_status": "NOT_RUN", "reason": "OVERFLOW_CLASS_HAS_NO_SCALAR_MAGNITUDE"},
-            "variogram_score": {"value": None, "support_status": "NOT_RUN", "reason": "OVERFLOW_CLASS_HAS_NO_SCALAR_MAGNITUDE"},
+            "state_crps": _tail_scalar_metrics(crps_rows[variant]),
+            "variogram_score": variogram,
         }
     metrics.update({
         "EXP2B_SCALAR": {"support_status": "NOT_RUN", "reason": "SEVEN_COMPONENT_AGGREGATE_UNRESOLVED"},
         "EXP2B_3CHANNEL": {"support_status": "NOT_RUN", "reason": "PASSENGER_CHANNEL_INCOMPLETE"},
         "EXP2B_7COMP": {"support_status": "PARTIAL", "reason": "TYPED_VECTOR_READY_WITH_P_ITINERARY_AND_P_SERVICE_ABSTAIN"},
-        "RMB_RISK": {"support_status": "NOT_RUN", "reason": "COMPLETE_SEVEN_COMPONENT_SCALAR_AND_TAIL_MAGNITUDE_UNAVAILABLE"},
+        "M4_RANKING": _ranking_metrics_entry(),
     })
     metrics_payload = {
         "schema_version": "EXP2_FULL_DEVELOPMENT_METRICS_V1",
@@ -246,33 +518,13 @@ def run(
                 "abstain_nodes": row["abstain_node_count"],
             })
     interpretation_path = output_root / "EXP2_FULL_DEVELOPMENT_INTERPRETATION.md"
-    interpretation_path.write_text(
-        "# Exp2 Development Interpretation\n\n"
-        "Tail-aware event metrics evaluate point, marginal, and joint representations on supported nodes. "
-        "Scalar CRPS, complete RMB risk, and authoritative ranking remain NOT_RUN because the explicit overflow class has no scalar magnitude and the two passenger components remain ABSTAIN.\n",
-        encoding="utf-8",
+    interpretation_path.write_text(_interpretation_text(), encoding="utf-8")
+    manifest = _build_manifest(
+        root=root, input_manifest=input_manifest, scenario_manifest=scenario_manifest,
+        node_count=node_count, consequence_path=consequence_path,
+        metrics_path=metrics_path, table_path=table_path,
+        interpretation_path=interpretation_path, metrics_payload=metrics_payload,
     )
-    manifest = {
-        "schema_version": "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST_V1",
-        "status": metrics_payload["status"],
-        "dataset": "DATA2", "split": "DEVELOPMENT",
-        "episode_count": input_manifest["episode_count"], "node_count": node_count,
-        "frozen_hashes": {
-            **scenario_manifest["frozen_hashes"],
-            "cohort_hash": scenario_manifest["cohort_hash"],
-            "scenario_hash": scenario_manifest["artifact_hash"],
-            "mapping_hash": _load(root / "registries/m4_v2_monetary_mapping_design.json")["artifact_hash"],
-        },
-        "outputs": {
-            "consequences": str(consequence_path.relative_to(root)).replace("\\", "/"),
-            "metrics": str(metrics_path.relative_to(root)).replace("\\", "/"),
-            "table": str(table_path.relative_to(root)).replace("\\", "/"),
-            "interpretation": str(interpretation_path.relative_to(root)).replace("\\", "/"),
-        },
-        "artifact_hashes": {"consequences": _sha(consequence_path), "metrics": metrics_payload["artifact_hash"]},
-        "safety": dict(SAFETY),
-    }
-    manifest["artifact_hash"] = content_id(manifest)
     manifest_path = output_root / "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json"
     _write(manifest_path, manifest)
     return {
@@ -282,15 +534,117 @@ def run(
     }
 
 
+def annotate_consequences_monetary_status(consequence_path: Path) -> None:
+    """Annotate P_itinerary/P_service rows with monetary=NOT_ANCHORED (D2).
+
+    Idempotent display-only pass over the frozen consequences parquet: numeric
+    values, consequence_artifact_id and all other columns are preserved; only
+    the JSON components annotation gains the monetary-status label for the two
+    HUMAN_DECISION_REQUIRED passenger components.
+    """
+    source = Path(consequence_path)
+    _require(source.is_file(), "EXP2_ANNOTATE_CONSEQUENCES_MISSING")
+    temporary = source.with_name(source.name + ".annotated.tmp")
+    reader = pq.ParquetFile(source)
+    writer = pq.ParquetWriter(temporary, CONSEQUENCE_SCHEMA, compression="zstd")
+    total = 0
+    annotated_rows = 0
+    checked_rows = 0
+    try:
+        for row_group in range(reader.num_row_groups):
+            rows = reader.read_row_group(row_group).to_pylist()
+            updated = []
+            for row in rows:
+                components = json.loads(row["components_json"])
+                component_ids = {item.get("component_id") for item in components}
+                _require(
+                    component_ids.issuperset(PENDING_MONETARY_COMPONENTS),
+                    "EXP2_ANNOTATE_PENDING_COMPONENT_MISSING",
+                )
+                checked_rows += 1
+                changed = False
+                for item in components:
+                    if item.get("component_id") in PENDING_MONETARY_COMPONENTS and "monetary_status" not in item:
+                        item["monetary_status"] = "NOT_ANCHORED"
+                        changed = True
+                if changed:
+                    row["components_json"] = json.dumps(components, sort_keys=True)
+                    annotated_rows += 1
+                updated.append(row)
+            writer.write_table(pa.Table.from_pylist(updated).cast(CONSEQUENCE_SCHEMA))
+            total += len(updated)
+    finally:
+        writer.close()
+        reader.close()
+    _require(total == reader.metadata.num_rows, "EXP2_ANNOTATE_ROW_COUNT_DRIFT")
+    _require(checked_rows == total, "EXP2_ANNOTATE_MISSING_PENDING_COMPONENTS")
+    temporary.replace(source)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scenario-root", type=Path)
     parser.add_argument("--input-root", type=Path)
     parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--finalize-only", action="store_true")
+    parser.add_argument("--annotate-only", action="store_true")
     args = parser.parse_args(argv)
+    root = Path(__file__).resolve().parents[2]
+    scenario_root = (args.scenario_root or root / SCENARIO_ROOT).resolve()
+    input_root = (args.input_root or root / INPUT_ROOT).resolve()
+    output_root = (args.output_root or root / DEFAULT_OUTPUT).resolve()
+    if args.finalize_only:
+        scenario_manifest = _load(scenario_root / "M1_V2_FULL_DEVELOPMENT_TYPED_SCENARIO_MANIFEST.json")
+        input_manifest = _load(input_root / "FULL_DEVELOPMENT_INPUT_MANIFEST.json")
+        metrics_path = output_root / "EXP2_FULL_DEVELOPMENT_METRICS.json"
+        consequence_path = output_root / "M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet"
+        table_path = output_root / "EXP2_FULL_DEVELOPMENT_TABLE.csv"
+        interpretation_path = output_root / "EXP2_FULL_DEVELOPMENT_INTERPRETATION.md"
+        metrics_payload = _load(metrics_path)
+        manifest = _build_manifest(
+            root=root, input_manifest=input_manifest, scenario_manifest=scenario_manifest,
+            node_count=scenario_manifest["node_count"], consequence_path=consequence_path,
+            metrics_path=metrics_path, table_path=table_path,
+            interpretation_path=interpretation_path, metrics_payload=metrics_payload,
+        )
+        manifest_path = output_root / "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json"
+        _write(manifest_path, manifest)
+        print(json.dumps({"status": "EXP2_FULL_DEVELOPMENT_FINALIZED", "manifest": str(manifest_path)}, sort_keys=True))
+        return 0
+    if args.annotate_only:
+        consequence_path = output_root / "M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet"
+        metrics_path = output_root / "EXP2_FULL_DEVELOPMENT_METRICS.json"
+        table_path = output_root / "EXP2_FULL_DEVELOPMENT_TABLE.csv"
+        interpretation_path = output_root / "EXP2_FULL_DEVELOPMENT_INTERPRETATION.md"
+        manifest_path = output_root / "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json"
+        _require(all(path.is_file() for path in (consequence_path, metrics_path, interpretation_path, manifest_path)), "EXP2_ANNOTATE_INPUT_MISSING")
+        annotate_consequences_monetary_status(consequence_path)
+        metrics_payload = _load(metrics_path)
+        metrics = metrics_payload["metrics"]
+        if "RMB_RISK" in metrics:
+            del metrics["RMB_RISK"]
+        metrics["M4_RANKING"] = _ranking_metrics_entry()
+        metrics_payload["artifact_hash"] = content_id(metrics_payload)
+        _write(metrics_path, metrics_payload)
+        interpretation_path.write_text(_interpretation_text(), encoding="utf-8")
+        scenario_manifest = _load(scenario_root / "M1_V2_FULL_DEVELOPMENT_TYPED_SCENARIO_MANIFEST.json")
+        input_manifest = _load(input_root / "FULL_DEVELOPMENT_INPUT_MANIFEST.json")
+        manifest = _build_manifest(
+            root=root, input_manifest=input_manifest, scenario_manifest=scenario_manifest,
+            node_count=scenario_manifest["node_count"], consequence_path=consequence_path,
+            metrics_path=metrics_path, table_path=table_path,
+            interpretation_path=interpretation_path, metrics_payload=metrics_payload,
+        )
+        _write(manifest_path, manifest)
+        print(json.dumps({
+            "status": "EXP2_FULL_DEVELOPMENT_ANNOTATED",
+            "consequences_hash": _sha(consequence_path),
+            "manifest": str(manifest_path),
+        }, sort_keys=True))
+        return 0
     run(
-        root=Path(__file__).resolve().parents[2], scenario_root=args.scenario_root,
-        input_root=args.input_root, output_root=args.output_root,
+        root=root, scenario_root=scenario_root,
+        input_root=input_root, output_root=output_root,
     )
     print("EXP2_FULL_DEVELOPMENT_COMPLETE")
     return 0

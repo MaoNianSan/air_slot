@@ -37,6 +37,7 @@ def _interpretation_class(candidate) -> str:
         ResponseProvenance.STRUCTURAL_BOUNDED_SCENARIO: "STRUCTURAL_SCENARIO",
         ResponseProvenance.OPERATOR_INDUSTRY: "OPERATIONAL_RULE",
         ResponseProvenance.EMPIRICAL_ACTION_LOG: "EMPIRICALLY_ANCHORED",
+        ResponseProvenance.ASSUMPTION_GROUNDED: "ASSUMPTION_GROUNDED",
         ResponseProvenance.UNSUPPORTED: "UNSUPPORTED",
     }
     return mapping.get(getattr(candidate, "response_provenance", None), "NOT_DECLARED")

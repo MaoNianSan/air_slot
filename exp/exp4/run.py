@@ -15,6 +15,10 @@ from exp.common.official_execution import (
     require_files,
 )
 from exp.exp4.global_development import run as run_global_development
+from exp.reporting.output_contract import (
+    validate_artifacts,
+    write_from_global_metrics,
+)
 from model.common.errors import ContractError
 
 
@@ -59,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run Exp4 Data2 baselines and Data1 bounded smoke.")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--finalize-output", action="store_true")
     parser.add_argument("--input-root", type=Path)
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
@@ -67,18 +72,41 @@ def main(argv: list[str] | None = None) -> int:
     input_root = require_active_path((args.input_root or root / INPUT_ROOT), root)
     output_root = require_active_path((args.output_root or root / OUTPUT_ROOT), root)
     if args.check:
+        if (output_root / "exp4_summary.json").is_file():
+            output_contract_state = validate_artifacts("EXP4", output_root)
+        else:
+            output_contract_state = "NOT_RUN"
         print(json.dumps({
             "status": "EXP4_OFFICIAL_PREFLIGHT_PASS",
             "frozen_hashes": frozen.as_dict(),
             "data2_role": "MAIN_DEVELOPMENT_EVALUATION",
             "data1_role": "BOUNDED_GENERALIZATION_SMOKE_ONLY",
+            "output_contract": output_contract_state,
             "FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": False,
         }, sort_keys=True))
+        return 0
+    if args.finalize_output:
+        _validate_existing(root, output_root)
+        write_from_global_metrics(
+            experiment_id="EXP4", output_root=output_root,
+            metrics_path=output_root / "EXP4_FULL_DEVELOPMENT_METRICS.json",
+            frozen_hashes=frozen.as_dict(), root=root,
+            scenario_count=250,
+        )
+        state = _validate_existing(root, output_root)
+        state["output_contract"] = validate_artifacts("EXP4", output_root)
+        print(json.dumps(state, sort_keys=True))
         return 0
     if args.resume and (output_root / "EXP4_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json").is_file():
         print(json.dumps(_validate_existing(root, output_root), sort_keys=True))
         return 0
     run_global_development(root=root, input_root=input_root, output_root=output_root)
+    write_from_global_metrics(
+        experiment_id="EXP4", output_root=output_root,
+        metrics_path=output_root / "EXP4_FULL_DEVELOPMENT_METRICS.json",
+        frozen_hashes=frozen.as_dict(), root=root,
+        scenario_count=250,
+    )
     print(json.dumps(_validate_existing(root, output_root), sort_keys=True))
     return 0
 

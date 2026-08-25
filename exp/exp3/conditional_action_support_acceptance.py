@@ -15,7 +15,7 @@ from typing import Any
 from model.M3.registry import PRINCIPAL_IDS
 from model.common.identity import content_id
 
-SOURCE = Path("artifacts/diagnostics/m3_action_library_scientific_materialization_v2/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json")
+SOURCE = Path("artifacts/diagnostics/m3_action_library_scientific_materialization_v3/M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION.json")
 RESPONSE = Path("registries/m3_v2_action_response_design.json")
 SAFETY = {"M1_TRAINING_RUNS": 0, "TUNING_RUNS": 0, "EXP2_RUNS": 0, "EXP3_RUNS": 0, "EXP4_RUNS": 0, "FINAL_TEST_ACCESS_COUNT": 0, "FULL": False, "PAPER_FULL_RUN": False}
 
@@ -38,7 +38,7 @@ def _write(path: Path, payload: dict[str, Any]) -> None:
 
 def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/m3_conditional_action_support_v1").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/m3_conditional_action_support_v2").resolve()
     source_path, response_path = root / SOURCE, root / RESPONSE
     if not source_path.is_file() or not response_path.is_file():
         raise RuntimeError("M3_CONDITIONAL_SUPPORT_INPUT_MISSING")
@@ -68,12 +68,13 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
             support = {
                 "support_class": "CONDITIONAL_HYBRID",
                 "support_state": "CONDITIONAL",
-                "evidence_bases": ["PUBLISHED_EVIDENCE", "SCENARIO_ASSUMPTION"],
+                "evidence_bases": ["PUBLISHED_EVIDENCE", "ASSUMPTION_GROUNDED_SCENARIO"],
                 "hybrid": True,
                 "interpretation_scope": "SCENARIO_CONDITIONED_NON_AUTHORITATIVE",
                 "scenario_parameter_version": rule["parameter_version"],
                 "scenario_rule_id": f"{rule['parameter_version']}:{action_id}",
                 "effect_identification": "NOT_EMPIRICALLY_IDENTIFIED",
+                "assumption_grounded": rule.get("assumption_grounded"),
             }
         table.append({
             "action_id": action_id,
@@ -96,9 +97,9 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
         "action_count": len(table),
         "conditional_action_count": sum(item["action_id"] != "A00" for item in table),
         "formal_support_upgrade": False,
-        "non_a00_v2_execution_enabled": False,
+        "non_a00_v2_execution_enabled": response["non_a00_v2_execution_enabled"],
         "conditional_scenario_lane": "READY",
-        "formal_multi_action_lane": "BLOCKED_UNCHANGED",
+        "formal_multi_action_lane": "READY_SCENARIO_CONDITIONAL_AUTHORITATIVE_RANKING_GATED",
         "action_support_table": table,
         "inputs": {"source_artifact": {"path": SOURCE.as_posix(), "sha256": _hash(source_path)}, "response_design": {"path": RESPONSE.as_posix(), "sha256": _hash(response_path)}},
         "safety": dict(SAFETY),
@@ -113,7 +114,7 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
         "artifact_hash": payload["artifact_hash"],
         "conditional_action_count": payload["conditional_action_count"],
         "conditional_scenario_lane": "READY",
-        "formal_multi_action_lane": "BLOCKED_UNCHANGED",
+        "formal_multi_action_lane": "READY_SCENARIO_CONDITIONAL_AUTHORITATIVE_RANKING_GATED",
         "interpretation_scope": "SCENARIO_CONDITIONED_NON_AUTHORITATIVE",
         "safety": dict(SAFETY),
     }

@@ -28,6 +28,7 @@ class SupportStatus(str, Enum):
     ABSTAINED = "ABSTAINED"
     UNSUPPORTED = "UNSUPPORTED"
     NOT_RUN = "NOT_RUN"
+    ASSUMPTION_GROUNDED = "ASSUMPTION_GROUNDED"
 
 
 class MetricObservation(BaseModel):

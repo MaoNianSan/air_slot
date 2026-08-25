@@ -37,6 +37,7 @@ class RiskPolicyStatus(str, Enum):
 class TailSupportState(str, Enum):
     SUPPORTED = "SUPPORTED"
     UNRESOLVED = "UNRESOLVED"
+    FROZEN_ASSUMPTION_GROUNDED = "FROZEN_ASSUMPTION_GROUNDED"
 
 
 class RiskEvaluationSupport(str, Enum):

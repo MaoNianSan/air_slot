@@ -1,33 +1,1943 @@
 {
-  "schema_version": "M3_ACTION_RESPONSE_DESIGN_V2",
-  "registry_id": "M3_ACTION_RESPONSE_DESIGN_V2",
   "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
-  "legacy_response_registry_hash": "sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0",
+  "action_set_frozen": {
+    "coverage": {
+      "AIRCRAFT_SWAP": "EXECUTABLE",
+      "CREW_SWAP": "EXECUTABLE",
+      "HOLD": "EXECUTABLE",
+      "NETWORK_EXTREME": "EXECUTABLE",
+      "PASSENGER_REASSIGNMENT": "EXECUTABLE",
+      "PROPAGATION_BUFFER": "EXECUTABLE"
+    },
+    "criteria": [
+      "COVERAGE",
+      "ORTHOGONALITY",
+      "INTERPRETABILITY"
+    ],
+    "family_map": {
+      "AIRCRAFT_SWAP": [
+        "A41",
+        "A42",
+        "A43",
+        "A51",
+        "A52",
+        "A53",
+        "A54",
+        "A55"
+      ],
+      "CREW_SWAP": [
+        "A61",
+        "A62",
+        "A63",
+        "A64"
+      ],
+      "HOLD": [
+        "A21",
+        "A22",
+        "A23"
+      ],
+      "NETWORK_EXTREME": [
+        "A71",
+        "A72"
+      ],
+      "PASSENGER_REASSIGNMENT": [
+        "A11",
+        "A31",
+        "A32",
+        "A33"
+      ],
+      "PROPAGATION_BUFFER": [
+        "A13"
+      ]
+    },
+    "formal_lane": "A00_ONLY",
+    "freeze_id": "sha256:f15cc4ff1e35524241c650dbbb8666d71f0e4b6e3d7e77b76e8824e7cd0dc48a",
+    "interpretability": {
+      "missing_action_ids": [],
+      "status": "PASS"
+    },
+    "orthogonality": {
+      "family_orthogonality": {
+        "family_support_sets": {
+          "AIRCRAFT_SWAP": [
+            "F_continuity",
+            "F_execution",
+            "F_propagation",
+            "R_operating"
+          ],
+          "CREW_SWAP": [
+            "F_execution",
+            "F_propagation",
+            "P_time",
+            "R_operating"
+          ],
+          "HOLD": [
+            "F_continuity",
+            "F_execution",
+            "F_propagation",
+            "P_time",
+            "R_operating"
+          ],
+          "NETWORK_EXTREME": [
+            "F_continuity",
+            "F_propagation",
+            "P_itinerary",
+            "P_service",
+            "P_time",
+            "R_operating"
+          ],
+          "PASSENGER_REASSIGNMENT": [
+            "F_execution",
+            "P_itinerary",
+            "P_service",
+            "P_time",
+            "R_operating"
+          ],
+          "PROPAGATION_BUFFER": [
+            "F_propagation",
+            "R_operating"
+          ]
+        },
+        "pairwise": [
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "AIRCRAFT_SWAP",
+            "family_b": "CREW_SWAP",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_A_STRICT_SUBSET",
+            "family_a": "AIRCRAFT_SWAP",
+            "family_b": "HOLD",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "AIRCRAFT_SWAP",
+            "superset_family": "HOLD",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "AIRCRAFT_SWAP",
+            "family_b": "NETWORK_EXTREME",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_continuity",
+              "F_propagation",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "AIRCRAFT_SWAP",
+            "family_b": "PASSENGER_REASSIGNMENT",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_execution",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "AIRCRAFT_SWAP",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "AIRCRAFT_SWAP",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_A_STRICT_SUBSET",
+            "family_a": "CREW_SWAP",
+            "family_b": "HOLD",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "CREW_SWAP",
+            "superset_family": "HOLD",
+            "support_a": [
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "CREW_SWAP",
+            "family_b": "NETWORK_EXTREME",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_continuity",
+              "F_propagation",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "CREW_SWAP",
+            "family_b": "PASSENGER_REASSIGNMENT",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_execution",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "CREW_SWAP",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "CREW_SWAP",
+            "support_a": [
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "HOLD",
+            "family_b": "NETWORK_EXTREME",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_continuity",
+              "F_propagation",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "HOLD",
+            "family_b": "PASSENGER_REASSIGNMENT",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_execution",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "HOLD",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "HOLD",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "NETWORK_EXTREME",
+            "family_b": "PASSENGER_REASSIGNMENT",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_continuity",
+              "F_propagation",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_execution",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "NETWORK_EXTREME",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "NETWORK_EXTREME",
+            "support_a": [
+              "F_continuity",
+              "F_propagation",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "MUTUALLY_NON_CONTAINED",
+            "family_a": "PASSENGER_REASSIGNMENT",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "MUTUALLY_NON_CONTAINED; neither family support set contains the other",
+            "support_a": [
+              "F_execution",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          }
+        ],
+        "schema_version": "M3_ACTION_FAMILY_ORTHOGONALITY_V1",
+        "status": "NESTED_SUPPORT_DOCUMENTED",
+        "violating_pairs": [
+          {
+            "containment": "FAMILY_A_STRICT_SUBSET",
+            "family_a": "AIRCRAFT_SWAP",
+            "family_b": "HOLD",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "AIRCRAFT_SWAP",
+            "superset_family": "HOLD",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "AIRCRAFT_SWAP",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "AIRCRAFT_SWAP",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_A_STRICT_SUBSET",
+            "family_a": "CREW_SWAP",
+            "family_b": "HOLD",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "CREW_SWAP",
+            "superset_family": "HOLD",
+            "support_a": [
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "CREW_SWAP",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "CREW_SWAP",
+            "support_a": [
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "HOLD",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "HOLD",
+            "support_a": [
+              "F_continuity",
+              "F_execution",
+              "F_propagation",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          },
+          {
+            "containment": "FAMILY_B_STRICT_SUBSET",
+            "family_a": "NETWORK_EXTREME",
+            "family_b": "PROPAGATION_BUFFER",
+            "reason": "FAMILY_LEVEL_NESTED_SUPPORT; family-level mutual non-containment does not hold for this pair; documented for human review, no silent drop",
+            "subset_family": "PROPAGATION_BUFFER",
+            "superset_family": "NETWORK_EXTREME",
+            "support_a": [
+              "F_continuity",
+              "F_propagation",
+              "P_itinerary",
+              "P_service",
+              "P_time",
+              "R_operating"
+            ],
+            "support_b": [
+              "F_propagation",
+              "R_operating"
+            ]
+          }
+        ]
+      },
+      "identical_support_pairs": [
+        {
+          "action_a": "A41",
+          "action_b": "A42",
+          "family": "AIRCRAFT_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A41",
+          "action_b": "A43",
+          "family": "AIRCRAFT_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A42",
+          "action_b": "A43",
+          "family": "AIRCRAFT_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A51",
+          "action_b": "A53",
+          "family": "AIRCRAFT_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A51",
+          "action_b": "A54",
+          "family": "AIRCRAFT_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A52",
+          "action_b": "A55",
+          "family": "AIRCRAFT_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A53",
+          "action_b": "A54",
+          "family": "AIRCRAFT_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A61",
+          "action_b": "A62",
+          "family": "CREW_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A63",
+          "action_b": "A64",
+          "family": "CREW_SWAP",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A22",
+          "action_b": "A23",
+          "family": "HOLD",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "HOLD_OR_WAIT_DELAY_ABSORPTION",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "action_a": "A71",
+          "action_b": "A72",
+          "family": "NETWORK_EXTREME",
+          "reason": "IDENTICAL_SUPPORT_AND_MECHANISM; registry distinguishes the pair only by action_id/parameterization; retained for human review of the parameterization difference; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        }
+      ],
+      "schema_version": "M3_ACTION_SET_ORTHOGONALITY_CHECK_V1",
+      "true_subset_pairs": [
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A41",
+          "superset": "A51",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A41",
+          "superset": "A53",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A41",
+          "superset": "A54",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A42",
+          "superset": "A51",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A42",
+          "superset": "A53",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A42",
+          "superset": "A54",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A43",
+          "superset": "A51",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A43",
+          "superset": "A53",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A43",
+          "superset": "A54",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A52",
+          "superset": "A51",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A55",
+          "superset": "A51",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A52",
+          "superset": "A53",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A52",
+          "superset": "A54",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A55",
+          "superset": "A53",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "AIRCRAFT_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A55",
+          "superset": "A54",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "CREW_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A61",
+          "superset": "A63",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "CREW_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A61",
+          "superset": "A64",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "CREW_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A62",
+          "superset": "A63",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "CREW_SWAP",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+          "subset": "A62",
+          "superset": "A64",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        },
+        {
+          "family": "PASSENGER_REASSIGNMENT",
+          "reason": "TRUE_SUBSET_SUPPORT; variant parameterization differs by registry action_id; retained and documented, no silent deduplication; not evidence for action-level orthogonality",
+          "retained": true,
+          "shared_mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+          "subset": "A33",
+          "superset": "A31",
+          "variant_label": "PARAMETRIC_VARIANTS_SAME_MECHANISM"
+        }
+      ],
+      "unmapped_actions": []
+    },
+    "safety": {
+      "EXP2_RUNS": 0,
+      "EXP3_RUNS": 0,
+      "FINAL_TEST_ACCESS_COUNT": 0,
+      "FULL": false,
+      "M1_TRAINING_RUNS": 0,
+      "PAPER_FULL_RUN": false,
+      "TUNING_RUNS": 0
+    },
+    "scenario_conditional_lane": "ALL_22_NON_A00",
+    "schema_version": "M3_ACTION_SET_FROZEN_V1",
+    "status": "COMPLETED_ASSUMPTION_GROUNDED_ACTION_SET_FROZEN"
+  },
   "formal_support_upgrade": false,
-  "non_a00_v2_execution_enabled": false,
+  "legacy_response_registry_hash": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+  "non_a00_v2_execution_enabled": true,
+  "registry_id": "M3_ACTION_RESPONSE_DESIGN_V2",
   "responses": [
-    {"action_id":"A00","action_family":"null","affected_components":[],"response_type":["IDENTITY"],"response_rule":"No additional recovery from the decision time onward; copy every C0 CU component and support state exactly.","parameter_source":"OPERATIONAL_RULE","support_state":"SUPPORTED","source_reference":["ROUND2_M3_V2_A00_IDENTITY"],"parameter_version":"M3_V2_IDENTITY_1","freeze_id":"ROUND2_M3_V2_DESIGN","provenance":["C_A00_CU_EQUALS_C0_CU"],"executable_v2":true},
-    {"action_id":"A11","action_family":"timing_passenger_coordination","affected_components":["P_itinerary","F_execution","P_time"],"response_type":["SEQUENCE_MODIFICATION","PASSENGER_SERVICE_PROTECTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A11"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A13","action_family":"flight_execution","affected_components":["F_propagation","R_operating"],"response_type":["DIRECT_REDUCTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A13"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A21","action_family":"timing","affected_components":["F_continuity","F_propagation","F_execution","P_time"],"response_type":["SEQUENCE_MODIFICATION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A21"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A22","action_family":"capacity_coordination","affected_components":["F_execution","F_propagation","R_operating"],"response_type":["SEQUENCE_MODIFICATION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A22"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A23","action_family":"capacity_coordination","affected_components":["F_execution","F_propagation","R_operating"],"response_type":["SEQUENCE_MODIFICATION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A23"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A31","action_family":"passenger_recovery","affected_components":["P_itinerary","P_service","R_operating"],"response_type":["PASSENGER_SERVICE_PROTECTION","RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A31"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A32","action_family":"passenger_recovery","affected_components":["P_itinerary","P_time","R_operating"],"response_type":["PASSENGER_SERVICE_PROTECTION","RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A32"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A33","action_family":"passenger_service","affected_components":["P_service","R_operating"],"response_type":["PASSENGER_SERVICE_PROTECTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A33"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A41","action_family":"ground_recovery","affected_components":["F_execution","F_continuity","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A41"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A42","action_family":"ground_recovery","affected_components":["F_continuity","F_execution","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A42"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A43","action_family":"ground_recovery","affected_components":["F_execution","F_continuity","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A43"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A51","action_family":"aircraft_recovery","affected_components":["F_continuity","F_propagation","F_execution","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A51"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A52","action_family":"aircraft_recovery","affected_components":["F_propagation","F_continuity","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A52"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A53","action_family":"aircraft_recovery","affected_components":["F_continuity","F_execution","F_propagation","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A53"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A54","action_family":"aircraft_recovery","affected_components":["F_continuity","F_propagation","F_execution","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A54"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A55","action_family":"aircraft_recovery","affected_components":["F_continuity","F_propagation","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A55"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A61","action_family":"crew_recovery","affected_components":["F_execution","F_propagation","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A61"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A62","action_family":"crew_recovery","affected_components":["F_execution","F_propagation","R_operating"],"response_type":["RESOURCE_SUBSTITUTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A62"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A63","action_family":"crew_recovery","affected_components":["F_execution","F_propagation","R_operating","P_time"],"response_type":["RESOURCE_SUBSTITUTION","SEQUENCE_MODIFICATION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A63"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A64","action_family":"crew_recovery","affected_components":["F_execution","F_propagation","R_operating","P_time"],"response_type":["RESOURCE_SUBSTITUTION","SEQUENCE_MODIFICATION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A64"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A71","action_family":"extreme_local_network","affected_components":["F_propagation","F_continuity","P_time","P_itinerary","P_service","R_operating"],"response_type":["SEQUENCE_MODIFICATION","PASSENGER_SERVICE_PROTECTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A71"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false},
-    {"action_id":"A72","action_family":"extreme_local_network","affected_components":["F_propagation","F_continuity","P_time","P_itinerary","P_service","R_operating"],"response_type":["SEQUENCE_MODIFICATION","PASSENGER_SERVICE_PROTECTION"],"response_rule":"Apply only a versioned component-wise scenario response after V2 mapping approval.","parameter_source":"SCENARIO_ASSUMPTION","support_state":"SCENARIO_ASSUMPTION","source_reference":["M3_RESPONSE_SCENARIO_V1:A72"],"parameter_version":"M3_RESPONSE_SCENARIO_V1","freeze_id":"sha256:ff8adb3034603ec225930ed9187bc296b46d58637a974c9de64b341248755ce0","provenance":["PURE_SCENARIO","FORMAL_SUPPORT_UPGRADE_FALSE"],"executable_v2":false}
-  ]
+    {
+      "action_family": "null",
+      "action_id": "A00",
+      "affected_components": [],
+      "executable_v2": true,
+      "freeze_id": "ROUND2_M3_V2_DESIGN",
+      "parameter_source": "OPERATIONAL_RULE",
+      "parameter_version": "M3_V2_IDENTITY_1",
+      "provenance": [
+        "C_A00_CU_EQUALS_C0_CU"
+      ],
+      "response_rule": "No additional recovery from the decision time onward; copy every C0 CU component and support state exactly.",
+      "response_type": [
+        "IDENTITY"
+      ],
+      "source_reference": [
+        "ROUND2_M3_V2_A00_IDENTITY"
+      ],
+      "support_state": "SUPPORTED"
+    },
+    {
+      "action_family": "timing_passenger_coordination",
+      "action_id": "A11",
+      "affected_components": [
+        "P_itinerary",
+        "F_execution",
+        "P_time"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]",
+        "literature": [
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
+          "YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991",
+          "CookTanner2015_EUROCONTROL"
+        ],
+        "mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:PASSENGER_REACCOMMODATION_PROXY",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded PASSENGER_REACCOMMODATION_PROXY response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "SEQUENCE_MODIFICATION",
+        "PASSENGER_SERVICE_PROTECTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A11:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "flight_execution",
+      "action_id": "A13",
+      "affected_components": [
+        "F_propagation",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, inbound_delay(s) - slack_a)",
+        "literature": [
+          "KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012"
+        ],
+        "mechanism": "PROPAGATION_SLACK_CUT",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:PROPAGATION_SLACK_CUT",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded PROPAGATION_SLACK_CUT response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "DIRECT_REDUCTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A13:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "timing",
+      "action_id": "A21",
+      "affected_components": [
+        "F_continuity",
+        "F_propagation",
+        "F_execution",
+        "P_time"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, planned_wait_minutes(s) - residual_delay(s))",
+        "literature": [
+          "KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012",
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0"
+        ],
+        "mechanism": "HOLD_OR_WAIT_DELAY_ABSORPTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:HOLD_OR_WAIT_DELAY_ABSORPTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded HOLD_OR_WAIT_DELAY_ABSORPTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "SEQUENCE_MODIFICATION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A21:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "capacity_coordination",
+      "action_id": "A22",
+      "affected_components": [
+        "F_execution",
+        "F_propagation",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, planned_wait_minutes(s) - residual_delay(s))",
+        "literature": [
+          "KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012",
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0"
+        ],
+        "mechanism": "HOLD_OR_WAIT_DELAY_ABSORPTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:HOLD_OR_WAIT_DELAY_ABSORPTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded HOLD_OR_WAIT_DELAY_ABSORPTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "SEQUENCE_MODIFICATION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A22:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "capacity_coordination",
+      "action_id": "A23",
+      "affected_components": [
+        "F_execution",
+        "F_propagation",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, planned_wait_minutes(s) - residual_delay(s))",
+        "literature": [
+          "KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012",
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0"
+        ],
+        "mechanism": "HOLD_OR_WAIT_DELAY_ABSORPTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:HOLD_OR_WAIT_DELAY_ABSORPTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded HOLD_OR_WAIT_DELAY_ABSORPTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "SEQUENCE_MODIFICATION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A23:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "passenger_recovery",
+      "action_id": "A31",
+      "affected_components": [
+        "P_itinerary",
+        "P_service",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]",
+        "literature": [
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
+          "YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991",
+          "CookTanner2015_EUROCONTROL"
+        ],
+        "mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:PASSENGER_REACCOMMODATION_PROXY",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded PASSENGER_REACCOMMODATION_PROXY response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "PASSENGER_SERVICE_PROTECTION",
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A31:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "passenger_recovery",
+      "action_id": "A32",
+      "affected_components": [
+        "P_itinerary",
+        "P_time",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]",
+        "literature": [
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
+          "YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991",
+          "CookTanner2015_EUROCONTROL"
+        ],
+        "mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:PASSENGER_REACCOMMODATION_PROXY",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded PASSENGER_REACCOMMODATION_PROXY response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "PASSENGER_SERVICE_PROTECTION",
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A32:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "passenger_service",
+      "action_id": "A33",
+      "affected_components": [
+        "P_service",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]",
+        "literature": [
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
+          "YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991",
+          "CookTanner2015_EUROCONTROL"
+        ],
+        "mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:PASSENGER_REACCOMMODATION_PROXY",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded PASSENGER_REACCOMMODATION_PROXY response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "PASSENGER_SERVICE_PROTECTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A33:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "ground_recovery",
+      "action_id": "A41",
+      "affected_components": [
+        "F_execution",
+        "F_continuity",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A41:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "ground_recovery",
+      "action_id": "A42",
+      "affected_components": [
+        "F_continuity",
+        "F_execution",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A42:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "ground_recovery",
+      "action_id": "A43",
+      "affected_components": [
+        "F_execution",
+        "F_continuity",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A43:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "aircraft_recovery",
+      "action_id": "A51",
+      "affected_components": [
+        "F_continuity",
+        "F_propagation",
+        "F_execution",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A51:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "aircraft_recovery",
+      "action_id": "A52",
+      "affected_components": [
+        "F_propagation",
+        "F_continuity",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A52:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "aircraft_recovery",
+      "action_id": "A53",
+      "affected_components": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A53:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "aircraft_recovery",
+      "action_id": "A54",
+      "affected_components": [
+        "F_continuity",
+        "F_propagation",
+        "F_execution",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A54:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "aircraft_recovery",
+      "action_id": "A55",
+      "affected_components": [
+        "F_continuity",
+        "F_propagation",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A55:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "crew_recovery",
+      "action_id": "A61",
+      "affected_components": [
+        "F_execution",
+        "F_propagation",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A61:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "crew_recovery",
+      "action_id": "A62",
+      "affected_components": [
+        "F_execution",
+        "F_propagation",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A62:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "crew_recovery",
+      "action_id": "A63",
+      "affected_components": [
+        "F_execution",
+        "F_propagation",
+        "R_operating",
+        "P_time"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION",
+        "SEQUENCE_MODIFICATION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A63:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "crew_recovery",
+      "action_id": "A64",
+      "affected_components": [
+        "F_execution",
+        "F_propagation",
+        "R_operating",
+        "P_time"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)",
+        "literature": [
+          "Evler2021_COR_DOI_10.1016/j.cor.2021.105602",
+          "Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716"
+        ],
+        "mechanism": "SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:SWAP_TURNAROUND_MISMATCH_REDUCTION",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded SWAP_TURNAROUND_MISMATCH_REDUCTION response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "RESOURCE_SUBSTITUTION",
+        "SEQUENCE_MODIFICATION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A64:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "extreme_local_network",
+      "action_id": "A71",
+      "affected_components": [
+        "F_propagation",
+        "F_continuity",
+        "P_time",
+        "P_itinerary",
+        "P_service",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]",
+        "literature": [
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
+          "YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991",
+          "CookTanner2015_EUROCONTROL"
+        ],
+        "mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:PASSENGER_REACCOMMODATION_PROXY",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded PASSENGER_REACCOMMODATION_PROXY response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "SEQUENCE_MODIFICATION",
+        "PASSENGER_SERVICE_PROTECTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A71:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    },
+    {
+      "action_family": "extreme_local_network",
+      "action_id": "A72",
+      "affected_components": [
+        "F_propagation",
+        "F_continuity",
+        "P_time",
+        "P_itinerary",
+        "P_service",
+        "R_operating"
+      ],
+      "assumption_grounded": {
+        "formula": "R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]",
+        "literature": [
+          "BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
+          "YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991",
+          "CookTanner2015_EUROCONTROL"
+        ],
+        "mechanism": "PASSENGER_REACCOMMODATION_PROXY",
+        "sensitivity_band": {
+          "base": {
+            "response_mean_delta": 0.0,
+            "success_probability_delta": 0.0
+          },
+          "high": {
+            "response_mean_delta": 0.1,
+            "success_probability_delta": 0.15
+          },
+          "low": {
+            "response_mean_delta": -0.1,
+            "success_probability_delta": -0.15
+          }
+        }
+      },
+      "executable_v2": true,
+      "freeze_id": "sha256:cf3477bfd3a3d6587306bae3fdbd5ecd050479c852bae8b27062ca4409ef03d1",
+      "parameter_source": "SCENARIO_ASSUMPTION",
+      "parameter_version": "M3_RESPONSE_SCENARIO_V1",
+      "provenance": [
+        "ASSUMPTION_GROUNDED",
+        "MECHANISM:PASSENGER_REACCOMMODATION_PROXY",
+        "LOW_BASE_HIGH_SENSITIVITY_BAND",
+        "FORMAL_SUPPORT_UPGRADE_FALSE"
+      ],
+      "response_rule": "Assumption-grounded PASSENGER_REACCOMMODATION_PROXY response; versioned component-wise scenario response with LOW/BASE/HIGH sensitivity band; FORMAL lane remains A00-only.",
+      "response_type": [
+        "SEQUENCE_MODIFICATION",
+        "PASSENGER_SERVICE_PROTECTION"
+      ],
+      "source_reference": [
+        "M3_RESPONSE_SCENARIO_V1:A72:ASSUMPTION_GROUNDED"
+      ],
+      "support_state": "SCENARIO_ASSUMPTION"
+    }
+  ],
+  "schema_version": "M3_ACTION_RESPONSE_DESIGN_V2"
 }

@@ -13,7 +13,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import torch
 
-from exp.m1_v2_current_stage_scenario_envelope import (
+from exp.workflows.m1_v2_current_stage_scenario_envelope import (
     SCENARIO_COUNT,
     SCENARIO_SEED,
     TARGETS,

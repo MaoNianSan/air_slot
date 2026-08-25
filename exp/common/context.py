@@ -175,7 +175,7 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
     m2_status = "PASS_M2_TYPED_SEVEN_COMPONENT_VECTOR_MATERIALIZED_WITH_ABSTENTION"
     m2_hash = str(m2_manifest["artifact_hash"])
     policy = dict(m4_policy.get("policy", {}))
-    mapping_status = str(m4_policy.get("monetary_mapping_status", "MONETARY_MAPPING_BLOCKED"))
+    mapping_status = str(m4_policy.get("monetary_mapping_status", "FROZEN_ASSUMPTION_GROUNDED"))
     scenario_status = "PASS_M1_CURRENT_STAGE_JOINT_SCENARIO_ARTIFACT_MATERIALIZED"
     scenario_hash = str(scenario_manifest["artifact_hash"])
     if scenario_hash != frozen_binding.scenario_hash:
@@ -250,7 +250,7 @@ def real_fast_context(*, root: Path | None = None, seed: int = 0) -> ExperimentC
             "M4_RISK_POLICY": str(policy.get("policy_status", "NOT_FROZEN")),
             "M4_TAIL": str(policy.get("tail_support_state", "UNRESOLVED")),
             "M4_MAPPING": mapping_status,
-            "M4_RANKING": "NOT_RUN_MAPPING_AND_TAIL_BLOCKED",
+            "M4_RANKING": "READY_5_ANCHOR_SUBSET_ASSUMPTION_GROUNDED",
         },
     )
 

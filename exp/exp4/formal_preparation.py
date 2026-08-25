@@ -16,6 +16,18 @@ from .protocol import EVALUATION_LEAD_MINUTES, PredictiveBaseline
 
 
 FORMAL_BASELINES = tuple(item.value for item in PredictiveBaseline)
+EXP4_EXECUTION_MANIFEST = Path("artifacts/experiments/exp4/full_development_v1/EXP4_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json")
+FROZEN_BASELINE_STATUS = "FROZEN_READY_ARTIFACT_BOUND"
+
+# Formal contract baseline id -> (implementation baseline id used by
+# exp/exp4/global_development.py, artifact filename). The mapping is explicit
+# so the two naming schemes stay traceable instead of silently diverging.
+IMPLEMENTATION_BASELINE_MAP: dict[str, tuple[str, str | None]] = {
+    "HISTORICAL": ("HISTORICAL", "HISTORICAL.json"),
+    "LIGHTGBM_FAST": ("LIGHTGBM", "LIGHTGBM.joblib"),
+    "RANDOM_FOREST": ("RANDOM_FOREST", "RANDOM_FOREST.joblib"),
+    "STATE_AWARE_FULL": ("STATE_AWARE_H32", None),
+}
 _SAFETY = {
     "M1_TRAINING_RUNS_THIS_PREPARATION": 0,
     "TUNING_RUNS_THIS_PREPARATION": 0,
@@ -184,7 +196,39 @@ def _validate(inputs: dict[str, tuple[Path, Any]]) -> dict[str, Any]:
     }
 
 
-def _baseline_contracts() -> dict[str, dict[str, Any]]:
+def _baseline_contracts(
+    root: Path, execution_manifest: dict[str, Any] | None = None,
+) -> dict[str, dict[str, Any]]:
+    bindings: dict[str, dict[str, Any]] = {}
+    if execution_manifest is not None:
+        model_artifacts = execution_manifest.get("model_artifacts", {})
+        for baseline, (implementation_id, _) in IMPLEMENTATION_BASELINE_MAP.items():
+            entry = model_artifacts.get(implementation_id)
+            if entry is None:
+                bindings[baseline] = {"status": "BLOCKED_IMPLEMENTATION_ARTIFACT_MISSING_IN_EXECUTION_MANIFEST"}
+                continue
+            artifact_path = root / entry["path"]
+            if not artifact_path.is_file():
+                bindings[baseline] = {
+                    "status": "BLOCKED_IMPLEMENTATION_ARTIFACT_FILE_MISSING",
+                    "artifact_path": entry["path"],
+                }
+                continue
+            actual = _file_hash(artifact_path)
+            if actual != entry["sha256"]:
+                bindings[baseline] = {
+                    "status": "BLOCKED_IMPLEMENTATION_ARTIFACT_HASH_MISMATCH",
+                    "artifact_path": entry["path"],
+                    "declared_sha256": entry["sha256"],
+                    "actual_sha256": actual,
+                }
+                continue
+            bindings[baseline] = {
+                "status": FROZEN_BASELINE_STATUS,
+                "implementation_baseline_id": implementation_id,
+                "artifact_path": entry["path"],
+                "artifact_sha256": entry["sha256"],
+            }
     common = {
         "evaluation_lead_minutes": EVALUATION_LEAD_MINUTES,
         "cohort_policy": "SAME_FROZEN_DATA2_DEVELOPMENT_COHORT_PER_BASELINE",
@@ -229,6 +273,20 @@ def _baseline_contracts() -> dict[str, dict[str, Any]]:
             "full_name_semantics": "STATE_AWARE_PATH_LABEL_ONLY_NOT_PAPER_FULL_OR_FULL_EXECUTION",
         },
     }
+    for baseline, contract in contracts.items():
+        binding = bindings.get(baseline)
+        if binding is None:
+            continue
+        if binding["status"] == FROZEN_BASELINE_STATUS:
+            contract["status"] = FROZEN_BASELINE_STATUS
+            contract["implementation_baseline_id"] = binding["implementation_baseline_id"]
+            contract["artifact_path"] = binding["artifact_path"]
+            contract["artifact_sha256"] = binding["artifact_sha256"]
+            contract["lineage_source"] = "EXP4_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json"
+            contract.pop("reason", None)
+        else:
+            contract["status"] = binding["status"]
+            contract["reason"] = f"EXP4_FULL_DEVELOPMENT_EXECUTION_MANIFEST_BINDING_FAILED:{binding['status']}"
     _require(tuple(contracts) == FORMAL_BASELINES, "EXP4_BASELINE_SET_MISMATCH")
     return contracts
 
@@ -268,11 +326,19 @@ def _lineage_schema() -> dict[str, Any]:
 
 def _readiness(gates: dict[str, Any], baseline_contracts: dict[str, dict[str, Any]]) -> dict[str, Any]:
     blockers = tuple(item["status"] for item in gates.values() if str(item["status"]).startswith("BLOCKED_"))
+    baselines_bound = all(
+        contract["status"] == FROZEN_BASELINE_STATUS
+        for contract in baseline_contracts.values()
+    )
+    execution_status = (
+        "BASELINES_FROZEN_BOUND_FORMAL_EXECUTION_GATED_BY_M1_PREDICTIVE_ARTIFACTS"
+        if baselines_bound else "BLOCKED_CURRENT_ARTIFACT_AND_BASELINE_GATES"
+    )
     return _artifact({
         "schema_version": "EXP4_FORMAL_EXECUTION_READINESS_V1",
         "status": "EXP4_FORMAL_EXECUTION_READY",
         "preparation_status": "READY",
-        "execution_status": "BLOCKED_CURRENT_ARTIFACT_AND_BASELINE_GATES",
+        "execution_status": execution_status,
         "data_environment_readiness": {
             "data2_2019": {
                 "role": "PRIMARY_DEVELOPMENT_EVALUATION_ENVIRONMENT",
@@ -287,7 +353,11 @@ def _readiness(gates: dict[str, Any], baseline_contracts: dict[str, dict[str, An
         "baseline_readiness": {
             baseline: {
                 "status": contract["status"],
-                "metrics": "NOT_RUN_NO_SYNTHETIC_OR_ZERO_FILLED_VALUES",
+                "metrics": (
+                    "MATERIALIZED_IN_EXP4_FULL_DEVELOPMENT_METRICS"
+                    if contract["status"] == FROZEN_BASELINE_STATUS
+                    else "NOT_RUN_NO_SYNTHETIC_OR_ZERO_FILLED_VALUES"
+                ),
             }
             for baseline, contract in baseline_contracts.items()
         },
@@ -305,14 +375,25 @@ def _readiness(gates: dict[str, Any], baseline_contracts: dict[str, dict[str, An
 
 def prepare_formal_execution(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp4_formal_execution_preparation_v10").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp4_formal_execution_preparation_v11").resolve()
     inputs = _inputs(root)
     fixed = _validate(inputs)
     gates = inputs["exp2_lineage"][1]["gates"]
+    execution_manifest_path = root / EXP4_EXECUTION_MANIFEST
+    execution_manifest = (
+        _load_json(execution_manifest_path) if execution_manifest_path.is_file() else None
+    )
     baseline_contracts = _artifact({
         "schema_version": "EXP4_FORMAL_BASELINE_CONTRACTS_V1",
-        "status": "READY_WITH_BLOCKED_EXECUTABLE_ARTIFACTS",
-        "baselines": _baseline_contracts(),
+        "status": (
+            "READY_WITH_FROZEN_BOUND_BASELINE_ARTIFACTS"
+            if execution_manifest is not None
+            else "READY_WITH_BLOCKED_EXECUTABLE_ARTIFACTS"
+        ),
+        "baselines": _baseline_contracts(root, execution_manifest),
+        "execution_manifest": (
+            _relative(execution_manifest_path, root) if execution_manifest is not None else None
+        ),
         "fixed_m1_contract": fixed,
         "safety": dict(_SAFETY),
     })

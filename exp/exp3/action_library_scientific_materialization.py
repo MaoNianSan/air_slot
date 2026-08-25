@@ -20,7 +20,7 @@ ACTION_PATH = Path("registries/action_templates.yaml")
 DESIGN_PATH = Path("registries/m3_v2_action_response_design.json")
 M2_PATH = Path("artifacts/experiment/m2_v2_current_stage_consequences_v1/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCE_MANIFEST.json")
 M4_PATH = Path("registries/m4_v2_monetary_mapping_design.json")
-CONSEQUENCE_MAPPING_PATH = Path("artifacts/diagnostics/m3_action_consequence_literature_mapping_v1/M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING.json")
+CONSEQUENCE_MAPPING_PATH = Path("artifacts/diagnostics/m3_action_consequence_literature_mapping_v2/M3_ACTION_CONSEQUENCE_LITERATURE_MAPPING.json")
 SAFETY = {
     "M1_TRAINING_RUNS_THIS_MATERIALIZATION": 0,
     "TUNING_RUNS_THIS_MATERIALIZATION": 0,
@@ -53,7 +53,7 @@ def _write(path: Path, payload: dict[str, Any]) -> None:
 
 def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/m3_action_library_scientific_materialization_v2").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/m3_action_library_scientific_materialization_v3").resolve()
     evidence_path, action_path = root / EVIDENCE_PATH, root / ACTION_PATH
     design_path, m2_path, m4_path = root / DESIGN_PATH, root / M2_PATH, root / M4_PATH
     consequence_mapping_path = root / CONSEQUENCE_MAPPING_PATH
@@ -88,13 +88,14 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
         response = response_by_id[template.template_id]
         consequence = consequence_by_id[template.template_id]
         passenger_blocked = any(component in {"P_itinerary", "P_service"} for component in affected)
+        passenger_channel_ready = str(
+            m2.get("representation_readiness", {}).get("EXP2B_3CHANNEL", "")
+        ).startswith("READY_")
         blockers = []
-        if template.template_id != "A00":
-            blockers.append("RESPONSE_EFFECT_SIZE_REMAINS_PURE_SCENARIO")
-        if passenger_blocked:
-            blockers.append("M2_PASSENGER_COMPONENT_SUPPORT_INCOMPLETE")
         if not m4["production_mapping_enabled"]:
             blockers.append("M4_PRODUCTION_MAPPING_NOT_FROZEN")
+        if passenger_blocked and not passenger_channel_ready:
+            blockers.append("M2_PASSENGER_COMPONENT_SUPPORT_INCOMPLETE")
         rows.append({
             "action_id": template.template_id,
             "action_name": template.name,
@@ -127,6 +128,9 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
         })
 
     counts = Counter(row["execution_type"] for row in rows)
+    non_a00_executable_count = sum(
+        1 for row in rows if row.get("executable_v2") and row["action_id"] != "A00"
+    )
     payload = {
         "schema_version": "M3_ACTION_LIBRARY_SCIENTIFIC_MATERIALIZATION_V2",
         "status": "M3_PAPER_SUPPORTED_ACTION_LIBRARY_MATERIALIZED",
@@ -137,21 +141,24 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
         "consequence_mapping_artifact_hash": consequence_mapping["artifact_hash"],
         "execution_status_counts": dict(counts),
         "formal_support_upgrade": False,
-        "non_a00_v2_execution_enabled": False,
+        "non_a00_v2_execution_enabled": design["non_a00_v2_execution_enabled"],
         "action_evidence_table": rows,
         "literature_mapping": evidence["references"],
         "remaining_blockers": [
-            "Non-A00 numerical response magnitudes remain versioned scenario assumptions rather than empirical action effects.",
-            "P_itinerary and P_service are ABSTAIN in the current M2 artifact, blocking complete passenger-linked action consequences.",
+            "Non-A00 response magnitudes are assumption-grounded mechanism responses with LOW/BASE/HIGH bands, not empirical action effects.",
+            "P_itinerary and P_service are ASSUMPTION_GROUNDED (literature-parameterized), not empirical, in the current M2 artifact.",
             "M4 production mapping and authoritative residual-risk ranking remain unfrozen.",
             "Data2 contains no observed action log for empirical response validation.",
         ],
         "exp3_readiness_impact": {
             "paper_supported_action_library": "READY",
             "conditional_contract_count": counts.get("conditional", 0),
-            "formal_executable_non_a00_count": 0,
-            "formal_multi_action_cohort": "STILL_BLOCKED",
-            "interpretation": "Literature support closes action-meaning provenance but does not identify action-effect parameters or promote scenario actions to formal evidence.",
+            "formal_executable_non_a00_count": non_a00_executable_count,
+            "formal_multi_action_cohort": (
+                "READY_SCENARIO_CONDITIONAL_AUTHORITATIVE_RANKING_GATED"
+                if non_a00_executable_count else "STILL_BLOCKED"
+            ),
+            "interpretation": "Non-A00 responses carry ASSUMPTION_GROUNDED mechanism provenance with LOW/BASE/HIGH bands and enter the SCENARIO/CONDITIONAL lane; authoritative ranking remains gated by the M4 material-coverage freeze.",
         },
         "m2_binding": {"artifact_hash": m2["artifact_hash"], "status": m2["status"]},
         "m4_binding": {"production_mapping_enabled": m4["production_mapping_enabled"], "scientific_status": m4["scientific_status"]},
@@ -175,7 +182,7 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
         "artifact_hash": payload["artifact_hash"],
         "action_count": payload["action_count"],
         "execution_status_counts": payload["execution_status_counts"],
-        "formal_executable_non_a00_count": 0,
+        "formal_executable_non_a00_count": payload["exp3_readiness_impact"]["formal_executable_non_a00_count"],
         "consequence_mapping_artifact_hash": consequence_mapping["artifact_hash"],
         "safety": SAFETY,
     }

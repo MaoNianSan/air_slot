@@ -30,7 +30,11 @@ SUPPORT_MANIFEST = Path(
 M2_REGISTRY = Path("registries/m2_data2_formal_cu_v1.json")
 ACTION_REGISTRY = Path("registries/action_templates.yaml")
 RESPONSE_REGISTRY = Path("registries/m3_response_scenarios.yaml")
-MAPPING_REGISTRY = Path("registries/m4_cu_rmb_mapping_candidate_v1.json")
+MAPPING_REGISTRY = Path("registries/m4_eur_mapping_assumption_grounded_v1.json")
+FIVE_ANCHOR_COMPONENTS = (
+    "F_continuity", "F_execution", "F_propagation", "P_time", "R_operating",
+)
+PENDING_MONETARY_COMPONENTS = ("P_itinerary", "P_service")
 
 
 def repository_root() -> Path:
@@ -151,16 +155,27 @@ def load_official_frozen_binding(root: Path | None = None) -> OfficialFrozenBind
         support.get("artifact_hash"), support.get("support_hash"), file_sha256(paths["support"])
     }:
         raise ContractError("OFFICIAL_SUPPORT_HASH_MISMATCH")
-    component_mappings = mapping.get("component_mappings", {})
-    if len(component_mappings) != 7:
+    ops_components = mapping.get("ops_components")
+    if not isinstance(ops_components, list) or len(ops_components) != 7:
         raise ContractError("OFFICIAL_MAPPING_COMPONENT_COUNT_INVALID")
-    for component_id, item in component_mappings.items():
-        parameters = {
-            parameter.get("parameter_name"): parameter.get("value")
-            for parameter in item.get("parameters", ())
+    anchor_status = {
+        str(item.get("component_id")): str(item.get("anchor_status"))
+        for item in ops_components
+    }
+    frozen = tuple(sorted(name for name, status in anchor_status.items() if status == "FROZEN_ASSUMPTION_GROUNDED"))
+    pending = tuple(sorted(name for name, status in anchor_status.items() if status == "HUMAN_DECISION_REQUIRED"))
+    if frozen != tuple(sorted(FIVE_ANCHOR_COMPONENTS)) or pending != tuple(sorted(PENDING_MONETARY_COMPONENTS)):
+        raise ContractError("OFFICIAL_MAPPING_BASELINE_DRIFT")
+    for item in ops_components:
+        if item.get("anchor_status") != "FROZEN_ASSUMPTION_GROUNDED":
+            continue
+        bands = {
+            str(band.get("band_id")): band.get("per_cu_money")
+            for band in item.get("bands", ())
         }
-        if item.get("component_id") != component_id or parameters.get("rmb_per_cu") != 1.0:
-            raise ContractError(f"OFFICIAL_MAPPING_BASELINE_DRIFT:{component_id}")
+        if any(bands.get(level) is None for level in ("LOW", "BASE", "HIGH")):
+            raise ContractError(f"OFFICIAL_MAPPING_FROZEN_RATE_MISSING:{item.get('component_id')}")
+    require_hash(mapping.get("registry_hash"), "OFFICIAL_MAPPING_REGISTRY_HASH_MISSING")
 
     return OfficialFrozenBinding(
         model_hash=model_hash,

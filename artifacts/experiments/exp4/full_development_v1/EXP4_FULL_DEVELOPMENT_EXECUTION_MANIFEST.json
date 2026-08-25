@@ -1,0 +1,56 @@
+{
+  "artifact_hash": "sha256:c51b1efd65b6cf17e6ac6452d7bb163b9b943a62a1ac0ede42da46b99ff219ea",
+  "artifact_hashes": {
+    "metrics": "sha256:e2ac8a9f685294842099425a1b0ca16737d5433d5785d3c9e03abf57da6b82c9"
+  },
+  "baselines": [
+    "HISTORICAL",
+    "LIGHTGBM",
+    "RANDOM_FOREST",
+    "STATE_AWARE_H32"
+  ],
+  "data1_data2_pooling": false,
+  "data1_role": "BOUNDED_GENERALIZATION_SMOKE_ONLY",
+  "data2_role": "MAIN_EVALUATION",
+  "episode_count": 128,
+  "frozen_hashes": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "cohort_hash": "sha256:1dd889489f7e2ae2a6b06e14322cf86081a4db5bfc6e693d2e5d88752a85cb38",
+    "model_hash": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "model_artifacts": {
+    "HISTORICAL": {
+      "path": "artifacts/experiments/exp4/full_development_v1/models/HISTORICAL.json",
+      "sha256": "sha256:df8b92b8489780fbce86cc88bae606bbdfaca36b69c1b31534801a7ca92f2c92"
+    },
+    "LIGHTGBM": {
+      "path": "artifacts/experiments/exp4/full_development_v1/models/LIGHTGBM.joblib",
+      "sha256": "sha256:b1919bf1a5e6ab78cf203aee8445b7e392e840def57ee20f6a2331cb5de6de14"
+    },
+    "RANDOM_FOREST": {
+      "path": "artifacts/experiments/exp4/full_development_v1/models/RANDOM_FOREST.joblib",
+      "sha256": "sha256:ef6e3434c729f4ba160be3cafc5d953738ad3e095905ce528f881f7acae64751"
+    },
+    "STATE_AWARE_H32": {
+      "path": "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt",
+      "sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b"
+    }
+  },
+  "node_count": 1769,
+  "outputs": {
+    "data1_acceptance": "artifacts/experiments/exp4/full_development_v1/EXP4_DATA1_BOUNDED_ACCEPTANCE.json",
+    "interpretation": "artifacts/experiments/exp4/full_development_v1/EXP4_FULL_DEVELOPMENT_INTERPRETATION.md",
+    "metrics": "artifacts/experiments/exp4/full_development_v1/EXP4_FULL_DEVELOPMENT_METRICS.json",
+    "table": "artifacts/experiments/exp4/full_development_v1/EXP4_FULL_DEVELOPMENT_TABLE.csv"
+  },
+  "safety": {
+    "DATA1_DATA2_POOLING": false,
+    "DEVELOPMENT_TUNING": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false
+  },
+  "schema_version": "EXP4_FULL_DEVELOPMENT_EXECUTION_MANIFEST_V1",
+  "status": "DATA2_BASELINES_COMPLETE_DATA1_BOUNDED_PASS"
+}

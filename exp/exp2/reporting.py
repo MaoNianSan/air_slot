@@ -1,6 +1,18 @@
+"""DEPRECATED (2026-08-24): superseded by exp.reporting.output_contract.
+
+Kept only because docs/experiment/EXP2_IMPLEMENTATION.md still references this
+module; no code imports it. Do not use in new code.
+"""
+from __future__ import annotations
+
+"""DEPRECATED (2026-08-24): superseded by exp.reporting.output_contract.
+
+Kept only because docs/experiment/EXP2_IMPLEMENTATION.md still references this
+module; no code imports it. Do not use in new code.
+"""
+
 """Exp2 result construction and common artifact reporting."""
 
-from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path

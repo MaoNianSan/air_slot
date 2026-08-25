@@ -4,7 +4,7 @@ variants: [P-F, P-C, D-F, D-C, LINEAGE_CORRUPTION]
 reference_evaluator: ALIGNED_DISTRIBUTIONAL_FULL_FIXED_FORMAL_SCOPE_FULL_DECISION_CONTRACT
 point_source: frozen_m1_scenarios
 point_rule: WEIGHTED_JOINT_SCENARIO_MEDOID
-formal_scope: [F_continuity, F_execution, F_propagation, P_time, R_operating]
+formal_scope: [F_continuity, F_execution, F_propagation, P_time, P_itinerary, P_service, R_operating]
 flight_scope: [F_continuity, F_execution, F_propagation]
 shuffle: within_scenario_association_only
 corruption_q: [0.0, 0.25, 0.50, 0.75, 1.0]

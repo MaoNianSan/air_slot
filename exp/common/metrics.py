@@ -1,4 +1,8 @@
+"""DEPRECATED (2026-08-24): superseded by exp.common.metrics_v2 (2026-08-24); no live importer.
+"""
+
 from __future__ import annotations
+
 
 
 def episode_normalized_mean(rows, metric: str) -> float:

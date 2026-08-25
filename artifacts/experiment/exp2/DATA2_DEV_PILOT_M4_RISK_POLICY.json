@@ -1,17 +1,56 @@
 {
   "FINAL_TEST_ACCESS_COUNT": 0,
   "PAPER_FULL_RUN": false,
-  "artifact_hash": "sha256:7436ea696c3f1f3da2a1dff04eeeb164a8fe3c1508b69550367383eee4c486db",
-  "m4_execution_status": "M1_POSITIVE_TAIL_DECISION_REQUIRED",
-  "manuscript_experiment_interpretation_note": "Exp2 remains a constructed internal paired-sensitivity lane until a complete seven-component monetary mapping is independently frozen.",
-  "monetary_mapping_reference": "registries/m4_v2_monetary_mapping_design.json",
-  "monetary_mapping_status": "MONETARY_MAPPING_BLOCKED",
+  "artifact_hash": "sha256:5ec0cdccc3374f559bae4e192e1911abd835f57fdd2a8327f43ad6d235a43123",
+  "m4_execution_status": "M4_TAIL_ASSUMPTION_GROUNDED_READY",
+  "m4_ranking_definition": {
+    "base_rates_per_cu": {
+      "F_continuity": 72.0,
+      "F_execution": 72.0,
+      "F_propagation": 72.0,
+      "P_time": 0.3,
+      "R_operating": 72.0
+    },
+    "components": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation",
+      "P_time",
+      "R_operating"
+    ],
+    "excluded_components": [
+      "P_itinerary",
+      "P_service"
+    ],
+    "excluded_reason": "MONETARY_ANCHOR_HUMAN_DECISION_REQUIRED_EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED",
+    "expost_level": "ASSUMPTION_GROUNDED",
+    "formal_recommendation_level": "ASSUMPTION_GROUNDED",
+    "registry": "registries/m4_eur_mapping_assumption_grounded_v1.json",
+    "registry_hash": "sha256:88beec332b885baf90cef90e3cc8091c8679f4ea93628c0e9227cd919c76d6a3",
+    "semantics": "CONSTRUCTED_INTERNAL_LOSS_NOT_CAUSAL_NOT_REGRET_NOT_OPTIMAL",
+    "sensitivity_bands": {
+      "BASE": 1.0,
+      "HIGH": 2.0,
+      "LOW": 0.5
+    },
+    "subset": "5-ANCHOR SUBSET",
+    "top1_level": "ASSUMPTION_GROUNDED",
+    "units": "constructed_EUR"
+  },
+  "manuscript_experiment_interpretation_note": "Tail scoring is ASSUMPTION_GROUNDED (T-BASE/T-PARAM dual track, exp/exp2/tail_scores.py); it is not empirical tail calibration. Monetary mapping is a constructed EUR scale anchored on EUROCONTROL EUR-per-minute literature (72 EUR/min network average; 0.30 EUR per passenger per delay minute) plus the EU261 EUR regulatory staircase (tau_comp=180; 150/210 sensitivity); claim statement: 'constructed scale anchored on EUROCONTROL EUR-basis values, not a currency conversion'. P_itinerary and P_service per-event anchors stay HUMAN_DECISION_REQUIRED until a literature value or a user-authorized assumption is provided. Exp2 remains an assumption-grounded internal paired-sensitivity lane; the mapping is not an empirical cost.",
+  "monetary_mapping_pending_anchor_components": [
+    "P_itinerary",
+    "P_service"
+  ],
+  "monetary_mapping_reference": "registries/m4_eur_mapping_assumption_grounded_v1.json",
+  "monetary_mapping_registry_hash": "sha256:88beec332b885baf90cef90e3cc8091c8679f4ea93628c0e9227cd919c76d6a3",
+  "monetary_mapping_status": "FROZEN_ASSUMPTION_GROUNDED",
   "policy": {
     "alpha": 0.9,
     "cvar_coefficient": 0.25,
     "expected_loss_coefficient": 0.75,
     "freeze_id": "EXP2_DATA2_DEVELOPMENT_PILOT_M4_POLICY_V1",
-    "policy_hash": "sha256:158a09bb47d4b715e0a97a1da74d6b64b2dd4ab5c99eb1cba1f00475f016a2dc",
+    "policy_hash": "sha256:8e451495417665b51d2de6d48235393af752310fb34a5059c9a952bf15e9ca5a",
     "policy_status": "FROZEN",
     "provenance": [
       "configs/scientific/foundation.yaml:m4_lambda=0.25",
@@ -21,13 +60,16 @@
     "risk_metric_version": "M4_RESIDUAL_RISK_V2",
     "tail_reference": [
       "configs/scientific/foundation.yaml:m1_v2_positive_tail_policy",
-      "M1_POSITIVE_TAIL_DECISION_REQUIRED"
+      "G_TAIL_T_A_MIXED_REPRESENTATION",
+      "G_TAIL_T_B_TWCRPS_AND_MIXED_CRPS_CLOSED_FORM",
+      "G_TAIL_T_C_GP_EXCESS_EXPECTATION_AND_LEV",
+      "exp/exp2/tail_scores.py"
     ],
-    "tail_support_state": "UNRESOLVED"
+    "tail_support_state": "FROZEN_ASSUMPTION_GROUNDED"
   },
   "policy_id": "EXP2_DATA2_DEVELOPMENT_RESIDUAL_RISK_POLICY_V1",
   "policy_version": "M4_RESIDUAL_RISK_V2",
   "schema_version": "AIR_SLOT_EXP2_M4_POLICY_BINDING_V1",
   "source_reference": "configs/scientific/foundation.yaml:manuscript_principal_empirical_specification",
-  "status": "FROZEN_POLICY_TAIL_EXECUTION_BLOCKED"
+  "status": "FROZEN_POLICY_ASSUMPTION_GROUNDED_TAIL_READY"
 }

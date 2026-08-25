@@ -1,6 +1,10 @@
-"""Provenance-preserving serializers for common experiment results."""
+"""DEPRECATED (2026-08-24): legacy reporter layer; new outputs go through exp.reporting.output_contract (2026-08-24).
+"""
 
 from __future__ import annotations
+
+"""Provenance-preserving serializers for common experiment results."""
+
 
 import csv
 import json

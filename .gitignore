@@ -61,3 +61,20 @@ artifacts/exp2/
 # Regenerable experiment outputs exceeding GitHub size limits (kept local)
 artifacts/experiment/**/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIOS.json
 artifacts/experiment/**/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json
+
+# ===== Artifact archive (moved duplicates/superseded versions, kept local) =====
+artifacts/_archive/
+
+# ===== Fast-gate runtime outputs (regenerable, kept local) =====
+artifacts/real_fast/
+
+# ===== Experiment run logs =====
+*.log.*
+artifacts/diagnostics/*.log.*
+
+
+# ===== Large regenerable experiment outputs (kept local) =====
+# Parquet / bulk inference payloads exceed GitHub size limits or are
+# regenerable from frozen caches; tables/figures/manifests stay versioned.
+artifacts/experiments/**/*.parquet
+artifacts/experiment/full_development_inputs_v1/M1_V2_FULL_DEVELOPMENT_INFERENCE_INPUTS.json

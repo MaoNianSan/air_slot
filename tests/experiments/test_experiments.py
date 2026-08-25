@@ -5,7 +5,7 @@ from exp.common.bootstrap import episode_bootstrap
 from exp.exp1.runner import Exp1Runner
 from exp.exp2.runner import Exp2Runner
 from exp.exp3.llm_audit import audit_cases
-from exp.promotion import promote
+from exp.workflows.promotion import promote
 
 def test_variants_bootstrap_and_llm_absence_are_explicit(tmp_path:Path):
     assert set(Exp1Runner().variants)=={

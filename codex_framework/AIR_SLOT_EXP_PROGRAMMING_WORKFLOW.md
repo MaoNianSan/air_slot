@@ -79,3 +79,23 @@ python -m codex_framework.air_slot_framework.cli smoke
 正式 Exp、Final Test、paper_full 均不由默认 CLI 触发，必须由独立 human gate
 显式授权。
 
+### 4.1 实验运行入口（DEVELOPMENT，唯一入口）
+
+```text
+python -m exp.exp1.run --check              # Exp1 只读 preflight（含十件套 validate）
+python -m exp.exp1.run --finalize-output    # Exp1 由既有 state metrics 重生成十件套
+python -m exp.exp2.run --finalize-output    # Exp2 由既有 metrics 重生成十件套
+python -m exp.exp3.run --finalize-output    # Exp3 条件 5-ANCHOR 诊断主表
+python -m exp.exp4.run --finalize-output    # Exp4 四件套 baseline 输出契约
+python -m exp.exp4.e2e_runtime              # Exp4D development E2E repeats（P50/P95/P99）
+```
+
+- 5-anchor ranking：条件 5-ANCHOR 诊断排序在 `exp/exp3/global_development.py`
+  计算，经 `python -m exp.exp3.run --finalize-output` 输出主表（
+  FINITE_SUPPORT_RATE / CONDITIONAL_TOP1_RESPONSE_AGREEMENT /
+  GLOBAL_CONSTRUCTED_EUR_SCALE_INVARIANCE / PER_ACTION_CONDITIONAL_RISK_MEAN），
+  ranking 语义 CONDITIONAL_DIAGNOSTIC_NOT_PRINCIPAL（constructed EUR，非
+  causal/regret/optimal）。
+- e2e_runtime：`python -m exp.exp4.e2e_runtime --repeats N`，仅 DEVELOPMENT，
+  输出 P50/P95/P99 与 WITHIN_60S/120S/300S，定位工程充分性（operational
+  adequacy），与科学结论分开表述。

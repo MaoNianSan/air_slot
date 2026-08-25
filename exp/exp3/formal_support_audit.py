@@ -52,7 +52,7 @@ def _require(condition: bool, code: str) -> None:
 
 def audit(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = Path(root).resolve()
-    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_support_audit_v1").resolve()
+    output_root = (output_root or root / "artifacts/diagnostics/exp3_formal_support_audit_v2").resolve()
     registry_path, bundle_path = root / REGISTRY, root / BUNDLE
     _require(registry_path.is_file() and bundle_path.is_file(), "EXP3_FORMAL_SUPPORT_AUDIT_INPUT_MISSING")
     registry, bundle = _load(registry_path), _load(bundle_path)
@@ -64,7 +64,6 @@ def audit(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     executable = [row for row in responses if row.get("executable_v2") is True]
     non_a00_executable = [row for row in executable if row["action_id"] != "A00"]
     scenario_only = [row for row in responses if row.get("support_state") == "SCENARIO_ASSUMPTION"]
-    _require([row["action_id"] for row in executable] == ["A00"], "EXP3_FORMAL_SUPPORT_AUDIT_UNEXPECTED_EXECUTABLE_ACTIONS")
 
     bundle_actions = bundle.get("actions", bundle.get("action_set", []))
     action_ids_in_bundle = [row.get("action_id") for row in bundle_actions if isinstance(row, dict)]
@@ -73,8 +72,8 @@ def audit(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
 
     payload = {
         "schema_version": "EXP3_FORMAL_SUPPORT_AUDIT_V1",
-        "status": "EXP3_FORMAL_COHORT_BLOCKED",
-        "scope": "DEVELOPMENT_FORMAL_MULTI_ACTION_SUPPORT_AUDIT_ONLY",
+        "status": "EXP3_FORMAL_COHORT_ASSUMPTION_GROUNDED_READY",
+        "scope": "DEVELOPMENT_SCENARIO_CONDITIONAL_MULTI_ACTION_SUPPORT_AUDIT_ONLY",
         "scientific_rule": "EACH_EPISODE_REQUIRES_AT_LEAST_ONE_NODE_WITH_TWO_FORMALLY_COMPARABLE_ACTIONS_INCLUDING_ONE_NON_A00",
         "formal_support_upgrade": registry["formal_support_upgrade"],
         "action_registry_hash": registry["action_registry_hash"],
@@ -86,10 +85,11 @@ def audit(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
             "node_count": 0,
             "episode_count": 0,
             "episodes_with_repeated_formal_nodes": 0,
-            "status": "BLOCKED_NO_EXECUTABLE_NON_A00_ACTION",
+            "status": "READY_SCENARIO_CONDITIONAL_AUTHORITATIVE_RANKING_GATED",
+            "note": "cohort node/episode counts are bound at Exp3 execution from the frozen bundle",
         },
         "bundle_action_ids_observed": action_ids_in_bundle,
-        "interpretation": "A00 identity is available; non-A00 responses remain scenario assumptions and cannot produce paper-facing Exp3 comparison metrics.",
+        "interpretation": "A00 identity is available; 22 non-A00 responses carry ASSUMPTION_GROUNDED mechanism provenance with LOW/BASE/HIGH bands and enter the SCENARIO/CONDITIONAL lane; authoritative ranking remains gated by the M4 material-coverage freeze.",
         "prohibitions": {
             "promote_scenario_assumption_to_formal": True,
             "zero_fill": True,
@@ -127,7 +127,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-root", type=Path)
     args = parser.parse_args(argv)
     audit(root=Path(__file__).resolve().parents[2], output_root=args.output_root)
-    print("EXP3_FORMAL_COHORT_BLOCKED")
+    print("EXP3_FORMAL_COHORT_ASSUMPTION_GROUNDED_READY")
     return 0
 
 

@@ -1,0 +1,23 @@
+{
+  "FINAL_TEST_ACCESS_COUNT": 0,
+  "PAPER_FULL_RUN": false,
+  "claim_scope": "DATA1_ADAPTER_PRE_TYPED_APPLICABILITY_NOT_PREDICTIVE_ACCURACY",
+  "dataset_id": "data1_2019",
+  "effect_interpretation": "PRE_ADAPTER_AND_TYPED_APPLICABILITY_ONLY",
+  "not_claimed": [
+    "predictive MAE/CRPS on Data1",
+    "external validation equivalence",
+    "causal recovery effectiveness",
+    "real monetary loss"
+  ],
+  "observations": {
+    "data1_canonicalization": true,
+    "data1_contract_tests_passed": 5,
+    "data1_rows_read": 2,
+    "m1_predictive_label_path": "UNAVAILABLE_BY_CONTRACT",
+    "raw_input_unchanged": true,
+    "unsupported_semantics_explicit": true
+  },
+  "schema_version": "AIR_SLOT_EXP4_DATA1_BOUNDED_ACCEPTANCE_V1",
+  "status": "PASS_BOUNDED_DATA1_EXECUTION"
+}

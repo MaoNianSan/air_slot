@@ -22,6 +22,7 @@ import yaml
 from model.M1.cache import M1DevelopmentBaseCache
 from model.M1.contracts import static_reference_context_from_pre
 from model.M1.data import FEATURE_NAMES_V2, encode_pre_sequence
+from model.M1.coverage import active_node_prefixes
 from model.M1.pipeline import M1Pipeline
 from model.M1.static_features import static_reference_features_from_pre
 from model.PRE.development import build_sampled_pre_cohorts
@@ -97,6 +98,33 @@ def _references(root: Path):
     )
 
 
+
+
+def _taxi_reference_for(prepared, taxi_reference):
+    """A2-same per-airport taxi lookup (label-construction role only)."""
+    reference_minutes, reference_id, reference_hash = None, None, None
+    if taxi_reference is not None:
+        lookup = taxi_reference.lookup(prepared.episode.connection_airport_id)
+        value = getattr(lookup, "value", None)
+        support = getattr(getattr(lookup, "support_state", None), "value", None)
+        if value is not None and support == "SUPPORTED":
+            reference_minutes = float(value)
+            reference_id = getattr(taxi_reference, "reference_id", None)
+            reference_hash = getattr(taxi_reference, "manifest_freeze_id", None)
+    return reference_minutes, reference_id, reference_hash
+
+def _json_safe(value):
+    """Recursively convert non-JSON values (tz-aware datetimes) to the same
+    ISO-8601 strings ``_write`` persists, so the recorded artifact hash can be
+    recomputed from the written file."""
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    if isinstance(value, dict):
+        return {key: _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    return value
+
 def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Path]:
     root = root.resolve()
     output_root = (output_root or root / DEFAULT_OUTPUT).resolve()
@@ -138,7 +166,6 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
     for values in cached_by_episode.values():
         values.sort(key=lambda item: len(item.values))
     _require({item.episode.episode_id for item in development} == set(cached_by_episode), "FULL_DEVELOPMENT_EPISODE_ID_DRIFT")
-    _require(sum(len(item.states) for item in development) == len(cached) == 1769, "FULL_DEVELOPMENT_NODE_COUNT_DRIFT")
 
     pipeline = M1Pipeline.load(root / CHECKPOINT)
     pipeline.model.eval()
@@ -149,23 +176,65 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
     stage_counts: Counter[str] = Counter()
     old_to_current: list[dict[str, Any]] = []
 
+    active_total = 0
     for prepared in development:
         episode_id = prepared.episode.episode_id
-        states = tuple(prepared.states)
         cached_rows = cached_by_episode[episode_id]
-        _require(len(states) == len(cached_rows), "FULL_DEVELOPMENT_EPISODE_NODE_COUNT_DRIFT")
-        states_by_episode[episode_id] = [state.model_dump(mode="json") for state in states]
-        for index, (state, old) in enumerate(zip(states, cached_rows, strict=True)):
-            node = state.decision_node
-            prefix = states[: index + 1]
-            values = encode_pre_sequence(prefix, pipeline.normalization)
-            context = static_reference_context_from_pre(state.static_reference_publication)
-            static, static_lineage = static_reference_features_from_pre(
-                state, context, pipeline.static_normalization,
+        reference_minutes, reference_id, reference_hash = _taxi_reference_for(prepared, taxi)
+        active_items = tuple(active_node_prefixes(
+            episode=prepared.episode,
+            nodes=prepared.nodes,
+            states=tuple(prepared.states),
+            successor_schedule=prepared.successor_schedule,
+            predecessor_outcome=prepared.predecessor_outcome,
+            successor_outcome=prepared.successor_outcome,
+            taxi_reference_minutes=reference_minutes,
+            taxi_reference_id=reference_id,
+            taxi_reference_hash=reference_hash,
+        ))
+        _require(
+            len(active_items) == len(cached_rows),
+            "FULL_DEVELOPMENT_EPISODE_ACTIVE_NODE_COUNT_DRIFT",
+        )
+        active_total += len(active_items)
+        episode_states: list[dict[str, Any]] = []
+        for (yielded_node, prefix, target_labels), old in zip(active_items, cached_rows, strict=True):
+            node = prefix[-1].decision_node
+            _require(
+                yielded_node.node_index == node.node_index,
+                "FULL_DEVELOPMENT_NODE_INDEX_MISMATCH",
             )
+            _require(
+                yielded_node.decision_time == node.decision_time,
+                "FULL_DEVELOPMENT_DECISION_TIME_MISMATCH",
+            )
+            values = encode_pre_sequence(prefix, pipeline.normalization)
+            for label in target_labels:
+                if label.decision_time_utc is not None:
+                    _require(
+                        label.decision_time_utc == node.decision_time.isoformat(),
+                        "FULL_DEVELOPMENT_DECISION_TIME_MISMATCH",
+                    )
             _require(tuple(values.shape) == tuple(old.values.shape), "FULL_DEVELOPMENT_PREFIX_SHAPE_DRIFT")
-            _require(torch.isfinite(values).all().item() and torch.isfinite(static).all().item(), "FULL_DEVELOPMENT_NONFINITE_INPUT")
+            for label in target_labels:
+                _require(
+                    bool(old.active[label.target_name]) == bool(label.active),
+                    "FULL_DEVELOPMENT_ACTIVE_FLAG_MISMATCH",
+                )
+                _require(
+                    old.targets[label.target_name] == label.exact_minutes,
+                    "FULL_DEVELOPMENT_TARGET_VALUE_MISMATCH",
+                )
+            context = static_reference_context_from_pre(prefix[-1].static_reference_publication)
+            static, static_lineage = static_reference_features_from_pre(
+                prefix[-1], context, pipeline.static_normalization,
+            )
+            _require(
+                torch.isfinite(values).all().item() and torch.isfinite(static).all().item(),
+                "FULL_DEVELOPMENT_NONFINITE_INPUT",
+            )
             stage_counts[node.operational_stage.value] += 1
+            episode_states.append(prefix[-1].model_dump(mode="json"))
             decision_nodes.append(node.model_dump(mode="json"))
             inputs.append({
                 "episode_id": episode_id,
@@ -179,7 +248,7 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
                 "feature_names": list(FEATURE_NAMES_V2),
                 "encoded_adaptive_prefix": values.tolist(),
                 "encoded_static_context": static.reshape(-1).tolist(),
-                "static_reference_lineage": static_lineage,
+                "static_reference_lineage": _json_safe(static_lineage),
                 "contains_labels": False,
             })
             old_to_current.append({
@@ -188,20 +257,19 @@ def materialize(*, root: Path, output_root: Path | None = None) -> dict[str, Pat
                 "historical_decision_node_id": old.decision_node_id,
                 "current_decision_node_id": node.decision_node_id,
             })
-            for target in ("T_IB_REMAINING_HAZARD", "D_OB", "D_TX"):
-                active = bool(old.active[target])
-                value = old.targets[target] if active else None
+            for label in target_labels:
                 labels.append({
                     "episode_id": episode_id,
                     "decision_node_id": node.decision_node_id,
                     "historical_decision_node_id": old.decision_node_id,
                     "node_index": node.node_index,
-                    "target_name": target,
-                    "active": active,
-                    "exact_minutes": None if value is None else float(value),
+                    "target_name": label.target_name,
+                    "active": bool(label.active),
+                    "exact_minutes": None if label.exact_minutes is None else float(label.exact_minutes),
                     "role": "POST_OUTCOME_DEVELOPMENT_EVALUATION_ONLY",
                 })
-
+        states_by_episode[episode_id] = episode_states
+    _require(active_total == len(cached) == 1769, "FULL_DEVELOPMENT_NODE_COUNT_DRIFT")
     node_ids = tuple(item["decision_node_id"] for item in decision_nodes)
     episode_ids = tuple(sorted(states_by_episode))
     cohort_hash = content_id({

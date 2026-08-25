@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from model.common.enums import EvidenceClass, SupportState
 from model.M2.contracts import (
     COMPONENTS,
@@ -51,20 +53,24 @@ COMPONENT_INPUT_CONTRACTS = {
         ),
         ComponentInputContract(
             component_id="P_itinerary",
-            critical_inputs=("itinerary_disruption_events",),
+            critical_inputs=("d_to_minutes", "itinerary_buffer_reference"),
             irrelevant_inputs=tuple(
                 name
                 for name in _CONTEXT_FIELDS
-                if name != "itinerary_disruption_events"
+                if name not in {"d_to_minutes", "itinerary_buffer_reference"}
             ),
         ),
         ComponentInputContract(
             component_id="P_service",
-            critical_inputs=("d_to_minutes", "service_policy_reference"),
+            critical_inputs=(
+                "d_to_minutes",
+                "service_policy_reference",
+                "passenger_exposure",
+            ),
             irrelevant_inputs=tuple(
                 name
                 for name in _CONTEXT_FIELDS
-                if name != "service_policy_reference"
+                if name not in {"service_policy_reference", "passenger_exposure"}
             ),
         ),
         ComponentInputContract(
@@ -104,6 +110,31 @@ def _context_value(
     context: M2ScientificContext, name: str
 ) -> ScientificContextValue:
     return getattr(context, name)
+
+
+def _itinerary_disruption_events(
+    reference: ScientificContextValue | None, d_to: float | None
+) -> float | None:
+    """Scenario-level missed-connection events under ASSUMPTION_GROUNDED classes.
+
+    Classes are JSON-encoded ``[{"passenger_count": n, "buffer_minutes": b}]``.
+    The assumption is literature-parameterized (connection-buffer threshold);
+    it is not empirical evidence.
+    """
+    if reference is None or reference.value is None:
+        return None
+    if reference.support_state is SupportState.ABSTAIN:
+        return None
+    if d_to is None:
+        return None
+    classes = json.loads(str(reference.value))
+    return float(
+        sum(
+            float(item["passenger_count"])
+            * (1.0 if d_to > float(item["buffer_minutes"]) else 0.0)
+            for item in classes
+        )
+    )
 
 
 def _abstain(
@@ -205,6 +236,9 @@ def native_quantities(
                 missing.append(f"{name}_ABSTAIN")
         for name in context_names:
             item = ctx(name)
+            if item is None:
+                missing.append(f"{name}_MISSING")
+                continue
             support_states.append(item.support_state)
             provenance.extend(item.provenance)
             reference_sources.append(item.reference_source or item.object_id)
@@ -313,32 +347,30 @@ def native_quantities(
         ),
         publish(
             "P_itinerary",
-            lambda: float(ctx("itinerary_disruption_events").value),
+            lambda: _itinerary_disruption_events(
+                ctx("itinerary_buffer_reference"), d_to
+            ),
             "events",
-            "supported_itinerary_disruption_events",
-            (),
-            ("itinerary_disruption_events",),
-            source_type=ctx("itinerary_disruption_events").source_type,
+            "missed_connection_threshold_events",
+            (("d_to_minutes", d_to, d_to_support),),
+            ("itinerary_buffer_reference",),
+            EvidenceClass.SCENARIO_PARAMETER,
+            SourceType.LITERATURE,
         ),
         publish(
             "P_service",
-            lambda: 1.0
-            if d_to >= float(ctx("service_policy_reference").value)
+            lambda: float(ctx("passenger_exposure").value)
+            if (
+                d_to is not None
+                and d_to >= float(ctx("service_policy_reference").value)
+            )
             else 0.0,
             "threshold_events",
             "service_policy_threshold",
             (("d_to_minutes", d_to, d_to_support),),
-            ("service_policy_reference",),
-            EvidenceClass.SCENARIO_PARAMETER
-            if ctx("service_policy_reference").evidence_class
-            is EvidenceClass.SCENARIO_PARAMETER
-            else EvidenceClass.DERIVED,
-            (
-                SourceType.HYBRID
-                if ctx("service_policy_reference").support_state
-                is not SupportState.ABSTAIN
-                else ctx("service_policy_reference").source_type
-            ),
+            ("service_policy_reference", "passenger_exposure"),
+            ctx("service_policy_reference").evidence_class,
+            ctx("service_policy_reference").source_type,
         ),
         publish(
             "R_operating",

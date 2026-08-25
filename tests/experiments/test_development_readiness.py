@@ -1,4 +1,4 @@
-from exp.readiness import build_development_readiness
+from exp.workflows.readiness import build_development_readiness
 
 
 def test_development_readiness_reflects_m2_m3_freezes():
