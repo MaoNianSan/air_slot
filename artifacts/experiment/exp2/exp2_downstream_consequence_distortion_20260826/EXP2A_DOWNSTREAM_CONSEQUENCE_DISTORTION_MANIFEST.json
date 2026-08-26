@@ -1,0 +1,67 @@
+{
+  "adapter_sha256": "sha256:eb875e7fe8bf9a46026d712242d76363d315894c0435daa863783144b7ec68d6",
+  "bootstrap": {
+    "reps": 2000,
+    "seed": 20260825,
+    "unit": "episode"
+  },
+  "common_support_node_counts_by_component": {
+    "F_continuity": 1769,
+    "F_execution": 98,
+    "F_propagation": 0,
+    "P_itinerary": 0,
+    "P_service": 0,
+    "P_time": 0,
+    "R_operating": 0
+  },
+  "common_support_rule": "ALL_THREE_REPRESENTATIONS_ALL_SCENARIOS_FINITE_SUPPORTED_NO_RENORMALIZATION",
+  "comparisons": [
+    "POINT_MINUS_JOINT",
+    "MARGINAL_MINUS_JOINT"
+  ],
+  "components": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "cvar_alpha": 0.9,
+  "episode_value_row_count": 390,
+  "exclusion_counts": {
+    "COMPONENT_ABSTAIN": 21036
+  },
+  "execution_workers": 12,
+  "included_node_component_comparisons": 3734,
+  "interpretation": "REPRESENTATION_DIAGNOSTIC_NOT_ACTION_RANKING_OR_OPERATIONAL_RECOMMENDATION",
+  "m2_design_sha256": "sha256:931d13908975fafa627f633bd352876ae8f69872e8d994226b2ff3ea4695184c",
+  "m2_registry_sha256": "sha256:63c8318984bd11844dafdb7c5ca7357fcf7cfa8599af34e7901a2c118b3be1e6",
+  "node_count": 1769,
+  "operational_recommendation": false,
+  "paper_result": false,
+  "reference_artifact_hashes": {
+    "downstream_exposure": "sha256:b61b632131163b1d7d240a9475978247c0c98cfd28f86c80dfaa3af778c74538",
+    "passenger": "sha256:2afb257a3b9163ed1405e9847c94739b3beb6c6a4fabfccaa09bbb3d4ce32050",
+    "taxi": "sha256:12ca5e93a6f6f0dcfc0dfe217a14a132fea93811ecef94875a4042025a0d5b34",
+    "turnaround": "sha256:1b80ea32ae33bd383f68e233a4a0c49701ec426cd92fa512095a6fbdd889a440"
+  },
+  "representation_hash_count": 5307,
+  "safety": {
+    "DEVELOPMENT_TUNING": false,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false
+  },
+  "schema_version": "EXP2A_DOWNSTREAM_CONSEQUENCE_DISTORTION_V1_20260826",
+  "scope": "DEVELOPMENT_ONLY",
+  "source_artifact": "artifacts\\experiments\\exp2\\full_development_scenarios_v1\\M1_V2_FULL_DEVELOPMENT_TYPED_SCENARIOS.parquet",
+  "source_artifact_sha256": "sha256:2ce9650a82c2d51fb0b4404cab670716fadeb6dbb5f66fb44fc18b11d26dbe8d",
+  "source_manifest": "artifacts\\experiments\\exp2\\full_development_scenarios_v1\\M1_V2_FULL_DEVELOPMENT_TYPED_SCENARIO_MANIFEST.json",
+  "summary_row_count": 14,
+  "variants": [
+    "EXP2A_POINT",
+    "EXP2A_MARGINAL",
+    "EXP2A_JOINT"
+  ]
+}
