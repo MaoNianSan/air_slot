@@ -8,6 +8,7 @@ from exp.exp4.per_node_records import (
     _lead_time_bin,
     _lead_time_for,
 )
+from exp.exp4.final_test import TARGET_TO_LABEL, TARGET_TO_PUBLIC
 
 
 def test_lead_bin_floor_semantics():
@@ -60,3 +61,8 @@ def test_episode_bootstrap_deterministic_and_episode_level():
 def test_methods_and_bins_contract():
     assert METHODS == ("HISTORICAL", "LIGHTGBM", "RANDOM_FOREST", "STATE_AWARE_H32")
     assert LEAD_TIME_BINS == (0, 30, 60, 120, 180, 240, 300, 360, 420, 480)
+
+
+def test_final_test_predecessor_uses_internal_label_and_public_reporting_name():
+    assert TARGET_TO_LABEL["T_IB_REMAINING_HAZARD"] == "T_IB_REMAINING_HAZARD"
+    assert TARGET_TO_PUBLIC["T_IB_REMAINING_HAZARD"] == "T_IB_A00"

@@ -76,6 +76,32 @@ def test_bootstrap_is_deterministic_at_episode_unit() -> None:
     pd.testing.assert_frame_equal(first, second)
 
 
+def test_bootstrap_summary_emits_typed_component_level_support_rows() -> None:
+    supported = pd.DataFrame([
+        {
+            "episode_id": "e1", "component": "F_execution", "channel": "Flight",
+            "comparison": "POINT_MINUS_JOINT", "absolute_mean_distortion": 1.0,
+            "absolute_tail_distortion": 2.0, "n_nodes": 1,
+        },
+    ])
+    summary = bootstrap_summary(supported, reps=10, seed=BOOTSTRAP_SEED, excluded_counts={"P_service": 3})
+    row = summary.loc[
+        (summary["component"] == "F_execution")
+        & (summary["comparison"] == "POINT_MINUS_JOINT")
+    ].iloc[0]
+    assert row["support_status"] == "SUPPORTED_COMMON_FINITE_SUPPORT"
+    assert row["metric"] == "ABSOLUTE_COMPONENT_CU_DISTORTION"
+    assert row["cvar_0_90_distortion"] == row["tail_distortion"]
+    abstain = summary.loc[
+        (summary["component"] == "P_service")
+        & (summary["comparison"] == "MARGINAL_MINUS_JOINT")
+    ].iloc[0]
+    assert abstain["support_status"] == "ABSTAIN_NO_COMMON_SUPPORT"
+    assert abstain["N_episode"] == abstain["N_node"] == 0
+    assert pd.isna(abstain["metric"])
+    assert abstain["excluded_node_count"] == 3
+
+
 def test_adapted_row_preserves_identity_and_recomputes_dto() -> None:
     class Sample:
         scenario_id = 7

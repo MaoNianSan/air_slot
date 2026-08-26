@@ -1,5 +1,5 @@
 {
-  "artifact_hash": "sha256:13c766eef550edc1b2f1bacbb4ac86ecc7f28e133bb34dc60441983638012235",
+  "artifact_hash": "sha256:4ddbc095db8af0a36920f69dfb9cd28b7e22d7557f3d225607419d5ac6f6e48b",
   "cohort": {
     "cohort_hash": "sha256:55fbc74d40c94bbb63c3421f48696bfebf3496f472e912c4a9be52d51da2c03d",
     "episode_count": 128,
@@ -8,7 +8,7 @@
   },
   "dataset_id": "DATA2",
   "exp1a": {
-    "claim_scope": "DEVELOPMENT_CONDITIONAL_DIAGNOSTIC",
+    "claim_scope": "FINAL_TEST_CONDITIONAL_DIAGNOSTIC",
     "consequence_reformation": "per-variant re-aggregation from frozen M2 rows; FULL rows are never copied",
     "m4_gate_reason": "NOT_RUN_SHARED_M4_MAPPING_AND_REPLAY_GATE",
     "per_node_records": {
@@ -34,7 +34,7 @@
     },
     "reduced_context_rule": "scenario state + identity + timing + union(template.required_facts) + support provenance; raw weather / hidden history / realized outcomes / future information blocked",
     "sorting_diagnostic": {
-      "claim_scope": "DEVELOPMENT_CONDITIONAL_DIAGNOSTIC",
+      "claim_scope": "FINAL_TEST_CONDITIONAL_DIAGNOSTIC",
       "excluded_by_reason": {
         "EXCLUDED_SUPPORT_BELOW_THRESHOLD": 515
       },
@@ -164,7 +164,7 @@
     }
   },
   "exp1b": {
-    "claim_scope": "DEVELOPMENT_COMPARATOR_ONLY",
+    "claim_scope": "FINAL_TEST_COMPARATOR",
     "crps_rule": "ACTIVE_LABEL_AND_FINITE_DRAWS_ONLY",
     "lead_time_bins_minutes": [
       0,
@@ -180,7 +180,7 @@
     ],
     "lead_time_rule": "T_IB=realized remaining minutes; D_OB=planned schedule horizon; D_TX=NA_NO_PLANNED_WHEELS_OFF; NA is never interpolated",
     "paired": {
-      "claim_scope": "DEVELOPMENT_COMPARATOR_ONLY",
+      "claim_scope": "FINAL_TEST_COMPARATOR",
       "targets": {
         "D_OB": {
           "common_nodes_with_absolute_error": 1615,

@@ -1,0 +1,51 @@
+{
+  "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_VARIOGRAM_SCORES",
+  "artifact_hash": "sha256:833d7b967465485d370eeb108a76be9a25637d6f4f9b6c5441952508aba89bbf",
+  "bootstrap": {
+    "ci": "PERCENTILE_95",
+    "replicates": 2000,
+    "seed": 20260825,
+    "unit": "EPISODE"
+  },
+  "p": 0.5,
+  "paper_result": true,
+  "record_count": 5136,
+  "records": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2A_FINAL_TEST_VARIOGRAM_RECORDS.csv",
+  "representation_specific_inputs": true,
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 2,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": true,
+    "PARAMETER_RESELECTED": false
+  },
+  "scenario_artifact": "artifacts/paper_results_v2_final_test_rmb/scenarios/M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet",
+  "scenario_hash": "sha256:fd408c5e7910d039730a736cf716c1f501fd2dd29f328d8c96e6140ac90d8fa9",
+  "schema_version": "EXP2A_FINAL_TEST_VARIOGRAM_V1",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "source_scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "split": "FINAL_TEST",
+  "status": "COMPLETE",
+  "summary_rows": [
+    {
+      "ci_lower": 7.113333267727874,
+      "ci_upper": 15.27977061279443,
+      "episodes": 128,
+      "representation": "Point",
+      "variogram_score": 10.836933222070407
+    },
+    {
+      "ci_lower": 6.25911710169953,
+      "ci_upper": 14.01320701660503,
+      "episodes": 128,
+      "representation": "Marginal",
+      "variogram_score": 9.754944746528524
+    },
+    {
+      "ci_lower": 6.244380914789496,
+      "ci_upper": 13.986052465893492,
+      "episodes": 128,
+      "representation": "Joint",
+      "variogram_score": 9.734822746158644
+    }
+  ]
+}

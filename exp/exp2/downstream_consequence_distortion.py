@@ -1,4 +1,4 @@
-"""Development-only Exp2A downstream consequence-distortion materialization.
+"""Exp2A downstream consequence-distortion materialization.
 
 This is a representation diagnostic.  It maps the same frozen M1 Development
 scenario artifact through POINT, MARGINAL, and JOINT representations, then
@@ -91,6 +91,11 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
+def _json_records(frame: pd.DataFrame) -> list[dict[str, Any]]:
+    """Convert DataFrame output to finite JSON scalars, encoding missing as null."""
+    return json.loads(frame.to_json(orient="records"))
+
+
 def _valid_distribution(values: Iterable[Any], weights: Iterable[Any]) -> tuple[np.ndarray, np.ndarray]:
     value_array = np.asarray(tuple(values), dtype=float)
     weight_array = np.asarray(tuple(weights), dtype=float)
@@ -146,8 +151,10 @@ def bootstrap_summary(
 ) -> pd.DataFrame:
     columns = [
         "component", "channel", "comparison", "mean_distortion", "mean_ci_lower", "mean_ci_upper",
-        "tail_distortion", "tail_ci_lower", "tail_ci_upper", "N_episode", "N_node",
-        "excluded_node_count", "bootstrap_reps", "bootstrap_seed",
+        "tail_distortion", "tail_ci_lower", "tail_ci_upper",
+        "cvar_0_90_distortion", "cvar_0_90_ci_lower", "cvar_0_90_ci_upper",
+        "metric", "N_episode", "N_node", "excluded_node_count", "support_status",
+        "bootstrap_reps", "bootstrap_seed",
     ]
     if episode_values.empty:
         return pd.DataFrame(columns=columns)
@@ -167,9 +174,14 @@ def bootstrap_summary(
             "tail_distortion": float(cvars.mean()),
             "tail_ci_lower": float(np.quantile(cvar_boot, 0.025)),
             "tail_ci_upper": float(np.quantile(cvar_boot, 0.975)),
+            "cvar_0_90_distortion": float(cvars.mean()),
+            "cvar_0_90_ci_lower": float(np.quantile(cvar_boot, 0.025)),
+            "cvar_0_90_ci_upper": float(np.quantile(cvar_boot, 0.975)),
+            "metric": "ABSOLUTE_COMPONENT_CU_DISTORTION",
             "N_episode": int(group["episode_id"].nunique()),
             "N_node": int(group["n_nodes"].sum()),
             "excluded_node_count": int((excluded_counts or {}).get(keys[0], 0)),
+            "support_status": "SUPPORTED_COMMON_FINITE_SUPPORT",
             "bootstrap_reps": reps, "bootstrap_seed": seed,
         })
     present = {(item["component"], item["comparison"]) for item in records}
@@ -181,8 +193,12 @@ def bootstrap_summary(
                 "component": component, "channel": COMPONENT_CHANNELS[component],
                 "comparison": comparison, "mean_distortion": None,
                 "mean_ci_lower": None, "mean_ci_upper": None, "tail_distortion": None,
-                "tail_ci_lower": None, "tail_ci_upper": None, "N_episode": 0, "N_node": 0,
+                "tail_ci_lower": None, "tail_ci_upper": None,
+                "cvar_0_90_distortion": None, "cvar_0_90_ci_lower": None,
+                "cvar_0_90_ci_upper": None, "metric": None,
+                "N_episode": 0, "N_node": 0,
                 "excluded_node_count": int((excluded_counts or {}).get(component, 0)),
+                "support_status": "ABSTAIN_NO_COMMON_SUPPORT",
                 "bootstrap_reps": reps, "bootstrap_seed": seed,
             })
     return pd.DataFrame(records, columns=columns).sort_values(
@@ -277,9 +293,13 @@ def _map_variant(
     return [_compact(item) for item in mapped], representation.representation_hash
 
 
-def _build_mapping_state(root: Path) -> dict[str, Any]:
-    manifest = _load(root / SCENARIO_ROOT / M1_MANIFEST)
-    pre_inputs = _load(root / INPUT_ROOT / PRE_INPUTS)
+def _build_mapping_state(
+    root: Path, *, scenario_root: Path = SCENARIO_ROOT,
+    input_root: Path = INPUT_ROOT, m1_manifest_name: str = M1_MANIFEST,
+    m1_artifact_name: str = M1_ARTIFACT, pre_inputs_name: str = PRE_INPUTS,
+) -> dict[str, Any]:
+    manifest = _load(root / scenario_root / m1_manifest_name)
+    pre_inputs = _load(root / input_root / pre_inputs_name)
     bundle = load_data2_reference_bundle({
         name: _load(root / REFERENCE_ROOT / filename)
         for name, filename in REFERENCE_FILES.items()
@@ -288,7 +308,7 @@ def _build_mapping_state(root: Path) -> dict[str, Any]:
     return {
         "root": root,
         "artifact_version": str(manifest.get("schema_version", "M1_V2")),
-        "source_hash": _sha(root / SCENARIO_ROOT / M1_ARTIFACT),
+        "source_hash": _sha(root / scenario_root / m1_artifact_name),
         "bundle": bundle,
         "mapper": M2Mapper(
             FrozenData2CUNormalizationRegistry(registry),
@@ -296,16 +316,26 @@ def _build_mapping_state(root: Path) -> dict[str, Any]:
         ),
         "airports": _node_airports(pre_inputs),
         "assumption_freeze_id": load_assumption_freeze_id(root),
+        "scenario_count_per_node": int(manifest["scenario_count_per_node"]),
     }
 
 
-def _initialize_worker(root_text: str) -> None:
+def _initialize_worker(root_text: str, scenario_root_text: str, input_root_text: str,
+                       manifest_name: str, artifact_name: str, pre_inputs_name: str) -> None:
     global _WORKER_STATE
-    _WORKER_STATE = _build_mapping_state(Path(root_text))
+    _WORKER_STATE = _build_mapping_state(
+        Path(root_text), scenario_root=Path(scenario_root_text),
+        input_root=Path(input_root_text), m1_manifest_name=manifest_name,
+        m1_artifact_name=artifact_name, pre_inputs_name=pre_inputs_name,
+    )
 
 
 def _process_node(rows: list[dict[str, Any]], state: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[str]]:
-    _require(len(rows) == 250 and len({row["decision_node_id"] for row in rows}) == 1, "EXP2A_DOWNSTREAM_NODE_BATCH_INVALID")
+    _require(
+        len(rows) == state["scenario_count_per_node"]
+        and len({row["decision_node_id"] for row in rows}) == 1,
+        "EXP2A_DOWNSTREAM_NODE_BATCH_INVALID",
+    )
     node_records: list[dict[str, Any]] = []
     exclusions: list[dict[str, Any]] = []
     hashes: list[str] = []
@@ -375,20 +405,47 @@ def _process_node_worker(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any
     return _process_node(rows, _WORKER_STATE)
 
 
-def materialize(*, root: Path, output_root: Path | None = None, workers: int | None = None) -> dict[str, Path]:
+def materialize(
+    *, root: Path, output_root: Path | None = None, workers: int | None = None,
+    scenario_root: Path | None = None, input_root: Path | None = None,
+    final_test: bool = False,
+) -> dict[str, Path]:
     root = Path(root).resolve()
     output = (root / DEFAULT_OUTPUT if output_root is None else Path(output_root)).resolve()
+    if final_test:
+        scenario_root = Path(scenario_root or "artifacts/paper_results_v2_final_test_rmb/scenarios")
+        input_root = Path(input_root or "artifacts/experiment/final_test_inputs_v1")
+        m1_artifact, m1_manifest, pre_inputs = (
+            "M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet",
+            "FINAL_TEST_SCENARIO_MANIFEST.json",
+            "M1_V2_FINAL_TEST_INFERENCE_INPUTS.json",
+        )
+        scope, split = "FINAL_TEST_OUT_OF_TIME_2019_10_12", "FINAL_TEST"
+        artifact_prefix = "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION"
+    else:
+        scenario_root = Path(scenario_root or SCENARIO_ROOT)
+        input_root = Path(input_root or INPUT_ROOT)
+        m1_artifact, m1_manifest, pre_inputs = M1_ARTIFACT, M1_MANIFEST, PRE_INPUTS
+        scope, split = "DEVELOPMENT_ONLY", "DEVELOPMENT"
+        artifact_prefix = "EXP2A_DOWNSTREAM_COMPONENT"
     paths = {
-        "m1_artifact": root / SCENARIO_ROOT / M1_ARTIFACT,
-        "m1_manifest": root / SCENARIO_ROOT / M1_MANIFEST,
-        "pre_inputs": root / INPUT_ROOT / PRE_INPUTS,
+        "m1_artifact": root / scenario_root / m1_artifact,
+        "m1_manifest": root / scenario_root / m1_manifest,
+        "pre_inputs": root / input_root / pre_inputs,
         "m2_registry": root / M2_REGISTRY, "m2_design": root / M2_DESIGN,
         **{name: root / REFERENCE_ROOT / filename for name, filename in REFERENCE_FILES.items()},
     }
     _require(all(path.is_file() for path in paths.values()), "EXP2A_DOWNSTREAM_INPUT_MISSING")
     manifest = _load(paths["m1_manifest"])
-    _require("DEVELOPMENT" in str(manifest.get("scope", "")), "EXP2A_DOWNSTREAM_NOT_DEVELOPMENT")
-    _require(manifest.get("safety", {}).get("FINAL_TEST_ACCESS_COUNT", 0) == 0, "EXP2A_DOWNSTREAM_FINAL_TEST_FORBIDDEN")
+    if final_test:
+        _require(
+            manifest.get("scope") == scope
+            and manifest.get("safety", {}).get("FINAL_TEST_ACCESS_COUNT", 0) > 0,
+            "EXP2B_DOWNSTREAM_FINAL_TEST_SCOPE_INVALID",
+        )
+    else:
+        _require("DEVELOPMENT" in str(manifest.get("scope", "")), "EXP2A_DOWNSTREAM_NOT_DEVELOPMENT")
+        _require(manifest.get("safety", {}).get("FINAL_TEST_ACCESS_COUNT", 0) == 0, "EXP2A_DOWNSTREAM_FINAL_TEST_FORBIDDEN")
     design = _load(paths["m2_design"])
     _require(design["formal_aggregate_status"] == "FORMAL_AGGREGATE_UNRESOLVED", "EXP2A_DOWNSTREAM_M2_DESIGN_DRIFT")
     source_hash = _sha(paths["m1_artifact"])
@@ -404,10 +461,18 @@ def materialize(*, root: Path, output_root: Path | None = None, workers: int | N
         exclusions.extend(rejected)
         representation_hashes.update(hashes)
 
-    batches = (_scenario_rows(batch) for batch in table.iter_batches(batch_size=250))
+    scenario_count_per_node = int(manifest["scenario_count_per_node"])
+    batches = (
+        _scenario_rows(batch)
+        for batch in table.iter_batches(batch_size=scenario_count_per_node)
+    )
     processed = 0
     if worker_count == 1:
-        state = _build_mapping_state(root)
+        state = _build_mapping_state(
+            root, scenario_root=scenario_root, input_root=input_root,
+            m1_manifest_name=m1_manifest, m1_artifact_name=m1_artifact,
+            pre_inputs_name=pre_inputs,
+        )
         for rows in batches:
             collect(_process_node(rows, state))
             processed += 1
@@ -415,7 +480,8 @@ def materialize(*, root: Path, output_root: Path | None = None, workers: int | N
                 print(f"EXP2A_DOWNSTREAM_PROGRESS={processed}/{manifest['node_count']}", flush=True)
     else:
         with ProcessPoolExecutor(
-            max_workers=worker_count, initializer=_initialize_worker, initargs=(str(root),),
+            max_workers=worker_count, initializer=_initialize_worker,
+            initargs=(str(root), str(scenario_root), str(input_root), m1_manifest, m1_artifact, pre_inputs),
         ) as executor:
             while True:
                 group: list[list[dict[str, Any]]] = []
@@ -444,25 +510,46 @@ def materialize(*, root: Path, output_root: Path | None = None, workers: int | N
         mean_absolute_tail_distortion=("absolute_tail_distortion", "mean"),
     ) if not node_frame.empty else pd.DataFrame())
     output.mkdir(parents=True, exist_ok=True)
-    names = {
-        "node_parquet": "EXP2A_DOWNSTREAM_COMPONENT_NODE_RECORDS_DEVELOPMENT_ONLY.parquet",
-        "node_csv": "EXP2A_DOWNSTREAM_COMPONENT_NODE_RECORDS_DEVELOPMENT_ONLY.csv",
-        "episode_csv": "EXP2A_DOWNSTREAM_COMPONENT_EPISODE_VALUES_DEVELOPMENT_ONLY.csv",
-        "summary_csv": "EXP2A_DOWNSTREAM_COMPONENT_SUMMARY_DEVELOPMENT_ONLY.csv",
-        "stage_csv": "EXP2A_DOWNSTREAM_STAGE_SUMMARY_DEVELOPMENT_ONLY.csv",
-        "exclusions_csv": "EXP2A_DOWNSTREAM_EXCLUSIONS_DEVELOPMENT_ONLY.csv",
-        "manifest": "EXP2A_DOWNSTREAM_CONSEQUENCE_DISTORTION_MANIFEST.json",
-        "readme": "README.md",
-    }
+    if final_test:
+        names = {
+            "node_parquet": f"{artifact_prefix}_RECORDS.parquet",
+            "node_csv": f"{artifact_prefix}_RECORDS.csv",
+            "episode_csv": f"{artifact_prefix}_EPISODE_VALUES.csv",
+            "summary_csv": f"{artifact_prefix}_SUMMARY.csv",
+            "stage_csv": f"{artifact_prefix}_STAGE_SUMMARY.csv",
+            "exclusions_csv": f"{artifact_prefix}_EXCLUSIONS.csv",
+            "manifest": f"{artifact_prefix}_MANIFEST.json",
+            "readme": "README.md",
+        }
+    else:
+        names = {
+            "node_parquet": "EXP2A_DOWNSTREAM_COMPONENT_NODE_RECORDS_DEVELOPMENT_ONLY.parquet",
+            "node_csv": "EXP2A_DOWNSTREAM_COMPONENT_NODE_RECORDS_DEVELOPMENT_ONLY.csv",
+            "episode_csv": "EXP2A_DOWNSTREAM_COMPONENT_EPISODE_VALUES_DEVELOPMENT_ONLY.csv",
+            "summary_csv": "EXP2A_DOWNSTREAM_COMPONENT_SUMMARY_DEVELOPMENT_ONLY.csv",
+            "stage_csv": "EXP2A_DOWNSTREAM_STAGE_SUMMARY_DEVELOPMENT_ONLY.csv",
+            "exclusions_csv": "EXP2A_DOWNSTREAM_EXCLUSIONS_DEVELOPMENT_ONLY.csv",
+            "manifest": "EXP2A_DOWNSTREAM_CONSEQUENCE_DISTORTION_MANIFEST.json",
+            "readme": "README.md",
+        }
     node_frame.to_parquet(output / names["node_parquet"], index=False)
     node_frame.to_csv(output / names["node_csv"], index=False)
     episode_frame.to_csv(output / names["episode_csv"], index=False)
     summary_frame.to_csv(output / names["summary_csv"], index=False)
     stage_frame.to_csv(output / names["stage_csv"], index=False)
     pd.DataFrame(exclusions, columns=["episode_id", "decision_node_id", "component_id", "variant_id", "reason_code", "detail"]).to_csv(output / names["exclusions_csv"], index=False)
+    safety = (
+        {"FINAL_TEST_ACCESS_COUNT": 3, "PAPER_FULL_RUN": True,
+         "MODEL_RETRAINED": False, "PARAMETER_RESELECTED": False}
+        if final_test else SAFETY
+    )
     materialization_manifest = {
-        "schema_version": "EXP2A_DOWNSTREAM_CONSEQUENCE_DISTORTION_V1_20260826",
-        "scope": "DEVELOPMENT_ONLY", "paper_result": False, "operational_recommendation": False,
+        "schema_version": (
+            "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_V1"
+            if final_test else "EXP2A_DOWNSTREAM_CONSEQUENCE_DISTORTION_V1_20260826"
+        ),
+        "scope": scope, "source_scope": scope, "split": split,
+        "paper_result": bool(final_test), "operational_recommendation": False,
         "interpretation": "REPRESENTATION_DIAGNOSTIC_NOT_ACTION_RANKING_OR_OPERATIONAL_RECOMMENDATION",
         "source_artifact": str(paths["m1_artifact"].relative_to(root)), "source_artifact_sha256": source_hash,
         "source_manifest": str(paths["m1_manifest"].relative_to(root)), "m2_registry_sha256": _sha(paths["m2_registry"]),
@@ -482,17 +569,134 @@ def materialize(*, root: Path, output_root: Path | None = None, workers: int | N
             }
             if not node_frame.empty else {}
         ),
-        "representation_hash_count": len(representation_hashes), "safety": SAFETY,
+        "representation_hash_count": len(representation_hashes), "safety": safety,
         "execution_workers": worker_count,
+        "outputs": {
+            key: str((output / value).relative_to(root)).replace("\\", "/")
+            for key, value in names.items() if key != "readme"
+        },
+        "summary_rows": _json_records(summary_frame),
+        "distortion_definition": "ABSOLUTE_DIFFERENCE_OF_WITHIN_NODE_WEIGHTED_COMPONENT_MEAN_OR_CVAR_0_90",
+        "monetary_aggregation": "NOT_PERFORMED_COMPONENT_LEVEL_CU_ONLY",
+        "zero_fill": False,
+        "development_value_reused": False,
     }
+    materialization_manifest["artifact_hash"] = content_id(materialization_manifest)
     _write_json(output / names["manifest"], materialization_manifest)
     (output / names["readme"]).write_text(
-        "# Exp2A downstream consequence distortion\n\n"
-        "Development-only representation diagnostic. POINT and MARGINAL are compared with frozen JOINT M1 scenarios after M2 mapping. "
+        "# Exp2 downstream consequence distortion\n\n"
+        "Representation diagnostic. POINT and MARGINAL are compared with frozen JOINT M1 scenarios after M2 mapping. "
         "This output is not an action ranking, operational recommendation, or empirical effectiveness claim.\n",
         encoding="utf-8",
     )
     return {key: output / value for key, value in names.items()}
+
+
+def publish_existing_final_test_artifacts(
+    *, root: Path, output_root: Path,
+    scenario_root: Path = Path("artifacts/paper_results_v2_final_test_rmb/scenarios"),
+    input_root: Path = Path("artifacts/experiment/final_test_inputs_v1"),
+) -> dict[str, Path]:
+    """Publish a manifest from already-materialized Final Test records.
+
+    This recovery path is intentionally metadata-only.  It is used if a
+    completed component mapping reached its CSV/Parquet outputs but failed
+    while serializing null support metrics into the manifest.
+    """
+    root, output, scenario_root, input_root = (
+        Path(root).resolve(), Path(output_root).resolve(),
+        Path(scenario_root), Path(input_root),
+    )
+    names = {
+        "node_parquet": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_RECORDS.parquet",
+        "node_csv": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_RECORDS.csv",
+        "episode_csv": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_EPISODE_VALUES.csv",
+        "summary_csv": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_SUMMARY.csv",
+        "stage_csv": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_STAGE_SUMMARY.csv",
+        "exclusions_csv": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_EXCLUSIONS.csv",
+        "manifest": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_MANIFEST.json",
+        "readme": "README.md",
+    }
+    outputs = {key: output / value for key, value in names.items()}
+    required = [
+        outputs[key] for key in (
+            "node_parquet", "node_csv", "episode_csv", "summary_csv",
+            "stage_csv", "exclusions_csv",
+        )
+    ]
+    _require(all(path.is_file() for path in required), "EXP2B_FINAL_TEST_RECOVERY_OUTPUT_MISSING")
+    scenario_manifest_path = root / scenario_root / "FINAL_TEST_SCENARIO_MANIFEST.json"
+    input_manifest_path = root / input_root / "FINAL_TEST_INPUT_MANIFEST.json"
+    _require(
+        scenario_manifest_path.is_file() and input_manifest_path.is_file(),
+        "EXP2B_FINAL_TEST_RECOVERY_INPUT_MISSING",
+    )
+    scenario_manifest, input_manifest = _load(scenario_manifest_path), _load(input_manifest_path)
+    _require(
+        scenario_manifest.get("scope") == "FINAL_TEST_OUT_OF_TIME_2019_10_12"
+        and input_manifest.get("scope") == "FINAL_TEST_OUT_OF_TIME_2019_10_12"
+        and input_manifest.get("development_input_used") is False,
+        "EXP2B_FINAL_TEST_RECOVERY_SCOPE_INVALID",
+    )
+    summary_frame = pd.read_csv(outputs["summary_csv"])
+    node_frame = pd.read_parquet(outputs["node_parquet"], columns=["component", "decision_node_id"])
+    exclusions = pd.read_csv(outputs["exclusions_csv"])
+    component_nodes = {
+        component: int(
+            node_frame.loc[node_frame["component"] == component, "decision_node_id"].nunique()
+        )
+        for component in COMPONENTS
+    }
+    manifest = {
+        "schema_version": "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_V1",
+        "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+        "source_scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+        "split": "FINAL_TEST", "paper_result": True,
+        "operational_recommendation": False,
+        "interpretation": "REPRESENTATION_DIAGNOSTIC_NOT_ACTION_RANKING_OR_OPERATIONAL_RECOMMENDATION",
+        "source_artifact": str((root / scenario_root / "M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet").relative_to(root)).replace("\\", "/"),
+        "source_artifact_sha256": _sha(root / scenario_root / "M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet"),
+        "source_manifest": str(scenario_manifest_path.relative_to(root)).replace("\\", "/"),
+        "m2_registry_sha256": _sha(root / M2_REGISTRY),
+        "m2_design_sha256": _sha(root / M2_DESIGN),
+        "adapter_sha256": _sha(root / "exp/exp2/representation.py"),
+        "reference_artifact_hashes": {
+            name: _sha(root / REFERENCE_ROOT / filename)
+            for name, filename in REFERENCE_FILES.items()
+        },
+        "components": list(COMPONENTS), "variants": list(VARIANTS),
+        "comparisons": [item[1] for item in COMPARISONS], "cvar_alpha": ALPHA,
+        "bootstrap": {"reps": BOOTSTRAP_REPS, "seed": BOOTSTRAP_SEED, "unit": "episode"},
+        "common_support_rule": "ALL_THREE_REPRESENTATIONS_ALL_SCENARIOS_FINITE_SUPPORTED_NO_RENORMALIZATION",
+        "node_count": int(node_frame["decision_node_id"].nunique()),
+        "included_node_component_comparisons": int(len(node_frame)),
+        "exclusion_counts": dict(Counter(exclusions["reason_code"])) if not exclusions.empty else {},
+        "common_support_node_counts_by_component": component_nodes,
+        "representation_hash_count": None,
+        "safety": {
+            "FINAL_TEST_ACCESS_COUNT": 3, "PAPER_FULL_RUN": True,
+            "MODEL_RETRAINED": False, "PARAMETER_RESELECTED": False,
+        },
+        "execution_workers": None,
+        "outputs": {
+            key: str(path.relative_to(root)).replace("\\", "/")
+            for key, path in outputs.items() if key != "readme"
+        },
+        "summary_rows": _json_records(summary_frame),
+        "distortion_definition": "ABSOLUTE_DIFFERENCE_OF_WITHIN_NODE_WEIGHTED_COMPONENT_MEAN_OR_CVAR_0_90",
+        "monetary_aggregation": "NOT_PERFORMED_COMPONENT_LEVEL_CU_ONLY",
+        "zero_fill": False, "development_value_reused": False,
+        "recovery": "MANIFEST_ONLY_FROM_COMPLETED_FINAL_TEST_RECORDS",
+    }
+    manifest["artifact_hash"] = content_id(manifest)
+    _write_json(outputs["manifest"], manifest)
+    outputs["readme"].write_text(
+        "# Exp2 Final Test downstream consequence distortion\n\n"
+        "Final Test component-level CU diagnostic. No RMB aggregation is performed; "
+        "each component has independent common-support status.\n",
+        encoding="utf-8",
+    )
+    return outputs
 
 
 def main() -> None:
@@ -500,8 +704,15 @@ def main() -> None:
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--workers", type=int)
+    parser.add_argument("--scenario-root", type=Path)
+    parser.add_argument("--input-root", type=Path)
+    parser.add_argument("--final-test", action="store_true")
     args = parser.parse_args()
-    paths = materialize(root=args.root, output_root=args.output_root, workers=args.workers)
+    paths = materialize(
+        root=args.root, output_root=args.output_root, workers=args.workers,
+        scenario_root=args.scenario_root, input_root=args.input_root,
+        final_test=args.final_test,
+    )
     print(json.dumps({key: str(value) for key, value in paths.items()}, indent=2))
 
 

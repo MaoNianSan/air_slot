@@ -21,6 +21,16 @@ from model.common.identity import content_id
 
 SCOPE = "FINAL_TEST_OUT_OF_TIME_2019_10_12"
 MODEL_ROOT = Path("artifacts/experiments/exp4/full_development_v1/models")
+TARGET_TO_LABEL = {
+    "T_IB_REMAINING_HAZARD": "T_IB_REMAINING_HAZARD",
+    "D_OB": "D_OB",
+    "D_TX": "D_TX",
+}
+TARGET_TO_PUBLIC = {
+    "T_IB_REMAINING_HAZARD": "T_IB_A00",
+    "D_OB": "D_OB",
+    "D_TX": "D_TX",
+}
 
 
 def _require(condition: bool, code: str) -> None:
@@ -127,13 +137,13 @@ def run(*, root: Path, input_root: Path, scenario_root: Path,
         lgbm_samples[target] = np.clip(point[:, None] + residuals[None, :], 0.0, None)
 
     records: list[dict[str, Any]] = []
-    target_to_label = {"T_IB_REMAINING_HAZARD": "T_IB_A00", "D_OB": "D_OB", "D_TX": "D_TX"}
     for index, item in enumerate(inputs):
         node_id, episode_id = item["decision_node_id"], item["episode_id"]
         pre, decision_time = pre_by_node[node_id], item.get("decision_time")
         for target in INTERNAL_TARGETS:
-            public_target = target_to_label[target]
-            label = labels_by_node.get((node_id, public_target), {})
+            label_name = TARGET_TO_LABEL[target]
+            public_target = TARGET_TO_PUBLIC[target]
+            label = labels_by_node.get((node_id, label_name), {})
             observed = label.get("exact_minutes") if label.get("active") else None
             observed = None if observed is None else float(observed)
             fixed_samples = np.asarray(historical["targets"][target]["empirical_samples"], dtype=np.float64)
@@ -199,6 +209,12 @@ def run(*, root: Path, input_root: Path, scenario_root: Path,
             "crps_episode_count": 0 if crps_bootstrap is None else crps_bootstrap["n_episodes"],
             "crps_status": "NA_NOT_SAVED_BY_M1" if (method == "STATE_AWARE_H32" and target in {"D_OB", "D_TX"}) else ("SUPPORTED" if crps_bootstrap is not None else "NA_NO_VALID_SUPPORT"),
         }
+    for method in ("HISTORICAL", "LIGHTGBM", "RANDOM_FOREST", "STATE_AWARE_H32"):
+        predecessor = aggregate[f"{method}:T_IB_A00"]
+        _require(
+            predecessor["mae_node_count"] > 0 and predecessor["mae_episode_count"] > 0,
+            "EXP4_FINAL_TEST_T_IB_A00_SUPPORT_MISSING",
+        )
     safety = {"FINAL_TEST_ACCESS_COUNT": sum(1 for name in ("manifest", "inputs", "labels", "scenarios") if paths[name].is_file()),
               "PAPER_FULL_RUN": True, "MODEL_RETRAINED": False, "PARAMETER_RESELECTED": False}
     metrics = {"schema_version": "EXP4_FINAL_TEST_METRICS_V1", "status": "COMPLETE",

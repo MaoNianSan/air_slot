@@ -1,5 +1,5 @@
 {
-  "artifact_hash": "sha256:0ff83b712c72373f27ed15112bfc408147a859bd10fcd0d163978642ca9cd8f5",
+  "artifact_hash": "sha256:95c2605f40a9449d9ddce3592ca8a82867a8dfcb60ce93ce162ae7ca262ef422",
   "decision_node_count": 1712,
   "end_date": "2019-12-31",
   "episode_count": 128,
@@ -19,7 +19,7 @@
     "path": "registries/m4_rmb_mapping_v1.json"
   },
   "safety": {
-    "FINAL_TEST_ACCESS_COUNT": 21,
+    "FINAL_TEST_ACCESS_COUNT": 26,
     "MODEL_RETRAINED": false,
     "PAPER_FULL_RUN": true,
     "PARAMETER_RESELECTED": false
@@ -34,20 +34,25 @@
         "manifest": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1_FINAL_TEST_MANIFEST.json"
       },
       "exp2a": {
-        "metrics": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2_FINAL_TEST_METRICS.json",
-        "summary": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json"
+        "contrasts": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2A_FINAL_TEST_VARIOGRAM_CONTRASTS.json",
+        "records": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2A_FINAL_TEST_VARIOGRAM_RECORDS.csv",
+        "representation_specific_inputs": true,
+        "summary": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2A_FINAL_TEST_VARIOGRAM_SUMMARY.json"
       },
       "exp2b": {
-        "manifest": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2B_FINAL_TEST_RMB_SUPPORT.json",
-        "reason": "MONETARY_COMPONENT_NOT_IN_SCOPE"
+        "manifest": "artifacts/paper_results_v2_final_test_rmb/exp2/downstream_distortion/EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_MANIFEST.json",
+        "records": "artifacts/paper_results_v2_final_test_rmb/exp2/downstream_distortion/EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_RECORDS.parquet",
+        "summary": "artifacts/paper_results_v2_final_test_rmb/exp2/downstream_distortion/EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_SUMMARY.csv",
+        "support_policy": "COMPONENT_LEVEL_COMMON_SUPPORT_OR_TYPED_ABSTAIN_NO_COMMON_SUPPORT"
       },
       "exp3": {
         "final_test_access_count": 3,
         "manifest": "artifacts/paper_results_v2_final_test_rmb/exp3/EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST.json"
       },
       "exp4": {
-        "final_test_access_count": 4,
-        "manifest": "artifacts/paper_results_v2_final_test_rmb/exp4/EXP4_FINAL_TEST_EXECUTION_MANIFEST.json"
+        "manifest": "artifacts/paper_results_v2_final_test_rmb/exp4/EXP4_FINAL_TEST_EXECUTION_MANIFEST.json",
+        "predecessor_internal_label": "T_IB_REMAINING_HAZARD",
+        "predecessor_public_target": "T_IB_A00"
       },
       "preflight": {
         "checks": [
@@ -108,7 +113,7 @@
     },
     "exp1": "PASS",
     "exp2a": "PASS",
-    "exp2b": "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE",
+    "exp2b": "PASS",
     "exp3": "PASS",
     "exp4": "PASS",
     "preflight": "PASS",
@@ -119,9 +124,9 @@
     "schema_version": "AIR_SLOT_FINAL_TEST_RMB_RUN_STATUS_V1",
     "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
     "support_gate": "PASS",
-    "updated_at": "2026-08-26T17:03:40+00:00"
+    "updated_at": "2026-08-26T18:47:52+00:00"
   },
   "start_date": "2019-10-01",
-  "starting_head": "bbf8388ca95a25ed392ce6783206f3440c95a6c8",
+  "starting_head": "e49efa1e54046e214f635a6ef99a460da11feb36",
   "status": "COMPLETE"
 }

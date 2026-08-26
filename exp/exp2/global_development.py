@@ -13,8 +13,9 @@ from typing import Any
 
 import pyarrow as pa
 import pyarrow.parquet as pq
+import numpy as np
 
-from exp.common.metrics_v2 import variogram_score
+from exp.exp2.representation import ScenarioRepresentationAdapter
 from exp.exp2.tail_aware_brier import _event, _observed, _point_index, _source_pairs
 from exp.exp2.tail_scores import (
     Q_MAX_MINUTES,
@@ -47,6 +48,11 @@ SCENARIO_ROOT = Path("artifacts/experiments/exp2/full_development_scenarios_v1")
 INPUT_ROOT = Path("artifacts/experiment/full_development_inputs_v1")
 DEFAULT_OUTPUT = Path("artifacts/experiments/exp2/full_development_v1")
 VARIANTS = ("EXP2A_POINT", "EXP2A_MARGINAL", "EXP2A_JOINT")
+VARIOGRAM_REPLICATES = 2000
+VARIOGRAM_SEED = 20260825
+VARIOGRAM_REPRESENTATION_LABELS = {
+    "POINT": "Point", "MARGINAL": "Marginal", "JOINT": "Joint",
+}
 FIVE_ANCHOR_COMPONENTS = (
     "F_continuity", "F_execution", "F_propagation", "P_time", "R_operating",
 )
@@ -260,10 +266,274 @@ def _variogram_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "value": None if not episode_means else mean(episode_means),
         "support_status": "SUPPORTED_FINITE_TERMS_ONLY",
         "scope": "FINITE_SUPPORT_PREDICTIVE_AND_OBSERVED_TERMS_ONLY",
-        "supported_nodes": len(rows),
+        "supported_nodes": sum(row["value"] is not None for row in rows),
         "supported_episodes": len(by_episode),
         "abstain_reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
     }
+
+
+def _target_envelope(row: dict[str, Any], target: str) -> dict[str, Any] | None:
+    return next(
+        (item for item in row["target_envelopes"] if item["target_name"] == target),
+        None,
+    )
+
+
+def _finite_variant_draws(
+    source_rows: list[dict[str, Any]], variant: str,
+) -> tuple[list[dict[str, float]], dict[str, Any]]:
+    """Return the frozen representation-specific finite (D_OB, D_TX) draws.
+
+    ``ScenarioRepresentationAdapter`` is the authoritative Point/Marginal/Joint
+    transform.  Finite support remains tied to the original per-field M1
+    envelope lineage: a marginal draw is eligible only when the source draw of
+    *each* scored primitive is finite, rather than by silently reweighting or
+    substituting a different scenario.
+    """
+    adapter = ScenarioRepresentationAdapter(
+        source_rows,
+        artifact_version="FINAL_TEST_M1_V2_TYPED_SCENARIOS",
+    )
+    representation = adapter.transform(variant)
+    by_scenario_id = {str(row["scenario_id"]): row for row in source_rows}
+    signature_rows: list[dict[str, Any]] = []
+    draws: list[dict[str, float]] = []
+    for sample in representation.samples:
+        source_ids = {
+            target: str(sample.field_source_scenario_ids[target])
+            for target in ("D_OB", "D_TX")
+        }
+        signature_rows.append({
+            "scenario_id": str(sample.scenario_id),
+            "scenario_weight": float(sample.scenario_weight),
+            "R_IB": sample.R_IB,
+            "D_OB": sample.D_OB,
+            "D_TX": sample.D_TX,
+            "field_source_scenario_ids": source_ids,
+        })
+        valid = sample.D_OB is not None and sample.D_TX is not None
+        for target, value in (("D_OB", sample.D_OB), ("D_TX", sample.D_TX)):
+            source = by_scenario_id.get(source_ids[target])
+            envelope = None if source is None else _target_envelope(source, target)
+            valid = bool(
+                valid
+                and value is not None
+                and envelope is not None
+                and envelope.get("class_id") != "OVERFLOW_TAIL"
+                and envelope.get("scalar_minutes") is not None
+            )
+        if valid:
+            draws.append({"D_OB": float(sample.D_OB), "D_TX": float(sample.D_TX)})
+    metadata = {
+        "representation": VARIOGRAM_REPRESENTATION_LABELS[variant.removeprefix("EXP2A_")],
+        "representation_hash": representation.representation_hash,
+        "representation_input_hash": content_id({
+            "variant": variant,
+            "samples": signature_rows,
+        }),
+        "representation_input_draw_count": len(signature_rows),
+        "finite_draw_count": len(draws),
+    }
+    return draws, metadata
+
+
+def _compute_variogram_records(
+    *, scenario_path: Path, labels_by_node: dict[str, list[dict[str, Any]]],
+    scenario_count_per_node: int,
+) -> list[dict[str, Any]]:
+    """Score Point, Marginal, and Joint separately for every Final Test node."""
+    # Imported lazily because closure reuses this module's scenario decoder.
+    # The frozen score and summary definitions remain single-source in closure.
+    from exp.exp2.closure import _variogram_score
+
+    records: list[dict[str, Any]] = []
+    parquet = pq.ParquetFile(scenario_path)
+    for batch in parquet.iter_batches(batch_size=scenario_count_per_node):
+        source_rows = _scenario_rows(batch)
+        node_ids = {row["decision_node_id"] for row in source_rows}
+        _require(
+            len(source_rows) == scenario_count_per_node and len(node_ids) == 1,
+            "EXP2_VARIOGRAM_SCENARIO_NODE_BATCH_INVALID",
+        )
+        node_id = next(iter(node_ids))
+        label_map = {row["target_name"]: row for row in labels_by_node.get(node_id, [])}
+        ob_label, tx_label = label_map.get("D_OB"), label_map.get("D_TX")
+        ob_value = None if ob_label is None or not ob_label.get("active") else ob_label.get("exact_minutes")
+        tx_value = None if tx_label is None or not tx_label.get("active") else tx_label.get("exact_minutes")
+        observation_is_finite = (
+            ob_value is not None
+            and tx_value is not None
+            and float(ob_value) < Q_MAX_MINUTES["D_OB"]
+            and float(tx_value) < Q_MAX_MINUTES["D_TX"]
+        )
+        for variant in VARIANTS:
+            draws, metadata = _finite_variant_draws(source_rows, variant)
+            value = (
+                _variogram_score(
+                    np.asarray([[row["D_OB"], row["D_TX"]] for row in draws], dtype=float),
+                    (float(ob_value), float(tx_value)),
+                )
+                if observation_is_finite and draws else None
+            )
+            records.append({
+                "episode_id": source_rows[0]["episode_id"],
+                "decision_node_id": node_id,
+                "representation": metadata["representation"],
+                "variogram_score": value,
+                "support_status": (
+                    "SUPPORTED_FINITE_TERMS_ONLY"
+                    if value is not None else "ABSTAIN_NO_FINITE_PREDICTIVE_OR_OBSERVED_TERM"
+                ),
+                **metadata,
+            })
+    return records
+
+
+def _summarize_variogram_records(
+    records: list[dict[str, Any]],
+) -> tuple[Any, Any]:
+    import pandas as pd
+    from exp.exp2.closure import exp2_variogram_summaries
+
+    frame = pd.DataFrame(records)
+    supported = frame.loc[frame["variogram_score"].notna()].copy()
+    _require(not supported.empty, "EXP2_VARIOGRAM_NO_FINITE_FINAL_TEST_SCORES")
+    episode_values = (
+        supported.groupby(["episode_id", "representation"], as_index=False)["variogram_score"]
+        .mean()
+        .sort_values(["representation", "episode_id"], kind="stable")
+    )
+    return exp2_variogram_summaries(episode_values, replicates=VARIOGRAM_REPLICATES)
+
+
+def _variogram_metric_entries(
+    records: list[dict[str, Any]], summary: Any,
+) -> dict[str, dict[str, Any]]:
+    import pandas as pd
+
+    frame = pd.DataFrame(records)
+    output: dict[str, dict[str, Any]] = {}
+    for variant in VARIANTS:
+        representation = VARIOGRAM_REPRESENTATION_LABELS[variant.removeprefix("EXP2A_")]
+        row = summary.loc[summary["representation"] == representation].iloc[0]
+        subset = frame.loc[frame["representation"] == representation]
+        supported = subset.loc[subset["variogram_score"].notna()]
+        output[variant] = {
+            "value": float(row["variogram_score"]),
+            "ci_lower": float(row["ci_lower"]),
+            "ci_upper": float(row["ci_upper"]),
+            "support_status": "SUPPORTED_FINITE_TERMS_ONLY",
+            "scope": "FINITE_SUPPORT_PREDICTIVE_AND_OBSERVED_TERMS_ONLY",
+            "supported_nodes": int(len(supported)),
+            "supported_episodes": int(supported["episode_id"].nunique()),
+            "abstain_reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+            "representation_specific_input_hashes": sorted(
+                set(supported["representation_input_hash"])
+            ),
+        }
+    return output
+
+
+def _atomic_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    with temporary.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+    temporary.replace(path)
+
+
+def _write_final_test_variogram_artifacts(
+    *, root: Path, output_root: Path, scenario_path: Path,
+    records: list[dict[str, Any]], summary: Any, contrasts: Any,
+) -> dict[str, Path]:
+    records_path = output_root / "EXP2A_FINAL_TEST_VARIOGRAM_RECORDS.csv"
+    summary_path = output_root / "EXP2A_FINAL_TEST_VARIOGRAM_SUMMARY.json"
+    contrasts_path = output_root / "EXP2A_FINAL_TEST_VARIOGRAM_CONTRASTS.json"
+    fieldnames = [
+        "episode_id", "decision_node_id", "representation", "variogram_score",
+        "support_status", "representation_hash", "representation_input_hash",
+        "representation_input_draw_count", "finite_draw_count",
+    ]
+    _atomic_csv(records_path, records, fieldnames)
+    common = {
+        "schema_version": "EXP2A_FINAL_TEST_VARIOGRAM_V1",
+        "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+        "source_scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+        "split": "FINAL_TEST",
+        "paper_result": True,
+        "p": 0.5,
+        "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_VARIOGRAM_SCORES",
+        "bootstrap": {
+            "unit": "EPISODE", "replicates": VARIOGRAM_REPLICATES,
+            "seed": VARIOGRAM_SEED, "ci": "PERCENTILE_95",
+        },
+        "scenario_artifact": str(scenario_path.relative_to(root)).replace("\\", "/"),
+        "scenario_hash": _sha(scenario_path),
+        "records": str(records_path.relative_to(root)).replace("\\", "/"),
+        "record_count": len(records),
+        "representation_specific_inputs": True,
+        "safety": {
+            "FINAL_TEST_ACCESS_COUNT": 2,
+            "PAPER_FULL_RUN": True,
+            "MODEL_RETRAINED": False,
+            "PARAMETER_RESELECTED": False,
+        },
+    }
+    summary_payload = {**common, "status": "COMPLETE", "summary_rows": summary.to_dict(orient="records")}
+    summary_payload["artifact_hash"] = content_id(summary_payload)
+    _write(summary_path, summary_payload)
+    contrast_payload = {**common, "status": "COMPLETE", "contrast_rows": contrasts.to_dict(orient="records")}
+    contrast_payload["artifact_hash"] = content_id(contrast_payload)
+    _write(contrasts_path, contrast_payload)
+    return {"records": records_path, "summary": summary_path, "contrasts": contrasts_path}
+
+
+def materialize_final_test_variogram(
+    *, root: Path, scenario_root: Path, input_root: Path, output_root: Path,
+) -> dict[str, Path]:
+    """Repair Exp2A Final Test variograms without re-running M2 or Exp1."""
+    root, scenario_root, input_root, output_root = (
+        path.resolve() for path in (root, scenario_root, input_root, output_root)
+    )
+    manifest_path = scenario_root / "FINAL_TEST_SCENARIO_MANIFEST.json"
+    labels_path = input_root / "M1_V2_FINAL_TEST_LABELS.json"
+    metrics_path = output_root / "EXP2_FINAL_TEST_METRICS.json"
+    execution_manifest_path = output_root / "EXP2_FINAL_TEST_EXECUTION_MANIFEST.json"
+    _require(
+        all(path.is_file() for path in (manifest_path, labels_path, metrics_path, execution_manifest_path)),
+        "EXP2_FINAL_TEST_VARIOGRAM_INPUT_MISSING",
+    )
+    scenario_manifest, labels, metrics, execution_manifest = map(
+        _load, (manifest_path, labels_path, metrics_path, execution_manifest_path)
+    )
+    _require(
+        scenario_manifest.get("scope") == "FINAL_TEST_OUT_OF_TIME_2019_10_12"
+        and labels.get("development_input_used") is False
+        and metrics.get("scope") == "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+        "EXP2_FINAL_TEST_VARIOGRAM_SCOPE_INVALID",
+    )
+    scenario_entry = scenario_manifest["models"]["M1_V2_GRU_H32"]
+    scenario_path = root / scenario_entry["artifact"]
+    _require(_sha(scenario_path) == scenario_entry["artifact_hash"], "EXP2_FINAL_TEST_VARIOGRAM_SCENARIO_HASH_MISMATCH")
+    labels_by_node: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in labels["labels"]:
+        labels_by_node[row["decision_node_id"]].append(row)
+    records = _compute_variogram_records(
+        scenario_path=scenario_path,
+        labels_by_node=labels_by_node,
+        scenario_count_per_node=int(scenario_manifest["scenario_count_per_node"]),
+    )
+    summary, contrasts = _summarize_variogram_records(records)
+    paths = _write_final_test_variogram_artifacts(
+        root=root, output_root=output_root, scenario_path=scenario_path,
+        records=records, summary=summary, contrasts=contrasts,
+    )
+    # Exp3 is frozen against the original M2 consequence execution manifest.
+    # These corrected Exp2A diagnostics are an additive overlay sourced directly
+    # from the frozen Final Test scenario/label artifacts; therefore neither the
+    # M2 execution manifest nor its hash is mutated.
+    return {**paths, "metrics": metrics_path, "manifest": execution_manifest_path}
 
 
 def _build_manifest(
@@ -414,7 +684,9 @@ def run(
     seven_status: Counter[str] = Counter()
     brier_rows: dict[str, list[dict[str, Any]]] = {variant: [] for variant in VARIANTS}
     crps_rows: dict[str, list[dict[str, Any]]] = {variant: [] for variant in VARIANTS}
-    variogram_rows: list[dict[str, Any]] = []
+    variogram_rows: dict[str, list[dict[str, Any]]] = {
+        variant: [] for variant in VARIANTS
+    }
     node_count = 0
     row_count = 0
     reference_lineage = tuple(bundle.reference_ids.values())
@@ -502,40 +774,37 @@ def run(
                             "target": target,
                             **scores,
                         })
-            finite_draws = []
-            for row in source_rows:
-                envs = {item["target_name"]: item for item in row["target_envelopes"]}
-                ob_env, tx_env = envs.get("D_OB"), envs.get("D_TX")
-                if (
-                    ob_env is not None and tx_env is not None
-                    and ob_env.get("class_id") != "OVERFLOW_TAIL"
-                    and tx_env.get("class_id") != "OVERFLOW_TAIL"
-                    and ob_env.get("scalar_minutes") is not None
-                    and tx_env.get("scalar_minutes") is not None
-                ):
-                    finite_draws.append({
-                        "D_OB": float(ob_env["scalar_minutes"]),
-                        "D_TX": float(tx_env["scalar_minutes"]),
-                    })
             ob_observed = label_map.get("D_OB")
             tx_observed = label_map.get("D_TX")
-            ob_value = None if ob_observed is None else ob_observed.get("exact_minutes")
-            tx_value = None if tx_observed is None else tx_observed.get("exact_minutes")
-            if (
-                finite_draws and ob_value is not None and tx_value is not None
+            ob_value = (
+                None if ob_observed is None or not ob_observed.get("active")
+                else ob_observed.get("exact_minutes")
+            )
+            tx_value = (
+                None if tx_observed is None or not tx_observed.get("active")
+                else tx_observed.get("exact_minutes")
+            )
+            observation_is_finite = (
+                ob_value is not None and tx_value is not None
                 and float(ob_value) < Q_MAX_MINUTES["D_OB"]
                 and float(tx_value) < Q_MAX_MINUTES["D_TX"]
-            ):
-                variogram_value = variogram_score(
-                    finite_draws, {"D_OB": float(ob_value), "D_TX": float(tx_value)},
+            )
+            for variant in VARIANTS:
+                draws, metadata = _finite_variant_draws(source_rows, variant)
+                from exp.exp2.closure import _variogram_score
+                variogram_value = (
+                    _variogram_score(
+                        np.asarray([[row["D_OB"], row["D_TX"]] for row in draws], dtype=float),
+                        (float(ob_value), float(tx_value)),
+                    )
+                    if observation_is_finite and draws else None
                 )
-            else:
-                variogram_value = None
-            variogram_rows.append({
-                "episode_id": source_rows[0]["episode_id"],
-                "decision_node_id": node_id,
-                "value": variogram_value,
-            })
+                variogram_rows[variant].append({
+                    "episode_id": source_rows[0]["episode_id"],
+                    "decision_node_id": node_id,
+                    "value": variogram_value,
+                    **metadata,
+                })
             node_count += 1
             row_count += len(parquet_rows)
     finally:
@@ -550,7 +819,12 @@ def run(
         for row in rows:
             by_episode[row["episode_id"]].append(float(row["brier"]))
         episode_means = [mean(values) for values in by_episode.values()]
-        variogram = _variogram_metrics(variogram_rows)
+        variogram = _variogram_metrics(variogram_rows[variant])
+        variogram["representation_specific_input_hashes"] = sorted({
+            row["representation_input_hash"]
+            for row in variogram_rows[variant]
+            if row["value"] is not None
+        })
         metrics[variant] = {
             "tail_aware_brier": None if not episode_means else mean(episode_means),
             "supported_node_count": len(rows),
@@ -606,10 +880,22 @@ def run(
     )
     manifest_path = output_root / manifest_name
     _write(manifest_path, manifest)
+    if final_test:
+        # The Final Test record/summary/contrast artifacts are materialized
+        # from the same frozen scenarios and labels, without recomputing M2.
+        repaired = materialize_final_test_variogram(
+            root=root, scenario_root=scenario_root, input_root=input_root,
+            output_root=output_root,
+        )
     return {
         "manifest": manifest_path, "metrics": metrics_path,
         "consequences": consequence_path, "table": table_path,
         "interpretation": interpretation_path,
+        **({
+            "variogram_records": repaired["records"],
+            "variogram_summary": repaired["summary"],
+            "variogram_contrasts": repaired["contrasts"],
+        } if final_test else {}),
     }
 
 

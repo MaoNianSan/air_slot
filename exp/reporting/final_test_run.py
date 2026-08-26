@@ -51,6 +51,24 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
+def _final_test_claim_metadata(payload: Any) -> Any:
+    """Migrate reporting-only scope strings without changing Exp1 numerics."""
+    replacements = {
+        "DEVELOPMENT_CONDITIONAL_DIAGNOSTIC": "FINAL_TEST_CONDITIONAL_DIAGNOSTIC",
+        "DEVELOPMENT_COMPARATOR_ONLY": "FINAL_TEST_COMPARATOR",
+    }
+    if isinstance(payload, dict):
+        migrated = {key: _final_test_claim_metadata(value) for key, value in payload.items()}
+        if "artifact_hash" in migrated:
+            migrated["artifact_hash"] = content_id({
+                key: value for key, value in migrated.items() if key != "artifact_hash"
+            })
+        return migrated
+    if isinstance(payload, list):
+        return [_final_test_claim_metadata(value) for value in payload]
+    return replacements.get(payload, payload)
+
+
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
@@ -160,22 +178,42 @@ def stage_exp1(root: Path) -> dict[str, Any]:
 
 
 def stage_exp2a(root: Path) -> dict[str, Any]:
-    paths = _materialize_exp2(root)
-    metrics = _load(paths["metrics"])
-    summary_path = root / EXP2 / "EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json"
-    summary = {"scope": SCOPE, "split": "FINAL_TEST", "status": "COMPLETE", "metrics": metrics["metrics"], "source_metrics_hash": metrics["artifact_hash"], "safety": metrics["safety"]}
-    summary["artifact_hash"] = content_id(summary)
-    _atomic_json(summary_path, summary)
-    return {"status": "PASS", "metrics": str(paths["metrics"].relative_to(root)).replace("\\", "/"), "summary": str(summary_path.relative_to(root)).replace("\\", "/")}
+    from exp.exp2.global_development import materialize_final_test_variogram
+    paths = materialize_final_test_variogram(
+        root=root, scenario_root=root / SCENARIOS,
+        input_root=root / FINAL_INPUT_ROOT, output_root=root / EXP2,
+    )
+    return {
+        "status": "PASS",
+        "records": str(paths["records"].relative_to(root)).replace("\\", "/"),
+        "summary": str(paths["summary"].relative_to(root)).replace("\\", "/"),
+        "contrasts": str(paths["contrasts"].relative_to(root)).replace("\\", "/"),
+    }
 
 
 def stage_exp2b(root: Path) -> dict[str, Any]:
-    inputs = _load(_input_paths(root)["manifest"])
-    payload = {"schema_version": "EXP2B_FINAL_TEST_RMB_SUPPORT_V1", "scope": SCOPE, "split": "FINAL_TEST", "status": "ABSTAIN", "reason": "MONETARY_COMPONENT_NOT_IN_SCOPE", "detail": "P_itinerary and P_service are operational-only and excluded from the five-component RMB monetary scope; no seven-component downstream comparison is formed.", "episode_count": inputs["episode_count"], "node_count": inputs["node_count"], "zero_fill": False, "development_value_reused": False}
-    payload["artifact_hash"] = content_id(payload)
-    path = root / EXP2 / "EXP2B_FINAL_TEST_RMB_SUPPORT.json"
-    _atomic_json(path, payload)
-    return {"status": "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE", "manifest": str(path.relative_to(root)).replace("\\", "/"), "reason": payload["reason"]}
+    from exp.exp2.downstream_consequence_distortion import materialize
+    paths = materialize(
+        root=root, scenario_root=root / SCENARIOS,
+        input_root=root / FINAL_INPUT_ROOT,
+        output_root=root / EXP2 / "downstream_distortion",
+        final_test=True,
+    )
+    payload = _load(paths["manifest"])
+    return {
+        "status": "PASS",
+        "manifest": str(paths["manifest"].relative_to(root)).replace("\\", "/"),
+        "records": str(paths["node_parquet"].relative_to(root)).replace("\\", "/"),
+        "summary": str(paths["summary_csv"].relative_to(root)).replace("\\", "/"),
+        "supported_component_comparisons": sum(
+            row["support_status"] == "SUPPORTED_COMMON_FINITE_SUPPORT"
+            for row in payload["summary_rows"]
+        ),
+        "abstain_component_comparisons": sum(
+            row["support_status"] == "ABSTAIN_NO_COMMON_SUPPORT"
+            for row in payload["summary_rows"]
+        ),
+    }
 
 
 def stage_exp3(root: Path) -> dict[str, Any]:
@@ -197,6 +235,15 @@ def stage_exp4(root: Path) -> dict[str, Any]:
     from exp.exp4.final_test import run
     paths = run(root=root, input_root=root / FINAL_INPUT_ROOT, scenario_root=root / SCENARIOS, output_root=root / EXP4)
     payload = _load(paths["manifest"])
+    aggregate = _load(paths["metrics"])["aggregate"]
+    _require(
+        all(
+            aggregate[f"{method}:T_IB_A00"]["mae_node_count"] > 0
+            and aggregate[f"{method}:T_IB_A00"]["mae_episode_count"] > 0
+            for method in ("HISTORICAL", "LIGHTGBM", "RANDOM_FOREST", "STATE_AWARE_H32")
+        ),
+        "FINAL_TEST_EXP4_PREDECESSOR_SUPPORT_MISSING",
+    )
     return {"status": "PASS", "manifest": str(paths["manifest"].relative_to(root)).replace("\\", "/"), "final_test_access_count": payload["safety"]["FINAL_TEST_ACCESS_COUNT"]}
 
 
@@ -209,7 +256,7 @@ def _make_exp4_figure(aggregate: dict[str, Any], output: Path) -> None:
     # contract; exports are print-safe PNG/PDF with embedded vector fonts.
     palette = {"STATE_AWARE_H32": "#0F4D92", "HISTORICAL": "#B64342", "LIGHTGBM": "#42949E", "RANDOM_FOREST": "#9A4D8E"}
     methods, targets = ["HISTORICAL", "LIGHTGBM", "RANDOM_FOREST", "STATE_AWARE_H32"], ["T_IB_A00", "D_OB", "D_TX"]
-    plt.rcParams.update({"font.family": ["DejaVu Sans", "Helvetica", "Arial", "sans-serif"], "font.size": 14, "axes.linewidth": 2.0, "pdf.fonttype": 42, "ps.fonttype": 42, "legend.frameon": False})
+    plt.rcParams.update({"font.family": ["DejaVu Sans"], "font.size": 14, "axes.linewidth": 2.0, "pdf.fonttype": 42, "ps.fonttype": 42, "legend.frameon": False})
     fig, axis = plt.subplots(figsize=(11, 5.5)); width, x = 0.19, np.arange(len(targets))
     for offset, method in enumerate(methods):
         values = [aggregate.get(f"{method}:{target}", {}).get("mae_minutes") for target in targets]
@@ -220,8 +267,15 @@ def _make_exp4_figure(aggregate: dict[str, Any], output: Path) -> None:
 
 
 def stage_reporting(root: Path) -> dict[str, Any]:
-    exp1 = _load(root / EXP1 / "EXP1_FINAL_TEST_SUMMARY.json")
-    exp2, exp2a, exp2b = (_load(root / EXP2 / "EXP2_FINAL_TEST_METRICS.json"), _load(root / EXP2 / "EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json"), _load(root / EXP2 / "EXP2B_FINAL_TEST_RMB_SUPPORT.json"))
+    exp1_path = root / EXP1 / "EXP1_FINAL_TEST_SUMMARY.json"
+    exp1 = _final_test_claim_metadata(_load(exp1_path))
+    _atomic_json(exp1_path, exp1)
+    exp2 = _load(root / EXP2 / "EXP2_FINAL_TEST_METRICS.json")
+    exp2a = {
+        "summary": _load(root / EXP2 / "EXP2A_FINAL_TEST_VARIOGRAM_SUMMARY.json"),
+        "contrasts": _load(root / EXP2 / "EXP2A_FINAL_TEST_VARIOGRAM_CONTRASTS.json"),
+    }
+    exp2b = _load(root / EXP2 / "downstream_distortion" / "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_MANIFEST.json")
     exp3, exp4, gate = (_load(root / EXP3 / "EXP3_FINAL_TEST_RMB_METRICS.json"), _load(root / EXP4 / "EXP4_FINAL_TEST_METRICS.json"), _load(root / M3M4 / "A00_FINAL_TEST_RMB_GATE_SUMMARY.json"))
     artifact_root = root / PAPER_ROOT; artifact_root.mkdir(parents=True, exist_ok=True)
     table_root, figure_root = root / TABLE_ROOT, root / FIGURE_ROOT
@@ -229,10 +283,30 @@ def stage_reporting(root: Path) -> dict[str, Any]:
     results = {"schema_version": "SECTION5_FINAL_TEST_RMB_RESULTS_V2", "scope": SCOPE, "source_scope": SCOPE, "split": "FINAL_TEST", "paper_result": True,
                "exp1": exp1, "exp2a": exp2a, "exp2b": exp2b, "exp2": exp2, "exp3": exp3, "support_gate": gate, "exp4": exp4,
                "claim_boundary": "Final Test evaluation with frozen models and RMB reporting mapping; no causal or operational-effect claim.",
-               "reporting_abstentions": {"exp2a_bootstrap_ci": "ABSTAIN_NOT_SAVED_DO_NOT_RECOMPUTE", "exp2b": exp2b["reason"]}}
+               "reporting_abstentions": {
+                   "exp2b": [
+                       row for row in exp2b["summary_rows"]
+                       if row["support_status"] == "ABSTAIN_NO_COMMON_SUPPORT"
+                   ],
+               }}
     results["artifact_hash"] = content_id(results); json_path = artifact_root / "SECTION5_FINAL_RESULTS.json"; _atomic_json(json_path, results)
     markdown_path = artifact_root / "SECTION5_FINAL_RESULTS.md"
-    markdown_path.write_text("# Section 5 Final Test RMB Results\n\n" + f"Scope: `{SCOPE}`. The cohort contains {exp4['episode_count']} episodes and {exp4['node_count']} decision nodes.\n\n" + "The RMB reporting scope is F_continuity, F_execution, F_propagation, P_time, and R_operating with 1 CU = 1 RMB. P_itinerary and P_service remain NOT_IN_MAIN_MONETARY_SCOPE without zero-fill.\n\n" + f"Exp2B: `ABSTAIN: {exp2b['reason']}`.\n\n" + f"Support gate: `{gate['A_sup']['status']}`; A00 is never emitted as a recommendation.\n", encoding="utf-8")
+    exp2b_supported = [
+        row for row in exp2b["summary_rows"]
+        if row["support_status"] == "SUPPORTED_COMMON_FINITE_SUPPORT"
+    ]
+    exp2b_abstain = [
+        row for row in exp2b["summary_rows"]
+        if row["support_status"] == "ABSTAIN_NO_COMMON_SUPPORT"
+    ]
+    markdown_path.write_text(
+        "# Section 5 Final Test RMB Results\n\n"
+        + f"Scope: `{SCOPE}`. The cohort contains {exp4['episode_count']} episodes and {exp4['node_count']} decision nodes.\n\n"
+        + "The RMB reporting scope is F_continuity, F_execution, F_propagation, P_time, and R_operating with 1 CU = 1 RMB. P_itinerary and P_service remain NOT_IN_MAIN_MONETARY_SCOPE without zero-fill; they are nevertheless retained in the component-level CU diagnostic.\n\n"
+        + f"Exp2B common-support component comparisons: {len(exp2b_supported)}; typed `ABSTAIN_NO_COMMON_SUPPORT`: {len(exp2b_abstain)}.\n\n"
+        + f"Support gate: `{gate['A_sup']['status']}`; A00 is never emitted as a recommendation.\n",
+        encoding="utf-8",
+    )
     table_path = table_root / "TABLE_FINAL_TEST_EXP4.csv"
     with table_path.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(stream, fieldnames=("method", "target", "mae_minutes", "mae_ci_95", "crps_minutes", "crps_ci_95", "mae_node_count", "crps_node_count", "mae_episode_count", "crps_episode_count", "crps_status")); writer.writeheader()
@@ -241,7 +315,8 @@ def stage_reporting(root: Path) -> dict[str, Any]:
     figure_base = figure_root / "FIGURE_FINAL_TEST_EXP4_MAE"; _make_exp4_figure(exp4["aggregate"], figure_base)
     output_spec = {"schema_version": "PAPER_OUTPUT_SPEC_V2_FINAL_TEST_RMB", "scope": SCOPE, "monetary_system": "RMB", "cu_to_rmb": 1.0,
                    "main_monetary_components": ["F_continuity", "F_execution", "F_propagation", "P_time", "R_operating"],
-                   "excluded_operational_components": ["P_itinerary", "P_service"],
+                    "excluded_operational_components": ["P_itinerary", "P_service"],
+                   "exp2b_component_diagnostic": "SEVEN_COMPONENT_CU_LEVEL_NO_RMB_AGGREGATION",
                    "outputs": {"results": str(json_path.relative_to(root)).replace("\\", "/"), "results_markdown": str(markdown_path.relative_to(root)).replace("\\", "/"),
                                "table": str(table_path.relative_to(root)).replace("\\", "/"), "figure_png": str(figure_base.with_suffix('.png').relative_to(root)).replace("\\", "/"), "figure_pdf": str(figure_base.with_suffix('.pdf').relative_to(root)).replace("\\", "/")}}
     output_spec["artifact_hash"] = content_id(output_spec); spec_path = root / OUTPUT_SPEC; _atomic_json(spec_path, output_spec)
@@ -251,7 +326,16 @@ def stage_reporting(root: Path) -> dict[str, Any]:
 def _chain_manifest(root: Path) -> dict[str, Any]:
     import subprocess
     inputs, status = _load(_input_paths(root)["manifest"]), _status(root)
-    stage_manifests = [root / SCENARIOS / "FINAL_TEST_SCENARIO_MANIFEST.json", root / EXP1 / "EXP1_FINAL_TEST_MANIFEST.json", root / EXP2 / "EXP2_FINAL_TEST_EXECUTION_MANIFEST.json", root / EXP3 / "EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST.json", root / M3M4 / "M3M4_FINAL_TEST_RMB_MANIFEST.json", root / EXP4 / "EXP4_FINAL_TEST_EXECUTION_MANIFEST.json"]
+    stage_manifests = [
+        root / SCENARIOS / "FINAL_TEST_SCENARIO_MANIFEST.json",
+        root / EXP1 / "EXP1_FINAL_TEST_MANIFEST.json",
+        root / EXP2 / "EXP2_FINAL_TEST_EXECUTION_MANIFEST.json",
+        root / EXP2 / "EXP2A_FINAL_TEST_VARIOGRAM_SUMMARY.json",
+        root / EXP2 / "downstream_distortion" / "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_MANIFEST.json",
+        root / EXP3 / "EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST.json",
+        root / M3M4 / "M3M4_FINAL_TEST_RMB_MANIFEST.json",
+        root / EXP4 / "EXP4_FINAL_TEST_EXECUTION_MANIFEST.json",
+    ]
     safety = [_load(path)["safety"] for path in stage_manifests if path.is_file()]
     registry = _load(root / RMB_REGISTRY)
     payload = {"schema_version": SCHEMA_VERSION, "status": "COMPLETE", "scope": SCOPE, "source_scope": SCOPE, "start_date": inputs["start_date"], "end_date": inputs["end_date"], "episode_count": inputs["episode_count"], "decision_node_count": inputs["decision_node_count"], "min_successor_service_date": inputs["min_successor_service_date"], "max_successor_service_date": inputs["max_successor_service_date"], "evaluation_overlap": status.get("details", {}).get("preflight", {}).get("evaluation_overlap"), "starting_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(), "rmb_registry": {"path": str(RMB_REGISTRY).replace("\\", "/"), "hash": registry["registry_hash"], "file_hash": file_sha256(root / RMB_REGISTRY)}, "safety": {"FINAL_TEST_ACCESS_COUNT": sum(int(item.get("FINAL_TEST_ACCESS_COUNT", 0)) for item in safety), "PAPER_FULL_RUN": True, "MODEL_RETRAINED": False, "PARAMETER_RESELECTED": False}, "stage_status": status, "outputs": {"section5_results": str((root / PAPER_ROOT / "SECTION5_FINAL_RESULTS.json").relative_to(root)).replace("\\", "/"), "paper_output_spec": str(OUTPUT_SPEC).replace("\\", "/")}}
@@ -288,14 +372,35 @@ def _verify_reusable_stage(root: Path, stage: str) -> None:
         _require(manifest.get("scope") == SCOPE and manifest.get("artifact_hash", "").startswith("sha256:"), "FINAL_TEST_RESUME_EXP1_INVALID")
         return
     if stage == "exp2a":
-        manifest = _load(root / EXP2 / "EXP2_FINAL_TEST_EXECUTION_MANIFEST.json")
-        summary = _load(root / EXP2 / "EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json")
-        _require(file_sha256(root / EXP2 / "M2_FINAL_TEST_CONSEQUENCES.parquet") == manifest["artifact_hashes"]["consequences"], "FINAL_TEST_RESUME_EXP2_CONSEQUENCE_HASH_MISMATCH")
-        _require(summary.get("scope") == SCOPE and summary.get("artifact_hash", "").startswith("sha256:"), "FINAL_TEST_RESUME_EXP2A_INVALID")
+        paths = {
+            "records": root / EXP2 / "EXP2A_FINAL_TEST_VARIOGRAM_RECORDS.csv",
+            "summary": root / EXP2 / "EXP2A_FINAL_TEST_VARIOGRAM_SUMMARY.json",
+            "contrasts": root / EXP2 / "EXP2A_FINAL_TEST_VARIOGRAM_CONTRASTS.json",
+        }
+        _require(all(path.is_file() for path in paths.values()), "FINAL_TEST_RESUME_EXP2A_OUTPUT_MISSING")
+        summary, contrasts = _load(paths["summary"]), _load(paths["contrasts"])
+        _require(
+            summary.get("scope") == SCOPE
+            and summary.get("representation_specific_inputs") is True
+            and summary.get("artifact_hash", "").startswith("sha256:")
+            and contrasts.get("scope") == SCOPE
+            and len(contrasts.get("contrast_rows", ())) == 2,
+            "FINAL_TEST_RESUME_EXP2A_INVALID",
+        )
         return
     if stage == "exp2b":
-        payload = _load(root / EXP2 / "EXP2B_FINAL_TEST_RMB_SUPPORT.json")
-        _require(payload.get("status") == "ABSTAIN" and payload.get("reason") == "MONETARY_COMPONENT_NOT_IN_SCOPE", "FINAL_TEST_RESUME_EXP2B_INVALID")
+        payload_path = root / EXP2 / "downstream_distortion" / "EXP2B_FINAL_TEST_DOWNSTREAM_DISTORTION_MANIFEST.json"
+        _require(payload_path.is_file(), "FINAL_TEST_RESUME_EXP2B_OUTPUT_MISSING")
+        payload = _load(payload_path)
+        rows = payload.get("summary_rows", ())
+        _require(
+            payload.get("scope") == SCOPE
+            and payload.get("paper_result") is True
+            and payload.get("monetary_aggregation") == "NOT_PERFORMED_COMPONENT_LEVEL_CU_ONLY"
+            and len(rows) == 14
+            and all(row.get("support_status") in {"SUPPORTED_COMMON_FINITE_SUPPORT", "ABSTAIN_NO_COMMON_SUPPORT"} for row in rows),
+            "FINAL_TEST_RESUME_EXP2B_INVALID",
+        )
         return
     raise RuntimeError(f"FINAL_TEST_RESUME_STAGE_UNKNOWN:{stage}")
 
@@ -323,31 +428,40 @@ def _exp4_contract_valid(root: Path) -> bool:
         aggregate = _load(path).get("aggregate", {})
         h32_dob = aggregate.get("STATE_AWARE_H32:D_OB", {})
         h32_dtx = aggregate.get("STATE_AWARE_H32:D_TX", {})
+        predecessor = [aggregate.get(f"{method}:T_IB_A00", {}) for method in ("HISTORICAL", "LIGHTGBM", "RANDOM_FOREST", "STATE_AWARE_H32")]
         return (bool(aggregate) and all("mae_ci_95" in value and "crps_ci_95" in value for value in aggregate.values())
                 and h32_dob.get("crps_minutes") is None and h32_dob.get("crps_status") == "NA_NOT_SAVED_BY_M1"
                 and h32_dtx.get("crps_minutes") is None and h32_dtx.get("crps_status") == "NA_NOT_SAVED_BY_M1"
-                and h32_dob.get("mae_minutes") is not None and h32_dtx.get("mae_minutes") is not None)
+                and h32_dob.get("mae_minutes") is not None and h32_dtx.get("mae_minutes") is not None
+                and all(item.get("mae_node_count", 0) > 0 and item.get("mae_episode_count", 0) > 0 for item in predecessor))
     except Exception:
         return False
 
 
 def run_chain(*, root: Path = ROOT, preflight_only: bool = False) -> dict[str, Any]:
     root = Path(root).resolve()
-    for stage in ("q4_inputs", "preflight", "rmb_registry", "scenarios", "exp1", "exp2a", "exp2b"):
+    for stage in ("q4_inputs", "preflight", "rmb_registry", "scenarios", "exp1"):
         _verify_reusable_stage(root, stage)
-    # Exp2B is a terminal typed abstention, never a retry target.
-    if _status(root).get("exp2b") == "ABSTAIN":
-        _update_status(root, "exp2b", "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE", **_status(root).get("details", {}).get("exp2b", {}))
     if preflight_only:
         return _status(root)
-    if not _exp3_contract_valid(root):
-        _update_status(root, "exp3", "PENDING", invalidated_reason="EXP3_V1_SCHEMA_OR_PUBLICATION_CONTRACT_INVALID")
-        for stage in ("support_gate", "exp4", "reporting"):
-            _update_status(root, stage, "PENDING", invalidated_reason="DOWNSTREAM_OF_EXP3_REPUBLICATION")
-    _run_stage(root, "exp3", lambda: stage_exp3(root))
-    _run_stage(root, "support_gate", lambda: stage_support_gate(root))
+    _require(_exp3_contract_valid(root), "FINAL_TEST_EXP3_FROZEN_CONTRACT_INVALID")
+    gate_manifest = root / M3M4 / "M3M4_FINAL_TEST_RMB_MANIFEST.json"
+    _require(gate_manifest.is_file() and _load(gate_manifest).get("artifact_hash", "").startswith("sha256:"), "FINAL_TEST_M3M4_FROZEN_CONTRACT_INVALID")
+    for stage, valid, reason in (
+        ("exp2a", lambda: _verify_reusable_stage(root, "exp2a"), "EXP2A_REPRESENTATION_SPECIFIC_VARIAGRAM_REQUIRED"),
+        ("exp2b", lambda: _verify_reusable_stage(root, "exp2b"), "EXP2B_COMPONENT_DIAGNOSTIC_REQUIRED"),
+    ):
+        try:
+            valid()
+            if _status(root).get(stage) != "PASS":
+                _update_status(root, stage, "PASS", resumed_from_existing_final_test_artifact=True)
+        except Exception:
+            _update_status(root, stage, "PENDING", invalidated_reason=reason)
+            _update_status(root, "reporting", "PENDING", invalidated_reason=f"DOWNSTREAM_OF_{stage.upper()}")
+    _run_stage(root, "exp2a", lambda: stage_exp2a(root))
+    _run_stage(root, "exp2b", lambda: stage_exp2b(root))
     if not _exp4_contract_valid(root):
-        _update_status(root, "exp4", "PENDING", invalidated_reason="EXP4_EPISODE_BOOTSTRAP_CI_MISSING")
+        _update_status(root, "exp4", "PENDING", invalidated_reason="EXP4_PREDECESSOR_INTERNAL_LABEL_FIX_REQUIRED")
         _update_status(root, "reporting", "PENDING", invalidated_reason="DOWNSTREAM_OF_EXP4_REPUBLICATION")
     _run_stage(root, "exp4", lambda: stage_exp4(root))
     _run_stage(root, "reporting", lambda: stage_reporting(root))

@@ -35,15 +35,21 @@
       "mae_node_count": 1712
     },
     "HISTORICAL:T_IB_A00": {
-      "crps_ci_95": null,
-      "crps_episode_count": 0,
-      "crps_minutes": null,
-      "crps_node_count": 0,
-      "crps_status": "NA_NO_VALID_SUPPORT",
-      "mae_ci_95": null,
-      "mae_episode_count": 0,
-      "mae_minutes": null,
-      "mae_node_count": 0
+      "crps_ci_95": [
+        36.073816822201266,
+        40.270417146054335
+      ],
+      "crps_episode_count": 42,
+      "crps_minutes": 38.19614200121959,
+      "crps_node_count": 223,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        55.16252652576183,
+        63.472712418300645
+      ],
+      "mae_episode_count": 42,
+      "mae_minutes": 59.4365715983363,
+      "mae_node_count": 223
     },
     "LIGHTGBM:D_OB": {
       "crps_ci_95": [
@@ -80,15 +86,21 @@
       "mae_node_count": 1712
     },
     "LIGHTGBM:T_IB_A00": {
-      "crps_ci_95": null,
-      "crps_episode_count": 0,
-      "crps_minutes": null,
-      "crps_node_count": 0,
-      "crps_status": "NA_NO_VALID_SUPPORT",
-      "mae_ci_95": null,
-      "mae_episode_count": 0,
-      "mae_minutes": null,
-      "mae_node_count": 0
+      "crps_ci_95": [
+        22.15756176154266,
+        35.149272796662835
+      ],
+      "crps_episode_count": 42,
+      "crps_minutes": 28.162908860671376,
+      "crps_node_count": 223,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        24.734335831809563,
+        47.63717473002509
+      ],
+      "mae_episode_count": 42,
+      "mae_minutes": 35.47164316507317,
+      "mae_node_count": 223
     },
     "RANDOM_FOREST:D_OB": {
       "crps_ci_95": [
@@ -125,15 +137,21 @@
       "mae_node_count": 1712
     },
     "RANDOM_FOREST:T_IB_A00": {
-      "crps_ci_95": null,
-      "crps_episode_count": 0,
-      "crps_minutes": null,
-      "crps_node_count": 0,
-      "crps_status": "NA_NO_VALID_SUPPORT",
-      "mae_ci_95": null,
-      "mae_episode_count": 0,
-      "mae_minutes": null,
-      "mae_node_count": 0
+      "crps_ci_95": [
+        27.866172781505185,
+        51.03129758986683
+      ],
+      "crps_episode_count": 42,
+      "crps_minutes": 37.99923736088548,
+      "crps_node_count": 223,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        38.64507968587079,
+        71.65827536230687
+      ],
+      "mae_episode_count": 42,
+      "mae_minutes": 53.15124971009839,
+      "mae_node_count": 223
     },
     "STATE_AWARE_H32:D_OB": {
       "crps_ci_95": null,
@@ -164,18 +182,24 @@
       "mae_node_count": 1712
     },
     "STATE_AWARE_H32:T_IB_A00": {
-      "crps_ci_95": null,
-      "crps_episode_count": 0,
-      "crps_minutes": null,
-      "crps_node_count": 0,
-      "crps_status": "NA_NO_VALID_SUPPORT",
-      "mae_ci_95": null,
-      "mae_episode_count": 0,
-      "mae_minutes": null,
-      "mae_node_count": 0
+      "crps_ci_95": [
+        7.421958500833177,
+        25.44697079250382
+      ],
+      "crps_episode_count": 42,
+      "crps_minutes": 15.724909834613257,
+      "crps_node_count": 223,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        9.223935122417265,
+        28.022106970702023
+      ],
+      "mae_episode_count": 42,
+      "mae_minutes": 17.97148835058499,
+      "mae_node_count": 223
     }
   },
-  "artifact_hash": "sha256:5b95d45df04342431f7608b940ffb5e4e412db3fc69f1715d2a1394f6c72d591",
+  "artifact_hash": "sha256:ed2e920670906906f43c25c04a9a239e855a40f02bd0026498df67816ebea766",
   "bootstrap": {
     "ci": "PERCENTILE_95",
     "replicates": 2000,
