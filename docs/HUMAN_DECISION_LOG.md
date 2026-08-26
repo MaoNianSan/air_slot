@@ -555,3 +555,25 @@ frozen.
 - verification notes: Final Test split file never read; `FINAL_TEST_ACCESS_COUNT=0`; calibration drift of STATE_AWARE_H32 vs stored dev metrics is expected Final Test semantics (max abs diff 0.1029, documented in the Exp4 manifest parity block); tabular baselines parity PASS (max abs diff <= 7.1e-15).
 - morning deliverable: `outputs/manuscript_values/PAPER_FILL_READY_20260827.md` (per-anchor values + unapplied TeX fill diff preview); `docs/AUTONOMOUS_FAILURE_LIST_20260826.md` (zero failures).
 - boundaries: `FINAL_TEST_ACCESS_COUNT=0` (split not read), `PAPER_FULL_RUN=FALSE`, no git, no `model/**`/`configs/**` edits, frozen artifacts unrewritten.
+
+## A00_BASELINE_GATE_V2_20260826
+
+- decision_id: `A00_BASELINE_GATE_V2_20260826`
+- date/time: `2026-08-26`
+- status: `IMPLEMENTATION_AUTHORIZED`
+- question: Prevent A00 from being presented as an operational recommendation when the current non-A00 action set is only conditionally modeled.
+- user decision: A00 is a counterfactual baseline only. Operational selection requires a non-A00 action with factual eligibility `TRUE`, response support `SUPPORTED`, and a finite objective; otherwise the system emits a typed abstention and does not recommend A00.
+- implementation: new `exp/exp3/a00_baseline_gate.py`; `exp/exp3/m3_m4_ranking_records.py` labels Top-1 as conditional and counts all finite conditional actions.
+- minimal rerun: read only the existing calibrated Development-cohort action-risk records; write new V2 outputs under `artifacts/experiment/`; run focused tests. No model inference, retraining, Final Test split read, paper-full run, TeX edit, or frozen V1 artifact rewrite.
+- expected current result: all 1,769 nodes x 3 bands abstain because non-A00 actions remain `UNKNOWN` eligibility and `SCENARIO_ASSUMPTION` response support. This result is not permission to alter A00 or invent factual availability.
+
+## D7_NON_A00_FACTUAL_ELIGIBILITY_AUDIT_20260826
+
+- decision_id: `D7_NON_A00_FACTUAL_ELIGIBILITY_AUDIT_20260826`
+- date/time: `2026-08-26`
+- status: `AUDIT_COMPLETE_HUMAN_DECISION_REQUIRED`
+- question: Can the current non-A00 conditional rankings support an operational recommendation after A00 Baseline Gate V2?
+- result: No.  The Development-cohort action-risk input has 1,769 nodes; all 22 non-A00 actions are `eligibility_state=UNKNOWN` and `response_support=SCENARIO_ASSUMPTION` at every node.  Consequently all 5,307 node-band records abstain under the V2 gate.  The 5,295 finite conditional rank groups are diagnostics, not recommendations.
+- source finding: registered inputs provide schedule/context, post-hoc actuals, aggregate passenger reference, weather, airport, and timezone reference, but no decision-time slot, authority, aircraft availability/compatibility, crew, gate/stand/ground-resource, or passenger-itinerary inventory.  Post-hoc reconstruction is prohibited by the information-time rule.
+- decision required: either (A) close operational non-A00 recommendation claims and retain conditional ranks only as diagnostics, or (B) authorize a new versioned decision-time data/response-evidence contract followed by a new independent evaluation.  No A00 objective change, silent eligibility inference, Final Test access, or manuscript fill is authorized by this audit.
+- evidence: `docs/D7_NON_A00_FACTUAL_ELIGIBILITY_AUDIT_20260826.md`.

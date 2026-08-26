@@ -9,6 +9,7 @@ from exp.exp2.exp2b_consequence_representation import (
     CHANNELS,
     RECORDS_SCHEMA,
     SAFETY,
+    TOP1_SEMANTICS,
     _baseline_channel_shares,
     _matched_case_rows,
     _scenario_loss,
@@ -237,3 +238,7 @@ def test_safety_all_zero() -> None:
     assert SAFETY["FINAL_TEST_ACCESS_COUNT"] == 0
     assert SAFETY["EXP2_RUNS"] == 0
     assert SAFETY["PAPER_FULL_RUN"] is False
+
+
+def test_top1_is_explicitly_conditional_not_an_operational_recommendation() -> None:
+    assert TOP1_SEMANTICS == "CONDITIONAL_DIAGNOSTIC_NOT_OPERATIONAL_RECOMMENDATION"

@@ -1,0 +1,59 @@
+{
+  "aggregate": {
+    "action_count": 23,
+    "band_count": 3,
+    "node_count": 1769,
+    "ranked_nodes": 1765,
+    "record_count": 122061,
+    "top1_by_band": {
+      "BASE": {
+        "conditional_top1_a00_share": 1.0,
+        "ranked_nodes": 1765
+      },
+      "HIGH": {
+        "conditional_top1_a00_share": 1.0,
+        "ranked_nodes": 1765
+      },
+      "LOW": {
+        "conditional_top1_a00_share": 1.0,
+        "ranked_nodes": 1765
+      }
+    },
+    "unranked_nodes": 4
+  },
+  "dataset": "DATA2",
+  "episode_count": 128,
+  "input_hashes": {
+    "action_risk": "sha256:661dd71603ef61c51a6e0da9453f2df573de81084edf9a41bce96ff845298ec5"
+  },
+  "node_count": 1769,
+  "outputs": {
+    "manifest": "artifacts\\experiment\\m3m4\\m3_m4_conditional_ranking_v2_20260826\\M3M4_MANIFEST_DEVELOPMENT_ONLY.json",
+    "records": "artifacts\\experiment\\m3m4\\m3_m4_conditional_ranking_v2_20260826\\M3M4_COMPARISON_RANKING_RECORDS_DEVELOPMENT_ONLY.parquet",
+    "records_csv": "artifacts\\experiment\\m3m4\\m3_m4_conditional_ranking_v2_20260826\\M3M4_COMPARISON_RANKING_RECORDS_DEVELOPMENT_ONLY.csv",
+    "stats": "artifacts\\experiment\\m3m4\\m3_m4_conditional_ranking_v2_20260826\\M3M4_AGGREGATE_STATS_DEVELOPMENT_ONLY.json",
+    "top1_summary": "artifacts\\experiment\\m3m4\\m3_m4_conditional_ranking_v2_20260826\\M3M4_TOP1_SUMMARY_DEVELOPMENT_ONLY.csv"
+  },
+  "paper_result": false,
+  "registry_hash": "sha256:befc10aab3a9b9ca5292ac82331e728f7d28b1546077725ab7cdf5564fcbc072",
+  "registry_ref": "M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V2",
+  "rules": {
+    "f7": "P_ITINERARY_P_SERVICE_ABSTAIN_EVENT_COUNTS_ONLY_NOT_IN_J_NO_ZERO_FILL",
+    "f8": "RMB_NOT_INSTANTIATED_NO_BETA_K_RMB",
+    "operational_recommendation": "A00_BASELINE_GATE_V2_REQUIRED",
+    "ranking_authority": "CONDITIONAL_DIAGNOSTIC_5_ANCHOR_SUBSET_NOT_PRINCIPAL",
+    "selection_rule": "MIN_J_LAMBDA_0_25_ALPHA_0_90_TIE_ACTION_ID_A00_REQUIRED",
+    "top1_semantics": "CONDITIONAL_DIAGNOSTIC_NOT_OPERATIONAL_RECOMMENDATION",
+    "wording_discipline": "FROZEN_DECLARED_ASSUMPTION_MODEL_DERIVED_ORDER_ONLY_NO_CAUSAL_CLAIM"
+  },
+  "safety": {
+    "EXPERIMENT_RERUNS": 0,
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "PAPER_FULL_RUN": false
+  },
+  "schema_version": "AIR_SLOT_M3M4_CONDITIONAL_RANKING_V2",
+  "scope": "DATA2_FULL_DEVELOPMENT_NO_FINAL_TEST",
+  "spec_ref": "PAPER_OUTPUT_SPEC_V1",
+  "split": "DEVELOPMENT",
+  "status": "MATERIALIZED"
+}

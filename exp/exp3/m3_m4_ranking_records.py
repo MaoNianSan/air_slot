@@ -1,9 +1,10 @@
-"""M3 non-A00 / M4 production comparison and ranking records (V3 T4, 2026-08-26).
+"""M3/M4 conditional comparison and ranking records (V2, 2026-08-26).
 
-Materializes the per-node action comparison/ranking table from the frozen
+Materializes the per-node conditional comparison/ranking table from the frozen
 Exp3 full-development action-risk records (1769 nodes x 23 actions x 3 bands).
 No model inference is run: every value is carried from the frozen parquet or
-derived from its frozen ranking semantics.
+derived from its conditional ranking semantics.  This module never makes an
+operational recommendation; that requires ``a00_baseline_gate``.
 
 Frozen rules (PAPER_OUTPUT_SPEC_V1.json, registry v2, F7/F8):
 - Ranking objective J = conditional_residual_risk over the frozen five-anchor
@@ -19,7 +20,7 @@ Frozen rules (PAPER_OUTPUT_SPEC_V1.json, registry v2, F7/F8):
 from __future__ import annotations
 
 import argparse
-import json
+import math
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -27,14 +28,15 @@ import pandas as pd
 
 from exp.common.official_execution import file_sha256, write_json
 
-DEFAULT_OUTPUT = Path("artifacts/experiment/m3m4/m3_m4_comparison_ranking_20260826")
+DEFAULT_OUTPUT = Path("artifacts/experiment/m3m4/m3_m4_conditional_ranking_v2_20260826")
 ACTION_RISK = Path(
-    "artifacts/experiments/exp3/full_development_v1/EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet"
+    "artifacts/paper_results_v1/exp3/EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet"
 )
-REGISTRY_V2 = Path("registries/m4_eur_mapping_assumption_grounded_v2.json")
-SPEC_V1 = Path("codex_framework/PAPER_OUTPUT_SPEC_V1.json")
+FROZEN_SPEC_REF = "PAPER_OUTPUT_SPEC_V1"
+FROZEN_REGISTRY_REF = "M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V2"
+FROZEN_REGISTRY_HASH = "sha256:befc10aab3a9b9ca5292ac82331e728f7d28b1546077725ab7cdf5564fcbc072"
 
-SCHEMA_VERSION = "AIR_SLOT_M3M4_COMPARISON_RANKING_V1"
+SCHEMA_VERSION = "AIR_SLOT_M3M4_CONDITIONAL_RANKING_V2"
 BAND_SCALE_FACTOR = {"LOW": 0.5, "BASE": 1.0, "HIGH": 2.0}
 SAFETY = {
     "FINAL_TEST_ACCESS_COUNT": 0,
@@ -48,15 +50,27 @@ def _require(condition: bool, code: str) -> None:
         raise RuntimeError(code)
 
 
+def _is_finite_objective(value: Any) -> bool:
+    """Accept only real finite objectives in a conditional comparison."""
+    try:
+        return False if pd.isna(value) else math.isfinite(float(value))
+    except (TypeError, ValueError):
+        return False
+
+
 def recompute_rank(rows: Iterable[dict[str, Any]]) -> dict[str, int]:
     """Frozen Top-1 semantics: min J, tie-break action_id, J-available only."""
-    comparable = [row for row in rows if pd.notna(row["residual_risk_objective"])]
-    comparable.sort(key=lambda row: (row["residual_risk_objective"], row["action_id"]))
+    comparable = [
+        row for row in rows if _is_finite_objective(row["residual_risk_objective"])
+    ]
+    comparable.sort(
+        key=lambda row: (float(row["residual_risk_objective"]), row["action_id"])
+    )
     return {row["action_id"]: rank for rank, row in enumerate(comparable, start=1)}
 
 
 def materialize_records(source: pd.DataFrame) -> pd.DataFrame:
-    """Carry frozen fields and derive rank_position/top1 per node x band."""
+    """Carry frozen fields and derive rank_position/conditional_top1 per node x band."""
     rows: list[dict[str, Any]] = []
     grouped = source.groupby(["decision_node_id", "response_sensitivity"], sort=False)
     for (node_id, band), group in grouped:
@@ -86,7 +100,7 @@ def materialize_records(source: pd.DataFrame) -> pd.DataFrame:
                     "constructed_eur_cvar_alpha": row["conditional_constructed_eur_cvar_alpha"],
                     "residual_risk_objective": row["conditional_residual_risk"],
                     "rank_position": rank,
-                    "top1": rank == 1 if rank is not None else None,
+                    "conditional_top1": rank == 1 if rank is not None else None,
                     "p_itinerary_event_count": row["p_itinerary_event_count"],
                     "p_service_event_count": row["p_service_event_count"],
                     "pending_monetary_event_status": row["pending_monetary_event_status"],
@@ -111,18 +125,23 @@ def materialize_records(source: pd.DataFrame) -> pd.DataFrame:
 
 
 def top1_summary(records: pd.DataFrame) -> pd.DataFrame:
-    ranked = records[records["top1"].astype("boolean").fillna(False)]
+    """Summarize conditional Top-1 without mistaking it for a recommendation."""
     rows = []
-    for (node_id, band), group in ranked.groupby(["decision_node_id", "band"], sort=False):
-        row = group.iloc[0]
+    for (node_id, band), group in records.groupby(["decision_node_id", "band"], sort=False):
+        comparable = group[group["rank_position"].notna()]
+        if comparable.empty:
+            continue
+        top = comparable[comparable["rank_position"] == 1]
+        _require(len(top) == 1, "M3M4_CONDITIONAL_TOP1_CARDINALITY_INVALID")
+        row = top.iloc[0]
         rows.append(
             {
                 "decision_node_id": node_id,
                 "band": band,
-                "top1_action_id": row["action_id"],
+                "conditional_top1_action_id": row["action_id"],
                 "top1_residual_risk_objective": row["residual_risk_objective"],
                 "top1_expected_constructed_eur": row["expected_constructed_eur"],
-                "n_comparable_actions": int(group["rank_position"].nunique()),
+                "n_conditional_comparable_actions": int(len(comparable)),
                 "support_status": row["diagnostic_support_status"],
             }
         )
@@ -135,7 +154,9 @@ def aggregate_stats(records: pd.DataFrame, summary: pd.DataFrame) -> dict[str, A
     for band, group in summary.groupby("band", sort=False):
         per_band[band] = {
             "ranked_nodes": int(group["decision_node_id"].nunique()),
-            "top1_a00_share": float((group["top1_action_id"] == "A00").mean()),
+            "conditional_top1_a00_share": float(
+                (group["conditional_top1_action_id"] == "A00").mean()
+            ),
         }
     return {
         "node_count": int(nodes),
@@ -156,23 +177,6 @@ def run(
     output_root = (output_root or root / DEFAULT_OUTPUT).resolve()
     action_risk = (action_risk or root / ACTION_RISK).resolve()
     _require(action_risk.is_file(), "M3M4_SOURCE_PARQUET_MISSING")
-    _require((root / REGISTRY_V2).is_file(), "M3M4_REGISTRY_V2_MISSING")
-    _require((root / SPEC_V1).is_file(), "M3M4_SPEC_V1_MISSING")
-
-    registry = json.loads((root / REGISTRY_V2).read_text(encoding="utf-8"))
-    components = {c["component_id"]: c for c in registry["ops_components"]}
-    _require(
-        components["P_itinerary"]["anchor_status"] == "ABSTAIN_MONETARY_NOT_ANCHORED_EVENT_COUNTS_ONLY",
-        "M3M4_F7_P_ITINERARY_NOT_ABSTAIN",
-    )
-    _require(
-        components["P_service"]["anchor_status"] == "ABSTAIN_MONETARY_NOT_ANCHORED_EVENT_COUNTS_ONLY",
-        "M3M4_F7_P_SERVICE_NOT_ABSTAIN",
-    )
-    _require(
-        registry["rmb_reporting_system"] == "NOT_INSTANTIATED_NO_BETA_K_RMB",
-        "M3M4_F8_RMB_NOT_ABSTAIN",
-    )
 
     source = pd.read_parquet(action_risk)
     _require(int(source["decision_node_id"].nunique()) == 1769, "M3M4_NODE_COUNT_INVALID")
@@ -184,17 +188,17 @@ def run(
     records = materialize_records(source)
     _require(len(records) == len(source), "M3M4_RECORD_CARDINALITY_INVALID")
 
-    # A00 must be in the comparison set for every node x band that has any
-    # comparable action (sample-level identity; frozen selection rule).
-    ranked = records[records["top1"].astype("boolean").fillna(False)]
+    # A00 must be present as a baseline for every node x band with a finite
+    # conditional action.  It need not be conditional Top-1: that would turn
+    # the baseline into a hard-coded outcome and hide future supported actions.
+    ranked = records[records["conditional_top1"].astype("boolean").fillna(False)]
     _require(
         int(ranked["decision_node_id"].nunique()) == 1765,
         "M3M4_RANKED_NODE_COUNT_INVALID",
     )
-    a00_top1 = ranked.groupby(["decision_node_id", "band"], sort=False)["action_id"].apply(
-        lambda values: list(values) == ["A00"]
-    )
-    _require(bool(a00_top1.all()), "M3M4_TOP1_NOT_A00")
+    for _, group in records.groupby(["decision_node_id", "band"], sort=False):
+        if group["rank_position"].notna().any():
+            _require("A00" in set(group["action_id"]), "M3M4_A00_BASELINE_MISSING")
 
     summary = top1_summary(records)
     stats = aggregate_stats(records, summary)
@@ -218,12 +222,14 @@ def run(
         "dataset": "DATA2",
         "split": "DEVELOPMENT",
         "status": "MATERIALIZED",
-        "spec_ref": "PAPER_OUTPUT_SPEC_V1",
-        "registry_ref": registry["registry_id"],
+        "spec_ref": FROZEN_SPEC_REF,
+        "registry_ref": FROZEN_REGISTRY_REF,
         "episode_count": int(records["episode_id"].nunique()),
         "node_count": 1769,
         "rules": {
             "selection_rule": "MIN_J_LAMBDA_0_25_ALPHA_0_90_TIE_ACTION_ID_A00_REQUIRED",
+            "top1_semantics": "CONDITIONAL_DIAGNOSTIC_NOT_OPERATIONAL_RECOMMENDATION",
+            "operational_recommendation": "A00_BASELINE_GATE_V2_REQUIRED",
             "ranking_authority": "CONDITIONAL_DIAGNOSTIC_5_ANCHOR_SUBSET_NOT_PRINCIPAL",
             "f7": "P_ITINERARY_P_SERVICE_ABSTAIN_EVENT_COUNTS_ONLY_NOT_IN_J_NO_ZERO_FILL",
             "f8": "RMB_NOT_INSTANTIATED_NO_BETA_K_RMB",
@@ -234,10 +240,8 @@ def run(
         "aggregate": stats,
         "input_hashes": {
             "action_risk": file_sha256(action_risk),
-            "registry_v2": file_sha256(root / REGISTRY_V2),
-            "spec_v1": file_sha256(root / SPEC_V1),
         },
-        "registry_hash": registry["registry_hash"],
+        "registry_hash": FROZEN_REGISTRY_HASH,
         "safety": dict(SAFETY),
         "paper_result": False,
         "outputs": {name: str(path.relative_to(root)) for name, path in paths.items()},
@@ -249,8 +253,13 @@ def run(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--action-risk", type=Path)
     args = parser.parse_args(argv)
-    paths = run(root=Path(__file__).resolve().parents[2], output_root=args.output_root)
+    paths = run(
+        root=Path(__file__).resolve().parents[2],
+        output_root=args.output_root,
+        action_risk=args.action_risk,
+    )
     for name, path in paths.items():
         print(f"{name}: {path}")
     return 0

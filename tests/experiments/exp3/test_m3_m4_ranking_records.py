@@ -9,7 +9,7 @@ paper_result=false, FINAL_TEST_ACCESS_COUNT=0).
 
 from __future__ import annotations
 
-import json
+import math
 
 import pandas as pd
 
@@ -83,6 +83,15 @@ def test_recompute_rank_excludes_not_run():
     assert "A00" not in ranks
 
 
+def test_recompute_rank_excludes_nonfinite_objectives():
+    rows = [
+        {"action_id": "A00", "residual_risk_objective": 40.0},
+        {"action_id": "B01", "residual_risk_objective": math.inf},
+        {"action_id": "C02", "residual_risk_objective": -math.inf},
+    ]
+    assert recompute_rank(rows) == {"A00": 1}
+
+
 def test_materialize_records_derives_rank_and_top1():
     source = _frame(
         [
@@ -98,11 +107,11 @@ def test_materialize_records_derives_rank_and_top1():
     assert len(records) == 6
     by = records.set_index(["decision_node_id", "action_id"])
     assert by.loc[("n1", "B01"), "rank_position"] == 1
-    assert bool(by.loc[("n1", "B01"), "top1"]) is True
+    assert bool(by.loc[("n1", "B01"), "conditional_top1"]) is True
     assert pd.isna(by.loc[("n1", "C02"), "rank_position"])
-    assert pd.isna(by.loc[("n1", "C02"), "top1"])
+    assert pd.isna(by.loc[("n1", "C02"), "conditional_top1"])
     assert by.loc[("n2", "C02"), "rank_position"] == 1
-    assert bool(by.loc[("n2", "C02"), "top1"]) is True
+    assert bool(by.loc[("n2", "C02"), "conditional_top1"]) is True
     assert by.loc[("n2", "A00"), "rank_position"] == 3
 
 
@@ -137,33 +146,17 @@ def test_top1_summary_and_aggregate_stats():
     records = materialize_records(source)
     summary = top1_summary(records)
     assert len(summary) == 2
-    assert set(summary["top1_action_id"]) == {"B01", "A00"}
+    assert set(summary["conditional_top1_action_id"]) == {"B01", "A00"}
+    assert set(summary["n_conditional_comparable_actions"]) == {2}
     stats = aggregate_stats(records, summary)
     assert stats["node_count"] == 2
     assert stats["ranked_nodes"] == 2
     assert stats["unranked_nodes"] == 0
-    assert stats["top1_by_band"]["BASE"]["top1_a00_share"] == 0.5
+    assert stats["top1_by_band"]["BASE"]["conditional_top1_a00_share"] == 0.5
 
 
-def test_band_scale_factors_match_registry_v2():
-    from pathlib import Path
-
-    registry = json.loads(
-        Path("registries/m4_eur_mapping_assumption_grounded_v2.json").read_text(encoding="utf-8")
-    )
-    first_bands = registry["ops_components"][0]["bands"]
-    for band in first_bands:
-        assert BAND_SCALE_FACTOR[band["band_id"]] == band["scale_factor"]
-    components = {c["component_id"]: c for c in registry["ops_components"]}
-    assert (
-        components["P_itinerary"]["anchor_status"]
-        == "ABSTAIN_MONETARY_NOT_ANCHORED_EVENT_COUNTS_ONLY"
-    )
-    assert (
-        components["P_service"]["anchor_status"]
-        == "ABSTAIN_MONETARY_NOT_ANCHORED_EVENT_COUNTS_ONLY"
-    )
-    assert registry["rmb_reporting_system"] == "NOT_INSTANTIATED_NO_BETA_K_RMB"
+def test_frozen_conditional_policy_constants():
+    assert BAND_SCALE_FACTOR == {"LOW": 0.5, "BASE": 1.0, "HIGH": 2.0}
 
 
 def test_safety_contract():

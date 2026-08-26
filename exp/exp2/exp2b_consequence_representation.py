@@ -8,7 +8,9 @@ Flight / Passenger / Resource), and Scalar (r=1, total over supported
 components).  The action-selection rule is the frozen M4 mechanism
 (min J = 0.75*E + 0.25*CVaR_alpha over the aligned scenario ensemble,
 alpha=0.90, deterministic tie-break by action_id, A00 required in the
-comparison set).  Monetary reporting is the constructed-EUR five-anchor
+comparison set). Its Top-1 fields are conditional diagnostic outputs, never
+operational recommendations: A00 is a baseline only and operational selection
+is delegated to ``exp.exp3.a00_baseline_gate``. Monetary reporting is the constructed-EUR five-anchor
 system; ``P_itinerary``/``P_service`` stay ABSTAIN for money (F7) and are
 reported as event counts only.  Coarse sums aggregate only supported
 components; an unsupported component is never zero-filled (03_methodology.tex
@@ -86,6 +88,7 @@ SAFETY = {
     "PAPER_FULL_RUN": False,
 }
 SCHEMA_VERSION = "AIR_SLOT_EXP2B_CONSEQUENCE_REPRESENTATION_V1"
+TOP1_SEMANTICS = "CONDITIONAL_DIAGNOSTIC_NOT_OPERATIONAL_RECOMMENDATION"
 
 RECORDS_SCHEMA = pa.schema([
     pa.field("episode_id", pa.string()),
@@ -394,7 +397,7 @@ def materialize(
     for representation in ("r3", "r1"):
         changed = int((common[f"top1_{representation}"] != common["top1_r7"]).sum())
         summary_rows.append({
-            "endpoint": "TOP1_DIFFERENCE_RATE",
+            "endpoint": "CONDITIONAL_TOP1_DIFFERENCE_RATE",
             "representation": representation,
             "n_common_scope_nodes": len(common),
             "n_changed": changed,
@@ -462,6 +465,8 @@ def materialize(
         "channels": CHANNELS,
         "action_count": 23,
         "selection_rule": "MIN_J_LAMBDA_0_25_ALPHA_0_90_TIE_ACTION_ID_A00_REQUIRED",
+        "top1_semantics": TOP1_SEMANTICS,
+        "operational_recommendation": "A00_BASELINE_GATE_V2_REQUIRED",
         "monetary_rule": "F5_CONSTRUCTED_EUR_FIVE_ANCHOR_BASE",
         "abstain_rule": "F7_P_ITIN_P_SERV_EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED",
         "coarse_sum_rule": "SUPPORTED_COMPONENTS_ONLY_NO_ZERO_FILL",
