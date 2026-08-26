@@ -1,0 +1,123 @@
+{
+  "claim_boundary": "RMB is the frozen reporting and measurement mapping for this Final Test comparison; it is not an EUR-to-RMB conversion or observed monetary ground truth.",
+  "components": [
+    {
+      "beta_k_rmb": {
+        "BASE": 1.0,
+        "HIGH": 2.0,
+        "LOW": 0.5
+      },
+      "component_id": "F_continuity",
+      "currency_conversion": false,
+      "mapping_function": "IDENTITY_LINEAR_CU_TO_RMB",
+      "scope_status": "IN_MAIN_MONETARY_SCOPE",
+      "source_type": "FROZEN_REPORTING_MEASUREMENT_MAPPING",
+      "unit": "RMB_PER_CU",
+      "zero_fill_allowed": false
+    },
+    {
+      "beta_k_rmb": {
+        "BASE": 1.0,
+        "HIGH": 2.0,
+        "LOW": 0.5
+      },
+      "component_id": "F_execution",
+      "currency_conversion": false,
+      "mapping_function": "IDENTITY_LINEAR_CU_TO_RMB",
+      "scope_status": "IN_MAIN_MONETARY_SCOPE",
+      "source_type": "FROZEN_REPORTING_MEASUREMENT_MAPPING",
+      "unit": "RMB_PER_CU",
+      "zero_fill_allowed": false
+    },
+    {
+      "beta_k_rmb": {
+        "BASE": 1.0,
+        "HIGH": 2.0,
+        "LOW": 0.5
+      },
+      "component_id": "F_propagation",
+      "currency_conversion": false,
+      "mapping_function": "IDENTITY_LINEAR_CU_TO_RMB",
+      "scope_status": "IN_MAIN_MONETARY_SCOPE",
+      "source_type": "FROZEN_REPORTING_MEASUREMENT_MAPPING",
+      "unit": "RMB_PER_CU",
+      "zero_fill_allowed": false
+    },
+    {
+      "beta_k_rmb": {
+        "BASE": 1.0,
+        "HIGH": 2.0,
+        "LOW": 0.5
+      },
+      "component_id": "P_time",
+      "currency_conversion": false,
+      "mapping_function": "IDENTITY_LINEAR_CU_TO_RMB",
+      "scope_status": "IN_MAIN_MONETARY_SCOPE",
+      "source_type": "FROZEN_REPORTING_MEASUREMENT_MAPPING",
+      "unit": "RMB_PER_CU",
+      "zero_fill_allowed": false
+    },
+    {
+      "beta_k_rmb": {
+        "BASE": 1.0,
+        "HIGH": 2.0,
+        "LOW": 0.5
+      },
+      "component_id": "R_operating",
+      "currency_conversion": false,
+      "mapping_function": "IDENTITY_LINEAR_CU_TO_RMB",
+      "scope_status": "IN_MAIN_MONETARY_SCOPE",
+      "source_type": "FROZEN_REPORTING_MEASUREMENT_MAPPING",
+      "unit": "RMB_PER_CU",
+      "zero_fill_allowed": false
+    },
+    {
+      "beta_k_rmb": null,
+      "component_id": "P_itinerary",
+      "currency_conversion": false,
+      "mapping_function": null,
+      "reason": "NOT_IN_MAIN_MONETARY_SCOPE",
+      "scope_status": "NOT_IN_MAIN_MONETARY_SCOPE",
+      "source_type": "OPERATIONAL_CONSEQUENCE_ONLY",
+      "unit": "EVENT_CU_ONLY",
+      "zero_fill_allowed": false
+    },
+    {
+      "beta_k_rmb": null,
+      "component_id": "P_service",
+      "currency_conversion": false,
+      "mapping_function": null,
+      "reason": "NOT_IN_MAIN_MONETARY_SCOPE",
+      "scope_status": "NOT_IN_MAIN_MONETARY_SCOPE",
+      "source_type": "OPERATIONAL_CONSEQUENCE_ONLY",
+      "unit": "EVENT_CU_ONLY",
+      "zero_fill_allowed": false
+    }
+  ],
+  "currency_conversion": "PROHIBITED",
+  "excluded_operational_components": [
+    "P_itinerary",
+    "P_service"
+  ],
+  "main_monetary_components": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "R_operating"
+  ],
+  "monetary_system": "RMB",
+  "registry_hash": "sha256:9e6038cdf54476cb8b3018168914545954d7a618adbeca77778caf8a4df9effa",
+  "registry_id": "M4_RMB_MAPPING_V1_FINAL_TEST",
+  "renormalization": "PROHIBITED",
+  "rmb_base_mapping": "1_CU_EQUALS_1_RMB",
+  "schema_version": "M4_RMB_MAPPING_V1",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "status": "FROZEN_FINAL_TEST_REPORTING_MAPPING",
+  "unsupported_component_policy": "ABSTAIN_NO_ZERO_FILL_NO_IMPUTATION",
+  "valuation_sensitivity_bands": [
+    "LOW",
+    "BASE",
+    "HIGH"
+  ]
+}

@@ -115,28 +115,42 @@ def _annotated_components_json(components: list[dict[str, Any]]) -> str:
     return json.dumps(annotated, sort_keys=True)
 
 
-def _ranking_metrics_entry() -> dict[str, Any]:
-    """M4_RANKING assumption-grounded 5-ANCHOR SUBSET contract (D2)."""
-    registry = json.loads(EUR_MAPPING_REGISTRY.read_text(encoding="utf-8"))
-    rates = {
-        item["component_id"]: {
-            band["band_id"]: band["per_cu_money"] for band in item["bands"]
+def _ranking_metrics_entry(mapping_registry: Path = EUR_MAPPING_REGISTRY) -> dict[str, Any]:
+    """Return the explicit five-component monetary contract for this run."""
+    registry = json.loads(mapping_registry.read_text(encoding="utf-8"))
+    is_rmb = registry.get("monetary_system") == "RMB"
+    if is_rmb:
+        component_rules = {item["component_id"]: item for item in registry["components"]}
+        rates = {
+            component: component_rules[component]["beta_k_rmb"]
+            for component in FIVE_ANCHOR_COMPONENTS
         }
-        for item in registry["ops_components"]
-    }
+        units = "RMB"
+        reason = "RMB_FIVE_COMPONENT_REPORTING_MAPPING_READY"
+        semantics = "FROZEN_REPORTING_MEASUREMENT_MAPPING_NO_CURRENCY_CONVERSION"
+    else:
+        rates = {
+            item["component_id"]: {
+                band["band_id"]: band["per_cu_money"] for band in item["bands"]
+            }
+            for item in registry["ops_components"]
+        }
+        units = "constructed_EUR"
+        reason = "FIVE_ANCHOR_SUBSET_RANKING_CONTRACT_READY_VALUE_MATERIALIZED_AT_FULL_CHAIN_EXECUTION"
+        semantics = "CONSTRUCTED_INTERNAL_LOSS_NOT_CAUSAL_NOT_REGRET_NOT_OPTIMAL"
     return {
         "support_status": "ASSUMPTION_GROUNDED",
-        "reason": "FIVE_ANCHOR_SUBSET_RANKING_CONTRACT_READY_VALUE_MATERIALIZED_AT_FULL_CHAIN_EXECUTION",
+        "reason": reason,
         "subset": "5-ANCHOR SUBSET",
         "components": list(FIVE_ANCHOR_COMPONENTS),
-        "units": "constructed_EUR",
-        "registry": "registries/m4_eur_mapping_assumption_grounded_v1.json",
+        "units": units,
+        "registry": str(mapping_registry).replace("\\", "/"),
         "registry_hash": registry["registry_hash"],
         "base_rates_per_cu": {
             component: rates[component]["BASE"] for component in FIVE_ANCHOR_COMPONENTS
         },
         "sensitivity_bands": {"LOW": 0.5, "BASE": 1.0, "HIGH": 2.0},
-        "semantics": "CONSTRUCTED_INTERNAL_LOSS_NOT_CAUSAL_NOT_REGRET_NOT_OPTIMAL",
+        "semantics": semantics,
         "top1_level": "ASSUMPTION_GROUNDED",
         "expost_level": "ASSUMPTION_GROUNDED",
         "formal_recommendation_level": "ASSUMPTION_GROUNDED",
@@ -256,20 +270,32 @@ def _build_manifest(
     *, root: Path, input_manifest: dict[str, Any], scenario_manifest: dict[str, Any],
     node_count: int, consequence_path: Path, metrics_path: Path, table_path: Path,
     interpretation_path: Path, metrics_payload: dict[str, Any],
+    scope: str = "DATA2_FULL_DEVELOPMENT_NO_FINAL_TEST",
+    split: str = "DEVELOPMENT",
+    mapping_registry: Path = EUR_MAPPING_REGISTRY,
+    safety: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    final_rmb = mapping_registry.name == "m4_rmb_mapping_v1.json"
     manifest = {
-        "schema_version": "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST_V1",
+        "schema_version": "EXP2_EXECUTION_MANIFEST_V2",
         "status": metrics_payload["status"],
-        "dataset": "DATA2", "split": "DEVELOPMENT",
+        "scope": scope,
+        "dataset": "DATA2", "split": split,
         "episode_count": input_manifest["episode_count"], "node_count": node_count,
         "frozen_hashes": {
             **scenario_manifest["frozen_hashes"],
             "cohort_hash": scenario_manifest["cohort_hash"],
-            "scenario_hash": scenario_manifest["artifact_hash"],
-            "mapping_hash": _sha(root / EUR_MAPPING_REGISTRY),
-            "mapping_registry": str(EUR_MAPPING_REGISTRY).replace("\\", "/"),
+            "scenario_hash": scenario_manifest.get(
+                "artifact_hash",
+                scenario_manifest.get("models", {}).get("M1_V2_GRU_H32", {}).get("artifact_hash"),
+            ),
+            "mapping_hash": _sha(root / mapping_registry),
+            "mapping_registry": str(mapping_registry).replace("\\", "/"),
         },
-        "consequence_annotation": "P_ITINERARY_P_SERVICE_EVENT_COUNTS_MONETARY_NOT_ANCHORED",
+        "consequence_annotation": (
+            "P_ITINERARY_P_SERVICE_NOT_IN_MAIN_MONETARY_SCOPE"
+            if final_rmb else "P_ITINERARY_P_SERVICE_EVENT_COUNTS_MONETARY_NOT_ANCHORED"
+        ),
         "outputs": {
             "consequences": str(consequence_path.relative_to(root)).replace("\\", "/"),
             "metrics": str(metrics_path.relative_to(root)).replace("\\", "/"),
@@ -277,7 +303,7 @@ def _build_manifest(
             "interpretation": str(interpretation_path.relative_to(root)).replace("\\", "/"),
         },
         "artifact_hashes": {"consequences": _sha(consequence_path), "metrics": metrics_payload["artifact_hash"]},
-        "safety": dict(SAFETY),
+        "safety": dict(SAFETY) if safety is None else dict(safety),
     }
     manifest["artifact_hash"] = content_id(manifest)
     return manifest
@@ -288,22 +314,70 @@ def run(
     scenario_root: Path | None = None,
     input_root: Path | None = None,
     output_root: Path | None = None,
+    final_test: bool = False,
+    monetary_registry: Path | None = None,
 ) -> dict[str, Path]:
     root = root.resolve()
     scenario_root = (scenario_root or root / SCENARIO_ROOT).resolve()
     input_root = (input_root or root / INPUT_ROOT).resolve()
     output_root = (output_root or root / DEFAULT_OUTPUT).resolve()
-    scenario_manifest_path = scenario_root / "M1_V2_FULL_DEVELOPMENT_TYPED_SCENARIO_MANIFEST.json"
-    input_manifest_path = input_root / "FULL_DEVELOPMENT_INPUT_MANIFEST.json"
-    inputs_path = input_root / "M1_V2_FULL_DEVELOPMENT_INFERENCE_INPUTS.json"
-    labels_path = input_root / "M1_V2_FULL_DEVELOPMENT_LABELS.json"
+    if final_test:
+        scope = "FINAL_TEST_OUT_OF_TIME_2019_10_12"
+        split = "FINAL_TEST"
+        scenario_manifest_path = scenario_root / "FINAL_TEST_SCENARIO_MANIFEST.json"
+        input_manifest_path = input_root / "FINAL_TEST_INPUT_MANIFEST.json"
+        inputs_path = input_root / "M1_V2_FINAL_TEST_INFERENCE_INPUTS.json"
+        labels_path = input_root / "M1_V2_FINAL_TEST_LABELS.json"
+        consequence_name = "M2_FINAL_TEST_CONSEQUENCES.parquet"
+        metrics_name = "EXP2_FINAL_TEST_METRICS.json"
+        table_name = "EXP2_FINAL_TEST_TABLE.csv"
+        interpretation_name = "EXP2_FINAL_TEST_INTERPRETATION.md"
+        manifest_name = "EXP2_FINAL_TEST_EXECUTION_MANIFEST.json"
+        mapping_registry = monetary_registry or Path("registries/m4_rmb_mapping_v1.json")
+        safety = {
+            "FINAL_TEST_ACCESS_COUNT": 0,
+            "PAPER_FULL_RUN": True,
+            "MODEL_RETRAINED": False,
+            "PARAMETER_RESELECTED": False,
+        }
+    else:
+        scope = "DATA2_FULL_DEVELOPMENT_NO_FINAL_TEST"
+        split = "DEVELOPMENT"
+        scenario_manifest_path = scenario_root / "M1_V2_FULL_DEVELOPMENT_TYPED_SCENARIO_MANIFEST.json"
+        input_manifest_path = input_root / "FULL_DEVELOPMENT_INPUT_MANIFEST.json"
+        inputs_path = input_root / "M1_V2_FULL_DEVELOPMENT_INFERENCE_INPUTS.json"
+        labels_path = input_root / "M1_V2_FULL_DEVELOPMENT_LABELS.json"
+        consequence_name = "M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet"
+        metrics_name = "EXP2_FULL_DEVELOPMENT_METRICS.json"
+        table_name = "EXP2_FULL_DEVELOPMENT_TABLE.csv"
+        interpretation_name = "EXP2_FULL_DEVELOPMENT_INTERPRETATION.md"
+        manifest_name = "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json"
+        mapping_registry = EUR_MAPPING_REGISTRY
+        safety = dict(SAFETY)
     required = (scenario_manifest_path, input_manifest_path, inputs_path, labels_path)
     _require(all(path.is_file() for path in required), "EXP2_GLOBAL_INPUT_MISSING")
     scenario_manifest, input_manifest, pre_inputs, labels = map(_load, required)
-    scenario_path = root / scenario_manifest["artifact"]
-    _require(_sha(scenario_path) == scenario_manifest["artifact_hash"], "EXP2_GLOBAL_SCENARIO_HASH_MISMATCH")
+    if final_test:
+        # This is derived from the four Final Test artifacts read above, not a
+        # sentinel.  It records the direct held-out reads performed by Exp2.
+        safety["FINAL_TEST_ACCESS_COUNT"] = len(required)
+    scenario_entry = scenario_manifest.get("models", {}).get("M1_V2_GRU_H32", {})
+    scenario_artifact = scenario_manifest.get("artifact", scenario_entry.get("artifact"))
+    scenario_hash = scenario_manifest.get("artifact_hash", scenario_entry.get("artifact_hash"))
+    _require(scenario_artifact is not None and scenario_hash is not None, "EXP2_GLOBAL_SCENARIO_BINDING_MISSING")
+    scenario_path = root / scenario_artifact
+    _require(_sha(scenario_path) == scenario_hash, "EXP2_GLOBAL_SCENARIO_HASH_MISMATCH")
     _require(scenario_manifest["cohort_hash"] == input_manifest["cohort_hash"] == labels["cohort_hash"], "EXP2_GLOBAL_COHORT_HASH_MISMATCH")
-    _require(scenario_manifest["safety"] == {**scenario_manifest["safety"], "FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": False}, "EXP2_GLOBAL_SAFETY_INVALID")
+    _require(
+        (scenario_manifest["safety"].get("FINAL_TEST_ACCESS_COUNT", 0) > 0)
+        if final_test
+        else scenario_manifest["safety"] == {**scenario_manifest["safety"], "FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": False},
+        "EXP2_GLOBAL_SAFETY_INVALID",
+    )
+    _require(
+        input_manifest.get("scope") == scope if final_test else True,
+        "EXP2_GLOBAL_INPUT_SCOPE_INVALID",
+    )
 
     references = {
         name: _load(root / REFERENCE_ROOT / filename)
@@ -331,7 +405,7 @@ def run(
             tail_excesses[row["target_name"]].append(raw - Q_MAX_MINUTES[row["target_name"]])
     pooled_tails = {target: pooled_tail_sigma(values) for target, values in tail_excesses.items()}
 
-    consequence_path = output_root / "M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet"
+    consequence_path = output_root / consequence_name
     temporary = consequence_path.with_suffix(".parquet.tmp")
     output_root.mkdir(parents=True, exist_ok=True)
     writer: pq.ParquetWriter | None = None
@@ -490,22 +564,23 @@ def run(
         "EXP2B_SCALAR": {"support_status": "NOT_RUN", "reason": "SEVEN_COMPONENT_AGGREGATE_UNRESOLVED"},
         "EXP2B_3CHANNEL": {"support_status": "NOT_RUN", "reason": "PASSENGER_CHANNEL_INCOMPLETE"},
         "EXP2B_7COMP": {"support_status": "PARTIAL", "reason": "TYPED_VECTOR_READY_WITH_P_ITINERARY_AND_P_SERVICE_ABSTAIN"},
-        "M4_RANKING": _ranking_metrics_entry(),
+        "M4_RANKING": _ranking_metrics_entry(mapping_registry),
     })
     metrics_payload = {
-        "schema_version": "EXP2_FULL_DEVELOPMENT_METRICS_V1",
+        "schema_version": "EXP2_METRICS_V2",
         "status": "COMPLETE_WITH_GATED_NOT_RUN_RESULTS",
-        "dataset": "DATA2", "split": "DEVELOPMENT",
+        "scope": scope,
+        "dataset": "DATA2", "split": split,
         "episode_count": input_manifest["episode_count"], "node_count": node_count,
         "metrics": metrics,
         "support_policy": "ABSTAIN_NOT_RUN_NO_ZERO_FILL_NO_SILENT_RENORMALIZATION",
-        "safety": dict(SAFETY),
+        "safety": safety,
     }
     metrics_payload["artifact_hash"] = content_id(metrics_payload)
-    metrics_path = output_root / "EXP2_FULL_DEVELOPMENT_METRICS.json"
+    metrics_path = output_root / metrics_name
     _write(metrics_path, metrics_payload)
 
-    table_path = output_root / "EXP2_FULL_DEVELOPMENT_TABLE.csv"
+    table_path = output_root / table_name
     with table_path.open("w", newline="", encoding="utf-8") as stream:
         writer_csv = csv.DictWriter(stream, fieldnames=("variant", "brier", "calibration_gap", "supported_nodes", "abstain_nodes"))
         writer_csv.writeheader()
@@ -517,15 +592,19 @@ def run(
                 "supported_nodes": row["supported_node_count"],
                 "abstain_nodes": row["abstain_node_count"],
             })
-    interpretation_path = output_root / "EXP2_FULL_DEVELOPMENT_INTERPRETATION.md"
-    interpretation_path.write_text(_interpretation_text(), encoding="utf-8")
+    interpretation_path = output_root / interpretation_name
+    interpretation_path.write_text(
+        _interpretation_text().replace("Development", "Final Test") if final_test else _interpretation_text(),
+        encoding="utf-8",
+    )
     manifest = _build_manifest(
         root=root, input_manifest=input_manifest, scenario_manifest=scenario_manifest,
         node_count=node_count, consequence_path=consequence_path,
         metrics_path=metrics_path, table_path=table_path,
         interpretation_path=interpretation_path, metrics_payload=metrics_payload,
+        scope=scope, split=split, mapping_registry=mapping_registry, safety=safety,
     )
-    manifest_path = output_root / "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json"
+    manifest_path = output_root / manifest_name
     _write(manifest_path, manifest)
     return {
         "manifest": manifest_path, "metrics": metrics_path,

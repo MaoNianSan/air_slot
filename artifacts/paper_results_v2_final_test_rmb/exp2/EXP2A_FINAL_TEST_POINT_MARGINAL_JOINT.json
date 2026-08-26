@@ -1,0 +1,525 @@
+{
+  "artifact_hash": "sha256:6ddba3d1eb47185762382e67f83cb19be614f1a757e9bc2509ac3679022c3546",
+  "metrics": {
+    "EXP2A_JOINT": {
+      "abstain_node_count": 97,
+      "calibration": {
+        "bins": [
+          {
+            "bin": 0,
+            "count": 1002,
+            "forecast": 0.08238323353293413,
+            "gap": 0.016419161676646712,
+            "observed": 0.09880239520958084
+          },
+          {
+            "bin": 1,
+            "count": 613,
+            "forecast": 0.1131484502446982,
+            "gap": 0.027145187601957596,
+            "observed": 0.1402936378466558
+          },
+          {
+            "bin": 2,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 3,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 4,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 5,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 6,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 7,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 8,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 9,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          }
+        ],
+        "fixed_bin_calibration_gap": 0.02049040247678019
+      },
+      "state_crps": {
+        "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_SCORES",
+        "claim": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL_TAIL_CALIBRATION",
+        "schemes": {
+          "T-BASE": {
+            "D_OB": {
+              "crps": 10.070805588123116,
+              "crps_finite": 10.070805588123116,
+              "crps_tail": 0.0,
+              "j_tail": 0.0,
+              "supported_episodes": 128,
+              "supported_nodes": 1615,
+              "twcrps_tail": 0.0
+            },
+            "D_TX": {
+              "crps": 4.286965243650126,
+              "crps_finite": 4.286965243650126,
+              "crps_tail": 0.0,
+              "j_tail": 0.0,
+              "supported_episodes": 128,
+              "supported_nodes": 1712,
+              "twcrps_tail": 0.0
+            }
+          },
+          "T-PARAM": {
+            "D_OB": {
+              "crps": null,
+              "crps_finite": null,
+              "crps_tail": null,
+              "j_tail": null,
+              "supported_episodes": 0,
+              "supported_nodes": 0,
+              "twcrps_tail": null
+            },
+            "D_TX": {
+              "crps": null,
+              "crps_finite": null,
+              "crps_tail": null,
+              "j_tail": null,
+              "supported_episodes": 0,
+              "supported_nodes": 0,
+              "twcrps_tail": null
+            }
+          }
+        },
+        "support_status": "ASSUMPTION_GROUNDED",
+        "tail_pit_diagnostic": {
+          "count": 0,
+          "mean_pit": null,
+          "status": "DIAGNOSTIC_ONLY_NOT_A_GATE"
+        },
+        "tail_pooled": {
+          "enabled": false,
+          "n_tail_samples": 0
+        },
+        "targets": [
+          "D_OB",
+          "D_TX"
+        ],
+        "variants_of_record": [
+          "EXP2A_POINT",
+          "EXP2A_MARGINAL",
+          "EXP2A_JOINT"
+        ]
+      },
+      "supported_episode_count": 128,
+      "supported_node_count": 1615,
+      "tail_aware_brier": 0.11673503278179312,
+      "variogram_score": {
+        "abstain_reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+        "scope": "FINITE_SUPPORT_PREDICTIVE_AND_OBSERVED_TERMS_ONLY",
+        "support_status": "SUPPORTED_FINITE_TERMS_ONLY",
+        "supported_episodes": 128,
+        "supported_nodes": 1712,
+        "value": 9.734822746158644
+      }
+    },
+    "EXP2A_MARGINAL": {
+      "abstain_node_count": 97,
+      "calibration": {
+        "bins": [
+          {
+            "bin": 0,
+            "count": 898,
+            "forecast": 0.08091314031180401,
+            "gap": 0.022650334075723838,
+            "observed": 0.10356347438752785
+          },
+          {
+            "bin": 1,
+            "count": 717,
+            "forecast": 0.11060529986052998,
+            "gap": 0.0177071129707113,
+            "observed": 0.12831241283124128
+          },
+          {
+            "bin": 2,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 3,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 4,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 5,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 6,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 7,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 8,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 9,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          }
+        ],
+        "fixed_bin_calibration_gap": 0.02045572755417957
+      },
+      "state_crps": {
+        "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_SCORES",
+        "claim": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL_TAIL_CALIBRATION",
+        "schemes": {
+          "T-BASE": {
+            "D_OB": {
+              "crps": 10.070805588123116,
+              "crps_finite": 10.070805588123116,
+              "crps_tail": 0.0,
+              "j_tail": 0.0,
+              "supported_episodes": 128,
+              "supported_nodes": 1615,
+              "twcrps_tail": 0.0
+            },
+            "D_TX": {
+              "crps": 4.286965243650126,
+              "crps_finite": 4.286965243650126,
+              "crps_tail": 0.0,
+              "j_tail": 0.0,
+              "supported_episodes": 128,
+              "supported_nodes": 1712,
+              "twcrps_tail": 0.0
+            }
+          },
+          "T-PARAM": {
+            "D_OB": {
+              "crps": null,
+              "crps_finite": null,
+              "crps_tail": null,
+              "j_tail": null,
+              "supported_episodes": 0,
+              "supported_nodes": 0,
+              "twcrps_tail": null
+            },
+            "D_TX": {
+              "crps": null,
+              "crps_finite": null,
+              "crps_tail": null,
+              "j_tail": null,
+              "supported_episodes": 0,
+              "supported_nodes": 0,
+              "twcrps_tail": null
+            }
+          }
+        },
+        "support_status": "ASSUMPTION_GROUNDED",
+        "tail_pit_diagnostic": {
+          "count": 0,
+          "mean_pit": null,
+          "status": "DIAGNOSTIC_ONLY_NOT_A_GATE"
+        },
+        "tail_pooled": {
+          "enabled": false,
+          "n_tail_samples": 0
+        },
+        "targets": [
+          "D_OB",
+          "D_TX"
+        ],
+        "variants_of_record": [
+          "EXP2A_POINT",
+          "EXP2A_MARGINAL",
+          "EXP2A_JOINT"
+        ]
+      },
+      "supported_episode_count": 128,
+      "supported_node_count": 1615,
+      "tail_aware_brier": 0.11688845475157998,
+      "variogram_score": {
+        "abstain_reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+        "scope": "FINITE_SUPPORT_PREDICTIVE_AND_OBSERVED_TERMS_ONLY",
+        "support_status": "SUPPORTED_FINITE_TERMS_ONLY",
+        "supported_episodes": 128,
+        "supported_nodes": 1712,
+        "value": 9.734822746158644
+      }
+    },
+    "EXP2A_POINT": {
+      "abstain_node_count": 97,
+      "calibration": {
+        "bins": [
+          {
+            "bin": 0,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 1,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 2,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 3,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 4,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 5,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 6,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 7,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 8,
+            "count": 0,
+            "forecast": null,
+            "gap": null,
+            "observed": null
+          },
+          {
+            "bin": 9,
+            "count": 1615,
+            "forecast": 1.0,
+            "gap": 0.8854489164086687,
+            "observed": 0.11455108359133127
+          }
+        ],
+        "fixed_bin_calibration_gap": 0.8854489164086687
+      },
+      "state_crps": {
+        "aggregation": "EPISODE_BALANCED_MEAN_OF_NODE_SCORES",
+        "claim": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL_TAIL_CALIBRATION",
+        "schemes": {
+          "T-BASE": {
+            "D_OB": {
+              "crps": 0.0071225071225071235,
+              "crps_finite": 0.0071225071225071235,
+              "crps_tail": 0.0,
+              "j_tail": 0.0,
+              "supported_episodes": 117,
+              "supported_nodes": 1415,
+              "twcrps_tail": 0.0
+            },
+            "D_TX": {
+              "crps": 0.16590364114994657,
+              "crps_finite": 0.16590364114994657,
+              "crps_tail": 0.0,
+              "j_tail": 0.0,
+              "supported_episodes": 112,
+              "supported_nodes": 1060,
+              "twcrps_tail": 0.0
+            }
+          },
+          "T-PARAM": {
+            "D_OB": {
+              "crps": null,
+              "crps_finite": null,
+              "crps_tail": null,
+              "j_tail": null,
+              "supported_episodes": 0,
+              "supported_nodes": 0,
+              "twcrps_tail": null
+            },
+            "D_TX": {
+              "crps": null,
+              "crps_finite": null,
+              "crps_tail": null,
+              "j_tail": null,
+              "supported_episodes": 0,
+              "supported_nodes": 0,
+              "twcrps_tail": null
+            }
+          }
+        },
+        "support_status": "ASSUMPTION_GROUNDED",
+        "tail_pit_diagnostic": {
+          "count": 0,
+          "mean_pit": null,
+          "status": "DIAGNOSTIC_ONLY_NOT_A_GATE"
+        },
+        "tail_pooled": {
+          "enabled": false,
+          "n_tail_samples": 0
+        },
+        "targets": [
+          "D_OB",
+          "D_TX"
+        ],
+        "variants_of_record": [
+          "EXP2A_POINT",
+          "EXP2A_MARGINAL",
+          "EXP2A_JOINT"
+        ]
+      },
+      "supported_episode_count": 128,
+      "supported_node_count": 1615,
+      "tail_aware_brier": 0.8671875,
+      "variogram_score": {
+        "abstain_reason": "OBSERVED_OR_PREDICTIVE_TAIL_TERM_ABSTAINED",
+        "scope": "FINITE_SUPPORT_PREDICTIVE_AND_OBSERVED_TERMS_ONLY",
+        "support_status": "SUPPORTED_FINITE_TERMS_ONLY",
+        "supported_episodes": 128,
+        "supported_nodes": 1712,
+        "value": 9.734822746158644
+      }
+    },
+    "EXP2B_3CHANNEL": {
+      "reason": "PASSENGER_CHANNEL_INCOMPLETE",
+      "support_status": "NOT_RUN"
+    },
+    "EXP2B_7COMP": {
+      "reason": "TYPED_VECTOR_READY_WITH_P_ITINERARY_AND_P_SERVICE_ABSTAIN",
+      "support_status": "PARTIAL"
+    },
+    "EXP2B_SCALAR": {
+      "reason": "SEVEN_COMPONENT_AGGREGATE_UNRESOLVED",
+      "support_status": "NOT_RUN"
+    },
+    "M4_RANKING": {
+      "base_rates_per_cu": {
+        "F_continuity": 1.0,
+        "F_execution": 1.0,
+        "F_propagation": 1.0,
+        "P_time": 1.0,
+        "R_operating": 1.0
+      },
+      "components": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "P_time",
+        "R_operating"
+      ],
+      "excluded_components": [
+        "P_itinerary",
+        "P_service"
+      ],
+      "excluded_reason": "MONETARY_ANCHOR_HUMAN_DECISION_REQUIRED_EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED",
+      "expost_level": "ASSUMPTION_GROUNDED",
+      "formal_recommendation_level": "ASSUMPTION_GROUNDED",
+      "reason": "RMB_FIVE_COMPONENT_REPORTING_MAPPING_READY",
+      "registry": "D:/research/air_slot/code/explore/registries/m4_rmb_mapping_v1.json",
+      "registry_hash": "sha256:9e6038cdf54476cb8b3018168914545954d7a618adbeca77778caf8a4df9effa",
+      "semantics": "FROZEN_REPORTING_MEASUREMENT_MAPPING_NO_CURRENCY_CONVERSION",
+      "sensitivity_bands": {
+        "BASE": 1.0,
+        "HIGH": 2.0,
+        "LOW": 0.5
+      },
+      "subset": "5-ANCHOR SUBSET",
+      "support_status": "ASSUMPTION_GROUNDED",
+      "top1_level": "ASSUMPTION_GROUNDED",
+      "units": "RMB"
+    }
+  },
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 4,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": true,
+    "PARAMETER_RESELECTED": false
+  },
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "source_metrics_hash": "sha256:bb34e13736951d2e20a756ce6ee2c2322e5a51b6a72e6f68fd39c4062e43e94c",
+  "split": "FINAL_TEST",
+  "status": "COMPLETE"
+}

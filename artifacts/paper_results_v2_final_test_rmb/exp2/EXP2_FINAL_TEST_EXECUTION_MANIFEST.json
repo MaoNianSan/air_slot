@@ -1,0 +1,37 @@
+{
+  "artifact_hash": "sha256:762076cbf7ed7333c050f31721e33491737ddc9c7eae28444e94b4463a9b95db",
+  "artifact_hashes": {
+    "consequences": "sha256:7538a7f020182d2e21e1c0da1b689e1a1a8454099bfca7cba4e6c134a5d8be7e",
+    "metrics": "sha256:bb34e13736951d2e20a756ce6ee2c2322e5a51b6a72e6f68fd39c4062e43e94c"
+  },
+  "consequence_annotation": "P_ITINERARY_P_SERVICE_NOT_IN_MAIN_MONETARY_SCOPE",
+  "dataset": "DATA2",
+  "episode_count": 128,
+  "frozen_hashes": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "cohort_hash": "sha256:55fbc74d40c94bbb63c3421f48696bfebf3496f472e912c4a9be52d51da2c03d",
+    "mapping_hash": "sha256:363d51c82a019932087a8c184994ab4a7cf095bef1137dff1b4cb626f98b10d6",
+    "mapping_registry": "D:/research/air_slot/code/explore/registries/m4_rmb_mapping_v1.json",
+    "model_hash": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "scenario_hash": "sha256:fd408c5e7910d039730a736cf716c1f501fd2dd29f328d8c96e6140ac90d8fa9",
+    "schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "node_count": 1712,
+  "outputs": {
+    "consequences": "artifacts/paper_results_v2_final_test_rmb/exp2/M2_FINAL_TEST_CONSEQUENCES.parquet",
+    "interpretation": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2_FINAL_TEST_INTERPRETATION.md",
+    "metrics": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2_FINAL_TEST_METRICS.json",
+    "table": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2_FINAL_TEST_TABLE.csv"
+  },
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 4,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": true,
+    "PARAMETER_RESELECTED": false
+  },
+  "schema_version": "EXP2_EXECUTION_MANIFEST_V2",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "split": "FINAL_TEST",
+  "status": "COMPLETE_WITH_GATED_NOT_RUN_RESULTS"
+}

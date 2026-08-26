@@ -1,16 +1,15 @@
-"""Final Test calibrated scenario materialization (D6 + T-cal, 2026-08-26).
+"""Held-out Final Test calibrated scenario materialization.
 
-Re-runs the frozen scenario envelope over the same Development cohort
-(1,769 nodes x 250 draws, seed 20260813) with the shared T-cal calibration
-artifact applied IN MEMORY to the frozen checkpoints (D7c/D7d):
+Runs the frozen scenario envelope over the materialized Q4 2019 Final Test
+cohort with the shared T-cal calibration artifact applied IN MEMORY to the
+frozen checkpoints:
 - STATE_AWARE H32 (M1_V2_GRU_H32): full adaptive prefix, calibrated
   temperatures; the hazard pmf is temperature-scaled inside _draw_target.
 - CURRENT-only comparator (M1_V2_GRU_H32_CURRENT_ONLY): single current
   legal node (prefix[-1]), same calibrated procedure.
 
-No retraining, no checkpoint writes, no Final Test split access
-(FINAL_TEST_ACCESS_COUNT = 0), no paper_full run.  Outputs are
-paper_result=true and live only in the new paper-result root.
+No retraining or checkpoint writes occurs.  The Final Test inference inputs
+are explicitly read and their Q4 scope is verified before any scenario draw.
 
 The draw procedure is byte-identical to the frozen dev materialization
 (exp.common.full_development_scenarios / exp.exp1.current_only_scenarios);
@@ -45,11 +44,8 @@ from model.M1.pipeline import M1Pipeline
 from model.PRE.contracts.pre_state import PREState
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_OUTPUT = Path("artifacts/paper_results_v1/scenarios")
-INPUT_ROOT = Path("artifacts/experiment/full_development_inputs_v1")
-COHORT = INPUT_ROOT / "DATA2_FULL_DEVELOPMENT_COHORT.json"
-INPUTS = INPUT_ROOT / "M1_V2_FULL_DEVELOPMENT_INFERENCE_INPUTS.json"
-INPUT_MANIFEST = INPUT_ROOT / "FULL_DEVELOPMENT_INPUT_MANIFEST.json"
+DEFAULT_OUTPUT = Path("artifacts/paper_results_v2_final_test_rmb/scenarios")
+DEFAULT_INPUT_ROOT = Path("artifacts/experiment/final_test_inputs_v1")
 SUPPORT = Path(
     "artifacts/diagnostics/m1_v2_positive_tail_policy_freeze_v2/"
     "M1_V2_TARGET_SUPPORT_MANIFEST.json"
@@ -70,11 +66,13 @@ CURRENT_TRAINING_METRICS = Path(
 )
 STATE_AWARE_MODEL_ID = "M1_V2_GRU_H32"
 CURRENT_ONLY_MODEL_ID = "M1_V2_GRU_H32_CURRENT_ONLY"
-SCHEMA_VERSION = "AIR_SLOT_FINAL_TEST_CALIBRATED_SCENARIO_MANIFEST_V1"
+SCHEMA_VERSION = "AIR_SLOT_FINAL_TEST_SCENARIO_MANIFEST_V2"
+SCOPE = "FINAL_TEST_OUT_OF_TIME_2019_10_12"
 SAFETY = {
-    "FINAL_TEST_ACCESS_COUNT": 0,
-    "PAPER_FULL_RUN": False,
+    "FINAL_TEST_ACCESS_COUNT": 3,
+    "PAPER_FULL_RUN": True,
     "MODEL_RETRAINED": False,
+    "PARAMETER_RESELECTED": False,
 }
 
 
@@ -234,26 +232,39 @@ def _stream_model(
     }
 
 
-def run(*, root: Path | None = None, output_root: Path | None = None) -> dict[str, Path]:
+def run(
+    *,
+    root: Path | None = None,
+    output_root: Path | None = None,
+    input_root: Path | None = None,
+) -> dict[str, Path]:
     root = (root or ROOT).resolve()
     output_root = (output_root or root / DEFAULT_OUTPUT).resolve()
+    input_root = (input_root or root / DEFAULT_INPUT_ROOT).resolve()
     _require(root in output_root.parents, "FINAL_TEST_SCENARIO_OUTPUT_OUTSIDE_PROJECT")
 
-    for relative in (
-        INPUTS, COHORT, INPUT_MANIFEST, SUPPORT,
-        STATE_AWARE_CHECKPOINT, CURRENT_ONLY_CHECKPOINT,
-        CALIBRATION_ARTIFACT, CURRENT_TRAINING_METRICS,
-    ):
-        _require((root / relative).is_file(), f"FINAL_TEST_SCENARIO_INPUT_MISSING:{relative}")
+    cohort_path = input_root / "DATA2_FINAL_TEST_COHORT.json"
+    inputs_path = input_root / "M1_V2_FINAL_TEST_INFERENCE_INPUTS.json"
+    input_manifest_path = input_root / "FINAL_TEST_INPUT_MANIFEST.json"
+    final_input_artifacts = (cohort_path, inputs_path, input_manifest_path)
 
-    binding = json.loads((root / INPUT_MANIFEST).read_text(encoding="utf-8"))
-    cohort = json.loads((root / COHORT).read_text(encoding="utf-8"))
-    inputs_payload = json.loads((root / INPUTS).read_text(encoding="utf-8"))
+    for relative in (
+        *final_input_artifacts,
+        root / SUPPORT, root / STATE_AWARE_CHECKPOINT, root / CURRENT_ONLY_CHECKPOINT,
+        root / CALIBRATION_ARTIFACT, root / CURRENT_TRAINING_METRICS,
+    ):
+        _require(relative.is_file(), f"FINAL_TEST_SCENARIO_INPUT_MISSING:{relative}")
+
+    binding = json.loads(input_manifest_path.read_text(encoding="utf-8"))
+    cohort = json.loads(cohort_path.read_text(encoding="utf-8"))
+    inputs_payload = json.loads(inputs_path.read_text(encoding="utf-8"))
     support = json.loads((root / SUPPORT).read_text(encoding="utf-8"))
     training_metrics = json.loads((root / CURRENT_TRAINING_METRICS).read_text(encoding="utf-8"))
     artifact = json.loads((root / CALIBRATION_ARTIFACT).read_text(encoding="utf-8"))
 
-    _require(binding["status"] == "FULL_DEVELOPMENT_INPUTS_READY", "FINAL_TEST_SCENARIO_BINDING_INVALID")
+    _require(binding["status"] == "FINAL_TEST_INPUTS_READY", "FINAL_TEST_SCENARIO_BINDING_INVALID")
+    _require(binding.get("scope") == SCOPE, "FINAL_TEST_SCENARIO_SCOPE_INVALID")
+    _require(binding.get("development_input_used") is False, "FINAL_TEST_SCENARIO_DEVELOPMENT_INPUT_FORBIDDEN")
     _require(
         cohort["cohort_hash"] == inputs_payload["cohort_hash"] == binding["cohort_hash"],
         "FINAL_TEST_SCENARIO_COHORT_HASH_MISMATCH",
@@ -310,10 +321,10 @@ def run(*, root: Path | None = None, output_root: Path | None = None) -> dict[st
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "status": "FINAL_TEST_CALIBRATED_SCENARIOS_MATERIALIZED",
-        "scope": "FINAL_TEST_CALIBRATED_REMATERIALIZATION_DEVELOPMENT_COHORT",
+        "scope": SCOPE,
         "paper_result": True,
         "dataset": "DATA2",
-        "split": "DEVELOPMENT",
+        "split": "FINAL_TEST",
         "cohort_hash": cohort["cohort_hash"],
         "node_count": int(cohort["node_count"]),
         "episode_count": int(cohort["episode_count"]),
@@ -346,14 +357,18 @@ def run(*, root: Path | None = None, output_root: Path | None = None) -> dict[st
             },
         },
         "input_hashes": {
-            "inference_inputs": _sha256(root / INPUTS),
-            "cohort": _sha256(root / COHORT),
+            "inference_inputs": _sha256(inputs_path),
+            "cohort": _sha256(cohort_path),
             "support": support_hash,
             "state_aware_checkpoint": _sha256(root / STATE_AWARE_CHECKPOINT),
             "current_only_checkpoint": _sha256(root / CURRENT_ONLY_CHECKPOINT),
             "calibration_artifact": artifact["artifact_hash"],
         },
-        "safety": dict(SAFETY),
+        "safety": {
+            "FINAL_TEST_ACCESS_COUNT": len(final_input_artifacts),
+            "PAPER_FULL_RUN": True,
+            "MODEL_RETRAINED": False,
+        },
         "outputs": {
             "history": str(history_path.relative_to(root)).replace("\\", "/"),
             "current": str(current_path.relative_to(root)).replace("\\", "/"),

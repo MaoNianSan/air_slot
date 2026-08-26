@@ -1,0 +1,32 @@
+{
+  "artifact_hash": "sha256:43efeb015139d7c6c4395996406d98151d4ca9d98bce9ac96273cfc4cb568c2e",
+  "dataset": "DATA2",
+  "episode_count": 128,
+  "input_hashes": {
+    "historical": "sha256:df8b92b8489780fbce86cc88bae606bbdfaca36b69c1b31534801a7ca92f2c92",
+    "inputs": "sha256:f45db1731759bedd13445ad072f7f5af9c928ab89402959d591aaf3e193675b0",
+    "labels": "sha256:d3176d01a82242f9a7bedff248b7e93bbffd2ee8f12a7bca411297907c8ba52b",
+    "lightgbm": "sha256:b1919bf1a5e6ab78cf203aee8445b7e392e840def57ee20f6a2331cb5de6de14",
+    "manifest": "sha256:d2757f00176139f9c1e31d8eae41dbda27a2523d9c29f027ad63d3601e155eb7",
+    "random_forest": "sha256:ef6e3434c729f4ba160be3cafc5d953738ad3e095905ce528f881f7acae64751",
+    "scenarios": "sha256:fd408c5e7910d039730a736cf716c1f501fd2dd29f328d8c96e6140ac90d8fa9"
+  },
+  "node_count": 1712,
+  "outputs": {
+    "grid": "artifacts/paper_results_v2_final_test_rmb/exp4/EXP4_FINAL_TEST_LEAD_TIME_GRID.csv",
+    "metrics": "artifacts/paper_results_v2_final_test_rmb/exp4/EXP4_FINAL_TEST_METRICS.json",
+    "records": "artifacts/paper_results_v2_final_test_rmb/exp4/EXP4_FINAL_TEST_PER_NODE_RECORDS.parquet"
+  },
+  "paper_result": true,
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 4,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": true,
+    "PARAMETER_RESELECTED": false
+  },
+  "schema_version": "EXP4_FINAL_TEST_EXECUTION_MANIFEST_V1",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "source_scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "split": "FINAL_TEST",
+  "status": "COMPLETE"
+}

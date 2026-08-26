@@ -1,0 +1,94 @@
+{
+  "details": {
+    "exp1": {
+      "final_test_access_count": 6,
+      "manifest": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1_FINAL_TEST_MANIFEST.json"
+    },
+    "exp2a": {
+      "metrics": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2_FINAL_TEST_METRICS.json",
+      "summary": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json"
+    },
+    "exp2b": {
+      "manifest": "artifacts/paper_results_v2_final_test_rmb/exp2/EXP2B_FINAL_TEST_RMB_SUPPORT.json",
+      "reason": "MONETARY_COMPONENT_NOT_IN_SCOPE"
+    },
+    "exp3": {
+      "final_test_access_count": 3,
+      "manifest": "artifacts/paper_results_v2_final_test_rmb/exp3/EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST.json"
+    },
+    "exp4": {
+      "final_test_access_count": 4,
+      "manifest": "artifacts/paper_results_v2_final_test_rmb/exp4/EXP4_FINAL_TEST_EXECUTION_MANIFEST.json"
+    },
+    "preflight": {
+      "checks": [
+        "TEST_DATE_RANGE_PASS",
+        "TEST_NONEMPTY_PASS",
+        "NO_DEVELOPMENT_EVALUATION_INPUT_PASS",
+        "MODEL_CHECKPOINT_FROZEN_PASS",
+        "CALIBRATION_ARTIFACT_FOUND_PASS",
+        "ACTION_REGISTRY_FOUND_PASS",
+        "RMB_REGISTRY_PASS"
+      ],
+      "decision_node_count": 1712,
+      "episode_count": 128,
+      "evaluation_overlap": {
+        "episode_id_overlap": 0,
+        "evaluation_row_overlap": 0
+      }
+    },
+    "q4_inputs": {
+      "decision_node_count": 1712,
+      "episode_count": 128,
+      "max_successor_service_date": "2019-12-31",
+      "min_successor_service_date": "2019-10-01"
+    },
+    "reporting": {
+      "output_spec": "codex_framework/PAPER_OUTPUT_SPEC_V2_FINAL_TEST_RMB.json",
+      "results": "artifacts/paper_results_v2_final_test_rmb/SECTION5_FINAL_RESULTS.json"
+    },
+    "rmb_registry": {
+      "registry": "registries/m4_rmb_mapping_v1.json",
+      "registry_hash": "sha256:9e6038cdf54476cb8b3018168914545954d7a618adbeca77778caf8a4df9effa"
+    },
+    "scenarios": {
+      "final_test_access_count": 3,
+      "manifest": "artifacts/paper_results_v2_final_test_rmb/scenarios/FINAL_TEST_SCENARIO_MANIFEST.json"
+    },
+    "support_gate": {
+      "A_num": {
+        "coverage": 1.0,
+        "decision_node_count": 1712,
+        "node_band_count": 5136,
+        "non_a00_candidate_count": 112992,
+        "numerical_node_band_count": 5136,
+        "status": "PASS"
+      },
+      "A_sup": {
+        "a00_never_recommended": true,
+        "no_zero_fill": true,
+        "non_a00_node_band_coverage": 0.0,
+        "recommendation_status_counts": {
+          "ABSTAIN_NO_FACTUALLY_ELIGIBLE_NON_A00": 5136
+        },
+        "status": "NO_SUPPORTED_NON_A00_RECOMMENDATION",
+        "supported_non_a00_candidate_count": 0
+      },
+      "manifest": "artifacts/paper_results_v2_final_test_rmb/m3m4/M3M4_FINAL_TEST_RMB_MANIFEST.json"
+    }
+  },
+  "exp1": "PASS",
+  "exp2a": "PASS",
+  "exp2b": "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE",
+  "exp3": "PASS",
+  "exp4": "PASS",
+  "preflight": "PASS",
+  "q4_inputs": "PASS",
+  "reporting": "PASS",
+  "rmb_registry": "PASS",
+  "scenarios": "PASS",
+  "schema_version": "AIR_SLOT_FINAL_TEST_RMB_RUN_STATUS_V1",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "support_gate": "PASS",
+  "updated_at": "2026-08-26T17:03:40+00:00"
+}

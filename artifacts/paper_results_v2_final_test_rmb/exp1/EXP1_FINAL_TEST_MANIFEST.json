@@ -1,0 +1,37 @@
+{
+  "artifact_hash": "sha256:7a895753e07ec304837e2b6bdd5b1ab3c6532eba67c36622a3a1d3a558d91990",
+  "dataset": "DATA2",
+  "episode_count": 128,
+  "input_hashes": {
+    "consequences": "sha256:7538a7f020182d2e21e1c0da1b689e1a1a8454099bfca7cba4e6c134a5d8be7e",
+    "current": "sha256:52371ad86879a9b85dc34e0136bb45fbc316fcdceda4f13d64c837085db8922b",
+    "history": "sha256:fd408c5e7910d039730a736cf716c1f501fd2dd29f328d8c96e6140ac90d8fa9",
+    "input_manifest": "sha256:d2757f00176139f9c1e31d8eae41dbda27a2523d9c29f027ad63d3601e155eb7",
+    "inputs": "sha256:f45db1731759bedd13445ad072f7f5af9c928ab89402959d591aaf3e193675b0",
+    "labels": "sha256:d3176d01a82242f9a7bedff248b7e93bbffd2ee8f12a7bca411297907c8ba52b",
+    "scenario_manifest": "sha256:3e0c848c6a6a7aff50ffeb3c9d6b56b31475aaaca0f6a8bb5513a8b0a7f2a052"
+  },
+  "node_count": 1712,
+  "outputs": {
+    "EXP1A_FINAL_TEST_RECORDS_csv": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1A_FINAL_TEST_RECORDS.csv",
+    "EXP1A_FINAL_TEST_RECORDS_parquet": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1A_FINAL_TEST_RECORDS.parquet",
+    "EXP1A_FINAL_TEST_SORTING_DIAGNOSTIC_csv": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1A_FINAL_TEST_SORTING_DIAGNOSTIC.csv",
+    "EXP1A_FINAL_TEST_SORTING_DIAGNOSTIC_parquet": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1A_FINAL_TEST_SORTING_DIAGNOSTIC.parquet",
+    "EXP1B_FINAL_TEST_PREDICTION_RECORDS_csv": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1B_FINAL_TEST_PREDICTION_RECORDS.csv",
+    "EXP1B_FINAL_TEST_PREDICTION_RECORDS_parquet": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1B_FINAL_TEST_PREDICTION_RECORDS.parquet",
+    "interpretation": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1_FINAL_TEST_INTERPRETATION.md",
+    "summary": "artifacts/paper_results_v2_final_test_rmb/exp1/EXP1_FINAL_TEST_SUMMARY.json"
+  },
+  "paper_result": true,
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 6,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": true,
+    "PARAMETER_RESELECTED": false
+  },
+  "schema_version": "AIR_SLOT_EXP1_FINAL_TEST_MANIFEST_V1",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "source_scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "split": "FINAL_TEST",
+  "status": "COMPLETE"
+}

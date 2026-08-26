@@ -1,68 +1,38 @@
-"""Final Test chain orchestrator (D6 scope, 2026-08-26, HP1=A).
-
-Reruns the record materialization + figures + Table 1 under the frozen spec
-(PAPER_OUTPUT_SPEC_V1.json + Exp1 addendum) with the shared T-cal calibration
-artifact applied in memory to the frozen STATE_AWARE H32 and CURRENT-only
-checkpoints.  Same Development cohort (1,769 nodes; the Final Test split is
-never read), same seeds (20260813 scenarios / 20260825 bootstrap),
-paper_result=true outputs only in the new roots:
-  artifacts/paper_results_v1/            (records + manifests)
-  outputs/manuscript_values/section5_secondary_analysis/paper/  (figures/tables)
-
-Boundaries: no retraining, no model/** or configs/** edits, no frozen artifact
-rewrites, no Git.  Every stage records input hashes, seeds, the calibration
-artifact hash, and safety counters.
-"""
+"""True held-out Q4 2019 Final Test and RMB paper-chain orchestrator."""
 
 from __future__ import annotations
 
 import argparse
+import csv
 import json
-from contextlib import contextmanager
 from datetime import datetime, timezone
-from hashlib import sha256
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Callable
 
-from exp.common.official_execution import file_sha256, write_json
+from exp.common.official_execution import file_sha256
+from model.common.identity import content_id
+
 
 ROOT = Path(__file__).resolve().parents[2]
-PAPER_ROOT = Path("artifacts/paper_results_v1")
-PAPER_OUTPUT_ROOT = Path("outputs/manuscript_values/section5_secondary_analysis/paper")
-CALIBRATION_ARTIFACT = Path(
-    "artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json"
+SCOPE = "FINAL_TEST_OUT_OF_TIME_2019_10_12"
+FINAL_INPUT_ROOT = Path("artifacts/experiment/final_test_inputs_v1")
+PAPER_ROOT = Path("artifacts/paper_results_v2_final_test_rmb")
+MANUSCRIPT_ROOT = Path("outputs/manuscript_values/section5_final_test_rmb")
+TABLE_ROOT = MANUSCRIPT_ROOT / "tables"
+FIGURE_ROOT = MANUSCRIPT_ROOT / "figures"
+OUTPUT_SPEC = Path("codex_framework/PAPER_OUTPUT_SPEC_V2_FINAL_TEST_RMB.json")
+RMB_REGISTRY = Path("registries/m4_rmb_mapping_v1.json")
+CHECKPOINT = Path("artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt")
+CALIBRATION = Path("artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json")
+ACTION_REGISTRY = Path("registries/action_templates.yaml")
+RUN_STATUS = PAPER_ROOT / "RUN_STATUS.json"
+CHAIN_MANIFEST = PAPER_ROOT / "FINAL_TEST_RMB_CHAIN_MANIFEST.json"
+SCENARIOS, EXP1, EXP2, EXP3, M3M4, EXP4 = (
+    PAPER_ROOT / "scenarios", PAPER_ROOT / "exp1", PAPER_ROOT / "exp2",
+    PAPER_ROOT / "exp3", PAPER_ROOT / "m3m4", PAPER_ROOT / "exp4",
 )
-DEV_INPUT_ROOT = Path("artifacts/experiment/full_development_inputs_v1")
-FT_SCENARIO_ROOT = PAPER_ROOT / "scenarios"
-FT_EXP2_ROOT = PAPER_ROOT / "exp2"
-FT_EXP1_ROOT = PAPER_ROOT / "exp1"
-FT_EXP2A_ROOT = PAPER_ROOT / "exp2a"
-FT_EXP3_ROOT = PAPER_ROOT / "exp3"
-FT_EXP2B_ROOT = PAPER_ROOT / "exp2b"
-FT_VALUATION_ROOT = PAPER_ROOT / "exp3_valuation"
-FT_REFRESH_SYNC_ROOT = PAPER_ROOT / "exp3_refresh_sync"
-FT_EXP4_ROOT = PAPER_ROOT / "exp4"
-FT_M3M4_ROOT = PAPER_ROOT / "m3m4"
-CHAIN_MANIFEST = PAPER_ROOT / "FINAL_TEST_CHAIN_MANIFEST.json"
-CALIBRATION_ARTIFACT_REL = CALIBRATION_ARTIFACT
-SCENARIO_MANIFEST = FT_SCENARIO_ROOT / "FINAL_TEST_SCENARIO_MANIFEST.json"
-FT_SCOPE = "FINAL_TEST_CALIBRATED_REMATERIALIZATION_DEVELOPMENT_COHORT"
-FT_SCENARIO_HISTORY = "M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet"
-FT_SCENARIO_CURRENT = "M1_V2_FINAL_TEST_TYPED_SCENARIOS_CURRENT.parquet"
-REGISTRY_V2_PATH = Path("registries/m4_eur_mapping_assumption_grounded_v2.json")
-REGISTRY_V2_HASH = "sha256:befc10aab3a9b9ca5292ac82331e728f7d28b1546077725ab7cdf5564fcbc072"
-PENDING_ABSTAIN_STATUS = "ABSTAIN_MONETARY_NOT_ANCHORED_EVENT_COUNTS_ONLY"
-SAFETY = {
-    "FINAL_TEST_ACCESS_COUNT": 0,
-    "PAPER_FULL_RUN": False,
-    "MODEL_RETRAINED": False,
-}
-SCHEMA_VERSION = "AIR_SLOT_FINAL_TEST_CHAIN_MANIFEST_V1"
-FINAL_TEST_ACCESS_NOTE = (
-    "FINAL_TEST_ACCESS_COUNT=0 means the Final Test split file was never read; "
-    "paper_result=true follows spec D6 (calibrated rematerialization on the frozen "
-    "Development cohort of 1,769 nodes with the shared T-cal artifact applied in memory)."
-)
+STAGES = ("q4_inputs", "preflight", "rmb_registry", "scenarios", "exp1", "exp2a", "exp2b", "exp3", "support_gate", "exp4", "reporting")
+SCHEMA_VERSION = "AIR_SLOT_FINAL_TEST_RMB_CHAIN_MANIFEST_V2"
 
 
 def _require(condition: bool, code: str) -> None:
@@ -70,678 +40,324 @@ def _require(condition: bool, code: str) -> None:
         raise RuntimeError(code)
 
 
-def _content_hash(payload: dict[str, Any]) -> str:
-    rendered = json.dumps(payload, sort_keys=True, default=str)
-    return f"sha256:{sha256(rendered.encode('utf-8')).hexdigest()}"
+def _load(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")
+    temporary.replace(path)
 
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-@contextmanager
-def _override(module: Any, mapping: dict[str, Any]) -> Iterator[None]:
-    saved = {name: getattr(module, name) for name in mapping}
-    try:
-        for name, value in mapping.items():
-            setattr(module, name, value)
-        yield
-    finally:
-        for name, value in saved.items():
-            setattr(module, name, value)
+def _default_status() -> dict[str, Any]:
+    return {"schema_version": "AIR_SLOT_FINAL_TEST_RMB_RUN_STATUS_V1", "scope": SCOPE, "updated_at": _now(), **{stage: "PENDING" for stage in STAGES}}
 
 
-def _rename_and_patch(
-    directory: Path,
-    renames: dict[str, str],
-    manifest_name: str | None = None,
-    manifest_updates: dict[str, Any] | None = None,
-    hash_field: str = "manifest_hash",
-) -> None:
-    """Rename newly written files (DEVELOPMENT_ONLY -> FINAL_TEST) and patch a
-    stage manifest so its outputs and scope fields stay truthful.  New FT-root
-    files only; no frozen artifact is touched."""
-    for old_name, new_name in renames.items():
-        source = directory / old_name
-        if source.is_file():
-            (directory / new_name).write_bytes(source.read_bytes())
-            source.unlink()
-    if manifest_name is not None:
-        path = directory / manifest_name
-        if path.is_file():
-            payload = json.loads(path.read_text(encoding="utf-8"))
-            for key, value in (manifest_updates or {}).items():
-                payload[key] = value
-            if hash_field and hash_field in payload:
-                payload[hash_field] = _content_hash(payload)
-            write_json(path, payload)
+def _status(root: Path) -> dict[str, Any]:
+    path = root / RUN_STATUS
+    return _load(path) if path.is_file() else _default_status()
+
+
+def _update_status(root: Path, stage: str, value: str, **details: Any) -> dict[str, Any]:
+    _require(stage in STAGES, "FINAL_TEST_RUN_STATUS_STAGE_UNKNOWN")
+    status = _status(root)
+    status[stage], status["updated_at"] = value, _now()
+    if details:
+        status.setdefault("details", {})[stage] = details
+    _atomic_json(root / RUN_STATUS, status)
+    return status
+
+
+def _run_stage(root: Path, stage: str, action: Callable[[], dict[str, Any]], *, terminal: tuple[str, ...] = ("PASS",)) -> dict[str, Any]:
+    status = _status(root)
+    if status.get(stage) in terminal:
+        return status.get("details", {}).get(stage, {"status": status[stage], "resumed": True})
+    result = action()
+    value = str(result.pop("status", "PASS"))
+    _require(value in {"PASS", "ABSTAIN", "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE"}, f"FINAL_TEST_STAGE_NONTERMINAL:{stage}:{value}")
+    _update_status(root, stage, value, **result)
+    return result
+
+
+def _input_paths(root: Path) -> dict[str, Path]:
+    input_root = root / FINAL_INPUT_ROOT
+    return {"manifest": input_root / "FINAL_TEST_INPUT_MANIFEST.json", "cohort": input_root / "DATA2_FINAL_TEST_COHORT.json", "inputs": input_root / "M1_V2_FINAL_TEST_INFERENCE_INPUTS.json", "labels": input_root / "M1_V2_FINAL_TEST_LABELS.json"}
+
+
+def stage_q4_inputs(root: Path) -> dict[str, Any]:
+    from exp.common.final_test_inputs import materialize
+    materialize(root=root, output_root=root / FINAL_INPUT_ROOT)
+    manifest = _load(_input_paths(root)["manifest"])
+    _require(manifest.get("scope") == SCOPE and manifest.get("episode_count", 0) > 0 and manifest.get("decision_node_count", 0) > 0, "FINAL_TEST_Q4_INPUT_INVALID")
+    return {"status": "PASS", "episode_count": manifest["episode_count"], "decision_node_count": manifest["decision_node_count"], "min_successor_service_date": manifest["min_successor_service_date"], "max_successor_service_date": manifest["max_successor_service_date"]}
+
+
+def stage_rmb_registry(root: Path) -> dict[str, Any]:
+    from exp.workflows.rmb_mapping_plan_materialization import materialize, verify
+    registry_path = materialize(root=root)
+    payload = verify(root=root)
+    _require(registry_path == root / RMB_REGISTRY and payload.get("registry_hash"), "FINAL_TEST_RMB_REGISTRY_HASH_MISMATCH")
+    return {"status": "PASS", "registry": str(RMB_REGISTRY).replace("\\", "/"), "registry_hash": payload["registry_hash"]}
+
+
+def _overlap_audit(root: Path, cohort: dict[str, Any]) -> dict[str, int]:
+    dev_path = root / "artifacts/experiment/full_development_inputs_v1/DATA2_FULL_DEVELOPMENT_COHORT.json"
+    _require(dev_path.is_file(), "FINAL_TEST_DEVELOPMENT_IDENTITY_AUDIT_INPUT_MISSING")
+    development = _load(dev_path)
+    final_episode_ids, development_episode_ids = set(cohort["episode_ids"]), {row["episode_id"] for row in development["decision_nodes"]}
+    final_rows = {(row["episode_id"], row["decision_node_id"]) for row in cohort["decision_nodes"]}
+    development_rows = {(row["episode_id"], row["decision_node_id"]) for row in development["decision_nodes"]}
+    return {"episode_id_overlap": len(final_episode_ids & development_episode_ids), "evaluation_row_overlap": len(final_rows & development_rows)}
+
+
+def stage_preflight(root: Path) -> dict[str, Any]:
+    paths = _input_paths(root)
+    _require(all(path.is_file() for path in paths.values()), "FINAL_TEST_PREFLIGHT_INPUT_MISSING")
+    manifest, cohort, inputs, labels = (_load(paths[name]) for name in ("manifest", "cohort", "inputs", "labels"))
+    _require(manifest["scope"] == SCOPE and manifest["development_input_used"] is False, "TEST_DATE_SCOPE_OR_DEVELOPMENT_LEAKAGE")
+    _require(manifest["episode_count"] > 0 and manifest["decision_node_count"] > 0, "TEST_NONEMPTY")
+    _require(manifest["min_successor_service_date"] >= "2019-10-01" and manifest["max_successor_service_date"] <= "2019-12-31", "TEST_DATE_RANGE")
+    dates = list(cohort["successor_service_dates"].values())
+    _require(len(dates) >= 100 and all("2019-10-01" <= value <= "2019-12-31" for value in dates[:100]), "TEST_DATE_IDENTITY_SAMPLE")
+    _require("full_development_inputs_v1" not in json.dumps(inputs) and "full_development_inputs_v1" not in json.dumps(labels), "NO_DEVELOPMENT_EVALUATION_INPUT")
+    _require(file_sha256(root / CHECKPOINT) == manifest["frozen_hashes"]["model_hash"], "MODEL_CHECKPOINT_FROZEN")
+    _require((root / CALIBRATION).is_file() and _load(root / CALIBRATION).get("artifact_hash"), "CALIBRATION_ARTIFACT_FOUND")
+    _require((root / ACTION_REGISTRY).is_file(), "ACTION_REGISTRY_FOUND")
+    registry = _load(root / RMB_REGISTRY)
+    _require(registry.get("monetary_system") == "RMB" and registry.get("rmb_base_mapping") == "1_CU_EQUALS_1_RMB", "RMB_REGISTRY_INVALID")
+    _require(tuple(registry["main_monetary_components"]) == ("F_continuity", "F_execution", "F_propagation", "P_time", "R_operating"), "RMB_SCOPE_INVALID")
+    _require(inputs.get("development_input_used") is False and labels.get("development_input_used") is False, "FINAL_TEST_INPUT_LEAKAGE")
+    overlap = _overlap_audit(root, cohort)
+    _require(overlap["evaluation_row_overlap"] == 0, "FINAL_TEST_DEVELOPMENT_EVALUATION_ROW_OVERLAP")
+    return {"status": "PASS", "checks": ["TEST_DATE_RANGE_PASS", "TEST_NONEMPTY_PASS", "NO_DEVELOPMENT_EVALUATION_INPUT_PASS", "MODEL_CHECKPOINT_FROZEN_PASS", "CALIBRATION_ARTIFACT_FOUND_PASS", "ACTION_REGISTRY_FOUND_PASS", "RMB_REGISTRY_PASS"], "evaluation_overlap": overlap, "episode_count": manifest["episode_count"], "decision_node_count": manifest["decision_node_count"]}
 
 
 def stage_scenarios(root: Path) -> dict[str, Any]:
-    from exp.reporting.final_test_scenarios import run as run_scenarios
-
-    paths = run_scenarios(root=root)
-    manifest_path = root / SCENARIO_MANIFEST
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    # Patch the FT manifest with the top-level fields consumed by the Exp2/Exp1/Exp2A
-    # materialization stages (their dev manifests carry these fields).
-    history_entry = manifest["models"]["M1_V2_GRU_H32"]
-    manifest["artifact"] = history_entry["artifact"]
-    manifest["artifact_hash"] = history_entry["artifact_hash"]
-    manifest["model_id"] = "M1_V2_GRU_H32"
-    manifest["crn_paired_with_history_scenarios"] = True
-    manifest["manifest_hash"] = _content_hash(manifest)
-    write_json(manifest_path, manifest)
-    # Exp2 materialization reads the scenario manifest under its historical
-    # filename; write a byte-identical copy under that name in the FT root.
-    write_json(
-        root / FT_SCENARIO_ROOT / "M1_V2_FULL_DEVELOPMENT_TYPED_SCENARIO_MANIFEST.json",
-        manifest,
-    )
-    return {
-        "status": "MATERIALIZED",
-        "history": str(paths["history"].relative_to(root)).replace("\\", "/"),
-        "current": str(paths["current"].relative_to(root)).replace("\\", "/"),
-        "manifest_hash": manifest.get("manifest_hash"),
-        "artifact_hash": manifest["models"]["M1_V2_GRU_H32"]["artifact_hash"],
-    }
+    from exp.reporting.final_test_scenarios import run
+    paths = run(root=root, input_root=root / FINAL_INPUT_ROOT, output_root=root / SCENARIOS)
+    manifest = _load(paths["manifest"])
+    _require(manifest["scope"] == SCOPE and manifest["safety"]["FINAL_TEST_ACCESS_COUNT"] > 0, "FINAL_TEST_SCENARIOS_INVALID")
+    return {"status": "PASS", "manifest": str(paths["manifest"].relative_to(root)).replace("\\", "/"), "final_test_access_count": manifest["safety"]["FINAL_TEST_ACCESS_COUNT"]}
 
 
-def stage_exp2(root: Path) -> dict[str, Any]:
-    from exp.exp2.global_development import run as run_exp2
-    import exp.exp2.global_development as exp2_module
-
-    output_root = (root / FT_EXP2_ROOT).resolve()
-    with _override(exp2_module, {"EUR_MAPPING_REGISTRY": REGISTRY_V2_PATH}):
-        result = run_exp2(
-            root=root,
-            scenario_root=root / FT_SCENARIO_ROOT,
-            input_root=root / DEV_INPUT_ROOT,
-            output_root=output_root,
-        )
-    manifest_path = result["manifest"]
-    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload["paper_result"] = True
-    payload["scope"] = FT_SCOPE
-    payload["registry"] = str(REGISTRY_V2_PATH)
-    payload["calibration_artifact_hash"] = _artifact_hash(root)
-    payload["safety"] = dict(SAFETY)
-    payload["artifact_hash"] = _content_hash(payload)
-    write_json(manifest_path, payload)
-    return {
-        "status": "MATERIALIZED",
-        "manifest": str(manifest_path.relative_to(root)).replace("\\", "/"),
-        "consequences": str(result["consequences"].relative_to(root)).replace("\\", "/"),
-    }
+def _materialize_exp2(root: Path) -> dict[str, Path]:
+    from exp.exp2.global_development import run
+    return run(root=root, scenario_root=root / SCENARIOS, input_root=root / FINAL_INPUT_ROOT, output_root=root / EXP2, final_test=True, monetary_registry=root / RMB_REGISTRY)
 
 
 def stage_exp1(root: Path) -> dict[str, Any]:
-    import exp.exp1.closure as closure
-
-    output_root = (root / FT_EXP1_ROOT).resolve()
-
-    def _ft_preflight(closure_root: Path, closure_output_root: Path) -> dict[str, Any]:
-        from exp.common.official_execution import load_official_frozen_binding
-
-        scenario_manifest = closure._load_json(closure_root / closure.SCENARIO_MANIFEST)
-        input_manifest = closure._load_json(closure_root / closure.INPUT_MANIFEST)
-        _require(
-            closure._sha256_file(closure_root / closure.SCENARIOS)
-            == scenario_manifest["artifact_hash"],
-            "FT_EXP1_SCENARIO_HASH_MISMATCH",
-        )
-        _require(
-            closure._sha256_file(closure_root / closure.CONSEQUENCES)
-            == json.loads(
-                (closure_root / FT_EXP2_ROOT / "EXP2_FULL_DEVELOPMENT_EXECUTION_MANIFEST.json")
-                .read_text(encoding="utf-8")
-            )["artifact_hashes"]["consequences"],
-            "FT_EXP1_M2_HASH_MISMATCH",
-        )
-        return {
-            "status": "EXP1_FINAL_TEST_PREFLIGHT_READY",
-            "scope": "FINAL_TEST_CALIBRATED_REMATERIALIZATION_DEVELOPMENT_COHORT",
-            "scenario_artifact_hash": scenario_manifest["artifact_hash"],
-            "frozen": load_official_frozen_binding(closure_root).as_dict(),
-        }
-
-    overrides = {
-        "SCENARIOS": FT_SCENARIO_ROOT / "M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet",
-        "SCENARIO_MANIFEST": SCENARIO_MANIFEST,
-        "CURRENT_SCENARIOS": FT_SCENARIO_ROOT / "M1_V2_FINAL_TEST_TYPED_SCENARIOS_CURRENT.parquet",
-        "CURRENT_SCENARIO_MANIFEST": SCENARIO_MANIFEST,
-        "CONSEQUENCES": FT_EXP2_ROOT / "M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet",
-        "LABELS": DEV_INPUT_ROOT / "M1_V2_FULL_DEVELOPMENT_LABELS.json",
-        "INFERENCE_INPUTS": DEV_INPUT_ROOT / "M1_V2_FULL_DEVELOPMENT_INFERENCE_INPUTS.json",
-        "INPUT_MANIFEST": DEV_INPUT_ROOT / "FULL_DEVELOPMENT_INPUT_MANIFEST.json",
-        "CURRENT_TRAINING_METRICS": Path(
-            "artifacts/experiment/exp1_full_development/exp1_closure_20260825/"
-            "EXP1B_CURRENT_ONLY_H32/M1_V2_CURRENT_ONLY_FAST_TRAIN_METRICS.json"
-        ),
-        "preflight": _ft_preflight,
-    }
-    with _override(closure, overrides):
-        summary = closure.run(root=root, output_root=output_root)
-
-    renames = {
-        "EXP1A_PAPER_FACING_RECORDS_DEVELOPMENT_ONLY.csv": "EXP1A_PAPER_FACING_RECORDS_FINAL_TEST.csv",
-        "EXP1A_PAPER_FACING_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP1A_PAPER_FACING_RECORDS_FINAL_TEST.parquet",
-        "EXP1B_PREDICTION_RECORDS_DEVELOPMENT_ONLY.csv": "EXP1B_PREDICTION_RECORDS_FINAL_TEST.csv",
-        "EXP1B_PREDICTION_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP1B_PREDICTION_RECORDS_FINAL_TEST.parquet",
-        "EXP1A_FROZEN_SORTING_DIAGNOSTIC_DEVELOPMENT_ONLY.csv": "EXP1A_FROZEN_SORTING_DIAGNOSTIC_FINAL_TEST.csv",
-        "EXP1A_FROZEN_SORTING_DIAGNOSTIC_DEVELOPMENT_ONLY.parquet": "EXP1A_FROZEN_SORTING_DIAGNOSTIC_FINAL_TEST.parquet",
-        "EXP1_DEVELOPMENT_CLOSURE_SUMMARY_DEVELOPMENT_ONLY.json": "EXP1_FINAL_TEST_CLOSURE_SUMMARY.json",
-        "EXP1_INTERPRETATION_DEVELOPMENT_ONLY.md": "EXP1_FINAL_TEST_INTERPRETATION.md",
-        "EXP1_DEVELOPMENT_CLOSURE_MANIFEST.json": "EXP1_FINAL_TEST_CLOSURE_MANIFEST.json",
-    }
-    _rename_and_patch(output_root, renames)
-
-    summary_path = output_root / "EXP1_FINAL_TEST_CLOSURE_SUMMARY.json"
-    payload = json.loads(summary_path.read_text(encoding="utf-8"))
-    payload["scope"] = "FINAL_TEST_CALIBRATED_REMATERIALIZATION_DEVELOPMENT_COHORT"
-    payload["paper_result"] = True
-    payload["calibration_artifact_hash"] = _artifact_hash(root)
-    payload["safety"] = dict(SAFETY)
-    payload["artifact_hash"] = _content_hash(payload)
-    write_json(summary_path, payload)
-
-    manifest_path = output_root / "EXP1_FINAL_TEST_CLOSURE_MANIFEST.json"
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    manifest["scope"] = "FINAL_TEST_CALIBRATED_REMATERIALIZATION_DEVELOPMENT_COHORT"
-    manifest["paper_result"] = True
-    manifest["calibration_artifact_hash"] = _artifact_hash(root)
-    manifest["outputs"] = {
-        name: {"path": value["path"].replace("_DEVELOPMENT_ONLY", "_FINAL_TEST")
-               .replace("EXP1_DEVELOPMENT_CLOSURE_SUMMARY", "EXP1_FINAL_TEST_CLOSURE_SUMMARY")
-               .replace("EXP1_INTERPRETATION_DEVELOPMENT_ONLY", "EXP1_FINAL_TEST_INTERPRETATION")
-               .replace("EXP1_DEVELOPMENT_CLOSURE_MANIFEST", "EXP1_FINAL_TEST_CLOSURE_MANIFEST")}
-        for name, value in manifest["outputs"].items()
-    }
-    manifest["manifest_hash"] = _content_hash(manifest)
-    write_json(manifest_path, manifest)
-    return {
-        "status": "MATERIALIZED",
-        "summary": str(summary_path.relative_to(root)).replace("\\", "/"),
-        "exp1a_records": str((output_root / "EXP1A_PAPER_FACING_RECORDS_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-        "exp1b_records": str((output_root / "EXP1B_PREDICTION_RECORDS_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-        "sorting_diagnostic": str((output_root / "EXP1A_FROZEN_SORTING_DIAGNOSTIC_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-    }
-
-
-def _artifact_hash(root: Path) -> str:
-    payload = json.loads((root / CALIBRATION_ARTIFACT_REL).read_text(encoding="utf-8"))
-    return payload["artifact_hash"]
-
-
-def _load_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def _patch_manifest(path: Path, extra: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Re-read, extend, and rewrite a stage manifest with FT scope fields."""
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    payload["paper_result"] = True
-    payload["scope"] = FT_SCOPE
-    if extra:
-        payload.update(extra)
-    payload["safety"] = dict(SAFETY)
-    payload["manifest_hash"] = _content_hash(payload)
-    write_json(path, payload)
-    return payload
-
-
-def stage_exp4(root: Path) -> dict[str, Any]:
-    import exp.exp4.per_node_records as pnr
-
-    output_root = (root / FT_EXP4_ROOT).resolve()
-    result = pnr.run(
-        root=root, input_root=root / DEV_INPUT_ROOT,
-        output_root=output_root,
-        calibration_artifact_path=root / CALIBRATION_ARTIFACT,
-    )
-    renames = {
-        "EXP4_PER_NODE_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP4_PER_NODE_RECORDS_FINAL_TEST.parquet",
-        "EXP4_PER_NODE_RECORDS_DEVELOPMENT_ONLY.csv": "EXP4_PER_NODE_RECORDS_FINAL_TEST.csv",
-        "EXP4_LEAD_TIME_GRID_DEVELOPMENT_ONLY.csv": "EXP4_LEAD_TIME_GRID_FINAL_TEST.csv",
-        "EXP4_PER_NODE_MANIFEST_DEVELOPMENT_ONLY.json": "EXP4_PER_NODE_MANIFEST_FINAL_TEST.json",
-    }
-    _rename_and_patch(output_root, renames)
-    manifest_path = output_root / "EXP4_PER_NODE_MANIFEST_FINAL_TEST.json"
-    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload = _patch_manifest(manifest_path, {
-        "calibration_artifact_hash": _artifact_hash(root),
-        "calibration_application": (
-            "SHARED_T_CAL_ARTIFACT_20260826_IN_MEMORY_STATE_AWARE_H32_ONLY; "
-            "HISTORICAL/LIGHTGBM/RANDOM_FOREST reuse frozen fitted dev artifacts unchanged"
-        ),
-        "parity_note": (
-            "STATE_AWARE_H32 MAE/CRPS may drift vs the saved Development metrics: calibrated "
-            "temperatures are applied in memory to the frozen checkpoint (checkpoint file "
-            "hash unchanged); HISTORICAL/LIGHTGBM/RANDOM_FOREST parity is unchanged. "
-            "Parity drift for H32 is expected Final Test semantics, not an error."
-        ),
-        "outputs": {
-            name: value.replace("DEVELOPMENT_ONLY", "FINAL_TEST")
-            for name, value in manifest_payload.get("outputs", {}).items()
-        },
-    })
-    return {
-        "status": "MATERIALIZED",
-        "records": str((output_root / "EXP4_PER_NODE_RECORDS_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-        "grid": str((output_root / "EXP4_LEAD_TIME_GRID_FINAL_TEST.csv").relative_to(root)).replace("\\", "/"),
-        "manifest": str(manifest_path.relative_to(root)).replace("\\", "/"),
-    }
-
-
-def stage_m3m4(root: Path) -> dict[str, Any]:
-    import exp.exp3.m3_m4_ranking_records as m3m4
-
-    output_root = (root / FT_M3M4_ROOT).resolve()
-    result = m3m4.run(
-        root=root, output_root=output_root,
-        action_risk=root / FT_EXP3_ROOT / "EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet",
-    )
-    renames = {
-        "M3M4_COMPARISON_RANKING_RECORDS_DEVELOPMENT_ONLY.parquet": "M3M4_COMPARISON_RANKING_RECORDS_FINAL_TEST.parquet",
-        "M3M4_COMPARISON_RANKING_RECORDS_DEVELOPMENT_ONLY.csv": "M3M4_COMPARISON_RANKING_RECORDS_FINAL_TEST.csv",
-        "M3M4_TOP1_SUMMARY_DEVELOPMENT_ONLY.csv": "M3M4_TOP1_SUMMARY_FINAL_TEST.csv",
-        "M3M4_AGGREGATE_STATS_DEVELOPMENT_ONLY.json": "M3M4_AGGREGATE_STATS_FINAL_TEST.json",
-        "M3M4_MANIFEST_DEVELOPMENT_ONLY.json": "M3M4_MANIFEST_FINAL_TEST.json",
-    }
-    _rename_and_patch(output_root, renames)
-    manifest_path = output_root / "M3M4_MANIFEST_FINAL_TEST.json"
-    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload = _patch_manifest(manifest_path, {
-        "calibration_artifact_hash": _artifact_hash(root),
-        "outputs": {
-            name: value.replace("DEVELOPMENT_ONLY", "FINAL_TEST")
-            for name, value in manifest_payload.get("outputs", {}).items()
-        },
-    })
-    return {
-        "status": "MATERIALIZED",
-        "records": str((output_root / "M3M4_COMPARISON_RANKING_RECORDS_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-        "stats": str((output_root / "M3M4_AGGREGATE_STATS_FINAL_TEST.json").relative_to(root)).replace("\\", "/"),
-        "manifest": str(manifest_path.relative_to(root)).replace("\\", "/"),
-    }
-
-
-def _ft_write_audit(output_root: Path, coverage: pd.DataFrame) -> None:
-    unavailable_nodes = int(coverage["unavailable_nodes"].max())
-    audit = f"""# Paper output audit (Final Test calibrated rematerialization)
-
-## 1. Planned main-text panels with real saved-result support
-
-- Figure 5A--C is generated from the Final Test Exp1 closure records (Exp1A 3,538 rows; Exp1B 10,614 rows; frozen sorting diagnostic 1,420/1,765 rows). Exp1A contrasts state-driven vs context-conditioned sorting; Exp1B contrasts the H32 HISTORICAL model with a CURRENT-only comparator under the same architecture, training budget, and calibration path, using each model's own checkpoint. All statistics are computed on the common supported observations; 95% confidence intervals are episode-cluster bootstrap (2,000 replicates, seed 20260825).
-- Figure 6A is generated for the Point, Marginal, and Joint predictive representations. Point uses the frozen F1 weighted-medoid variogram records materialized by the Final Test Exp2A closure; Marginal and Joint use the saved scenario-level outputs. Scores are aggregated within aircraft-linked episodes and reported with 2,000 episode-cluster bootstrap replicates.
-- Figure 7A is generated from the Final Test Exp3 refresh/sync records (freeze F3): One-Shot executable (aged) vs Rolling refreshed rates anchored at the first-valid-suggestion time t_i^0 (eq:exp_anchor), plus state-sync coverage at exact-vintage deltas of 5 and 10 minutes. Vintage binding requires decision_time exactly equal to t - delta (P2 exact_vintage_bindings); unmatched nodes are typed EXP3B_VINTAGE_NOT_AVAILABLE with no nearest-past fallback. {unavailable_nodes} decision nodes lacked stored comparison results and are not treated as zero coverage.
-- Figure 7B is generated as valuation-only: LOW/BASE/HIGH bands move the frozen five-anchor monetary coefficients only (0.5x/1.0x/2.0x), while response parameters stay at the F4-frozen declared values. The panel shows the reference action A00; the materialized records cover all 23 action envelopes. Status: ASSUMPTION_GROUNDED, not authoritative.
-- Figure 8 is generated for T_IB_A00 and D_OB as target x lead-time MAE and CRPS curves with episode-cluster confidence intervals. D_TX is not plotted: without a planned wheels-off reference its lead-time bins are NA and no interpolation is applied.
-- Table 1 contains target-specific point estimates and episode-cluster 95% confidence intervals reconstructed from the Final Test per-node records.
-
-## 2. Scope
-
-- All outputs in this directory are Final Test calibrated rematerialization outputs (paper_result=true) generated under AIR_SLOT_OVERNIGHT_CHAIN_FINAL_20260826. The shared T-cal artifact (artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json) is applied in memory to the frozen STATE_AWARE H32 and CURRENT-only checkpoints; checkpoint files are not retrained or rewritten.
-- The Development cohort (1,769 nodes, DATA2) is used; the Final Test split is never read (FINAL_TEST_ACCESS_COUNT=0).
-- The Exp3 valuation-only records are ASSUMPTION_GROUNDED: the monetary coefficients are assumption-grounded frozen values, not authoritative or causal. P_itinerary/P_service are ABSTAIN (F7); RMB is not instantiated (F8).
-
-## 3. Panels not generated or intentionally removed
-
-- Figure 6B--C: intentionally removed per F2 (PARTIAL_Q_SERIES_NOT_IMPLEMENTED; q-series frozen). No Figure 6B--C code path, caption, or audit entry is kept.
-- Figure 8 panel for D_TX: not drawn because D_TX has no planned wheels-off reference; lead-time bins are NA and are never interpolated.
-- STATE_AWARE_H32 D_OB/D_TX CRPS cells are blank: M1 does not save those distributional scores; nothing is inferred.
-"""
-    (output_root / "paper_output_audit.md").write_text(audit, encoding="utf-8")
-
-
-def _ft_write_scope_marker(output_root: Path) -> None:
-    payload = {
-        "scope": FT_SCOPE,
-        "paper_result": True,
-        "final_test_access_count": 0,
-        "generated_by": "exp.reporting.final_test_run (AIR_SLOT_OVERNIGHT_CHAIN_FINAL_20260826)",
-    }
-    (output_root / "OUTPUT_SCOPE_FINAL_TEST.json").write_text(
-        json.dumps(payload, indent=2) + "\n", encoding="utf-8",
-    )
-
-
-def stage_figures(root: Path) -> dict[str, Any]:
-    import exp.reporting.figure5_exp1_development as f5
-    import exp.reporting.section5_secondary_analysis as s5
-
-    output_root = (root / PAPER_OUTPUT_ROOT).resolve()
-    with _override(f5, {
-        "EXP1_CLOSURE_ROOT": FT_EXP1_ROOT,
-        "EXP1_SUMMARY": FT_EXP1_ROOT / "EXP1_FINAL_TEST_CLOSURE_SUMMARY.json",
-        "DEFAULT_OUTPUT_ROOT": PAPER_OUTPUT_ROOT,
-    }):
-        f5.run(root=root)
-    _rename_and_patch(output_root, {
-        "EXP1_FIGURES_MANIFEST_DEVELOPMENT_ONLY.json": "EXP1_FIGURES_MANIFEST_FINAL_TEST.json",
-    })
-    _patch_manifest(output_root / "EXP1_FIGURES_MANIFEST_FINAL_TEST.json", {
-        "calibration_artifact_hash": _artifact_hash(root),
-    })
-
-    s5_overrides = {
-        "EXP2_SCENARIOS": FT_SCENARIO_ROOT / FT_SCENARIO_HISTORY,
-        "EXP2_LABELS": DEV_INPUT_ROOT / "M1_V2_FULL_DEVELOPMENT_LABELS.json",
-        "EXP3_ACTION_RISK": FT_EXP3_ROOT / "EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet",
-        "EXP2A_POINT_RECORDS": FT_EXP2A_ROOT / "EXP2A_POINT_VARIOGRAM_RECORDS_FINAL_TEST.parquet",
-        "EXP2A_VARIOGRAM_SUMMARIES": FT_EXP2A_ROOT / "EXP2A_VARIOGRAM_SUMMARIES_FINAL_TEST.csv",
-        "EXP3_VALUATION_RECORDS": FT_VALUATION_ROOT / "EXP3_VALUATION_ONLY_RECORDS_FINAL_TEST.parquet",
-        "EXP4_GRID": FT_EXP4_ROOT / "EXP4_LEAD_TIME_GRID_FINAL_TEST.csv",
-        "EXP3_FIGURE7A_EPISODE_VALUES": FT_REFRESH_SYNC_ROOT / "EXP3_FIGURE7A_EPISODE_VALUES_FINAL_TEST.csv",
-        "EXP3_FIGURE7A_SUMMARY": FT_REFRESH_SYNC_ROOT / "EXP3_FIGURE7A_SUMMARY_FINAL_TEST.csv",
-        "_write_audit": _ft_write_audit,
-        "_write_scope_marker": _ft_write_scope_marker,
-    }
-    with _override(s5, s5_overrides):
-        paths = s5.run(root=root, output_root=output_root)
-    return {
-        "status": "MATERIALIZED",
-        "figure_5": str((output_root / "figures" / "figure_5_exp1_direct_information.pdf").relative_to(root)).replace("\\", "/"),
-        "figure_6": str(paths["figure_6"].relative_to(root)).replace("\\", "/"),
-        "figure_7": str(paths["figure_7"].relative_to(root)).replace("\\", "/"),
-        "figure_7b": str(paths["figure_7b"].relative_to(root)).replace("\\", "/"),
-        "figure_8": str(paths["figure_8"].relative_to(root)).replace("\\", "/"),
-        "table_1": str(paths["table_1"].relative_to(root)).replace("\\", "/"),
-        "audit": str((output_root / "paper_output_audit.md").relative_to(root)).replace("\\", "/"),
-    }
-
-
-def run_chain(root: Path = ROOT, stages: tuple[str, ...] | None = None) -> dict[str, Any]:
-    root = root.resolve()
-    chain_path = root / CHAIN_MANIFEST
-    results: dict[str, Any] = {}
-    if chain_path.is_file():
-        results.update(_load_json(chain_path).get("stages", {}))
-    order = (
-        "scenarios", "exp2", "exp1", "exp2a", "exp3",
-        "valuation", "refresh_sync", "exp2b", "exp4", "m3m4", "figures",
-    )
-    available = {
-        "scenarios": stage_scenarios,
-        "exp2": stage_exp2,
-        "exp1": stage_exp1,
-        "exp2a": stage_exp2a,
-        "exp3": stage_exp3,
-        "valuation": stage_valuation,
-        "refresh_sync": stage_refresh_sync,
-        "exp2b": stage_exp2b,
-        "exp4": stage_exp4,
-        "m3m4": stage_m3m4,
-        "figures": stage_figures,
-    }
-    for name in order:
-        if stages is not None and name not in stages:
-            continue
-        if name in results:
-            print(f"[FINAL_TEST] stage {name} already recorded; skipping", flush=True)
-            continue
-        print(f"[FINAL_TEST] stage {name} starting", flush=True)
-        results[name] = available[name](root)
-        print(f"[FINAL_TEST] stage {name} done", flush=True)
-    chain = {
-        "schema_version": SCHEMA_VERSION,
-        "status": "MATERIALIZED",
-        "decision_id": "AIR_SLOT_OVERNIGHT_CHAIN_FINAL_20260826",
-        "calibration_artifact_hash": _artifact_hash(root),
-        "stages": results,
-        "final_test_access_note": FINAL_TEST_ACCESS_NOTE,
-        "safety": dict(SAFETY),
-    }
-    chain["manifest_hash"] = _content_hash(chain)
-    write_json(chain_path, chain)
-    print(json.dumps(chain, indent=2, sort_keys=True, default=str))
-    return chain
-
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--root", type=Path, default=None)
-    parser.add_argument(
-        "--stages", type=str, default=None,
-        help="comma-separated subset of stage names (default: all)",
-    )
-    args = parser.parse_args(argv)
-    root = (args.root or ROOT).resolve()
-    stages = tuple(item.strip() for item in args.stages.split(",")) if args.stages else None
-    run_chain(root=root, stages=stages)
-    return 0
+    from exp.exp1.final_test import run
+    _materialize_exp2(root)
+    paths = run(root=root, scenario_root=root / SCENARIOS, exp2_root=root / EXP2, input_root=root / FINAL_INPUT_ROOT, output_root=root / EXP1)
+    payload = _load(paths["manifest"])
+    return {"status": "PASS", "manifest": str(paths["manifest"].relative_to(root)).replace("\\", "/"), "final_test_access_count": payload["safety"]["FINAL_TEST_ACCESS_COUNT"]}
 
 
 def stage_exp2a(root: Path) -> dict[str, Any]:
-    import exp.exp2.closure as closure
-
-    output_root = (root / FT_EXP2A_ROOT).resolve()
-    overrides = {
-        "SCENARIOS": FT_SCENARIO_ROOT / FT_SCENARIO_HISTORY,
-        "SCENARIO_MANIFEST": SCENARIO_MANIFEST,
-        "LABELS": DEV_INPUT_ROOT / "M1_V2_FULL_DEVELOPMENT_LABELS.json",
-    }
-    with _override(closure, overrides):
-        records = closure.materialize_point_records(root=root, output_root=output_root)
-        episode_values = closure.exp2_variogram_episode_values(root)
-        summary, contrast = closure.exp2_variogram_summaries(
-            episode_values, replicates=closure.BOOTSTRAP_REPLICATES,
-        )
-    summary.to_csv(
-        output_root / "EXP2A_VARIOGRAM_SUMMARIES_DEVELOPMENT_ONLY.csv", index=False,
-    )
-    contrast.to_csv(
-        output_root / "EXP2A_VARIOGRAM_CONTRASTS_DEVELOPMENT_ONLY.csv", index=False,
-    )
-    supported = records.loc[records["support_status"] == "SUPPORTED"]
-    manifest = {
-        "schema_version": closure.SCHEMA_VERSION,
-        "scope": FT_SCOPE,
-        "paper_result": True,
-        "freeze_refs": {
-            "F1": "PRIMITIVE_MEDOID_COORDINATES_R_IB_D_OB_D_TX_D_TO_IDENTITY_ONLY",
-            "F2": "PARTIAL_Q_SERIES_NOT_IMPLEMENTED",
-        },
-        "source_artifact": str(FT_SCENARIO_ROOT / FT_SCENARIO_HISTORY).replace("\\", "/"),
-        "source_artifact_hash": file_sha256(root / FT_SCENARIO_ROOT / FT_SCENARIO_HISTORY),
-        "scenario_manifest_hash": _load_json(root / SCENARIO_MANIFEST)["manifest_hash"],
-        "node_count": len(records),
-        "point_supported_nodes": int(len(supported)),
-        "point_abstain_nodes": int(len(records) - len(supported)),
-        "episode_bootstrap_replicates": closure.BOOTSTRAP_REPLICATES,
-        "bootstrap_seed": closure.GLOBAL_SEED,
-        "summary_rows": summary.to_dict(orient="records"),
-        "contrast_rows": contrast.to_dict(orient="records"),
-        "calibration_artifact_hash": _artifact_hash(root),
-        "outputs": [
-            "EXP2A_POINT_VARIOGRAM_RECORDS_FINAL_TEST.csv",
-            "EXP2A_POINT_VARIOGRAM_RECORDS_FINAL_TEST.parquet",
-            "EXP2A_VARIOGRAM_SUMMARIES_FINAL_TEST.csv",
-            "EXP2A_VARIOGRAM_CONTRASTS_FINAL_TEST.csv",
-        ],
-        "safety": dict(SAFETY),
-    }
-    manifest["manifest_hash"] = _content_hash(manifest)
-    write_json(output_root / "EXP2A_POINT_VARIOGRAM_MANIFEST.json", manifest)
-    _rename_and_patch(output_root, {
-        "EXP2A_POINT_VARIOGRAM_RECORDS_DEVELOPMENT_ONLY.csv": "EXP2A_POINT_VARIOGRAM_RECORDS_FINAL_TEST.csv",
-        "EXP2A_POINT_VARIOGRAM_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP2A_POINT_VARIOGRAM_RECORDS_FINAL_TEST.parquet",
-        "EXP2A_VARIOGRAM_SUMMARIES_DEVELOPMENT_ONLY.csv": "EXP2A_VARIOGRAM_SUMMARIES_FINAL_TEST.csv",
-        "EXP2A_VARIOGRAM_CONTRASTS_DEVELOPMENT_ONLY.csv": "EXP2A_VARIOGRAM_CONTRASTS_FINAL_TEST.csv",
-    })
-    return {
-        "status": "MATERIALIZED",
-        "manifest": str((output_root / "EXP2A_POINT_VARIOGRAM_MANIFEST.json").relative_to(root)).replace("\\", "/"),
-        "records": str((output_root / "EXP2A_POINT_VARIOGRAM_RECORDS_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-        "point_supported_nodes": int(len(supported)),
-    }
-
-
-def stage_exp3(root: Path) -> dict[str, Any]:
-    import exp.exp3.global_development as gd
-
-    output_root = (root / FT_EXP3_ROOT).resolve()
-    overrides = {
-        "MAPPING_REGISTRY": REGISTRY_V2_PATH,
-        "EXPECTED_REGISTRY_HASH": REGISTRY_V2_HASH,
-        "PENDING_ANCHOR_STATUS": PENDING_ABSTAIN_STATUS,
-        "PENDING_ANCHOR_FIELD_REASON": "P_ITINERARY_P_SERVICE_MONETARY_ANCHORS_ABSTAIN_MONETARY_NOT_ANCHORED",
-        "PENDING_EXCLUDED_REASON": "MONETARY_ANCHOR_ABSTAIN_MONETARY_NOT_ANCHORED_EVENT_COUNTS_ONLY",
-        "PENDING_SUPPORT_REASON": "COMPLETE_SEVEN_COMPONENT_MONETARY_ANCHORS_ABSTAIN_MONETARY_NOT_ANCHORED",
-        "PENDING_INTERPRETATION_NOTE": (
-            "per-event monetary anchors remain ABSTAIN_MONETARY_NOT_ANCHORED_EVENT_COUNTS_ONLY "
-            "and they never enter the ranking. "
-        ),
-    }
-    with _override(gd, overrides):
-        result = gd.run(
-            root=root, exp2_root=root / FT_EXP2_ROOT,
-            input_root=root / DEV_INPUT_ROOT, output_root=output_root,
-        )
-    manifest_path = result["manifest"]
-    _patch_manifest(manifest_path, {
-        "registry": str(REGISTRY_V2_PATH),
-        "registry_decision_refs": [
-            "F7_P_ITIN_P_SERV_ABSTAIN_MONETARY_NOT_ANCHORED",
-            "F8_RMB_SYSTEM_LEVEL_ABSTAIN_NO_BETA_K_RMB",
-        ],
-        "calibration_artifact_hash": _artifact_hash(root),
-    })
-    return {
-        "status": "MATERIALIZED",
-        "action_risk": str(result["action_risk"].relative_to(root)).replace("\\", "/"),
-        "metrics": str(result["metrics"].relative_to(root)).replace("\\", "/"),
-        "manifest": str(manifest_path.relative_to(root)).replace("\\", "/"),
-    }
-
-
-def stage_valuation(root: Path) -> dict[str, Any]:
-    import exp.exp3.valuation_only as vo
-
-    output_root = (root / FT_VALUATION_ROOT).resolve()
-    if not (output_root / "EXP3_VALUATION_ONLY_RECORDS_DEVELOPMENT_ONLY.parquet").is_file():
-        restored = output_root / "EXP3_VALUATION_ONLY_RECORDS_FINAL_TEST.parquet"
-        if restored.is_file():
-            (output_root / "EXP3_VALUATION_ONLY_RECORDS_DEVELOPMENT_ONLY.parquet").write_bytes(
-                restored.read_bytes(),
-            )
-    overrides = {
-        "MAPPING_REGISTRY": REGISTRY_V2_PATH,
-        "EXPECTED_REGISTRY_HASH": REGISTRY_V2_HASH,
-        "EXISTING_ACTION_RISK": Path(
-            "artifacts/paper_results_v1/exp3/EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet"
-        ),
-    }
-    with _override(vo, overrides):
-        result = vo.run(
-            root=root, exp2_root=root / FT_EXP2_ROOT,
-            input_root=root / DEV_INPUT_ROOT, output_root=output_root,
-        )
-    renames = {
-        "EXP3_VALUATION_ONLY_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP3_VALUATION_ONLY_RECORDS_FINAL_TEST.parquet",
-        "EXP3_VALUATION_ONLY_SUMMARY_DEVELOPMENT_ONLY.csv": "EXP3_VALUATION_ONLY_SUMMARY_FINAL_TEST.csv",
-        "EXP3_VALUATION_ONLY_MANIFEST_DEVELOPMENT_ONLY.json": "EXP3_VALUATION_ONLY_MANIFEST_FINAL_TEST.json",
-    }
-    _rename_and_patch(output_root, renames)
-    manifest_path = output_root / "EXP3_VALUATION_ONLY_MANIFEST_FINAL_TEST.json"
-    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload = _patch_manifest(manifest_path, {
-        "registry": str(REGISTRY_V2_PATH),
-        "calibration_artifact_hash": _artifact_hash(root),
-        "outputs": {
-            name: value.replace("DEVELOPMENT_ONLY", "FINAL_TEST")
-            for name, value in manifest_payload.get("outputs", {}).items()
-        },
-    })
-    return {
-        "status": "MATERIALIZED",
-        "records": str((output_root / "EXP3_VALUATION_ONLY_RECORDS_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-        "manifest": str(manifest_path.relative_to(root)).replace("\\", "/"),
-        "row_count": payload.get("output_row_count"),
-    }
-
-
-def stage_refresh_sync(root: Path) -> dict[str, Any]:
-    import exp.exp3.refresh_sync_records as rs
-
-    output_root = (root / FT_REFRESH_SYNC_ROOT).resolve()
-    result = rs.run(
-        root=root, output_root=output_root,
-        action_risk=root / FT_EXP3_ROOT / "EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet",
-    )
-    renames = {
-        "EXP3_REFRESH_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP3_REFRESH_RECORDS_FINAL_TEST.parquet",
-        "EXP3_REFRESH_RECORDS_DEVELOPMENT_ONLY.csv": "EXP3_REFRESH_RECORDS_FINAL_TEST.csv",
-        "EXP3_STATE_SYNC_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP3_STATE_SYNC_RECORDS_FINAL_TEST.parquet",
-        "EXP3_STATE_SYNC_RECORDS_DEVELOPMENT_ONLY.csv": "EXP3_STATE_SYNC_RECORDS_FINAL_TEST.csv",
-        "EXP3_REFRESH_EPISODE_VALUES_DEVELOPMENT_ONLY.csv": "EXP3_REFRESH_EPISODE_VALUES_FINAL_TEST.csv",
-        "EXP3_STATE_SYNC_EPISODE_VALUES_DEVELOPMENT_ONLY.csv": "EXP3_STATE_SYNC_EPISODE_VALUES_FINAL_TEST.csv",
-        "EXP3_FIGURE7A_EPISODE_VALUES_DEVELOPMENT_ONLY.csv": "EXP3_FIGURE7A_EPISODE_VALUES_FINAL_TEST.csv",
-        "EXP3_FIGURE7A_SUMMARY_DEVELOPMENT_ONLY.csv": "EXP3_FIGURE7A_SUMMARY_FINAL_TEST.csv",
-        "EXP3_REFRESH_SYNC_SUMMARY_DEVELOPMENT_ONLY.csv": "EXP3_REFRESH_SYNC_SUMMARY_FINAL_TEST.csv",
-        "EXP3_REFRESH_SYNC_MANIFEST_DEVELOPMENT_ONLY.json": "EXP3_REFRESH_SYNC_MANIFEST_FINAL_TEST.json",
-    }
-    _rename_and_patch(output_root, renames)
-    manifest_path = output_root / "EXP3_REFRESH_SYNC_MANIFEST_FINAL_TEST.json"
-    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload = _patch_manifest(manifest_path, {
-        "calibration_artifact_hash": _artifact_hash(root),
-        "outputs": {
-            name: value.replace("DEVELOPMENT_ONLY", "FINAL_TEST")
-            for name, value in manifest_payload.get("outputs", {}).items()
-        },
-    })
-    return {
-        "status": "MATERIALIZED",
-        "figure_episode": str((output_root / "EXP3_FIGURE7A_EPISODE_VALUES_FINAL_TEST.csv").relative_to(root)).replace("\\", "/"),
-        "figure_summary": str((output_root / "EXP3_FIGURE7A_SUMMARY_FINAL_TEST.csv").relative_to(root)).replace("\\", "/"),
-        "manifest": str(manifest_path.relative_to(root)).replace("\\", "/"),
-        "node_count": payload.get("node_count"),
-    }
+    paths = _materialize_exp2(root)
+    metrics = _load(paths["metrics"])
+    summary_path = root / EXP2 / "EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json"
+    summary = {"scope": SCOPE, "split": "FINAL_TEST", "status": "COMPLETE", "metrics": metrics["metrics"], "source_metrics_hash": metrics["artifact_hash"], "safety": metrics["safety"]}
+    summary["artifact_hash"] = content_id(summary)
+    _atomic_json(summary_path, summary)
+    return {"status": "PASS", "metrics": str(paths["metrics"].relative_to(root)).replace("\\", "/"), "summary": str(summary_path.relative_to(root)).replace("\\", "/")}
 
 
 def stage_exp2b(root: Path) -> dict[str, Any]:
-    import exp.exp2.exp2b_consequence_representation as exp2b
+    inputs = _load(_input_paths(root)["manifest"])
+    payload = {"schema_version": "EXP2B_FINAL_TEST_RMB_SUPPORT_V1", "scope": SCOPE, "split": "FINAL_TEST", "status": "ABSTAIN", "reason": "MONETARY_COMPONENT_NOT_IN_SCOPE", "detail": "P_itinerary and P_service are operational-only and excluded from the five-component RMB monetary scope; no seven-component downstream comparison is formed.", "episode_count": inputs["episode_count"], "node_count": inputs["node_count"], "zero_fill": False, "development_value_reused": False}
+    payload["artifact_hash"] = content_id(payload)
+    path = root / EXP2 / "EXP2B_FINAL_TEST_RMB_SUPPORT.json"
+    _atomic_json(path, payload)
+    return {"status": "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE", "manifest": str(path.relative_to(root)).replace("\\", "/"), "reason": payload["reason"]}
 
-    output_root = (root / FT_EXP2B_ROOT).resolve()
-    overrides = {
-        "EXISTING_ACTION_RISK": Path(
-            "artifacts/paper_results_v1/exp3/EXP3_FULL_DEVELOPMENT_ACTION_RISK.parquet"
-        ),
-        "MAPPING_REGISTRY": REGISTRY_V2_PATH,
-        "EXPECTED_REGISTRY_HASH": REGISTRY_V2_HASH,
-    }
-    with _override(exp2b, overrides):
-        result = exp2b.materialize(
-            root=root, exp2_root=root / FT_EXP2_ROOT,
-            input_root=root / DEV_INPUT_ROOT, output_root=output_root,
-        )
-    renames = {
-        "EXP2B_RECORDS_DEVELOPMENT_ONLY.parquet": "EXP2B_RECORDS_FINAL_TEST.parquet",
-        "EXP2B_RECORDS_DEVELOPMENT_ONLY.csv": "EXP2B_RECORDS_FINAL_TEST.csv",
-        "EXP2B_SUMMARY_DEVELOPMENT_ONLY.csv": "EXP2B_SUMMARY_FINAL_TEST.csv",
-        "EXP2B_NODE_SUMMARY_DEVELOPMENT_ONLY.csv": "EXP2B_NODE_SUMMARY_FINAL_TEST.csv",
-        "EXP2B_FAMILY_TRANSITIONS_DEVELOPMENT_ONLY.csv": "EXP2B_FAMILY_TRANSITIONS_FINAL_TEST.csv",
-        "EXP2B_MATCHED_CASE_DEVELOPMENT_ONLY.csv": "EXP2B_MATCHED_CASE_FINAL_TEST.csv",
-        "EXP2B_MANIFEST_DEVELOPMENT_ONLY.json": "EXP2B_MANIFEST_FINAL_TEST.json",
-    }
-    _rename_and_patch(output_root, renames)
-    manifest_path = output_root / "EXP2B_MANIFEST_FINAL_TEST.json"
-    manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    payload = _patch_manifest(manifest_path, {
-        "registry": str(REGISTRY_V2_PATH),
-        "calibration_artifact_hash": _artifact_hash(root),
-        "outputs": {
-            name: value.replace("DEVELOPMENT_ONLY", "FINAL_TEST")
-            for name, value in manifest_payload.get("outputs", {}).items()
-        },
-    })
-    return {
-        "status": "MATERIALIZED",
-        "records": str((output_root / "EXP2B_RECORDS_FINAL_TEST.parquet").relative_to(root)).replace("\\", "/"),
-        "matched_case": str((output_root / "EXP2B_MATCHED_CASE_FINAL_TEST.csv").relative_to(root)).replace("\\", "/"),
-        "manifest": str(manifest_path.relative_to(root)).replace("\\", "/"),
-    }
+
+def stage_exp3(root: Path) -> dict[str, Any]:
+    from exp.exp3.final_test_rmb import run
+    paths = run(root=root, exp2_root=root / EXP2, input_root=root / FINAL_INPUT_ROOT, output_root=root / EXP3, monetary_registry=root / RMB_REGISTRY)
+    payload = _load(paths["manifest"])
+    _require(payload["schema_version"] == "EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST_V2", "FINAL_TEST_EXP3_MANIFEST_VERSION_INVALID")
+    return {"status": "PASS", "manifest": str(paths["manifest"].relative_to(root)).replace("\\", "/"), "final_test_access_count": payload["safety"]["FINAL_TEST_ACCESS_COUNT"]}
+
+
+def stage_support_gate(root: Path) -> dict[str, Any]:
+    from exp.exp3.final_test_rmb import materialize_ranking_and_a00_gate
+    paths = materialize_ranking_and_a00_gate(root=root, action_risk=root / EXP3 / "EXP3_FINAL_TEST_RMB_ACTION_RISK.parquet", output_root=root / M3M4)
+    gate = _load(paths["gate_summary"])
+    return {"status": "PASS", "manifest": str(paths["manifest"].relative_to(root)).replace("\\", "/"), "A_num": gate["A_num"], "A_sup": gate["A_sup"]}
+
+
+def stage_exp4(root: Path) -> dict[str, Any]:
+    from exp.exp4.final_test import run
+    paths = run(root=root, input_root=root / FINAL_INPUT_ROOT, scenario_root=root / SCENARIOS, output_root=root / EXP4)
+    payload = _load(paths["manifest"])
+    return {"status": "PASS", "manifest": str(paths["manifest"].relative_to(root)).replace("\\", "/"), "final_test_access_count": payload["safety"]["FINAL_TEST_ACCESS_COUNT"]}
+
+
+def _make_exp4_figure(aggregate: dict[str, Any], output: Path) -> None:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import numpy as np
+    # Publication palette/style follows the repository scientific-figure-making
+    # contract; exports are print-safe PNG/PDF with embedded vector fonts.
+    palette = {"STATE_AWARE_H32": "#0F4D92", "HISTORICAL": "#B64342", "LIGHTGBM": "#42949E", "RANDOM_FOREST": "#9A4D8E"}
+    methods, targets = ["HISTORICAL", "LIGHTGBM", "RANDOM_FOREST", "STATE_AWARE_H32"], ["T_IB_A00", "D_OB", "D_TX"]
+    plt.rcParams.update({"font.family": ["DejaVu Sans", "Helvetica", "Arial", "sans-serif"], "font.size": 14, "axes.linewidth": 2.0, "pdf.fonttype": 42, "ps.fonttype": 42, "legend.frameon": False})
+    fig, axis = plt.subplots(figsize=(11, 5.5)); width, x = 0.19, np.arange(len(targets))
+    for offset, method in enumerate(methods):
+        values = [aggregate.get(f"{method}:{target}", {}).get("mae_minutes") for target in targets]
+        axis.bar(x + (offset - 1.5) * width, [np.nan if value is None else value for value in values], width, label=method, color=palette[method], edgecolor="black", linewidth=1.0)
+    axis.set_xticks(x, targets); axis.set_ylabel("MAE (minutes)"); axis.set_title("Final Test predictive benchmark")
+    axis.spines["top"].set_visible(False); axis.spines["right"].set_visible(False); axis.legend(frameon=False, ncol=2)
+    fig.tight_layout(pad=0.4); fig.savefig(output.with_suffix(".png"), dpi=300, bbox_inches="tight"); fig.savefig(output.with_suffix(".pdf"), bbox_inches="tight"); plt.close(fig)
+
+
+def stage_reporting(root: Path) -> dict[str, Any]:
+    exp1 = _load(root / EXP1 / "EXP1_FINAL_TEST_SUMMARY.json")
+    exp2, exp2a, exp2b = (_load(root / EXP2 / "EXP2_FINAL_TEST_METRICS.json"), _load(root / EXP2 / "EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json"), _load(root / EXP2 / "EXP2B_FINAL_TEST_RMB_SUPPORT.json"))
+    exp3, exp4, gate = (_load(root / EXP3 / "EXP3_FINAL_TEST_RMB_METRICS.json"), _load(root / EXP4 / "EXP4_FINAL_TEST_METRICS.json"), _load(root / M3M4 / "A00_FINAL_TEST_RMB_GATE_SUMMARY.json"))
+    artifact_root = root / PAPER_ROOT; artifact_root.mkdir(parents=True, exist_ok=True)
+    table_root, figure_root = root / TABLE_ROOT, root / FIGURE_ROOT
+    table_root.mkdir(parents=True, exist_ok=True); figure_root.mkdir(parents=True, exist_ok=True)
+    results = {"schema_version": "SECTION5_FINAL_TEST_RMB_RESULTS_V2", "scope": SCOPE, "source_scope": SCOPE, "split": "FINAL_TEST", "paper_result": True,
+               "exp1": exp1, "exp2a": exp2a, "exp2b": exp2b, "exp2": exp2, "exp3": exp3, "support_gate": gate, "exp4": exp4,
+               "claim_boundary": "Final Test evaluation with frozen models and RMB reporting mapping; no causal or operational-effect claim.",
+               "reporting_abstentions": {"exp2a_bootstrap_ci": "ABSTAIN_NOT_SAVED_DO_NOT_RECOMPUTE", "exp2b": exp2b["reason"]}}
+    results["artifact_hash"] = content_id(results); json_path = artifact_root / "SECTION5_FINAL_RESULTS.json"; _atomic_json(json_path, results)
+    markdown_path = artifact_root / "SECTION5_FINAL_RESULTS.md"
+    markdown_path.write_text("# Section 5 Final Test RMB Results\n\n" + f"Scope: `{SCOPE}`. The cohort contains {exp4['episode_count']} episodes and {exp4['node_count']} decision nodes.\n\n" + "The RMB reporting scope is F_continuity, F_execution, F_propagation, P_time, and R_operating with 1 CU = 1 RMB. P_itinerary and P_service remain NOT_IN_MAIN_MONETARY_SCOPE without zero-fill.\n\n" + f"Exp2B: `ABSTAIN: {exp2b['reason']}`.\n\n" + f"Support gate: `{gate['A_sup']['status']}`; A00 is never emitted as a recommendation.\n", encoding="utf-8")
+    table_path = table_root / "TABLE_FINAL_TEST_EXP4.csv"
+    with table_path.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=("method", "target", "mae_minutes", "mae_ci_95", "crps_minutes", "crps_ci_95", "mae_node_count", "crps_node_count", "mae_episode_count", "crps_episode_count", "crps_status")); writer.writeheader()
+        for key, value in exp4["aggregate"].items():
+            method, target = key.split(":", 1); writer.writerow({"method": method, "target": target, **value})
+    figure_base = figure_root / "FIGURE_FINAL_TEST_EXP4_MAE"; _make_exp4_figure(exp4["aggregate"], figure_base)
+    output_spec = {"schema_version": "PAPER_OUTPUT_SPEC_V2_FINAL_TEST_RMB", "scope": SCOPE, "monetary_system": "RMB", "cu_to_rmb": 1.0,
+                   "main_monetary_components": ["F_continuity", "F_execution", "F_propagation", "P_time", "R_operating"],
+                   "excluded_operational_components": ["P_itinerary", "P_service"],
+                   "outputs": {"results": str(json_path.relative_to(root)).replace("\\", "/"), "results_markdown": str(markdown_path.relative_to(root)).replace("\\", "/"),
+                               "table": str(table_path.relative_to(root)).replace("\\", "/"), "figure_png": str(figure_base.with_suffix('.png').relative_to(root)).replace("\\", "/"), "figure_pdf": str(figure_base.with_suffix('.pdf').relative_to(root)).replace("\\", "/")}}
+    output_spec["artifact_hash"] = content_id(output_spec); spec_path = root / OUTPUT_SPEC; _atomic_json(spec_path, output_spec)
+    return {"status": "PASS", "results": str(json_path.relative_to(root)).replace("\\", "/"), "output_spec": str(spec_path.relative_to(root)).replace("\\", "/")}
+
+
+def _chain_manifest(root: Path) -> dict[str, Any]:
+    import subprocess
+    inputs, status = _load(_input_paths(root)["manifest"]), _status(root)
+    stage_manifests = [root / SCENARIOS / "FINAL_TEST_SCENARIO_MANIFEST.json", root / EXP1 / "EXP1_FINAL_TEST_MANIFEST.json", root / EXP2 / "EXP2_FINAL_TEST_EXECUTION_MANIFEST.json", root / EXP3 / "EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST.json", root / M3M4 / "M3M4_FINAL_TEST_RMB_MANIFEST.json", root / EXP4 / "EXP4_FINAL_TEST_EXECUTION_MANIFEST.json"]
+    safety = [_load(path)["safety"] for path in stage_manifests if path.is_file()]
+    registry = _load(root / RMB_REGISTRY)
+    payload = {"schema_version": SCHEMA_VERSION, "status": "COMPLETE", "scope": SCOPE, "source_scope": SCOPE, "start_date": inputs["start_date"], "end_date": inputs["end_date"], "episode_count": inputs["episode_count"], "decision_node_count": inputs["decision_node_count"], "min_successor_service_date": inputs["min_successor_service_date"], "max_successor_service_date": inputs["max_successor_service_date"], "evaluation_overlap": status.get("details", {}).get("preflight", {}).get("evaluation_overlap"), "starting_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(), "rmb_registry": {"path": str(RMB_REGISTRY).replace("\\", "/"), "hash": registry["registry_hash"], "file_hash": file_sha256(root / RMB_REGISTRY)}, "safety": {"FINAL_TEST_ACCESS_COUNT": sum(int(item.get("FINAL_TEST_ACCESS_COUNT", 0)) for item in safety), "PAPER_FULL_RUN": True, "MODEL_RETRAINED": False, "PARAMETER_RESELECTED": False}, "stage_status": status, "outputs": {"section5_results": str((root / PAPER_ROOT / "SECTION5_FINAL_RESULTS.json").relative_to(root)).replace("\\", "/"), "paper_output_spec": str(OUTPUT_SPEC).replace("\\", "/")}}
+    payload["artifact_hash"] = content_id(payload); return payload
+
+
+def _verify_reusable_stage(root: Path, stage: str) -> None:
+    """Verify existing PASS/ABSTAIN artifacts without rematerializing them."""
+    status = _status(root)
+    value = status.get(stage)
+    _require(value in {"PASS", "ABSTAIN", "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE"}, f"FINAL_TEST_RESUME_STAGE_NOT_TERMINAL:{stage}")
+    if stage == "q4_inputs":
+        manifest = _load(_input_paths(root)["manifest"])
+        _require(manifest.get("scope") == SCOPE and manifest.get("artifact_hash", "").startswith("sha256:"), "FINAL_TEST_RESUME_Q4_MANIFEST_INVALID")
+        _require(manifest.get("episode_count", 0) > 0 and manifest.get("decision_node_count", 0) > 0, "FINAL_TEST_RESUME_Q4_EMPTY")
+        return
+    if stage == "preflight":
+        details = status.get("details", {}).get("preflight", {})
+        _require(set(details.get("checks", ())) >= {"TEST_DATE_RANGE_PASS", "TEST_NONEMPTY_PASS", "NO_DEVELOPMENT_EVALUATION_INPUT_PASS", "MODEL_CHECKPOINT_FROZEN_PASS", "CALIBRATION_ARTIFACT_FOUND_PASS", "ACTION_REGISTRY_FOUND_PASS", "RMB_REGISTRY_PASS"}, "FINAL_TEST_RESUME_PREFLIGHT_INVALID")
+        return
+    if stage == "rmb_registry":
+        registry = _load(root / RMB_REGISTRY)
+        _require(registry.get("registry_hash", "").startswith("sha256:") and registry.get("monetary_system") == "RMB", "FINAL_TEST_RESUME_RMB_INVALID")
+        return
+    if stage == "scenarios":
+        manifest = _load(root / SCENARIOS / "FINAL_TEST_SCENARIO_MANIFEST.json")
+        _require(manifest.get("scope") == SCOPE and manifest.get("safety", {}).get("FINAL_TEST_ACCESS_COUNT", 0) > 0, "FINAL_TEST_RESUME_SCENARIOS_INVALID")
+        for item in manifest.get("models", {}).values():
+            path = root / item["artifact"]
+            _require(path.is_file() and file_sha256(path) == item["artifact_hash"], "FINAL_TEST_RESUME_SCENARIO_HASH_MISMATCH")
+        return
+    if stage == "exp1":
+        manifest = _load(root / EXP1 / "EXP1_FINAL_TEST_MANIFEST.json")
+        _require(manifest.get("scope") == SCOPE and manifest.get("artifact_hash", "").startswith("sha256:"), "FINAL_TEST_RESUME_EXP1_INVALID")
+        return
+    if stage == "exp2a":
+        manifest = _load(root / EXP2 / "EXP2_FINAL_TEST_EXECUTION_MANIFEST.json")
+        summary = _load(root / EXP2 / "EXP2A_FINAL_TEST_POINT_MARGINAL_JOINT.json")
+        _require(file_sha256(root / EXP2 / "M2_FINAL_TEST_CONSEQUENCES.parquet") == manifest["artifact_hashes"]["consequences"], "FINAL_TEST_RESUME_EXP2_CONSEQUENCE_HASH_MISMATCH")
+        _require(summary.get("scope") == SCOPE and summary.get("artifact_hash", "").startswith("sha256:"), "FINAL_TEST_RESUME_EXP2A_INVALID")
+        return
+    if stage == "exp2b":
+        payload = _load(root / EXP2 / "EXP2B_FINAL_TEST_RMB_SUPPORT.json")
+        _require(payload.get("status") == "ABSTAIN" and payload.get("reason") == "MONETARY_COMPONENT_NOT_IN_SCOPE", "FINAL_TEST_RESUME_EXP2B_INVALID")
+        return
+    raise RuntimeError(f"FINAL_TEST_RESUME_STAGE_UNKNOWN:{stage}")
+
+
+def _exp3_contract_valid(root: Path) -> bool:
+    manifest_path, risk_path = (root / EXP3 / "EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST.json", root / EXP3 / "EXP3_FINAL_TEST_RMB_ACTION_RISK.parquet")
+    if not (manifest_path.is_file() and risk_path.is_file()):
+        return False
+    try:
+        manifest = _load(manifest_path)
+        import pyarrow.parquet as pq
+        fields = set(pq.ParquetFile(risk_path).schema_arrow.names)
+        return (manifest.get("schema_version") == "EXP3_FINAL_TEST_RMB_EXECUTION_MANIFEST_V2"
+                and manifest.get("artifact_hashes", {}).get("action_risk") == file_sha256(risk_path)
+                and {"decision_time", "valuation_band", "is_A00", "chi_inst", "chi_num", "scenario_lineage_hash", "rmb_registry_hash"}.issubset(fields))
+    except Exception:
+        return False
+
+
+def _exp4_contract_valid(root: Path) -> bool:
+    path = root / EXP4 / "EXP4_FINAL_TEST_METRICS.json"
+    if not path.is_file():
+        return False
+    try:
+        aggregate = _load(path).get("aggregate", {})
+        h32_dob = aggregate.get("STATE_AWARE_H32:D_OB", {})
+        h32_dtx = aggregate.get("STATE_AWARE_H32:D_TX", {})
+        return (bool(aggregate) and all("mae_ci_95" in value and "crps_ci_95" in value for value in aggregate.values())
+                and h32_dob.get("crps_minutes") is None and h32_dob.get("crps_status") == "NA_NOT_SAVED_BY_M1"
+                and h32_dtx.get("crps_minutes") is None and h32_dtx.get("crps_status") == "NA_NOT_SAVED_BY_M1"
+                and h32_dob.get("mae_minutes") is not None and h32_dtx.get("mae_minutes") is not None)
+    except Exception:
+        return False
+
+
+def run_chain(*, root: Path = ROOT, preflight_only: bool = False) -> dict[str, Any]:
+    root = Path(root).resolve()
+    for stage in ("q4_inputs", "preflight", "rmb_registry", "scenarios", "exp1", "exp2a", "exp2b"):
+        _verify_reusable_stage(root, stage)
+    # Exp2B is a terminal typed abstention, never a retry target.
+    if _status(root).get("exp2b") == "ABSTAIN":
+        _update_status(root, "exp2b", "ABSTAIN_MONETARY_COMPONENT_NOT_IN_SCOPE", **_status(root).get("details", {}).get("exp2b", {}))
+    if preflight_only:
+        return _status(root)
+    if not _exp3_contract_valid(root):
+        _update_status(root, "exp3", "PENDING", invalidated_reason="EXP3_V1_SCHEMA_OR_PUBLICATION_CONTRACT_INVALID")
+        for stage in ("support_gate", "exp4", "reporting"):
+            _update_status(root, stage, "PENDING", invalidated_reason="DOWNSTREAM_OF_EXP3_REPUBLICATION")
+    _run_stage(root, "exp3", lambda: stage_exp3(root))
+    _run_stage(root, "support_gate", lambda: stage_support_gate(root))
+    if not _exp4_contract_valid(root):
+        _update_status(root, "exp4", "PENDING", invalidated_reason="EXP4_EPISODE_BOOTSTRAP_CI_MISSING")
+        _update_status(root, "reporting", "PENDING", invalidated_reason="DOWNSTREAM_OF_EXP4_REPUBLICATION")
+    _run_stage(root, "exp4", lambda: stage_exp4(root))
+    _run_stage(root, "reporting", lambda: stage_reporting(root))
+    manifest = _chain_manifest(root); _atomic_json(root / CHAIN_MANIFEST, manifest); return manifest
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument("--preflight-only", action="store_true")
+    args = parser.parse_args(argv); result = run_chain(preflight_only=args.preflight_only)
+    print(json.dumps({"scope": SCOPE, "status": result.get("status", "COMPLETE")}, sort_keys=True)); return 0
 
 
 if __name__ == "__main__":

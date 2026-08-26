@@ -1,0 +1,78 @@
+{
+  "action_count": 23,
+  "artifact_hash": "sha256:8795f8dd86209fdf769a64a24131233b605840c39b7d435bfb75229b3dae1386",
+  "bands": {
+    "BASE": {
+      "F_continuity": 1.0,
+      "F_execution": 1.0,
+      "F_propagation": 1.0,
+      "P_time": 1.0,
+      "R_operating": 1.0
+    },
+    "HIGH": {
+      "F_continuity": 2.0,
+      "F_execution": 2.0,
+      "F_propagation": 2.0,
+      "P_time": 2.0,
+      "R_operating": 2.0
+    },
+    "LOW": {
+      "F_continuity": 0.5,
+      "F_execution": 0.5,
+      "F_propagation": 0.5,
+      "P_time": 0.5,
+      "R_operating": 0.5
+    }
+  },
+  "conditional_top1_sensitivity_agreement": {
+    "HIGH": 0.9959112149532711,
+    "LOW": 1
+  },
+  "cu_to_rmb": 1.0,
+  "dataset": "DATA2",
+  "eligibility_counts": {
+    "TRUE": 5136,
+    "UNKNOWN": 112992
+  },
+  "episode_count": 128,
+  "excluded_operational_components": [
+    "P_itinerary",
+    "P_service"
+  ],
+  "finite_support_rate_mean": 0.9089602803738319,
+  "main_monetary_components": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "R_operating"
+  ],
+  "monetary_system": "RMB",
+  "node_count": 1712,
+  "output_row_count": 118128,
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 3,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": true,
+    "PARAMETER_RESELECTED": false
+  },
+  "schema_version": "EXP3_FINAL_TEST_RMB_METRICS_V2",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "split": "FINAL_TEST",
+  "status": "COMPLETE_WITH_CONDITIONAL_RMB_ACTION_COMPARISON",
+  "support_policy": "EXPLICIT_CONDITIONING_NO_ZERO_FILL_NO_SILENT_RENORMALIZATION",
+  "validation": {
+    "a00_band_identity_node_count": 1712,
+    "a00_consequence_identity_checks_current_run": 8169735,
+    "action_count": 23,
+    "conditional_top1_sensitivity_agreement": {
+      "HIGH": 0.9959112149532711,
+      "LOW": 1
+    },
+    "no_development_evaluation_rows": true,
+    "node_count": 1712,
+    "row_count": 118128,
+    "scenario_lineage_shared_per_node": true,
+    "unsupported_component_zero_fill": false
+  }
+}

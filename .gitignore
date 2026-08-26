@@ -83,3 +83,8 @@ artifacts/experiment/full_development_inputs_v1/M1_V2_FULL_DEVELOPMENT_INFERENCE
 artifacts/experiment/exp2/exp2_representation_refactor_20260825/EXP2A_JOINT_RECORDS_DEVELOPMENT_ONLY.csv
 artifacts/experiment/exp2/exp2_representation_refactor_20260825/EXP2A_MARGINAL_RECORDS_DEVELOPMENT_ONLY.csv
 artifacts/paper_results_v1/exp2/M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet
+
+# ===== Over-100MB Final Test RMB regenerable artifact (GitHub hard limit) =====
+# M2 Final Test consequences parquet (~304MB) exceeds GitHub's 100MB hard
+# limit; regenerable from the frozen Final Test input & lineage caches.
+artifacts/paper_results_v2_final_test_rmb/exp2/M2_FINAL_TEST_CONSEQUENCES.parquet

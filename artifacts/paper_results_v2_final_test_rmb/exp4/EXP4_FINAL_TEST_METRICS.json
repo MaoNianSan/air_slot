@@ -1,0 +1,204 @@
+{
+  "aggregate": {
+    "HISTORICAL:D_OB": {
+      "crps_ci_95": [
+        5.732595825195313,
+        13.016622924804688
+      ],
+      "crps_episode_count": 128,
+      "crps_minutes": 9.13653564453125,
+      "crps_node_count": 1615,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        5.8513671875,
+        15.242382812499999
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 10.2109375,
+      "mae_node_count": 1615
+    },
+    "HISTORICAL:D_TX": {
+      "crps_ci_95": [
+        2.536601448059082,
+        4.930632138252258
+      ],
+      "crps_episode_count": 128,
+      "crps_minutes": 3.704721450805664,
+      "crps_node_count": 1712,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        3.140625,
+        6.094140624999998
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 4.6015625,
+      "mae_node_count": 1712
+    },
+    "HISTORICAL:T_IB_A00": {
+      "crps_ci_95": null,
+      "crps_episode_count": 0,
+      "crps_minutes": null,
+      "crps_node_count": 0,
+      "crps_status": "NA_NO_VALID_SUPPORT",
+      "mae_ci_95": null,
+      "mae_episode_count": 0,
+      "mae_minutes": null,
+      "mae_node_count": 0
+    },
+    "LIGHTGBM:D_OB": {
+      "crps_ci_95": [
+        7.248599252553273,
+        13.605684441238424
+      ],
+      "crps_episode_count": 128,
+      "crps_minutes": 10.154408738023282,
+      "crps_node_count": 1615,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        8.827067903562613,
+        16.571656078519137
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 12.361181184849613,
+      "mae_node_count": 1615
+    },
+    "LIGHTGBM:D_TX": {
+      "crps_ci_95": [
+        3.1267259862216235,
+        5.371444478322576
+      ],
+      "crps_episode_count": 128,
+      "crps_minutes": 4.193426823821989,
+      "crps_node_count": 1712,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        3.933346398336945,
+        6.60290565066675
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 5.241778772139513,
+      "mae_node_count": 1712
+    },
+    "LIGHTGBM:T_IB_A00": {
+      "crps_ci_95": null,
+      "crps_episode_count": 0,
+      "crps_minutes": null,
+      "crps_node_count": 0,
+      "crps_status": "NA_NO_VALID_SUPPORT",
+      "mae_ci_95": null,
+      "mae_episode_count": 0,
+      "mae_minutes": null,
+      "mae_node_count": 0
+    },
+    "RANDOM_FOREST:D_OB": {
+      "crps_ci_95": [
+        7.083890258866976,
+        13.369183192454194
+      ],
+      "crps_episode_count": 128,
+      "crps_minutes": 10.04004321195955,
+      "crps_node_count": 1615,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        7.8890303113621245,
+        15.774173397540613
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 11.673844408804499,
+      "mae_node_count": 1615
+    },
+    "RANDOM_FOREST:D_TX": {
+      "crps_ci_95": [
+        3.160106302358668,
+        5.511785479498626
+      ],
+      "crps_episode_count": 128,
+      "crps_minutes": 4.286979743487947,
+      "crps_node_count": 1712,
+      "crps_status": "SUPPORTED",
+      "mae_ci_95": [
+        4.124497157057085,
+        6.788430971942482
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 5.41646703380846,
+      "mae_node_count": 1712
+    },
+    "RANDOM_FOREST:T_IB_A00": {
+      "crps_ci_95": null,
+      "crps_episode_count": 0,
+      "crps_minutes": null,
+      "crps_node_count": 0,
+      "crps_status": "NA_NO_VALID_SUPPORT",
+      "mae_ci_95": null,
+      "mae_episode_count": 0,
+      "mae_minutes": null,
+      "mae_node_count": 0
+    },
+    "STATE_AWARE_H32:D_OB": {
+      "crps_ci_95": null,
+      "crps_episode_count": 0,
+      "crps_minutes": null,
+      "crps_node_count": 0,
+      "crps_status": "NA_NOT_SAVED_BY_M1",
+      "mae_ci_95": [
+        5.901821710592436,
+        15.289716279439096
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 10.254354115801764,
+      "mae_node_count": 1615
+    },
+    "STATE_AWARE_H32:D_TX": {
+      "crps_ci_95": null,
+      "crps_episode_count": 0,
+      "crps_minutes": null,
+      "crps_node_count": 0,
+      "crps_status": "NA_NOT_SAVED_BY_M1",
+      "mae_ci_95": [
+        3.1611543480360083,
+        6.111863715775351
+      ],
+      "mae_episode_count": 128,
+      "mae_minutes": 4.613818715450922,
+      "mae_node_count": 1712
+    },
+    "STATE_AWARE_H32:T_IB_A00": {
+      "crps_ci_95": null,
+      "crps_episode_count": 0,
+      "crps_minutes": null,
+      "crps_node_count": 0,
+      "crps_status": "NA_NO_VALID_SUPPORT",
+      "mae_ci_95": null,
+      "mae_episode_count": 0,
+      "mae_minutes": null,
+      "mae_node_count": 0
+    }
+  },
+  "artifact_hash": "sha256:5b95d45df04342431f7608b940ffb5e4e412db3fc69f1715d2a1394f6c72d591",
+  "bootstrap": {
+    "ci": "PERCENTILE_95",
+    "replicates": 2000,
+    "resampling_unit": "EPISODE",
+    "seed": 20260825
+  },
+  "dataset": "DATA2",
+  "episode_count": 128,
+  "methods": [
+    "HISTORICAL",
+    "LIGHTGBM",
+    "RANDOM_FOREST",
+    "STATE_AWARE_H32"
+  ],
+  "node_count": 1712,
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 4,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": true,
+    "PARAMETER_RESELECTED": false
+  },
+  "schema_version": "EXP4_FINAL_TEST_METRICS_V1",
+  "scope": "FINAL_TEST_OUT_OF_TIME_2019_10_12",
+  "split": "FINAL_TEST",
+  "status": "COMPLETE"
+}

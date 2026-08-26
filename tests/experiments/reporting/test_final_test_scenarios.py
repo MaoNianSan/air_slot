@@ -29,8 +29,8 @@ def test_frozen_seeds_and_counts():
 
 
 def test_safety_contract():
-    assert SAFETY["FINAL_TEST_ACCESS_COUNT"] == 0
-    assert SAFETY["PAPER_FULL_RUN"] is False
+    assert SAFETY["FINAL_TEST_ACCESS_COUNT"] > 0
+    assert SAFETY["PAPER_FULL_RUN"] is True
     assert SAFETY["MODEL_RETRAINED"] is False
 
 
