@@ -16,6 +16,8 @@ from exp.common.real_fast import (
     select_replay,
     state_vintage_bindings,
 )
+
+from .vintage import exact_vintage_bindings
 from exp.common.result_schema import MetricLevel, MetricObservation, SupportStatus
 from exp.common.runner import BaseRunner
 
@@ -87,8 +89,23 @@ class Exp3Runner(BaseRunner):
             "EXP3B_STATE_LAG_10": 10,
         }
         lag = lag_by_variant.get(variant_id)
-        vintage = () if lag is None else state_vintage_bindings(context, lag_minutes=lag)
+        # Freeze F3 P2 (2026-08-25): lagged variants bind only the exact prior
+        # node at t - delta (exact_vintage_bindings); SYNC keeps the current
+        # state identity.
+        if lag in (None, 0):
+            vintage = () if lag is None else state_vintage_bindings(context, lag_minutes=0)
+        else:
+            vintage = exact_vintage_bindings(context, lag_minutes=lag)
         available_vintage = sum(item["state_vintage_node_id"] is not None for item in vintage)
+        # Freeze F3 (2026-08-25): a lagged variant takes only the frozen state
+        # identity of the past node at t-delta; a node without a legal vintage
+        # is typed-excluded (EXP3B_VINTAGE_NOT_AVAILABLE) and never falls back
+        # to the current or most recent state.
+        excluded_vintage = (
+            () if lag in (None, 0) else tuple(
+                item for item in vintage if item["state_vintage_node_id"] is None
+            )
+        )
         metrics = {
             "VARIANT_CONTRACT": MetricObservation(
                 metric_id="VARIANT_CONTRACT", level=MetricLevel.SYSTEM, value=True,
@@ -134,6 +151,21 @@ class Exp3Runner(BaseRunner):
                     "lag_minutes": lag,
                     "current_state_read": lag == 0 if lag is not None else None,
                     "state_vintage_only_changed_factor": lag is not None,
+                    "vintage_identity_rule": (
+                        "FROZEN_PRIOR_STATE_IDENTITY_NO_REEVALUATION_NO_INTERPOLATION"
+                        if lag not in (None, 0) else "CURRENT_STATE"
+                    ),
+                    "vintage_match_rule": (
+                        "EXACT_DECISION_TIME_T_MINUS_DELTA"
+                        if lag not in (None, 0) else "CURRENT_STATE"
+                    ),
+                    "vintage_fallback_policy": "FORBIDDEN",
+                    "exclusion_code": (
+                        "EXP3B_VINTAGE_NOT_AVAILABLE"
+                        if lag not in (None, 0) and excluded_vintage else None
+                    ),
+                    "excluded_node_count": len(excluded_vintage),
+                    "fallback_to_current_state": False,
                 },
             ),
             "STATE_REPRESENTATION_DRIFT": MetricObservation(

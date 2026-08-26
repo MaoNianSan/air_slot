@@ -1,0 +1,142 @@
+{
+  "application": "IDENTICAL_SHARED_ARTIFACT_FILE_EACH_MODEL_USES_ITS_FITTED_TEMPERATURE_SET",
+  "artifact_hash": "sha256:655df66b9f037db31b3b461dd3e126d741fb5f3c5af29ec21c975b64f573f944",
+  "calibration_split": {
+    "end": "2019-07-31",
+    "n_episodes": 64,
+    "start": "2019-07-01"
+  },
+  "decision_id": "AIR_SLOT_HUMAN_GATES_ALL_APPROVED_20260826 (D7=B, D7a-D7d=A)",
+  "fitting_procedure": {
+    "development_split_read": false,
+    "final_test_split_read": false,
+    "hyperparameter_search": "NONE",
+    "one_shot": true,
+    "optimizer": "LBFGS",
+    "selection_loop": "NONE",
+    "steps": 50,
+    "temperature_clamp": [
+      0.05,
+      20.0
+    ],
+    "train_split_read": false
+  },
+  "models": {
+    "CURRENT_ONLY": {
+      "active_counts": {
+        "d_ob_zero": 1006,
+        "d_tx_zero": 1060,
+        "hazard": 203
+      },
+      "after_metrics": {
+        "hazard_event_time_nll": 11.350457191467285,
+        "zero_bce": {
+          "D_OB": 0.6931605935096741,
+          "D_TX": 0.6943581104278564
+        }
+      },
+      "before_metrics": {
+        "hazard_event_time_nll": 11.35625171661377,
+        "zero_bce": {
+          "D_OB": 0.6957526206970215,
+          "D_TX": 0.7250258326530457
+        }
+      },
+      "checkpoint_path": "artifacts/experiment/exp1_full_development/exp1_closure_20260825/EXP1B_CURRENT_ONLY_H32/M1_V2_FAST_TRAIN_MODE.pt",
+      "checkpoint_sha256_after": "sha256:cea56794c4ffea5ca9adda13e769f06ea7d7216570777ec5e76d0b6bd1ecd2c1",
+      "checkpoint_sha256_before": "sha256:cea56794c4ffea5ca9adda13e769f06ea7d7216570777ec5e76d0b6bd1ecd2c1",
+      "model_id": "M1_V2_GRU_H32_CURRENT_ONLY",
+      "n_episodes": 64,
+      "n_nodes": 1060,
+      "positive_quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "quantile_coverage_diagnostics": {
+        "D_OB": {
+          "0.1": 0.0,
+          "0.3": 0.0,
+          "0.5": 0.06724511831998825,
+          "0.7": 0.09761388599872589,
+          "0.9": 0.09761388599872589
+        },
+        "D_TX": {
+          "0.1": 0.0,
+          "0.3": 0.054999999701976776,
+          "0.5": 0.12250000238418579,
+          "0.7": 0.12250000238418579,
+          "0.9": 0.27250000834465027
+        }
+      },
+      "temperatures": {
+        "d_ob_zero": 20.0,
+        "d_tx_zero": 20.0,
+        "hazard": 1.357414960861206
+      }
+    },
+    "STATE_AWARE_H32": {
+      "active_counts": {
+        "d_ob_zero": 1006,
+        "d_tx_zero": 1060,
+        "hazard": 203
+      },
+      "after_metrics": {
+        "hazard_event_time_nll": 11.36117935180664,
+        "zero_bce": {
+          "D_OB": 0.6929959654808044,
+          "D_TX": 0.6950007677078247
+        }
+      },
+      "before_metrics": {
+        "hazard_event_time_nll": 11.380390167236328,
+        "zero_bce": {
+          "D_OB": 0.694854199886322,
+          "D_TX": 0.7400155067443848
+        }
+      },
+      "checkpoint_path": "artifacts/experiment/m1_v2_tuning_stage1_fast/GRU_H32/M1_V2_FAST_TRAIN_MODE.pt",
+      "checkpoint_sha256_after": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+      "checkpoint_sha256_before": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+      "model_id": "M1_V2_GRU_H32",
+      "n_episodes": 64,
+      "n_nodes": 1060,
+      "positive_quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+      "quantile_coverage_diagnostics": {
+        "D_OB": {
+          "0.1": 0.0,
+          "0.3": 0.0,
+          "0.5": 0.06724511831998825,
+          "0.7": 0.09761388599872589,
+          "0.9": 0.09761388599872589
+        },
+        "D_TX": {
+          "0.1": 0.0,
+          "0.3": 0.054999999701976776,
+          "0.5": 0.12250000238418579,
+          "0.7": 0.12250000238418579,
+          "0.9": 0.27250000834465027
+        }
+      },
+      "temperatures": {
+        "d_ob_zero": 4.514564514160156,
+        "d_tx_zero": 20.0,
+        "hazard": 1.74347984790802
+      }
+    }
+  },
+  "paper_result": false,
+  "policy": "M1_CALIBRATION_CONTRACT_V1",
+  "positive_quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+  "predecessor_calibration_method": "TEMPERATURE_ON_HAZARD_LOGITS",
+  "predecessor_probability_calibration": "DISCRETE_HAZARD_EVENT_TIME_NLL",
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "AIR_SLOT_M1_V2_CALIBRATION_ARTIFACT_V1",
+  "shared_by": [
+    "M1_V2_GRU_H32",
+    "M1_V2_GRU_H32_CURRENT_ONLY"
+  ],
+  "status": "FROZEN_SHARED_CALIBRATION_ARTIFACT",
+  "successor_zero_mass_calibration": "HURDLE_ZERO_BINARY_CE_TEMPERATURE"
+}

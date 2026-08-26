@@ -71,6 +71,14 @@ RESPONSE_REGISTRY = Path("registries/m3_response_scenarios.yaml")
 M2_REGISTRY = Path("registries/m2_data2_formal_cu_v2.json")
 MAPPING_REGISTRY = Path("registries/m4_eur_mapping_assumption_grounded_v1.json")
 RISK_POLICY = Path("artifacts/experiment/exp2/DATA2_DEV_PILOT_M4_RISK_POLICY.json")
+EXPECTED_REGISTRY_HASH = "sha256:88beec332b885baf90cef90e3cc8091c8679f4ea93628c0e9227cd919c76d6a3"
+PENDING_ANCHOR_STATUS = "HUMAN_DECISION_REQUIRED"
+PENDING_ANCHOR_FIELD_REASON = "P_ITINERARY_P_SERVICE_MONETARY_ANCHORS_HUMAN_DECISION_REQUIRED"
+PENDING_EXCLUDED_REASON = "MONETARY_ANCHOR_HUMAN_DECISION_REQUIRED_EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED"
+PENDING_SUPPORT_REASON = "COMPLETE_SEVEN_COMPONENT_MONETARY_ANCHORS_HUMAN_DECISION_REQUIRED"
+PENDING_INTERPRETATION_NOTE = (
+    "per-event monetary anchors remain HUMAN_DECISION_REQUIRED and they never enter the ranking. "
+)
 FIVE_ANCHOR_COMPONENTS = (
     "F_continuity", "F_execution", "F_propagation", "P_time", "R_operating",
 )
@@ -141,7 +149,7 @@ def run(
     formal_scope = tuple(m2_registry["formal_scope"])
     _require(len(formal_scope) == 7, "EXP3_GLOBAL_FORMAL_SCOPE_INVALID")
     _require(
-        mapping.get("registry_hash") == "sha256:88beec332b885baf90cef90e3cc8091c8679f4ea93628c0e9227cd919c76d6a3",
+        mapping.get("registry_hash") == EXPECTED_REGISTRY_HASH,
         "EXP3_GLOBAL_EUR_MAPPING_REGISTRY_DRIFT",
     )
     components = mapping.get("ops_components")
@@ -153,7 +161,7 @@ def run(
         "EXP3_GLOBAL_MAPPING_FIVE_ANCHOR_DRIFT",
     )
     _require(
-        tuple(sorted(name for name, status in anchor_status.items() if status == "HUMAN_DECISION_REQUIRED"))
+        tuple(sorted(name for name, status in anchor_status.items() if status == PENDING_ANCHOR_STATUS))
         == tuple(sorted(PENDING_MONETARY_COMPONENTS)),
         "EXP3_GLOBAL_MAPPING_PENDING_ANCHOR_DRIFT",
     )
@@ -318,7 +326,7 @@ def run(
                         "complete_seven_component_supported_scenarios": complete_supported,
                         "complete_seven_component_risk_status": "NOT_RUN",
                         "complete_seven_component_risk_reason": (
-                            "P_ITINERARY_P_SERVICE_MONETARY_ANCHORS_HUMAN_DECISION_REQUIRED"
+                            PENDING_ANCHOR_FIELD_REASON
                         ),
                         "p_itinerary_event_count": itinerary_event_count,
                         "p_service_event_count": service_event_count,
@@ -390,11 +398,11 @@ def run(
             "semantics": "CONSTRUCTED_INTERNAL_LOSS_NOT_CAUSAL_NOT_REGRET_NOT_OPTIMAL",
             "top1_level": "ASSUMPTION_GROUNDED",
             "excluded_components": list(PENDING_MONETARY_COMPONENTS),
-            "excluded_reason": "MONETARY_ANCHOR_HUMAN_DECISION_REQUIRED_EVENT_COUNTS_ONLY_MONETARY_NOT_ANCHORED",
+            "excluded_reason": PENDING_EXCLUDED_REASON,
         },
         "formal_complete_chain": {
             "support_status": "NOT_RUN",
-            "reason": "COMPLETE_SEVEN_COMPONENT_MONETARY_ANCHORS_HUMAN_DECISION_REQUIRED",
+            "reason": PENDING_SUPPORT_REASON,
             "authoritative_ranking": False,
             "decision_selection": "NOT_RUN",
         },
@@ -424,8 +432,8 @@ def run(
         "(EUROCONTROL 2004 EUR-basis anchor; LOW/BASE/HIGH = 0.5x/1.0x/2.0x). It is an internal "
         "constructed-loss comparison: not causal, not regret, not optimal, and not an empirical cost. "
         "P_itinerary and P_service are reported as event counts only (monetary=NOT_ANCHORED): their "
-        "per-event monetary anchors remain HUMAN_DECISION_REQUIRED and they never enter the ranking. "
-        "The complete seven-component monetary ranking and authoritative decision selection remain "
+        + PENDING_INTERPRETATION_NOTE
+        + "The complete seven-component monetary ranking and authoritative decision selection remain "
         "NOT_RUN; no zero-fill and no causal action-effect claim is made.\n",
         encoding="utf-8",
     )

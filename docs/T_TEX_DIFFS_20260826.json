@@ -1,0 +1,51 @@
+[
+ {
+  "file": "D:\\research\\air_slot\\Rolling_Airline_Recovery_v2\\sections\\05_experiment.tex",
+  "line": 131,
+  "label": "T2_R_IB_COORDINATE_T_IB_A00_STYLE",
+  "old": "In this scenario, $R^{IB}_{i,t,s}$ is the remaining in-block-time coordinate of the operating state; its scenario mapping is the A00-baseline remaining in-block-time target (data-side identifier $T\\_IB\\_A00$), not a separately measured variable.",
+  "new": "In this scenario, \\(R^{IB}_{i,t,s}\\) is the remaining in-block-time coordinate of the operating state; its scenario mapping is the A00-baseline remaining in-block-time target (data-side identifier \\(T\\_IB\\_A00\\)), not a separately measured variable."
+ },
+ {
+  "file": "D:\\research\\air_slot\\Rolling_Airline_Recovery_v2\\sections\\05_experiment.tex",
+  "line": 261,
+  "label": "T5_D_TX_CAVEAT",
+  "old": "The evaluation lead time \\(\\ell\\) is distinct from the forecast horizon \\(\\tau\\) used by the state estimator.",
+  "new": "The evaluation lead time \\(\\ell\\) is distinct from the forecast horizon \\(\\tau\\) used by the state estimator. For the taxi-out target \\(D^{+,TX}\\), no planned wheels-off reference exists; its lead-time bins are therefore reported as NA and only the overall rows are reported. Missing lead-time values are never interpolated."
+ },
+ {
+  "file": "D:\\research\\air_slot\\Rolling_Airline_Recovery_v2\\sections\\05_experiment.tex",
+  "line": 167,
+  "label": "T6A_TOP1_SUPPORT_CONDITIONS_02A",
+  "old": "The decision-level endpoint is Top-1 disagreement with the Joint representation. This measures whether simplifying the operating-state representation changes the recovery recommendation; it does not treat the Joint recommendation as an observed ground-truth action.",
+  "new": "The decision-level endpoint is Top-1 disagreement with the Joint representation. This measures whether simplifying the operating-state representation changes the recovery recommendation; it does not treat the Joint recommendation as an observed ground-truth action. Top-1 comparisons are made only on decision opportunities with common supported observations; unsupported components and actions are typed-excluded, never zero-filled."
+ },
+ {
+  "file": "D:\\research\\air_slot\\Rolling_Airline_Recovery_v2\\sections\\05_experiment.tex",
+  "line": 197,
+  "label": "T6B_TOP1_SUPPORT_CONDITIONS_02B",
+  "old": "The principal endpoint is the proportion of decision opportunities for which the selected recovery action differs from that obtained under the seven-component representation.",
+  "new": "The principal endpoint is the proportion of decision opportunities for which the selected recovery action differs from that obtained under the seven-component representation. Comparisons are restricted to decision opportunities with common supported observations; unsupported components and actions are typed-excluded, never zero-filled."
+ },
+ {
+  "file": "D:\\research\\air_slot\\Rolling_Airline_Recovery_v2\\sections\\04_implement.tex",
+  "line": 403,
+  "label": "T8_CALIBRATION_WORDING_04",
+  "old": "Calibration is used for probability calibration;",
+  "new": "Calibration fits the single shared calibration artifact used by both paths (a discrete-hazard event-time NLL temperature for the predecessor head and binary cross-entropy temperatures for the successor hurdle zero mass), with positive-quantile calibration not applied;"
+ },
+ {
+  "file": "D:\\research\\air_slot\\Rolling_Airline_Recovery_v2\\sections\\04_implement.tex",
+  "line": 171,
+  "label": "T1_CHECKPOINT_WORDING_04",
+  "old": "For controlled history comparisons, the state-aware path reuses the same train-frozen architecture, checkpoint, feature schema, target definitions, and calibration policy.",
+  "new": "For controlled history comparisons, the state-aware path reuses the same train-frozen architecture, feature schema, target definitions, and calibration policy with an identical training budget and an identical calibration path; the two variants have separate checkpoints."
+ },
+ {
+  "file": "D:\\research\\air_slot\\Rolling_Airline_Recovery_v2\\sections\\05_experiment.tex",
+  "line": 111,
+  "label": "T3_PRINCIPAL_EVENT_D_TO_30_STYLE",
+  "old": "while the principal delay-event Brier score (principal delay event $D^{+,TO}>30$) and calibration summarize probabilistic event performance.",
+  "new": "while the principal delay-event Brier score (principal delay event \\(D^{+,TO}>30\\)) and calibration summarize probabilistic event performance."
+ }
+]

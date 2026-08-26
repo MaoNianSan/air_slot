@@ -75,3 +75,11 @@ artifacts/diagnostics/*.log.*
 # regenerable from frozen caches; tables/figures/manifests stay versioned.
 artifacts/experiments/**/*.parquet
 artifacts/experiment/full_development_inputs_v1/M1_V2_FULL_DEVELOPMENT_INFERENCE_INPUTS.json
+
+# ===== Over-100MB regenerable artifacts (GitHub hard limit, kept local) =====
+# Exp2A full-development joint/marginal CSV dumps (~330-360MB) and M2
+# full-development consequences parquet (~313MB) exceed GitHub's 100MB hard
+# limit; small point/variogram tables & manifests remain versioned.
+artifacts/experiment/exp2/exp2_representation_refactor_20260825/EXP2A_JOINT_RECORDS_DEVELOPMENT_ONLY.csv
+artifacts/experiment/exp2/exp2_representation_refactor_20260825/EXP2A_MARGINAL_RECORDS_DEVELOPMENT_ONLY.csv
+artifacts/paper_results_v1/exp2/M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet

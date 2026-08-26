@@ -1,0 +1,34 @@
+{
+  "artifact": "artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json",
+  "artifact_hash": "sha256:655df66b9f037db31b3b461dd3e126d741fb5f3c5af29ec21c975b64f573f944",
+  "calibration_split": {
+    "end": "2019-07-31",
+    "n_episodes": 64,
+    "start": "2019-07-01"
+  },
+  "checkpoint_hashes_unchanged": {
+    "M1_V2_GRU_H32": true,
+    "M1_V2_GRU_H32_CURRENT_ONLY": true
+  },
+  "input_hashes": {
+    "cache": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "current_only_checkpoint": "sha256:cea56794c4ffea5ca9adda13e769f06ea7d7216570777ec5e76d0b6bd1ecd2c1",
+    "feature_schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "state_aware_checkpoint": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b"
+  },
+  "manifest_hash": "sha256:b412cd6c79cc9e717e137da7ee3c8e63f9b775ef351ccce105ff9643a76f88e0",
+  "quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "AIR_SLOT_M1_V2_CALIBRATION_ARTIFACT_V1_MANIFEST",
+  "scope": "CALIBRATION_SPLIT_ONLY_DEVELOPMENT_SAFE",
+  "shared_by": [
+    "M1_V2_GRU_H32",
+    "M1_V2_GRU_H32_CURRENT_ONLY"
+  ],
+  "status": "M1_V2_CALIBRATION_ARTIFACT_MATERIALIZED"
+}

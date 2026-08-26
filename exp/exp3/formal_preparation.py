@@ -181,6 +181,11 @@ def _variant_contracts() -> dict[str, dict[str, Any]]:
             contract["state_vintage_lag_minutes"] = lag
             contract["current_direct_information"] = "FIXED"
             contract["future_state_read"] = "FORBIDDEN"
+            if lag:
+                contract["vintage_identity_rule"] = "FROZEN_PRIOR_STATE_IDENTITY_NO_REEVALUATION_NO_INTERPOLATION"
+                contract["vintage_match_rule"] = "EXACT_DECISION_TIME_T_MINUS_DELTA"
+                contract["vintage_exclusion_code"] = "EXP3B_VINTAGE_NOT_AVAILABLE"
+                contract["vintage_fallback"] = "FORBIDDEN"
         contracts[public_id] = contract
     return contracts
 

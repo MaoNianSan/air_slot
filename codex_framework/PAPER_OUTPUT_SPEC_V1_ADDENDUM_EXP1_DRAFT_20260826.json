@@ -1,0 +1,80 @@
+{
+  "spec_id": "PAPER_OUTPUT_SPEC_V1_ADDENDUM_EXP1_DRAFT_20260826",
+  "schema_version": "PAPER_OUTPUT_SPEC_V1_ADDENDUM_EXP1_DRAFT_V1",
+  "base_spec": "PAPER_OUTPUT_SPEC_V1",
+  "base_spec_status": "FROZEN_APPROVED_20260826",
+  "base_spec_approval": "AIR_SLOT_G2_MONETARY_AND_G3_SPEC_FREEZE_20260826",
+  "scope": "DEVELOPMENT_ONLY",
+  "paper_result": false,
+  "final_test_access_count": 0,
+  "git": "NO_COMMIT",
+  "figure_5": {
+    "purpose": "Exp1 evidence figures (Exp1A direct-reuse sorting diagnostic; Exp1B history vs current-only paired comparison)",
+    "data_source": "artifacts/experiment/exp1_full_development/exp1_closure_20260825 (EXP1A_PAPER_FACING_RECORDS 3538 rows; EXP1A_FROZEN_SORTING_DIAGNOSTIC 1769 rows; EXP1B_PREDICTION_RECORDS 10614 rows; closure summary)",
+    "exp1a": {
+      "question": "state-driven quantity vs context-conditioned consequence ordering",
+      "statistics": [
+        "spearman_rho",
+        "kendall_tau",
+        "top10_overlap_rate",
+        "top20_overlap_rate",
+        "decile_divergence_rate"
+      ],
+      "specifications": [
+        "main support>=0.90 (1420 nodes)",
+        "sensitivity support>=0.50 (1765 nodes)",
+        "p90_D_TO sensitivity (1420 nodes)"
+      ],
+      "strata": [
+        "PRE_IB (149)",
+        "POST_IB_PRE_OB (1173)",
+        "POST_OB_PRE_TO (98)"
+      ],
+      "exclusions": {
+        "EXCLUDED_M2_NOT_AVAILABLE": 4,
+        "EXCLUDED_SUPPORT_BELOW_THRESHOLD": 345
+      },
+      "claim_scope": "DEVELOPMENT_CONDITIONAL_DIAGNOSTIC",
+      "not_run": "top-1 / ex-post endpoints NOT_RUN (NOT_RUN_SHARED_M4_MAPPING_AND_REPLAY_GATE)"
+    },
+    "exp1b": {
+      "question": "H32 HISTORY vs CURRENT-only paired comparison on common supported observations",
+      "statistics": [
+        "delta_mae_minutes",
+        "delta_crps_minutes",
+        "delta_mae_by_lead_time_bin"
+      ],
+      "targets": [
+        "T_IB_A00",
+        "D_OB",
+        "D_TX"
+      ],
+      "wording_rule": "same architecture, training budget, and calibration path; separate checkpoints (never 'same checkpoint')",
+      "budget_identical": true,
+      "calibration_path_identical": true,
+      "checkpoints": {
+        "HISTORY": "M1_V2_GRU_H32 (sha256:e3401c76...)",
+        "CURRENT_ONLY": "M1_V2_GRU_H32_CURRENT_ONLY (sha256:cea56794...)"
+      },
+      "claim_scope": "DEVELOPMENT_COMPARATOR_ONLY"
+    },
+    "bootstrap": {
+      "resampling_unit": "EPISODE",
+      "replicates": 2000,
+      "seed": 20260825,
+      "ci_method": "PERCENTILE_95"
+    },
+    "outputs": [
+      "outputs/manuscript_values/section5_secondary_analysis/figures/figure_5_exp1_direct_information.{pdf,png,svg}",
+      "outputs/manuscript_values/section5_secondary_analysis/data/figure_5a_sorting_summary.csv",
+      "outputs/manuscript_values/section5_secondary_analysis/data/figure_5b_stage_strata.csv",
+      "outputs/manuscript_values/section5_secondary_analysis/data/figure_5c_history_current_deltas.csv",
+      "outputs/manuscript_values/section5_secondary_analysis/data/figure_5c_lead_time_delta_mae.csv",
+      "outputs/manuscript_values/section5_secondary_analysis/figure_5_caption.txt",
+      "outputs/manuscript_values/section5_secondary_analysis/EXP1_FIGURES_MANIFEST_DEVELOPMENT_ONLY.json"
+    ],
+    "pending_approval": "merge this addendum into PAPER_OUTPUT_SPEC_V1 after human review; no spec change before approval"
+  },
+  "superseded_by": "codex_framework/PAPER_OUTPUT_SPEC_V1_ADDENDUM_EXP1_20260826.json",
+  "status": "SUPERSEDED_BY_FROZEN_ADDENDUM"
+}

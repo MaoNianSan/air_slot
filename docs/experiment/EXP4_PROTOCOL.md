@@ -38,3 +38,24 @@ binding latency and records p50/p95/p99 plus 60/120/300-second budgets; it does
 not mislabel this partial timing as complete-chain latency while predictive
 artifacts remain unavailable. No Final Test, paper-full execution, parameter
 selection, or scientific mapping is enabled by this protocol.
+
+## Development Per-Node Records (2026-08-25)
+
+`exp/exp4/per_node_records.py` materializes per-node prediction records for
+the four baselines at paper-statistic granularity
+(`artifacts/experiment/exp4/exp4_per_node_records_20260825/`).  Schema:
+`episode_id | decision_node_id | method | target | observed_minutes |
+point_prediction | absolute_error | crps | crps_supported |
+lead_time_minutes | lead_time_source | lead_time_bin_minutes` (the `method`
+column is a documented extension of the instructed schema so HISTORICAL /
+LIGHTGBM / RANDOM_FOREST / STATE_AWARE_H32 can be distinguished).
+
+Lead-time rule follows Exp1B: T_IB_A00 = realized remaining minutes; D_OB =
+planned schedule horizon; D_TX = NA (no planned wheels-off reference); NA is
+never interpolated.  Lead bins use the frozen grid
+`0, 30, 60, 120, 180, 240, 300, 360, 420, 480` with floor-to-edge semantics.
+CRPS: ML baselines use sample CRPS for all targets; STATE_AWARE_H32 uses the
+frozen M1 finite-support T_IB scope only (D_OB/D_TX are not saved by M1:
+`crps=None, crps_supported=False`).  Grid cells are summarized with
+episode-cluster bootstrap (episode is the resampling unit, 2000 replicates,
+seed 20260825), output as `EXP4_LEAD_TIME_GRID_DEVELOPMENT_ONLY.csv`.

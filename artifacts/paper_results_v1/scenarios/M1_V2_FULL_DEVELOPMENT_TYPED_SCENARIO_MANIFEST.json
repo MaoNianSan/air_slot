@@ -1,0 +1,67 @@
+{
+  "artifact": "artifacts/paper_results_v1/scenarios/M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet",
+  "artifact_hash": "sha256:bdc3a3ddd2f42507c746b36791e02963003aa9b6acfa6b71fc344675d762db08",
+  "bootstrap_seed": 20260825,
+  "calibration": {
+    "application": "IN_MEMORY_PIPELINE_TEMPERATURES_CHECKPOINTS_UNTOUCHED",
+    "artifact": "artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json",
+    "artifact_hash": "sha256:655df66b9f037db31b3b461dd3e126d741fb5f3c5af29ec21c975b64f573f944",
+    "decision_id": "AIR_SLOT_HUMAN_GATES_ALL_APPROVED_20260826 (D7=B, D7a-D7d=A)"
+  },
+  "cohort_hash": "sha256:1dd889489f7e2ae2a6b06e14322cf86081a4db5bfc6e693d2e5d88752a85cb38",
+  "crn_paired_with_history_scenarios": true,
+  "dataset": "DATA2",
+  "episode_count": 128,
+  "frozen_hashes": {
+    "cache_hash": "sha256:157c0d555c40efd9d7dc5ecebc5dda60a902b855d42bdab9a3657aa601e6f919",
+    "model_hash": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "schema_hash": "sha256:1f4b886a9bddc67f3fe72b977ea957cf5828b6cdd20dcc69655dcf3f2ec2972a",
+    "support_hash": "sha256:a8eea18645b6426712bb65caeedeafa9e01957bc9d97f11f2ffb80733e75a8e3"
+  },
+  "input_hashes": {
+    "calibration_artifact": "sha256:655df66b9f037db31b3b461dd3e126d741fb5f3c5af29ec21c975b64f573f944",
+    "cohort": "sha256:1130d44cc5d5783b609ce92d991becd5342638bd8532884757f6bd576b6e4ff8",
+    "current_only_checkpoint": "sha256:cea56794c4ffea5ca9adda13e769f06ea7d7216570777ec5e76d0b6bd1ecd2c1",
+    "inference_inputs": "sha256:ebea2fc8ce6d6b02023fd57d5a8b3855f6e3138cda8301310c3769b068b5f29e",
+    "state_aware_checkpoint": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+    "support": "sha256:886b2dff9d2cb735e59d002577c21c1c3c0765427e8fa16660c77480d22e8525"
+  },
+  "manifest_hash": "sha256:d5c2cda2f0e9c5d4044aded831d5ccab7f27044342196e85b35eb677a87c6288",
+  "model_id": "M1_V2_GRU_H32",
+  "models": {
+    "M1_V2_GRU_H32": {
+      "artifact": "artifacts/paper_results_v1/scenarios/M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet",
+      "artifact_hash": "sha256:bdc3a3ddd2f42507c746b36791e02963003aa9b6acfa6b71fc344675d762db08",
+      "checkpoint_sha256": "sha256:e3401c76f48bdad0a64e7e764af68f854854ec17cd193c70f57cbbd5f63af24b",
+      "class_counts": null,
+      "row_count": null
+    },
+    "M1_V2_GRU_H32_CURRENT_ONLY": {
+      "artifact": "artifacts/paper_results_v1/scenarios/M1_V2_FINAL_TEST_TYPED_SCENARIOS_CURRENT.parquet",
+      "artifact_hash": "sha256:5b76f2ca2c9dc1053588ca9b7af50e2fd3e9139085134f3fcf3cbdce532dca0c",
+      "checkpoint_sha256": "sha256:cea56794c4ffea5ca9adda13e769f06ea7d7216570777ec5e76d0b6bd1ecd2c1",
+      "class_counts": null,
+      "row_count": null
+    }
+  },
+  "node_count": 1769,
+  "outputs": {
+    "current": "artifacts/paper_results_v1/scenarios/M1_V2_FINAL_TEST_TYPED_SCENARIOS_CURRENT.parquet",
+    "history": "artifacts/paper_results_v1/scenarios/M1_V2_FINAL_TEST_TYPED_SCENARIOS_HISTORY.parquet",
+    "manifest": "artifacts/paper_results_v1/scenarios/FINAL_TEST_SCENARIO_MANIFEST.json"
+  },
+  "paper_result": true,
+  "row_count": 442250,
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": false
+  },
+  "scenario_count_per_node": 250,
+  "scenario_seed": 20260813,
+  "schema_version": "AIR_SLOT_FINAL_TEST_CALIBRATED_SCENARIO_MANIFEST_V1",
+  "scope": "FINAL_TEST_CALIBRATED_REMATERIALIZATION_DEVELOPMENT_COHORT",
+  "split": "DEVELOPMENT",
+  "status": "FINAL_TEST_CALIBRATED_SCENARIOS_MATERIALIZED",
+  "tail_scalar_extrapolation": false
+}

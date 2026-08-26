@@ -1,0 +1,81 @@
+{
+  "calibration_artifact_hash": "sha256:655df66b9f037db31b3b461dd3e126d741fb5f3c5af29ec21c975b64f573f944",
+  "dataset": "DATA2",
+  "endpoints": {
+    "one_shot_executable_rate": "PROPORTION_OF_ANCHOR_RECOMMENDATIONS_STILL_EXECUTABLE_AS_AGED",
+    "post_replay": "EQ_EXP_POST_REPLAY_COMMON_BASIS_RESIDUAL_RISK_DIFFERENCE",
+    "selected_action_difference": "ONE_SHOT_TOP1_VS_ROLLING_TOP1",
+    "state_sync": "SELECTED_ACTION_DIFFERENCE_DELTA_5_10_VS_DELTA_0"
+  },
+  "episode_count": 128,
+  "input_hashes": {
+    "action_risk": "sha256:661dd71603ef61c51a6e0da9453f2df573de81084edf9a41bce96ff845298ec5",
+    "cohort": "sha256:1130d44cc5d5783b609ce92d991becd5342638bd8532884757f6bd576b6e4ff8"
+  },
+  "manifest_hash": "sha256:7ca783dee5ae558aba930bb53ca0502124d6be43f1b06685253b7e210fc95a47",
+  "node_count": 1769,
+  "outputs": {
+    "figure_episode": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_FIGURE7A_EPISODE_VALUES_FINAL_TEST.csv",
+    "figure_summary": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_FIGURE7A_SUMMARY_FINAL_TEST.csv",
+    "manifest": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_REFRESH_SYNC_MANIFEST_FINAL_TEST.json",
+    "refresh_episode": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_REFRESH_EPISODE_VALUES_FINAL_TEST.csv",
+    "refresh_records": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_REFRESH_RECORDS_FINAL_TEST.parquet",
+    "refresh_records_csv": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_REFRESH_RECORDS_FINAL_TEST.csv",
+    "state_sync_episode": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_STATE_SYNC_EPISODE_VALUES_FINAL_TEST.csv",
+    "state_sync_records": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_STATE_SYNC_RECORDS_FINAL_TEST.parquet",
+    "state_sync_records_csv": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_STATE_SYNC_RECORDS_FINAL_TEST.csv",
+    "summary": "artifacts\\paper_results_v1\\exp3_refresh_sync\\EXP3_REFRESH_SYNC_SUMMARY_FINAL_TEST.csv"
+  },
+  "paper_result": true,
+  "rules": {
+    "anchor_rule": "EQ_EXP_ANCHOR_FIRST_NODE_TWO_COMPARABLE_AND_ONE_NON_A00",
+    "bootstrap": {
+      "ci_method": "PERCENTILE_95",
+      "replicates": 2000,
+      "resampling_unit": "EPISODE",
+      "seed": 20260825
+    },
+    "executability_rule": "ELIGIBILITY_TRUE_AND_J_AVAILABLE_NO_DEADLINE_DATA_NO_INTERPOLATION",
+    "post_replay_rule": "EQ_EXP_POST_REPLAY_COMMON_J_BASIS_ONLY",
+    "selection_rule": "MIN_J_LAMBDA_0_25_ALPHA_0_90_TIE_ACTION_ID_A00_REQUIRED",
+    "vintage_exclusion_code": "EXP3B_VINTAGE_NOT_AVAILABLE",
+    "vintage_identity_rule": "FROZEN_PRIOR_STATE_IDENTITY_NO_REEVALUATION_NO_INTERPOLATION",
+    "vintage_rule": "F3_EXACT_DECISION_TIME_T_MINUS_DELTA_NO_FALLBACK_NO_NEAREST_PAST"
+  },
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "MODEL_RETRAINED": false,
+    "PAPER_FULL_RUN": false
+  },
+  "schema_version": "AIR_SLOT_EXP3_REFRESH_SYNC_V1",
+  "scope": "FINAL_TEST_CALIBRATED_REMATERIALIZATION_DEVELOPMENT_COHORT",
+  "split": "DEVELOPMENT",
+  "status": "MATERIALIZED",
+  "superseded_artifacts": [
+    {
+      "path": "artifacts/real_fast/exp3/exp3_exp3a_one_shot.json",
+      "reason": "pre-P2 lag semantics (nearest-past selection) on the 69-node pilot cohort; decision endpoints NOT_RUN (BLOCKED_ANCHOR_ACTION_COVERAGE). Superseded by F3 exact-vintage full-cohort materialization; numerical differences are expected by design.",
+      "sha256": "sha256:777eb1fcf5440f9a15a0b67e09b725eace970150626ed2b5077225143a15f0f7"
+    },
+    {
+      "path": "artifacts/real_fast/exp3/exp3_exp3a_rolling.json",
+      "reason": "pre-P2 lag semantics (nearest-past selection) on the 69-node pilot cohort; decision endpoints NOT_RUN (BLOCKED_ANCHOR_ACTION_COVERAGE). Superseded by F3 exact-vintage full-cohort materialization; numerical differences are expected by design.",
+      "sha256": "sha256:0adfc58d4da771a1a542edd3b10a33e9b6bb6ba819b74992bd34dc772088b10f"
+    },
+    {
+      "path": "artifacts/real_fast/exp3/exp3_exp3b_sync.json",
+      "reason": "pre-P2 lag semantics (nearest-past selection) on the 69-node pilot cohort; decision endpoints NOT_RUN (BLOCKED_ANCHOR_ACTION_COVERAGE). Superseded by F3 exact-vintage full-cohort materialization; numerical differences are expected by design.",
+      "sha256": "sha256:b9d43c894d3d84c6b66c8852c67112abaced4c45b9638c7a3622ef0d0d341375"
+    },
+    {
+      "path": "artifacts/real_fast/exp3/exp3_exp3b_state_lag_5.json",
+      "reason": "pre-P2 lag semantics (nearest-past selection) on the 69-node pilot cohort; decision endpoints NOT_RUN (BLOCKED_ANCHOR_ACTION_COVERAGE). Superseded by F3 exact-vintage full-cohort materialization; numerical differences are expected by design.",
+      "sha256": "sha256:6778111fdb0c572f126fc54ea4660194b8e420144b14675858a6ce4f8f3404cd"
+    },
+    {
+      "path": "artifacts/real_fast/exp3/exp3_exp3b_state_lag_10.json",
+      "reason": "pre-P2 lag semantics (nearest-past selection) on the 69-node pilot cohort; decision endpoints NOT_RUN (BLOCKED_ANCHOR_ACTION_COVERAGE). Superseded by F3 exact-vintage full-cohort materialization; numerical differences are expected by design.",
+      "sha256": "sha256:172638d6c5cb572908492a766cf1c3f4716d5b7e5bb0db36622ae030bc98d548"
+    }
+  ]
+}

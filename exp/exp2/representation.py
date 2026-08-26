@@ -3,6 +3,13 @@
 This module transforms frozen M1/M2 outputs only.  It contains no model
 training, M2 consequence reconstruction, action response, monetary mapping,
 or risk evaluation logic.
+
+Freeze F1 (2026-08-25, approved): the scenario coordinates are the manuscript
+triple (R_IB, D_OB, D_TX); R_IB is read from the frozen scenario target
+T_IB_A00 (``exp/workflows/m1_v2_current_stage_scenario_envelope.py`` maps
+R_IB -> T_IB_A00).  D_TO is a derived identity check only (D_TO = D_OB + D_TX)
+and never enters the medoid distance or the marginal permutation.  There is no
+partial-q / q-series entry point (freeze F2: not implemented).
 """
 
 from __future__ import annotations
@@ -11,6 +18,8 @@ from collections import defaultdict
 from collections.abc import Iterable, Mapping
 from copy import deepcopy
 from typing import Any, Literal
+
+import numpy as np
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -30,6 +39,10 @@ from .variants import (
 )
 
 
+# Freeze F1: manuscript primitive coordinates.  D_TO stays a derived identity
+# check on ScenarioSample and keeps its historical field_source keys so the
+# representation surface remains contract-stable for unchanged rows.
+PRIMITIVE_FIELDS = ("R_IB", "D_OB", "D_TX")
 SCENARIO_FIELDS = ("D_OB", "D_TX", "D_TO")
 CHANNELS = ("Flight", "Passenger", "Resource")
 
@@ -57,6 +70,7 @@ class ScenarioSample(BaseModel):
 
     scenario_id: int | str
     scenario_weight: float = Field(gt=0, le=1)
+    R_IB: float | None
     D_OB: float | None
     D_TX: float | None
     D_TO: float | None
@@ -65,7 +79,10 @@ class ScenarioSample(BaseModel):
 
     @model_validator(mode="after")
     def valid_sample(self):
-        if any(value is not None and value < 0 for value in (self.D_OB, self.D_TX, self.D_TO)):
+        if any(
+            value is not None and value < 0
+            for value in (self.R_IB, self.D_OB, self.D_TX, self.D_TO)
+        ):
             raise ValueError("EXP2_SCENARIO_DELAY_NEGATIVE")
         if set(self.field_source_scenario_ids) != set(SCENARIO_FIELDS):
             raise ValueError("EXP2_SCENARIO_FIELD_LINEAGE_INCOMPLETE")
@@ -140,6 +157,7 @@ class ScenarioRepresentationAdapter:
         weight = row.get("scenario_weight")
         if weight is None:
             raise ValueError("EXP2_SCENARIO_WEIGHT_REQUIRED")
+        r_ib = row.get("T_IB_A00", row.get("R_IB"))
         d_ob = row.get("D_OB", row.get("d_ob_minutes"))
         d_tx = row.get("D_TX", row.get("d_tx_minutes"))
         d_to = row.get("D_TO", row.get("d_to_minutes"))
@@ -162,6 +180,7 @@ class ScenarioRepresentationAdapter:
         return ScenarioSample(
             scenario_id=scenario_id,
             scenario_weight=float(weight),
+            R_IB=None if r_ib is None else float(r_ib),
             D_OB=None if d_ob is None else float(d_ob),
             D_TX=None if d_tx is None else float(d_tx),
             D_TO=None if d_to is None else float(d_to),
@@ -191,6 +210,8 @@ class ScenarioRepresentationAdapter:
                 "joint_dependency_preserved": False,
                 "marginals_preserved": False,
                 "coherent_joint_scenario": True,
+                "medoid_coordinates": list(PRIMITIVE_FIELDS),
+                "D_TO_ROLE": "IDENTITY_VALIDATION_ONLY",
             }
         if content_id(tuple(item.model_dump(mode="json") for item in self._rows)) != before:
             raise ContractError("EXP2_MUTATED_M1_ARTIFACT")
@@ -205,22 +226,45 @@ class ScenarioRepresentationAdapter:
         )
 
     def _point_sample(self) -> ScenarioSample:
-        """Select a real weighted joint medoid instead of component-wise means."""
-        def distance(candidate: ScenarioSample) -> float:
-            total = 0.0
-            for row in self._rows:
-                squared = 0.0
-                for field in SCENARIO_FIELDS:
-                    left, right = getattr(candidate, field), getattr(row, field)
-                    if left is not None and right is not None:
-                        squared += (float(left) - float(right)) ** 2
-                total += row.scenario_weight * squared
-            return total
+        """Select a real weighted joint scenario medoid over the manuscript
+        primitive coordinates (R_IB, D_OB, D_TX) only; D_TO never enters the
+        distance (freeze F1).  Ties break by scenario order."""
 
-        selected = min(enumerate(self._rows), key=lambda item: (distance(item[1]), item[0]))[1]
+        def _coordinate(item: ScenarioSample, field: str) -> float:
+            value = getattr(item, field)
+            return float("nan") if value is None else float(value)
+
+        weights = np.asarray([item.scenario_weight for item in self._rows], dtype=float)
+        values = np.asarray(
+            [[_coordinate(item, field) for field in PRIMITIVE_FIELDS] for item in self._rows],
+            dtype=float,
+        )
+        usable_columns = np.isfinite(values).any(axis=0)
+        if not usable_columns.any():
+            raise ContractError("EXP2_POINT_NO_COMPLETE_PRIMITIVE_CANDIDATE")
+        complete = np.isfinite(values[:, usable_columns]).all(axis=1)
+        distances = np.zeros(len(self._rows), dtype=float)
+        for column in np.where(usable_columns)[0]:
+            source = values[:, column]
+            available = np.isfinite(source)
+            source_values = source[available]
+            source_weights = weights[available]
+            weight_sum = source_weights.sum()
+            first_moment = np.dot(source_weights, source_values)
+            second_moment = np.dot(source_weights, source_values * source_values)
+            distances[complete] += (
+                second_moment
+                - 2.0 * source[complete] * first_moment
+                + (source[complete] ** 2) * weight_sum
+            )
+        distances[~complete] = np.inf
+        if not complete.any():
+            raise ContractError("EXP2_POINT_NO_COMPLETE_PRIMITIVE_CANDIDATE")
+        selected = self._rows[int(np.argmin(distances))]
         return ScenarioSample(
             scenario_id=f"POINT:{selected.scenario_id}",
             scenario_weight=1.0,
+            R_IB=selected.R_IB,
             D_OB=selected.D_OB,
             D_TX=selected.D_TX,
             D_TO=selected.D_TO,
@@ -236,9 +280,9 @@ class ScenarioRepresentationAdapter:
         for index, item in enumerate(self._rows):
             groups[item.scenario_weight].append(index)
 
-        sources = {field: list(range(len(self._rows))) for field in ("D_OB", "D_TX")}
-        offsets = {"D_OB": 0, "D_TX": 1}
-        for field in ("D_OB", "D_TX"):
+        sources = {field: list(range(len(self._rows))) for field in PRIMITIVE_FIELDS}
+        offsets = {"D_OB": 0, "D_TX": 1, "R_IB": 2}
+        for field in PRIMITIVE_FIELDS:
             for indices in groups.values():
                 if len(indices) <= 1:
                     continue
@@ -249,17 +293,21 @@ class ScenarioRepresentationAdapter:
 
         output = []
         for target, original in enumerate(self._rows):
-            source_rows = {field: self._rows[sources[field][target]] for field in ("D_OB", "D_TX")}
+            source_rows = {
+                field: self._rows[sources[field][target]] for field in PRIMITIVE_FIELDS
+            }
             lineage = tuple(dict.fromkeys(
                 entry
-                for field in ("D_OB", "D_TX")
+                for field in PRIMITIVE_FIELDS
                 for entry in source_rows[field].lineage
             ))
+            r_ib = source_rows["R_IB"].R_IB
             d_ob = source_rows["D_OB"].D_OB
             d_tx = source_rows["D_TX"].D_TX
             output.append(ScenarioSample(
                 scenario_id=original.scenario_id,
                 scenario_weight=original.scenario_weight,
+                R_IB=r_ib,
                 D_OB=d_ob,
                 D_TX=d_tx,
                 D_TO=None if d_ob is None or d_tx is None else d_ob + d_tx,
@@ -279,13 +327,14 @@ class ScenarioRepresentationAdapter:
 
         preserved = all(
             weighted_marginal(self._rows, field) == weighted_marginal(output, field)
-            for field in ("D_OB", "D_TX")
+            for field in PRIMITIVE_FIELDS
         )
         if not preserved:
             raise ContractError("EXP2_MARGINAL_DISTRIBUTION_NOT_PRESERVED")
         return tuple(output), {
             "joint_dependency_preserved": False,
             "marginals_preserved": True,
+            "primitive_fields": list(PRIMITIVE_FIELDS),
             "field_source_scenario_ids": {
                 field: tuple(self._rows[index].scenario_id for index in indices)
                 for field, indices in sources.items()
@@ -466,6 +515,7 @@ __all__ = [
     "ConsequenceRepresentation",
     "ConsequenceRepresentationAdapter",
     "ConsequenceValue",
+    "PRIMITIVE_FIELDS",
     "SCENARIO_FIELDS",
     "ScenarioConsequenceRepresentation",
     "ScenarioRepresentation",
