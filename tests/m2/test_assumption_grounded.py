@@ -91,10 +91,10 @@ def test_p_itinerary_scenario_threshold_events():
         row.component_id: row
         for row in native_quantities(_scenario(20.0), context)
     }
-    # d_to=20 > buffer=15 -> all 100 passengers disrupted.
-    assert by["P_itinerary"].native_quantity == 100.0
+    # The active refactor freezes a strict D_TO > 45 minute boundary.
+    assert by["P_itinerary"].native_quantity == 0.0
     assert by["P_itinerary"].support_state is SupportState.SUPPORTED
-    assert by["P_itinerary"].evidence_class is EvidenceClass.SCENARIO_PARAMETER
+    assert by["P_itinerary"].evidence_class is EvidenceClass.DERIVED
     # d_to=20 < tau=180 -> no service-policy event.
     assert by["P_service"].native_quantity == 0.0
     assert by["P_service"].support_state is SupportState.SUPPORTED
@@ -111,6 +111,12 @@ def test_p_itinerary_no_disruption_within_buffer():
     assert by["P_itinerary"].native_quantity == 0.0
     assert by["P_service"].native_quantity == 0.0
 
+    by_above = {
+        row.component_id: row
+        for row in native_quantities(_scenario(60.0), context)
+    }
+    assert by_above["P_itinerary"].native_quantity == 25.0
+
 
 def test_p_service_threshold_event_at_or_above_tau():
     context = _assumption_context(
@@ -123,7 +129,7 @@ def test_p_service_threshold_event_at_or_above_tau():
     assert by["P_service"].native_quantity == 100.0
 
 
-def test_legacy_context_still_abstains_passenger_components():
+def test_reference_context_supports_all_passenger_components():
     bundle = load_data2_reference_bundle(smoke_reference_payloads())
     context = build_m2_context(
         bundle,
@@ -136,8 +142,8 @@ def test_legacy_context_still_abstains_passenger_components():
         row.component_id: row
         for row in native_quantities(_scenario(20.0), context)
     }
-    assert by["P_itinerary"].support_state is SupportState.ABSTAIN
-    assert by["P_service"].support_state is SupportState.ABSTAIN
+    assert by["P_itinerary"].support_state is SupportState.SUPPORTED
+    assert by["P_service"].support_state is SupportState.SUPPORTED
 
 
 def test_seven_component_scope_formal_ready():

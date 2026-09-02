@@ -171,9 +171,9 @@ def test_c_d_j_scenario_identity_d_to_and_lineage_are_preserved():
         "pre_lineage=pre-state-hash" in item
         for item in output.component_vector.rows[0].provenance
     )
-    unresolved = summarize_formal_consequence((output,))
-    assert unresolved.status == "UNAVAILABLE"
-    assert unresolved.reason_code == "FORMAL_SCENARIO_CONSEQUENCE_UNAVAILABLE"
+    resolved = summarize_formal_consequence((output,))
+    assert resolved.status == "AVAILABLE"
+    assert resolved.reason_code is None
     with pytest.raises(ValidationError, match="M2_D_TO_IDENTITY_VIOLATION"):
         M2ScenarioInput.model_validate(
             {**typed.model_dump(), "d_to_minutes": 29.0}

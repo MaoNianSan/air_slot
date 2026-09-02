@@ -245,7 +245,8 @@ def test_33_tail_gate_unchanged():
     assert tail.value == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
     assert tail.provenance["decision_id"] == "AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE"
     quantile_levels = scientific.parameters["m1_v2_quantile_levels"]
-    assert quantile_levels.freeze_state.value == "DEVELOPMENT_ONLY"
+    assert quantile_levels.freeze_state.value == "FROZEN"
+    assert quantile_levels.provenance["decision_id"] == "AIR_SLOT_MODEL_FREEZE_20260901"
 
 
 def test_34_data2_remains_trajectory_free():

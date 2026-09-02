@@ -1,0 +1,33 @@
+{
+  "components": {
+    "P_itinerary": {
+      "active_quantity_definition": "expected_passengers_per_flight * connection_share * I[D_TO > 45 minutes]",
+      "definition": "expected_passengers_per_flight * connection_share * I[D_TO > 45 minutes]",
+      "median": 9.882948210182091,
+      "population_rows": 3497660,
+      "positive_n": 373073,
+      "unit": "expected_disrupted_connecting_passenger_exposure"
+    },
+    "P_service": {
+      "active_quantity_definition": "expected_passengers_per_flight * I[D_TO >= 180 minutes]",
+      "definition": "expected_passengers_per_flight * I[D_TO >= 180 minutes]",
+      "median": 104.88473684210527,
+      "population_rows": 3497660,
+      "positive_n": 51700,
+      "unit": "expected_long_delay_passenger_service_exposure"
+    },
+    "P_time": {
+      "active_quantity_definition": "expected_passengers_per_flight * D_TO",
+      "definition": "expected_passengers_per_flight * D_TO",
+      "median": 990.3555555555556,
+      "population_rows": 3497660,
+      "positive_n": 2275869,
+      "unit": "passenger_minutes"
+    }
+  },
+  "final_test_access_count": 0,
+  "fit_partition": "TRAIN",
+  "paper_full_run": false,
+  "scale_rule": "Median_Train(q_k | q_k > 0)",
+  "schema_version": "PASSENGER_CONSEQUENCE_TRAIN_SCALES_V1"
+}

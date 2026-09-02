@@ -55,18 +55,6 @@ MODEL_IMPLEMENTATION_NAMES = {
     "represent_history",
 }
 
-EXPERIMENT_IMPLEMENTATION_NAMES = {
-    "_run_candidate",
-    "recommend_window",
-    "_write_h_decision",
-    "_write_w_evidence",
-}
-
-THIN_VALIDATION_TARGETS = {
-    "validation/data2_v5_hstar_development.py",
-    "validation/data2_v5_wstar_development.py",
-}
-
 # C0A is a closed, read-only source-clock audit. It invokes the official PRE
 # canonicalizer to verify selected source records and does not own or duplicate
 # PRE construction semantics.
@@ -111,7 +99,7 @@ def _finding(path: str, code: str, detail: str) -> dict[str, str]:
 
 def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
     findings = []
-    for top in ("model", "exp", "validation"):
+    for top in ("model", "validation"):
         for path in sorted((root / top).rglob("*.py")):
             if "__pycache__" in path.parts:
                 continue
@@ -120,7 +108,7 @@ def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
             tree = ast.parse(text)
             modules = _module_names(tree)
             is_downstream = rel.startswith(
-                ("model/M1/", "model/M2/", "model/M3/", "model/M4/", "exp/")
+                ("model/M1/", "model/M2/", "model/M3/", "model/M4/")
             )
             if is_downstream:
                 tokens = _raw_tokens(text)
@@ -146,7 +134,7 @@ def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
                     continue
                 calls = _call_names(node)
                 if (
-                    rel.startswith(("validation/", "exp/"))
+                    rel.startswith("validation/")
                     and rel not in READ_ONLY_PRE_AUDIT_CONSUMERS
                 ):
                     owned_calls = sorted(calls & PRE_IMPLEMENTATION_CALLS)
@@ -159,32 +147,11 @@ def scan_pre_ownership(root: Path) -> list[dict[str, str]]:
                             )
                         )
                 if (
-                    rel.startswith(("validation/", "exp/"))
+                    rel.startswith("validation/")
                     and node.name in MODEL_IMPLEMENTATION_NAMES
                 ):
                     findings.append(
                         _finding(rel, "MODEL_HISTORY_LOGIC_OUTSIDE_M1", node.name)
-                    )
-                if (
-                    rel.startswith("validation/")
-                    and node.name in EXPERIMENT_IMPLEMENTATION_NAMES
-                ):
-                    findings.append(
-                        _finding(rel, "EXPERIMENT_LOGIC_OUTSIDE_EXP", node.name)
-                    )
-            if rel in THIN_VALIDATION_TARGETS:
-                functions = [
-                    node.name
-                    for node in tree.body
-                    if isinstance(
-                        node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
-                    )
-                ]
-                if set(functions) - {"main"}:
-                    findings.append(
-                        _finding(
-                            rel, "VALIDATION_WRAPPER_NOT_THIN", ",".join(functions)
-                        )
                     )
     dependency_failures = [
         item for item in scan_dependency_boundaries(root) if item["status"] == "FAIL"
@@ -211,9 +178,6 @@ def build_gate_result(root: Path) -> dict:
         ),
         "MODEL_LOGIC_OUTSIDE_MODEL": sum(
             item["code"] == "MODEL_HISTORY_LOGIC_OUTSIDE_M1" for item in findings
-        ),
-        "EXP_LOGIC_OUTSIDE_EXP": sum(
-            item["code"] == "EXPERIMENT_LOGIC_OUTSIDE_EXP" for item in findings
         ),
         "findings": findings,
         "volume_failures": volume_failures,

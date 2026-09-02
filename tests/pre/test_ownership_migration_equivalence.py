@@ -12,7 +12,7 @@ from types import SimpleNamespace
 import pytest
 import torch
 
-from exp.exp1.development.wstar import recommend_window
+from model.M1.development_selection import recommend_history_window
 from model.M1.coverage import active_node_prefixes
 from model.M1.data import encode_pre_sequence, fit_train_normalization
 from model.M1.history import adaptive_history, current_history, fixed_history
@@ -431,7 +431,7 @@ def test_frozen_w_aggregation_and_recommendation_fixture_parity():
         int(window): values["mean_joint_nll"]
         for window, values in evidence["per_candidate"].items()
     }
-    raw_best, recommendation, relative, equivalent = recommend_window(means)
+    raw_best, recommendation, relative, equivalent = recommend_history_window(means)
     assert raw_best == evidence["best_raw_W"]
     assert recommendation == evidence["codex_recommendation"]
     assert relative == {

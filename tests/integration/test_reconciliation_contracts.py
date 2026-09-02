@@ -1,16 +1,8 @@
-from copy import deepcopy
 from datetime import timedelta
 from pathlib import Path
 
 import pytest
 import torch
-import yaml
-
-from exp.common.contracts import ExperimentRunManifest, assert_final_test_immutable
-from exp.exp1.variants import construct_exp1_variant
-from exp.exp2.representations import point_collapse, shuffle_scenario_lineage
-from exp.exp3.ablations import transformed_ablation
-from exp.exp4.strata import decompose_principal_outputs
 from model import M1, PRE
 from model.M1.data import M1NormalizationArtifact
 from model.M1.semantics import (
@@ -20,7 +12,6 @@ from model.M1.semantics import (
 )
 from model.common.config import load_config_layers
 from model.common.errors import ContractError
-from model.common.identity import content_id
 from tests.fixtures.pre.foundation_cases import build_request
 
 
@@ -34,11 +25,11 @@ def test_formal_m1_uses_development_frozen_hidden_size_selection():
     scientific = load_config_layers(Path("configs")).scientific
     normalization = M1NormalizationArtifact(fitted_split="train", values={})
 
-    with pytest.raises(ValueError, match="M1_HIDDEN_SIZE_SELECTION_REQUIRED"):
-        M1.M1Pipeline.from_scientific_config(
-            scientific, input_size=4, normalization=normalization
-        )
-    with pytest.raises(ValueError, match="M1_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES"):
+    primary = M1.M1Pipeline.from_scientific_config(
+        scientific, input_size=4, normalization=normalization
+    )
+    assert primary.model.hidden_size == 8
+    with pytest.raises(ValueError, match="M1_HIDDEN_SIZE_NOT_IN_FROZEN_MODEL_SETTINGS"):
         M1.M1Pipeline.from_scientific_config(
             scientific, input_size=4, normalization=normalization, hidden_size=4
         )
@@ -91,105 +82,36 @@ def test_m1_service_labels_fast_and_state_paths_explicitly():
     assert state.fallback_status == "NONE"
     assert fast.forecast_horizons_minutes == FORMAL_FORECAST_HORIZONS_MINUTES
     assert fast.delay_thresholds_minutes == DELAY_THRESHOLDS_MINUTES
+    assert fast.decision_time == pre_state.decision_node.decision_time
+    assert fast.information_cutoff == pre_state.decision_node.information_cutoff
+    assert fast.roll_minutes == pre_state.decision_node.roll_minutes
+    assert fast.model_version == "fixture"
+    assert fast.scenario_count == 64
+    assert "model_path=FAST" in fast.lineage
     assert fast.state_age_minutes == 5.0
+    assert state.state_updated_at == fast.state_updated_at
 
 
-def test_exp1_variants_are_copy_isolated_from_formal_artifacts():
-    formal = {"episodes": [{"episode_id": "e1", "values": [1, 2]}]}
-    before = deepcopy(formal)
-    variant = construct_exp1_variant(formal, "current")
-    variant["episodes"][0]["values"].append(3)
-
-    assert formal == before
-    assert variant["evaluation_variant"] == "current"
-
-
-def test_exp2_point_and_shuffle_reuse_the_frozen_m1_source():
-    scenarios = (
-        {"scenario_weight": 0.25, "r_ib_minutes": 4.0,
-         "r_ob_minutes": 10.0, "t_tx_minutes": 2.0},
-        {"scenario_weight": 0.75, "r_ib_minutes": 8.0,
-         "r_ob_minutes": 20.0, "t_tx_minutes": 6.0},
+def test_direct_query_does_not_reset_scheduled_update_timeline():
+    pre_state = PRE.build_pre_state(build_request()).pre_state
+    values = torch.zeros(1, 2, 4)
+    lengths = torch.tensor([2])
+    service = M1.M1Service(M1.M1Pipeline.smoke(), model_version="fixture")
+    service.scheduled_update(pre_state)
+    first = service.predict_now(
+        pre_state,
+        values,
+        lengths,
+        generated_at=pre_state.decision_node.decision_time + timedelta(minutes=5),
     )
-    source_hash = content_id(scenarios)
-
-    point = point_collapse(scenarios)
-    first, first_audit = shuffle_scenario_lineage(scenarios, seed=19)
-    repeated, repeated_audit = shuffle_scenario_lineage(scenarios, seed=19)
-
-    assert point["source_m1_artifact_hash"] == source_hash
-    assert point["point_rule"] == "WEIGHTED_JOINT_SCENARIO_MEDOID"
-    assert point["r_ib_minutes"] == 8.0
-    assert point["r_ob_minutes"] == 20.0
-    assert point["t_tx_minutes"] == 6.0
-    assert point["d_to_minutes"] is None
-    assert point["d_to_status"] == "REFERENCE_TERMS_REQUIRED"
-    assert first == repeated
-    assert first_audit == repeated_audit
-    assert first_audit["source_m1_artifact_hash"] == source_hash
-    assert first_audit["marginals_preserved"] is True
-    assert content_id(scenarios) == source_hash
-
-
-@pytest.mark.parametrize(
-    "ablation", ("no_induced", "no_evidence_distinction", "no_coverage_restriction")
-)
-def test_exp3_ablations_transform_copies_only(ablation):
-    formal = {
-        "candidates": [{"induced": {"x": 1}, "induced_response": {"y": 2}}],
-        "consequence_rows": [{"evidence_class": "DIRECT"}],
-    }
-    before = deepcopy(formal)
-    transformed = transformed_ablation(formal, ablation)
-
-    assert formal == before
-    assert transformed is not formal
-    assert transformed["evaluation_ablation"] == ablation
-
-
-def test_exp4_strata_decompose_principal_outputs_without_retraining():
-    config = yaml.safe_load(Path("configs/evaluation/exp4.yaml").read_text(encoding="utf-8"))
-    principal = ({"episode_id": "e1", "disruption_severity": 2.0},)
-    before = deepcopy(principal)
-    strata = {
-        "disruption_severity": {"label": "FROZEN_BIN"},
-        "operational_stage": {"missing": "UNSUPPORTED"},
-    }
-
-    decomposed = decompose_principal_outputs(
-        principal, development_frozen_strata=strata
+    second = service.predict_now(
+        pre_state,
+        values,
+        lengths,
+        generated_at=pre_state.decision_node.decision_time + timedelta(minutes=10),
     )
-
-    assert config["retrain_by_stratum"] is False
-    assert principal == before
-    assert decomposed[0]["operational_strata"] == {
-        "disruption_severity": "FROZEN_BIN",
-        "operational_stage": "UNSUPPORTED",
-    }
+    assert first.state_updated_at == second.state_updated_at
+    assert first.state_age_minutes == 5.0
+    assert second.state_age_minutes == 10.0
 
 
-def test_final_test_tuning_and_contract_changes_invalidate_the_run():
-    before = ExperimentRunManifest(
-        experiment="exp1",
-        dataset_instance_id="data2_2019",
-        dataset_role="MAIN_TEXT_PRINCIPAL",
-        variant_ids=("current",),
-        input_manifest_hash="input",
-        config_hash="config",
-        status="PASS",
-        split="FINAL_TEST",
-        scientific_config_hash="science",
-        evaluation_config_hash="evaluation",
-        registry_manifest_hash="registry",
-        split_contract_hash="split",
-        cohort_hash="cohort",
-        primary_metric="metric",
-        scenario_count=1000,
-    )
-    tuned = before.model_copy(update={"tuning_events": ("changed_threshold",)})
-    changed = before.model_copy(update={"evaluation_config_hash": "changed"})
-
-    with pytest.raises(ContractError, match="FINAL_TEST_TUNING_INVALIDATES_PROMOTION"):
-        tuned.final_test_guard()
-    with pytest.raises(ContractError, match="FINAL_TEST_IMMUTABILITY_VIOLATION"):
-        assert_final_test_immutable(before, changed)

@@ -1,0 +1,24 @@
+{
+  "registry_id": "PASSENGER_REFERENCE_SUPERSESSION_V1",
+  "version": "1.0.0",
+  "effective_date": "2026-09-02",
+  "supersedes": [
+    {
+      "artifact": "registries/m2_data2_formal_cu_v2.json",
+      "status": "SUPERSEDED",
+      "reason": "P_itinerary and P_service used assumption scale=1.0; P_time used route-period aggregate passenger totals."
+    },
+    {
+      "artifact": "registries/m4_rmb_base_mapping.json",
+      "status": "SUPERSEDED",
+      "reason": "RMB BASE scope contained only five components."
+    }
+  ],
+  "active_replacements": {
+    "m2_cu_registry": "registries/m2_data2_formal_cu_v3.json",
+    "m4_rmb_registry": "registries/m4_rmb_base_mapping_v2.json"
+  },
+  "historical_artifacts_modified": false,
+  "final_test_access_count": 0,
+  "paper_full_run": false
+}

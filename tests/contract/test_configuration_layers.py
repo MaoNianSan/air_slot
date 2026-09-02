@@ -27,22 +27,23 @@ def test_layers_load_separately():
     assert layers.scientific.parameters["replay_lag_minutes"].value == 0
     assert layers.scientific.parameters["forecast_horizons_minutes"].value == [0,15,60]
     assert layers.scientific.parameters["delay_thresholds_minutes"].value == [15,30,60]
+    assert layers.scientific.parameters["evaluation_lead_times_minutes"].value == [0,30,60,120,180,240,300,360,420,480]
+    assert layers.scientific.parameters["downstream_exposure_horizon_minutes"].value == 360
     hidden_size = layers.scientific.parameters["m1_hidden_size"]
-    assert hidden_size.freeze_state.value == "DEVELOPMENT_CANDIDATE"
-    assert hidden_size.value == 32
-    assert hidden_size.provenance["selection_state"] == "DEVELOPMENT_CANDIDATE"
+    assert hidden_size.freeze_state.value == "FROZEN"
+    assert hidden_size.value == 8
+    assert hidden_size.provenance["selection_state"] == (
+        "HISTORICAL_MODEL_FREEZE_RECONCILIATION"
+    )
     assert hidden_size.provenance["target_contract"] == [
         "T_IB_REMAINING_HAZARD", "D_OB", "D_TX"]
-    assert "historical evidence is not V2 selection evidence" in (
+    assert "SUPERSEDED" in (
         hidden_size.provenance["legacy_v1_provenance"])
     assert hidden_size.provenance["final_test_access_count"] == 0
-    candidates = layers.scientific.parameters["m1_hidden_size_candidates"]
-    assert candidates.value == [8, 16, 32]
-    assert candidates.provenance["decision_id"] == (
-        "AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE")
-    assert candidates.provenance["prior_decision_id"] == (
-        "AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE")
-    assert candidates.provenance["candidate_update_scope"] == "ADD_H8_ONLY"
+    sensitivity = layers.scientific.parameters["m1_sensitivity_hidden_size"]
+    assert sensitivity.value == 16
+    assert sensitivity.provenance["role"] == "PREDEFINED_SENSITIVITY"
+    assert sensitivity.provenance["tuning_candidate"] is False
     fixed_window = layers.scientific.parameters["m1_fixed_history_window_minutes"]
     assert fixed_window.freeze_state.value == "SENSITIVITY_ONLY"
     assert fixed_window.value == 30
@@ -63,15 +64,16 @@ def test_layers_load_separately():
     assert v2_contract.provenance["history"] == "FULL_ADAPTIVE_CAUSAL_PREFIX"
     assert v2_contract.provenance["final_test_access_count"] == 0
     quantile_levels = layers.scientific.parameters["m1_v2_quantile_levels"]
-    assert quantile_levels.freeze_state.value == "DEVELOPMENT_ONLY"
+    assert quantile_levels.freeze_state.value == "FROZEN"
     assert quantile_levels.value == [0.1, 0.3, 0.5, 0.7, 0.9]
+    assert quantile_levels.provenance["decision_id"] == "AIR_SLOT_MODEL_FREEZE_20260901"
     assert quantile_levels.provenance["final_test_access_count"] == 0
     tail_policy = layers.scientific.parameters["m1_v2_positive_tail_policy"]
     assert tail_policy.freeze_state.value == "FROZEN"
     assert tail_policy.value == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
     assert tail_policy.provenance["decision_id"] == "AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE"
     assert tail_policy.provenance["target_q_max_minutes"] == {
-        "T_IB_A00": 360, "D_OB": 210, "D_TX": 60,
+        "T_IB_A00": 360, "D_OB": 180, "D_TX": 60,
     }
     assert tail_policy.provenance["selection_state"] == "HUMAN_APPROVED"
     formal_contract = layers.scientific.parameters["m1_formal_output_contract"]
@@ -80,7 +82,7 @@ def test_layers_load_separately():
     assert formal_contract.provenance["decision_id"] == (
         "AIR_SLOT_MODEL_MANUSCRIPT_RECONCILIATION_2026-08-19")
     assert formal_contract.provenance["final_test_access_count"] == 0
-    assert layers.scientific.parameters["scenario_count"].value == 1000
+    assert layers.scientific.parameters["scenario_count"].value == 64
     assert layers.scientific.parameters["weather_max_age_minutes"].value == 60
     assert layers.scientific.parameters["cloud_encoding"].value == "both"
     assert layers.scientific.parameters["m1_r_ib_max_finite_minutes"].value == 360
@@ -94,23 +96,23 @@ def test_layers_load_separately():
         assert provenance["controls_principal_v2_pipeline"] is False
     v2_supports = {
         "m1_v2_t_ib_remaining_max_finite_minutes": (360, "EPISODE_MAX_ACTIVE_REMAINING"),
-        "m1_v2_d_ob_max_finite_minutes": (210, "UNIQUE_EPISODE_OUTCOME"),
+        "m1_v2_d_ob_max_finite_minutes": (180, "UNIQUE_EPISODE_OUTCOME"),
         "m1_v2_d_tx_max_finite_minutes": (60, "UNIQUE_EPISODE_OUTCOME"),
     }
     for name, (value, statistic) in v2_supports.items():
         parameter = layers.scientific.parameters[name]
         assert parameter.freeze_state.value == "FROZEN"
         assert parameter.value == value
-        assert parameter.provenance["support_provenance"] == (
-            "V2_SUPPORT_REFROZEN_AFTER_A2_B2")
+        expected_provenance = (
+            "AIR_SLOT_MODEL_FREEZE_20260901"
+            if name == "m1_v2_d_ob_max_finite_minutes"
+            else "V2_SUPPORT_REFROZEN_AFTER_A2_B2"
+        )
+        assert parameter.provenance["support_provenance"] == expected_provenance
         assert parameter.provenance["selection_unit"] == "TRAIN_EPISODE_BALANCED"
         assert parameter.provenance["statistic"] == statistic
         assert parameter.provenance["final_test_access_count"] == 0
-    warning_artifact = layers.scientific.parameters["m1_warning_model_artifact"]
-    assert warning_artifact.value.endswith("M1_SIGNED_WARNING_MODEL_V1.pt")
-    assert warning_artifact.provenance["selection_rule"] == "FIRST_PRE_REGISTERED_W_SEED"
-    assert warning_artifact.provenance["training_seed"] == 20260813
-    assert warning_artifact.provenance["final_test_access_count"] == 0
+    assert "m1_warning_model_artifact" not in layers.scientific.parameters
     assert layers.engineering.device == "cpu"
     assert resolve_raw_roots(layers.engineering) == {
         "data1": PROJECT_ROOT / "data1", "data2": PROJECT_ROOT / "data2"}

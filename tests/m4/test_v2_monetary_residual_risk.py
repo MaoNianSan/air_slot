@@ -5,10 +5,17 @@ import pytest
 from pydantic import ValidationError
 
 from model.M3.action_response import ResponseSourceType, ResponseSupportClass
-from model.M4.m3_action_interface import M4ActionEnvelopeInput
+from model.M4.m3_action_interface import (
+    ComparisonScopeStatus,
+    ComparisonSupportRequirement,
+    ConsequenceComparisonScope,
+    M4ActionEnvelopeInput,
+)
+from model.M4.authority import project_authority
 from model.M4.residual_risk import (
     M1_POSITIVE_TAIL_DECISION_REQUIRED,
-    RankingAuthority,
+    NumericalComparisonStatus,
+    NumericalEvaluationState,
     ResidualRiskPolicy,
     RiskEvaluationSupport,
     RiskPolicyStatus,
@@ -18,6 +25,7 @@ from model.M4.residual_risk import (
     weighted_expectation,
     weighted_var_cvar,
 )
+from model.M4.scientific_registry import PRINCIPAL_RMB_COMPONENTS
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.errors import ContractError
 from model.common.monetary_system import (
@@ -34,12 +42,36 @@ def _hash(character):
     return f"sha256:{character * 64}"
 
 
+def _comparison_scope(
+    *,
+    components=CONSEQUENCE_COMPONENTS,
+    status=ComparisonScopeStatus.FROZEN,
+    version="TEST-SCOPE-1",
+    measurement_registry_id="TEST-TEST-M1-1.0.0",
+):
+    return ConsequenceComparisonScope(
+        scope_id="TEST-COMPARISON-SCOPE",
+        component_ids=tuple(components),
+        support_requirements={
+            component: ComparisonSupportRequirement.NON_ABSTAIN_FINITE_CU
+            for component in components
+        },
+        valuation_measurement_registry_id=measurement_registry_id,
+        version=version,
+        provenance=("TEST_ONLY",),
+        status=status,
+    )
+
+
 def _action_input(
     *,
     action_id="A00",
     response_support=ResponseSupportClass.SUPPORTED,
     scenario_values=(1.0, 3.0),
     scenario_weights=(0.25, 0.75),
+    eligibility_state="ELIGIBLE",
+    opportunity_state=None,
+    comparison_scope="DEFAULT",
 ):
     scenario_ids = tuple(range(len(scenario_values)))
     scenarios = tuple(
@@ -68,7 +100,12 @@ def _action_input(
         decision_node_id="node-v2",
         action_id=action_id,
         action_family="null" if action_id == "A00" else "test-action",
-        eligibility_state="ELIGIBLE",
+        opportunity_state=(
+            opportunity_state
+            if opportunity_state is not None
+            else ("NOT_REQUIRED" if action_id == "A00" else "NOT_INSTANTIATED")
+        ),
+        eligibility_state=eligibility_state,
         eligibility_id=_hash("b"),
         response_support=response_support,
         response_rule_id=f"M3_V2_{action_id}",
@@ -85,6 +122,9 @@ def _action_input(
         scenario_ids=scenario_ids,
         scenario_weights=scenario_weights,
         scenario_consequences=scenarios,
+        comparison_scope=(
+            _comparison_scope() if comparison_scope == "DEFAULT" else comparison_scope
+        ),
         m3_envelope_hash=_hash("d"),
     )
 
@@ -189,7 +229,12 @@ def test_3_same_cu_different_monetary_system_changes_only_loss():
         envelope, monetary_mapping=_mapping(system="TEST-M1", scale=1), risk_policy=_policy()
     )
     second = evaluate_residual_risk(
-        envelope, monetary_mapping=_mapping(system="TEST-M2", scale=2), risk_policy=_policy()
+        _action_input(
+            comparison_scope=_comparison_scope(
+                measurement_registry_id="TEST-TEST-M2-1.0.0"
+            )
+        ),
+        monetary_mapping=_mapping(system="TEST-M2", scale=2), risk_policy=_policy()
     )
     assert first.scenario_ids == second.scenario_ids == envelope.scenario_ids
     assert first.action_id == second.action_id == envelope.action_id
@@ -203,7 +248,12 @@ def test_4_mapping_version_changes_loss_artifact_identity():
         envelope, monetary_mapping=_mapping(version="1.0.0"), risk_policy=_policy()
     )
     second = evaluate_residual_risk(
-        envelope, monetary_mapping=_mapping(version="2.0.0"), risk_policy=_policy()
+        _action_input(
+            comparison_scope=_comparison_scope(
+                measurement_registry_id="TEST-TEST-M1-2.0.0"
+            )
+        ),
+        monetary_mapping=_mapping(version="2.0.0"), risk_policy=_policy()
     )
     assert first.monetary_mapping_registry_hash != second.monetary_mapping_registry_hash
     assert first.scenario_losses[0].loss_artifact_id != second.scenario_losses[0].loss_artifact_id
@@ -229,13 +279,19 @@ def test_5_every_mapping_has_named_parameter_and_provenance():
         )
     root = Path(__file__).resolve().parents[2]
     design = json.loads(
-        (root / "registries" / "m4_v2_monetary_mapping_design.json").read_text(
+        (root / "registries" / "m4_v3_rmb_mapping_design.json").read_text(
             encoding="utf-8"
         )
     )
-    assert design["production_mapping_enabled"] is False
+    assert design["scientific_status"] == "FROZEN"
+    assert design["implementation_status"] == "MATCH"
+    assert design["production_mapping_enabled"] is True
+    assert design["active_registry_id"] == "M4_RMB_BASE_MAPPING_V2"
     assert tuple(item["component_id"] for item in design["component_status"]) == CONSEQUENCE_COMPONENTS
-    assert all(item["support_state"] == "ABSTAIN" for item in design["component_status"])
+    principal = {item["component_id"]: item for item in design["component_status"]}
+    assert set(principal) == set(PRINCIPAL_RMB_COMPONENTS)
+    assert all(item["support_state"] == "SUPPORTED" for item in principal.values())
+    assert all(item["base_beta"] == 1.0 for item in principal.values())
 
 
 def test_6_scenario_weights_are_preserved_in_risk_envelope():
@@ -296,21 +352,23 @@ def test_10_a00_is_mapped_from_its_identity_consequence_without_mutation():
     assert result.action_id == "A00"
 
 
-def test_11_unsupported_action_is_not_ranked():
+def test_11_abstained_response_remains_evidential_metadata_when_numerics_are_complete():
     evaluation = evaluate_residual_risk(
         _action_input(action_id="A11", response_support=ResponseSupportClass.ABSTAIN),
         monetary_mapping=_mapping(),
         risk_policy=_policy(),
     )
     ranking = rank_risk_evaluations((evaluation,))
-    assert evaluation.support_state is RiskEvaluationSupport.ABSTAINED
-    assert evaluation.ranking_authority is RankingAuthority.NOT_RANKED
-    assert ranking.abstained_action_ids == ("A11",)
-    assert not ranking.authoritative_ranking
-    assert not ranking.conditional_ranking
+    assert evaluation.response_support is ResponseSupportClass.ABSTAIN
+    assert evaluation.support_state is RiskEvaluationSupport.ASSUMPTION_BASED
+    assert evaluation.numerical_state is NumericalEvaluationState.DEFINED
+    assert evaluation.comparison_status is NumericalComparisonStatus.CONDITIONAL_INPUTS
+    assert not ranking.not_comparable_action_ids
+    assert not ranking.supported_input_ranking
+    assert ranking.conditional_input_ranking[0].action_id == "A11"
 
 
-def test_12_assumption_based_action_has_conditional_ranking_label():
+def test_12_assumption_based_action_has_conditional_input_comparison():
     evaluation = evaluate_residual_risk(
         _action_input(
             action_id="A11",
@@ -321,8 +379,9 @@ def test_12_assumption_based_action_has_conditional_ranking_label():
     )
     ranking = rank_risk_evaluations((evaluation,))
     assert evaluation.support_state is RiskEvaluationSupport.ASSUMPTION_BASED
-    assert ranking.conditional_ranking[0].ranking_authority is RankingAuthority.CONDITIONAL
-    assert not ranking.authoritative_ranking
+    assert evaluation.comparison_status is NumericalComparisonStatus.CONDITIONAL_INPUTS
+    assert ranking.conditional_input_ranking[0].comparison_status is NumericalComparisonStatus.CONDITIONAL_INPUTS
+    assert not ranking.supported_input_ranking
     supported = evaluate_residual_risk(
         _action_input(action_id="A00"),
         monetary_mapping=_mapping(status=MonetaryMappingStatus.FROZEN),
@@ -330,7 +389,8 @@ def test_12_assumption_based_action_has_conditional_ranking_label():
     )
     supported_ranking = rank_risk_evaluations((supported,))
     assert supported.support_state is RiskEvaluationSupport.SUPPORTED
-    assert supported_ranking.authoritative_ranking[0].ranking_authority is RankingAuthority.AUTHORITATIVE
+    assert supported.comparison_status is NumericalComparisonStatus.SUPPORTED_INPUTS
+    assert supported_ranking.supported_input_ranking[0].comparison_status is NumericalComparisonStatus.SUPPORTED_INPUTS
 
 
 def test_13_m2_reference_lineage_is_preserved():
@@ -367,3 +427,154 @@ def test_15_risk_envelope_is_reproducible():
     )
     assert first == second
     assert first.risk_envelope_hash == second.risk_envelope_hash
+
+
+def test_16_unknown_factual_eligibility_keeps_complete_numerical_result_conditional():
+    evaluation = evaluate_residual_risk(
+        _action_input(action_id="A11", eligibility_state="UNKNOWN"),
+        monetary_mapping=_mapping(status=MonetaryMappingStatus.FROZEN),
+        risk_policy=_policy(status=RiskPolicyStatus.FROZEN),
+    )
+    ranking = rank_risk_evaluations((evaluation,))
+    assert evaluation.eligibility_state.value == "UNKNOWN"
+    assert evaluation.numerical_state is NumericalEvaluationState.DEFINED
+    assert evaluation.support_state is RiskEvaluationSupport.ASSUMPTION_BASED
+    assert evaluation.comparison_status is NumericalComparisonStatus.CONDITIONAL_INPUTS
+    assert "FACTUAL_ELIGIBILITY_UNKNOWN" in evaluation.reason_codes
+    entry = ranking.conditional_input_ranking[0]
+    assert entry.action_id == "A11"
+    assert entry.eligibility_state.value == "UNKNOWN"
+    assert entry.response_support is ResponseSupportClass.SUPPORTED
+    assert entry.opportunity_state.value == "NOT_INSTANTIATED"
+
+
+def test_17_incomplete_numerical_model_remains_undefined_independently_of_facts():
+    source = _action_input(action_id="A11", eligibility_state="UNKNOWN")
+    incomplete = M4ActionEnvelopeInput.model_validate(
+        {
+            **source.model_dump(),
+            "scenario_consequences": tuple(
+                {
+                    **scenario.model_dump(),
+                    "components": tuple(
+                        {
+                            **component.model_dump(),
+                            "C_a_CU": None,
+                            "support_state": "ABSTAIN",
+                        }
+                        if component.component_id == CONSEQUENCE_COMPONENTS[0]
+                        else component.model_dump()
+                        for component in scenario.components
+                    ),
+                }
+                for scenario in source.scenario_consequences
+            ),
+        }
+    )
+    evaluation = evaluate_residual_risk(
+        incomplete,
+        monetary_mapping=_mapping(status=MonetaryMappingStatus.FROZEN),
+        risk_policy=_policy(status=RiskPolicyStatus.FROZEN),
+    )
+    assert evaluation.eligibility_state.value == "UNKNOWN"
+    assert evaluation.numerical_state is NumericalEvaluationState.UNDEFINED
+    assert evaluation.comparison_status is NumericalComparisonStatus.NOT_COMPARABLE
+    assert "ACTION_CONSEQUENCE_COMPONENT_ABSTAIN" in evaluation.reason_codes
+
+
+def test_18_opportunity_is_independent_metadata_and_keeps_complete_risk_conditional():
+    unavailable = _action_input(action_id="A11", opportunity_state="UNAVAILABLE")
+    evaluation = evaluate_residual_risk(
+        unavailable,
+        monetary_mapping=_mapping(status=MonetaryMappingStatus.FROZEN),
+        risk_policy=_policy(status=RiskPolicyStatus.FROZEN),
+    )
+    assert evaluation.numerical_state is NumericalEvaluationState.DEFINED
+    assert evaluation.opportunity_state.value == "UNAVAILABLE"
+    assert evaluation.comparison_status is NumericalComparisonStatus.CONDITIONAL_INPUTS
+    assert "OPPORTUNITY_SUPPORT_NOT_CONFIRMED" in evaluation.reason_codes
+
+
+def test_19_selection_is_unimplemented_and_selector_api_rejects_calls():
+    evaluation = evaluate_residual_risk(
+        _action_input(),
+        monetary_mapping=_mapping(status=MonetaryMappingStatus.FROZEN),
+        risk_policy=_policy(status=RiskPolicyStatus.FROZEN),
+    )
+    assert evaluation.selection_state.value == "UNIMPLEMENTED"
+    with pytest.raises(ContractError, match="M4_SELECTION_NOT_AUTHORIZED"):
+        project_authority()
+
+
+def test_20_absent_comparison_scope_keeps_chi_num_undefined():
+    evaluation = evaluate_residual_risk(
+        _action_input(comparison_scope=None),
+        monetary_mapping=_mapping(),
+        risk_policy=_policy(),
+    )
+    assert evaluation.numerical_state is NumericalEvaluationState.UNDEFINED
+    assert evaluation.comparison_status is NumericalComparisonStatus.NOT_COMPARABLE
+    assert "COMPARISON_SCOPE_NOT_FROZEN" in evaluation.reason_codes
+
+
+def test_21_unfrozen_comparison_scope_keeps_chi_num_undefined():
+    evaluation = evaluate_residual_risk(
+        _action_input(
+            comparison_scope=_comparison_scope(
+                status=ComparisonScopeStatus.NOT_FROZEN
+            )
+        ),
+        monetary_mapping=_mapping(),
+        risk_policy=_policy(),
+    )
+    assert evaluation.numerical_state is NumericalEvaluationState.UNDEFINED
+    assert "COMPARISON_SCOPE_NOT_FROZEN" in evaluation.reason_codes
+
+
+def test_22_frozen_subset_scope_preserves_out_of_scope_abstention_and_maps_subset():
+    scope = _comparison_scope(components=("F_continuity", "P_time"))
+    evaluation = evaluate_residual_risk(
+        _action_input(comparison_scope=scope),
+        monetary_mapping=_mapping(),
+        risk_policy=_policy(),
+    )
+    assert evaluation.numerical_state is NumericalEvaluationState.DEFINED
+    assert evaluation.comparison_component_ids == ("F_continuity", "P_time")
+    assert evaluation.coverage_fraction == 1.0
+    assert evaluation.expected_monetary_loss == 5.0
+    out_of_scope = evaluation.scenario_losses[0].component_losses[1]
+    assert out_of_scope.component_id == "F_execution"
+    assert out_of_scope.L_k_m is None
+    assert out_of_scope.reason_code == "OUT_OF_COMPARISON_SCOPE"
+
+
+def test_23_ranking_rejects_mismatched_comparison_scopes():
+    first = evaluate_residual_risk(
+        _action_input(action_id="A00", comparison_scope=_comparison_scope()),
+        monetary_mapping=_mapping(),
+        risk_policy=_policy(),
+    )
+    second = evaluate_residual_risk(
+        _action_input(
+            action_id="A11",
+            comparison_scope=_comparison_scope(components=("F_continuity",)),
+        ),
+        monetary_mapping=_mapping(),
+        risk_policy=_policy(),
+    )
+    with pytest.raises(ValueError, match="M4_RANKING_COMMON_BASIS_MISMATCH"):
+        rank_risk_evaluations((first, second))
+
+
+def test_24_scope_measurement_registry_mismatch_keeps_chi_num_undefined():
+    evaluation = evaluate_residual_risk(
+        _action_input(
+            comparison_scope=_comparison_scope(
+                measurement_registry_id="OTHER-MEASUREMENT-REGISTRY"
+            )
+        ),
+        monetary_mapping=_mapping(),
+        risk_policy=_policy(),
+    )
+    assert evaluation.numerical_state is NumericalEvaluationState.UNDEFINED
+    assert "COMPARISON_SCOPE_MEASUREMENT_REGISTRY_MISMATCH" in evaluation.reason_codes

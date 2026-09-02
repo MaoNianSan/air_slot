@@ -20,6 +20,7 @@ class M1ModelPath(str, Enum):
 class M1Forecast(FrozenModel):
     episode_id: str
     decision_node_id: str
+    decision_time: datetime
     model_path: M1ModelPath
     model_version: str
     forecast_generated_at: datetime
@@ -27,10 +28,12 @@ class M1Forecast(FrozenModel):
     roll_minutes: int
     forecast_horizons_minutes: tuple[int, ...]
     delay_thresholds_minutes: tuple[int, ...]
+    scenario_count: int
     state_updated_at: datetime
     state_age_minutes: float
     distributions: dict[str, Any]
     support: dict[str, str]
+    lineage: tuple[str, ...]
     fallback_status: str
 
 
@@ -38,11 +41,30 @@ class M1Service:
     """Stable facade over state-aware M1 and an explicitly supplied FAST path."""
 
     def __init__(
-        self, pipeline, *, model_version: str, fast_predictor: Callable | None = None
+        self,
+        pipeline,
+        *,
+        model_version: str,
+        fast_predictor: Callable | None = None,
+        scenario_count: int | None = None,
+        lineage: tuple[str, ...] = ("M1_SERVICE",),
     ):
         self.pipeline = pipeline
         self.model_version = model_version
         self.fast_predictor = fast_predictor
+        if scenario_count is None:
+            from model.common.config import load_config_layers
+            from model.common.paths import PROJECT_ROOT
+
+            scenario_count = load_config_layers(
+                PROJECT_ROOT / "configs"
+            ).scientific.parameters["scenario_count"].value
+        if int(scenario_count) <= 0:
+            raise ValueError("M1_SCENARIO_COUNT_INVALID")
+        if not lineage:
+            raise ValueError("M1_FORECAST_LINEAGE_REQUIRED")
+        self.scenario_count = int(scenario_count)
+        self.lineage = tuple(lineage)
         self._state_updated_at: dict[str, datetime] = {}
 
     def scheduled_update(self, pre_state) -> None:
@@ -92,6 +114,7 @@ class M1Service:
         return M1Forecast(
             episode_id=node.episode_id,
             decision_node_id=node.decision_node_id,
+            decision_time=node.decision_time,
             model_path=model_path,
             model_version=self.model_version,
             forecast_generated_at=generated_at,
@@ -99,12 +122,18 @@ class M1Service:
             roll_minutes=node.roll_minutes,
             forecast_horizons_minutes=FORMAL_FORECAST_HORIZONS_MINUTES,
             delay_thresholds_minutes=DELAY_THRESHOLDS_MINUTES,
+            scenario_count=self.scenario_count,
             state_updated_at=state_updated_at,
             state_age_minutes=max(
                 0.0, (generated_at - state_updated_at).total_seconds() / 60.0
             ),
             distributions=distributions,
             support=support,
+            lineage=self.lineage + (
+                f"model_version={self.model_version}",
+                f"model_path={model_path.value}",
+                f"information_cutoff={node.information_cutoff.isoformat()}",
+            ),
             fallback_status=fallback,
         )
 

@@ -9,7 +9,7 @@ Observed factual values are retained in a separate, evaluation-only field.
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
@@ -184,10 +184,106 @@ class JointScenarioEnvelope(FrozenModel):
         return self
 
 
+def class_envelope(
+    *,
+    target: str,
+    index: int | None,
+    conditioning_index: int | None,
+    contract: Any,
+    source_role: str,
+    decision_time: str,
+    scalar: float | None,
+    raw_observed_minutes: float | None = None,
+    raw_observed_time_utc: str | None = None,
+    raw_model_candidate_minutes: float | None = None,
+    event_time_utc: str | None = None,
+    lineage: tuple[str, ...],
+) -> TargetScenarioEnvelope:
+    """Convert one contracted target class into its typed public envelope.
+
+    ``decision_time`` is accepted as part of the stable construction contract;
+    event-time derivation remains the caller's responsibility.
+    """
+
+    del decision_time
+    if index is None:
+        return TargetScenarioEnvelope(
+            target_name=target,
+            class_id=ABSTAIN_CLASS_ID,
+            source_role="ABSTAIN",
+            support_state="ABSTAIN",
+            scalar_support_state="ABSTAIN_UNSUPPORTED",
+            lineage=lineage,
+        )
+    overflow = contract.tail_state(index) == "OVERFLOW"
+    if overflow:
+        lower = float(contract.max_finite_minutes)
+        public_index = index if target == "T_IB_A00" else index + 1
+        return TargetScenarioEnvelope(
+            target_name=target,
+            class_index=public_index,
+            conditioning_index=conditioning_index,
+            class_id=TAIL_CLASS_ID,
+            class_lower_minutes=lower,
+            class_upper_minutes=None,
+            scalar_minutes=None,
+            event_time_utc=event_time_utc,
+            raw_observed_minutes=raw_observed_minutes,
+            raw_observed_time_utc=raw_observed_time_utc,
+            raw_model_candidate_minutes=raw_model_candidate_minutes,
+            source_role=source_role,
+            support_state="SUPPORTED",
+            scalar_support_state="ABSTAIN_TAIL_CLASS",
+            overflow=True,
+            lineage=lineage,
+        )
+    if target in ("D_OB", "D_TX") and index == 0 and abs(float(scalar or 0.0)) <= 1e-12:
+        return TargetScenarioEnvelope(
+            target_name=target,
+            class_index=index,
+            conditioning_index=conditioning_index,
+            class_id=ZERO_CLASS_ID,
+            class_lower_minutes=0.0,
+            class_upper_minutes=0.0,
+            scalar_minutes=0.0,
+            raw_observed_minutes=raw_observed_minutes,
+            source_role=source_role,
+            support_state="SUPPORTED",
+            scalar_support_state="SUPPORTED",
+            lineage=lineage,
+        )
+    if target == "T_IB_A00":
+        lower = float(contract.bin_start(index))
+        upper = float(contract.bin_end(index))
+    else:
+        lower = float(index * contract.bin_width_minutes)
+        upper = float((index + 1) * contract.bin_width_minutes)
+    value = float(scalar if scalar is not None else (lower + upper) / 2.0)
+    public_index = index if target == "T_IB_A00" else index + 1
+    class_id = f"BIN_{index}" if target == "T_IB_A00" else f"POSITIVE_BIN_{index}"
+    return TargetScenarioEnvelope(
+        target_name=target,
+        class_index=public_index,
+        conditioning_index=conditioning_index,
+        class_id=class_id,
+        class_lower_minutes=lower,
+        class_upper_minutes=upper,
+        scalar_minutes=value,
+        event_time_utc=event_time_utc,
+        raw_observed_minutes=raw_observed_minutes,
+        raw_observed_time_utc=raw_observed_time_utc,
+        source_role=source_role,
+        support_state="SUPPORTED",
+        scalar_support_state="SUPPORTED",
+        lineage=lineage,
+    )
+
+
 __all__ = [
     "ABSTAIN_CLASS_ID",
     "TAIL_CLASS_ID",
     "ZERO_CLASS_ID",
     "JointScenarioEnvelope",
     "TargetScenarioEnvelope",
+    "class_envelope",
 ]

@@ -1,9 +1,9 @@
-"""Round 2 focused tests U/V/W/X — M3 extensible action contract.
+"""M3 exact-library and independent instantiation/factual-state tests.
 
-- U: principal 23 required but extra actions accepted (subset, not exact set).
+- U: the active registry is exactly the frozen 23-action set.
 - V: missing instantiation parameter -> I(a)=0 -> candidate not in A.
 - W: structural UNKNOWN is distinct from I(a)=0 and keeps the candidate.
-- X: a new action enters the library without changing M1/M2 state contracts.
+- X: an unversioned extra action is rejected by the active registry.
 """
 
 from pathlib import Path
@@ -38,16 +38,15 @@ EXTRA_TEMPLATE = ActionTemplate(
 )
 
 
-def test_u_principal_23_required_but_extra_action_accepted():
+def test_u_active_registry_is_exactly_23_and_rejects_extra_action():
     standard = ActionRegistry.load(STRUCTURAL_PATH)
     assert {item.template_id for item in standard.templates} == set(PRINCIPAL_IDS)
-    extended = standard.model_copy(
-        update={"templates": (*standard.templates, EXTRA_TEMPLATE)}
-    )
-    ids = tuple(item.template_id for item in extended.templates)
-    assert len(ids) == len(set(ids)) == 24
-    assert set(PRINCIPAL_IDS) <= set(ids)
-    assert extended.digest() != standard.digest()
+    assert tuple(item.template_id for item in standard.templates) == PRINCIPAL_IDS
+    assert len(standard.templates) == 23
+    payload = standard.model_dump(mode="json")
+    payload["templates"].append(EXTRA_TEMPLATE.model_dump(mode="json"))
+    with pytest.raises(Exception, match="PRINCIPAL_ACTION_EXACT_SET_MISMATCH"):
+        ActionRegistry.model_validate(payload)
 
 
 def test_u_missing_principal_id_fails_closed():
@@ -55,7 +54,7 @@ def test_u_missing_principal_id_fails_closed():
     dropped = standard.model_copy(
         update={"templates": tuple(item for item in standard.templates if item.template_id != "A13")}
     )
-    with pytest.raises(Exception, match="PRINCIPAL_ACTION_SUBSET_MISMATCH"):
+    with pytest.raises(Exception, match="PRINCIPAL_ACTION_EXACT_SET_MISMATCH"):
         ActionRegistry.model_validate(dropped.model_dump(mode="json"))
 
 
@@ -105,7 +104,7 @@ def test_w_structural_unknown_keeps_candidate_with_p_unknown():
     assert candidates[0].instantiable is True
 
 
-def test_w_structural_false_excludes_candidate():
+def test_w_factual_false_keeps_formed_instance_with_false_fact_state():
     template = ActionTemplate(
         template_id="A96",
         name="false structural",
@@ -120,24 +119,17 @@ def test_w_structural_false_excludes_candidate():
          "facts": {"replacement_aircraft": False}, "parameters": {}},
         registry,
     )
-    assert len(candidates) == 0
+    assert len(candidates) == 1
+    assert candidates[0].instantiable is True
+    assert candidates[0].precondition_state == "FALSE"
 
 
-def test_x_extra_action_enters_library_without_upstream_contract_change():
+def test_x_extra_action_requires_new_versioned_registry():
     standard = ActionRegistry.load(STRUCTURAL_PATH)
-    extended = standard.model_copy(
-        update={"templates": (*standard.templates, EXTRA_TEMPLATE)}
-    )
-    candidates = instantiate_candidates(
-        {"episode_id": "e", "decision_node_id": "n",
-         "facts": {"aircraft_identity": True}, "parameters": {}},
-        extended,
-    )
-    by_id = {item.template_id: item for item in candidates}
-    assert "A99" in by_id
-    assert by_id["A99"].response_parameter_status.value == "NOT_FROZEN"
-    assert by_id["A99"].instantiable is True
-    # M1/M2 upstream state contracts are untouched by library extension.
+    payload = standard.model_dump(mode="json")
+    payload["templates"].append(EXTRA_TEMPLATE.model_dump(mode="json"))
+    with pytest.raises(Exception, match="PRINCIPAL_ACTION_EXACT_SET_MISMATCH"):
+        ActionRegistry.model_validate(payload)
     assert STOCHASTIC_TARGETS == ("R_IB", "DELTA_OB", "T_TX")
     assert tuple(COMPONENTS) == (
         "F_continuity", "F_execution", "F_propagation",
@@ -145,7 +137,7 @@ def test_x_extra_action_enters_library_without_upstream_contract_change():
     )
 
 
-def test_x_response_registry_accepts_extra_not_frozen_action():
+def test_x_response_registry_rejects_extra_or_missing_action():
     registry = load_response_registry(RESPONSE_PATH, structural_path=STRUCTURAL_PATH)
     payload = registry.model_dump(mode="json")
     payload["actions"]["A99"] = {
@@ -156,12 +148,9 @@ def test_x_response_registry_accepts_extra_not_frozen_action():
         "response_model": "BERNOULLI_BETA",
         "value": None,
     }
-    extended = ResponseScenarioRegistry.model_validate(payload)
-    assert set(PRINCIPAL_IDS) <= set(extended.actions)
-    params = extended.parameters("A99", sensitivity="BASE")
-    assert params["response_parameter_status"] == "NOT_FROZEN"
-    assert "success_probability" not in params
+    with pytest.raises(Exception, match="M3_RESPONSE_PRINCIPAL_ACTION_EXACT_SET_MISMATCH"):
+        ResponseScenarioRegistry.model_validate(payload)
     dropped_payload = registry.model_dump(mode="json")
     del dropped_payload["actions"]["A11"]
-    with pytest.raises(Exception, match="M3_RESPONSE_PRINCIPAL_ACTION_SUBSET_MISMATCH"):
+    with pytest.raises(Exception, match="M3_RESPONSE_PRINCIPAL_ACTION_EXACT_SET_MISMATCH"):
         ResponseScenarioRegistry.model_validate(dropped_payload)

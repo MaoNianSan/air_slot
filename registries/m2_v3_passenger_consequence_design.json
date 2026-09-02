@@ -1,0 +1,34 @@
+{
+  "design_id": "M2_PASSENGER_CONSEQUENCE_REFERENCE_REFACTOR",
+  "version": "3.0.0",
+  "status": "FROZEN",
+  "supersedes": ["M2_DATA2_FORMAL_CU_V2"],
+  "passenger_reference_schema_version": "PASSENGER_REFERENCE_SCHEMA_V1",
+  "fit_partition": "TRAIN",
+  "components": {
+    "P_time": {
+      "formula": "expected_passengers_per_flight * D_TO",
+      "native_unit": "passenger_minutes",
+      "reference": "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE",
+      "evidence_boundary": "EMPIRICAL_REFERENCE_NOT_ACTUAL_FLIGHT_PASSENGER_COUNT"
+    },
+    "P_itinerary": {
+      "formula": "expected_passengers_per_flight * connection_share * I[D_TO > 45]",
+      "native_unit": "expected_disrupted_connecting_passenger_exposure",
+      "references": ["T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE", "DB1B_CONNECTION_SHARE_REFERENCE"],
+      "threshold_minutes": 45.0,
+      "evidence_boundary": "HISTORICAL_REFERENCE_NOT_OBSERVED_MISSED_CONNECTION"
+    },
+    "P_service": {
+      "formula": "expected_passengers_per_flight * I[D_TO >= 180]",
+      "native_unit": "expected_long_delay_passenger_service_exposure",
+      "reference": "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE",
+      "threshold_minutes": 180.0,
+      "evidence_boundary": "SCENARIO_POLICY_REFERENCE_NOT_OBSERVED_SERVICE_RECORD"
+    }
+  },
+  "cu_normalization": "Median_Train(q_k | q_k > 0) for every component",
+  "rmb_mapping_registry": "M4_RMB_BASE_MAPPING_V2",
+  "final_test_access_count": 0,
+  "paper_full_run": false
+}

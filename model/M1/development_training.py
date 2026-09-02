@@ -15,7 +15,6 @@ import yaml
 
 from model.common.config import load_config_layers
 from model.common.identity import content_id
-from model.PRE.contracts.pre_state import EpisodeRecord
 from model.PRE.development import (
     build_sampled_pre_cohorts,
     development_input_identity,
@@ -60,7 +59,7 @@ DIAGNOSTICS_NAME = f"{ARTIFACT_ID}_PREDICTIVE_DIAGNOSTICS.json"
 SCENARIOS_NAME = f"{ARTIFACT_ID}_SCENARIOS.json"
 CACHE_NAME = f"{ARTIFACT_ID}_CACHE_V3.npz"
 CACHE_MANIFEST_NAME = f"{ARTIFACT_ID}_CACHE_V3_MANIFEST.json"
-CONFIG_RELATIVE = Path("configs/experiment/m1_data2_development_fast.yaml")
+CONFIG_RELATIVE = Path("configs/engineering/m1_data2_development_fast.yaml")
 REFERENCE_ROOT = Path("artifacts/diagnostics/v5_development_freeze")
 
 
@@ -72,7 +71,9 @@ def _write_json(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        # YAML partition dates are loaded as ``date`` objects; serialize them
+        # deterministically instead of failing after training has completed.
+        json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n",
         encoding="utf-8",
     )
     temporary.replace(path)
@@ -92,31 +93,10 @@ def _load_fast_config(root: Path) -> tuple[dict, str]:
             raise ValueError(f"M1_FAST_PARTITION_CONTRACT_MISMATCH:{split}")
     if payload.get("final_test_access_count") != 0:
         raise ValueError("M1_FAST_FINAL_TEST_ACCESS_MUST_BE_ZERO")
-    if payload.get("paper_full_run") is not False:
-        raise ValueError("M1_FAST_PAPER_FULL_FORBIDDEN")
     counts = payload["base_cohort"]["episode_counts"]
     if int(counts.get("test", -1)) != 0:
         raise ValueError("M1_FAST_TEST_COHORT_MUST_BE_ZERO")
     return payload, content_id(payload)
-
-
-def _load_pilot(root: Path, config: dict) -> tuple[dict, tuple[EpisodeRecord, ...]]:
-    path = root / Path(config["pilot_cohort"]["path"])
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    if (
-        payload.get("dataset_id") != "DATA2"
-        or payload.get("split") != "DEVELOPMENT"
-        or payload.get("FINAL_TEST_ACCESS_COUNT") != 0
-        or payload.get("PAPER_FULL_RUN") is not False
-        or payload.get("selector_pre_outcome") is not True
-    ):
-        raise ValueError("M1_FAST_PILOT_COHORT_BOUNDARY_INVALID")
-    episodes = tuple(
-        EpisodeRecord.model_validate(item) for item in payload["episode_records"]
-    )
-    if {item.episode_id for item in episodes} != set(payload["episode_ids"]):
-        raise ValueError("M1_FAST_PILOT_EPISODE_ID_MISMATCH")
-    return payload, episodes
 
 
 def _load_references(root: Path):
@@ -235,7 +215,6 @@ def _build_or_load_cache(
     artifact_root: Path,
     config: dict,
     scientific,
-    pilot_episodes,
     taxi_reference,
     turnaround_reference,
 ):
@@ -248,7 +227,7 @@ def _build_or_load_cache(
     actual_counts = {
         "train": base_counts["train"],
         "calibration": base_counts["calibration"],
-        "development": base_counts["development"] + len(pilot_episodes),
+        "development": base_counts["development"],
     }
     key = cache_key(
         source_manifest_hash=identity["source_manifest_hash"],
@@ -295,7 +274,7 @@ def _build_or_load_cache(
         resume=True,
         taxi_reference=taxi_reference,
         turnaround_reference=turnaround_reference,
-        additional_development=pilot_episodes,
+        additional_development=(),
     )
     rows = {}
     stages = {}
@@ -330,7 +309,7 @@ def _build_or_load_cache(
         "source_manifest_hash": identity["source_manifest_hash"],
         "PRE_registry_hash": identity["registry_hash"],
         "base_cohort_counts": base_counts,
-        "pilot_episode_count": len(pilot_episodes),
+        "development_evaluation_source": "BASE_DEVELOPMENT_COHORT",
         "preparation_state_reused": preparation_state.stat().st_mtime_ns == state_mtime,
         "final_test_access_count": 0,
     }
@@ -371,12 +350,12 @@ def _build_or_load_cache(
     )
 
 
-def _subset(cache, split: str, pilot_ids: set[str], representation: str):
+def _subset(cache, split: str, episode_ids: set[str], representation: str):
     kwargs = {"representation": representation}
     if representation == "FIXED_HISTORY":
         kwargs["window_minutes"] = 30
     return tuple(
-        row for row in cache.partition(split, **kwargs) if row.episode_id in pilot_ids
+        row for row in cache.partition(split, **kwargs) if row.episode_id in episode_ids
     )
 
 
@@ -479,7 +458,7 @@ def _baseline_diagnostics(pipeline, train, calibration, pilot, config) -> dict:
 def _scenario_attempt(
     lifecycle,
     cohorts,
-    pilot_ids: set[str],
+    evaluation_ids: set[str],
     config,
     artifact_root: Path,
     taxi_reference,
@@ -493,7 +472,7 @@ def _scenario_attempt(
     prepared = {
         item.episode.episode_id: item
         for item in cohorts.development
-        if item.episode.episode_id in pilot_ids
+        if item.episode.episode_id in evaluation_ids
     }
     rows, _ = active_rows(
         tuple(prepared.values()),
@@ -566,41 +545,45 @@ def _scenario_attempt(
 def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -> dict:
     started = time.perf_counter()
     root = root.resolve()
-    artifact_root = (output_root or root / "artifacts/experiment/m1_v2").resolve()
+    artifact_root = (
+        output_root or root / "artifacts/diagnostics/model/m1_v2_development_fast"
+    ).resolve()
     artifact_root.mkdir(parents=True, exist_ok=True)
     config, fast_config_hash = _load_fast_config(root)
     scientific = load_config_layers(root / "configs").scientific
     hidden_size = int(scientific.parameters["m1_hidden_size"].value)
-    hidden_candidates = tuple(
-        int(value) for value in scientific.parameters["m1_hidden_size_candidates"].value
+    sensitivity_hidden_size = int(
+        scientific.parameters["m1_sensitivity_hidden_size"].value
     )
-    if hidden_size not in hidden_candidates:
-        raise ValueError("M1_V2_FAST_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES")
+    if hidden_size == sensitivity_hidden_size:
+        raise ValueError("M1_V2_FAST_PRIMARY_RUNTIME_CANNOT_USE_SENSITIVITY_SETTING")
     torch.set_num_threads(
         min(
             int(config["training"]["torch_threads"]),
             torch.get_num_threads(),
         )
     )
-    pilot, pilot_episodes = _load_pilot(root, config)
-    pilot_ids = set(pilot["episode_ids"])
     taxi, turnaround, references = _load_references(root)
     cache, cohorts, cache_status = _build_or_load_cache(
         root,
         artifact_root,
         config,
         scientific,
-        pilot_episodes,
         taxi,
         turnaround,
     )
     train = tuple(cache.partition("train"))
     calibration = tuple(cache.partition("calibration"))
-    pilot_adaptive = _subset(cache, "development", pilot_ids, "ADAPTIVE_HISTORY")
-    pilot_current = _subset(cache, "development", pilot_ids, "CURRENT")
-    pilot_fixed = _subset(cache, "development", pilot_ids, "FIXED_HISTORY")
-    if len(pilot_adaptive) != len(pilot["decision_nodes"]):
-        raise ValueError("M1_V2_FAST_PILOT_NODE_COUNT_MISMATCH")
+    evaluation_ids = {
+        row.episode_id for row in cache.partition("development")
+    }
+    development_adaptive = _subset(
+        cache, "development", evaluation_ids, "ADAPTIVE_HISTORY"
+    )
+    development_current = _subset(cache, "development", evaluation_ids, "CURRENT")
+    development_fixed = _subset(
+        cache, "development", evaluation_ids, "FIXED_HISTORY"
+    )
 
     train_coverage = target_coverage(train)
     calibration_coverage = target_coverage(calibration)
@@ -638,17 +621,17 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     predictive = {
         "ADAPTIVE_HISTORY": evaluate_lifecycle(
             lifecycle,
-            pilot_adaptive,
+            development_adaptive,
             batch_size=batch_size,
         ),
         "CURRENT": evaluate_lifecycle(
             lifecycle,
-            pilot_current,
+            development_current,
             batch_size=batch_size,
         ),
         "FIXED_HISTORY_30": evaluate_lifecycle(
             lifecycle,
-            pilot_fixed,
+            development_fixed,
             batch_size=batch_size,
         ),
     }
@@ -666,11 +649,11 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
         pipeline,
         train,
         calibration,
-        pilot_adaptive,
+        development_adaptive,
         config,
     )
 
-    deterministic_batch = pilot_adaptive[: min(16, len(pilot_adaptive))]
+    deterministic_batch = development_adaptive[: min(16, len(development_adaptive))]
     lifecycle.pipeline.model.eval()
     before, _, _, _ = lifecycle.batched_logits(
         deterministic_batch,
@@ -694,7 +677,7 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
     scenario_status = _scenario_attempt(
         loaded,
         cohorts,
-        pilot_ids,
+        evaluation_ids,
         config,
         artifact_root,
         taxi,
@@ -704,10 +687,10 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
         "artifact_id": ARTIFACT_ID,
         "artifact_scope": "DEVELOPMENT_FAST_ONLY",
         "checkpoint_hash": checkpoint_hash,
-        "cohort_hash": pilot["cohort_hash"],
-        "cohort_artifact_hash": pilot["artifact_hash"],
-        "episode_count": len(pilot_ids),
-        "node_count": len(pilot_adaptive),
+        "cohort_hash": content_id(sorted(evaluation_ids)),
+        "cohort_artifact_hash": None,
+        "episode_count": len(evaluation_ids),
+        "node_count": len(development_adaptive),
         "representations": predictive,
         "baselines": baselines,
         "scenario_artifact_status": scenario_status,
@@ -743,7 +726,7 @@ def run_data2_development_fast(*, root: Path, output_root: Path | None = None) -
         "development_split": config["partitions"]["development"],
         "FAST_selection_rule": {
             "base": config["base_cohort"],
-            "pilot": config["pilot_cohort"],
+            "development_evaluation": config["development_evaluation"],
             "config_hash": fast_config_hash,
         },
         "seed": int(config["training"]["seed"]),

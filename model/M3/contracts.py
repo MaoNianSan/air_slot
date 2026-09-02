@@ -5,7 +5,7 @@ from hashlib import sha256
 import json
 from typing import Any
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, computed_field, field_validator, model_validator
 
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.enums import EvidenceClass, SupportState
@@ -156,6 +156,13 @@ class CoverageRequirement(str, Enum):
     SUPPORT_ONLY = "SUPPORT_ONLY"
 
 
+class InstantiationState(str, Enum):
+    """χ_inst: whether the declared mathematical action instance was formed."""
+
+    FORMED = "FORMED"
+    NOT_FORMED = "NOT_FORMED"
+
+
 class BenefitOrBurden(str, Enum):
     BENEFIT = "BENEFIT"
     BURDEN = "BURDEN"
@@ -230,7 +237,7 @@ class CandidateAction(FrozenModel):
     candidate_index: int = Field(ge=0)
     parameters: dict[str, Any]
     precondition_state: str
-    instantiable: bool = True
+    instantiation_state: InstantiationState = InstantiationState.FORMED
     authority_capabilities: tuple[str, ...]
     mitigation: dict[str, float]
     induced: dict[str, float]
@@ -246,18 +253,62 @@ class CandidateAction(FrozenModel):
     coverage: str
     preparation_time_minutes: float
     deadline_semantics: str
+    precondition_reason: str = "REQUIRED_FACTS_TRUE"
+    factual_provenance: tuple[str, ...] = ()
 
     @model_validator(mode="after")
     def typed_boundaries(self):
         if self.precondition_state not in {"TRUE", "FALSE", "UNKNOWN"}:
             raise ValueError("UNKNOWN_PRECONDITION_STATE")
-        if not self.instantiable:
+        if self.instantiation_state is not InstantiationState.FORMED:
             raise ValueError("NON_INSTANTIABLE_CANDIDATE_MUST_NOT_ENTER_A")
         if self.template_id != "A00" and (
             self.response_parameter_status is ResponseParameterStatus.FROZEN
             and not self.response_parameters
         ):
             raise ValueError("FROZEN_RESPONSE_PARAMETERS_REQUIRED")
+        return self
+
+    @computed_field
+    @property
+    def instantiable(self) -> bool:
+        """Compatibility projection of χ_inst; not an independent state."""
+        return self.instantiation_state is InstantiationState.FORMED
+
+
+class ActionInstantiationRecord(FrozenModel):
+    """Auditable template-level record for ``chi_inst``.
+
+    A record exists for every action template at every decision node.  Only a
+    formed mathematical instance carries a ``CandidateAction``; a missing
+    required parameter is therefore visible in the audit trail without being
+    admitted to the candidate set consumed by downstream layers.
+    """
+
+    template_id: str = Field(min_length=1)
+    instantiation_state: InstantiationState
+    reason: str = Field(min_length=1)
+    missing_required_parameters: tuple[str, ...] = ()
+    source: tuple[str, ...] = Field(min_length=1)
+    lineage: tuple[str, ...] = Field(min_length=1)
+    candidate: CandidateAction | None = None
+
+    @model_validator(mode="after")
+    def candidate_boundary(self):
+        if self.instantiation_state is InstantiationState.FORMED:
+            if self.candidate is None:
+                raise ValueError("FORMED_INSTANTIATION_REQUIRES_CANDIDATE")
+            if self.candidate.template_id != self.template_id:
+                raise ValueError("INSTANTIATION_CANDIDATE_TEMPLATE_MISMATCH")
+            if self.candidate.instantiation_state is not InstantiationState.FORMED:
+                raise ValueError("FORMED_RECORD_REQUIRES_FORMED_CANDIDATE")
+            if self.missing_required_parameters:
+                raise ValueError("FORMED_INSTANTIATION_CANNOT_HAVE_MISSING_PARAMETERS")
+        else:
+            if self.candidate is not None:
+                raise ValueError("NOT_FORMED_INSTANTIATION_CANNOT_HAVE_CANDIDATE")
+            if not self.missing_required_parameters:
+                raise ValueError("NOT_FORMED_INSTANTIATION_REQUIRES_MISSING_PARAMETERS")
         return self
 
 

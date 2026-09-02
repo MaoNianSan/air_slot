@@ -37,6 +37,8 @@ from model.PRE.transformation import (
     build_reference_fit_manifest,
     current_transformation_registry,
 )
+from model.common.config import load_config_layers
+from model.common.paths import PROJECT_ROOT
 
 RULE_ID = "EXPECTED_DOWNSTREAM_EXPOSURE"
 RULE_VERSION = "1.0.0"
@@ -44,7 +46,11 @@ STATISTIC_ID = "MEDIAN"
 MINIMUM_SUPPORT_RULE = "MIN_CELL_SIZE_50"
 FALLBACK_HIERARCHY = ("AIRPORT_CELL", "GLOBAL")
 APPLICABILITY_SCOPE = "CONNECTION_AIRPORT_GROUP"
-HORIZON_MINUTES = 360
+HORIZON_MINUTES = int(
+    load_config_layers(PROJECT_ROOT / "configs")
+    .scientific.parameters["downstream_exposure_horizon_minutes"]
+    .value
+)
 
 _LEVEL_CELL = "AIRPORT_CELL"
 _LEVEL_GLOBAL = "GLOBAL"

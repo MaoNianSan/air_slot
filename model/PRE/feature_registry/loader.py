@@ -88,7 +88,7 @@ def load_registry_bundle(
         for priority in priorities:
             if set(priority.rule_ids) - rule_ids:
                 raise RegistryError("priority references unknown rule")
-        consumers = {"PRE", "M1", "M2", "M3", "EXP3", "EVALUATION_ONLY"}
+        consumers = {"PRE", "M1", "M2", "M3", "EVALUATION_ONLY"}
         for rule in rules:
             if not set(rule.downstream_consumers) <= consumers:
                 raise RegistryError("raw-to-consumer boundary violation")

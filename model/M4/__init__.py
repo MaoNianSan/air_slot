@@ -1,20 +1,27 @@
 """M4 V2 monetary interpretation and residual-risk aggregation."""
 
-from .m3_action_interface import M4ActionEnvelopeInput
+from .m3_action_interface import ConsequenceComparisonScope, M4ActionEnvelopeInput
 from .residual_risk import (
     ResidualRiskPolicy,
     RiskEvaluationEnvelope,
     RiskRankingEnvelope,
+    NumericalEvaluationState,
+    SelectionState,
     evaluate_residual_risk,
+    load_active_risk_policy,
     rank_risk_evaluations,
 )
 
 __all__ = [
     "M4ActionEnvelopeInput",
+    "ConsequenceComparisonScope",
     "ResidualRiskPolicy",
     "RiskEvaluationEnvelope",
     "RiskRankingEnvelope",
+    "NumericalEvaluationState",
+    "SelectionState",
     "evaluate_residual_risk",
+    "load_active_risk_policy",
     "rank_risk_evaluations",
 ]
 

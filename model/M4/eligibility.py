@@ -20,12 +20,13 @@ def scenario_opportunities(candidate, m1_scenarios):
         )
         for scenario in m1_scenarios
     ]
-    if candidate.precondition_state == "UNKNOWN" and any(
-        value is None for value in deadlines
-    ):
-        return [1.0 for _ in m1_scenarios]
     if any(value is None for value in deadlines):
-        raise ContractError("ACTION_DEADLINE_UNRESOLVED")
+        reason = (
+            "ACTION_OPPORTUNITY_NOT_INSTANTIATED"
+            if candidate.precondition_state == "UNKNOWN"
+            else "ACTION_DEADLINE_UNRESOLVED"
+        )
+        raise ContractError(reason)
     return [
         1.0 if float(value) > candidate.preparation_time_minutes else 0.0
         for value in deadlines

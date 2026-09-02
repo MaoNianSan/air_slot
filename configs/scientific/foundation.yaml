@@ -23,32 +23,42 @@ parameters:
   roll_minutes: {freeze_state: FROZEN, value: 5}
   roll_sensitivity_minutes: {freeze_state: FROZEN, value: [10]}
   forecast_horizons_minutes: {freeze_state: FROZEN, value: [0, 15, 60]}
-  delay_thresholds_minutes: {freeze_state: FROZEN, value: [15, 30, 60]}
-  m1_hidden_size:
-    freeze_state: DEVELOPMENT_CANDIDATE
-    value: 32
-    provenance:
-      selection_state: DEVELOPMENT_CANDIDATE
-      decision_id: AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE
-      decision_date: "2026-08-22"
-      prior_decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
-      candidate_update_scope: ADD_H8_ONLY
-      target_contract: [T_IB_REMAINING_HAZARD, D_OB, D_TX]
-      candidate_set: [8, 16, 32]
-      selection_metric: EPISODE_BALANCED_JOINT_VALIDATION_LOSS
-      parsimony_rule: "select the smallest H within the 0.5% Development practical-equivalence region; a larger H requires meaningful paired Development improvement"
-      legacy_v1_provenance: "D3_SIGNED_M1_H_W_REFREEZE selected H=32 for [R_IB, DELTA_OB, T_TX]; historical evidence is not V2 selection evidence"
-      final_test_access_count: 0
-  m1_hidden_size_candidates:
+  evaluation_lead_times_minutes:
     freeze_state: FROZEN
-    value: [8, 16, 32]
+    value: [0, 30, 60, 120, 180, 240, 300, 360, 420, 480]
     provenance:
-      selection_state: HUMAN_APPROVED_CANDIDATE_SET
-      decision_id: AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE
-      decision_date: "2026-08-22"
-      prior_decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
-      candidate_update_scope: ADD_H8_ONLY
-      architecture_search_expansion_authorized: false
+      role: EVALUATION_NODE_SLICING_ONLY
+      model_forecast_horizon: false
+      note: "ell is historical decision-node lead time; it is not tau and does not create prediction heads."
+  delay_thresholds_minutes: {freeze_state: FROZEN, value: [15, 30, 60]}
+  downstream_exposure_horizon_minutes:
+    freeze_state: FROZEN
+    value: 360
+    provenance:
+      scientific_object: AIRCRAFT_CHAIN_EXPECTED_DOWNSTREAM_EXPOSURE
+      distinct_from_m1_finite_support: true
+      reference_rules: [EXPECTED_DOWNSTREAM_EXPOSURE@1.0.0, DATA2_DOWNSTREAM_EXPOSURE@1.0.0]
+  m1_hidden_size:
+    freeze_state: FROZEN
+    value: 8
+    provenance:
+      selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
+      decision_id: AIR_SLOT_MODEL_FREEZE_20260901
+      decision_date: "2026-09-01"
+      role: PRIMARY
+      target_contract: [T_IB_REMAINING_HAZARD, D_OB, D_TX]
+      architecture: SINGLE_LAYER_CAUSAL_UNIDIRECTIONAL_GRU
+      legacy_v1_provenance: "H=32 is SUPERSEDED and is not active runtime authority"
+      final_test_access_count: 0
+  m1_sensitivity_hidden_size:
+    freeze_state: FROZEN
+    value: 16
+    provenance:
+      selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
+      decision_id: AIR_SLOT_MODEL_FREEZE_20260901
+      decision_date: "2026-09-01"
+      role: PREDEFINED_SENSITIVITY
+      tuning_candidate: false
       final_test_access_count: 0
   m1_fixed_history_window_minutes:
     freeze_state: SENSITIVITY_ONLY
@@ -136,12 +146,12 @@ parameters:
       final_test_access_count: 0
   m1_v2_d_ob_max_finite_minutes:
     freeze_state: FROZEN
-    value: 210
+    value: 180
     provenance:
       selection_state: HUMAN_APPROVED
       decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
       decision_date: "2026-08-22"
-      support_provenance: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+      support_provenance: AIR_SLOT_MODEL_FREEZE_20260901
       selection_unit: TRAIN_EPISODE_BALANCED
       statistic: UNIQUE_EPISODE_OUTCOME
       calibration_role: DIAGNOSTIC_ONLY
@@ -170,25 +180,29 @@ parameters:
       primitive_targets: [T_IB_A00, D_OB, D_TX]
       derived_targets: [R_IB, D_TO]
       dependency_chain: "T_IB_A00 -> D_OB -> D_TX"
-      state_aware: causal_GRU_H8_H16_H32_DEVELOPMENT_CANDIDATE
+      state_aware: causal_single_layer_unidirectional_GRU_H8_PRIMARY
+      sensitivity: causal_single_layer_unidirectional_GRU_H16_PREDEFINED
       predecessor_head: DISCRETE_HAZARD
       successor_heads: HURDLE_QUANTILE
       successor_conditioning: "D_TX | T_IB_A00, D_OB (formal D_OB only; never signed DELTA_OB)"
       r_ib_identity: "R_IB = max(0, T_IB_A00 - t); derived, never a separate head"
       d_to_identity: "D_TO = D_OB + D_TX per scenario; never a separate head"
       history: FULL_ADAPTIVE_CAUSAL_PREFIX
-      scenario_count: 1000
-      support_sources: "V2_SUPPORT_REFROZEN_AFTER_A2_B2 (m1_v2_t_ib_remaining_max_finite_minutes=360, m1_v2_d_ob_max_finite_minutes=210, m1_v2_d_tx_max_finite_minutes=60, m1_bin_width_minutes=5); selection unit TRAIN_EPISODE_BALANCED; Calibration and Development diagnostic only; Final Test access 0"
+      scenario_count: 64
+      support_sources: "AIR_SLOT_MODEL_FREEZE_20260901 (m1_v2_t_ib_remaining_max_finite_minutes=360, m1_v2_d_ob_max_finite_minutes=180, m1_v2_d_tx_max_finite_minutes=60, m1_bin_width_minutes=5); Final Test access 0"
       training_objective: TARGET_SPECIFIC_EPISODE_BALANCED
       development_selection_metric: EPISODE_BALANCED_JOINT_VALIDATION_LOSS
       legacy_v1: "m1_stochastic_targets=[R_IB, DELTA_OB, T_TX] retained as LEGACY_V1 provenance only; m1_fixed_history_window_minutes=30 migrated to SENSITIVITY_ONLY/HISTORICAL_V1"
       final_test_access_count: 0
   m1_v2_quantile_levels:
-    freeze_state: DEVELOPMENT_ONLY
+    freeze_state: FROZEN
     value: [0.1, 0.3, 0.5, 0.7, 0.9]
     provenance:
-      selection_state: DEVELOPMENT_CANDIDATE
-      note: "manuscript does not freeze numeric positive-quantile levels; DEVELOPMENT_ONLY scaffold pending HUMAN_DECISION_REQUIRED"
+      selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
+      decision_id: AIR_SLOT_MODEL_FREEZE_20260901
+      decision_date: "2026-09-01"
+      role: FROZEN_REPRESENTATION_GRID_NO_PARAMETER_SELECTION
+      note: "Current implemented positive-quantile grid retained as the active model representation; no tuning or reselection performed."
       final_test_access_count: 0
   m1_v2_positive_tail_policy:
     freeze_state: FROZEN
@@ -201,7 +215,7 @@ parameters:
       tail_class_id: OVERFLOW_TAIL
       target_q_max_minutes:
         T_IB_A00: 360
-        D_OB: 210
+        D_OB: 180
         D_TX: 60
       finite_support_bins:
         bin_width_minutes: 5
@@ -216,7 +230,7 @@ parameters:
         no_winsorization: true
       threshold_tuning:
         development_based_threshold_tuning: false
-        q_max_source: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+        q_max_source: AIR_SLOT_MODEL_FREEZE_20260901
       continuous_quantile_queries_above_q_max: "ABSTAIN_EXPLICIT_TAIL_CLASS_REQUIRED"
       note: "Finite support bins encode values below q_max; values at or above q_max are retained as an explicit OVERFLOW_TAIL class with raw observed value and lineage. No scalar tail extrapolation, clamp, truncation, deletion, or winsorization is permitted."
       cvar_alpha_reference: 0.90
@@ -240,22 +254,38 @@ parameters:
       successor_zero_mass_calibration: HURDLE_ZERO_BINARY_CE_TEMPERATURE
       positive_quantile_calibration: QUANTILE_CALIBRATION_NOT_APPLIED
       split: calibration
-      note: "no fitted calibration artifact yet; shared by STATE_AWARE and FAST; Final Test forbidden"
+      split_start: 2019-07-01
+      split_end: 2019-07-31
+      primitive_calibration_objects: [T_IB_A00_HAZARD, D_OB_ZERO_MASS, D_TX_ZERO_MASS]
+      path_semantics: "STATE_AWARE and FAST share the policy and output contract; fitted temperatures remain model/checkpoint specific"
+      active_primary_artifact_status: NOT_MATERIALIZED_FOR_H8
+      superseded_artifact: artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json
+      superseded_artifact_scope: H32_AND_CURRENT_ONLY_ONLY
+      note: "Do not apply the H32/CURRENT_ONLY fitted temperatures to H8; no recalibration is performed by model freeze."
       final_test_access_count: 0
-  scenario_count: {freeze_state: FROZEN, value: 1000}
-  m1_warning_model_artifact:
+  m1_episode_partition_contract:
     freeze_state: FROZEN
-    value: artifacts/diagnostics/v5_development_freeze/M1_SIGNED_WARNING_MODEL_V1.pt
+    value: SUCCESSOR_SERVICE_DATE_EPISODE_ATOMIC
     provenance:
-      selection_state: DEVELOPMENT_FROZEN
-      decision_id: D3_SIGNED_M1_H_W_REFREEZE
-      decision_date: "2026-08-17"
-      selection_rule: FIRST_PRE_REGISTERED_W_SEED
-      training_seed: 20260813
-      source_checkpoint: artifacts/diagnostics/v5_development_freeze/runs_signed_wstar/W30_H32_seed20260813.pt
-      artifact_hash: sha256:a522985e07564c34d947b8ca891b1b3bf810ac0044e0b578710cd693957215db
-      manifest: artifacts/diagnostics/v5_development_freeze/M1_SIGNED_WARNING_MODEL_V1_MANIFEST.json
-      principal_event: D_TO_POST_GT_30
-      final_test_access_count: 0
+      partitions:
+        train: [2019-01-01, 2019-06-30]
+        calibration: [2019-07-01, 2019-07-31]
+        development: [2019-08-01, 2019-09-30]
+        test: [2019-10-01, OPEN]
+      invariant: "all rolling nodes for one (f-, f+) episode remain in one partition"
+  m1_episode_weighting_contract:
+    freeze_state: FROZEN
+    value: TARGET_SPECIFIC_INVERSE_ELIGIBLE_NODE_COUNT
+    provenance:
+      formula: "w_i,n = 1/N_i for eligible nodes of each target/loss component"
+      episode_total_weight: 1.0
+  m1_scenario_random_key_contract:
+    freeze_state: FROZEN
+    value: SHA256_STABLE_KEY_V2
+    provenance:
+      key_fields: [global_seed, episode_id, scenario_id, target_identity]
+      excludes: [worker_order, batch_order, cpu_count, decision_node_id]
+      invariant: "same scientific input and seed imply the same scenario lineage"
+  scenario_count: {freeze_state: FROZEN, value: 64}
   m4_lambda: {freeze_state: FROZEN, value: 0.25}
   m4_alpha: {freeze_state: FROZEN, value: 0.90}

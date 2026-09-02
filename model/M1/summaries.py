@@ -2,7 +2,7 @@ import numpy as np
 
 from .semantics import (
     DELAY_THRESHOLDS_MINUTES,
-    EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES,
+    EVALUATION_LEAD_TIMES_MINUTES,
     FORMAL_FORECAST_HORIZONS_MINUTES,
 )
 
@@ -130,7 +130,7 @@ def horizon_summaries(
     """
     horizons = tuple(horizons)
     allowed = set(FORMAL_FORECAST_HORIZONS_MINUTES) | set(
-        EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES
+        EVALUATION_LEAD_TIMES_MINUTES
     )
     if not set(horizons) <= allowed:
         raise ValueError(f"UNKNOWN_FORECAST_HORIZON:{sorted(set(horizons) - allowed)}")

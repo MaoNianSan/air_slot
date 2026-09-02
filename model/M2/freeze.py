@@ -58,7 +58,15 @@ FORMAL_SCOPE = M2_FORMAL_SCOPE
 AGGREGATION_RULE = "SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED"
 SUPPORT_RULE = "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY"
 OUTSIDE_SCOPE = ("P_itinerary", "P_service")
-SEVEN_SCOPE = (*FORMAL_SCOPE, *OUTSIDE_SCOPE)
+SEVEN_SCOPE = (
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating",
+)
 
 _NATIVE_DEFINITIONS = M2_NATIVE_DEFINITIONS
 
@@ -78,6 +86,10 @@ class M2Data2FormalCuRegistry(FrozenModel):
     paper_full_run: bool = False
     assumption_grounded: dict[str, Any] | None = None
     assumption_scale_artifact: dict[str, dict[str, Any]] | None = None
+    comparison_scope_contract: dict[str, Any] | None = None
+    numeric_scale_adoption: dict[str, Any] | None = None
+    scientific_status: str = "FROZEN"
+    implementation_status: str = "MATCH"
     registry_hash: str = ""
 
     @model_validator(mode="after")
@@ -96,6 +108,11 @@ class M2Data2FormalCuRegistry(FrozenModel):
                 raise ContractError("M2_V2_FORMAL_SCOPE_MISMATCH")
             if not self.assumption_grounded or not self.assumption_scale_artifact:
                 raise ContractError("M2_V2_ASSUMPTION_GROUNDED_MISSING")
+        elif self.registry_id == "M2_DATA2_FORMAL_CU_V3":
+            if tuple(self.formal_scope) != tuple(SEVEN_SCOPE) or len(self.formal_scope) != len(set(self.formal_scope)):
+                raise ContractError("M2_V3_FORMAL_SCOPE_MISMATCH")
+            if self.assumption_scale_artifact:
+                raise ContractError("M2_V3_MUST_NOT_USE_ASSUMPTION_SCALES")
         else:
             raise ContractError("M2_REGISTRY_IDENTITY_UNKNOWN")
         if set(self.component_weights) != set(self.formal_scope):
@@ -103,6 +120,8 @@ class M2Data2FormalCuRegistry(FrozenModel):
         if any(weight != 1.0 for weight in self.component_weights.values()):
             raise ContractError("M2_COMPONENT_WEIGHT_NOT_UNITY")
         assumption_components = set(self.assumption_scale_artifact or {})
+        if self.registry_id == "M2_DATA2_FORMAL_CU_V3" and set(self.train_scale_artifact) != set(SEVEN_SCOPE):
+            raise ContractError("M2_V3_REQUIRES_SEVEN_TRAIN_SCALES")
         missing = (
             set(self.formal_scope)
             - set(self.train_scale_artifact)
@@ -110,7 +129,21 @@ class M2Data2FormalCuRegistry(FrozenModel):
         )
         if missing:
             raise ContractError(f"M2_TRAIN_SCALE_ARTIFACT_MISSING:{sorted(missing)}")
-        required = {"turnaround", "taxi", "downstream_exposure", "passenger"}
+        if self.registry_id == "M2_DATA2_FORMAL_CU_V2":
+            expected_assumptions = {"P_itinerary", "P_service"}
+            if assumption_components != expected_assumptions:
+                raise ContractError("M2_V2_ASSUMPTION_NORMALIZATION_SET_MISMATCH")
+            for component in expected_assumptions:
+                item = self.assumption_scale_artifact[component]
+                if item.get("normalization_status") != "ASSUMPTION_EVENT_NORMALIZATION":
+                    raise ContractError("M2_V2_ASSUMPTION_NORMALIZATION_STATUS_INVALID")
+                if item.get("empirical_train_positive_median") is not False:
+                    raise ContractError("M2_V2_ASSUMPTION_SCALE_CANNOT_CLAIM_EMPIRICAL_MEDIAN")
+        required = (
+            {"turnaround", "taxi", "downstream_exposure", "expected_pax", "connection_share"}
+            if self.registry_id == "M2_DATA2_FORMAL_CU_V3"
+            else {"turnaround", "taxi", "downstream_exposure", "passenger"}
+        )
         if set(self.reference_artifacts) != required:
             raise ContractError("M2_REFERENCE_ARTIFACT_SET_MISMATCH")
         if self.registry_hash and self.registry_hash != self.digest():
@@ -126,6 +159,10 @@ class M2Data2FormalCuRegistry(FrozenModel):
             payload.pop("assumption_grounded", None)
         if payload.get("assumption_scale_artifact") is None:
             payload.pop("assumption_scale_artifact", None)
+        if payload.get("comparison_scope_contract") is None:
+            payload.pop("comparison_scope_contract", None)
+        if payload.get("numeric_scale_adoption") is None:
+            payload.pop("numeric_scale_adoption", None)
         return payload
 
     def digest(self) -> str:
@@ -142,8 +179,19 @@ class M2Data2FormalCuRegistry(FrozenModel):
         return value
 
     def component_definition(self, component: str) -> str:
-        if component in self.train_scale_artifact:
-            return self.train_scale_artifact[component]["definition"]
+        scale = self.train_scale_artifact.get(component)
+        if scale is not None:
+            return str(
+                scale.get(
+                    "active_quantity_definition",
+                    scale.get(
+                        "definition",
+                        self.native_quantity_definitions.get(component, {}).get(
+                            "definition", component
+                        ),
+                    ),
+                )
+            )
         return self.native_quantity_definitions[component]["definition"]
 
 

@@ -88,3 +88,12 @@ artifacts/paper_results_v1/exp2/M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet
 # M2 Final Test consequences parquet (~304MB) exceeds GitHub's 100MB hard
 # limit; regenerable from the frozen Final Test input & lineage caches.
 artifacts/paper_results_v2_final_test_rmb/exp2/M2_FINAL_TEST_CONSEQUENCES.parquet
+
+# ===== Over-100MB regenerable passenger-reference freeze (GitHub hard limit) =====
+# T100 expected-pax-per-flight reference JSON (~312MB) exceeds GitHub's 100MB
+# hard limit; regenerable via the passenger-reference freeze materialization
+# pipeline (see materialization.log / PASSENGER_REFERENCE_MANIFEST.json).
+artifacts/diagnostics/passenger_reference_freeze/T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json
+
+# ===== Local reference material (not tracked; user decision 2026-09-02) =====
+Rolling_Airline_Recovery (4).pdf

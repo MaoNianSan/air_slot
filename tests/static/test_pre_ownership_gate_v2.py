@@ -9,4 +9,3 @@ def test_pre_ownership_gate_v2_passes():
     assert result["STATIC_VOLUME_GATE"] == "PASS", result["volume_failures"]
     assert result["PRE_DATA_CONSTRUCTION_OUTSIDE_PRE"] == 0
     assert result["MODEL_LOGIC_OUTSIDE_MODEL"] == 0
-    assert result["EXP_LOGIC_OUTSIDE_EXP"] == 0

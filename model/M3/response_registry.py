@@ -137,8 +137,8 @@ class ResponseScenarioRegistry(FrozenModel):
         ids = tuple(self.actions)
         if len(ids) != len(set(ids)):
             raise RegistryError("M3_RESPONSE_DUPLICATE_ACTION_ID")
-        if not set(PRINCIPAL_IDS) <= set(ids):
-            raise RegistryError("M3_RESPONSE_PRINCIPAL_ACTION_SUBSET_MISMATCH")
+        if ids != PRINCIPAL_IDS:
+            raise RegistryError("M3_RESPONSE_PRINCIPAL_ACTION_EXACT_SET_MISMATCH")
         unknown = set(self.tiers) - {f"T{i}" for i in range(1, 7)}
         if unknown:
             raise RegistryError("M3_RESPONSE_UNKNOWN_TIER")

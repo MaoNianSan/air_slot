@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "interface_version": "2.1.0",
   "design_status": "FROZEN",
-  "formal_aggregate_status": "FORMAL_AGGREGATE_UNRESOLVED",
+  "formal_aggregate_status": "COMPONENT_INTERFACE_FROZEN_M4_SCOPE_EXPLICIT",
   "component_order": [
     "F_continuity",
     "F_execution",
@@ -13,6 +13,11 @@
     "P_service",
     "R_operating"
   ],
+  "ontology_contract": {
+    "K": ["F_continuity", "F_execution", "F_propagation", "P_time", "P_itinerary", "P_service", "R_operating"],
+    "comparison_scope_owner": "M4",
+    "comparison_scope_default": null
+  },
   "components": {
     "F_continuity": {
       "aspect": "Flight",
@@ -47,14 +52,20 @@
       "mechanism": "itinerary disruption events",
       "native_unit": "events",
       "source_type": "DATA",
-      "support_class": "ABSTAIN"
+      "support_class": "ABSTAIN",
+      "definition_form": "g_itin(D_TO, itinerary_buffer_reference)",
+      "reference_object": "M2_ITINERARY_BUFFER_ASSUMPTION_V1",
+      "default_context_status": "ABSTAIN"
     },
     "P_service": {
       "aspect": "Passenger",
       "mechanism": "service-policy threshold events",
       "native_unit": "threshold_events",
       "source_type": "OPERATIONAL_RULE",
-      "support_class": "ABSTAIN"
+      "support_class": "ABSTAIN",
+      "definition_form": "g_service(D_TO, service_policy_reference)",
+      "reference_object": "M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
+      "default_context_status": "ABSTAIN"
     },
     "R_operating": {
       "aspect": "Resource",
@@ -64,9 +75,9 @@
       "support_class": "AVAILABLE_FROM_M1"
     }
   },
-  "cu_definition": "C_k_CU = q_k_native / c_k_train_or_reference_frozen",
-  "cu_normalization_registry_id": "M2_DATA2_FORMAL_CU_V2_PENDING",
-  "cu_normalization_status": "HUMAN_DECISION_REQUIRED",
+  "cu_definition": "Principal components: C_k_CU=q_k_native/Median_Train(q_k>0); P_itinerary/P_service: explicit assumption event normalization, never empirical median",
+  "cu_normalization_registry_id": "M2_DATA2_FORMAL_CU_V2",
+  "cu_normalization_status": "FROZEN",
   "monetary_mapping_layer": "M4_ONLY",
   "downstream_fallback_hierarchy": [
     "SAME_AIRCRAFT_SUCCESSOR_CHAIN",

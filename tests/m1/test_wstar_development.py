@@ -1,8 +1,8 @@
 import pytest
 
-from exp.exp1.development.wstar import (
+from model.M1.development_selection import (
     SECONDARY_TRAINING_SEEDS,
-    recommend_window,
+    recommend_history_window,
 )
 
 
@@ -11,7 +11,7 @@ def test_secondary_w_seeds_use_frozen_v5_sequence_prefix():
 
 
 def test_w_recommendation_prefers_shorter_equivalent_history():
-    raw_best, recommendation, relative, equivalent = recommend_window({
+    raw_best, recommendation, relative, equivalent = recommend_history_window({
         30: 4.05,
         60: 4.018,
         120: 4.0,
@@ -24,7 +24,7 @@ def test_w_recommendation_prefers_shorter_equivalent_history():
 
 
 def test_w_recommendation_keeps_raw_best_when_shorter_is_not_equivalent():
-    raw_best, recommendation, _, equivalent = recommend_window({
+    raw_best, recommendation, _, equivalent = recommend_history_window({
         30: 4.1,
         60: 4.04,
         120: 4.0,

@@ -3,7 +3,7 @@
 import ast
 from pathlib import Path
 
-PRODUCTION_ROOTS = ("model", "exp", "validation")
+PRODUCTION_ROOTS = ("model", "validation")
 
 # Formal runtime has no large-file exemptions. Archived implementations live
 # under ``archive/`` and are intentionally outside production roots.

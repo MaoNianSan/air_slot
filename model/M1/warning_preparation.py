@@ -3,7 +3,7 @@
 The regular PRE publisher intentionally returns typed ``PREState`` objects for
 audits and bounded cohorts.  Full Development keeps the same field semantics
 but retains only the M1 feature row and the small set of evaluation metadata
-needed by Exp1.
+needed by model-level warning evaluation.
 """
 
 from __future__ import annotations

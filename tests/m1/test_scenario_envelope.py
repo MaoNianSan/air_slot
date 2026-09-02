@@ -1,6 +1,9 @@
 from model.M1.contracts import HazardBinContract, HurdleQuantileContract
-from model.M1.scenario_envelope import JointScenarioEnvelope, TargetScenarioEnvelope
-from exp.workflows.m1_v2_current_stage_scenario_envelope import _class_envelope
+from model.M1.scenario_envelope import (
+    JointScenarioEnvelope,
+    TargetScenarioEnvelope,
+    class_envelope,
+)
 
 
 LINEAGE = ("test:lineage",)
@@ -8,7 +11,7 @@ LINEAGE = ("test:lineage",)
 
 def _delay_contract():
     return HurdleQuantileContract(
-        target_name="D_OB", max_finite_minutes=210, bin_width_minutes=5,
+        target_name="D_OB", max_finite_minutes=180, bin_width_minutes=5,
         quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
         upper_tail_policy="FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
     )
@@ -16,12 +19,12 @@ def _delay_contract():
 
 def test_zero_and_first_positive_bin_have_distinct_public_identity():
     contract = _delay_contract()
-    zero = _class_envelope(
+    zero = class_envelope(
         target="D_OB", index=0, conditioning_index=0, contract=contract,
         source_role="MODEL_DRAW", decision_time="2019-08-01T00:00:00+00:00",
         scalar=0.0, lineage=LINEAGE,
     )
-    positive = _class_envelope(
+    positive = class_envelope(
         target="D_OB", index=0, conditioning_index=0, contract=contract,
         source_role="MODEL_DRAW", decision_time="2019-08-01T00:00:00+00:00",
         scalar=2.5, lineage=LINEAGE,
@@ -34,7 +37,7 @@ def test_zero_and_first_positive_bin_have_distinct_public_identity():
 
 def test_tail_class_has_no_scalar_and_can_retain_supported_candidate():
     contract = _delay_contract()
-    tail = _class_envelope(
+    tail = class_envelope(
         target="D_OB", index=contract.overflow_index,
         conditioning_index=contract.overflow_index, contract=contract,
         source_role="MODEL_DRAW", decision_time="2019-08-01T00:00:00+00:00",
@@ -54,18 +57,18 @@ def test_joint_d_to_abstains_when_a_primitive_is_tail():
         quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
         upper_tail_policy="FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS",
     )
-    ib = _class_envelope(
+    ib = class_envelope(
         target="T_IB_A00", index=0, conditioning_index=0, contract=hazard,
         source_role="MODEL_DRAW", decision_time="2019-08-01T00:00:00+00:00",
         scalar=2.5, event_time_utc="2019-08-01T00:02:30+00:00", lineage=LINEAGE,
     )
-    d_ob = _class_envelope(
+    d_ob = class_envelope(
         target="D_OB", index=d_ob_contract.overflow_index,
         conditioning_index=d_ob_contract.overflow_index, contract=d_ob_contract,
         source_role="MODEL_DRAW", decision_time="2019-08-01T00:00:00+00:00",
         scalar=None, lineage=LINEAGE,
     )
-    d_tx = _class_envelope(
+    d_tx = class_envelope(
         target="D_TX", index=0, conditioning_index=0, contract=d_tx_contract,
         source_role="MODEL_DRAW", decision_time="2019-08-01T00:00:00+00:00",
         scalar=0.0, lineage=LINEAGE,
@@ -88,7 +91,7 @@ def test_factual_tail_preserves_raw_value_separately():
     tail = TargetScenarioEnvelope(
         target_name="D_OB", class_index=contract.overflow_index + 1,
         conditioning_index=contract.overflow_index, class_id="OVERFLOW_TAIL",
-        class_lower_minutes=210.0, scalar_minutes=None, raw_observed_minutes=240.0,
+        class_lower_minutes=180.0, scalar_minutes=None, raw_observed_minutes=240.0,
         source_role="FACTUAL_OBSERVED", support_state="SUPPORTED",
         scalar_support_state="ABSTAIN_TAIL_CLASS", overflow=True, lineage=LINEAGE,
     )

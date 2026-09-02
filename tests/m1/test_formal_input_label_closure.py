@@ -143,10 +143,10 @@ def test_formal_pipeline_uses_frozen_target_supports():
     pipeline=M1Pipeline.from_scientific_config(scientific,input_size=len(FEATURE_NAMES_V2),
                                                normalization=_normalization(), hidden_size=16)
     assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
-        "T_IB_REMAINING_HAZARD":360,"D_OB":210,"D_TX":60}
-    assert pipeline.bins["D_OB"].positive_bin_count == 42
-    assert pipeline.bins["D_OB"].class_count == 43
-    for target, finite, overflow in (("T_IB_REMAINING_HAZARD",360,365),("D_OB",210,215),("D_TX",60,65)):
+        "T_IB_REMAINING_HAZARD":360,"D_OB":180,"D_TX":60}
+    assert pipeline.bins["D_OB"].positive_bin_count == 36
+    assert pipeline.bins["D_OB"].class_count == 37
+    for target, finite, overflow in (("T_IB_REMAINING_HAZARD",360,365),("D_OB",180,185),("D_TX",60,65)):
         bins=pipeline.bins[target]
         assert bins.encode(finite-0.001) == bins.class_count-2
         assert bins.encode(finite) == bins.class_count-1
@@ -174,7 +174,7 @@ def test_formal_v2_pipeline_does_not_require_legacy_support_names():
         normalization=_normalization(),hidden_size=16,
     )
     assert {name:item.max_finite_minutes for name,item in pipeline.bins.items()} == {
-        "T_IB_REMAINING_HAZARD":360,"D_OB":210,"D_TX":60}
+        "T_IB_REMAINING_HAZARD":360,"D_OB":180,"D_TX":60}
 
 
 def test_output_support_change_cannot_change_full_input_history():

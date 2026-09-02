@@ -2,7 +2,6 @@ import pytest
 
 from model.M2.context import (
     AirportReferenceKeys,
-    build_exp2_fixed_scope_pending,
     build_m2_context,
     build_m2_frozen_scope,
     load_data2_reference_bundle,
@@ -111,8 +110,10 @@ def test_mapping_uses_frozen_context():
     assert by_component["F_propagation"].native_quantity == 20.0
     assert by_component["P_time"].native_quantity == 2000.0
     assert by_component["R_operating"].native_quantity == 0.0
-    assert by_component["P_itinerary"].support_state is SupportState.ABSTAIN
-    assert by_component["P_service"].support_state is SupportState.ABSTAIN
+    assert by_component["P_itinerary"].native_quantity == 0.0
+    assert by_component["P_itinerary"].support_state is SupportState.SUPPORTED
+    assert by_component["P_service"].native_quantity == 0.0
+    assert by_component["P_service"].support_state is SupportState.SUPPORTED
 
 
 def test_d_to_identity_consumes_formal_scenario_fields():

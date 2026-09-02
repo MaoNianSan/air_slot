@@ -1,43 +1,40 @@
 # Air Slot
 
-Air Slot is an evidence-aware airline-recovery research implementation. The scientific chain is:
+Air Slot is an evidence-aware airline-recovery research implementation. Its
+current scientific chain is:
 
 ```text
-RAW -> PRE -> M1 -> M2 -> M4 -> Formal Decision Artifact -> evaluation / Exp1-4
-                    ^
-                    M3 (independent atomic action/response library)
+raw data (read only) -> PRE -> M1 -> M2 -> M3 -> M4
 ```
 
-PRE answers what may be known at decision time. M1 models unresolved operational state. M2 maps
-that state to the fixed seven-component consequence ontology. M3 represents atomic recovery
-actions and response provenance; it is not a sequential learner after M2. M4 is the only formal
-action-comparison and ranking layer.
+- `model/PRE/` owns decision-time admissibility, typed publication, evidence,
+  and lineage.
+- `model/M1/` models unresolved operational state.
+- `model/M2/` maps state scenarios to the seven-component consequence ontology.
+- `model/M3/` owns atomic action, factual-eligibility, and response contracts.
+- `model/M4/` owns monetary mapping, residual-risk evaluation, and labelled
+  ranking. Ranking is not an operational recommendation.
+- `registries/` contains versioned source and scientific contracts.
+- `validation/` contains bounded model/scientific checks.
+- `artifacts/diagnostics/` contains justified model diagnostics; it is not a
+  paper-results pipeline.
 
-Data2 (BTS 2019 and its frozen references) is the principal empirical environment. Data1
-(OpenSky/METAR/Eurostat sources) is the cross-evidence-environment portability family. Raw schema differences stop at
-the PRE adapter/registry boundary. `model/` owns scientific contracts, `exp/` owns evaluation-only
-contrasts, `validation/` owns bounded checks, `configs/` separates scientific/evaluation/runtime
-settings, and `registries/` owns source and action definitions.
+`data1/` and `data2/` are independent, read-only data environments. Raw schema
+differences stop at PRE. Model code must not create caches, indexes, temporary
+files, or documentation inside either data root.
 
-The V5 experiment layer uses one cross-experiment contract, named RNG streams, immutable formal
-artifacts, controlled Exp1-Exp4 evaluation, and read-only publication generation. Engineering
-presence does not imply real-data paper readiness. See
-`docs/EXPERIMENT_V5_IMPLEMENTATION_AUDIT.md` and the generated status manifests before any larger run.
-The local output map is in [`OUTPUT_INDEX.md`](OUTPUT_INDEX.md); runtime outputs,
-diagnostic artifacts, and human-readable reports are kept in separate roots.
+The old Exp1-Exp4 implementation and old Section 5 paper-result pipeline are
+retired. There is no active `exp/` package, and the future experiment suite has
+not yet been redesigned. No model import or execution path may depend on an old
+experiment output.
 
-Use the current Python 3.11 interpreter directly:
+Authoritative current documentation:
 
-```text
-python -m pip install -r requirements.txt
-python -m validation.cli all --fixtures-only
-pytest -q
-python -m exp.cli smoke-all --output artifacts/diagnostics/v5_smoke
-python -m exp.cli status --output .
-```
+- [Architecture](docs/ARCHITECTURE.md)
+- [Data and evidence boundary](docs/DATA_AND_EVIDENCE_BOUNDARY.md)
+- [Action and decision contract](docs/ACTION_DECISION_CONTRACT.md)
+- [Model validation](docs/MODEL_VALIDATION.md)
 
-Formal experiment modes are `smoke`, `development`, `paper_full`, and `numerical_stress`. `FAST`
-is an M1 computational path, not an experiment mode. `paper_full` requires explicit approval and a
-fully passing cross-contract gate. The bounded smoke is non-paper evidence; formal Exp1-Exp4 Final
-Test, paper promotion, and numerical-stress execution have not run. The Development-scope LLM audit (Exp3.7 V2, state-conditioned operational reasonableness explanation) completed on the frozen scenario artifact; the Final Test remains untouched. Hidden-size selection
-is Development-frozen at `H=32` / `W=30 minutes` (decisions `D2_H_STAR` / `D3_SIGNED_M1_H_W_REFREEZE`); no Final Test selection was used.
+Use the current Python 3.11 environment directly. Run model tests with
+`python -m pytest -q tests/pre tests/m1 tests/m2 tests/m3 tests/m4 tests/contract tests/integration`.
+No Final Test or paper experiment is authorized by this command.

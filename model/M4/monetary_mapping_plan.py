@@ -1,4 +1,4 @@
-"""M-FROZEN candidate: constructed EUR monetary mapping plan (G-Monetary).
+"""Superseded constructed-EUR contract retained for historical provenance.
 
 Functional form fixed by contract (G-Monetary, Path B supplement 2.2, decision
 2026-08-24 D1 = OPTION_A_DUAL_LAYER with EUR-native ops labels):
@@ -18,6 +18,9 @@ conversion".  Registry-level numeric freeze (FROZEN_ASSUMPTION_GROUNDED) is
 per-component: components whose literature anchor exists carry numeric
 values; components whose per-CU anchor is not in the retrieved literature
 stay ``HUMAN_DECISION_REQUIRED`` with an explicit reason (no zero-fill).
+
+This module is not active model authority. The active loader is
+``model.M4.scientific_registry`` and accepts only the frozen RMB BASE registry.
 """
 
 from __future__ import annotations

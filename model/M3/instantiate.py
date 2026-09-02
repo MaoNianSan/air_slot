@@ -1,61 +1,82 @@
+from dataclasses import dataclass
+
 from model.common.identity import content_id
-from .contracts import CandidateAction
+from .contracts import ActionInstantiationRecord, CandidateAction, InstantiationState
+from .factual_adapter import adapt_pre_state, evaluate_action_facts
 
 
-def instantiate_candidates(
+@dataclass(frozen=True)
+class ActionInstantiationEvaluation:
+    """χ_inst for one template, independent of its factual conditions."""
+
+    state: InstantiationState
+    parameters: dict[str, object]
+    missing_parameters: tuple[str, ...]
+    reason: str
+
+
+def evaluate_action_instantiation(template, adapted) -> ActionInstantiationEvaluation:
+    """Evaluate whether the declared mathematical action parameters exist."""
+    parameters = {
+        name: adapted.parameters.get(name) for name in template.required_parameters
+    }
+    missing = tuple(name for name, value in parameters.items() if value is None)
+    if missing:
+        return ActionInstantiationEvaluation(
+            state=InstantiationState.NOT_FORMED,
+            parameters=parameters,
+            missing_parameters=missing,
+            reason="REQUIRED_PARAMETER_MISSING",
+        )
+    return ActionInstantiationEvaluation(
+        state=InstantiationState.FORMED,
+        parameters=parameters,
+        missing_parameters=(),
+        reason="REQUIRED_PARAMETERS_PRESENT",
+    )
+
+
+def instantiate_action_records(
     pre_state: dict, registry, *, response_registry=None, sensitivity="BASE"
 ):
+    """Return one auditable instantiation record for every action template."""
+    adapted = adapt_pre_state(pre_state)
     if not isinstance(pre_state, dict):
-        values = {
-            **pre_state.predecessor_state,
-            **pre_state.current_state,
-            **pre_state.successor_state,
-            **pre_state.reference_state.entries,
-        }
-        facts = {
-            name: (
-                None
-                if str(value.support_state.value) == "ABSTAIN"
-                else bool(value.value)
-            )
-            for name, value in values.items()
-        }
-        episode_parameters = {
-            name: (None if str(value.support_state.value) == "ABSTAIN" else value.value)
-            for name, value in values.items()
-        }
         episode_id = pre_state.decision_node.episode_id
         decision_node_id = pre_state.decision_node.decision_node_id
     else:
-        facts = pre_state.get("facts", {})
-        episode_parameters = pre_state.get("parameters", {})
         episode_id = pre_state["episode_id"]
         decision_node_id = pre_state["decision_node_id"]
-    candidates = []
+    records = []
     for action_index, template in enumerate(registry.templates):
-        # I(a): factual eligibility from current state only.
-        structural_states = [facts.get(name) for name in template.required_facts]
-        precondition = (
-            "FALSE"
-            if any(value is False for value in structural_states)
-            else (
-                "UNKNOWN"
-                if any(value is None for value in structural_states)
-                else "TRUE"
+        # χ_fact is recorded on the instance; it does not decide χ_inst.
+        factual = evaluate_action_facts(template, adapted)
+        precondition = factual.state.value
+        instantiation = evaluate_action_instantiation(template, adapted)
+        if instantiation.state is not InstantiationState.FORMED:
+            records.append(
+                ActionInstantiationRecord(
+                    template_id=template.template_id,
+                    instantiation_state=instantiation.state,
+                    reason=instantiation.reason,
+                    missing_required_parameters=instantiation.missing_parameters,
+                    source=(
+                        f"registry_id={registry.registry_id}",
+                        f"registry_schema_version={registry.schema_version}",
+                    ),
+                    lineage=(
+                        f"episode_id={episode_id}",
+                        f"decision_node_id={decision_node_id}",
+                        f"action_index={action_index}",
+                    ),
+                    candidate=None,
+                )
             )
-        )
-        if precondition == "FALSE":
             continue
-        # I(a) also requires named action parameters to be instantiable.
-        parameter_values = {
-            name: episode_parameters.get(name) for name in template.required_parameters
-        }
-        if any(value is None for value in parameter_values.values()):
-            continue  # I(a)=0: not in A_{i,t}; never silently fabricated.
         parameters = {
             "episode_id": episode_id,
             "decision_node_id": decision_node_id,
-            **parameter_values,
+            **instantiation.parameters,
         }
         stable_parameters = {
             name: value
@@ -88,8 +109,7 @@ def instantiate_candidates(
             response_parameters = merged
             response_registry_id = response_registry.registry_id
             response_registry_hash = response_registry.digest()
-        candidates.append(
-            CandidateAction(
+        candidate = CandidateAction(
                 candidate_action_id=f"{template.template_id}:{identity.split(':')[1][:16]}",
                 template_id=template.template_id,
                 action_family=template.family,
@@ -97,7 +117,7 @@ def instantiate_candidates(
                 candidate_index=0,
                 parameters=parameters,
                 precondition_state=precondition,
-                instantiable=True,
+                instantiation_state=instantiation.state,
                 authority_capabilities=template.authority_capabilities,
                 mitigation=template.mitigation,
                 induced=template.induced,
@@ -113,6 +133,42 @@ def instantiate_candidates(
                 coverage=template.coverage,
                 preparation_time_minutes=template.preparation_time_minutes,
                 deadline_semantics=template.deadline_semantics,
+                precondition_reason=factual.reason,
+                factual_provenance=factual.provenance,
+            )
+        records.append(
+            ActionInstantiationRecord(
+                template_id=template.template_id,
+                instantiation_state=instantiation.state,
+                reason=instantiation.reason,
+                missing_required_parameters=instantiation.missing_parameters,
+                source=(
+                    f"registry_id={registry.registry_id}",
+                    f"registry_schema_version={registry.schema_version}",
+                ),
+                lineage=(
+                    f"episode_id={episode_id}",
+                    f"decision_node_id={decision_node_id}",
+                    f"action_index={action_index}",
+                    *factual.provenance,
+                ),
+                candidate=candidate,
             )
         )
-    return tuple(candidates)
+    return tuple(records)
+
+
+def instantiate_candidates(
+    pre_state: dict, registry, *, response_registry=None, sensitivity="BASE"
+):
+    """Compatibility projection containing only formed candidates."""
+    return tuple(
+        record.candidate
+        for record in instantiate_action_records(
+            pre_state,
+            registry,
+            response_registry=response_registry,
+            sensitivity=sensitivity,
+        )
+        if record.instantiation_state is InstantiationState.FORMED
+    )

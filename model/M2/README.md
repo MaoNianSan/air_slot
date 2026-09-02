@@ -8,7 +8,7 @@ M1V2Scenario envelope -> native consequence quantities -> CU normalization
                  -> ComponentVector -> FormalEstimandValue
 ```
 
-Native quantities and CU normalization are separate responsibilities. Unsupported quantities remain null
+Native quantities and CU normalization are separate responsibilities. `P_time` uses T-100 expected passengers per performed flight; `P_itinerary` uses a DB1B historical continuation share with a strict 45-minute threshold; `P_service` uses a strict 180-minute threshold. These remain aggregate/reference quantities, not observed passenger outcomes. Unsupported quantities remain null
 with explicit support; they are never silently converted to zero. `ConsequenceScope` and
 `FormalEstimandValue` are the authoritative M4 interface. Available-component diagnostics are not
 formal ranking values. The current `ValuationRegistry.smoke()` path is development evidence, not a

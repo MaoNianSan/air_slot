@@ -18,6 +18,7 @@ from model.M3.m2_action_interface import (
     M3ActionConditionedConsequence,
     M3BaselineConsequenceInput,
 )
+from model.M3.contracts import InstantiationState
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.enums import SupportState
 from model.common.errors import ContractError
@@ -189,6 +190,7 @@ class ActionEvaluationEnvelope(FrozenModel):
 
     action_id: str = Field(min_length=1)
     action_family: str = Field(min_length=1)
+    instantiation_state: InstantiationState = InstantiationState.FORMED
     eligibility: ActionEligibility
     response_rule: ActionResponseRule
     input_scenario_ids: tuple[int, ...]
@@ -199,8 +201,8 @@ class ActionEvaluationEnvelope(FrozenModel):
 
     @model_validator(mode="after")
     def scenario_and_contract_identity(self):
-        if self.eligibility.state is EligibilityState.INELIGIBLE:
-            raise ValueError("M3_INELIGIBLE_ACTION_CANNOT_HAVE_EVALUATION")
+        if self.instantiation_state is not InstantiationState.FORMED:
+            raise ValueError("M3_NONINSTANTIATED_ACTION_CANNOT_HAVE_CONSEQUENCE_ENVELOPE")
         if not (
             self.action_id == self.eligibility.action_id == self.response_rule.action_id
         ) or not (
@@ -258,7 +260,11 @@ class ActionEvaluationEnvelope(FrozenModel):
             "decision_node_id": self.scenario_evaluations[0].decision_node_id,
             "action_id": self.action_id,
             "action_family": self.action_family,
+            "instantiation_state": self.instantiation_state.value,
             "eligibility_state": self.eligibility.state.value,
+            "opportunity_state": (
+                "NOT_REQUIRED" if self.action_id == "A00" else "NOT_INSTANTIATED"
+            ),
             "eligibility_id": self.eligibility.eligibility_id,
             "response_support": self.response_rule.support_state.value,
             "response_rule_id": self.response_rule.response_rule_id,
@@ -382,8 +388,9 @@ def build_conditional_scenario_envelope(
     """
     if not baselines:
         raise ValueError("M3_CONDITIONAL_REQUIRES_BASELINE_SCENARIOS")
-    if eligibility.state is not EligibilityState.ELIGIBLE:
-        raise ValueError("M3_CONDITIONAL_REQUIRES_ELIGIBLE_ACTION")
+    # χ_num is independent of χ_fact. A declared scenario response may be
+    # evaluated on a mathematically formed instance while factual eligibility
+    # remains TRUE, FALSE, or UNKNOWN as retained metadata.
     if response_rule.action_id == "A00":
         raise ValueError("M3_CONDITIONAL_NON_A00_ACTION_REQUIRED")
     if response_rule.support_state is not ResponseSupportClass.SCENARIO_ASSUMPTION:

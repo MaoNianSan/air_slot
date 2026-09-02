@@ -3,6 +3,7 @@ import pytest
 from model.M3.contracts import ResponseParameterStatus, ResponseProvenance
 from model.M4.decision import _compatible_formal_ranking, evaluate_decision
 from model.M4.response import response_value
+from model.M4.eligibility import scenario_opportunities
 from model.common.errors import ContractError
 from model.common.estimand import FormalEstimandStatus
 from tests.fixtures.p0_p1_contracts import (
@@ -70,6 +71,17 @@ def test_unknown_is_conditional_and_false_is_excluded():
     )
     assert next(item for item in unknown.actions if item.template_id == "A11").lane == "CONDITIONAL"
     assert next(item for item in closed.actions if item.template_id == "A11").lane == "EXCLUDED"
+
+
+def test_unknown_opportunity_without_deadline_is_not_defaulted_open():
+    action = candidate("A11", precondition="UNKNOWN").model_copy(
+        update={"parameters": {}}
+    )
+    with pytest.raises(ContractError, match="ACTION_OPPORTUNITY_NOT_INSTANTIATED"):
+        scenario_opportunities(
+            action,
+            [{"scenario_id": 0, "scenario_weight": 1.0}],
+        )
 
 
 def test_unfrozen_response_is_not_formal_regardless_of_provenance():

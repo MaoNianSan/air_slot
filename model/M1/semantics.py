@@ -23,7 +23,7 @@ from typing import Final
 
 FORMAL_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (0, 15, 60)
 DELAY_THRESHOLDS_MINUTES: Final[tuple[int, ...]] = (15, 30, 60)
-EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (
+EVALUATION_LEAD_TIMES_MINUTES: Final[tuple[int, ...]] = (
     0,
     30,
     60,
@@ -34,6 +34,11 @@ EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (
     360,
     420,
     480,
+)
+# Historical import compatibility only. The values are evaluation-node lead
+# times (ell), never formal forecast horizons (tau).
+EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES: Final[tuple[int, ...]] = (
+    EVALUATION_LEAD_TIMES_MINUTES
 )
 
 # ---------------------------------------------------------------------------

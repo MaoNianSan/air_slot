@@ -1,0 +1,42 @@
+{
+  "data_guard": {
+    "data1_modified": false,
+    "data2_modified": false,
+    "diff": "",
+    "status_short": ""
+  },
+  "final_test_access_count": 0,
+  "frozen_contract_gate": {
+    "actual": {
+      "hidden_size": 8,
+      "support": {
+        "D_OB": 180,
+        "D_TX": 60,
+        "T_IB_REMAINING_HAZARD": 360
+      },
+      "temperatures": {
+        "D_OB_ZERO": 1.3648149967193604,
+        "D_TX_ZERO": 1.445334553718567,
+        "T_IB_REMAINING_HAZARD": 20.0
+      }
+    },
+    "artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H8\\DATA2_M1_V2_DEVELOPMENT_FAST.pt",
+    "artifact_exists": true,
+    "expected": {
+      "d_ob_max_finite_minutes": 180,
+      "hidden_size": 8,
+      "scenario_count": 64,
+      "support": {
+        "D_OB": 180,
+        "D_TX": 60,
+        "T_IB_REMAINING_HAZARD": 360
+      }
+    },
+    "failures": [],
+    "status": "PASS"
+  },
+  "no_experiment_runner": true,
+  "schema_version": "AIR_SLOT_MODEL_FAST_SMOKE_MANIFEST_V1",
+  "summary_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\model_fast_smoke\\FAST_SMOKE_SUMMARY.json",
+  "summary_status": "PASS"
+}

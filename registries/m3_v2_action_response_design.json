@@ -1,5 +1,13 @@
 {
   "action_registry_hash": "sha256:2057a4fc274eb9eb7b820365f5b85ff1d0d3f9ea96549e8618842c740f987716",
+  "instantiation_audit_contract": {
+    "owner": "model/M3/instantiate.py",
+    "record_type": "ActionInstantiationRecord",
+    "coverage": "ONE_RECORD_PER_REGISTERED_TEMPLATE_PER_NODE",
+    "formed_behavior": "FORMED record carries CandidateAction",
+    "not_formed_behavior": "NOT_FORMED record carries no candidate and retains reason, missing_required_parameters, source, and lineage",
+    "m4_boundary": "ONLY_FORMED_CANDIDATES_MAY_ENTER_M4"
+  },
   "action_set_frozen": {
     "coverage": {
       "AIRCRAFT_SWAP": "EXECUTABLE",

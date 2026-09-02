@@ -8,7 +8,7 @@ from model.common.enums import (
 )
 from model.common.value_objects import FrozenModel
 
-Consumer = Literal["PRE", "M1", "M2", "M3", "EXP3", "EVALUATION_ONLY"]
+Consumer = Literal["PRE", "M1", "M2", "M3", "EVALUATION_ONLY"]
 SourceKind = Literal["RAW_SOURCE", "PROJECTION", "DERIVED_ARTIFACT"]
 ColumnRole = Literal[
     "COVERED_ACTIVE",

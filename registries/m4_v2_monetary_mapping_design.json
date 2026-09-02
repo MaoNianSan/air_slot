@@ -1,10 +1,11 @@
 {
   "schema_version": "M4_MONETARY_MAPPING_DESIGN_V2",
   "registry_id": "M4_MONETARY_MAPPING_DESIGN_V2",
-  "scientific_status": "SCIENTIFIC_DECISION_REQUIRED",
-  "production_mapping_enabled": false,
-  "monetary_systems": [],
-  "human_gate": "MONETARY_MAPPING_FREEZE_REQUIRED",
+  "scientific_status": "FROZEN",
+  "implementation_status": "MATCH",
+  "production_mapping_enabled": true,
+  "active_registry_id": "M4_RMB_BASE_MAPPING_V1",
+  "monetary_systems": ["RMB"],
   "mapping_contract": {
     "required_fields": [
       "monetary_system_id",
@@ -23,15 +24,30 @@
     "implemented_mapping_functions": ["LINEAR_SCALE"],
     "required_linear_parameter_name": "money_per_cu"
   },
+  "comparison_scope_contract": {
+    "owner": "M4",
+    "definition": "K_cmp is an explicitly instantiated frozen subset of the fixed M2 ontology K; no seven- or five-component default",
+    "required_fields": [
+      "scope_id",
+      "component_ids",
+      "support_requirements",
+      "valuation_measurement_registry_id",
+      "version",
+      "provenance",
+      "status"
+    ],
+    "unfrozen_behavior": "chi_num=UNDEFINED; reason=COMPARISON_SCOPE_NOT_FROZEN"
+  },
   "component_status": [
-    {"component_id":"F_continuity","mapping_function":null,"parameter_version":null,"source_type":null,"reference":[],"freeze_id":null,"support_state":"ABSTAIN","reason_code":"MONETARY_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
-    {"component_id":"F_execution","mapping_function":null,"parameter_version":null,"source_type":null,"reference":[],"freeze_id":null,"support_state":"ABSTAIN","reason_code":"MONETARY_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
-    {"component_id":"F_propagation","mapping_function":null,"parameter_version":null,"source_type":null,"reference":[],"freeze_id":null,"support_state":"ABSTAIN","reason_code":"MONETARY_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
-    {"component_id":"P_time","mapping_function":null,"parameter_version":null,"source_type":null,"reference":[],"freeze_id":null,"support_state":"ABSTAIN","reason_code":"MONETARY_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
-    {"component_id":"P_itinerary","mapping_function":null,"parameter_version":null,"source_type":null,"reference":[],"freeze_id":null,"support_state":"ABSTAIN","reason_code":"MONETARY_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
-    {"component_id":"P_service","mapping_function":null,"parameter_version":null,"source_type":null,"reference":[],"freeze_id":null,"support_state":"ABSTAIN","reason_code":"MONETARY_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
-    {"component_id":"R_operating","mapping_function":null,"parameter_version":null,"source_type":null,"reference":[],"freeze_id":null,"support_state":"ABSTAIN","reason_code":"MONETARY_MAPPING_SCIENTIFIC_DECISION_REQUIRED"}
+    {"component_id":"F_continuity","mapping_function":"LINEAR_SCALE","parameter_version":"1.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260901_RMB_BASE","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"F_execution","mapping_function":"LINEAR_SCALE","parameter_version":"1.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260901_RMB_BASE","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"F_propagation","mapping_function":"LINEAR_SCALE","parameter_version":"1.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260901_RMB_BASE","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"P_time","mapping_function":"LINEAR_SCALE","parameter_version":"1.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260901_RMB_BASE","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"P_itinerary","mapping_function":null,"parameter_version":null,"source_type":null,"freeze_id":null,"support_state":"ABSTAIN","reason_code":"OUTSIDE_PRINCIPAL_RMB_SCOPE"},
+    {"component_id":"P_service","mapping_function":null,"parameter_version":null,"source_type":null,"freeze_id":null,"support_state":"ABSTAIN","reason_code":"OUTSIDE_PRINCIPAL_RMB_SCOPE"},
+    {"component_id":"R_operating","mapping_function":"LINEAR_SCALE","parameter_version":"1.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260901_RMB_BASE","support_state":"SUPPORTED","base_beta":1.0}
   ],
+  "claim_boundary": "1 CU = 1 RMB is a constructed reporting and measurement convention, not currency conversion, accounting cost, or empirical airline loss.",
   "test_mapping_policy": "TEST_ONLY_REGISTRIES_MAY_EXECUTE_CONTRACT_TESTS_BUT_CANNOT_SUPPORT_AUTHORITATIVE_RANKING",
   "final_test_access_count": 0,
   "paper_full_run": false

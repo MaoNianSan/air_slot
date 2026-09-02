@@ -116,8 +116,9 @@ def test_frozen_valuation_uses_positive_train_median_scale():
         context(
             turnaround_reference=supported("turnaround_reference", 5),
             taxi_reference=supported("taxi_reference", 5),
-            expected_downstream_exposure=supported("expected_downstream_exposure", 1),
-            passenger_exposure=supported("passenger_exposure", 10),
+                expected_downstream_exposure=supported("expected_downstream_exposure", 1),
+                passenger_exposure=supported("passenger_exposure", 10),
+                expected_passengers_per_flight=supported("expected_passengers_per_flight", 10),
         ),
     )[0]
     by_component = {row.component_id: row for row in output.component_vector.rows}

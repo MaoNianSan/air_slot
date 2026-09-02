@@ -34,6 +34,12 @@ from model.PRE.reference.turnaround_data2 import (
     Data2TurnaroundReference,
     data2_turnaround_reference_from_payload,
 )
+from model.PRE.references.connection_share_reference import ConnectionShareReference
+from model.PRE.references.connection_share_reference import connection_share_reference_from_payload
+from model.PRE.references.passenger_load_reference import (
+    ExpectedPassengersReference,
+    expected_passengers_reference_from_payload,
+)
 from model.PRE.transformation import ConstructionType
 from model.common.estimand import ConsequenceScope, ScopeStatus
 from model.common.enums import EvidenceClass, SupportState
@@ -41,7 +47,7 @@ from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel, SupportedValue
 
-_EXP2_FIXED_SCOPE = (
+_FROZEN_FIVE_COMPONENT_SCOPE = (
     "F_continuity",
     "F_execution",
     "F_propagation",
@@ -49,10 +55,12 @@ _EXP2_FIXED_SCOPE = (
     "R_operating",
 )
 
-
 class AirportReferenceKeys(FrozenModel):
     connection_airport_id: str = Field(min_length=1)
     successor_destination_airport_id: str = Field(min_length=1)
+    carrier_id: str | None = None
+    month: int | None = Field(default=None, ge=1, le=12)
+    quarter: int | None = Field(default=None, ge=1, le=4)
 
 
 @dataclass(frozen=True)
@@ -61,6 +69,8 @@ class M2ReferenceBundle:
     taxi: Data2TaxiReference
     downstream_exposure: Data2ExposureReference
     passenger: Data2PassengerReference
+    expected_passengers: ExpectedPassengersReference | None = None
+    connection_share: ConnectionShareReference | None = None
 
     @property
     def reference_ids(self) -> dict[str, str]:
@@ -69,6 +79,7 @@ class M2ReferenceBundle:
             "taxi": self.taxi.reference_id,
             "downstream_exposure": self.downstream_exposure.reference_id,
             "passenger": self.passenger.reference_id,
+            **({"expected_passengers": self.expected_passengers.reference_id} if self.expected_passengers else {}),
         }
 
 
@@ -130,11 +141,27 @@ def load_data2_reference_bundle(
         passenger.rule_version != "1.0.0"
     ):
         raise ContractError("M2_REFERENCE_RULE_MISMATCH:passenger")
+    connection_share = None
+    if payloads.get("connection_share") is not None:
+        raw = payloads["connection_share"]
+        if isinstance(raw, ConnectionShareReference):
+            connection_share = raw
+        elif isinstance(raw, Mapping):
+            connection_share = connection_share_reference_from_payload(dict(raw))
+    expected_passengers = None
+    if payloads.get("expected_passengers") is not None:
+        raw = payloads["expected_passengers"]
+        if isinstance(raw, ExpectedPassengersReference):
+            expected_passengers = raw
+        elif isinstance(raw, Mapping):
+            expected_passengers = expected_passengers_reference_from_payload(dict(raw))
     return M2ReferenceBundle(
         turnaround=loaded["turnaround"],
         taxi=loaded["taxi"],
         downstream_exposure=loaded["downstream_exposure"],
         passenger=passenger,
+        expected_passengers=expected_passengers,
+        connection_share=connection_share,
     )
 
 
@@ -201,6 +228,73 @@ def build_m2_context(
     airport_keys: AirportReferenceKeys,
 ) -> M2ScientificContext:
     """Resolve the four supported M2 inputs from train-frozen references."""
+    expected_pax_value = _abstain(
+        "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE@1.0.0",
+        "passengers_per_flight",
+        "NO_T100_EXPECTED_PAX_REFERENCE_FROZEN",
+    )
+    if bundle.expected_passengers is not None:
+        cell = bundle.expected_passengers.lookup(
+            airport_keys.carrier_id,
+            airport_keys.connection_airport_id,
+            airport_keys.successor_destination_airport_id,
+            airport_keys.month,
+        )
+        if cell is not None:
+            expected_pax_value = ScientificContextValue(
+                object_id="T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE@1.0.0",
+                value=cell.reference_value,
+                unit="passengers_per_flight",
+                support_state=cell.support_state,
+                evidence_class=EvidenceClass.EMPIRICAL_REFERENCE,
+                construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
+                reference_period=bundle.expected_passengers.fit_partition,
+                freeze_id=bundle.expected_passengers.reference_id,
+                provenance=(
+                    f"reference_id={bundle.expected_passengers.reference_id}",
+                    f"fallback_level={cell.fallback_level}",
+                    f"numerator_passengers={cell.numerator_passengers:g}",
+                    f"denominator_departures_performed={cell.denominator_departures_performed:g}",
+                ),
+                source_type=SourceType.DATA,
+                reference_source=bundle.expected_passengers.reference_id,
+                reference_id=cell.reference_id,
+                reference_version="T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE@1.0.0",
+                confidence=ExposureConfidence.LOW,
+            )
+    connection_value = _abstain(
+        "DB1B_CONNECTION_SHARE_REFERENCE@1.0.0",
+        "share",
+        "NO_DB1B_CONNECTION_SHARE_REFERENCE_FROZEN",
+    )
+    if bundle.connection_share is not None:
+        cell = bundle.connection_share.lookup(
+            airport_keys.connection_airport_id,
+            airport_keys.successor_destination_airport_id,
+            airport_keys.quarter,
+        )
+        if cell is not None:
+            connection_value = ScientificContextValue(
+                object_id="DB1B_CONNECTION_SHARE_REFERENCE@1.0.0",
+                value=cell.connection_share,
+                unit="share",
+                support_state=cell.support_state,
+                evidence_class=EvidenceClass.EMPIRICAL_REFERENCE,
+                construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
+                reference_period=bundle.connection_share.fit_partition,
+                freeze_id=bundle.connection_share.reference_id,
+                provenance=(
+                    f"reference_id={bundle.connection_share.reference_id}",
+                    f"fallback_level={cell.fallback_level}",
+                    f"total_passenger_weight={cell.total_passenger_weight:g}",
+                    f"connecting_passenger_weight={cell.connecting_passenger_weight:g}",
+                ),
+                source_type=SourceType.DATA,
+                reference_source=bundle.connection_share.reference_id,
+                reference_id=bundle.connection_share.reference_id,
+                reference_version="DB1B_CONNECTION_SHARE_REFERENCE@1.0.0",
+                confidence=ExposureConfidence.LOW,
+            )
     return M2ScientificContext(
         turnaround_reference=_reference_value(
             "DATA2_TURNAROUND_REFERENCE@1.0.0",
@@ -226,6 +320,7 @@ def build_m2_context(
             ),
             bundle.passenger,
         ),
+        expected_passengers_per_flight=expected_pax_value,
         itinerary_disruption_events=_abstain(
             "itinerary_disruption_events",
             "events",
@@ -247,6 +342,7 @@ def build_m2_context(
             bundle.taxi.lookup(airport_keys.connection_airport_id),
             bundle.taxi,
         ),
+        connection_share_reference=connection_value,
     )
 
 
@@ -310,7 +406,7 @@ def build_m2_v2_context(
     passenger = legacy.passenger_exposure.model_copy(
         update={
             "source_type": SourceType.DATA,
-            "assumption_scope": "ROUTE_AGGREGATE_PASSENGER_EXPOSURE_FOR_P_TIME_ONLY",
+            "assumption_scope": "SUPERSEDED_ROUTE_AGGREGATE_CONTEXT_ONLY_NOT_ACTIVE_PASSENGER_CONSEQUENCE",
         }
     )
     return legacy.model_copy(
@@ -326,18 +422,22 @@ def build_assumption_grounded_context(
     airport_keys: AirportReferenceKeys,
     *,
     node_specific_exposure: ScientificContextValue,
-    tau_service_minutes: float = 180.0,
-    itinerary_buffer_minutes: float = 45.0,
+    tau_service_minutes: float,
+    itinerary_buffer_minutes: float,
     assumption_freeze_id: str = (
         "sha256:0fcb524c808d56f0bb44f0d29bd4f2ec237a0674b159086ffdc835e0abe46580"
     ),
 ) -> M2ScientificContext:
-    """Path-B seven-component context under ASSUMPTION_GROUNDED inputs.
+    """Assumption-grounded context with explicit Data2 realization values.
 
     ``itinerary_buffer_reference`` carries itinerary classes (passenger count,
     connection buffer) built from the frozen route passenger reference;
     ``service_policy_reference`` carries the frozen service-policy threshold.
-    Both are literature-parameterized assumptions, not empirical evidence;
+    Both are literature-parameterized assumptions, not empirical evidence.
+    Callers must supply the realization values explicitly: this function does
+    not define an ontology-wide 45-minute or 180-minute default.  The current
+    Data2 registry records 45 and 180 minutes as its frozen assumption values.
+    ``assumption_freeze_id``
     ``assumption_freeze_id`` equals the frozen M2 V2 freeze closure
     registry hash (M2_FORMAL_FREEZE_CLOSURE_V2.json) and must not be edited.
     """
@@ -368,6 +468,12 @@ def build_assumption_grounded_context(
             "passenger_reference_reused_for_itinerary_split",
         ),
         source_type=SourceType.LITERATURE,
+        reference_source=bundle.passenger.reference_id,
+        reference_id=bundle.passenger.reference_id,
+        reference_version=(
+            f"{bundle.passenger.rule_id}@{bundle.passenger.rule_version};"
+            "M2_ITINERARY_BUFFER_ASSUMPTION_V1"
+        ),
         confidence=ExposureConfidence.MEDIUM,
         assumption_scope="MISSED_CONNECTION_ITINERARY_CLASSES_BASE",
     )
@@ -386,6 +492,9 @@ def build_assumption_grounded_context(
             "literature=CookTanner2015_EUROCONTROL",
         ),
         source_type=SourceType.LITERATURE,
+        reference_source="EU261_style_long_delay_threshold",
+        reference_id="M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
+        reference_version="M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
         confidence=ExposureConfidence.MEDIUM,
         assumption_scope="SERVICE_POLICY_THRESHOLD_BASE",
     )
@@ -397,28 +506,13 @@ def build_assumption_grounded_context(
     )
 
 
-def build_exp2_fixed_scope_pending(
-    config: Mapping[str, Any] | None = None,
-) -> ConsequenceScope:
-    """Deprecated pre-freeze alias; superseded by build_m2_frozen_scope."""
-    return build_m2_frozen_scope(config)
-
-
-def build_m2_frozen_scope(
-    config: Mapping[str, Any] | None = None,
-) -> ConsequenceScope:
-    """Frozen M2 Data2 formal scope (M2_DATA2_FORMAL_CU_V1, DECISION 1).
-
-    Exactly the five principal components; P_itinerary/P_service stay
-    outside the principal aggregate; the support rule is UNAVAILABLE/ABSTAIN.
-    """
+def build_m2_frozen_scope(config: Mapping[str, Any] | None = None) -> ConsequenceScope:
+    """Compatibility M2 CU scope; never an implicit M4 ``K_cmp``."""
     configured = tuple(config.get("formal_scope")) if config is not None else ()
     if configured == tuple(COMPONENTS):
         return build_m2_seven_component_scope()
-    components = configured or _EXP2_FIXED_SCOPE
-    if not components or not set(components) <= set(COMPONENTS):
-        raise ContractError("M2_EXP2_FIXED_SCOPE_INVALID")
-    if tuple(components) != _EXP2_FIXED_SCOPE:
+    components = configured or _FROZEN_FIVE_COMPONENT_SCOPE
+    if tuple(components) != _FROZEN_FIVE_COMPONENT_SCOPE:
         raise ContractError("M2_FROZEN_SCOPE_NOT_FIVE_COMPONENT_FIXED")
     return ConsequenceScope.create(
         estimand_id="M2_DATA2_FORMAL_CU",
@@ -432,37 +526,32 @@ def build_m2_frozen_scope(
 
 
 def build_m2_seven_component_scope() -> ConsequenceScope:
-    """Path-B assumption-grounded seven-component formal scope (V2.1).
-
-    Seven components are formal-ready only with ASSUMPTION_GROUNDED inputs for
-    P_itinerary/P_service and the M2_DATA2_FORMAL_CU_V2 registry.
-    """
+    """Active seven-component passenger-reference CU scope; not an M4 default."""
     return ConsequenceScope.create(
         estimand_id="M2_DATA2_FORMAL_CU",
-        estimand_version="V2.1",
+        estimand_version="V3.0",
         included_components=tuple(COMPONENTS),
         aggregation_rule_id="SUM_OVER_SEVEN_ONLY_IF_ALL_SUPPORTED",
-        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V2",
-        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V2",
+        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V3",
+        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V3",
         scope_status=ScopeStatus.FORMAL_READY,
     )
 
 
 def build_m2_v2_scope() -> ConsequenceScope:
-    """Frozen seven-component ontology with an unresolved aggregate gate.
+    """Historical V2 seven-component CU interface.
 
-    The ontology and aggregation rule are fixed, but the aggregate cannot be
-    declared formal-ready while P_itinerary/P_service and the V2 CU scale
-    registry remain unfrozen.
+    Kept for historical artifact replay only; active callers use
+    :func:`build_m2_seven_component_scope`.
     """
     return ConsequenceScope.create(
         estimand_id="M2_DATA2_FORMAL_CU",
         estimand_version="V2.0",
         included_components=tuple(COMPONENTS),
         aggregation_rule_id="SUM_OVER_SEVEN_ONLY_IF_ALL_NATIVE_AND_CU_FROZEN",
-        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V2_PENDING",
-        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V2_PENDING",
-        scope_status=ScopeStatus.FORMAL_AGGREGATE_UNRESOLVED,
+        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V2",
+        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V2",
+        scope_status=ScopeStatus.FORMAL_READY,
     )
 
 
@@ -567,11 +656,67 @@ def smoke_reference_payloads() -> dict[str, Any]:
         "manifest_freeze_id": content_id({"synthetic": "passenger-freeze"}),
         "support_state": "SUPPORTED",
     }
+    expected_passengers = {
+        "schema_version": "PASSENGER_EXPECTED_PAX_REFERENCE_V1",
+        "reference_id": content_id({"synthetic": "expected-passengers"}),
+        "reference_unit": "passengers_per_flight",
+        "grain": "carrier+origin+destination+month",
+        "fallback_hierarchy": ["carrier-route-month", "carrier-route", "route-month", "route", "carrier", "global"],
+        "fit_partition": "TRAIN",
+        "source": "T100",
+        "support_state": "SUPPORTED",
+        "evidence_class": "EMPIRICAL_REFERENCE",
+        "lineage_hash": content_id({"synthetic": "expected-passengers-lineage"}),
+        "cells": [
+            {
+                "key": ["", "ABE", "ATL", ""],
+                "reference_value": 100.0,
+                "grain": "carrier-route-month",
+                "fallback_level": "carrier-route-month",
+                "numerator_passengers": 1000.0,
+                "denominator_departures_performed": 10.0,
+                "sample_size": 1,
+                "support_state": "SUPPORTED",
+                "reference_id": content_id({"synthetic": "expected-passengers-cell"}),
+                "lineage_hash": content_id({"synthetic": "expected-passengers-cell-lineage"}),
+            }
+        ],
+    }
+    connection_share = {
+        "schema_version": "PASSENGER_CONNECTION_SHARE_REFERENCE_V1",
+        "reference_id": content_id({"synthetic": "connection-share"}),
+        "connection_share": 0.25,
+        "total_passenger_weight": 100.0,
+        "connecting_passenger_weight": 25.0,
+        "grain": "origin+destination+quarter",
+        "fallback_hierarchy": ["route-quarter", "route", "quarter", "global"],
+        "fit_partition": "TRAIN",
+        "source": "DB1B_COUPON",
+        "support_state": "SUPPORTED",
+        "evidence_class": "EMPIRICAL_REFERENCE",
+        "lineage_hash": content_id({"synthetic": "connection-share-lineage"}),
+        "cells": [
+            {
+                "key": ["ABE", "ATL", ""],
+                "connection_share": 0.25,
+                "total_passenger_weight": 100.0,
+                "connecting_passenger_weight": 25.0,
+                "grain": "route-quarter",
+                "fallback_level": "route-quarter",
+                "sample_size": 2,
+                "support_state": "SUPPORTED",
+                "reference_id": content_id({"synthetic": "connection-share-cell"}),
+                "lineage_hash": content_id({"synthetic": "connection-share-cell-lineage"}),
+            }
+        ],
+    }
     return {
         "turnaround": turnaround,
         "taxi": taxi,
         "downstream_exposure": exposure,
         "passenger": passenger,
+        "expected_passengers": expected_passengers,
+        "connection_share": connection_share,
     }
 
 
@@ -579,7 +724,6 @@ __all__ = [
     "AirportReferenceKeys",
     "M2ReferenceBundle",
     "build_assumption_grounded_context",
-    "build_exp2_fixed_scope_pending",
     "build_m2_context",
     "build_m2_frozen_scope",
     "build_m2_seven_component_scope",

@@ -217,10 +217,14 @@ class M2ScientificContext(FrozenModel):
     turnaround_floor: ScientificContextValue
     expected_downstream_exposure: ScientificContextValue
     passenger_exposure: ScientificContextValue
+    expected_passengers_per_flight: ScientificContextValue | None = None
     itinerary_disruption_events: ScientificContextValue
     itinerary_buffer_reference: ScientificContextValue | None = None
     service_policy_reference: ScientificContextValue
     taxi_reference: ScientificContextValue
+    # Historical DB1B continuation share used only as a frozen reference;
+    # optional for compatibility with pre-refactor callers.
+    connection_share_reference: ScientificContextValue | None = None
 
 
 class ComponentInputContract(FrozenModel):

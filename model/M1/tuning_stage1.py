@@ -1,7 +1,7 @@
 """Read-only preparation and evaluation contracts for M1 V2 Stage 1.
 
-This module performs no automatic training. It defines the narrow H sensitivity
-manifest, the no-history baseline contract, the Development metric projection,
+This module performs no automatic training. It exposes the frozen primary H=8
+and predefined H=16 sensitivity settings, the no-history diagnostic contract,
 and a separately guarded FAST entry point used only after authorization.
 """
 
@@ -27,9 +27,12 @@ from .history import HistoryEncoderMode
 from .lifecycle import M1Lifecycle
 from .pipeline import M1Pipeline
 from .network import M1V2GRU
-from .semantics import EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES
+from .semantics import EVALUATION_LEAD_TIMES_MINUTES
 
-STAGE1_H_CANDIDATES: tuple[int, ...] = (8, 16, 32)
+FROZEN_HIDDEN_SIZE_SETTINGS: tuple[int, ...] = (8, 16)
+# Compatibility export for historical audit readers. These are frozen primary
+# and sensitivity settings, not an active tuning candidate set.
+STAGE1_H_CANDIDATES: tuple[int, ...] = FROZEN_HIDDEN_SIZE_SETTINGS
 STAGE1_METRICS: tuple[str, ...] = (
     "EPISODE_BALANCED_JOINT_VALIDATION_LOSS",
     "T_IB_HAZARD_NLL",
@@ -55,7 +58,7 @@ STAGE1_SPLITS = {
 }
 STAGE1_SUPPORT = {
     "T_IB_REMAINING_HAZARD": 360,
-    "D_OB": 210,
+    "D_OB": 180,
     "D_TX": 60,
     "bin_width_minutes": 5,
 }
@@ -152,11 +155,13 @@ def stage1_development_metrics(
 def validate_stage1_contract(scientific) -> dict[str, object]:
     """Validate only the frozen contracts required by Stage 1 preparation."""
 
-    candidates = tuple(
-        int(value) for value in scientific.parameters["m1_hidden_size_candidates"].value
+    primary_hidden_size = int(scientific.parameters["m1_hidden_size"].value)
+    sensitivity_hidden_size = int(
+        scientific.parameters["m1_sensitivity_hidden_size"].value
     )
-    if candidates != STAGE1_H_CANDIDATES:
-        raise ValueError(f"M1_V2_STAGE1_H_CANDIDATES_MISMATCH:{candidates}")
+    frozen_settings = (primary_hidden_size, sensitivity_hidden_size)
+    if frozen_settings != FROZEN_HIDDEN_SIZE_SETTINGS:
+        raise ValueError(f"M1_V2_FROZEN_HIDDEN_SETTINGS_MISMATCH:{frozen_settings}")
     support = {
         "T_IB_REMAINING_HAZARD": scientific.parameters[
             "m1_v2_t_ib_remaining_max_finite_minutes"
@@ -171,14 +176,16 @@ def validate_stage1_contract(scientific) -> dict[str, object]:
         "feature_count": len(FEATURE_NAMES_V2),
         "static_feature_count": STATIC_FEATURE_COUNT,
         "support": support,
-        "candidate_hidden_sizes": list(candidates),
+        "primary_hidden_size": primary_hidden_size,
+        "sensitivity_hidden_size": sensitivity_hidden_size,
+        "hidden_size_selection_authorized": False,
         "split_roles": dict(STAGE1_SPLITS),
         "final_test_access_count": 0,
     }
 
 
-def exp1_interface_contract() -> dict[str, object]:
-    """Describe the existing M1 -> Exp1 artifact boundary without executing it."""
+def downstream_artifact_contract() -> dict[str, object]:
+    """Describe the read-only M1 state-distribution artifact boundary."""
 
     return {
         "joint_state_distribution_artifact": {
@@ -201,8 +208,8 @@ def exp1_interface_contract() -> dict[str, object]:
             "baseline": HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION.value,
             "status": "READY",
         },
-        "forecast_horizons_minutes": list(EVALUATION_ONLY_FORECAST_HORIZONS_MINUTES),
-        "exp1_mutation": False,
+        "evaluation_lead_times_minutes": list(EVALUATION_LEAD_TIMES_MINUTES),
+        "downstream_mutation": False,
     }
 
 
@@ -236,14 +243,14 @@ def stage1_parameter_count(
     if mode is HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION:
         hidden = 16 if hidden_size is None else int(hidden_size)
     else:
-        if hidden_size not in STAGE1_H_CANDIDATES:
+        if hidden_size not in FROZEN_HIDDEN_SIZE_SETTINGS:
             raise ValueError(f"M1_V2_STAGE1_H_INVALID:{hidden_size}")
         hidden = int(hidden_size)
     hazard = HazardBinContract(bin_width_minutes=5, max_finite_minutes=360)
     d_ob = HurdleQuantileContract(
         target_name="D_OB",
         bin_width_minutes=5,
-        max_finite_minutes=210,
+        max_finite_minutes=180,
         quantile_levels=(0.1, 0.3, 0.5, 0.7, 0.9),
         upper_tail_policy="UNRESOLVED",
     )
@@ -393,13 +400,13 @@ def stage1_manifest(root: Path) -> dict[str, object]:
     scientific = load_config_layers(root / "configs").scientific
     contract = validate_stage1_contract(scientific)
     closure_path = root / (
-        "artifacts/diagnostics/m1_v2_paper_model_closure/"
-        "AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE.json"
+        "artifacts/diagnostics/model/m1_v2_model_closure/"
+        "AIR_SLOT_M1_V2_MODEL_CLOSURE.json"
     )
     closure = json.loads(closure_path.read_text(encoding="utf-8"))
     training_hash = stage1_training_config_hash()
     candidates = []
-    for hidden_size in STAGE1_H_CANDIDATES:
+    for hidden_size in FROZEN_HIDDEN_SIZE_SETTINGS:
         candidates.append(
             {
                 "model_id": f"M1_V2_STATE_AWARE_H{hidden_size}",
@@ -435,10 +442,10 @@ def stage1_manifest(root: Path) -> dict[str, object]:
         "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
     }
     return {
-        "schema_version": "M1_V2_TUNING_STAGE1_MANIFEST_V1",
-        "status": "M1_V2_TUNING_STAGE1_READY",
+        "schema_version": "M1_V2_FROZEN_SETTINGS_MANIFEST_V1",
+        "status": "M1_V2_FROZEN_SETTINGS_READY",
         "execution_authorized": False,
-        "decision_id": "AIR_SLOT_M1_V2_TUNING_STAGE1_IMPLEMENTATION",
+        "decision_id": "AIR_SLOT_MODEL_FREEZE_20260901",
         "repository_head": "UNSET_UNTIL_EXECUTION",
         "dataset": "DATA2_2019",
         "fixed_contract": fixed_contract,
@@ -449,7 +456,7 @@ def stage1_manifest(root: Path) -> dict[str, object]:
         "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
         "training_config": STAGE1_TRAINING_CONFIG,
         "training_config_hash": training_hash,
-        "candidate_list": ["NO_HISTORY", "H8", "H16", "H32"],
+        "setting_list": ["NO_HISTORY_DIAGNOSTIC", "H8_PRIMARY", "H16_SENSITIVITY"],
         "candidates": candidates,
         "development_evaluation": {
             "principal": STAGE1_METRICS[0],
@@ -458,7 +465,7 @@ def stage1_manifest(root: Path) -> dict[str, object]:
             "metric_source": "M1Lifecycle.episode_balanced_objective",
         },
         "no_history_baseline": NO_HISTORY_BASELINE_CONTRACT,
-        "exp1_interface": exp1_interface_contract(),
+        "downstream_interface": downstream_artifact_contract(),
         "fast_train_mode": fast_train_mode_contract(),
         "safety": {
             "M1_TRAINING_RUNS": 0,
@@ -475,20 +482,18 @@ def run_fast_stage1_tuning(
     output_dir: Path | None = None,
     execution_authorized: bool = False,
 ) -> dict[str, object]:
-    """Execute the authorized four-variant, Development-only FAST comparison.
+    """Retired historical tuning entry point.
 
-    This entry point intentionally consumes the B2 frozen cache directly.  It
-    neither rebuilds features nor reads calibration or Final Test records, so
-    all candidates receive the exact same 128/128 deterministic subset.
+    H=8 is the frozen primary setting and H=16 is a predefined sensitivity.
+    The active model exposes no hidden-size selection workflow.
     """
 
-    if not execution_authorized:
-        raise RuntimeError("M1_V2_STAGE1_FAST_REQUIRES_EXPLICIT_AUTHORIZATION")
+    raise RuntimeError("M1_HIDDEN_SIZE_TUNING_NOT_AUTHORIZED_MODEL_FROZEN")
 
     root = Path(root).resolve()
     closure_path = root / (
-        "artifacts/diagnostics/m1_v2_paper_model_closure/"
-        "AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE.json"
+        "artifacts/diagnostics/model/m1_v2_model_closure/"
+        "AIR_SLOT_M1_V2_MODEL_CLOSURE.json"
     )
     closure = json.loads(closure_path.read_text(encoding="utf-8"))
     frozen_cache_dir = root / "artifacts/diagnostics/m1_v2_feature_gate_b2"
@@ -556,7 +561,8 @@ def run_fast_stage1_tuning(
         raise ValueError("M1_V2_STAGE1_FAST_FINAL_TEST_EXAMPLE_FORBIDDEN")
 
     output_dir = Path(
-        output_dir or (root / "artifacts/experiment/m1_v2_tuning_stage1_fast")
+        output_dir
+        or (root / "artifacts/diagnostics/model/m1_v2_tuning_stage1_fast")
     ).resolve()
     if output_dir == root or root not in output_dir.parents:
         raise ValueError("M1_V2_STAGE1_FAST_OUTPUT_OUTSIDE_PROJECT_FORBIDDEN")
@@ -597,12 +603,6 @@ def run_fast_stage1_tuning(
             "GRU_H16",
             "M1_V2_GRU_H16",
             16,
-            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
-        ),
-        (
-            "GRU_H32",
-            "M1_V2_GRU_H32",
-            32,
             HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
         ),
     )
@@ -704,7 +704,6 @@ def run_fast_stage1_tuning(
             "NO_HISTORY": NO_HISTORY_BASELINE_CONTRACT,
             "GRU_H8": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
             "GRU_H16": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
-            "GRU_H32": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
         },
         "FINAL_TEST_ACCESS_COUNT": 0,
         "PAPER_FULL_RUN": False,
@@ -771,7 +770,7 @@ __all__ = [
     "STAGE1_H_CANDIDATES",
     "STAGE1_METRICS",
     "STAGE1_TRAINING_CONFIG",
-    "exp1_interface_contract",
+    "downstream_artifact_contract",
     "fast_train_mode",
     "fast_train_mode_contract",
     "run_fast_stage1_tuning",

@@ -1,0 +1,27 @@
+{
+  "bin_width_minutes": 5,
+  "conditional_order": [
+    "T_IB_A00",
+    "D_OB",
+    "D_TX"
+  ],
+  "final_test_access_count": 0,
+  "overflow": {
+    "D_OB": 185,
+    "D_TX": 65,
+    "T_IB_A00": 365
+  },
+  "primitive_targets": [
+    "T_IB_A00",
+    "D_OB",
+    "D_TX"
+  ],
+  "schema_version": "M1_FROZEN_H8_TARGET_SUPPORT_MANIFEST_V1",
+  "support": {
+    "D_OB": 180,
+    "D_TX": 60,
+    "T_IB_REMAINING_HAZARD": 360
+  },
+  "target_contract_hash": "sha256:524bd12352762b4bde9f74f3c01f27da15d5adb2c4433f0a25d7cc2a6f3dacf9",
+  "target_manifest_hash": "sha256:ce4d0c14b2104978ed09879da104bcad8e278a002cb5d5f64e72e580dc592d10"
+}

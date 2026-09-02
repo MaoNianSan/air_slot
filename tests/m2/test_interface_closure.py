@@ -132,15 +132,15 @@ def test_e_down_lineage_is_deterministic_and_reference_version_sensitive():
     assert first.lineage_hash != changed.lineage_hash
 
 
-def test_passenger_abstention_is_preserved_in_formal_output():
+def test_passenger_reference_support_is_preserved_in_formal_output():
     mapper, context = _runtime()
     output = mapper.map_m1_scenarios((_input(),), context)[0]
     by_component = {row.component_id: row for row in output.component_vector.rows}
     assert by_component["P_time"].support_state is SupportState.SUPPORTED
     for component in ("P_itinerary", "P_service"):
-        assert by_component[component].support_state is SupportState.ABSTAIN
-        assert by_component[component].native_quantity is None
-        assert by_component[component].constructed_value_cu is None
+        assert by_component[component].support_state is SupportState.SUPPORTED
+        assert by_component[component].native_quantity == 0.0
+        assert by_component[component].constructed_value_cu is not None
 
 
 def test_distribution_object_preserves_all_weights_and_changes_risk_summary():

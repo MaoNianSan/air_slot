@@ -1,5 +1,5 @@
 {
-  "aggregation_rule": "SUM_OVER_SEVEN_ONLY_IF_ALL_SUPPORTED",
+  "aggregation_rule": "M2_SEVEN_COMPONENT_ONTOLOGY_ONLY; M4_COMPARISON_SCOPE_EXPLICIT",
   "assumption_grounded": {
     "itinerary_buffer_minutes": 45.0,
     "literature": [
@@ -8,16 +8,20 @@
       "Cook & Tanner 2015, The cost of passenger delay to airlines in Europe, EUROCONTROL consultation document (no DOI)"
     ],
     "policy": "ASSUMPTION_GROUNDED_NOT_EMPIRICAL",
-    "sensitivity_plan": "LOW/BASE/HIGH per M3 registry structure; tau_service 120/180/240; buffer threshold variants",
+    "sensitivity_plan": "No implicit M4 scope; explicit assumption-grounded realization only",
     "tau_service_minutes": 180.0
   },
   "assumption_scale_artifact": {
     "P_itinerary": {
+      "empirical_train_positive_median": false,
+      "normalization_status": "ASSUMPTION_EVENT_NORMALIZATION",
       "scale": 1.0,
       "source": "ASSUMPTION_GROUNDED",
       "unit": "events"
     },
     "P_service": {
+      "empirical_train_positive_median": false,
+      "normalization_status": "ASSUMPTION_EVENT_NORMALIZATION",
       "scale": 1.0,
       "source": "ASSUMPTION_GROUNDED",
       "unit": "threshold_events"
@@ -50,37 +54,37 @@
       "unit": "minutes"
     },
     "F_execution": {
-      "definition": "max(0, DELTA_OB) = R_OB",
+      "definition": "D_OB",
       "driver": "additional_off_block_wait",
       "quantity": "Z_exec",
       "unit": "minutes"
     },
     "F_propagation": {
-      "definition": "max(0, DELTA_OB + T_TX - taxi_reference(origin)) * expected_downstream_exposure(origin)",
+      "definition": "D_TO * expected_downstream_exposure(origin)",
       "driver": "takeoff_delay_x_expected_downstream_exposure",
       "quantity": "Z_takeoff * E_down",
       "unit": "exposure_minutes"
     },
     "P_itinerary": {
-      "definition": "sum_it n_pax(it) * 1[D_TO > buffer_it]",
+      "definition": "g_itin(D_TO, itinerary_buffer_reference) = sum_i n_pax(i) * 1[D_TO > buffer_i]",
       "driver": "missed_connection_threshold_events",
       "quantity": "N_miss",
       "unit": "events"
     },
     "P_service": {
-      "definition": "n_pax(node) * 1[D_TO >= tau_service]",
+      "definition": "g_service(D_TO, service_policy_reference) = passenger_exposure * 1[D_TO >= tau_service]",
       "driver": "service_policy_threshold",
       "quantity": "N_svc",
       "unit": "threshold_events"
     },
     "P_time": {
-      "definition": "passenger_exposure(origin,destination) * max(0, DELTA_OB + T_TX - taxi_reference(origin))",
+      "definition": "passenger_exposure(origin,destination) * D_TO",
       "driver": "passenger_exposure_x_delay",
       "quantity": "V_OD_pax * Z_takeoff",
       "unit": "passenger_minutes"
     },
     "R_operating": {
-      "definition": "max(0, T_TX - taxi_reference(origin))",
+      "definition": "D_TX",
       "driver": "excess_taxi",
       "quantity": "Z_taxi",
       "unit": "excess_taxi_minutes"
@@ -113,14 +117,29 @@
       "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
     }
   },
-  "registry_hash": "sha256:6a671e677835a73e80689f50cc16c2512e69fd43226d1fa36df33b834b139876",
+  "registry_hash": "sha256:c7c8d5e615dd951ff576a923aa7b967a236e3c7249ac09e3152e830c6bf8f769",
   "registry_id": "M2_DATA2_FORMAL_CU_V2",
   "schema_version": "M2_DATA2_FORMAL_CU_V2",
+  "scientific_status": "FROZEN",
+  "implementation_status": "MATCH",
+  "numeric_scale_adoption": {
+    "decision": "HISTORICAL_MODEL_FREEZE_RECONCILIATION_20260901",
+    "rule": "ADOPT_EXISTING_FROZEN_TRAIN_POSITIVE_MEDIANS_WITHOUT_DATA_RECOMPUTATION",
+    "provenance_boundary": "artifact_original_definition is retained separately from active_quantity_definition",
+    "final_test_access_count": 0
+  },
   "support_rule": "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY",
+  "comparison_scope_contract": {
+    "owner": "M4",
+    "default": null,
+    "required_state": "EXPLICIT_FROZEN_CONSEQUENCE_COMPARISON_SCOPE"
+  },
   "train_scale_artifact": {
     "F_continuity": {
-      "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
+      "active_quantity_definition": "max(0, R_IB - turnaround_reference(connection_airport))",
       "definition": "max(0, R_IB - turnaround_reference(connection_airport))",
+      "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
+      "artifact_original_definition": "max(0, R_IB - turnaround_reference(connection_airport))",
       "median": 43.0,
       "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
       "population_rows": 2670770,
@@ -128,8 +147,10 @@
       "unit": "minutes"
     },
     "F_execution": {
+      "active_quantity_definition": "D_OB",
+      "definition": "D_OB",
       "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
-      "definition": "max(0, DELTA_OB) = R_OB",
+      "artifact_original_definition": "max(0, DELTA_OB) = R_OB",
       "median": 17.0,
       "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
       "population_rows": 3497660,
@@ -137,8 +158,10 @@
       "unit": "minutes"
     },
     "F_propagation": {
+      "active_quantity_definition": "D_TO * expected_downstream_exposure(origin)",
+      "definition": "D_TO * expected_downstream_exposure(origin)",
       "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
-      "definition": "max(0, DELTA_OB + T_TX - taxi_reference(origin)) * expected_downstream_exposure(origin)",
+      "artifact_original_definition": "max(0, DELTA_OB + T_TX - taxi_reference(origin)) * expected_downstream_exposure(origin)",
       "median": 11.0,
       "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
       "population_rows": 3497660,
@@ -146,8 +169,10 @@
       "unit": "exposure_minutes"
     },
     "P_time": {
+      "active_quantity_definition": "passenger_exposure(origin,destination) * D_TO",
+      "definition": "passenger_exposure(origin,destination) * D_TO",
       "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
-      "definition": "passenger_exposure(origin,destination) * max(0, DELTA_OB + T_TX - taxi_reference(origin))",
+      "artifact_original_definition": "passenger_exposure(origin,destination) * max(0, DELTA_OB + T_TX - taxi_reference(origin))",
       "median": 1037820.0,
       "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
       "population_rows": 3497259,
@@ -155,8 +180,10 @@
       "unit": "passenger_minutes"
     },
     "R_operating": {
+      "active_quantity_definition": "D_TX",
+      "definition": "D_TX",
       "artifact_hash": "sha256:6fa1861107645b4d6bfb7671cac1add4d9e16327f528bb594b6ef374c1d64144",
-      "definition": "max(0, T_TX - taxi_reference(origin))",
+      "artifact_original_definition": "max(0, T_TX - taxi_reference(origin))",
       "median": 5.0,
       "path": "artifacts\\diagnostics\\v5_development_freeze\\M2_DATA2_TRAIN_SCALES_V1.json",
       "population_rows": 3497660,

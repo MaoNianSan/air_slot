@@ -509,11 +509,12 @@ def test_r_final_test_access_remains_zero():
     assert tail.value == "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
     assert tail.provenance["decision_id"] == "AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE"
     assert tail.provenance["target_q_max_minutes"] == {
-        "T_IB_A00": 360, "D_OB": 210, "D_TX": 60,
+        "T_IB_A00": 360, "D_OB": 180, "D_TX": 60,
     }
     assert tail.provenance["selection_state"] == "HUMAN_APPROVED"
     quantile_levels = scientific.parameters["m1_v2_quantile_levels"]
-    assert quantile_levels.freeze_state.value == "DEVELOPMENT_ONLY"
+    assert quantile_levels.freeze_state.value == "FROZEN"
+    assert quantile_levels.provenance["decision_id"] == "AIR_SLOT_MODEL_FREEZE_20260901"
     for name in ("m1_state_estimator_v2", "m1_v2_quantile_levels",
                  "m1_v2_positive_tail_policy", "m1_formal_output_contract"):
         provenance = scientific.parameters[name].provenance or {}

@@ -11,9 +11,8 @@ from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 from .contracts import ActionTemplate
 
-# Principal/current library (manuscript): the 23 templates are required but the
-# action universe is not a closed set; extra structural actions are allowed and
-# must satisfy the full Gamma_a contract (Round 2, spec 6.1).
+# Active model library: exactly these 23 templates. Additional templates require
+# a new versioned model freeze and cannot enter this registry implicitly.
 PRINCIPAL_IDS = (
     "A00",
     "A11",
@@ -106,12 +105,12 @@ class ActionRegistry(FrozenModel):
         return output_path
 
     @model_validator(mode="after")
-    def principal_subset_registry(self):
+    def exact_principal_registry(self):
         ids = tuple(item.template_id for item in self.templates)
         if len(ids) != len(set(ids)):
             raise RegistryError("DUPLICATE_ACTION_ID")
-        if self.enforce_principal_ids and not set(PRINCIPAL_IDS) <= set(ids):
-            raise RegistryError("PRINCIPAL_ACTION_SUBSET_MISMATCH")
+        if self.enforce_principal_ids and ids != PRINCIPAL_IDS:
+            raise RegistryError("PRINCIPAL_ACTION_EXACT_SET_MISMATCH")
         return self
 
     @model_validator(mode="after")

@@ -287,9 +287,12 @@ class M1Pipeline:
         hidden = selected_parameter.value if hidden_size is None else hidden_size
         if hidden is None:
             raise ValueError("M1_HIDDEN_SIZE_SELECTION_REQUIRED")
-        candidates = scientific.parameters.get("m1_hidden_size_candidates")
-        if candidates is not None and hidden not in candidates.value:
-            raise ValueError("M1_HIDDEN_SIZE_NOT_IN_DEVELOPMENT_CANDIDATES")
+        allowed_hidden_sizes = {
+            int(scientific.parameters["m1_hidden_size"].value),
+            int(scientific.parameters["m1_sensitivity_hidden_size"].value),
+        }
+        if hidden not in allowed_hidden_sizes:
+            raise ValueError("M1_HIDDEN_SIZE_NOT_IN_FROZEN_MODEL_SETTINGS")
         contracts = {
             M1_V2_HAZARD_COORDINATE_TARGET: HazardBinContract(
                 bin_width_minutes=width, max_finite_minutes=ib_max

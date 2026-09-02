@@ -7,43 +7,33 @@ from model.common.config import load_config_layers
 
 
 PREFLIGHT = Path(
-    "artifacts/diagnostics/m1_v2_paper_model_closure/M1_V2_TUNING_PREFLIGHT.json"
+    "artifacts/diagnostics/model/m1_v2_model_closure/M1_V2_TUNING_PREFLIGHT.json"
 )
 
 
-def test_h_candidate_update_is_ready_and_bounded():
+def test_historical_tuning_preflight_is_not_active_authority():
     manifest = json.loads(PREFLIGHT.read_text(encoding="utf-8"))
     scientific = load_config_layers(Path("configs")).scientific
-    evaluation = yaml.safe_load(
-        Path("configs/evaluation/exp1.yaml").read_text(encoding="utf-8")
-    )
-    cross_contract = json.loads(
-        Path("EXPERIMENT_CROSS_CONTRACT.json").read_text(encoding="utf-8")
+    engineering = yaml.safe_load(
+        Path("configs/engineering/m1_data2_development_fast.yaml").read_text(
+            encoding="utf-8"
+        )
     )
 
     assert manifest["status"] == "M1_V2_TUNING_PREFLIGHT_H_READY"
     assert manifest["tuning_authorized"] is False
-    assert manifest["candidate_update"] == {
-        "decision_id": "AIR_SLOT_M1_V2_TUNING_PREFLIGHT_H_CANDIDATES_UPDATE",
-        "decision_date": "2026-08-22",
-        "scope": "CANDIDATE_CONFIGURATION_ONLY",
-        "previous_hidden_size_candidates": [16, 32],
-        "current_hidden_size_candidates": [8, 16, 32],
-    }
-    assert manifest["candidate_space"]["hidden_size"] == [8, 16, 32]
-    assert scientific.parameters["m1_hidden_size_candidates"].value == [8, 16, 32]
-    assert evaluation["hidden_size_candidates"] == [8, 16, 32]
-    assert cross_contract["hidden_size_candidates"] == [8, 16, 32]
-    assert manifest["bounded_protocol"]["stage_1_hidden_size"]["candidates"] == [
-        8, 16, 32,
-    ]
-    assert manifest["bounded_protocol"][
-        "maximum_unique_candidate_configurations_per_seed"
-    ] == 7
+    assert manifest["candidate_update"]["decision_date"] == "2026-08-22"
+    assert scientific.parameters["m1_hidden_size"].value == 8
+    assert scientific.parameters["m1_sensitivity_hidden_size"].value == 16
+    assert engineering["development_selection"]["runtime_hidden_size"] == 8
+    assert engineering["development_selection"][
+        "predefined_sensitivity_hidden_size"
+    ] == 16
 
 
-def test_h_candidate_update_preserves_fixed_contract_and_zero_run_counters():
+def test_current_freeze_supersedes_historical_preflight_without_running_it():
     manifest = json.loads(PREFLIGHT.read_text(encoding="utf-8"))
+    scientific = load_config_layers(Path("configs")).scientific
 
     assert manifest["final_feature_contract"] == {
         "dynamic": 39,
@@ -51,22 +41,10 @@ def test_h_candidate_update_preserves_fixed_contract_and_zero_run_counters():
         "total": 43,
         "history": "FULL_ADAPTIVE_CAUSAL_PREFIX",
     }
-    assert manifest["final_target_support"] == {
-        "T_IB_REMAINING_HAZARD": 360,
-        "D_OB": 210,
-        "D_TX": 60,
-        "bin_width_minutes": 5,
-        "support_provenance": "V2_SUPPORT_REFROZEN_AFTER_A2_B2",
-    }
-    assert manifest["candidate_space"]["learning_rate"] == [0.001, 0.003, 0.01]
-    assert manifest["candidate_space"]["weight_decay"] == [0.0, 0.0001]
-    assert manifest["candidate_space"]["optimization_duration_epochs"] == [4, 8]
-    assert manifest["split_roles"] == {
-        "Train": "fit candidate model",
-        "Development": "select H/LR/regularization/duration using principal metric",
-        "Calibration": "post-selection probability calibration and diagnostics only",
-        "Final Test": "locked",
-    }
+    assert scientific.parameters["m1_v2_t_ib_remaining_max_finite_minutes"].value == 360
+    assert scientific.parameters["m1_v2_d_ob_max_finite_minutes"].value == 180
+    assert scientific.parameters["m1_v2_d_tx_max_finite_minutes"].value == 60
+    assert scientific.parameters["scenario_count"].value == 64
     assert manifest["safety"]["M1_TRAINING_RUNS"] == 0
     assert manifest["safety"]["TUNING_RUNS"] == 0
     assert manifest["safety"]["FINAL_TEST_ACCESS_COUNT"] == 0

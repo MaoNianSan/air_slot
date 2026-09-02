@@ -9,7 +9,7 @@ from model.M1.pipeline import M1Pipeline
 from model.M1.tuning_stage1 import (
     STAGE1_H_CANDIDATES,
     STAGE1_METRICS,
-    exp1_interface_contract,
+    downstream_artifact_contract,
     run_fast_train_mode,
     stage1_development_metrics,
     stage1_manifest,
@@ -19,14 +19,16 @@ from model.M1.tuning_stage1 import (
 
 def test_stage1_manifest_matches_frozen_contract_and_is_not_run():
     manifest = stage1_manifest(Path("."))
-    assert manifest["status"] == "M1_V2_TUNING_STAGE1_READY"
+    assert manifest["status"] == "M1_V2_FROZEN_SETTINGS_READY"
     assert manifest["execution_authorized"] is False
-    assert manifest["candidate_list"] == ["NO_HISTORY", "H8", "H16", "H32"]
-    assert [row["hidden_size"] for row in manifest["candidates"][:3]] == [8, 16, 32]
+    assert manifest["setting_list"] == [
+        "NO_HISTORY_DIAGNOSTIC", "H8_PRIMARY", "H16_SENSITIVITY"
+    ]
+    assert [row["hidden_size"] for row in manifest["candidates"][:2]] == [8, 16]
     assert manifest["fixed_contract"]["total_feature_count"] == 43
     assert manifest["fixed_contract"]["support"] == {
         "T_IB_REMAINING_HAZARD": 360,
-        "D_OB": 210,
+        "D_OB": 180,
         "D_TX": 60,
         "bin_width_minutes": 5,
     }
@@ -41,11 +43,13 @@ def test_stage1_manifest_matches_frozen_contract_and_is_not_run():
 
 def test_stage1_manifest_file_matches_preparation_contract():
     path = Path(
-        "artifacts/diagnostics/m1_v2_paper_model_closure/"
+        "artifacts/diagnostics/model/m1_v2_model_closure/"
         "M1_V2_TUNING_STAGE1_MANIFEST.json"
     )
     manifest = json.loads(path.read_text(encoding="utf-8"))
+    # The checked-in artifact is historical and is not current runtime authority.
     assert manifest["candidate_list"] == ["NO_HISTORY", "H8", "H16", "H32"]
+    assert STAGE1_H_CANDIDATES == (8, 16)
     assert manifest["development_evaluation"]["principal"] == STAGE1_METRICS[0]
     assert manifest["development_evaluation"]["secondary"] == list(STAGE1_METRICS[1:])
     assert manifest["safety"]["M1_TRAINING_RUNS"] == 0
@@ -109,10 +113,20 @@ def test_fast_train_mode_requires_explicit_authorization():
         )
 
 
-def test_exp1_interface_contract_is_read_only_and_horizon_complete():
-    interface = exp1_interface_contract()
-    assert interface["exp1_mutation"] is False
-    assert interface["forecast_horizons_minutes"] == [
+def test_hidden_size_tuning_entry_point_is_retired():
+    from model.M1.tuning_stage1 import run_fast_stage1_tuning
+
+    with pytest.raises(
+        RuntimeError, match="M1_HIDDEN_SIZE_TUNING_NOT_AUTHORIZED_MODEL_FROZEN"
+    ):
+        run_fast_stage1_tuning(Path("."), execution_authorized=True)
+
+
+def test_downstream_artifact_contract_is_read_only_and_horizon_complete():
+    interface = downstream_artifact_contract()
+    assert interface["downstream_mutation"] is False
+    assert "forecast_horizons_minutes" not in interface
+    assert interface["evaluation_lead_times_minutes"] == [
         0, 30, 60, 120, 180, 240, 300, 360, 420, 480,
     ]
     assert interface["joint_state_distribution_artifact"]["status"] == "READY"
@@ -121,7 +135,7 @@ def test_exp1_interface_contract_is_read_only_and_horizon_complete():
 
 def test_stage1_parameter_counts_are_deterministic_and_ordered():
     counts = [stage1_parameter_count(size) for size in STAGE1_H_CANDIDATES]
-    assert counts == [4708, 9716, 20884]
+    assert counts == [4660, 9620]
     assert stage1_parameter_count(
         16, history_mode=HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION,
-    ) == 7620
+    ) == 7524

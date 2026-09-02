@@ -1,6 +1,6 @@
 """M3 action-template instantiation."""
 
-from .contracts import ActionMaterialCoverageContract, CandidateAction
+from .contracts import ActionInstantiationRecord, ActionMaterialCoverageContract, CandidateAction, InstantiationState
 from .action_response import (
     ActionEligibility,
     ActionEvaluationEnvelope,
@@ -13,7 +13,12 @@ from .action_response import (
     build_a00_identity_envelope,
     build_conditional_scenario_envelope,
 )
-from .instantiate import instantiate_candidates
+from .instantiate import (
+    ActionInstantiationEvaluation,
+    evaluate_action_instantiation,
+    instantiate_action_records,
+    instantiate_candidates,
+)
 from .m2_action_interface import (
     ActionConditionedCUQuantity,
     M3ActionConditionedConsequence,
@@ -24,6 +29,8 @@ from .registry import ActionRegistry
 
 __all__ = [
     "ActionMaterialCoverageContract",
+    "ActionInstantiationRecord",
+    "ActionInstantiationEvaluation",
     "ActionEligibility",
     "ActionEvaluationEnvelope",
     "ActionResponseRule",
@@ -31,6 +38,7 @@ __all__ = [
     "ActionConditionedCUQuantity",
     "ActionRegistry",
     "CandidateAction",
+    "InstantiationState",
     "EligibilityState",
     "M3ActionConditionedConsequence",
     "M3BaselineConsequenceInput",
@@ -40,5 +48,7 @@ __all__ = [
     "ResponseSupportClass",
     "build_a00_identity_envelope",
     "build_conditional_scenario_envelope",
+    "evaluate_action_instantiation",
+    "instantiate_action_records",
     "instantiate_candidates",
 ]

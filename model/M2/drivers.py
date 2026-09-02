@@ -45,31 +45,30 @@ COMPONENT_INPUT_CONTRACTS = {
         ),
         ComponentInputContract(
             component_id="P_time",
-            critical_inputs=("d_to_minutes", "passenger_exposure"),
+            critical_inputs=("d_to_minutes", "expected_passengers_per_flight"),
             irrelevant_inputs=tuple(
-                name for name in _CONTEXT_FIELDS if name != "passenger_exposure"
+                name for name in _CONTEXT_FIELDS if name != "expected_passengers_per_flight"
             ),
         ),
         ComponentInputContract(
             component_id="P_itinerary",
-            critical_inputs=("d_to_minutes", "itinerary_buffer_reference"),
+            critical_inputs=("d_to_minutes", "expected_passengers_per_flight", "connection_share_reference"),
             irrelevant_inputs=tuple(
                 name
                 for name in _CONTEXT_FIELDS
-                if name not in {"d_to_minutes", "itinerary_buffer_reference"}
+                if name not in {"d_to_minutes", "expected_passengers_per_flight", "connection_share_reference"}
             ),
         ),
         ComponentInputContract(
             component_id="P_service",
             critical_inputs=(
                 "d_to_minutes",
-                "service_policy_reference",
-                "passenger_exposure",
+                "expected_passengers_per_flight",
             ),
             irrelevant_inputs=tuple(
                 name
                 for name in _CONTEXT_FIELDS
-                if name not in {"service_policy_reference", "passenger_exposure"}
+                if name != "expected_passengers_per_flight"
             ),
         ),
         ComponentInputContract(
@@ -132,6 +131,16 @@ def _itinerary_disruption_events(
             for item in classes
         )
     )
+
+
+def _connection_share_value(reference: ScientificContextValue | None) -> float | None:
+    if reference is None or reference.value is None or reference.support_state is SupportState.ABSTAIN:
+        return None
+    try:
+        value = float(reference.value)
+    except (TypeError, ValueError):
+        return None
+    return value if 0.0 <= value <= 1.0 else None
 
 
 def _abstain(
@@ -210,6 +219,12 @@ def native_quantities(
 
     def ctx(name):
         return _context_value(context, name)
+
+    def expected_pax():
+        item = ctx("expected_passengers_per_flight")
+        if item is None:
+            return None
+        return item
 
     def publish(
         component,
@@ -336,42 +351,36 @@ def native_quantities(
         ),
         publish(
             "P_time",
-            lambda: float(ctx("passenger_exposure").value) * d_to,
+            lambda: float(expected_pax().value) * d_to,
             "passenger_minutes",
-            "passenger_exposure_x_delay",
+            "expected_passengers_per_flight_x_delay",
             (("d_to_minutes", d_to, d_to_support),),
-            ("passenger_exposure",),
+            ("expected_passengers_per_flight",),
             EvidenceClass.DOMAIN_PROXY,
             SourceType.HYBRID,
         ),
         publish(
             "P_itinerary",
-            lambda: _itinerary_disruption_events(
-                ctx("itinerary_buffer_reference"), d_to
-            ),
-            "events",
-            "missed_connection_threshold_events",
+            lambda: float(expected_pax().value)
+            * float(_connection_share_value(ctx("connection_share_reference")))
+            * (1.0 if d_to > 45.0 else 0.0),
+            "expected_disrupted_connecting_passenger_exposure",
+            "expected_passengers_x_connecting_share_x_itinerary_threshold",
             (("d_to_minutes", d_to, d_to_support),),
-            ("itinerary_buffer_reference",),
-            EvidenceClass.SCENARIO_PARAMETER,
-            SourceType.LITERATURE,
+            ("expected_passengers_per_flight", "connection_share_reference"),
+            EvidenceClass.DERIVED,
+            SourceType.HYBRID,
         ),
         publish(
             "P_service",
-            lambda: (
-                float(ctx("passenger_exposure").value)
-                if (
-                    d_to is not None
-                    and d_to >= float(ctx("service_policy_reference").value)
-                )
-                else 0.0
-            ),
-            "threshold_events",
-            "service_policy_threshold",
+            lambda: float(expected_pax().value)
+            * (1.0 if d_to >= 180.0 else 0.0),
+            "expected_long_delay_passenger_service_exposure",
+            "expected_passengers_x_service_threshold",
             (("d_to_minutes", d_to, d_to_support),),
-            ("service_policy_reference", "passenger_exposure"),
-            ctx("service_policy_reference").evidence_class,
-            ctx("service_policy_reference").source_type,
+            ("expected_passengers_per_flight",),
+            EvidenceClass.DERIVED,
+            SourceType.HYBRID,
         ),
         publish(
             "R_operating",

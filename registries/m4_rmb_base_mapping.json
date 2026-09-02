@@ -1,0 +1,24 @@
+{
+  "registry_id": "M4_RMB_BASE_MAPPING_V1",
+  "version": "1.0.0",
+  "freeze_id": "AIR_SLOT_MODEL_FREEZE_20260901_RMB_BASE",
+  "reference_period": "MODEL_FREEZE_2026-09-01",
+  "measurement_system": "RMB",
+  "mapping_type": "LINEAR_IDENTITY_CONSTRUCTED_UNIT",
+  "base_beta": 1.0,
+  "component_ids": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "R_operating"
+  ],
+  "scientific_status": "FROZEN",
+  "implementation_status": "MATCH",
+  "claim_boundary": "1 CU = 1 RMB is a constructed reporting and measurement convention, not currency conversion, accounting cost, or empirical airline loss.",
+  "provenance": [
+    "HISTORICAL_MODEL_FREEZE_RECONCILIATION_20260901",
+    "BASE_ONLY_NO_LOW_HIGH_BANDS",
+    "P_ITINERARY_AND_P_SERVICE_OUTSIDE_PRINCIPAL_RMB_SCOPE"
+  ]
+}

@@ -50,6 +50,8 @@ from model.PRE.reference.turnaround_data2 import (
     build_data2_turnaround_reference,
 )
 from model.PRE.streaming.data2 import load_timezones
+from model.PRE.references.passenger_load_reference import build_expected_passengers_reference
+from model.PRE.references.connection_share_reference import build_connection_share_reference
 
 
 def ontime_paths(root: Path, months: tuple[int, ...]) -> tuple[Path, ...]:
@@ -96,6 +98,8 @@ def iter_train_rows(paths: tuple[Path, ...], timezones: dict[str, str]):
                     "actual_arrival_utc": outcome.actual_arrival_utc,
                     "actual_departure_utc": outcome.actual_departure_utc,
                     "taxi_out_minutes": outcome.taxi_out_minutes,
+                    "carrier_id": getattr(schedule, "carrier_id", None),
+                    "month": int(raw.get("FlightDate", "").split("-")[1]) if raw.get("FlightDate", "").count("-") == 2 else None,
                     "split": "train",
                 }
 
@@ -132,6 +136,10 @@ __all__ = [
     "iter_train_rows",
     "ontime_paths",
     "stream_passenger_routes",
+    "stream_t100_rows",
+    "stream_db1b_coupon_rows",
+    "fit_passenger_consequence_references",
+    "compute_passenger_consequence_train_scales",
 ]
 
 ONTIME_PROJECTED_FIELDS = [
@@ -185,10 +193,22 @@ M2_NATIVE_DEFINITIONS = {
         "driver": "takeoff_delay_x_expected_downstream_exposure",
     },
     "P_time": {
-        "quantity": "V_OD_pax * Z_takeoff",
-        "definition": "passenger_exposure(origin,destination) * max(0, DELTA_OB + T_TX - taxi_reference(origin))",
+        "quantity": "Nbar_pax * D_TO",
+        "definition": "expected_passengers_per_flight(carrier,origin,destination,month) * D_TO",
         "unit": "passenger_minutes",
-        "driver": "passenger_exposure_x_delay",
+        "driver": "expected_passengers_per_flight_x_delay",
+    },
+    "P_itinerary": {
+        "quantity": "Nbar_pax * r_conn * I[D_TO > 45]",
+        "definition": "expected_passengers_per_flight * expected_connecting_share * I[D_TO > 45 minutes]",
+        "unit": "expected_disrupted_connecting_passenger_exposure",
+        "driver": "expected_passengers_x_connecting_share_x_itinerary_threshold",
+    },
+    "P_service": {
+        "quantity": "Nbar_pax * I[D_TO >= 180]",
+        "definition": "expected_passengers_per_flight * I[D_TO >= 180 minutes]",
+        "unit": "expected_long_delay_passenger_service_exposure",
+        "driver": "expected_passengers_x_service_threshold",
     },
     "R_operating": {
         "quantity": "Z_taxi",
@@ -237,6 +257,61 @@ def stream_passenger_routes(coupon_paths: tuple[Path, ...]) -> list[dict[str, An
         }
         for (origin, destination), total in sorted(sums.items())
     ]
+
+
+def stream_t100_rows(path: Path, *, fit_partition: str = "TRAIN"):
+    """Read T-100 aggregate rows without writing to ``data2``."""
+    with path.open(encoding="utf-8-sig", errors="replace", newline="") as handle:
+        for row in csv.DictReader(handle):
+            yield {**row, "split": fit_partition}
+
+
+def stream_db1b_coupon_rows(paths: tuple[Path, ...], *, fit_partition: str = "TRAIN"):
+    for path in paths:
+        with path.open(encoding="utf-8-sig", errors="replace", newline="") as handle:
+            for row in csv.DictReader(handle):
+                yield {**row, "split": fit_partition, "TRIPBREAK": row.get("Break", "")}
+
+
+def fit_passenger_consequence_references(*, root: Path, fit_period: str = "2019-H1") -> dict[str, Any]:
+    """Build T-100 expected load and DB1B continuation references."""
+    t100_path = root / "data2" / "raw" / "bts" / "t100" / "2019" / "T_T100_SEGMENT_ALL_CARRIER.csv"
+    coupon_paths = tuple(sorted((root / "data2" / "raw" / "bts" / "db1b" / "2019" / "coupon").glob("Origin_and_Destination_Survey_DB1BCoupon_2019_[12].csv")))
+    pax = build_expected_passengers_reference(stream_t100_rows(t100_path), fit_partition="TRAIN")
+    conn = build_connection_share_reference(stream_db1b_coupon_rows(coupon_paths), fit_partition="TRAIN")
+    return {"expected_pax": pax, "connection_share": conn, "fit_period": fit_period, "source_paths": (t100_path, *coupon_paths)}
+
+
+def compute_passenger_consequence_train_scales(rows: list[dict[str, Any]], *, expected_pax_reference, connection_share_reference) -> dict[str, dict[str, Any]]:
+    """Compute positive TRAIN medians for all passenger components."""
+    values = {"P_time": [], "P_itinerary": [], "P_service": []}
+    populations = {name: 0 for name in values}
+    for row in rows:
+        d_to = row.get("d_to_minutes")
+        if d_to is None:
+            continue
+        cell = expected_pax_reference.lookup(row.get("carrier_id"), row["origin_airport_id"], row["destination_airport_id"], row.get("month"))
+        share_cell = connection_share_reference.lookup(row["origin_airport_id"], row["destination_airport_id"], row.get("quarter"))
+        if cell is None or share_cell is None:
+            continue
+        pax = float(cell.reference_value)
+        conn = pax * float(share_cell.connection_share)
+        delay = float(d_to)
+        if delay > 0:
+            values["P_time"].append(pax * delay)
+        if delay > 45.0 and conn > 0:
+            values["P_itinerary"].append(conn)
+        if delay >= 180.0 and pax > 0:
+            values["P_service"].append(pax)
+        for name in values:
+            populations[name] += 1
+    output = {}
+    units = {"P_time": "passenger-minutes", "P_itinerary": "expected_disrupted_connecting_passenger_exposure", "P_service": "expected_long_delay_passenger_service_exposure"}
+    for name, positive in values.items():
+        if not positive:
+            raise ContractError(f"M2_TRAIN_SCALE_NO_POSITIVE_POPULATION:{name}")
+        output[name] = {"median": median(positive), "positive_n": len(positive), "population_rows": populations[name], "unit": units[name]}
+    return output
 
 
 def _artifact_hash(payload: dict) -> str:
