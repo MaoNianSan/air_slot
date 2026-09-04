@@ -2,9 +2,9 @@
 
 from pathlib import Path
 
-from model.M3.factual_adapter import FactualState, adapt_pre_state
-from model.M3.instantiate import instantiate_action_records
-from model.M3.registry import ActionRegistry
+from model.M3.factual_layer.adapter import FactualState, adapt_pre_state
+from model.M3.instantiation_layer.builder import instantiate_action_records
+from model.M3.registry_layer.actions import ActionRegistry
 from model.PRE.contracts.pre_state import DecisionNodeRecord, PREState
 from model.common.enums import EvidenceClass, OperationalStage, SupportState
 from model.common.value_objects import SupportedValue

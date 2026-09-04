@@ -589,7 +589,7 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "registries/scientific_variables.yaml",
         "registries/dataset_capabilities.yaml",
         "configs/scientific/foundation.yaml",
-        "model/M2/freeze.py",
+        "model/M2/cu/registry.py",
         "model/PRE/adapters/registry.py",
         "model/PRE/canonical/data2_timestamps.py",
         "model/PRE/canonical/normalization_flights.py",

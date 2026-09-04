@@ -1,4 +1,4 @@
-schema_version: "1.1.0"
+schema_version: "1.2.0"
 templates:
   - {template_id: A00, name: No additional action, family: "null", required_facts: [], authority_capabilities: [], mitigation: {}, induced: {}, response_model: DETERMINISTIC, response_parameters: {value: 0.0}, response_provenance: OPERATOR_INDUSTRY, response_parameter_status: NOT_REQUIRED, coverage: FULL, preparation_time_minutes: 0}
   - {template_id: A11, name: Controlled connection hold, family: timing_passenger_coordination, required_facts: [passenger_connection], authority_capabilities: [FLIGHT, PAX], mitigation: {P_itinerary: 0.5}, induced: {F_execution: 3, P_time: 3}, coverage: HIGH, preparation_time_minutes: 5}
@@ -11,9 +11,9 @@ templates:
   - {template_id: A33, name: Passenger care service activation, family: passenger_service, required_facts: [passenger_exposure], authority_capabilities: [PAX], mitigation: {}, induced: {P_service: 2, R_operating: 2}, coverage: PARTIAL, preparation_time_minutes: 0}
   - {template_id: A41, name: Gate stand reassignment, family: ground_recovery, required_facts: [gate_resource], authority_capabilities: [GROUND], mitigation: {F_execution: 0.3, F_continuity: 0.2}, induced: {R_operating: 3}, coverage: HIGH, preparation_time_minutes: 10}
   - {template_id: A42, name: Quick turn ground support reinforcement, family: ground_recovery, required_facts: [ground_resource], authority_capabilities: [GROUND], mitigation: {F_continuity: 0.3, F_execution: 0.2}, induced: {R_operating: 4}, coverage: HIGH, preparation_time_minutes: 10}
-  - {template_id: A43, name: Aircraft tow or stand reposition, family: ground_recovery, required_facts: [stand_resource], authority_capabilities: [GROUND], mitigation: {F_execution: 0.2}, induced: {F_continuity: 2, R_operating: 4}, coverage: PARTIAL, preparation_time_minutes: 20}
-  - {template_id: A51, name: Same fleet aircraft swap, family: aircraft_recovery, required_facts: [replacement_aircraft, aircraft_compatibility], authority_capabilities: [AIRCRAFT], mitigation: {F_continuity: 0.5, F_propagation: 0.3}, induced: {F_execution: 3, R_operating: 6}, coverage: PARTIAL, preparation_time_minutes: 30}
-  - {template_id: A52, name: Local rotation aircraft reassignment, family: aircraft_recovery, required_facts: [rotation_option], authority_capabilities: [AIRCRAFT], mitigation: {F_propagation: 0.4}, induced: {F_continuity: 3, R_operating: 5}, coverage: PARTIAL, preparation_time_minutes: 30}
+  - {template_id: A43, name: Aircraft tow or stand reposition, family: ground_recovery, required_facts: [stand_resource], authority_capabilities: [GROUND], mitigation: {F_execution: 0.2}, induced: {R_operating: 4}, coverage: PARTIAL, preparation_time_minutes: 20}
+  - {template_id: A51, name: Same fleet aircraft swap, family: aircraft_recovery, required_facts: [replacement_aircraft, aircraft_compatibility], authority_capabilities: [AIRCRAFT], mitigation: {F_continuity: 0.5, F_propagation: 0.3}, induced: {R_operating: 6}, coverage: PARTIAL, preparation_time_minutes: 30}
+  - {template_id: A52, name: Local rotation aircraft reassignment, family: aircraft_recovery, required_facts: [rotation_option], authority_capabilities: [AIRCRAFT], mitigation: {F_propagation: 0.4}, induced: {R_operating: 5}, coverage: PARTIAL, preparation_time_minutes: 30}
   - {template_id: A53, name: Standby aircraft activation, family: aircraft_recovery, required_facts: [standby_aircraft], authority_capabilities: [AIRCRAFT], mitigation: {F_continuity: 0.5, F_execution: 0.4, F_propagation: 0.4}, induced: {R_operating: 8}, coverage: PARTIAL, preparation_time_minutes: 45}
   - {template_id: A54, name: Cross fleet equipment substitution, family: aircraft_recovery, required_facts: [replacement_aircraft, cross_fleet_compatibility], authority_capabilities: [AIRCRAFT], mitigation: {F_continuity: 0.4, F_propagation: 0.3}, induced: {F_execution: 4, R_operating: 7}, coverage: PARTIAL, preparation_time_minutes: 45}
   - {template_id: A55, name: Ferry aircraft reposition, family: aircraft_recovery, required_facts: [reposition_aircraft], authority_capabilities: [AIRCRAFT], mitigation: {F_continuity: 0.4, F_propagation: 0.3}, induced: {R_operating: 9}, coverage: PARTIAL, preparation_time_minutes: 60}
@@ -21,5 +21,191 @@ templates:
   - {template_id: A62, name: Reserve crew activation, family: crew_recovery, required_facts: [reserve_crew], authority_capabilities: [CREW], mitigation: {F_execution: 0.4, F_propagation: 0.3}, induced: {R_operating: 6}, coverage: PARTIAL, preparation_time_minutes: 30}
   - {template_id: A63, name: Crew reposition or deadhead, family: crew_recovery, required_facts: [crew_reposition], authority_capabilities: [CREW], mitigation: {F_execution: 0.3, F_propagation: 0.2}, induced: {R_operating: 6, P_time: 2}, coverage: PARTIAL, preparation_time_minutes: 45}
   - {template_id: A64, name: Crew duty repair rescheduling, family: crew_recovery, required_facts: [crew_duty], authority_capabilities: [CREW], mitigation: {F_execution: 0.3, F_propagation: 0.2}, induced: {R_operating: 5, P_time: 2}, coverage: PARTIAL, preparation_time_minutes: 30}
-  - {template_id: A71, name: Successor flight cancellation, family: extreme_local_network, required_facts: [cancellation_authority], authority_capabilities: [NETWORK, CANCEL], mitigation: {F_propagation: 0.8}, induced: {F_continuity: 8, P_time: 10, P_itinerary: 10, P_service: 5, R_operating: 5}, coverage: PARTIAL, preparation_time_minutes: 10}
-  - {template_id: A72, name: Downstream leg cancellation rotation truncation, family: extreme_local_network, required_facts: [network_authority], authority_capabilities: [NETWORK, CANCEL], mitigation: {F_propagation: 0.8}, induced: {F_continuity: 10, P_time: 12, P_itinerary: 12, P_service: 6, R_operating: 7}, coverage: PARTIAL, preparation_time_minutes: 15}
+  - {template_id: A71, name: Successor flight cancellation, family: extreme_local_network, required_facts: [cancellation_authority], authority_capabilities: [NETWORK, CANCEL], mitigation: {F_propagation: 0.8}, induced: {P_time: 10, P_itinerary: 10, P_service: 5, R_operating: 5}, coverage: PARTIAL, preparation_time_minutes: 10}
+  - {template_id: A72, name: Downstream leg cancellation rotation truncation, family: extreme_local_network, required_facts: [network_authority], authority_capabilities: [NETWORK, CANCEL], mitigation: {F_propagation: 0.8}, induced: {P_time: 12, P_itinerary: 12, P_service: 6, R_operating: 7}, coverage: PARTIAL, preparation_time_minutes: 15}
+
+footprints:
+  A00:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: UNTOUCHED, level: NONE}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: UNTOUCHED, level: NONE}
+  A11:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: INDUCED, level: PRIMARY}
+    F_propagation: {role: INDUCED, level: SECONDARY}
+    P_time: {role: INDUCED, level: PRIMARY}
+    P_itinerary: {role: MITIGATION, level: PRIMARY}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: UNTOUCHED, level: NONE}
+  A13:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: MITIGATION, level: SECONDARY}
+    P_itinerary: {role: MITIGATION, level: SECONDARY}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A21:
+    F_continuity: {role: MITIGATION, level: PRIMARY}
+    F_execution: {role: INDUCED, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: INDUCED, level: PRIMARY}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: UNTOUCHED, level: NONE}
+  A22:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: SECONDARY}
+  A23:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: SECONDARY}
+  A31:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: UNTOUCHED, level: NONE}
+    P_time: {role: INDUCED, level: CONDITIONAL_SECONDARY}
+    P_itinerary: {role: MITIGATION, level: PRIMARY}
+    P_service: {role: MITIGATION, level: SECONDARY}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A32:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: UNTOUCHED, level: NONE}
+    P_time: {role: MITIGATION, level: PRIMARY}
+    P_itinerary: {role: MITIGATION, level: PRIMARY}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A33:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: UNTOUCHED, level: NONE}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: INDUCED, level: PRIMARY}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A41:
+    F_continuity: {role: MITIGATION, level: PRIMARY}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: SECONDARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A42:
+    F_continuity: {role: MITIGATION, level: PRIMARY}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: SECONDARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A43:
+    F_continuity: {role: MITIGATION, level: SECONDARY}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: UNTOUCHED, level: NONE}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A51:
+    F_continuity: {role: MITIGATION, level: PRIMARY}
+    F_execution: {role: MITIGATION, level: SECONDARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A52:
+    F_continuity: {role: MITIGATION, level: SECONDARY}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A53:
+    F_continuity: {role: MITIGATION, level: PRIMARY}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A54:
+    F_continuity: {role: MITIGATION, level: PRIMARY}
+    F_execution: {role: INDUCED, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: INDUCED, level: CONDITIONAL_SECONDARY}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A55:
+    F_continuity: {role: MITIGATION, level: PRIMARY}
+    F_execution: {role: INDUCED, level: CONDITIONAL_SECONDARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A61:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A62:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: UNTOUCHED, level: NONE}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A63:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: INDUCED, level: CONDITIONAL_SECONDARY}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A64:
+    F_continuity: {role: UNTOUCHED, level: NONE}
+    F_execution: {role: MITIGATION, level: PRIMARY}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: INDUCED, level: CONDITIONAL_SECONDARY}
+    P_itinerary: {role: UNTOUCHED, level: NONE}
+    P_service: {role: UNTOUCHED, level: NONE}
+    R_operating: {role: INDUCED, level: PRIMARY}
+  A71:
+    F_continuity: {role: MITIGATION, level: SECONDARY}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: INDUCED, level: PRIMARY}
+    P_itinerary: {role: INDUCED, level: PRIMARY}
+    P_service: {role: INDUCED, level: PRIMARY}
+    R_operating: {role: INDUCED, level: SECONDARY}
+  A72:
+    F_continuity: {role: MITIGATION, level: SECONDARY}
+    F_execution: {role: UNTOUCHED, level: NONE}
+    F_propagation: {role: MITIGATION, level: PRIMARY}
+    P_time: {role: INDUCED, level: PRIMARY}
+    P_itinerary: {role: INDUCED, level: PRIMARY}
+    P_service: {role: INDUCED, level: PRIMARY}
+    R_operating: {role: INDUCED, level: SECONDARY}

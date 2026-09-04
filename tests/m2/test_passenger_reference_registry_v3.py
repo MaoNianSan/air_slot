@@ -1,6 +1,6 @@
 import pytest
 
-from model.M2.freeze import M2Data2FormalCuRegistry
+from model.M2.cu.registry import M2Data2FormalCuRegistry
 from model.common.errors import ContractError
 
 

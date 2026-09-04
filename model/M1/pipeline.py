@@ -52,12 +52,13 @@ from .static_features import (
     M1StaticNormalizationArtifact,
     static_reference_features_from_pre,
 )
-from .network import M1V2GRU, OrderedEventGRU
+from .model_layer.gru import M1V2GRU, OrderedEventGRU
 from .history import HistoryEncoderMode
-from .scenarios import ancestral_sample_v2
+from .scenario_layer.sampler import ancestral_sample_v2
 from .loss import hazard_pmf, monotone_positive_quantiles
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
-from .calibration import M1CalibrationContract, common_calibration_policy
+from .calibration_layer.hurdle_temperature import M1CalibrationContract, common_calibration_policy
+from .tail import EmpiricalTailContinuation
 
 V1_TO_V2_SUPPORT = {"R_IB": "T_IB_A00", "DELTA_OB": "D_OB", "T_TX": "D_TX"}
 
@@ -116,10 +117,15 @@ def conditional_head_summary(model, state, contracts, *, temperatures=None):
             d_ob_zero = d_ob_zero + weight * z_ob
             d_ob_quant = d_ob_quant + weight[:, None] * q_ob
             expected_d_ob = (1.0 - z_ob) * q_ob.mean(dim=-1)
-            expected_bin = torch.clamp(
-                (expected_d_ob / d_ob.bin_width_minutes).long(),
+            finite_expected_bin = torch.clamp(
+                torch.floor(expected_d_ob / d_ob.bin_width_minutes).long(),
                 0,
-                d_ob.overflow_index,
+                d_ob.overflow_index - 1,
+            )
+            expected_bin = torch.where(
+                expected_d_ob > d_ob.max_finite_minutes,
+                torch.full_like(finite_expected_bin, d_ob.overflow_index),
+                finite_expected_bin,
             )
             zero_tx, quant_tx = model.d_tx_heads(state, ib, expected_bin)
             z_tx = torch.sigmoid(
@@ -161,6 +167,7 @@ class M1Pipeline:
         calibration_diagnostics=None,
         static_normalization=None,
         history_mode=None,
+        tail_continuations=None,
     ):
         self.model = model
         self.contracts = contracts
@@ -195,6 +202,7 @@ class M1Pipeline:
         self.static_normalization = static_normalization
         self.calibration_contract = calibration_contract or common_calibration_policy()
         self.calibration_diagnostics = dict(calibration_diagnostics or {})
+        self.tail_continuations = dict(tail_continuations or {})
 
     @property
     def bins(self):
@@ -411,7 +419,8 @@ class M1Pipeline:
         )
 
     def sample_from_pre(
-        self, pre_state, values, lengths, *, observed, count, seed, taxi_reference=None
+        self, pre_state, values, lengths, *, observed, count, seed, taxi_reference=None,
+        tail_continuations=None,
     ):
         if not isinstance(self.model, M1V2GRU):
             raise ValueError("M1_V1_PRINCIPAL_DISABLED")
@@ -519,6 +528,11 @@ class M1Pipeline:
             fast_features=fast_features,
             static_features=static_features,
             **reference_context,
+            tail_continuations=(
+                self.tail_continuations
+                if tail_continuations is None
+                else dict(tail_continuations)
+            ),
         )
 
     def calibration_policy(self):

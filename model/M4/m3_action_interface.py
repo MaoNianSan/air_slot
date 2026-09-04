@@ -10,14 +10,14 @@ from enum import Enum
 
 from pydantic import Field, model_validator
 
-from model.M3.action_response import (
+from model.M3 import (
     ActionEvaluationEnvelope,
     EligibilityState,
     ResponseParameter,
     ResponseSourceType,
     ResponseSupportClass,
+    InstantiationState,
 )
-from model.M3.contracts import InstantiationState
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.enums import SupportState
 from model.common.value_objects import FrozenModel

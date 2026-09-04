@@ -19,7 +19,7 @@ from model.M1.data import (
 from model.M1.history import adaptive_history, represent_history
 from model.M1.loss import hazard_pmf, monotone_positive_quantiles
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import ancestral_sample_v2
+from model.M1.scenario_layer.sampler import ancestral_sample_v2
 from model.common.config import load_config_layers
 from model.PRE.canonical.normalization import canonicalize_ontime_row
 from model.PRE.pipeline import ProductionPRERequest, publish_production_pre

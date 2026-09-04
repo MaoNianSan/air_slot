@@ -9,7 +9,7 @@ from model.M2.contracts import (
     ScenarioConsequenceDistribution,
     ScenarioConsequence,
 )
-from model.M2.drivers import native_quantities
+from model.M2.consequences.engine import native_quantities
 from model.common.cu_normalization import CUNormalizationStatus
 from model.common.enums import SupportState
 from model.common.estimand import FormalEstimandStatus, ScopeStatus

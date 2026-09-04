@@ -18,8 +18,11 @@ or reusing superseded H32 artifacts.
 
 M2 tests verify fixed seven-component order, pure consequence definitions,
 support propagation, no zero-fill, CU lineage, active-registry hash integrity,
-and separation of current quantity definitions from frozen-artifact formula
-provenance.
+T-100 H1 and DB1B Q1/Q2 fit boundaries, fail-closed TripBreak schema handling,
+component-specific passenger abstention, context-sourced thresholds, and
+separation of current quantity definitions from frozen-artifact formula
+provenance. The active registry is `M2_DATA2_FORMAL_CU_V4`; all seven positive
+Train medians are required.
 
 M3 tests verify:
 

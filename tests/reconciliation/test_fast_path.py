@@ -18,7 +18,7 @@ from model.M1.fast_path import (
     fast_v2_distribution_schema,
 )
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import ancestral_sample_v2
+from model.M1.scenario_layer.sampler import ancestral_sample_v2
 from model.common.errors import ContractError
 
 

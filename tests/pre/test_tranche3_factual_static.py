@@ -31,7 +31,7 @@ from model.M1.contracts import (
 )
 from model.M1.data import STATIC_FEATURE_COUNT, STATIC_FEATURE_NAMES
 from model.M1.factual_state import factual_observed_state
-from model.M1.network import M1V2GRU
+from model.M1.model_layer.gru import M1V2GRU
 from model.M1.pipeline import M1Pipeline
 from model.M1.static_features import (
     M1StaticNormalizationArtifact,

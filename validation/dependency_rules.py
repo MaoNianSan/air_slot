@@ -3,7 +3,7 @@ from pathlib import Path
 
 # Approved scientific-status field usages (user-approved registry contracts).
 APPROVED_STATUS_SCHEMA_PAIRS = {
-    "model/M2/freeze.py": 'scientific_status: str = "FROZEN"',
+    "model/M2/cu/registry.py": 'scientific_status: str = "FROZEN"',
     "model/M3/response_registry.py": 'scientific_status: str = "HUMAN_APPROVED_SCENARIO_SPECIFICATION"',
     "model/M4/scientific_registry.py": 'payload["scientific_status"]',
     "registries/m3_response_scenarios.yaml": "scientific_status: HUMAN_APPROVED_SCENARIO_SPECIFICATION",

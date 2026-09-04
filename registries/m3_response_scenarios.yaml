@@ -9,6 +9,11 @@ response_provenance_default: ASSUMPTION_GROUNDED
 
 beta_concentration: 12.0
 induced_score_to_cu: 0.10
+induced_score_unit: INDUCED_SCORE
+induced_score_to_cu_unit: CU_PER_INDUCED_SCORE
+induced_burden_semantics: ACTION_ATTEMPT_BURDEN
+induced_burden_requires_realized_mitigation: false
+induced_burden_components: [F_continuity, F_execution, F_propagation, P_time, P_itinerary, P_service, R_operating]
 
 sensitivity:
   principal_axis: RESPONSE_EFFICACY

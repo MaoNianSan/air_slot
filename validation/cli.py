@@ -12,6 +12,11 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Air Slot foundation validation")
     parser.add_argument("command", choices=("contracts", "adapters", "pre", "all"))
     parser.add_argument("--fixtures-only", action="store_true")
+    parser.add_argument(
+        "--materialize",
+        action="store_true",
+        help="persist validation outputs under outputs/; default is read-only/in-memory",
+    )
     return parser
 
 
@@ -21,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
         _parser().error("--fixtures-only is required for this command")
     root = PROJECT_ROOT
     run, fixture = run_foundation(args.command, root)
-    if fixture is not None:
+    if args.materialize and fixture is not None:
         fixture_path = (
             root
             / "outputs"
@@ -32,7 +37,7 @@ def main(argv: list[str] | None = None) -> int:
         )
         fixture_path.parent.mkdir(parents=True, exist_ok=True)
         fixture_path.write_bytes(canonical_json_bytes(fixture) + b"\n")
-    if args.command == "all":
+    if args.materialize and args.command == "all":
         output = (
             root
             / "outputs"

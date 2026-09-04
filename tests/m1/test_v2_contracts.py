@@ -47,7 +47,8 @@ def test_hazard_contract_support_and_encoding():
     assert contract.class_count == 13
     assert contract.encode(0) == 0
     assert contract.encode(24) == 4
-    assert contract.encode(60) == contract.overflow_index
+    assert contract.encode(60) == contract.overflow_index - 1
+    assert contract.encode(60.001) == contract.overflow_index
     assert contract.representative(contract.overflow_index)[2] is True
     with pytest.raises(ValueError):
         contract.encode(-1)
@@ -99,7 +100,8 @@ def test_d_ob_zero_mass_and_positive_support_contract():
     contract = _d_ob()
     assert contract.encode(0) == 0
     assert contract.encode(59) == 11
-    assert contract.encode(60) == contract.overflow_index
+    assert contract.encode(60) == contract.overflow_index - 1
+    assert contract.encode(60.001) == contract.overflow_index
     assert contract.quantile_count == 5
 
 

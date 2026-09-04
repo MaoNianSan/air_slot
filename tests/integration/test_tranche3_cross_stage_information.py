@@ -24,7 +24,7 @@ import torch
 from model.common.config import load_config_layers
 from model.M1.factual_state import factual_observed_state
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import required_observations_v2
+from model.M1.scenario_layer.sampler import required_observations_v2
 from model.PRE.canonical.normalization import canonicalize_ontime_row
 from model.PRE.pipeline import ProductionPRERequest, publish_production_pre
 

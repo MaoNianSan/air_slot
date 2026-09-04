@@ -17,8 +17,8 @@ from model.M1.data import encode_pre_sequence
 from model.M1.lifecycle import M1TrainingExample
 from model.M1.target_builder import build_v2_target_labels
 from model.M1.contracts import M1V2TargetLabel
-from model.PRE.contracts.canonical import FlightRecord, OperationalEventRecord
-from model.PRE.contracts.pre_state import DecisionNodeRecord, EpisodeRecord, PREState
+from model.PRE import FlightRecord, OperationalEventRecord
+from model.PRE import DecisionNodeRecord, EpisodeRecord, PREState
 
 
 def active_node_prefixes(

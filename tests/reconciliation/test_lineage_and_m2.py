@@ -8,7 +8,7 @@ abstains instead of reconstructing delay state from DELTA_OB/T_TX/taxi ref.
 import pytest
 
 from model.M2.contracts import M2ScientificContext, ScientificContextValue
-from model.M2.drivers import native_quantities
+from model.M2.consequences.engine import native_quantities
 from model.PRE.transformation import ConstructionType
 from model.common.enums import EvidenceClass, SupportState
 from model.common.errors import ContractError
@@ -86,7 +86,9 @@ def test_d_m2_consumes_formal_fields_and_never_reconstructs_d_to():
     ctx = context(
         turnaround_reference=supported("turnaround_reference", 5),
         expected_downstream_exposure=supported("expected_downstream_exposure", 1.0),
-        passenger_exposure=supported("passenger_exposure", 100.0),
+        expected_passengers_per_flight=supported("expected_passengers_per_flight", 100.0),
+        connection_share_reference=supported("connection_share_reference", 0.25),
+        itinerary_buffer_reference=supported("itinerary_buffer_reference", 45.0),
         service_policy_reference=supported("service_policy_reference", 15.0),
     )
     rows = native_quantities(_formal_scenario(), ctx)
@@ -118,7 +120,9 @@ def test_d_legacy_only_scenario_abstains_instead_of_reconstructing():
     ctx = context(
         turnaround_reference=supported("turnaround_reference", 5),
         expected_downstream_exposure=supported("expected_downstream_exposure", 1.0),
-        passenger_exposure=supported("passenger_exposure", 100.0),
+        expected_passengers_per_flight=supported("expected_passengers_per_flight", 100.0),
+        connection_share_reference=supported("connection_share_reference", 0.25),
+        itinerary_buffer_reference=supported("itinerary_buffer_reference", 45.0),
         service_policy_reference=supported("service_policy_reference", 15.0),
     )
     rows = native_quantities(legacy, ctx)

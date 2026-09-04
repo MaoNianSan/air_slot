@@ -1,5 +1,5 @@
 from model.M2.contracts import M2ScientificContext, ScientificContextValue
-from model.M2.drivers import COMPONENT_INPUT_CONTRACTS, native_quantities
+from model.M2.consequences.engine import COMPONENT_INPUT_CONTRACTS, native_quantities
 from model.M2.mapper import M2Mapper
 from model.M2.valuation import ValuationRegistry
 from model.PRE.transformation import ConstructionType

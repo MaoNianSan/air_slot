@@ -1,0 +1,1075 @@
+{
+  "entries": [
+    {
+      "relative_path": "configs/engineering/m1_data2_development_fast.yaml",
+      "role": "M1_ENGINEERING_CONFIG",
+      "sha256": "sha256:72e3232044ccb55f95aab27682f482ee4101b4e260fd0d466b9274570e92efab",
+      "size": 1029
+    },
+    {
+      "relative_path": "configs/scientific/foundation.yaml",
+      "role": "SCIENTIFIC_CONFIG",
+      "sha256": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0",
+      "size": 13578
+    },
+    {
+      "relative_path": "model/M1/__init__.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:460c40c7a4dcb1bf8e3d52f3053d4925cae55e9c698351b0ba733dfd5ebc1b77",
+      "size": 454
+    },
+    {
+      "relative_path": "model/M1/artifacts.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:489c1d52684c16a8509fd8edec3935e75f770cb75cdb54cec5ef92d0599269da",
+      "size": 163
+    },
+    {
+      "relative_path": "model/M1/cache.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:fbd15c02982a6a8e0e21d52c2601e0ce7f48dc55f202f7e546ab289e12c54c26",
+      "size": 25940
+    },
+    {
+      "relative_path": "model/M1/calibration.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:10a8d34988fef872650ca640f3c6b618702c1f9fdc16385f0978980f66c7487e",
+      "size": 6914
+    },
+    {
+      "relative_path": "model/M1/cli.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:4cbe08bff514bfb11b231af466e7143bdd0d88dcead9164900802f506131967b",
+      "size": 3609
+    },
+    {
+      "relative_path": "model/M1/contracts.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:717b4eb6101a525d1fb315e0407ec5c5ec06658a17285f3fb9304eaf072191c3",
+      "size": 39829
+    },
+    {
+      "relative_path": "model/M1/coverage.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:8f2d3eb4b1bf82bf0b25fc52bd692878a4b77e6689e412fda8c07c04c3534c90",
+      "size": 3702
+    },
+    {
+      "relative_path": "model/M1/data.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:e82036a197cda66c016160fbd03c011bb3e073525935a4b3938656456f65ba7f",
+      "size": 19059
+    },
+    {
+      "relative_path": "model/M1/development_diagnostics.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:e0bf506b7d7241442ada51dd547b0ff304bfbae8e0b0f79b0a1d152c73ebe859",
+      "size": 11365
+    },
+    {
+      "relative_path": "model/M1/development_selection.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:3b724d3865b9255308c5e5d6668ffd9d99e33b3093f190818f8306da2978d014",
+      "size": 1932
+    },
+    {
+      "relative_path": "model/M1/development_training.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:a01a5e2626ef68fd5cf50b8cc7e7db74780763cada97a03feaa7b2b5573f8314",
+      "size": 29340
+    },
+    {
+      "relative_path": "model/M1/evaluation.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:bd4d4445e8a4b9091fedd2f334414a9ec649fec874d378bceccd46af0b3206eb",
+      "size": 330
+    },
+    {
+      "relative_path": "model/M1/factual_state.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:d7acbde8df6c7d27ccb9473a25072cdc7456695d4e3980c80fc22e3b14053fac",
+      "size": 5051
+    },
+    {
+      "relative_path": "model/M1/fast_path.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:38093a1ac7eebbe0843ea5e47e88c2e075295617d45f11d2b6f2cd0caaa7f801",
+      "size": 33274
+    },
+    {
+      "relative_path": "model/M1/history.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:05963a41c7936a33ff5840a2d4f074e74c851efae5c5aaac5a7c464a944fe76b",
+      "size": 2661
+    },
+    {
+      "relative_path": "model/M1/inference.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:014cbc19f21fd15eba50d3d068a786838f8d1e57dfe29f5eb2fff385a7281750",
+      "size": 140
+    },
+    {
+      "relative_path": "model/M1/lifecycle.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:ce42cfdb96db8fa869dd6c5dc3f302cab6a42856ab038a6b922777f08289177a",
+      "size": 28118
+    },
+    {
+      "relative_path": "model/M1/loss.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:5d862136190f375a4e9ddcf2d722090d4ebeef091455f8983806787227a618e2",
+      "size": 15297
+    },
+    {
+      "relative_path": "model/M1/model.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:b43a1823be593637eb7fc7f534b3e54067e075743350a5410eb64e874f45aea5",
+      "size": 124
+    },
+    {
+      "relative_path": "model/M1/network.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:964644cfd100347048f6bf69f827d50c3d1ef84c2a5c0b7c30c836c1426034c2",
+      "size": 18052
+    },
+    {
+      "relative_path": "model/M1/pipeline.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:a25fdf4ef7a5df4004c5a6854b7f2e5b66c4f0d6c4cbc409013d0b84c7021e79",
+      "size": 29046
+    },
+    {
+      "relative_path": "model/M1/preparation.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:dc813deb39187c0ffdfab5996e3e04d044d18f2e3969c4b48315c1f38af87399",
+      "size": 5934
+    },
+    {
+      "relative_path": "model/M1/scenario_envelope.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:6864c1cf3ebd3d61a6c59230ea1292586c21131372413503fc6bbe9689574ea3",
+      "size": 12408
+    },
+    {
+      "relative_path": "model/M1/scenarios.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:09feb7571b1e99ef3f8845af1e109de9f25552804d6582d71100a176ef3d57e3",
+      "size": 23930
+    },
+    {
+      "relative_path": "model/M1/semantics.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:3daafa5208bbb13fd1bcef348c504d987ed0c93b489fd787369b062988738915",
+      "size": 11498
+    },
+    {
+      "relative_path": "model/M1/service.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:02dd81b397ec63210f57feadf5055b06dd4796992632c5d39d0352ebff274eb0",
+      "size": 5301
+    },
+    {
+      "relative_path": "model/M1/splits.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:f96947710e81f6100825bac30089e7326044d4e78e875265d5d6399e869234f0",
+      "size": 829
+    },
+    {
+      "relative_path": "model/M1/static_features.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:b7efaec599c3f57d9b593d7c726c56dab1be5b33b76d77a69f411c2faa45c36f",
+      "size": 6751
+    },
+    {
+      "relative_path": "model/M1/summaries.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:337d9052a18a8271593e9a5a7e389f6f037f2ae009b31e730ada229f06449ec1",
+      "size": 6065
+    },
+    {
+      "relative_path": "model/M1/tail.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:7b3fe7daaf9187c562455fc44fd5a12e1b4478c93d9000b814560c760b7408bd",
+      "size": 8415
+    },
+    {
+      "relative_path": "model/M1/target_builder.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:ea333e2a6daee7e361abbe3f2cf5e0b72dffcac03b3720ce17b00620ee5176f3",
+      "size": 14651
+    },
+    {
+      "relative_path": "model/M1/tuning_stage1.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:106d3fe59febc5ab776df4b2dae88f992721c2515246d5bc9f282ce42fbe0b6d",
+      "size": 28238
+    },
+    {
+      "relative_path": "model/M1/warning.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:9bbca0bad266d6776507796f273d58c92dd6049f0e35f011fa7d2560fb732eae",
+      "size": 17258
+    },
+    {
+      "relative_path": "model/M1/warning_preparation.py",
+      "role": "M1_RUNTIME",
+      "sha256": "sha256:1b2043239f3a55f80aa8ac3245853d108b48b07befe9734a0f89a5c6e20644e0",
+      "size": 12013
+    },
+    {
+      "relative_path": "model/M2/__init__.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:3695a2c5fbea30b0f8253865d4b4838e56084cbf736d9b9d067c235d12c3e8be",
+      "size": 993
+    },
+    {
+      "relative_path": "model/M2/cli.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:44e48188f03f2ad4f5f9bf23465b3bc1ad354a1c9d1c9b48065f6b38e04c551c",
+      "size": 3486
+    },
+    {
+      "relative_path": "model/M2/consequence.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:af02c68a604380bea4bef33f47d1bc8ef73b60583a6dc761c0651f534b525f87",
+      "size": 136
+    },
+    {
+      "relative_path": "model/M2/context.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:e0336b12a616e02146072e2384a3a5c1c418fe566b88408d1920481c6705feca",
+      "size": 26016
+    },
+    {
+      "relative_path": "model/M2/contracts.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:1fa75d561a5d068d01ed543893cbda827af76813719b3c173067ec972c7bdfc5",
+      "size": 28640
+    },
+    {
+      "relative_path": "model/M2/cu.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:979b86faef444c7a80cc2fd94684465f67361c9e6e595cba9960f249fc5712b0",
+      "size": 223
+    },
+    {
+      "relative_path": "model/M2/drivers.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:d1243713e3faf1937e2738568da2a5b41ca86920caeb323d2988d97b5692e2de",
+      "size": 13062
+    },
+    {
+      "relative_path": "model/M2/evaluation.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:946732d35885fe351ba5169ce6d12ca28126f18b3479528a143816cdca90cde2",
+      "size": 728
+    },
+    {
+      "relative_path": "model/M2/exposure.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:f2712ea0e5ef32cba7a4ac77a07f53be94a165254c5927c2459d0087d77ecfde",
+      "size": 7108
+    },
+    {
+      "relative_path": "model/M2/freeze.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:da8e07f1a093124bf4a7ff8273fe1d86a52b7d3b8ccdca560e61a217459c3d0b",
+      "size": 24402
+    },
+    {
+      "relative_path": "model/M2/freeze_cli.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:b58aae431a715fea4adbb5e49fece4056d13fe0213bb4fe933cd2a386d0e44d3",
+      "size": 2921
+    },
+    {
+      "relative_path": "model/M2/mapper.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:a35224f5604a788992bff8ee6dc7a007fec8c16d5e0bf590590f2723679dade9",
+      "size": 6973
+    },
+    {
+      "relative_path": "model/M2/mapping.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:42297e4057d7648b63996d5e2066d65590862e20a8f20d6d58953f192c2e18ef",
+      "size": 88
+    },
+    {
+      "relative_path": "model/M2/native_formulas.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:8266148d07f79eb1cc96a58e53bed0bac3ae8687d4a52c05222beecd4f855bdb",
+      "size": 370
+    },
+    {
+      "relative_path": "model/M2/passenger_reference_freeze.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:33d76857e77d611078eb0018b254429bcfab4fbf6847e947f5d747cf4479967b",
+      "size": 3742
+    },
+    {
+      "relative_path": "model/M2/scientific_registry.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:58862ad369ed2b89ee526c4451d41872169ec839b2a1e47b21c17eb9535bd9ae",
+      "size": 2320
+    },
+    {
+      "relative_path": "model/M2/summary.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:3ff466ea81f48f32329eac2282832d5bdc14b7b020268773bb7694c117065231",
+      "size": 4655
+    },
+    {
+      "relative_path": "model/M2/valuation.py",
+      "role": "M2_RUNTIME",
+      "sha256": "sha256:efcd4007530e890fc7a489c44b945653741489feb7c9a757e9822b55b4be3dbf",
+      "size": 6497
+    },
+    {
+      "relative_path": "model/M3/__init__.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:4c21cf643663fc3a0505f39c0a4d86322415d43e4ac6af8749277139725b4e50",
+      "size": 1823
+    },
+    {
+      "relative_path": "model/M3/action_library.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:9ce9f10825bfe823793f4444563b945a420cdca173d6bd5cdca4657fd3c63f62",
+      "size": 141
+    },
+    {
+      "relative_path": "model/M3/action_response.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:8690c2843843b84182f825c5487d4381eac35282451f294966a286b6fbf85a31",
+      "size": 23491
+    },
+    {
+      "relative_path": "model/M3/cli.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:d81caff04637bbec85c16158ec150fd9a48850d240c14b6c3e494d18757d2f15",
+      "size": 1606
+    },
+    {
+      "relative_path": "model/M3/contracts.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:25505cb9cc3d0a9d4fcb3ebbf84d731c3c2251f453ac818c836ff43a7d3f305d",
+      "size": 17764
+    },
+    {
+      "relative_path": "model/M3/factual_adapter.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:ce3ee70f280f1def9a62bdcfc0c790f0ac6d817b523e59ad0c4e990cdd2f9855",
+      "size": 13759
+    },
+    {
+      "relative_path": "model/M3/instantiate.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:3cca543a4890c6ed2bd9f62f343bf19a2c2f9e1042a30396318e26fcab634720",
+      "size": 7277
+    },
+    {
+      "relative_path": "model/M3/m2_action_interface.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:dba9f097e23ffb07eb95b7788c80af233284524bab7d02293d96a59a54fd712b",
+      "size": 8877
+    },
+    {
+      "relative_path": "model/M3/readiness.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:301de09d7125657a50f1bc54ff9d212a4e65167d5a8f27afa48975c257ddbf43",
+      "size": 5768
+    },
+    {
+      "relative_path": "model/M3/registry.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:11701cdffa49f6dec7f873a51524b236e0f38629629e27610debf20234c90e81",
+      "size": 8111
+    },
+    {
+      "relative_path": "model/M3/response.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:26f8910a634230d72a476dd70b3cd5257a42bec7bdc54e2bc42b622e85e5bd37",
+      "size": 8632
+    },
+    {
+      "relative_path": "model/M3/response_registry.py",
+      "role": "M3_RUNTIME",
+      "sha256": "sha256:ee27b78d20c0d3532456689a7101bff001fc407fe7c99342e6c7b5a7f204b32a",
+      "size": 15164
+    },
+    {
+      "relative_path": "model/M4/__init__.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:6e9000a52f9d1a93374a6f73e334e71621338053658ec4fac5123214a0e8e961",
+      "size": 1343
+    },
+    {
+      "relative_path": "model/M4/authority.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:cf4e9da2e3a08df4cc8b561616ef1176f02db3f402ca80eb5ad752ab28624d7a",
+      "size": 458
+    },
+    {
+      "relative_path": "model/M4/cli.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:fc05a09136b315cc176877839f020fcc4833b459ef8e817a76d33d75cd2dba5d",
+      "size": 729
+    },
+    {
+      "relative_path": "model/M4/contracts.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:2bc4dfc6460d881ed6ad9e3c77674c87d85b9d4b14efd56b966c752367157ec1",
+      "size": 3963
+    },
+    {
+      "relative_path": "model/M4/coverage.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:d4bd202fc571c41376afc3801cf7ab16bd12397ffec577f23f13799361a1bb4d",
+      "size": 4833
+    },
+    {
+      "relative_path": "model/M4/decision.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:7f943b5a9e6e8f1b7333e9fad0a6aed296e9c3a78390299c89ee56d8a49dac4d",
+      "size": 3700
+    },
+    {
+      "relative_path": "model/M4/eligibility.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:b639cc1921b90001af4b9642a98698777cd0695d68e8636a75430d73289abb41",
+      "size": 1120
+    },
+    {
+      "relative_path": "model/M4/lanes.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:8ad61537d90d9e8907795780c1ddc60398c56ff699c0887c059e671173e86487",
+      "size": 1843
+    },
+    {
+      "relative_path": "model/M4/m3_action_interface.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:114c7c6af2a7919a8ff47190a182e0318e7ce56481bad2ecbafcabfc66fbecb5",
+      "size": 7754
+    },
+    {
+      "relative_path": "model/M4/monetary_mapping_plan.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:108fec38e0d35a3a33fe5d34dfe7a81e014923891ee6c0134d798d3bce8f6be1",
+      "size": 12719
+    },
+    {
+      "relative_path": "model/M4/monetary_mapping_registry.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:292178a1c80c2b50f3b2a52123f766b8c1d9f56ec54fc5975bed3658ba738f02",
+      "size": 10370
+    },
+    {
+      "relative_path": "model/M4/post_action.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:a6d9e4f1c1269db57b1d2fc99f924b182095f869c33e92459235719977ca9b85",
+      "size": 11148
+    },
+    {
+      "relative_path": "model/M4/ranking.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:d157305fae339760c9d3fac9d052b8cc1fcb50e6ec0f79f20b0666221f17a997",
+      "size": 2373
+    },
+    {
+      "relative_path": "model/M4/residual_risk.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:155e3a9770429ee1c4ab724d538e8300ca8429477aa535f333abf070e0687ccd",
+      "size": 34289
+    },
+    {
+      "relative_path": "model/M4/response.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:be6ff320b3d33e38720ae96f03009a4e5aedb5d137aa1e603147647161366c22",
+      "size": 3212
+    },
+    {
+      "relative_path": "model/M4/results.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:3e4015320a1b81866743e89bf3711474ee512ba0519edf5c38df8bb8d936ef07",
+      "size": 1989
+    },
+    {
+      "relative_path": "model/M4/risk.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:3cc817c6cd0cd447e4849eaca8da95661bc999f5594d140dcdb0809b0c5f67d5",
+      "size": 870
+    },
+    {
+      "relative_path": "model/M4/scientific_registry.py",
+      "role": "M4_RUNTIME",
+      "sha256": "sha256:52d976f34376d870178d52aa23ca6b5ccedcaf3c0d139fc0bc13cdb6f989805b",
+      "size": 3666
+    },
+    {
+      "relative_path": "model/PRE/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b2654c9760932dce7602b418b2a76cc556a54b259b84eace0f556ce2ee7d05cc",
+      "size": 353
+    },
+    {
+      "relative_path": "model/PRE/adapters/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:eb6ced95a35d411a559d936c872c5a8a7e1ba3f26dff88fa10bab65f27733530",
+      "size": 75
+    },
+    {
+      "relative_path": "model/PRE/adapters/base.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b1f5f008eeb19cc38fc6b6f474a5e60ad10f587c2dcf7a4b1a6fc755a6d98e9f",
+      "size": 1774
+    },
+    {
+      "relative_path": "model/PRE/adapters/data1.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:6ba1916353a39afaaf76e218f9cfa1aa1cfc61d4a521b2425c2cc52f001d4cb8",
+      "size": 3428
+    },
+    {
+      "relative_path": "model/PRE/adapters/data2.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b72bdf3520aa8985ac6b9b419f45dd9b1579059cf23636abc25da0cc4166e52b",
+      "size": 4437
+    },
+    {
+      "relative_path": "model/PRE/adapters/readers.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:690fdc44a740920328bc3516629f7e1a4de89971719cacb24fb82e10b4a22308",
+      "size": 5427
+    },
+    {
+      "relative_path": "model/PRE/adapters/registry.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:be3893772c52708cac175fc3baa0a36150547d58d4e05d7117e43be6cc97ebcd",
+      "size": 3270
+    },
+    {
+      "relative_path": "model/PRE/adapters/validation.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:759847a647227683d6153bce90e9b6cb2667a3953a7997ec562256a53ee8019f",
+      "size": 566
+    },
+    {
+      "relative_path": "model/PRE/cache/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:a028eb524f1507dab7866d47af46a5f62125cbdb25d674350df50ebe9c42f234",
+      "size": 50
+    },
+    {
+      "relative_path": "model/PRE/cache/manifest.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b23de7be99e18459d31b3e4584b5b67f0d15a28a8813d44cfdfb9e9dd666c72e",
+      "size": 476
+    },
+    {
+      "relative_path": "model/PRE/cache/resume.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:d7c3db9c1e3cab64cd0a2f55dc058222599273de49b1898f9772fd834cdeacab",
+      "size": 490
+    },
+    {
+      "relative_path": "model/PRE/canonical/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:f110ad4f3cda980da07ad49849c88633bfcd1f275228e89bc55f2159c4dd9ce0",
+      "size": 49
+    },
+    {
+      "relative_path": "model/PRE/canonical/data2_timestamps.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:050600232901618c2370808546b5885cb493c289539850d94b796aa085e23743",
+      "size": 4904
+    },
+    {
+      "relative_path": "model/PRE/canonical/normalization.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:0b213ae0cc2974450e4720bf04187b158eb74ecc344d1e63c6c69436fc697571",
+      "size": 1159
+    },
+    {
+      "relative_path": "model/PRE/canonical/normalization_common.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:a951fb4d5222e95224a6d9505b2382eb19a9f79f6bea9a75403acfe43f5b6b14",
+      "size": 1531
+    },
+    {
+      "relative_path": "model/PRE/canonical/normalization_flights.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:96daa96ab4f51d666eb530cfde8a0c00a225978125880d5ed25336fcf7ca419b",
+      "size": 14202
+    },
+    {
+      "relative_path": "model/PRE/canonical/normalization_references.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b4ab91550fd4bc56586024cd549f338731f5d57715ea54ce01cd98705b7ac73b",
+      "size": 11601
+    },
+    {
+      "relative_path": "model/PRE/canonical/normalization_weather.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:f39213290839b724427dee582292cf900b8e0ecb280f246ff24fecaaf964cc19",
+      "size": 11683
+    },
+    {
+      "relative_path": "model/PRE/canonical/storage.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:324feb47fc74e1e6d82dff3c038c7e158927b26429031f404d2fc384e621bef9",
+      "size": 2878
+    },
+    {
+      "relative_path": "model/PRE/canonical/timezone.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:c9d30aeb3e77f2e206d77dc6bbbeafd5d85c66870a28b2ef2f1df60cf8c11b1d",
+      "size": 1311
+    },
+    {
+      "relative_path": "model/PRE/canonical/units.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:423e57a333780fbcf36f8cba1b90bf1db35fbf6380cd2a345059898d9f5dca4e",
+      "size": 319
+    },
+    {
+      "relative_path": "model/PRE/cli.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:7aba18e63a0b170a6a021d4bbc7ddedd6b26d4b6b7979cc8b3816ceec7aabd81",
+      "size": 6858
+    },
+    {
+      "relative_path": "model/PRE/cohort.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:8cebe03745213bcc9a390c2c357f12bb4f4fc56b3450e340873fd79227059230",
+      "size": 1103
+    },
+    {
+      "relative_path": "model/PRE/contracts/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:6f205a78a5b5f60661dd6c2b94591c538fbf13f5816bb0c357dd251ecd25c449",
+      "size": 374
+    },
+    {
+      "relative_path": "model/PRE/contracts/canonical.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:7744f2b5c154e9391b3c42d24b454a65a81c919bdf9570ee06358f2dde6bffd8",
+      "size": 5882
+    },
+    {
+      "relative_path": "model/PRE/contracts/pre_state.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:8e7e44bb064d28c7c97c7fea1d5d04579ee26f0c29c0f37a11a166719fbc0d54",
+      "size": 6690
+    },
+    {
+      "relative_path": "model/PRE/contracts/training_artifacts.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:55f7779970f9ec8b2051d044bca012ccedea4a51e8cf9c74982ebdd001e07016",
+      "size": 3090
+    },
+    {
+      "relative_path": "model/PRE/development.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:5fd3451f7b994b1b5b5d8ce7501942b3bb6eaa27a5bb41c2760eaec193f80a2f",
+      "size": 10333
+    },
+    {
+      "relative_path": "model/PRE/development_support.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:c97e78d89895d2cf8acdfe029dd1ec313ad083d2e92a61c70a5deebd2e498506",
+      "size": 7069
+    },
+    {
+      "relative_path": "model/PRE/episode/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:0e835a3de09ca942b4b13975ea2df01ed05ee7a37aaff763fa441c103fa23986",
+      "size": 43
+    },
+    {
+      "relative_path": "model/PRE/episode/builder.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:8b414038a8c9896b5e955444b43b75bed7d9c3b71cf1e44ff717696e382309a3",
+      "size": 10977
+    },
+    {
+      "relative_path": "model/PRE/episode/containment.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b17146b846438640169ab6cf872a9e941cf7b4ce7387af380200778951af4ce8",
+      "size": 3786
+    },
+    {
+      "relative_path": "model/PRE/episode/event_detection.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:727598cdc7502b2036e36a64258a6afe2272f1df7aa188e5caeb174f2a9bc2de",
+      "size": 15816
+    },
+    {
+      "relative_path": "model/PRE/episode/membership.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:1c6171661cb7311b78c059388670b1d99b3e22c7ba346736f46f8d78eb9c3d88",
+      "size": 624
+    },
+    {
+      "relative_path": "model/PRE/episode/node_builder.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:c31bea5823f936d9bfdbd60121868634c0c79368d0e829011f593a063ef2d119",
+      "size": 5586
+    },
+    {
+      "relative_path": "model/PRE/evidence/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:93505df82eb090573330a707bb819fed912cf4a9890c4a286d79ba5df8cc559b",
+      "size": 52
+    },
+    {
+      "relative_path": "model/PRE/evidence/admissibility.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:1e18045d7048adae474d39b09f0b408ace0163a67fff7dae693b1ddc6f7ae482",
+      "size": 1415
+    },
+    {
+      "relative_path": "model/PRE/evidence/publication.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:9b56d50113421e49d7008ad1cf91c2ebbc179ff44afdfe827c06808d179fde93",
+      "size": 3101
+    },
+    {
+      "relative_path": "model/PRE/evidence/support.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:4828efe7657115c3584b7f3f4aff00f2e36ff3c1db925fb7790fcdeaa1f01697",
+      "size": 1067
+    },
+    {
+      "relative_path": "model/PRE/factual/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:c02fd357ec1adb6f36eef2db9d56102ed4071df4f2b8d30e98ed4b50894cfe9d",
+      "size": 50
+    },
+    {
+      "relative_path": "model/PRE/factual/availability.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:dd7d274b3253c7dc08008c542926f56c9771521ed92089931f5fb9087c7eb17e",
+      "size": 4413
+    },
+    {
+      "relative_path": "model/PRE/factual/replay.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:3c5553822d75295ea673ba8c50df0806562e38dc85a73178d703c3b04268e3b3",
+      "size": 5511
+    },
+    {
+      "relative_path": "model/PRE/feature_registry/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:948fc9a43e7f1582277f6ab6b3f59d58b557fd89c297ad3bc9c742f37ad7ab82",
+      "size": 39
+    },
+    {
+      "relative_path": "model/PRE/feature_registry/inspection.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:34d4f96fc138e1da747ccc0692619eb55882a265aa45c1bc3f1a6088f66a0083",
+      "size": 1118
+    },
+    {
+      "relative_path": "model/PRE/feature_registry/loader.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:57bd022a47b2d7b3aec1d453a9e1bb1230a54ae15e7711ee159044691170c6f0",
+      "size": 4677
+    },
+    {
+      "relative_path": "model/PRE/feature_registry/models.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:7e7a8a9df1bbb0d0883ae4b796dd478bb9070efff48f3f028bd5e13d1d6a81b0",
+      "size": 6389
+    },
+    {
+      "relative_path": "model/PRE/foundation.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:9ecd43f999204c86f49631abfee9ed50706dfcc4d89a82da88c0bdc19e321ef3",
+      "size": 5924
+    },
+    {
+      "relative_path": "model/PRE/mapping.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:9dfc5be2cf04ae5626a287a7102043d5a89944f972596b5744d7923ba87ff646",
+      "size": 17271
+    },
+    {
+      "relative_path": "model/PRE/pipeline.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:3cc007c38d7472297c7d5a5c03a4cfabacaaa6fb25b0942fabd2a8f03dcf7275",
+      "size": 10784
+    },
+    {
+      "relative_path": "model/PRE/profiling.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:15977a742f17ad18b3e44b1263500cb22d259791bac0f722a36186488ebb0d9c",
+      "size": 12053
+    },
+    {
+      "relative_path": "model/PRE/publication/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:9b249cc5ecb739e4a8972874eac27e754b0f3e24e5e4df792decbbd9b4339596",
+      "size": 42
+    },
+    {
+      "relative_path": "model/PRE/publication/static_reference.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:231d3654f1501ffb392e490d491b1e7989654e8ea7681dab074240a37dc85d18",
+      "size": 12802
+    },
+    {
+      "relative_path": "model/PRE/raw_schema.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:ca818e4746f1c8a1e6bd67a46182a3e7ad00b9b7fa213dfaf6afe10c6ed76376",
+      "size": 211
+    },
+    {
+      "relative_path": "model/PRE/realized/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    {
+      "relative_path": "model/PRE/realized/routing.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:0681526d2499a001cf785a99ff5fcbdc62af2ba20f91816cfe68e45cab749239",
+      "size": 6690
+    },
+    {
+      "relative_path": "model/PRE/reference/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "size": 2
+    },
+    {
+      "relative_path": "model/PRE/reference/candidate_audit.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:5d9afcc0f1f7d8453242b35c71ff81a92a1769a193dbc25a44daea2ac824f86a",
+      "size": 23286
+    },
+    {
+      "relative_path": "model/PRE/reference/data2_m2_train_fit.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:85f935003c977a5d73f50654bcbd57184a80c87d5e0d1725b13cbe67153d64ef",
+      "size": 33509
+    },
+    {
+      "relative_path": "model/PRE/reference/exposure.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:08216df9e6f1ee12cc20938deab42866cdc10af52f730804233c99fc099fbc46",
+      "size": 11556
+    },
+    {
+      "relative_path": "model/PRE/reference/exposure_data2.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:c067748e753b19f360b7f169bd0b139b5f50674effbb37225f8237d187f5307b",
+      "size": 15406
+    },
+    {
+      "relative_path": "model/PRE/reference/passenger_data2.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:3d8c6192e6577daf0995122fd8f82f16b54bd8ce53bc2753ec8a1e5603d33157",
+      "size": 14831
+    },
+    {
+      "relative_path": "model/PRE/reference/taxi.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:4bb70a4cfa7724b7b533200a027cf7031b627343088c8f684a261b7ba0a12676",
+      "size": 12016
+    },
+    {
+      "relative_path": "model/PRE/reference/taxi_data2.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:5a1b47145bcdc43d9d29c4b40607a6afe21533252c794a8901193f0c149c3563",
+      "size": 19066
+    },
+    {
+      "relative_path": "model/PRE/reference/turnaround.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b0cb434d94f9dd0f052b9cb685d8725b1ef1c262cdc4b9892056d8c1f77b611e",
+      "size": 11012
+    },
+    {
+      "relative_path": "model/PRE/reference/turnaround_data2.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:23780c8e7a42027eaff304ba5be5b8394fbbc91002820031876fc12406b5c328",
+      "size": 13233
+    },
+    {
+      "relative_path": "model/PRE/references/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:94c3d35e06686edc8b7f7318f45b84c9514ea6aa5e0d7d901d3044bd347e7962",
+      "size": 965
+    },
+    {
+      "relative_path": "model/PRE/references/connection_share_reference.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b88e3a7ec9afc1849e72938bed5afd48297362c9e32114ae37ef8a332ad21ed1",
+      "size": 9554
+    },
+    {
+      "relative_path": "model/PRE/references/passenger_load_reference.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b941e9e04d60b53323e8fb0df2e303c9dd704ba684518eff34919862daa9ba96",
+      "size": 8917
+    },
+    {
+      "relative_path": "model/PRE/streaming/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:dd388cc53071a17c502d7cf91c3fcf56e4255a7ec9f727029d0c583fcc4852b0",
+      "size": 51
+    },
+    {
+      "relative_path": "model/PRE/streaming/containment.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:2368b53f0c0f6030d236da9d85803ce753436ebcf299c2b315437ee43ff9ffc6",
+      "size": 12567
+    },
+    {
+      "relative_path": "model/PRE/streaming/data2.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:7ae8586d5a9f93a67184c9f07af6d3aeee0914c12b8e46fe2e8b9ee87aaad115",
+      "size": 30577
+    },
+    {
+      "relative_path": "model/PRE/streaming/development.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:3cc69c350c9af7bf41d4429584ac136de4e87503fb32b07009f2274e4acd26ad",
+      "size": 19859
+    },
+    {
+      "relative_path": "model/PRE/streaming/development_delta.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:568865ac05bccb0c451a4151883b0e5262d94ae497a7359a5348e05c07e60aeb",
+      "size": 3322
+    },
+    {
+      "relative_path": "model/PRE/transform/__init__.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:74dff7409c0156371c16ff17206aed81b74f1e9f3beb64f87c78c4ac464feaef",
+      "size": 689
+    },
+    {
+      "relative_path": "model/PRE/transform/contracts.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:49ec4321a6c89ad424eeb090030e99e82fa51925d60520d7e17720c985618bcf",
+      "size": 5673
+    },
+    {
+      "relative_path": "model/PRE/transform/engine.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:da5f14aad4e2932fe80a991015a33b1623a24cfd7eb5c6e608964e6d1feb2d24",
+      "size": 6727
+    },
+    {
+      "relative_path": "model/PRE/transform/rules.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:464449746b1290e71673e0afafcf331f575050fa6ce62ebe81b8ce40a1bcc097",
+      "size": 36012
+    },
+    {
+      "relative_path": "model/PRE/transformation.py",
+      "role": "PRE_AUTHORITATIVE_RUNTIME",
+      "sha256": "sha256:b4ef6bfdc26c9b11cafbc09d16562715897fd91ff4cf162cc9ee5f19a1730884",
+      "size": 787
+    },
+    {
+      "relative_path": "model/common/__init__.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:c43efb4eb01485b184396ecf052518d5bf537524ed264dfa714e8f78ec867c2e",
+      "size": 35
+    },
+    {
+      "relative_path": "model/common/config.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:375ebdc7e3adbd9af250fc08e74463b2016a0be1ed34eebea59e538384468faa",
+      "size": 2399
+    },
+    {
+      "relative_path": "model/common/consequence_ontology.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:9d45236b11c0565e8a8975809c96292f75110d9ce8efab58c03d006f5b03dca8",
+      "size": 158
+    },
+    {
+      "relative_path": "model/common/cu_normalization.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:d78d6c5e1920eecbbccbf93b69b2edf0b391942984a35900336674fddf1bb3fe",
+      "size": 4420
+    },
+    {
+      "relative_path": "model/common/enums.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:2e54a6b7d416b233b2c7921dfada178c2bed0d28adc897be6d8ea38b545075cb",
+      "size": 2615
+    },
+    {
+      "relative_path": "model/common/errors.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:4165962fc5bf2ec6d2b23fc97a3bc233560b3715e3c45b254d92f0856608413b",
+      "size": 436
+    },
+    {
+      "relative_path": "model/common/estimand.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:e01954efd43435fcd6d17889e318cedf15f2e76577ad6b68d0666002ff5b1cfb",
+      "size": 6549
+    },
+    {
+      "relative_path": "model/common/identity.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:58f747fe911d7a0d5d53d42844dd7ed87fe3ee6e8d9409e04eb8fe797adb9eeb",
+      "size": 207
+    },
+    {
+      "relative_path": "model/common/monetary_system.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:41f8f270bb720d401446279665e3bafde2246eb8035374a01031761d8d5ac678",
+      "size": 8340
+    },
+    {
+      "relative_path": "model/common/native_formulas.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:080385275a804552ff1fdd681195777ea2615556028386f34a9ed753fbe56448",
+      "size": 2023
+    },
+    {
+      "relative_path": "model/common/paths.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:66be8174be6fbb4f231859dd2baaa92018a58c0424de4880c7e446e7d00a0e69",
+      "size": 645
+    },
+    {
+      "relative_path": "model/common/rmb_mapping.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:a643ff7ff3b5460c01a36e17d591614e01e83278ad2803ca1fa19ee2ba91103b",
+      "size": 7748
+    },
+    {
+      "relative_path": "model/common/scenario_lineage.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:54a6ed3efb5b062a0b07e313f41d42db8bdc4f699e8585f17e8719d76bc90890",
+      "size": 2015
+    },
+    {
+      "relative_path": "model/common/serialization.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:54e1d090615ef39d62f9f97ea57cd5c665431f95b193375b696c2b6c8fd30a3e",
+      "size": 1248
+    },
+    {
+      "relative_path": "model/common/value_objects.py",
+      "role": "COMMON_RUNTIME_DEPENDENCY",
+      "sha256": "sha256:82288bb3ab8250e7d985dcece0312b4e9b015a099e36f963da6db3785102be25",
+      "size": 3518
+    }
+  ],
+  "entry_count": 177,
+  "final_test_access_count": 0,
+  "importable": false,
+  "schema_version": "MODEL_RUNTIME_SOURCE_SNAPSHOT_V1",
+  "snapshot_manifest_hash": "sha256:632e4600c8a66ee68df9b291e5f44db2ceb0c266510a2f6ad51a4337a8e5afec",
+  "source_manifest_file_sha256": "sha256:421cb57b6a647c1ccb0a619838e923da806019fa6b644c6dd2791caa5aa56e50",
+  "source_manifest_hash": "sha256:981b9b63afc92aef6679665b18ea774aa22445e4e9eb75b285d624927fa0befa",
+  "source_manifest_schema_version": "MODEL_RUNTIME_CODE_MANIFEST_V1",
+  "status": "HISTORICAL_IMMUTABLE_PROVENANCE"
+}

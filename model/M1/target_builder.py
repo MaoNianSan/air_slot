@@ -2,10 +2,10 @@ from model.common.enums import DecisionTimeRole, OperationalStage, SupportState
 from model.common.errors import ContractError
 from model.M1.contracts import M1TargetLabel, M1V2TargetLabel, V2_TARGETS
 from model.M1.semantics import M1_V2_HAZARD_COORDINATE_TARGET
-from model.PRE.cohort import split_for_date
+from model.PRE import split_for_date
 from model.common.value_objects import ProvenanceRef
-from model.PRE.contracts.canonical import FlightRecord, OperationalEventRecord
-from model.PRE.contracts.pre_state import (
+from model.PRE import FlightRecord, OperationalEventRecord
+from model.PRE import (
     DecisionNodeRecord,
     EpisodeRecord,
     TargetSupportState,

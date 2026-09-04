@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from model.common.cu_normalization import CUNormalizationStatus
-from model.M2.freeze import (
+from model.M2.cu.registry import (
     FORMAL_SCOPE,
     FrozenData2ValuationRegistry,
     M2Data2FormalCuRegistry,
@@ -30,6 +30,10 @@ def _scale_payload():
             "population_rows": 1000 + index,
             "unit": "minutes",
             "definition": f"definition-{name}",
+            "active_quantity_definition": f"definition-{name}",
+            "fit_period": "2019-H1",
+            "path": "artifacts/x/scales.json",
+            "artifact_hash": "sha256:" + "9" * 64,
         }
         for index, name in enumerate(FORMAL_SCOPE)
     }
@@ -43,54 +47,62 @@ def _reference_payload():
             "reference_id": f"sha256:{index + 100:064d}",
             "manifest_freeze_id": f"sha256:{index + 200:064d}",
         }
-        for index, name in enumerate(("turnaround", "taxi", "downstream_exposure", "passenger"))
+        for index, name in enumerate(("turnaround", "taxi", "downstream_exposure", "expected_pax", "connection_share"))
     }
 
 
+def _registry(**overrides):
+    values = {
+        "train_scale_artifact": _scale_payload(),
+        "reference_artifacts": _reference_payload(),
+        "semantic_channels": {
+            "P_service": {
+                "consequence_semantics": "passenger service / care burden",
+                "baseline_empirical_realization": "expected passengers x I[D_TO >= 180]",
+            },
+            "R_operating": {
+                "consequence_semantics": "operating / recovery-resource burden",
+                "baseline_empirical_realization": "D_TX",
+            },
+        },
+        "component_weights": {name: 1.0 for name in FORMAL_SCOPE},
+        "fit_year": 2019,
+        "fit_months": (1, 2, 3, 4, 5, 6),
+        "db1b_quarters": (1, 2),
+        "passenger_manifest": "artifacts/x/PASSENGER_REFERENCE_MANIFEST_V2.json",
+    }
+    values.update(overrides)
+    return M2Data2FormalCuRegistry(**values)
+
+
 def test_m2_registry_contract_rejects_scope_drift():
-    with pytest.raises(ContractError, match="M2_FORMAL_SCOPE_MISMATCH"):
-        M2Data2FormalCuRegistry(
+    with pytest.raises(ContractError, match="M2_V4_FORMAL_SCOPE_MISMATCH"):
+        _registry(
             formal_scope=("F_continuity",),
-            train_scale_artifact=_scale_payload(),
-            reference_artifacts=_reference_payload(),
-            component_weights={name: 1.0 for name in FORMAL_SCOPE},
         )
 
 
 def test_m2_registry_requires_all_five_scales_and_four_references():
-    with pytest.raises(ContractError, match="M2_TRAIN_SCALE_ARTIFACT_MISSING"):
-        M2Data2FormalCuRegistry(
+    with pytest.raises(ContractError, match="M2_V4_REQUIRES_SEVEN_TRAIN_SCALES"):
+        _registry(
             train_scale_artifact=dict(list(_scale_payload().items())[:4]),
-            reference_artifacts=_reference_payload(),
-            component_weights={name: 1.0 for name in FORMAL_SCOPE},
         )
-    with pytest.raises(ContractError, match="M2_REFERENCE_ARTIFACT_SET_MISMATCH"):
-        M2Data2FormalCuRegistry(
-            train_scale_artifact=_scale_payload(),
+    with pytest.raises(ContractError, match="M2_V4_PASSENGER_REFERENCE_ARTIFACT_MISSING"):
+        _registry(
             reference_artifacts={"turnaround": _reference_payload()["turnaround"]},
-            component_weights={name: 1.0 for name in FORMAL_SCOPE},
         )
 
 
 def test_m2_registry_weights_must_be_unity():
     with pytest.raises(ContractError, match="M2_COMPONENT_WEIGHT_NOT_UNITY"):
-        M2Data2FormalCuRegistry(
-            train_scale_artifact=_scale_payload(),
-            reference_artifacts=_reference_payload(),
+        _registry(
             component_weights={"F_continuity": 2.0, **{name: 1.0 for name in FORMAL_SCOPE[1:]}},
         )
 
 
 def test_m2_registry_hash_is_self_consistent_and_write_once(tmp_path):
-    registry = M2Data2FormalCuRegistry(
-        train_scale_artifact=_scale_payload(),
-        reference_artifacts=_reference_payload(),
-        component_weights={name: 1.0 for name in FORMAL_SCOPE},
-    ).model_copy(update={"registry_hash": M2Data2FormalCuRegistry(
-        train_scale_artifact=_scale_payload(),
-        reference_artifacts=_reference_payload(),
-        component_weights={name: 1.0 for name in FORMAL_SCOPE},
-    ).digest()})
+    base = _registry()
+    registry = base.model_copy(update={"registry_hash": base.digest()})
     registry_path = tmp_path / "m2_data2_formal_cu_v1.json"
     manifest_path = tmp_path / "manifest.json"
     write_m2_registry(registry, registry_path=registry_path, manifest_path=manifest_path, root=tmp_path)
@@ -103,11 +115,7 @@ def test_m2_registry_hash_is_self_consistent_and_write_once(tmp_path):
 
 
 def test_frozen_valuation_uses_positive_train_median_scale():
-    registry = M2Data2FormalCuRegistry(
-        train_scale_artifact=_scale_payload(),
-        reference_artifacts=_reference_payload(),
-        component_weights={name: 1.0 for name in FORMAL_SCOPE},
-    )
+    registry = _registry()
     valuation = FrozenData2ValuationRegistry(registry)
     scope = scope_fixture(cu_normalization_registry_id=REGISTRY_ID)
     mapper = M2Mapper(valuation, scope)
@@ -117,8 +125,10 @@ def test_frozen_valuation_uses_positive_train_median_scale():
             turnaround_reference=supported("turnaround_reference", 5),
             taxi_reference=supported("taxi_reference", 5),
                 expected_downstream_exposure=supported("expected_downstream_exposure", 1),
-                passenger_exposure=supported("passenger_exposure", 10),
                 expected_passengers_per_flight=supported("expected_passengers_per_flight", 10),
+                connection_share_reference=supported("connection_share_reference", 0.25),
+                itinerary_buffer_reference=supported("itinerary_buffer_reference", 45),
+                service_policy_reference=supported("service_policy_reference", 180),
         ),
     )[0]
     by_component = {row.component_id: row for row in output.component_vector.rows}
@@ -216,14 +226,10 @@ def test_m2_train_preparation_is_pre_owned_typed_canonical_artifact(tmp_path):
 
 
 def test_frozen_valuation_abstains_when_passenger_route_missing():
-    registry = M2Data2FormalCuRegistry(
-        train_scale_artifact=_scale_payload(),
-        reference_artifacts=_reference_payload(),
-        component_weights={name: 1.0 for name in FORMAL_SCOPE},
-    )
+    registry = _registry()
     valuation = FrozenData2ValuationRegistry(registry)
     scope = scope_fixture(
-        components=("F_continuity", "F_execution", "F_propagation", "P_time", "R_operating"),
+        components=FORMAL_SCOPE,
         cu_normalization_registry_id=REGISTRY_ID,
     )
     output = M2Mapper(valuation, scope).map_scenarios(
@@ -234,6 +240,6 @@ def test_frozen_valuation_abstains_when_passenger_route_missing():
             expected_downstream_exposure=supported("expected_downstream_exposure", 1),
         ),
     )[0]
-    # Missing passenger exposure: P_time abstains -> five-component total unavailable.
+    # Missing expected-passenger reference keeps the all-seven aggregate unavailable.
     assert output.formal_estimand_value.status is FormalEstimandStatus.FORMAL_AGGREGATE_UNRESOLVED
     assert output.formal_estimand_value.value_cu is None

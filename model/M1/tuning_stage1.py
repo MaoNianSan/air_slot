@@ -26,7 +26,7 @@ from .data import FEATURE_NAMES_V2, STATIC_FEATURE_COUNT
 from .history import HistoryEncoderMode
 from .lifecycle import M1Lifecycle
 from .pipeline import M1Pipeline
-from .network import M1V2GRU
+from .model_layer.gru import M1V2GRU
 from .semantics import EVALUATION_LEAD_TIMES_MINUTES
 
 FROZEN_HIDDEN_SIZE_SETTINGS: tuple[int, ...] = (8, 16)

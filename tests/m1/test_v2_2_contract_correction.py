@@ -15,7 +15,7 @@ import torch
 
 from model.common.config import load_config_layers
 from model.common.errors import ContractError
-from model.M1.calibration import (
+from model.M1.calibration_layer.hurdle_temperature import (
     COMMON_CALIBRATION_POLICY,
     M1CalibrationContract,
     common_calibration_policy,
@@ -48,7 +48,7 @@ from model.M1.fast_path import (
     _ConstantValuePredictor,
 )
 from model.M1.loss import hazard_interval_nll, hazard_pmf
-from model.M1.network import M1V2GRU
+from model.M1.model_layer.gru import M1V2GRU
 from model.M1.pipeline import M1Pipeline
 from model.M1.semantics import (
     M1_V2_HAZARD_COORDINATE_TARGET,
@@ -272,7 +272,7 @@ def test_j_tail_observations_remain_at_risk_in_all_finite_sets():
     predictor = LightGBMDistributionalPredictor(contracts)
     values = np.asarray([2.0, 3.0, 7.0, 70.0])
     sizes = predictor.hazard_risk_set_sizes(values)
-    # The 70-minute row (>= max_finite) is at risk in EVERY finite bin.
+    # The 70-minute row (> max_finite) is at risk in EVERY finite bin.
     assert all(size >= 1 for size in sizes)
     tail_row = np.where(values >= 60.0)[0][0]
     # It never contributes a finite-bin event (no event rows beyond max_finite).
@@ -347,7 +347,7 @@ def test_l_hand_computed_discrete_hazard_matches_code():
 def test_m_multiclass_calibration_rejected_for_hazard():
     with pytest.raises(ContractError, match="M1_HAZARD_MULTICLASS_CALIBRATION_FORBIDDEN"):
         reject_multiclass_hazard_calibration()
-    import model.M1.calibration as calibration_module
+    import model.M1.calibration_layer.hurdle_temperature as calibration_module
     assert not hasattr(calibration_module, "fit_temperature")
 
 

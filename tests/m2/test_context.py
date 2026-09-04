@@ -7,7 +7,7 @@ from model.M2.context import (
     load_data2_reference_bundle,
     smoke_reference_payloads,
 )
-from model.M2.drivers import native_quantities
+from model.M2.consequences.engine import native_quantities
 from model.PRE.transformation import ConstructionType
 from model.common.enums import EvidenceClass, SupportState
 from model.common.estimand import ScopeStatus
@@ -48,12 +48,16 @@ def test_context_from_smoke_frozen_payloads():
     assert context.turnaround_reference.value == 38.0
     assert context.taxi_reference.value == 15.0
     assert context.expected_downstream_exposure.value == 1.0
-    assert context.passenger_exposure.value == 100.0
+    assert context.expected_passengers_per_flight.value == 100.0
+    assert context.connection_share_reference.value == 0.25
+    assert context.itinerary_buffer_reference.value == 45.0
+    assert context.service_policy_reference.value == 180.0
     for value in (
         context.turnaround_reference,
         context.taxi_reference,
         context.expected_downstream_exposure,
-        context.passenger_exposure,
+        context.expected_passengers_per_flight,
+        context.connection_share_reference,
     ):
         assert value.construction_type is ConstructionType.TRAIN_FROZEN_REFERENCE
         assert value.freeze_id.startswith("sha256:")
@@ -69,14 +73,12 @@ def test_missing_optional_normative_inputs_abstain():
             successor_destination_airport_id="ATL",
         ),
     )
-    for value in (
-        context.turnaround_floor,
-        context.itinerary_disruption_events,
-        context.service_policy_reference,
-    ):
-        assert value.value is None
-        assert value.support_state is SupportState.ABSTAIN
-        assert value.evidence_class is EvidenceClass.UNSUPPORTED
+    assert context.turnaround_floor.value is None
+    assert context.turnaround_floor.support_state is SupportState.ABSTAIN
+    assert context.itinerary_buffer_reference.support_state is SupportState.SUPPORTED
+    assert context.service_policy_reference.support_state is SupportState.SUPPORTED
+    assert context.itinerary_buffer_reference.evidence_class is EvidenceClass.SCENARIO_PARAMETER
+    assert context.service_policy_reference.evidence_class is EvidenceClass.SCENARIO_PARAMETER
 
 
 def test_expected_reference_id_mismatch_raises():
@@ -153,7 +155,7 @@ def test_d_to_identity_consumes_formal_scenario_fields():
     assert by_component["P_time"].native_quantity == 1000.0
 
 
-def test_m2_frozen_scope_is_five_component_fixed_and_formal_ready():
+def test_m2_frozen_scope_is_seven_component_v4_and_formal_ready():
     scope = build_m2_frozen_scope(
         {
             "formal_scope": [
@@ -161,18 +163,22 @@ def test_m2_frozen_scope_is_five_component_fixed_and_formal_ready():
                 "F_execution",
                 "F_propagation",
                 "P_time",
+                "P_itinerary",
+                "P_service",
                 "R_operating",
             ]
         }
     )
     assert scope.scope_status is ScopeStatus.FORMAL_READY
-    assert scope.cu_normalization_registry_id == "M2_DATA2_FORMAL_CU_V1"
-    assert scope.aggregation_rule_id == "SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED"
+    assert scope.cu_normalization_registry_id == "M2_DATA2_FORMAL_CU_V4"
+    assert scope.aggregation_rule_id == "SUM_OVER_SEVEN_ONLY_IF_ALL_SUPPORTED"
     assert scope.included_components == (
         "F_continuity",
         "F_execution",
         "F_propagation",
         "P_time",
+        "P_itinerary",
+        "P_service",
         "R_operating",
     )
 
@@ -180,5 +186,5 @@ def test_m2_frozen_scope_is_five_component_fixed_and_formal_ready():
 def test_m2_frozen_scope_rejects_scope_drift():
     from model.common.errors import ContractError
 
-    with pytest.raises(ContractError, match="M2_FROZEN_SCOPE_NOT_FIVE_COMPONENT_FIXED"):
+    with pytest.raises(ContractError, match="M2_V4_FORMAL_SCOPE_MISMATCH"):
         build_m2_frozen_scope({"formal_scope": ["F_continuity"]})

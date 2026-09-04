@@ -12,7 +12,7 @@ from model.M2.contracts import (
     ScientificContextValue,
     SourceType,
 )
-from model.PRE.transformation import ConstructionType
+from model.PRE import ConstructionType
 from model.common.enums import EvidenceClass, SupportState
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel

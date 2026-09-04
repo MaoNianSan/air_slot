@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from model.M1.pipeline import M1Pipeline
-from model.M3.registry import ActionRegistry
+from model.M3.registry_layer.actions import ActionRegistry
 from model.common.config import load_config_layers
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.paths import PROJECT_ROOT

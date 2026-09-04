@@ -12,8 +12,7 @@ from math import isfinite
 
 from pydantic import Field, computed_field, model_validator
 
-from model.M3.action_response import EligibilityState, ResponseSupportClass
-from model.M3.contracts import InstantiationState
+from model.M3 import EligibilityState, InstantiationState, ResponseSupportClass
 from model.M4.m3_action_interface import (
     ConsequenceComparisonScope,
     M4ActionEnvelopeInput,

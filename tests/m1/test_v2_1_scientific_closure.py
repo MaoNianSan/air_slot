@@ -41,9 +41,9 @@ from model.M1.loss import (
     monotone_positive_quantiles,
     quantile_value,
 )
-from model.M1.network import M1V2GRU
+from model.M1.model_layer.gru import M1V2GRU
 from model.M1.pipeline import M1Pipeline, conditional_head_summary
-from model.M1.scenarios import ancestral_sample_v2
+from model.M1.scenario_layer.sampler import ancestral_sample_v2
 from model.M1.semantics import (
     M1_V2_HAZARD_COORDINATE_TARGET,
     remaining_hazard_coordinate_minutes,

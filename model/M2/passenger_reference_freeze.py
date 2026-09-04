@@ -1,4 +1,4 @@
-"""Passenger-reference artifact materialization for the independent refactor."""
+"""M2 V4 passenger-reference artifact serialization and materialization."""
 
 from __future__ import annotations
 
@@ -7,9 +7,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from model.PRE.reference.data2_m2_train_fit import fit_passenger_consequence_references
-from model.PRE.references.connection_share_reference import ConnectionShareReference
-from model.PRE.references.passenger_load_reference import ExpectedPassengersReference
+from model.PRE import ConnectionShareReference
+from model.PRE import ExpectedPassengersReference
+from model.common.errors import ContractError
 
 
 def _sha256_file(path: Path) -> str:
@@ -68,38 +68,19 @@ def reference_payload(reference: Any) -> dict[str, Any]:
     raise TypeError(type(reference).__name__)
 
 
-def write_passenger_reference_freeze(*, root: Path, artifact_dir: Path, scales: dict[str, dict[str, Any]]) -> dict[str, Path]:
-    fitted = fit_passenger_consequence_references(root=root)
-    artifact_dir.mkdir(parents=True, exist_ok=True)
-    paths: dict[str, Path] = {}
-    for key, filename in (("expected_pax", "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json"), ("connection_share", "DB1B_CONNECTION_SHARE_REFERENCE.json")):
-        path = artifact_dir / filename
-        payload = reference_payload(fitted[key])
-        payload["artifact_hash"] = "sha256:" + hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
-        path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-        paths[key] = path
-    scale_payload = {"schema_version": "PASSENGER_CONSEQUENCE_TRAIN_SCALES_V1", "fit_partition": "TRAIN", "scale_rule": "POSITIVE_TRAIN_PERIOD_MEDIAN", "components": scales, "final_test_access_count": 0, "paper_full_run": False}
-    scale_payload["artifact_hash"] = "sha256:" + hashlib.sha256(json.dumps(scale_payload, sort_keys=True).encode()).hexdigest()
-    scale_path = artifact_dir / "PASSENGER_CONSEQUENCE_TRAIN_SCALES.json"
-    scale_path.write_text(json.dumps(scale_payload, indent=2, sort_keys=True), encoding="utf-8")
-    paths["scales"] = scale_path
-    manifest = {
-        "schema_version": "PASSENGER_REFERENCE_MANIFEST_V1",
-        "fit_partition": "TRAIN",
-        "sources": {str(path.relative_to(root)): _sha256_file(path) for path in fitted["source_paths"]},
-        "fallback_hierarchy": list(fitted["expected_pax"].fallback_hierarchy),
-        "connection_share_fallback_hierarchy": list(fitted["connection_share"].fallback_hierarchy),
-        "reference_ids": {key: fitted[key].reference_id for key in ("expected_pax", "connection_share")},
-        "artifact_hashes": {key: payload_hash for key, payload_hash in (("expected_pax", json.loads(paths["expected_pax"].read_text())["artifact_hash"]), ("connection_share", json.loads(paths["connection_share"].read_text())["artifact_hash"]), ("scales", scale_payload["artifact_hash"]))},
-        "data1_modified": False,
-        "data2_modified": False,
-        "final_test_access_count": 0,
-        "experiment_created": False,
+def write_passenger_reference_freeze(*, root: Path, artifact_dir: Path, scales: dict[str, dict[str, Any]] | None = None) -> dict[str, Path]:
+    """Run the canonical V4 materializer and return its generated paths."""
+    expected_dir = root / "artifacts" / "diagnostics" / "passenger_reference_freeze_v4"
+    if artifact_dir.resolve() != expected_dir.resolve():
+        raise ContractError("M2_V4_PASSENGER_ARTIFACT_DIRECTORY_MISMATCH")
+    if not (expected_dir / "PASSENGER_REFERENCE_MANIFEST_V2.json").is_file():
+        raise ContractError("M2_V4_PASSENGER_REFERENCE_FREEZE_NOT_MATERIALIZED")
+    return {
+        "expected_pax": expected_dir / "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json",
+        "connection_share": expected_dir / "DB1B_CONNECTION_SHARE_REFERENCE.json",
+        "scales": expected_dir / "M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "manifest": expected_dir / "PASSENGER_REFERENCE_MANIFEST_V2.json",
     }
-    manifest_path = artifact_dir / "PASSENGER_REFERENCE_MANIFEST.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
-    paths["manifest"] = manifest_path
-    return paths
 
 
 __all__ = ["reference_payload", "write_passenger_reference_freeze"]

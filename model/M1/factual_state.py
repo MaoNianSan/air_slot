@@ -18,7 +18,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from model.common.enums import DecisionTimeRole, SupportState
-from model.PRE.contracts.pre_state import PREState
+from model.PRE import PREState
 
 
 def _fact(pre: PREState, family: str, variable: str) -> dict | None:

@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Any
 
 from model.common.identity import content_id
-from model.M3.registry import ActionRegistry
+from model.M3.registry_layer.actions import ActionRegistry
 
 from .artifacts import FormalArtifactBundle, FormalDecisionNodeArtifact
 

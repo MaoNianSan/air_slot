@@ -14,7 +14,7 @@ The FAST path shares with STATE_AWARE the V2 formal semantics:
   on the formal D_OB parent
 - output schema (``{T_IB_A00: pmf, D_OB: {...}, D_TX: {...}}``) via
   ``conditional_head_summary``
-- support schema and V2 scenario schema (``model.M1.scenarios.ancestral_sample_v2``)
+- support schema and V2 scenario schema (``model.M1.scenario_layer.sampler.ancestral_sample_v2``)
 
 Round 2.2 representation contract (``r_fast``):
 - ``r_fast(i, t)`` is the deterministic current/local-change
@@ -57,7 +57,7 @@ from .static_features import (
     M1StaticNormalizationArtifact,
     static_reference_features_from_pre,
 )
-from .calibration import (
+from .calibration_layer.hurdle_temperature import (
     common_calibration_policy,
     fit_hazard_temperature,
     fit_zero_mass_temperature,
@@ -72,7 +72,7 @@ from .contracts import (
 )
 from .pipeline import conditional_head_summary
 from .loss import monotone_positive_quantiles
-from .scenarios import ancestral_sample_v2
+from .scenario_layer.sampler import ancestral_sample_v2
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 
 
@@ -256,7 +256,7 @@ class LightGBMDistributionalPredictor:
         finite bin ``k`` the binary model is fit ONLY on the risk set
         ``R_k = {n : active AND remaining >= start(B_k)}`` with
         ``y_{n,k} = 1[remaining in B_k]``.  Rows with
-        ``remaining >= max_finite`` remain at-risk in every finite risk set
+        ``remaining > max_finite`` remain at-risk in every finite risk set
         and produce no finite-bin event (survival tail absorbs them).  A
         single-class risk set on a synthetic bundle raises unless
         ``allow_test_only_surrogate=True``, in which case a TEST_ONLY
@@ -317,9 +317,15 @@ class LightGBMDistributionalPredictor:
             if risk_size < 2:
                 degenerate = True
             else:
-                event = (ib_target[risk_mask] >= bin_start) & (
-                    ib_target[risk_mask] < bin_start + width
-                )
+                upper = bin_start + width
+                if bin_index == hazard.finite_class_count - 1:
+                    event = (ib_target[risk_mask] >= bin_start) & (
+                        ib_target[risk_mask] <= hazard.max_finite_minutes
+                    )
+                else:
+                    event = (ib_target[risk_mask] >= bin_start) & (
+                        ib_target[risk_mask] < upper
+                    )
                 degenerate = bool(event.sum() < 1 or (1 - event).sum() < 1)
             if degenerate:
                 if not allow_test_only_surrogate:
@@ -407,7 +413,7 @@ class LightGBMDistributionalPredictor:
 
         Contract used by ``fit`` for every finite hazard bin and directly
         verifiable in tests: a later-bin model never sees rows whose event
-        already happened, and rows with ``remaining >= max_finite`` remain
+        already happened, and rows with ``remaining > max_finite`` remain
         at-risk in every finite risk set (absorbed by the survival tail).
         """
         hazard: HazardBinContract = self.contracts[M1_V2_HAZARD_COORDINATE]

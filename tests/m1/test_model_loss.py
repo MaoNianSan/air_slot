@@ -1,6 +1,6 @@
 import torch
 from model.M1.contracts import TargetBinContract
-from model.M1.network import OrderedEventGRU
+from model.M1.model_layer.gru import OrderedEventGRU
 from model.M1.loss import interval_nll
 
 def test_ordered_one_layer_heads_and_interval_marginalization():

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from model.M3.registry import ActionRegistry
+from model.M3.registry_layer.actions import ActionRegistry
 from model.common.errors import RegistryError
 
 

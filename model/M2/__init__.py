@@ -7,6 +7,8 @@ from .contracts import (
     ScenarioConsequenceDistribution,
 )
 from .mapper import M2Mapper
+from .envelope import ConsequenceEnvelope
+from .service import M2Service
 from .summary import ConsequenceDistributionSummary, summarize_formal_consequence
 
 
@@ -23,8 +25,10 @@ def map_m1_scenario_consequence(scenarios, context, *, registry, consequence_sco
 
 __all__ = [
     "ConsequenceDistributionSummary",
+    "ConsequenceEnvelope",
     "CUQuantity",
     "M2Mapper",
+    "M2Service",
     "M2ScenarioInput",
     "ScenarioConsequence",
     "ScenarioConsequenceDistribution",

@@ -15,12 +15,12 @@ import yaml
 
 from model.common.config import load_config_layers
 from model.common.identity import content_id
-from model.PRE.development import (
+from model.PRE import (
     build_sampled_pre_cohorts,
     development_input_identity,
 )
-from model.PRE.reference.taxi_data2 import data2_taxi_reference_from_payload
-from model.PRE.reference.turnaround_data2 import (
+from model.PRE import data2_taxi_reference_from_payload
+from model.PRE import (
     data2_turnaround_reference_from_payload,
 )
 
@@ -50,7 +50,7 @@ from .preparation import (
     fit_static_normalization_from_rows,
     normalization_rows,
 )
-from .scenarios import required_observations_v2
+from .scenario_layer.sampler import required_observations_v2
 
 ARTIFACT_ID = "DATA2_M1_V2_DEVELOPMENT_FAST"
 CHECKPOINT_NAME = f"{ARTIFACT_ID}.pt"

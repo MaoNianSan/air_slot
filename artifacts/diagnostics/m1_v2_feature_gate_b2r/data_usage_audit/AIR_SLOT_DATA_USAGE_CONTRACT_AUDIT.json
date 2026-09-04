@@ -1,5 +1,5 @@
 {
-  "artifact_hash": "sha256:061726c21b2a0226366abc01537df0fb4350f3fe13b27400ea010321798068f4",
+  "artifact_hash": "sha256:b2f006b576fec7ada003caeacdbe3c7e4d80657cbd289618658938189677c517",
   "artifact_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH",
   "artifacts": {
     "audit": "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json",
@@ -2609,7 +2609,7 @@
       "status": "COVERED_ACTIVE"
     }
   ],
-  "repository_head": "9849669ea958b8c884ead85196f268d27f739af0",
+  "repository_head": "35e52588d4c1a98cd2d1bef884d78d0b052095bc",
   "rule_audit": [
     {
       "canonical_variable": "predecessor_motion",
@@ -3043,10 +3043,10 @@
   "schema_version": "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V2",
   "scope": "READ_ONLY_REGISTRY_PRE_M1_STATIC_AUDIT",
   "source_hashes": {
-    "configs/scientific/foundation.yaml": "sha256:f88d9662ee48a81a4a29fa910caf6d94f7b9d822c9620e4592d531d575a02e00",
+    "configs/scientific/foundation.yaml": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0",
     "docs/reconciliation/AIR_SLOT_DATA_USAGE_CONTRACT_V1.md": "sha256:bc28019f9dbfefd557bfc76f1f5cfbe860a3268a1000f552e3d51b34a9525f4d",
-    "model/M1/data.py": "sha256:e82036a197cda66c016160fbd03c011bb3e073525935a4b3938656456f65ba7f",
-    "model/M2/freeze.py": "sha256:e12f987471d94ad819b69696ab2c9e309ee13ad4bb240421276c71b704797cca",
+    "model/M1/data.py": "sha256:0db9cae172e53a7bc960c5ec4966d8d0204bd75bb0b8a6e20acfae812dcce688",
+    "model/M2/cu/registry.py": "sha256:cf1f41b271f395bc5da6a8f6fd8c8df33ab9c24acdfc8f9780d6b5ccf3d23c50",
     "model/PRE/adapters/registry.py": "sha256:be3893772c52708cac175fc3baa0a36150547d58d4e05d7117e43be6cc97ebcd",
     "model/PRE/canonical/data2_timestamps.py": "sha256:050600232901618c2370808546b5885cb493c289539850d94b796aa085e23743",
     "model/PRE/canonical/normalization_flights.py": "sha256:96daa96ab4f51d666eb530cfde8a0c00a225978125880d5ed25336fcf7ca419b",
@@ -3056,13 +3056,13 @@
     "model/PRE/feature_registry/models.py": "sha256:7e7a8a9df1bbb0d0883ae4b796dd478bb9070efff48f3f028bd5e13d1d6a81b0",
     "model/PRE/mapping.py": "sha256:9dfc5be2cf04ae5626a287a7102043d5a89944f972596b5744d7923ba87ff646",
     "model/PRE/publication/static_reference.py": "sha256:231d3654f1501ffb392e490d491b1e7989654e8ea7681dab074240a37dc85d18",
-    "model/PRE/reference/data2_m2_train_fit.py": "sha256:d64c18a22444942f0381b307f475e7e16c41d144fb7efa053b02b108db15b39d",
+    "model/PRE/reference/data2_m2_train_fit.py": "sha256:85f935003c977a5d73f50654bcbd57184a80c87d5e0d1725b13cbe67153d64ef",
     "registries/data_usage_rules.yaml": "sha256:74f418cb8b1a6011e031ddbde4e5a097f26e621cd0baf123fa7c2a2ee8b873a4",
     "registries/dataset_capabilities.yaml": "sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b",
     "registries/scientific_variables.yaml": "sha256:b48f20879001775e40ea2f35b2bb868fb26553a254b8308857560895b1c3c5b0",
     "registries/source_adapter_registry.yaml": "sha256:83f288e0123ea04ed2e49152efd73e003c5548b37696dad4d186c3733ab96c70",
     "validation/data_usage_classification.py": "sha256:84b82db1442eb5bcd0e5056d6dd5a3af30b8410f496acc2aa623c352cb6531d8",
-    "validation/data_usage_contract_audit.py": "sha256:939ea11b0941d0e0c412da9146e00f1b4959f38735dfc63467948c73ea401205"
+    "validation/data_usage_contract_audit.py": "sha256:59d3f9c67b1b93ef1360a4c9a7ae90e11e52513711b90f522ccbbb051adf7d3c"
   },
   "status": "DATA_USAGE_CONTRACT_AUDIT_PASS"
 }

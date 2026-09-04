@@ -24,7 +24,7 @@ from model.common.enums import SupportState
 from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
-from model.M3.response import action_post_consequences, response_draw
+from model.M3.response_layer.core import action_post_consequences, response_draw
 
 
 class EligibilityState(str, Enum):
@@ -376,6 +376,8 @@ def build_conditional_scenario_envelope(
     response_parameters: Mapping[str, Any],
     mitigation: Mapping[str, float],
     induced: Mapping[str, float],
+    footprint: Mapping[str, object] | None = None,
+    induced_response: Mapping[str, float] | None = None,
     seed: int,
     response_registry_hash: str,
     sensitivity_level: str = "BASE",
@@ -458,6 +460,8 @@ def build_conditional_scenario_envelope(
             pre_by_component=supported_values,
             mitigation=mitigation,
             induced=induced,
+            footprint=footprint,
+            induced_response=induced_response,
             rho=float(rho),
             induced_score_to_cu=float(gamma),
             included_components=tuple(supported_values),

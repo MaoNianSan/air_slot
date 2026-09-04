@@ -1,0 +1,4301 @@
+{
+  "artifact_hash": "sha256:41d9b25f77283e3329dc820c48e6bc839a67ee3fde041865d8b90204bb60eeef",
+  "artifact_scope": "DEVELOPMENT_ONLY_PRE_REFACTOR_GOLDEN",
+  "guards": {
+    "data1_modified": false,
+    "data2_modified": false,
+    "experiment_created": false,
+    "final_test_access_count": 0,
+    "model_retrained": false,
+    "parameter_reselected": false
+  },
+  "pre_states": [
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [
+            "CEILING_FROM_ISD_CIG",
+            "CEILING_FROM_METAR_TEXT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "airport_id": "SEA",
+            "ceiling_base_m": 7620.0,
+            "ceiling_status": "FINITE",
+            "cloud_base_m": [
+              3657.6000000000004,
+              7620.0
+            ],
+            "cloud_cover_codes": [
+              "FEW",
+              "BKN"
+            ],
+            "dewpoint_c": 10.0,
+            "mslp_hpa": null,
+            "present_weather_codes": null,
+            "qnh_hpa": 1019.0,
+            "temperature_c": 23.3,
+            "visibility_m": 16093.0,
+            "wind_direction_deg": 350.0,
+            "wind_gust_mps": null,
+            "wind_speed_mps": 3.1
+          }
+        },
+        "predecessor_operational_fact": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "BTS_DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "actual_arrival_utc": "2019-08-14T04:03:00Z",
+            "actual_departure_utc": "2019-08-13T21:47:00Z",
+            "availability_basis": "FACTUAL_REPLAY_RULE",
+            "availability_time": "2019-08-14T04:03:00Z",
+            "cancelled": false,
+            "canonical_event_time": "2019-08-13T21:47:00Z",
+            "decision_time_role": "FACTUAL_REPLAY_EVIDENCE",
+            "declared_availability_by_field": {
+              "actual_arrival_utc": "2019-08-14T04:03:00Z",
+              "actual_departure_utc": "2019-08-13T21:47:00Z",
+              "wheels_off_utc": "2019-08-13T22:23:00Z",
+              "wheels_on_utc": "2019-08-14T03:54:00Z"
+            },
+            "declared_availability_time": "2019-08-14T04:03:00Z",
+            "declared_lag_minutes": 0.0,
+            "declared_replay_policy": "DECLARED_EVENT_TIME_REPLAY",
+            "declared_replay_rule_id": "D2-BTS-FACTUAL-REPLAY",
+            "diverted": false,
+            "event_time": "2019-08-14T04:03:00Z",
+            "event_type": "COMPLETED_OPERATIONAL_OUTCOME",
+            "flight_id": "flight:3c1ec80aec0652022d24387598b81562c9d7bc33e92bd9ea50ae001b2c6954ed",
+            "provenance_rule_id": "D2-BTS-ACTUAL",
+            "source_record_id": "canonical-event:2009428e97af2a8d426658dc1e71aa0d70b7c93804c54f44f8d4b2df122daca6",
+            "taxi_in_minutes": 9.0,
+            "taxi_out_minutes": 36.0,
+            "wheels_off_utc": "2019-08-13T22:23:00Z",
+            "wheels_on_utc": "2019-08-14T03:54:00Z"
+          }
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:00981f4e188f19b45f2671e574eff9740e5eae0f85aa0592f323f9527cc7a80b",
+        "decision_time": "2019-08-14T04:46:00Z",
+        "episode_id": "sha256:4472767ce9954e0f419a6c7f16e2095097b975c28b6016f5c855ea5a77076224",
+        "formal_eligible": true,
+        "information_cutoff": "2019-08-14T04:46:00Z",
+        "legal_record_ids": [
+          "canonical-flight:cd5b2d3ca7906adb8c536176eeb804b60152480ed837fb2993c9af204c74e5f2",
+          "weather:f5d606b7b42c918804d0df8ebb11dcdc8f132c88cd853927f8f91ace2b5297b1"
+        ],
+        "node_index": 6,
+        "node_invalidation_reason": null,
+        "operational_stage": "POST_IB_PRE_OB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-08-14T03:58:00Z",
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:00981f4e188f19b45f2671e574eff9740e5eae0f85aa0592f323f9527cc7a80b",
+          "decision_time_role": "INFERENCE_EVIDENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-08-14T03:53:00Z",
+          "evidence_class": "DIRECT",
+          "fallback_level": "NONE",
+          "freshness_seconds": 2880.0,
+          "quality_flags": [
+            "CEILING_FROM_ISD_CIG",
+            "CEILING_FROM_METAR_TEXT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "scientific_object": "current_weather",
+          "selected": true,
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:f5d606b7b42c918804d0df8ebb11dcdc8f132c88cd853927f8f91ace2b5297b1",
+          "support_ceiling": "DIRECT"
+        },
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:00981f4e188f19b45f2671e574eff9740e5eae0f85aa0592f323f9527cc7a80b",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-08-14T05:26:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:cd5b2d3ca7906adb8c536176eeb804b60152480ed837fb2993c9af204c74e5f2",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "B6"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "JFK",
+            "origin_airport_id": "SEA",
+            "route_key": "SEA-JFK"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "B6",
+            "destination_airport_id": "JFK",
+            "flight_id": "flight:666425540d8de24119e21bdba2b0f8945c616da51307d7675801f1da26d59874",
+            "origin_airport_id": "SEA",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-14T10:52:00Z",
+            "scheduled_departure_utc": "2019-08-14T05:26:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 18.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 65.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "B6"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "JFK",
+            "origin_airport_id": "SEA",
+            "route_key": "SEA-JFK"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "B6",
+            "destination_airport_id": "JFK",
+            "flight_id": "flight:666425540d8de24119e21bdba2b0f8945c616da51307d7675801f1da26d59874",
+            "origin_airport_id": "SEA",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-14T10:52:00Z",
+            "scheduled_departure_utc": "2019-08-14T05:26:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 18.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 65.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": 2880.0,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-08-14T03:58:00Z",
+          "canonical_variable": "current_weather",
+          "decision_node_id": "sha256:00981f4e188f19b45f2671e574eff9740e5eae0f85aa0592f323f9527cc7a80b",
+          "event_time": "2019-08-14T03:53:00Z",
+          "fallback_used": false,
+          "quality_flags": [
+            "CEILING_FROM_ISD_CIG",
+            "CEILING_FROM_METAR_TEXT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "reference_role": null,
+          "rule_id": "D2-NOAA-ISD",
+          "scientific_variable": "current_weather",
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:f5d606b7b42c918804d0df8ebb11dcdc8f132c88cd853927f8f91ace2b5297b1",
+          "supported_value": {
+            "evidence_class": "DIRECT",
+            "formal_input_support": "DIRECT",
+            "quality_flags": [
+              "CEILING_FROM_ISD_CIG",
+              "CEILING_FROM_METAR_TEXT",
+              "QNH_DERIVED_FROM_METAR",
+              "REPORT_TYPE=FM-15",
+              "SLP_ISD_UNMAPPED"
+            ],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "DIRECT",
+            "support_state": "SUPPORTED",
+            "unit": "canonical",
+            "value": {
+              "airport_id": "SEA",
+              "ceiling_base_m": 7620.0,
+              "ceiling_status": "FINITE",
+              "cloud_base_m": [
+                3657.6000000000004,
+                7620.0
+              ],
+              "cloud_cover_codes": [
+                "FEW",
+                "BKN"
+              ],
+              "dewpoint_c": 10.0,
+              "mslp_hpa": null,
+              "present_weather_codes": null,
+              "qnh_hpa": 1019.0,
+              "temperature_c": 23.3,
+              "visibility_m": 16093.0,
+              "wind_direction_deg": 350.0,
+              "wind_gust_mps": null,
+              "wind_speed_mps": 3.1
+            }
+          }
+        },
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:00981f4e188f19b45f2671e574eff9740e5eae0f85aa0592f323f9527cc7a80b",
+          "event_time": "2019-08-14T05:26:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:cd5b2d3ca7906adb8c536176eeb804b60152480ed837fb2993c9af204c74e5f2",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N981JT",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "B6",
+              "destination_airport_id": "JFK",
+              "flight_id": "flight:666425540d8de24119e21bdba2b0f8945c616da51307d7675801f1da26d59874",
+              "origin_airport_id": "SEA",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-08-14T10:52:00Z",
+              "scheduled_departure_utc": "2019-08-14T05:26:00Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": "NO_LEGAL_RECORD_AT_DECISION_TIME",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        },
+        "predecessor_operational_fact": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "BTS_DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "actual_arrival_utc": "2019-08-20T00:26:00Z",
+            "actual_departure_utc": "2019-08-19T19:35:00Z",
+            "availability_basis": "FACTUAL_REPLAY_RULE",
+            "availability_time": "2019-08-20T00:26:00Z",
+            "cancelled": false,
+            "canonical_event_time": "2019-08-19T19:35:00Z",
+            "decision_time_role": "FACTUAL_REPLAY_EVIDENCE",
+            "declared_availability_by_field": {
+              "actual_arrival_utc": "2019-08-20T00:26:00Z",
+              "actual_departure_utc": "2019-08-19T19:35:00Z",
+              "wheels_off_utc": "2019-08-19T19:51:00Z",
+              "wheels_on_utc": "2019-08-20T00:14:00Z"
+            },
+            "declared_availability_time": "2019-08-20T00:26:00Z",
+            "declared_lag_minutes": 0.0,
+            "declared_replay_policy": "DECLARED_EVENT_TIME_REPLAY",
+            "declared_replay_rule_id": "D2-BTS-FACTUAL-REPLAY",
+            "diverted": false,
+            "event_time": "2019-08-20T00:26:00Z",
+            "event_type": "COMPLETED_OPERATIONAL_OUTCOME",
+            "flight_id": "flight:dfe3555f896cb0b53d3936db45d516e5908e811b557aaa1e69284b57eefb7be3",
+            "provenance_rule_id": "D2-BTS-ACTUAL",
+            "source_record_id": "canonical-event:5f83d0960475ad71d2e78e70ace7f6e5edf56cff18fb3f406274b293b9ffbe6f",
+            "taxi_in_minutes": 12.0,
+            "taxi_out_minutes": 16.0,
+            "wheels_off_utc": "2019-08-19T19:51:00Z",
+            "wheels_on_utc": "2019-08-20T00:14:00Z"
+          }
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:01d9985723007925c81c277496c428cbb4d8135b27b9e178bdd5908515f964ed",
+        "decision_time": "2019-08-20T00:45:00Z",
+        "episode_id": "sha256:5a8e692f80187b5ed7e00c18f086d0ede6255b6ea601d1b03a95e7fbab30f2dd",
+        "formal_eligible": true,
+        "information_cutoff": "2019-08-20T00:45:00Z",
+        "legal_record_ids": [
+          "canonical-flight:f98fb42073dac59f3634053b47e6dbfcc473c0b579aa3c406f986064de5bc1ef"
+        ],
+        "node_index": 16,
+        "node_invalidation_reason": null,
+        "operational_stage": "POST_IB_PRE_OB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:01d9985723007925c81c277496c428cbb4d8135b27b9e178bdd5908515f964ed",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-08-20T00:55:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:f98fb42073dac59f3634053b47e6dbfcc473c0b579aa3c406f986064de5bc1ef",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "CHS",
+            "origin_airport_id": "EWR",
+            "route_key": "EWR-CHS"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "CHS",
+            "flight_id": "flight:b931a7ffe35c6e20c9f265785e0cc43917dadfeea9491783605030a0ac58d9c2",
+            "origin_airport_id": "EWR",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-20T03:01:00Z",
+            "scheduled_departure_utc": "2019-08-20T00:55:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 21.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 58.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "CHS",
+            "origin_airport_id": "EWR",
+            "route_key": "EWR-CHS"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "CHS",
+            "flight_id": "flight:b931a7ffe35c6e20c9f265785e0cc43917dadfeea9491783605030a0ac58d9c2",
+            "origin_airport_id": "EWR",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-20T03:01:00Z",
+            "scheduled_departure_utc": "2019-08-20T00:55:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 21.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 58.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:01d9985723007925c81c277496c428cbb4d8135b27b9e178bdd5908515f964ed",
+          "event_time": "2019-08-20T00:55:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:f98fb42073dac59f3634053b47e6dbfcc473c0b579aa3c406f986064de5bc1ef",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N37274",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "UA",
+              "destination_airport_id": "CHS",
+              "flight_id": "flight:b931a7ffe35c6e20c9f265785e0cc43917dadfeea9491783605030a0ac58d9c2",
+              "origin_airport_id": "EWR",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-08-20T03:01:00Z",
+              "scheduled_departure_utc": "2019-08-20T00:55:00Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": "NO_LEGAL_RECORD_AT_DECISION_TIME",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        },
+        "predecessor_operational_fact": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "BTS_DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "actual_arrival_utc": "2019-09-22T15:45:00Z",
+            "actual_departure_utc": "2019-09-22T15:03:00Z",
+            "availability_basis": "FACTUAL_REPLAY_RULE",
+            "availability_time": "2019-09-22T15:45:00Z",
+            "cancelled": false,
+            "canonical_event_time": "2019-09-22T15:03:00Z",
+            "decision_time_role": "FACTUAL_REPLAY_EVIDENCE",
+            "declared_availability_by_field": {
+              "actual_arrival_utc": "2019-09-22T15:45:00Z",
+              "actual_departure_utc": "2019-09-22T15:03:00Z",
+              "wheels_off_utc": "2019-09-22T15:12:00Z",
+              "wheels_on_utc": "2019-09-22T15:42:00Z"
+            },
+            "declared_availability_time": "2019-09-22T15:45:00Z",
+            "declared_lag_minutes": 0.0,
+            "declared_replay_policy": "DECLARED_EVENT_TIME_REPLAY",
+            "declared_replay_rule_id": "D2-BTS-FACTUAL-REPLAY",
+            "diverted": false,
+            "event_time": "2019-09-22T15:45:00Z",
+            "event_type": "COMPLETED_OPERATIONAL_OUTCOME",
+            "flight_id": "flight:a036b89e069ac1c84591c06286a8742082b6d3a5018f2a911816a2b5aeca67cc",
+            "provenance_rule_id": "D2-BTS-ACTUAL",
+            "source_record_id": "canonical-event:8c9613c1d4cf9e6f40e7c9d233f286ee09c4b37a1dd06264e2afe518529253d8",
+            "taxi_in_minutes": 3.0,
+            "taxi_out_minutes": 9.0,
+            "wheels_off_utc": "2019-09-22T15:12:00Z",
+            "wheels_on_utc": "2019-09-22T15:42:00Z"
+          }
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:06a374669b17ca9114fbe3d708939f8d703980ae595bbb1a0d5fbf8fb99ad23f",
+        "decision_time": "2019-09-22T16:25:00Z",
+        "episode_id": "sha256:4a9e3074fb33011e4ebe1d94fe1b7fca04c80261f0cd8c47bbaa340c0c1db9ac",
+        "formal_eligible": true,
+        "information_cutoff": "2019-09-22T16:25:00Z",
+        "legal_record_ids": [
+          "canonical-flight:de0de7a371c8f29b2dce01dd7ae52839db94e7acf2367d56c7ae6c6ff219c2c3"
+        ],
+        "node_index": 5,
+        "node_invalidation_reason": null,
+        "operational_stage": "POST_IB_PRE_OB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:06a374669b17ca9114fbe3d708939f8d703980ae595bbb1a0d5fbf8fb99ad23f",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-09-22T16:35:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:de0de7a371c8f29b2dce01dd7ae52839db94e7acf2367d56c7ae6c6ff219c2c3",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N736SA",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "WN"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "MCO",
+            "origin_airport_id": "ORF",
+            "route_key": "ORF-MCO"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N736SA",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "WN",
+            "destination_airport_id": "MCO",
+            "flight_id": "flight:9327d59dbe1576d5b6eb29988bb37930435000e37166fc092231a666e4e2c168",
+            "origin_airport_id": "ORF",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-22T18:40:00Z",
+            "scheduled_departure_utc": "2019-09-22T16:35:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 13.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 40.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N736SA",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "WN"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "MCO",
+            "origin_airport_id": "ORF",
+            "route_key": "ORF-MCO"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N736SA",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "WN",
+            "destination_airport_id": "MCO",
+            "flight_id": "flight:9327d59dbe1576d5b6eb29988bb37930435000e37166fc092231a666e4e2c168",
+            "origin_airport_id": "ORF",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-22T18:40:00Z",
+            "scheduled_departure_utc": "2019-09-22T16:35:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 13.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 40.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:06a374669b17ca9114fbe3d708939f8d703980ae595bbb1a0d5fbf8fb99ad23f",
+          "event_time": "2019-09-22T16:35:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:de0de7a371c8f29b2dce01dd7ae52839db94e7acf2367d56c7ae6c6ff219c2c3",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N736SA",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "WN",
+              "destination_airport_id": "MCO",
+              "flight_id": "flight:9327d59dbe1576d5b6eb29988bb37930435000e37166fc092231a666e4e2c168",
+              "origin_airport_id": "ORF",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-09-22T18:40:00Z",
+              "scheduled_departure_utc": "2019-09-22T16:35:00Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": "NO_LEGAL_RECORD_AT_DECISION_TIME",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        },
+        "predecessor_operational_fact": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "BTS_DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "actual_arrival_utc": "2019-09-04T20:23:00Z",
+            "actual_departure_utc": "2019-09-04T17:19:00Z",
+            "availability_basis": "FACTUAL_REPLAY_RULE",
+            "availability_time": "2019-09-04T20:23:00Z",
+            "cancelled": false,
+            "canonical_event_time": "2019-09-04T17:19:00Z",
+            "decision_time_role": "FACTUAL_REPLAY_EVIDENCE",
+            "declared_availability_by_field": {
+              "actual_arrival_utc": "2019-09-04T20:23:00Z",
+              "actual_departure_utc": "2019-09-04T17:19:00Z",
+              "wheels_off_utc": "2019-09-04T17:41:00Z",
+              "wheels_on_utc": "2019-09-04T20:05:00Z"
+            },
+            "declared_availability_time": "2019-09-04T20:23:00Z",
+            "declared_lag_minutes": 0.0,
+            "declared_replay_policy": "DECLARED_EVENT_TIME_REPLAY",
+            "declared_replay_rule_id": "D2-BTS-FACTUAL-REPLAY",
+            "diverted": false,
+            "event_time": "2019-09-04T20:23:00Z",
+            "event_type": "COMPLETED_OPERATIONAL_OUTCOME",
+            "flight_id": "flight:d184e2270b94a857a87901d81f4d53b7fcbcb8f61d66958b5b01d82b882ce2ba",
+            "provenance_rule_id": "D2-BTS-ACTUAL",
+            "source_record_id": "canonical-event:634e6f71cdb526b9479095d7220b4206f6620c8c573f20d2a1544885ccfbb885",
+            "taxi_in_minutes": 18.0,
+            "taxi_out_minutes": 22.0,
+            "wheels_off_utc": "2019-09-04T17:41:00Z",
+            "wheels_on_utc": "2019-09-04T20:05:00Z"
+          }
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:0793745c3903c6f0501d62a39e7bcd37f7e596318abe8c34fe9d801c8a9f8482",
+        "decision_time": "2019-09-04T21:10:00Z",
+        "episode_id": "sha256:589e6500b3913e9baefa3a3be8fd5496b89a659ce591b942a26b2f8d0fd4bc59",
+        "formal_eligible": true,
+        "information_cutoff": "2019-09-04T21:10:00Z",
+        "legal_record_ids": [
+          "canonical-flight:fba91dd2f0a477e001e47fce71b83ec9ea10693258c12f6f94d68c7e8c1a2cb9"
+        ],
+        "node_index": 8,
+        "node_invalidation_reason": null,
+        "operational_stage": "POST_IB_PRE_OB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:0793745c3903c6f0501d62a39e7bcd37f7e596318abe8c34fe9d801c8a9f8482",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-09-04T21:35:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:fba91dd2f0a477e001e47fce71b83ec9ea10693258c12f6f94d68c7e8c1a2cb9",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N773SK",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "OO"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "DAY",
+            "origin_airport_id": "ORD",
+            "route_key": "ORD-DAY"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N773SK",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "OO",
+            "destination_airport_id": "DAY",
+            "flight_id": "flight:c1dd6b1fc6e21a962adea1a6a924e24beba63cfe376696f39d7afda5bae22bf6",
+            "origin_airport_id": "ORD",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-04T22:43:00Z",
+            "scheduled_departure_utc": "2019-09-04T21:35:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 19.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 60.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N773SK",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "OO"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "DAY",
+            "origin_airport_id": "ORD",
+            "route_key": "ORD-DAY"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N773SK",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "OO",
+            "destination_airport_id": "DAY",
+            "flight_id": "flight:c1dd6b1fc6e21a962adea1a6a924e24beba63cfe376696f39d7afda5bae22bf6",
+            "origin_airport_id": "ORD",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-04T22:43:00Z",
+            "scheduled_departure_utc": "2019-09-04T21:35:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 19.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 60.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:0793745c3903c6f0501d62a39e7bcd37f7e596318abe8c34fe9d801c8a9f8482",
+          "event_time": "2019-09-04T21:35:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:fba91dd2f0a477e001e47fce71b83ec9ea10693258c12f6f94d68c7e8c1a2cb9",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N773SK",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "OO",
+              "destination_airport_id": "DAY",
+              "flight_id": "flight:c1dd6b1fc6e21a962adea1a6a924e24beba63cfe376696f39d7afda5bae22bf6",
+              "origin_airport_id": "ORD",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-09-04T22:43:00Z",
+              "scheduled_departure_utc": "2019-09-04T21:35:00Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": "NO_LEGAL_RECORD_AT_DECISION_TIME",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:0d0554bb72c4f0752be6cac5faa23fe26ca466c5d95d646f2e8e95ece74618bf",
+        "decision_time": "2019-08-19T23:55:00Z",
+        "episode_id": "sha256:5a8e692f80187b5ed7e00c18f086d0ede6255b6ea601d1b03a95e7fbab30f2dd",
+        "formal_eligible": true,
+        "information_cutoff": "2019-08-19T23:55:00Z",
+        "legal_record_ids": [
+          "canonical-flight:f98fb42073dac59f3634053b47e6dbfcc473c0b579aa3c406f986064de5bc1ef"
+        ],
+        "node_index": 6,
+        "node_invalidation_reason": null,
+        "operational_stage": "PRE_IB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:0d0554bb72c4f0752be6cac5faa23fe26ca466c5d95d646f2e8e95ece74618bf",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-08-20T00:55:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:f98fb42073dac59f3634053b47e6dbfcc473c0b579aa3c406f986064de5bc1ef",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "CHS",
+            "origin_airport_id": "EWR",
+            "route_key": "EWR-CHS"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "CHS",
+            "flight_id": "flight:b931a7ffe35c6e20c9f265785e0cc43917dadfeea9491783605030a0ac58d9c2",
+            "origin_airport_id": "EWR",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-20T03:01:00Z",
+            "scheduled_departure_utc": "2019-08-20T00:55:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 21.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 58.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "CHS",
+            "origin_airport_id": "EWR",
+            "route_key": "EWR-CHS"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N37274",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "CHS",
+            "flight_id": "flight:b931a7ffe35c6e20c9f265785e0cc43917dadfeea9491783605030a0ac58d9c2",
+            "origin_airport_id": "EWR",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-20T03:01:00Z",
+            "scheduled_departure_utc": "2019-08-20T00:55:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 21.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 58.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:0d0554bb72c4f0752be6cac5faa23fe26ca466c5d95d646f2e8e95ece74618bf",
+          "event_time": "2019-08-20T00:55:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:f98fb42073dac59f3634053b47e6dbfcc473c0b579aa3c406f986064de5bc1ef",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N37274",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "UA",
+              "destination_airport_id": "CHS",
+              "flight_id": "flight:b931a7ffe35c6e20c9f265785e0cc43917dadfeea9491783605030a0ac58d9c2",
+              "origin_airport_id": "EWR",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-08-20T03:01:00Z",
+              "scheduled_departure_utc": "2019-08-20T00:55:00Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [
+            "CEILING_UNLIMITED",
+            "CEILING_UNLIMITED_OR_METAR_ABSENT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "airport_id": "SFO",
+            "ceiling_base_m": null,
+            "ceiling_status": "UNLIMITED",
+            "cloud_base_m": [
+              182.88
+            ],
+            "cloud_cover_codes": [
+              "FEW"
+            ],
+            "dewpoint_c": 13.3,
+            "mslp_hpa": null,
+            "present_weather_codes": null,
+            "qnh_hpa": 1015.2,
+            "temperature_c": 16.1,
+            "visibility_m": 16093.0,
+            "wind_direction_deg": 270.0,
+            "wind_gust_mps": null,
+            "wind_speed_mps": 7.7
+          }
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:0e97abc491cb9cb7762ccf351c6aceb7131209790895b13fd0d777bf54213bf3",
+        "decision_time": "2019-09-09T05:48:00Z",
+        "episode_id": "sha256:1d16117334c6ee7fe4cb28e4c268b187a9e17d6021f208ea72657b8ee4b9dea8",
+        "formal_eligible": true,
+        "information_cutoff": "2019-09-09T05:48:00Z",
+        "legal_record_ids": [
+          "canonical-flight:20742742719280501eaa644c7538de976d1f185e11638f72f15171d33f796363",
+          "weather:28556b3e7a0ea4265c8abb30fc59380b6df8ea70ddc33a747320ffba3f50a6c8"
+        ],
+        "node_index": 4,
+        "node_invalidation_reason": null,
+        "operational_stage": "PRE_IB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-09-09T05:01:00Z",
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:0e97abc491cb9cb7762ccf351c6aceb7131209790895b13fd0d777bf54213bf3",
+          "decision_time_role": "INFERENCE_EVIDENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-09-09T04:56:00Z",
+          "evidence_class": "DIRECT",
+          "fallback_level": "NONE",
+          "freshness_seconds": 2820.0,
+          "quality_flags": [
+            "CEILING_UNLIMITED",
+            "CEILING_UNLIMITED_OR_METAR_ABSENT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "scientific_object": "current_weather",
+          "selected": true,
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:28556b3e7a0ea4265c8abb30fc59380b6df8ea70ddc33a747320ffba3f50a6c8",
+          "support_ceiling": "DIRECT"
+        },
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:0e97abc491cb9cb7762ccf351c6aceb7131209790895b13fd0d777bf54213bf3",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-09-09T06:45:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:20742742719280501eaa644c7538de976d1f185e11638f72f15171d33f796363",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "BOS",
+            "origin_airport_id": "SFO",
+            "route_key": "SFO-BOS"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "BOS",
+            "flight_id": "flight:85594cc58921c08c25a0a2a3b0cc801106edf8943dadb51c201922e69d1bdedf",
+            "origin_airport_id": "SFO",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-09T12:23:00Z",
+            "scheduled_departure_utc": "2019-09-09T06:45:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 20.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 61.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "BOS",
+            "origin_airport_id": "SFO",
+            "route_key": "SFO-BOS"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "BOS",
+            "flight_id": "flight:85594cc58921c08c25a0a2a3b0cc801106edf8943dadb51c201922e69d1bdedf",
+            "origin_airport_id": "SFO",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-09T12:23:00Z",
+            "scheduled_departure_utc": "2019-09-09T06:45:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 20.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 61.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": 2820.0,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-09-09T05:01:00Z",
+          "canonical_variable": "current_weather",
+          "decision_node_id": "sha256:0e97abc491cb9cb7762ccf351c6aceb7131209790895b13fd0d777bf54213bf3",
+          "event_time": "2019-09-09T04:56:00Z",
+          "fallback_used": false,
+          "quality_flags": [
+            "CEILING_UNLIMITED",
+            "CEILING_UNLIMITED_OR_METAR_ABSENT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "reference_role": null,
+          "rule_id": "D2-NOAA-ISD",
+          "scientific_variable": "current_weather",
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:28556b3e7a0ea4265c8abb30fc59380b6df8ea70ddc33a747320ffba3f50a6c8",
+          "supported_value": {
+            "evidence_class": "DIRECT",
+            "formal_input_support": "DIRECT",
+            "quality_flags": [
+              "CEILING_UNLIMITED",
+              "CEILING_UNLIMITED_OR_METAR_ABSENT",
+              "QNH_DERIVED_FROM_METAR",
+              "REPORT_TYPE=FM-15",
+              "SLP_ISD_UNMAPPED"
+            ],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "DIRECT",
+            "support_state": "SUPPORTED",
+            "unit": "canonical",
+            "value": {
+              "airport_id": "SFO",
+              "ceiling_base_m": null,
+              "ceiling_status": "UNLIMITED",
+              "cloud_base_m": [
+                182.88
+              ],
+              "cloud_cover_codes": [
+                "FEW"
+              ],
+              "dewpoint_c": 13.3,
+              "mslp_hpa": null,
+              "present_weather_codes": null,
+              "qnh_hpa": 1015.2,
+              "temperature_c": 16.1,
+              "visibility_m": 16093.0,
+              "wind_direction_deg": 270.0,
+              "wind_gust_mps": null,
+              "wind_speed_mps": 7.7
+            }
+          }
+        },
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:0e97abc491cb9cb7762ccf351c6aceb7131209790895b13fd0d777bf54213bf3",
+          "event_time": "2019-09-09T06:45:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:20742742719280501eaa644c7538de976d1f185e11638f72f15171d33f796363",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N14107",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "UA",
+              "destination_airport_id": "BOS",
+              "flight_id": "flight:85594cc58921c08c25a0a2a3b0cc801106edf8943dadb51c201922e69d1bdedf",
+              "origin_airport_id": "SFO",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-09-09T12:23:00Z",
+              "scheduled_departure_utc": "2019-09-09T06:45:00Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [
+            "CEILING_FROM_ISD_CIG",
+            "CEILING_FROM_METAR_TEXT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "airport_id": "SEA",
+            "ceiling_base_m": 7620.0,
+            "ceiling_status": "FINITE",
+            "cloud_base_m": [
+              7620.0
+            ],
+            "cloud_cover_codes": [
+              "BKN"
+            ],
+            "dewpoint_c": 10.6,
+            "mslp_hpa": null,
+            "present_weather_codes": null,
+            "qnh_hpa": 1019.3,
+            "temperature_c": 22.2,
+            "visibility_m": 16093.0,
+            "wind_direction_deg": 340.0,
+            "wind_gust_mps": null,
+            "wind_speed_mps": 2.6
+          }
+        },
+        "predecessor_operational_fact": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "BTS_DIRECT_CLOCK_WITH_SIGNED_DELAY_DATE_DISAMBIGUATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "actual_arrival_utc": "2019-08-14T04:03:00Z",
+            "actual_departure_utc": "2019-08-13T21:47:00Z",
+            "availability_basis": "FACTUAL_REPLAY_RULE",
+            "availability_time": "2019-08-14T04:03:00Z",
+            "cancelled": false,
+            "canonical_event_time": "2019-08-13T21:47:00Z",
+            "decision_time_role": "FACTUAL_REPLAY_EVIDENCE",
+            "declared_availability_by_field": {
+              "actual_arrival_utc": "2019-08-14T04:03:00Z",
+              "actual_departure_utc": "2019-08-13T21:47:00Z",
+              "wheels_off_utc": "2019-08-13T22:23:00Z",
+              "wheels_on_utc": "2019-08-14T03:54:00Z"
+            },
+            "declared_availability_time": "2019-08-14T04:03:00Z",
+            "declared_lag_minutes": 0.0,
+            "declared_replay_policy": "DECLARED_EVENT_TIME_REPLAY",
+            "declared_replay_rule_id": "D2-BTS-FACTUAL-REPLAY",
+            "diverted": false,
+            "event_time": "2019-08-14T04:03:00Z",
+            "event_type": "COMPLETED_OPERATIONAL_OUTCOME",
+            "flight_id": "flight:3c1ec80aec0652022d24387598b81562c9d7bc33e92bd9ea50ae001b2c6954ed",
+            "provenance_rule_id": "D2-BTS-ACTUAL",
+            "source_record_id": "canonical-event:2009428e97af2a8d426658dc1e71aa0d70b7c93804c54f44f8d4b2df122daca6",
+            "taxi_in_minutes": 9.0,
+            "taxi_out_minutes": 36.0,
+            "wheels_off_utc": "2019-08-13T22:23:00Z",
+            "wheels_on_utc": "2019-08-14T03:54:00Z"
+          }
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:107dc71c1cb13fd28ae74bbffd65611569852f90d3d94acd9bfda0a8b0a94dfc",
+        "decision_time": "2019-08-14T05:16:00Z",
+        "episode_id": "sha256:4472767ce9954e0f419a6c7f16e2095097b975c28b6016f5c855ea5a77076224",
+        "formal_eligible": true,
+        "information_cutoff": "2019-08-14T05:16:00Z",
+        "legal_record_ids": [
+          "canonical-flight:cd5b2d3ca7906adb8c536176eeb804b60152480ed837fb2993c9af204c74e5f2",
+          "weather:fd569186c2404304164a8ad71277c988d3d46f1f8304522e8a462dbb8bd8b6f9"
+        ],
+        "node_index": 12,
+        "node_invalidation_reason": null,
+        "operational_stage": "POST_IB_PRE_OB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-08-14T04:58:00Z",
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:107dc71c1cb13fd28ae74bbffd65611569852f90d3d94acd9bfda0a8b0a94dfc",
+          "decision_time_role": "INFERENCE_EVIDENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-08-14T04:53:00Z",
+          "evidence_class": "DIRECT",
+          "fallback_level": "NONE",
+          "freshness_seconds": 1080.0,
+          "quality_flags": [
+            "CEILING_FROM_ISD_CIG",
+            "CEILING_FROM_METAR_TEXT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "scientific_object": "current_weather",
+          "selected": true,
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:fd569186c2404304164a8ad71277c988d3d46f1f8304522e8a462dbb8bd8b6f9",
+          "support_ceiling": "DIRECT"
+        },
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:107dc71c1cb13fd28ae74bbffd65611569852f90d3d94acd9bfda0a8b0a94dfc",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-08-14T05:26:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:cd5b2d3ca7906adb8c536176eeb804b60152480ed837fb2993c9af204c74e5f2",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "B6"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "JFK",
+            "origin_airport_id": "SEA",
+            "route_key": "SEA-JFK"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "B6",
+            "destination_airport_id": "JFK",
+            "flight_id": "flight:666425540d8de24119e21bdba2b0f8945c616da51307d7675801f1da26d59874",
+            "origin_airport_id": "SEA",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-14T10:52:00Z",
+            "scheduled_departure_utc": "2019-08-14T05:26:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 18.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 65.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "B6"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "JFK",
+            "origin_airport_id": "SEA",
+            "route_key": "SEA-JFK"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N981JT",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "B6",
+            "destination_airport_id": "JFK",
+            "flight_id": "flight:666425540d8de24119e21bdba2b0f8945c616da51307d7675801f1da26d59874",
+            "origin_airport_id": "SEA",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-08-14T10:52:00Z",
+            "scheduled_departure_utc": "2019-08-14T05:26:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 18.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 65.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": 1080.0,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-08-14T04:58:00Z",
+          "canonical_variable": "current_weather",
+          "decision_node_id": "sha256:107dc71c1cb13fd28ae74bbffd65611569852f90d3d94acd9bfda0a8b0a94dfc",
+          "event_time": "2019-08-14T04:53:00Z",
+          "fallback_used": false,
+          "quality_flags": [
+            "CEILING_FROM_ISD_CIG",
+            "CEILING_FROM_METAR_TEXT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "reference_role": null,
+          "rule_id": "D2-NOAA-ISD",
+          "scientific_variable": "current_weather",
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:fd569186c2404304164a8ad71277c988d3d46f1f8304522e8a462dbb8bd8b6f9",
+          "supported_value": {
+            "evidence_class": "DIRECT",
+            "formal_input_support": "DIRECT",
+            "quality_flags": [
+              "CEILING_FROM_ISD_CIG",
+              "CEILING_FROM_METAR_TEXT",
+              "QNH_DERIVED_FROM_METAR",
+              "REPORT_TYPE=FM-15",
+              "SLP_ISD_UNMAPPED"
+            ],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "DIRECT",
+            "support_state": "SUPPORTED",
+            "unit": "canonical",
+            "value": {
+              "airport_id": "SEA",
+              "ceiling_base_m": 7620.0,
+              "ceiling_status": "FINITE",
+              "cloud_base_m": [
+                7620.0
+              ],
+              "cloud_cover_codes": [
+                "BKN"
+              ],
+              "dewpoint_c": 10.6,
+              "mslp_hpa": null,
+              "present_weather_codes": null,
+              "qnh_hpa": 1019.3,
+              "temperature_c": 22.2,
+              "visibility_m": 16093.0,
+              "wind_direction_deg": 340.0,
+              "wind_gust_mps": null,
+              "wind_speed_mps": 2.6
+            }
+          }
+        },
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:107dc71c1cb13fd28ae74bbffd65611569852f90d3d94acd9bfda0a8b0a94dfc",
+          "event_time": "2019-08-14T05:26:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:cd5b2d3ca7906adb8c536176eeb804b60152480ed837fb2993c9af204c74e5f2",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N981JT",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "B6",
+              "destination_airport_id": "JFK",
+              "flight_id": "flight:666425540d8de24119e21bdba2b0f8945c616da51307d7675801f1da26d59874",
+              "origin_airport_id": "SEA",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-08-14T10:52:00Z",
+              "scheduled_departure_utc": "2019-08-14T05:26:00Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "current_state": {
+        "current_weather": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "quality_flags": [
+            "CEILING_UNLIMITED",
+            "CEILING_UNLIMITED_OR_METAR_ABSENT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "airport_id": "SFO",
+            "ceiling_base_m": null,
+            "ceiling_status": "UNLIMITED",
+            "cloud_base_m": [
+              182.88
+            ],
+            "cloud_cover_codes": [
+              "FEW"
+            ],
+            "dewpoint_c": 13.3,
+            "mslp_hpa": null,
+            "present_weather_codes": null,
+            "qnh_hpa": 1015.2,
+            "temperature_c": 16.1,
+            "visibility_m": 16093.0,
+            "wind_direction_deg": 270.0,
+            "wind_gust_mps": null,
+            "wind_speed_mps": 7.7
+          }
+        }
+      },
+      "decision_node": {
+        "config_hash": "sha256:aa192806c3f618bbe6e77916214fe51a1e4705468391be24aa60b9c50d43b9d0",
+        "decision_node_id": "sha256:187420ce6d00c9e0f2d547eed52926deafca12ff8df8d653ad07e5625f323c3b",
+        "decision_time": "2019-09-09T05:53:00Z",
+        "episode_id": "sha256:1d16117334c6ee7fe4cb28e4c268b187a9e17d6021f208ea72657b8ee4b9dea8",
+        "formal_eligible": true,
+        "information_cutoff": "2019-09-09T05:53:00Z",
+        "legal_record_ids": [
+          "canonical-flight:20742742719280501eaa644c7538de976d1f185e11638f72f15171d33f796363",
+          "weather:28556b3e7a0ea4265c8abb30fc59380b6df8ea70ddc33a747320ffba3f50a6c8"
+        ],
+        "node_index": 5,
+        "node_invalidation_reason": null,
+        "operational_stage": "PRE_IB",
+        "registry_manifest_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "roll_minutes": 5,
+        "status": "CONSTRUCTED"
+      },
+      "evidence_ledger": [
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-09-09T05:01:00Z",
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:187420ce6d00c9e0f2d547eed52926deafca12ff8df8d653ad07e5625f323c3b",
+          "decision_time_role": "INFERENCE_EVIDENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-09-09T04:56:00Z",
+          "evidence_class": "DIRECT",
+          "fallback_level": "NONE",
+          "freshness_seconds": 3120.0,
+          "quality_flags": [
+            "CEILING_UNLIMITED",
+            "CEILING_UNLIMITED_OR_METAR_ABSENT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "scientific_object": "current_weather",
+          "selected": true,
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:28556b3e7a0ea4265c8abb30fc59380b6df8ea70ddc33a747320ffba3f50a6c8",
+          "support_ceiling": "DIRECT"
+        },
+        {
+          "abstention_reason": null,
+          "admissible": true,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "criticality": "OBJECT",
+          "decision_node_id": "sha256:187420ce6d00c9e0f2d547eed52926deafca12ff8df8d653ad07e5625f323c3b",
+          "decision_time_role": "FROZEN_REFERENCE",
+          "episode_member": true,
+          "episode_support": "SUPPORTED",
+          "event_time": "2019-09-09T06:45:00Z",
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "fallback_level": "NONE",
+          "freshness_seconds": null,
+          "quality_flags": [],
+          "scientific_object": "schedule_reference",
+          "selected": true,
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:20742742719280501eaa644c7538de976d1f185e11638f72f15171d33f796363",
+          "support_ceiling": "EMPIRICAL_REFERENCE"
+        }
+      ],
+      "predecessor_state": {
+        "predecessor_motion": {
+          "evidence_class": "UNSUPPORTED",
+          "formal_input_support": "UNSUPPORTED",
+          "quality_flags": [],
+          "realized_outcome_support": "UNSUPPORTED",
+          "reason_code": "NO_TRAJECTORY",
+          "support_ceiling": "UNSUPPORTED",
+          "support_state": "ABSTAIN",
+          "unit": "canonical",
+          "value": null
+        }
+      },
+      "reference_state": {
+        "entries": {
+          "airport_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          },
+          "airport_timezone": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "EXTERNAL_STANDARD",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "STATIC_REFERENCE",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "IANA",
+            "value": null
+          },
+          "passenger_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "NOT_FLIGHT_LEVEL",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "passengers",
+            "value": null
+          },
+          "segment_reference": {
+            "evidence_class": "UNSUPPORTED",
+            "formal_input_support": "DOMAIN_PROXY",
+            "quality_flags": [],
+            "realized_outcome_support": "UNSUPPORTED",
+            "reason_code": "AGGREGATE_ONLY",
+            "support_ceiling": "UNSUPPORTED",
+            "support_state": "ABSTAIN",
+            "unit": "canonical",
+            "value": null
+          }
+        }
+      },
+      "static_reference_publication": {
+        "aircraft_identity": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "MODEL_FEATURE_PENDING",
+          "provenance": {
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "MODEL_FEATURE_PENDING",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "BOS",
+            "origin_airport_id": "SFO",
+            "route_key": "SFO-BOS"
+          }
+        },
+        "schedule_reference": {
+          "fallback_level": null,
+          "freeze_id": null,
+          "model_feature_status": "RETAINED_IDENTITY",
+          "provenance": {
+            "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+            "reference_id": "schedule_reference"
+          },
+          "provenance_reference_id": "schedule_reference",
+          "publication_status": "RETAINED_IDENTITY",
+          "reference_id": "schedule_reference",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "BOS",
+            "flight_id": "flight:85594cc58921c08c25a0a2a3b0cc801106edf8943dadb51c201922e69d1bdedf",
+            "origin_airport_id": "SFO",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-09T12:23:00Z",
+            "scheduled_departure_utc": "2019-09-09T06:45:00Z"
+          }
+        },
+        "taxi_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "rule_id": "DATA2_TAXI_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 20.0
+          }
+        },
+        "turnaround_reference": {
+          "fallback_level": "CELL",
+          "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+          "model_feature_status": "MODEL_FEATURE",
+          "provenance": {
+            "dataset_instance_id": "data2_2019",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "rule_id": "DATA2_TURNAROUND_REFERENCE",
+            "rule_version": "1.0.0"
+          },
+          "provenance_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "publication_status": "MODEL_FEATURE",
+          "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 61.0
+          }
+        }
+      },
+      "successor_state": {
+        "aircraft_identity": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "AIRCRAFT_IDENTITY_RETAINED_REGISTRATION"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION"
+          }
+        },
+        "carrier_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "CARRIER_FROM_BTS_REPORTING_AIRLINE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "carrier_id": "UA"
+          }
+        },
+        "route_context": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "ROUTE_CONTEXT_FROM_SCHEDULE"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "canonical",
+          "value": {
+            "destination_airport_id": "BOS",
+            "origin_airport_id": "SFO",
+            "route_key": "SFO-BOS"
+          }
+        },
+        "schedule_reference": {
+          "evidence_class": "EMPIRICAL_REFERENCE",
+          "formal_input_support": "EMPIRICAL_REFERENCE",
+          "quality_flags": [],
+          "realized_outcome_support": "DIRECT",
+          "reason_code": null,
+          "support_ceiling": "EMPIRICAL_REFERENCE",
+          "support_state": "SUPPORTED",
+          "unit": "UTC",
+          "value": {
+            "aircraft_id": "N14107",
+            "aircraft_id_namespace": "REGISTRATION",
+            "carrier_id": "UA",
+            "destination_airport_id": "BOS",
+            "flight_id": "flight:85594cc58921c08c25a0a2a3b0cc801106edf8943dadb51c201922e69d1bdedf",
+            "origin_airport_id": "SFO",
+            "schedule_semantics": "CRS_DEPARTURE",
+            "scheduled_arrival_utc": "2019-09-09T12:23:00Z",
+            "scheduled_departure_utc": "2019-09-09T06:45:00Z"
+          }
+        },
+        "taxi_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TAXI_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+              "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+              "rule_id": "DATA2_TAXI_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 20.0
+          }
+        },
+        "turnaround_reference": {
+          "evidence_class": "DIRECT",
+          "formal_input_support": null,
+          "quality_flags": [
+            "TURNAROUND_REFERENCE_PUBLISHED"
+          ],
+          "realized_outcome_support": null,
+          "reason_code": null,
+          "support_ceiling": "DIRECT",
+          "support_state": "SUPPORTED",
+          "unit": "minutes",
+          "value": {
+            "fallback_level": "CELL",
+            "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+            "provenance": {
+              "dataset_instance_id": "data2_2019",
+              "freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+              "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+              "rule_id": "DATA2_TURNAROUND_REFERENCE",
+              "rule_version": "1.0.0"
+            },
+            "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+            "support_state": "SUPPORTED",
+            "unit": "minutes",
+            "value": 61.0
+          }
+        }
+      },
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "variable_lineage": [
+        {
+          "age_seconds": 3120.0,
+          "availability_basis": "REPLAY_EVENT_TIME",
+          "availability_time": "2019-09-09T05:01:00Z",
+          "canonical_variable": "current_weather",
+          "decision_node_id": "sha256:187420ce6d00c9e0f2d547eed52926deafca12ff8df8d653ad07e5625f323c3b",
+          "event_time": "2019-09-09T04:56:00Z",
+          "fallback_used": false,
+          "quality_flags": [
+            "CEILING_UNLIMITED",
+            "CEILING_UNLIMITED_OR_METAR_ABSENT",
+            "QNH_DERIVED_FROM_METAR",
+            "REPORT_TYPE=FM-15",
+            "SLP_ISD_UNMAPPED"
+          ],
+          "reference_role": null,
+          "rule_id": "D2-NOAA-ISD",
+          "scientific_variable": "current_weather",
+          "source_name": "noaa_isd",
+          "source_record_id": "weather:28556b3e7a0ea4265c8abb30fc59380b6df8ea70ddc33a747320ffba3f50a6c8",
+          "supported_value": {
+            "evidence_class": "DIRECT",
+            "formal_input_support": "DIRECT",
+            "quality_flags": [
+              "CEILING_UNLIMITED",
+              "CEILING_UNLIMITED_OR_METAR_ABSENT",
+              "QNH_DERIVED_FROM_METAR",
+              "REPORT_TYPE=FM-15",
+              "SLP_ISD_UNMAPPED"
+            ],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "DIRECT",
+            "support_state": "SUPPORTED",
+            "unit": "canonical",
+            "value": {
+              "airport_id": "SFO",
+              "ceiling_base_m": null,
+              "ceiling_status": "UNLIMITED",
+              "cloud_base_m": [
+                182.88
+              ],
+              "cloud_cover_codes": [
+                "FEW"
+              ],
+              "dewpoint_c": 13.3,
+              "mslp_hpa": null,
+              "present_weather_codes": null,
+              "qnh_hpa": 1015.2,
+              "temperature_c": 16.1,
+              "visibility_m": 16093.0,
+              "wind_direction_deg": 270.0,
+              "wind_gust_mps": null,
+              "wind_speed_mps": 7.7
+            }
+          }
+        },
+        {
+          "age_seconds": null,
+          "availability_basis": "SCHEDULE_REFERENCE_ASSUMPTION",
+          "availability_time": null,
+          "canonical_variable": "schedule_reference",
+          "decision_node_id": "sha256:187420ce6d00c9e0f2d547eed52926deafca12ff8df8d653ad07e5625f323c3b",
+          "event_time": "2019-09-09T06:45:00Z",
+          "fallback_used": false,
+          "quality_flags": [],
+          "reference_role": null,
+          "rule_id": "D2-BTS-SCHEDULE",
+          "scientific_variable": "schedule_reference",
+          "source_name": "bts_ontime",
+          "source_record_id": "canonical-flight:20742742719280501eaa644c7538de976d1f185e11638f72f15171d33f796363",
+          "supported_value": {
+            "evidence_class": "EMPIRICAL_REFERENCE",
+            "formal_input_support": "EMPIRICAL_REFERENCE",
+            "quality_flags": [],
+            "realized_outcome_support": "DIRECT",
+            "reason_code": null,
+            "support_ceiling": "EMPIRICAL_REFERENCE",
+            "support_state": "SUPPORTED",
+            "unit": "UTC",
+            "value": {
+              "aircraft_id": "N14107",
+              "aircraft_id_namespace": "REGISTRATION",
+              "carrier_id": "UA",
+              "destination_airport_id": "BOS",
+              "flight_id": "flight:85594cc58921c08c25a0a2a3b0cc801106edf8943dadb51c201922e69d1bdedf",
+              "origin_airport_id": "SFO",
+              "schedule_semantics": "CRS_DEPARTURE",
+              "scheduled_arrival_utc": "2019-09-09T12:23:00Z",
+              "scheduled_departure_utc": "2019-09-09T06:45:00Z"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "schema_version": "PRE_GOLDEN_V1",
+  "scientific_parent_fingerprint": "sha256:80133fa5a57593dcdeda3fb3871c037146b1faa98b135377a83ba8e1e4f86f1d",
+  "selected_node_ids": [
+    "sha256:00981f4e188f19b45f2671e574eff9740e5eae0f85aa0592f323f9527cc7a80b",
+    "sha256:01d9985723007925c81c277496c428cbb4d8135b27b9e178bdd5908515f964ed",
+    "sha256:06a374669b17ca9114fbe3d708939f8d703980ae595bbb1a0d5fbf8fb99ad23f",
+    "sha256:0793745c3903c6f0501d62a39e7bcd37f7e596318abe8c34fe9d801c8a9f8482",
+    "sha256:0d0554bb72c4f0752be6cac5faa23fe26ca466c5d95d646f2e8e95ece74618bf",
+    "sha256:0e97abc491cb9cb7762ccf351c6aceb7131209790895b13fd0d777bf54213bf3",
+    "sha256:107dc71c1cb13fd28ae74bbffd65611569852f90d3d94acd9bfda0a8b0a94dfc",
+    "sha256:187420ce6d00c9e0f2d547eed52926deafca12ff8df8d653ad07e5625f323c3b"
+  ],
+  "source_preparation_manifest_hash": "sha256:32e91fc30b97eebc8ab2a1724b89617785ea150aff9a6913ab9c552f9f55a8eb",
+  "source_preparation_state_hash": "sha256:2015525eda4f7290d400c2a4255f9c67706789d1392cb59ed5ec53c5276d1b93"
+}

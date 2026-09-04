@@ -1,0 +1,97 @@
+{
+  "artifact_hash": "sha256:4ae4f2ecaf75a8b8ad83597a6459aec3f63fe531cfbb921870d394123ff601e4",
+  "code_commit": "35e52588d4c1a98cd2d1bef884d78d0b052095bc",
+  "data1_modified": false,
+  "data2_modified": false,
+  "db1b_fit_quarters": [
+    1,
+    2
+  ],
+  "db1b_quarters_used": [
+    1,
+    2
+  ],
+  "db1b_quarters_used_actual": [
+    1,
+    2
+  ],
+  "db1b_row_audit": {
+    "quarters_used": [
+      1,
+      2
+    ],
+    "rows_excluded_invalid_schema": 0,
+    "rows_excluded_outside_fit_period": 0,
+    "rows_seen": 21202213,
+    "rows_used": 21202213,
+    "trip_break_fields": [
+      "Break"
+    ]
+  },
+  "db1b_rows_excluded_invalid_schema": 0,
+  "db1b_rows_excluded_outside_fit_period": 0,
+  "db1b_rows_seen": 21202213,
+  "db1b_rows_used": 21202213,
+  "experiment_created": false,
+  "final_test_ontime_access_count": 0,
+  "fit_months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "fit_partition": "TRAIN",
+  "fit_year": 2019,
+  "m2_v4_registry_hash": "sha256:a740d26eacb995741040c20c4bca881743981cb421a24699e4cdc5624ddafde6",
+  "reference_artifact_hashes": {
+    "connection_share": "sha256:b595af0009e8527836e867ad61ae1e2ef434a4e63d7a1e300e9b95c46ef445b2",
+    "expected_pax": "sha256:b0f8f7b1e2e8c0d10c2a0c4ec6e13aae04fbf662e93b11afba0de65aca3e91ab"
+  },
+  "reference_ids": {
+    "connection_share": "sha256:0b58f3bbbbbde7de38d6a71de903f05141c165b4e86bd4409609286798898e35",
+    "expected_pax": "sha256:0a190e1877a36f27296a6dcd7fc51228d0be94331e38674fe31fafcf29a9e1b9"
+  },
+  "schema_version": "PASSENGER_REFERENCE_MANIFEST_V2",
+  "seven_scale_artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+  "source_file_hashes": {
+    "data2\\raw\\bts\\db1b\\2019\\coupon\\Origin_and_Destination_Survey_DB1BCoupon_2019_1.csv": "sha256:6f5eff1540650dc9915fbe8dce3c6d5984704325f9687dd231062f9cc854c449",
+    "data2\\raw\\bts\\db1b\\2019\\coupon\\Origin_and_Destination_Survey_DB1BCoupon_2019_2.csv": "sha256:b733c586c1339434235f44d16e59e82b6b5b87c6267cf350f2bfe663458ebf75",
+    "data2\\raw\\bts\\t100\\2019\\T_T100_SEGMENT_ALL_CARRIER.csv": "sha256:9b838fd6f15594f0481b03380e6744b2dc0e3061248188a587b61fd5fe96b667"
+  },
+  "t100_fit_months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "t100_months_used": [
+    6,
+    2,
+    5,
+    1,
+    3,
+    4
+  ],
+  "t100_row_audit": {
+    "rows_excluded_invalid_month": 0,
+    "rows_excluded_outside_fit_period": 246813,
+    "rows_seen": 487923,
+    "rows_used": 241110,
+    "used_months": [
+      6,
+      2,
+      5,
+      1,
+      3,
+      4
+    ]
+  },
+  "t100_rows_excluded_invalid_month": 0,
+  "t100_rows_excluded_outside_fit_period": 246813,
+  "t100_rows_seen": 487923,
+  "t100_rows_used": 241110
+}

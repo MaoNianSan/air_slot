@@ -24,7 +24,7 @@ import torch
 import model.M1.lifecycle as lifecycle_module
 import model.M1.fast_path as fast_path_module
 from model.common.errors import ContractError
-from model.M1.calibration import (
+from model.M1.calibration_layer.hurdle_temperature import (
     common_calibration_policy,
     fit_hazard_temperature,
     fit_zero_mass_temperature,
@@ -40,7 +40,7 @@ from model.M1.contracts import (
 from model.M1.data import STATIC_FEATURE_COUNT, fast_features_from_sequence
 from model.M1.fast_path import LightGBMDistributionalPredictor
 from model.M1.lifecycle import M1Lifecycle, M1TrainingExample
-from model.M1.network import M1V2GRU
+from model.M1.model_layer.gru import M1V2GRU
 from model.M1.pipeline import M1Pipeline
 from model.PRE.foundation import PREBuildRequest, build_pre_state
 

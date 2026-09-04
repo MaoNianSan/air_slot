@@ -10,7 +10,7 @@ from model.common.enums import SupportState
 from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
-from model.PRE.contracts.pre_state import PREState
+from model.PRE import PREState
 
 STATIC_NUMERIC_FEATURE_NAMES: tuple[str, ...] = (
     "turnaround_reference_minutes",

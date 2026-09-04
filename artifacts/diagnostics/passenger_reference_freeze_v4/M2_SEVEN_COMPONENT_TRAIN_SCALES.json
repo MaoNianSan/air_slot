@@ -1,0 +1,102 @@
+{
+  "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+  "components": {
+    "F_continuity": {
+      "active_quantity_definition": "max(0, R_IB - turnaround_reference)",
+      "definition": "max(0, R_IB - turnaround_reference)",
+      "fit_period": "2019-H1",
+      "median": 43.0,
+      "native_unit": "minutes",
+      "population_rows": 2668531,
+      "positive_n": 206787,
+      "unit": "minutes"
+    },
+    "F_execution": {
+      "active_quantity_definition": "D_OB",
+      "definition": "D_OB",
+      "fit_period": "2019-H1",
+      "median": 17.0,
+      "native_unit": "minutes",
+      "population_rows": 3497660,
+      "positive_n": 1250180,
+      "unit": "minutes"
+    },
+    "F_propagation": {
+      "active_quantity_definition": "D_TO * expected_downstream_exposure",
+      "definition": "D_TO * expected_downstream_exposure",
+      "fit_period": "2019-H1",
+      "median": 10.0,
+      "native_unit": "exposure_minutes",
+      "population_rows": 3497660,
+      "positive_n": 2267813,
+      "unit": "exposure_minutes"
+    },
+    "P_itinerary": {
+      "active_quantity_definition": "expected_passengers_per_flight * connection_share * I[D_TO > itinerary_threshold_minutes]",
+      "definition": "expected_passengers_per_flight * connection_share * I[D_TO > itinerary_threshold_minutes]",
+      "fit_period": "2019-H1",
+      "median": 9.882948210182091,
+      "native_unit": "expected_disrupted_connecting_passenger_exposure",
+      "population_rows": 3497660,
+      "positive_n": 373073,
+      "unit": "expected_disrupted_connecting_passenger_exposure"
+    },
+    "P_service": {
+      "active_quantity_definition": "expected_passengers_per_flight * I[D_TO >= service_threshold_minutes]",
+      "definition": "expected_passengers_per_flight * I[D_TO >= service_threshold_minutes]",
+      "fit_period": "2019-H1",
+      "median": 104.88473684210527,
+      "native_unit": "expected_long_delay_passenger_service_exposure",
+      "population_rows": 3497660,
+      "positive_n": 51700,
+      "unit": "expected_long_delay_passenger_service_exposure"
+    },
+    "P_time": {
+      "active_quantity_definition": "expected_passengers_per_flight * D_TO",
+      "definition": "expected_passengers_per_flight * D_TO",
+      "fit_period": "2019-H1",
+      "median": 990.3555555555556,
+      "native_unit": "passenger_minutes",
+      "population_rows": 3497660,
+      "positive_n": 2275867,
+      "unit": "passenger_minutes"
+    },
+    "R_operating": {
+      "active_quantity_definition": "D_TX",
+      "definition": "D_TX",
+      "fit_period": "2019-H1",
+      "median": 5.0,
+      "native_unit": "excess_taxi_minutes",
+      "population_rows": 3497660,
+      "positive_n": 1619429,
+      "unit": "excess_taxi_minutes"
+    }
+  },
+  "db1b_quarters": [
+    1,
+    2
+  ],
+  "final_test_ontime_access_count": 0,
+  "fit_months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "fit_partition": "TRAIN",
+  "fit_year": 2019,
+  "formal_scope": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "paper_full_run": false,
+  "scale_rule": "Median_Train(q_k | q_k > 0)",
+  "schema_version": "M2_SEVEN_COMPONENT_TRAIN_SCALES_V4"
+}

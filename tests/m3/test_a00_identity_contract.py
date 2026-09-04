@@ -13,12 +13,12 @@ from model.M3.action_response import (
     build_a00_identity_envelope,
 )
 from model.M3.contracts import InstantiationState
-from model.M3.instantiate import instantiate_action_records
+from model.M3.instantiation_layer.builder import instantiate_action_records
 from model.M3.m2_action_interface import (
     M3BaselineCUQuantity,
     M3BaselineConsequenceInput,
 )
-from model.M3.registry import ActionRegistry
+from model.M3.registry_layer.actions import ActionRegistry
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.enums import SupportState
 from model.common.identity import content_id

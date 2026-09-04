@@ -4,13 +4,13 @@ import pytest
 from pydantic import ValidationError
 
 from model.M3.contracts import ActionTemplate, InstantiationState
-from model.M3.instantiate import (
+from model.M3.instantiation_layer.builder import (
     evaluate_action_instantiation,
     instantiate_action_records,
     instantiate_candidates,
 )
-from model.M3.factual_adapter import adapt_pre_state
-from model.M3.registry import ActionRegistry
+from model.M3.factual_layer.adapter import adapt_pre_state
+from model.M3.registry_layer.actions import ActionRegistry
 
 
 def test_unknown_consequence_key_is_a_hard_registry_error():

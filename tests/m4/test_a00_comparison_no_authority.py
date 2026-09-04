@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from model.M4.authority import project_authority
+from model.M4.authority_layer.prohibition import project_authority
 from model.M4.residual_risk import (
     NumericalComparisonStatus,
     NumericalEvaluationState,

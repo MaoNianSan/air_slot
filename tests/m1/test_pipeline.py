@@ -7,7 +7,7 @@ import pytest
 import torch
 
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import ancestral_sample_v2
+from model.M1.scenario_layer.sampler import ancestral_sample_v2
 from model.common.errors import ContractError
 from model.PRE.foundation import PREBuildRequest, build_pre_state
 

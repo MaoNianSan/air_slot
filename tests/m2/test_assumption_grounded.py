@@ -1,5 +1,6 @@
-import json
 from pathlib import Path
+
+import pytest
 
 from model.M2.context import (
     AirportReferenceKeys,
@@ -16,7 +17,7 @@ from model.M2.contracts import (
     ScientificContextValue,
     SourceType,
 )
-from model.M2.drivers import native_quantities
+from model.M2.consequences.engine import native_quantities
 from model.PRE.transformation import ConstructionType
 from model.common.estimand import ScopeStatus
 from model.common.enums import EvidenceClass, SupportState
@@ -72,20 +73,19 @@ def _assumption_context(**kwargs):
 
 def test_assumption_context_inputs_supported():
     context = _assumption_context(
-        tau_service_minutes=180.0, itinerary_buffer_minutes=15.0
+        tau_service_minutes=180.0, itinerary_buffer_minutes=45.0
     )
     assert context.itinerary_buffer_reference.support_state is SupportState.SUPPORTED
     assert context.service_policy_reference.value == 180.0
-    classes = json.loads(context.itinerary_buffer_reference.value)
-    assert classes == [{"passenger_count": 100.0, "buffer_minutes": 15.0}]
-    assert context.itinerary_buffer_reference.source_type is SourceType.LITERATURE
-    assert context.service_policy_reference.source_type is SourceType.LITERATURE
+    assert context.itinerary_buffer_reference.value == 45.0
+    assert context.itinerary_buffer_reference.source_type is SourceType.SCENARIO_ASSUMPTION
+    assert context.service_policy_reference.source_type is SourceType.SCENARIO_ASSUMPTION
     assert context.itinerary_buffer_reference.assumption_scope is not None
 
 
 def test_p_itinerary_scenario_threshold_events():
     context = _assumption_context(
-        tau_service_minutes=180.0, itinerary_buffer_minutes=15.0
+        tau_service_minutes=180.0, itinerary_buffer_minutes=45.0
     )
     by = {
         row.component_id: row
@@ -94,7 +94,7 @@ def test_p_itinerary_scenario_threshold_events():
     # The active refactor freezes a strict D_TO > 45 minute boundary.
     assert by["P_itinerary"].native_quantity == 0.0
     assert by["P_itinerary"].support_state is SupportState.SUPPORTED
-    assert by["P_itinerary"].evidence_class is EvidenceClass.DERIVED
+    assert by["P_itinerary"].evidence_class is EvidenceClass.DOMAIN_PROXY
     # d_to=20 < tau=180 -> no service-policy event.
     assert by["P_service"].native_quantity == 0.0
     assert by["P_service"].support_state is SupportState.SUPPORTED
@@ -102,7 +102,7 @@ def test_p_itinerary_scenario_threshold_events():
 
 def test_p_itinerary_no_disruption_within_buffer():
     context = _assumption_context(
-        tau_service_minutes=180.0, itinerary_buffer_minutes=15.0
+        tau_service_minutes=180.0, itinerary_buffer_minutes=45.0
     )
     by = {
         row.component_id: row
@@ -120,7 +120,7 @@ def test_p_itinerary_no_disruption_within_buffer():
 
 def test_p_service_threshold_event_at_or_above_tau():
     context = _assumption_context(
-        tau_service_minutes=180.0, itinerary_buffer_minutes=15.0
+        tau_service_minutes=180.0, itinerary_buffer_minutes=45.0
     )
     by = {
         row.component_id: row
@@ -162,5 +162,12 @@ def test_frozen_scope_delegates_on_seven_config():
     scope = build_m2_frozen_scope({"formal_scope": seven})
     assert scope.scope_status is ScopeStatus.FORMAL_READY
     assert tuple(scope.included_components) == tuple(seven)
-    legacy = build_m2_frozen_scope()
-    assert len(legacy.included_components) == 5
+    active = build_m2_frozen_scope()
+    assert len(active.included_components) == 7
+
+
+def test_legacy_context_wrapper_rejects_non_v4_thresholds():
+    with pytest.raises(Exception, match="M2_LEGACY_ITINERARY_THRESHOLD_MISMATCH"):
+        _assumption_context(tau_service_minutes=180.0, itinerary_buffer_minutes=15.0)
+    with pytest.raises(Exception, match="M2_LEGACY_SERVICE_THRESHOLD_MISMATCH"):
+        _assumption_context(tau_service_minutes=240.0, itinerary_buffer_minutes=45.0)

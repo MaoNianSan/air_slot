@@ -18,14 +18,15 @@ from typing import Any, Mapping
 import yaml
 from pydantic import Field, model_validator
 
-from model.M3.registry import ActionRegistry, PRINCIPAL_IDS
+from model.M3.registry_layer.actions import ActionRegistry, PRINCIPAL_IDS
+from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.errors import RegistryError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 
 REGISTRY_ID = "M3_RESPONSE_SCENARIO_V1"
 SCHEMA_VERSION = "M3_RESPONSE_SCENARIO_V1"
-# Backwards-compatible alias: the principal-23 set now lives in model.M3.registry.
+# Backwards-compatible alias: the principal-23 set now lives in model.M3.registry_layer.actions.
 PRINCIPAL_IDS = PRINCIPAL_IDS
 SENSITIVITY_LEVELS = ("LOW", "BASE", "HIGH")
 PARAMETER_BASIS = "TRANSPARENT_TIERED_SCENARIO_V1"
@@ -67,6 +68,8 @@ class ResponseScenarioAction(FrozenModel):
                 raise RegistryError("M3_RESPONSE_A00_NOT_REQUIRED_VIOLATION")
             if self.response_model != "DETERMINISTIC":
                 raise RegistryError("M3_RESPONSE_A00_DETERMINISTIC_REQUIRED")
+            if self.value != 0.0:
+                raise RegistryError("M3_RESPONSE_A00_IDENTITY_VALUE_REQUIRED")
         elif self.response_parameter_status not in {"FROZEN", "NOT_FROZEN"}:
             raise RegistryError("M3_RESPONSE_NON_A00_MUST_BE_FROZEN_OR_NOT_FROZEN")
         if (
@@ -96,6 +99,11 @@ class ResponseScenarioRegistry(FrozenModel):
     response_provenance_default: str = "PURE_SCENARIO"
     beta_concentration: float = 12.0
     induced_score_to_cu: float = 0.10
+    induced_score_unit: str = "INDUCED_SCORE"
+    induced_score_to_cu_unit: str = "CU_PER_INDUCED_SCORE"
+    induced_burden_semantics: str = "ACTION_ATTEMPT_BURDEN"
+    induced_burden_requires_realized_mitigation: bool = False
+    induced_burden_components: tuple[str, ...] = CONSEQUENCE_COMPONENTS
     sensitivity: dict[str, dict[str, float]] = Field(default_factory=dict)
     principal_sensitivity_axis: str = "RESPONSE_EFFICACY"
     secondary_burden_sensitivity: dict[str, Any] = Field(default_factory=dict)
@@ -148,6 +156,16 @@ class ResponseScenarioRegistry(FrozenModel):
             raise RegistryError("M3_RESPONSE_INVALID_CONCENTRATION")
         if not (0 < self.induced_score_to_cu):
             raise RegistryError("M3_RESPONSE_INVALID_INDUCED_CONVERSION")
+        if self.induced_score_unit != "INDUCED_SCORE":
+            raise RegistryError("M3_RESPONSE_INDUCED_SCORE_UNIT_MISMATCH")
+        if self.induced_score_to_cu_unit != "CU_PER_INDUCED_SCORE":
+            raise RegistryError("M3_RESPONSE_INDUCED_CONVERSION_UNIT_MISMATCH")
+        if self.induced_burden_semantics != "ACTION_ATTEMPT_BURDEN":
+            raise RegistryError("M3_RESPONSE_INDUCED_BURDEN_SEMANTICS_MISMATCH")
+        if self.induced_burden_requires_realized_mitigation:
+            raise RegistryError("M3_RESPONSE_INDUCED_BURDEN_MUST_BE_ATTEMPT_BASED")
+        if tuple(self.induced_burden_components) != tuple(CONSEQUENCE_COMPONENTS):
+            raise RegistryError("M3_RESPONSE_INDUCED_COMPONENT_SCOPE_MISMATCH")
         for name, item in self.actions.items():
             if name == "A00":
                 continue
@@ -275,6 +293,11 @@ class ResponseScenarioRegistry(FrozenModel):
             "action_tiers": {name: item.tier for name, item in self.actions.items()},
             "beta_concentration": self.beta_concentration,
             "induced_score_to_cu": self.induced_score_to_cu,
+            "induced_score_unit": self.induced_score_unit,
+            "induced_score_to_cu_unit": self.induced_score_to_cu_unit,
+            "induced_burden_semantics": self.induced_burden_semantics,
+            "induced_burden_requires_realized_mitigation": self.induced_burden_requires_realized_mitigation,
+            "induced_burden_components": list(self.induced_burden_components),
             "principal_sensitivity_axis": self.principal_sensitivity_axis,
             "low_base_high_rules": {
                 level: self.sensitivity.get(level.lower())

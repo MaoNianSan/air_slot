@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-
 from dataclasses import dataclass
 from typing import Any, Mapping
 
@@ -18,42 +16,34 @@ from model.M2.contracts import (
     SourceType,
 )
 from model.M2.exposure import NodeExposureReferences
-from model.PRE.reference.exposure_data2 import (
+from model.PRE import (
     Data2ExposureReference,
     data2_downstream_exposure_from_payload,
 )
-from model.PRE.reference.passenger_data2 import (
+from model.PRE import (
     Data2PassengerReference,
     data2_passenger_reference_from_payload,
 )
-from model.PRE.reference.taxi_data2 import (
+from model.PRE import (
     Data2TaxiReference,
     data2_taxi_reference_from_payload,
 )
-from model.PRE.reference.turnaround_data2 import (
+from model.PRE import (
     Data2TurnaroundReference,
     data2_turnaround_reference_from_payload,
 )
-from model.PRE.references.connection_share_reference import ConnectionShareReference
-from model.PRE.references.connection_share_reference import connection_share_reference_from_payload
-from model.PRE.references.passenger_load_reference import (
+from model.PRE import ConnectionShareReference
+from model.PRE import connection_share_reference_from_payload
+from model.PRE import (
     ExpectedPassengersReference,
     expected_passengers_reference_from_payload,
 )
-from model.PRE.transformation import ConstructionType
+from model.PRE import ConstructionType
 from model.common.estimand import ConsequenceScope, ScopeStatus
 from model.common.enums import EvidenceClass, SupportState
 from model.common.errors import ContractError
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel, SupportedValue
-
-_FROZEN_FIVE_COMPONENT_SCOPE = (
-    "F_continuity",
-    "F_execution",
-    "F_propagation",
-    "P_time",
-    "R_operating",
-)
 
 class AirportReferenceKeys(FrozenModel):
     connection_airport_id: str = Field(min_length=1)
@@ -68,7 +58,7 @@ class M2ReferenceBundle:
     turnaround: Data2TurnaroundReference
     taxi: Data2TaxiReference
     downstream_exposure: Data2ExposureReference
-    passenger: Data2PassengerReference
+    passenger: Data2PassengerReference | None = None
     expected_passengers: ExpectedPassengersReference | None = None
     connection_share: ConnectionShareReference | None = None
 
@@ -78,8 +68,9 @@ class M2ReferenceBundle:
             "turnaround": self.turnaround.reference_id,
             "taxi": self.taxi.reference_id,
             "downstream_exposure": self.downstream_exposure.reference_id,
-            "passenger": self.passenger.reference_id,
+            **({"passenger": self.passenger.reference_id} if self.passenger else {}),
             **({"expected_passengers": self.expected_passengers.reference_id} if self.expected_passengers else {}),
+            **({"connection_share": self.connection_share.reference_id} if self.connection_share else {}),
         }
 
 
@@ -114,6 +105,8 @@ def load_data2_reference_bundle(
     loaded: dict[str, Any] = {}
     expected = expected_reference_ids or {}
     for name, loader in loaders.items():
+        if name == "passenger" and name not in payloads:
+            continue
         payload = _require(payloads, name)
         reference = loader(payload)
         _sha256(reference.reference_id, name)
@@ -136,10 +129,10 @@ def load_data2_reference_bundle(
         loaded["downstream_exposure"].rule_version,
     ) != ("DATA2_DOWNSTREAM_EXPOSURE", "1.0.0"):
         raise ContractError("M2_REFERENCE_RULE_MISMATCH:downstream_exposure")
-    passenger = loaded["passenger"]
-    if not passenger.rule_id.startswith("DATA2_PASSENGER_REFERENCE") or (
+    passenger = loaded.get("passenger")
+    if passenger is not None and (not passenger.rule_id.startswith("DATA2_PASSENGER_REFERENCE") or (
         passenger.rule_version != "1.0.0"
-    ):
+    )):
         raise ContractError("M2_REFERENCE_RULE_MISMATCH:passenger")
     connection_share = None
     if payloads.get("connection_share") is not None:
@@ -248,7 +241,7 @@ def build_m2_context(
                 support_state=cell.support_state,
                 evidence_class=EvidenceClass.EMPIRICAL_REFERENCE,
                 construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
-                reference_period=bundle.expected_passengers.fit_partition,
+                reference_period="2019-H1",
                 freeze_id=bundle.expected_passengers.reference_id,
                 provenance=(
                     f"reference_id={bundle.expected_passengers.reference_id}",
@@ -281,7 +274,7 @@ def build_m2_context(
                 support_state=cell.support_state,
                 evidence_class=EvidenceClass.EMPIRICAL_REFERENCE,
                 construction_type=ConstructionType.TRAIN_FROZEN_REFERENCE,
-                reference_period=bundle.connection_share.fit_partition,
+                reference_period="2019-H1",
                 freeze_id=bundle.connection_share.reference_id,
                 provenance=(
                     f"reference_id={bundle.connection_share.reference_id}",
@@ -295,6 +288,36 @@ def build_m2_context(
                 reference_version="DB1B_CONNECTION_SHARE_REFERENCE@1.0.0",
                 confidence=ExposureConfidence.LOW,
             )
+    from model.M2.scientific_registry import load_active_passenger_consequence_design
+
+    design = load_active_passenger_consequence_design()
+    itin_threshold = float(design["components"]["P_itinerary"]["itinerary_threshold_minutes"])
+    service_threshold = float(design["components"]["P_service"]["service_threshold_minutes"])
+    threshold_base = dict(
+        support_state=SupportState.SUPPORTED,
+        evidence_class=EvidenceClass.SCENARIO_PARAMETER,
+        construction_type=ConstructionType.SCENARIO_ASSUMPTION,
+        source_type=SourceType.SCENARIO_ASSUMPTION,
+        reference_source="M2_PASSENGER_CONSEQUENCE_REFERENCE_REFACTOR@4.0.0",
+        reference_version="4.0.0",
+        confidence=ExposureConfidence.MEDIUM,
+    )
+    itinerary_threshold = ScientificContextValue(
+        object_id="M2_ITINERARY_THRESHOLD_REFERENCE_V4",
+        value=itin_threshold,
+        unit="minutes",
+        assumption_scope="REPRESENTATIVE_CONNECTION_DISRUPTION_REFERENCE",
+        provenance=("threshold_minutes=45", "not_observed_missed_connection", "historical_connection_share_is_reference_only"),
+        **threshold_base,
+    )
+    service_threshold = ScientificContextValue(
+        object_id="M2_SERVICE_THRESHOLD_REFERENCE_V4",
+        value=service_threshold,
+        unit="minutes",
+        assumption_scope="LONG_DELAY_PASSENGER_SERVICE_REFERENCE",
+        provenance=("threshold_minutes=180", "not_observed_service_event", "not_observed_airline_expenditure", "policy_reference_not_universal_operational_fact"),
+        **threshold_base,
+    )
     return M2ScientificContext(
         turnaround_reference=_reference_value(
             "DATA2_TURNAROUND_REFERENCE@1.0.0",
@@ -312,37 +335,33 @@ def build_m2_context(
             bundle.downstream_exposure.lookup(airport_keys.connection_airport_id),
             bundle.downstream_exposure,
         ),
-        passenger_exposure=_reference_value(
-            f"{bundle.passenger.rule_id}@{bundle.passenger.rule_version}",
-            bundle.passenger.lookup(
-                airport_keys.connection_airport_id,
-                airport_keys.successor_destination_airport_id,
-            ),
-            bundle.passenger,
-        ),
         expected_passengers_per_flight=expected_pax_value,
-        itinerary_disruption_events=_abstain(
-            "itinerary_disruption_events",
-            "events",
-            "NO_ITINERARY_DISRUPTION_EVIDENCE_FROZEN",
-        ),
-        itinerary_buffer_reference=_abstain(
-            "itinerary_buffer_reference",
-            "classes",
-            "NO_ITINERARY_BUFFER_REFERENCE_FROZEN",
-        ),
-        service_policy_reference=_abstain(
-            "service_policy_reference",
-            "minutes",
-            "NO_SERVICE_POLICY_FROZEN",
-            source_type=SourceType.OPERATIONAL_RULE,
-        ),
+        connection_share_reference=connection_value,
+        itinerary_buffer_reference=itinerary_threshold,
+        service_policy_reference=service_threshold,
         taxi_reference=_reference_value(
             "DATA2_TAXI_REFERENCE@1.0.0",
             bundle.taxi.lookup(airport_keys.connection_airport_id),
             bundle.taxi,
         ),
-        connection_share_reference=connection_value,
+    )
+
+
+def build_m2_v4_context(
+    bundle: M2ReferenceBundle,
+    airport_keys: AirportReferenceKeys,
+    *,
+    node_specific_exposure: ScientificContextValue,
+) -> M2ScientificContext:
+    """Build the single canonical active M2 V4 scientific context."""
+    if node_specific_exposure.support_level is None:
+        raise ContractError("M2_V4_EXPOSURE_SUPPORT_LEVEL_REQUIRED")
+    if node_specific_exposure.reference_source is None:
+        raise ContractError("M2_V4_EXPOSURE_REFERENCE_SOURCE_REQUIRED")
+    if node_specific_exposure.confidence is None:
+        raise ContractError("M2_V4_EXPOSURE_CONFIDENCE_REQUIRED")
+    return build_m2_context(bundle, airport_keys).model_copy(
+        update={"expected_downstream_exposure": node_specific_exposure}
     )
 
 
@@ -396,25 +415,7 @@ def build_m2_v2_context(
     node_specific_exposure: ScientificContextValue,
 ) -> M2ScientificContext:
     """Build the V2 context; node-specific exposure is mandatory and explicit."""
-    if node_specific_exposure.support_level is None:
-        raise ContractError("M2_V2_EXPOSURE_SUPPORT_LEVEL_REQUIRED")
-    if node_specific_exposure.reference_source is None:
-        raise ContractError("M2_V2_EXPOSURE_REFERENCE_SOURCE_REQUIRED")
-    if node_specific_exposure.confidence is None:
-        raise ContractError("M2_V2_EXPOSURE_CONFIDENCE_REQUIRED")
-    legacy = build_m2_context(bundle, airport_keys)
-    passenger = legacy.passenger_exposure.model_copy(
-        update={
-            "source_type": SourceType.DATA,
-            "assumption_scope": "SUPERSEDED_ROUTE_AGGREGATE_CONTEXT_ONLY_NOT_ACTIVE_PASSENGER_CONSEQUENCE",
-        }
-    )
-    return legacy.model_copy(
-        update={
-            "expected_downstream_exposure": node_specific_exposure,
-            "passenger_exposure": passenger,
-        }
-    )
+    return build_m2_v4_context(bundle, airport_keys, node_specific_exposure=node_specific_exposure)
 
 
 def build_assumption_grounded_context(
@@ -428,112 +429,33 @@ def build_assumption_grounded_context(
         "sha256:0fcb524c808d56f0bb44f0d29bd4f2ec237a0674b159086ffdc835e0abe46580"
     ),
 ) -> M2ScientificContext:
-    """Assumption-grounded context with explicit Data2 realization values.
-
-    ``itinerary_buffer_reference`` carries itinerary classes (passenger count,
-    connection buffer) built from the frozen route passenger reference;
-    ``service_policy_reference`` carries the frozen service-policy threshold.
-    Both are literature-parameterized assumptions, not empirical evidence.
-    Callers must supply the realization values explicitly: this function does
-    not define an ontology-wide 45-minute or 180-minute default.  The current
-    Data2 registry records 45 and 180 minutes as its frozen assumption values.
-    ``assumption_freeze_id``
-    ``assumption_freeze_id`` equals the frozen M2 V2 freeze closure
-    registry hash (M2_FORMAL_FREEZE_CLOSURE_V2.json) and must not be edited.
-    """
-    legacy = build_m2_v2_context(
-        bundle,
-        airport_keys,
-        node_specific_exposure=node_specific_exposure,
-    )
-    pax = float(legacy.passenger_exposure.value)
-    classes = json.dumps(
-        [{"passenger_count": pax, "buffer_minutes": float(itinerary_buffer_minutes)}],
-        sort_keys=True,
-    )
-    itinerary_buffer_reference = ScientificContextValue(
-        object_id="M2_ITINERARY_BUFFER_ASSUMPTION_V1",
-        value=classes,
-        unit="classes",
-        support_state=SupportState.SUPPORTED,
-        evidence_class=EvidenceClass.SCENARIO_PARAMETER,
-        construction_type=ConstructionType.SCENARIO_ASSUMPTION,
-        freeze_id=assumption_freeze_id,
-        reason_code="ASSUMPTION_GROUNDED",
-        provenance=(
-            "ASSUMPTION_GROUNDED_ITINERARY_CLASSES",
-            "connection_buffer_threshold_missed_connection",
-            "literature=Theis2006_TRR1951_DOI_10.3141/1951-04",
-            "literature=BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0",
-            "passenger_reference_reused_for_itinerary_split",
-        ),
-        source_type=SourceType.LITERATURE,
-        reference_source=bundle.passenger.reference_id,
-        reference_id=bundle.passenger.reference_id,
-        reference_version=(
-            f"{bundle.passenger.rule_id}@{bundle.passenger.rule_version};"
-            "M2_ITINERARY_BUFFER_ASSUMPTION_V1"
-        ),
-        confidence=ExposureConfidence.MEDIUM,
-        assumption_scope="MISSED_CONNECTION_ITINERARY_CLASSES_BASE",
-    )
-    service_policy_reference = ScientificContextValue(
-        object_id="M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
-        value=float(tau_service_minutes),
-        unit="minutes",
-        support_state=SupportState.SUPPORTED,
-        evidence_class=EvidenceClass.EXTERNAL_STANDARD,
-        construction_type=ConstructionType.EXTERNAL_OR_POLICY_REFERENCE,
-        freeze_id=assumption_freeze_id,
-        reason_code="ASSUMPTION_GROUNDED",
-        provenance=(
-            "ASSUMPTION_GROUNDED_SERVICE_POLICY_THRESHOLD",
-            "EU261_style_long_delay_threshold",
-            "literature=CookTanner2015_EUROCONTROL",
-        ),
-        source_type=SourceType.LITERATURE,
-        reference_source="EU261_style_long_delay_threshold",
-        reference_id="M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
-        reference_version="M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
-        confidence=ExposureConfidence.MEDIUM,
-        assumption_scope="SERVICE_POLICY_THRESHOLD_BASE",
-    )
-    return legacy.model_copy(
-        update={
-            "itinerary_buffer_reference": itinerary_buffer_reference,
-            "service_policy_reference": service_policy_reference,
-        }
-    )
+    """Compatibility-only wrapper for the active V4 context builder."""
+    if float(itinerary_buffer_minutes) != 45.0:
+        raise ContractError("M2_LEGACY_ITINERARY_THRESHOLD_MISMATCH")
+    if float(tau_service_minutes) != 180.0:
+        raise ContractError("M2_LEGACY_SERVICE_THRESHOLD_MISMATCH")
+    return build_m2_v4_context(bundle, airport_keys, node_specific_exposure=node_specific_exposure)
 
 
 def build_m2_frozen_scope(config: Mapping[str, Any] | None = None) -> ConsequenceScope:
-    """Compatibility M2 CU scope; never an implicit M4 ``K_cmp``."""
+    """Return the active seven-component M2 V4 scope."""
     configured = tuple(config.get("formal_scope")) if config is not None else ()
     if configured == tuple(COMPONENTS):
         return build_m2_seven_component_scope()
-    components = configured or _FROZEN_FIVE_COMPONENT_SCOPE
-    if tuple(components) != _FROZEN_FIVE_COMPONENT_SCOPE:
-        raise ContractError("M2_FROZEN_SCOPE_NOT_FIVE_COMPONENT_FIXED")
-    return ConsequenceScope.create(
-        estimand_id="M2_DATA2_FORMAL_CU",
-        estimand_version="V5.0",
-        included_components=components,
-        aggregation_rule_id="SUM_OVER_FIVE_ONLY_IF_ALL_SUPPORTED",
-        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V1",
-        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V1",
-        scope_status=ScopeStatus.FORMAL_READY,
-    )
+    if configured and configured != tuple(COMPONENTS):
+        raise ContractError("M2_V4_FORMAL_SCOPE_MISMATCH")
+    return build_m2_seven_component_scope()
 
 
 def build_m2_seven_component_scope() -> ConsequenceScope:
     """Active seven-component passenger-reference CU scope; not an M4 default."""
     return ConsequenceScope.create(
         estimand_id="M2_DATA2_FORMAL_CU",
-        estimand_version="V3.0",
+        estimand_version="V4.0",
         included_components=tuple(COMPONENTS),
         aggregation_rule_id="SUM_OVER_SEVEN_ONLY_IF_ALL_SUPPORTED",
-        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V3",
-        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V3",
+        cu_normalization_registry_id="M2_DATA2_FORMAL_CU_V4",
+        material_coverage_contract_id="M2_MATERIAL_COVERAGE_CONTRACT_V4",
         scope_status=ScopeStatus.FORMAL_READY,
     )
 
@@ -725,6 +647,7 @@ __all__ = [
     "M2ReferenceBundle",
     "build_assumption_grounded_context",
     "build_m2_context",
+    "build_m2_v4_context",
     "build_m2_frozen_scope",
     "build_m2_seven_component_scope",
     "load_data2_reference_bundle",

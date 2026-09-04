@@ -29,6 +29,41 @@ provenance.
 operational recommendation. Non-A00 response parameters are explicit model
 inputs and retain their source/support class.
 
+### Structural footprint and induced burden
+
+Every action/component cell is explicitly classified as `MITIGATION`,
+`INDUCED`, or `UNTOUCHED`, with level `PRIMARY`, `SECONDARY`,
+`CONDITIONAL_SECONDARY`, or `NONE`. These levels describe structural role and
+do not imply a numerical magnitude. Coefficients are independent fields: an
+active structural cell without a frozen coefficient remains
+`NUMERICAL_PARAMETER_NOT_MATERIALIZED`.
+
+The response equation uses `d_a,k` in ordinal `INDUCED_SCORE` units and the
+registry-frozen `gamma = 0.10 CU / INDUCED_SCORE`. The additive term is
+`ACTION_ATTEMPT_BURDEN`: it remains present when `rho = 0` because mitigation
+failure does not erase the burden of attempting the action. It is not an
+empirical action effect, causal estimate, observed cost, or monetary
+coefficient.
+
+### Numerical response completeness
+
+Structural action formation and response-parameter completeness are separate.
+Missing `m_a,k` or `d_a,k` values never change a constructable action from
+`chi_inst=FORMED` to `NOT_FORMED`. For an active footprint cell, the numerical
+parameter state is one of:
+
+```text
+STRUCTURAL_ZERO
+NUMERICALLY_MATERIALIZED
+NUMERICAL_PARAMETER_NOT_MATERIALIZED
+```
+
+Only `UNTOUCHED` cells may be structural zero. An active cell without its
+declared coefficient yields `chi_num=UNDEFINED` with reason
+`RESPONSE_PARAMETER_NOT_MATERIALIZED`; no coefficient is defaulted to zero.
+The deterministic action-level audit is materialized as
+`M3_ACTION_NUMERICAL_READINESS`.
+
 ## Required facts and support class
 
 | Required fact | Actions | Classification | Contract interpretation |

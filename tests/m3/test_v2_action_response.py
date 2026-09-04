@@ -19,7 +19,7 @@ from model.M3.m2_action_interface import (
     ActionConditionedCUQuantity,
     M3BaselineConsequenceInput,
 )
-from model.M3.registry import ActionRegistry
+from model.M3.registry_layer.actions import ActionRegistry
 from model.M3.response_registry import ResponseScenarioRegistry
 from model.M4.m3_action_interface import M4ActionEnvelopeInput
 from model.common.enums import SupportState
@@ -228,10 +228,17 @@ def test_d_eligibility_and_response_are_independent_frozen_objects():
 
 def test_e_unsupported_baseline_or_response_cannot_silently_be_supported():
     envelope = _envelope()
-    abstaining = next(
-        row
-        for row in envelope.scenario_evaluations[0].component_quantities
-        if row.baseline_support_state is SupportState.ABSTAIN
+    supported = envelope.scenario_evaluations[0].component_quantities[0]
+    abstaining = ActionConditionedCUQuantity.model_validate(
+        {
+            **supported.model_dump(),
+            "baseline_support_state": SupportState.ABSTAIN,
+            "adjusted_value_cu": None,
+            "support_state": SupportState.ABSTAIN,
+            "response_intensity": None,
+            "response_draw_id": None,
+            "reason_code": "BASELINE_UNSUPPORTED",
+        }
     )
     with pytest.raises(
         ValidationError, match="M3_BASELINE_ABSTAIN_CANNOT_BECOME_SUPPORTED"

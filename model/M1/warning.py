@@ -23,7 +23,7 @@ from .contracts import (
     V2_TARGETS,
 )
 from .loss import hazard_pmf, monotone_positive_quantiles, quantile_value
-from .scenarios import _uniform_v2, required_observations_v2
+from .scenario_layer.sampler import _uniform_v2, required_observations_v2
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
 
 PRINCIPAL_WARNING_EVENT = "D_TO_POST_GT_30"
@@ -150,10 +150,17 @@ def _sample_hurdle_quantile_batch(
             positive_uniform,
             upper_tail_policy=contract.upper_tail_policy,
         )
-    index = torch.clamp(
-        (value / contract.bin_width_minutes).long(), 0, contract.overflow_index
+    finite_index = torch.clamp(
+        torch.floor(value / contract.bin_width_minutes).long(),
+        0,
+        contract.overflow_index - 1,
     )
-    overflow = index == contract.overflow_index
+    overflow = value > contract.max_finite_minutes
+    index = torch.where(
+        overflow,
+        torch.full_like(finite_index, contract.overflow_index),
+        finite_index,
+    )
     return value, index, overflow
 
 
@@ -287,12 +294,17 @@ def batched_warning_probability(
     d_tx_value = torch.full(
         (n, count), float("nan"), dtype=torch.float32, device=device
     )
+    d_tx_bin = torch.full((n, count), -1, dtype=torch.long, device=device)
     overflow_tx = torch.zeros((n, count), dtype=torch.bool, device=device)
     for i in range(n):
         if not supported[i]:
             continue
         if observed_d_tx[i] is not None:
-            d_tx_value[i] = float(observed_d_tx[i])
+            value = float(observed_d_tx[i])
+            index = d_tx_contract.encode(value)
+            d_tx_value[i] = value
+            d_tx_bin[i] = index
+            overflow_tx[i] = d_tx_contract.tail_state(index) == "OVERFLOW"
             continue
         if (ib_bin[i] < 0).any() or (d_ob_bin[i] < 0).any():
             supported[i] = False
@@ -322,10 +334,11 @@ def batched_warning_probability(
             temperature.get("D_TX", 1.0)
         )  # (K, G, Q)
         zero_g, quant_g = _gather_heads(zero, quant, ib_bin[i], d_ob_bin[i])
-        value, _, overflow = _sample_hurdle_quantile_batch(
+        value, index, overflow = _sample_hurdle_quantile_batch(
             zero_g, quant_g, d_tx_contract, uniforms[i, :, 2], device
         )
         d_tx_value[i] = value
+        d_tx_bin[i] = index
         overflow_tx[i] = overflow
 
     d_to = d_ob_value + d_tx_value
@@ -342,11 +355,7 @@ def batched_warning_probability(
         indices = {
             "T_IB_A00": ib_bin,
             "D_OB": d_ob_bin,
-            "D_TX": torch.where(
-                d_tx_value >= 0,
-                (d_tx_value / d_tx_contract.bin_width_minutes).long(),
-                torch.tensor(-1, device=device),
-            ),
+            "D_TX": d_tx_bin,
         }
     return BatchedWarningResult(
         probability=probabilities,

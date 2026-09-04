@@ -12,9 +12,9 @@ import torch
 
 from model.M1.contracts import AlignedScenario, M1V2Scenario
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import ancestral_sample_v2
+from model.M1.scenario_layer.sampler import ancestral_sample_v2
 from model.M1.semantics import total_takeoff_delay_minutes
-from model.M2.drivers import _scenario_value
+from model.M2.consequences.engine import _scenario_value
 from model.common.enums import SupportState
 from model.common.errors import ContractError
 

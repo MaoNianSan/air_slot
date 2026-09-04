@@ -18,8 +18,8 @@ registries/configs -> consumed contracts
 experiment or paper-result code.
 
 Active model-owned authorities are `configs/scientific/foundation.yaml`,
-`registries/m2_data2_formal_cu_v2.json`, `registries/action_templates.yaml`,
-`registries/m4_rmb_base_mapping.json`,
+`registries/m2_data2_formal_cu_v4.json`, `registries/action_templates.yaml`,
+`registries/m4_rmb_base_mapping_v2.json`,
 `registries/m4_risk_policy_base_v1.json`, and
 `registries/MODEL_PARAMETER_REGISTRY.json`. Historical EUR registries and
 compatibility M4 facades are not active loader inputs.
@@ -33,6 +33,22 @@ compatibility M4 facades are not active loader inputs.
 | `model/M4` | common-basis numerical risk calculation and comparison metadata | operational selection or authority inference |
 | `model/common` | shared typed primitives | layer-specific policy |
 
+## M2 V4 passenger path
+
+The active M2 context has one passenger path: T-100 expected passengers per
+performed flight, DB1B historical continuation share, and typed 45-minute and
+180-minute scenario-reference thresholds. Runtime and Train materialization use
+the same pure formulas:
+
+```text
+P_time      = Nbar_pax * D_TO
+P_itinerary = Nbar_pax * r_conn * I[D_TO > 45]
+P_service   = Nbar_pax * I[D_TO >= 180]
+```
+
+All seven native components use their own positive Train median and all seven
+enter `M4_RMB_BASE_MAPPING_V2` with `beta_k = 1`.
+
 ## M3/M4 boundary
 
 M3 transfers only typed `C^(a,CU)` distributions plus scenario identity,
@@ -45,6 +61,13 @@ requires an explicit frozen `ConsequenceComparisonScope` with `K_cmp subset K`,
 support requirements, measurement registry ID, version, and provenance. The
 same exact scope identity and component IDs are required for all compared
 actions; no seven- or five-component default exists.
+
+M3 action footprints are explicit seven-component metadata. A footprint cell
+has a structural role (`MITIGATION`, `INDUCED`, `UNTOUCHED`) and level
+(`PRIMARY`, `SECONDARY`, `CONDITIONAL_SECONDARY`, `NONE`); levels are not
+effect sizes. The induced score uses unit `INDUCED_SCORE` and the registry
+conversion `gamma=0.10 CU/INDUCED_SCORE` as action-attempt burden, independent
+of realized mitigation.
 `RiskRankingEnvelope` has three numerical output collections:
 
 ```text

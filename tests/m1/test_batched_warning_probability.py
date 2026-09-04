@@ -5,11 +5,13 @@ The batched sampler must agree with ``ancestral_sample_v2`` +
 probability, and it must abstain when formal inputs are missing.
 """
 
+from datetime import datetime, timedelta, timezone
+
 import pytest
 import torch
 
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenarios import ancestral_sample_v2
+from model.M1.scenario_layer.sampler import ancestral_sample_v2
 from model.M1.warning import batched_warning_probability, warning_probability
 
 
@@ -114,3 +116,48 @@ def test_batched_warning_abstains_when_formal_input_is_missing():
     )
     assert not result.support[0]
     assert torch.isnan(result.probability[0])
+
+
+def test_batched_observed_endpoint_classification_matches_continuous_contract():
+    pipeline = M1Pipeline.smoke(input_size=4)
+    hazard = pipeline.contracts["T_IB_REMAINING_HAZARD"]
+    d_ob = pipeline.contracts["D_OB"]
+    d_tx = pipeline.contracts["D_TX"]
+    decision_time = datetime(2019, 1, 1, tzinfo=timezone.utc)
+    values = torch.zeros((2, 1, 4))
+    with torch.no_grad():
+        histories = pipeline.model.encode_history(
+            values, torch.ones(2, dtype=torch.long)
+        )
+    result = batched_warning_probability(
+        pipeline,
+        histories,
+        episode_ids=("finite-endpoint", "continuous-overflow"),
+        stages=("COMPLETED", "COMPLETED"),
+        decision_times_utc=(decision_time.isoformat(),) * 2,
+        observed_t_ib=(
+            (decision_time + timedelta(minutes=hazard.max_finite_minutes)).isoformat(),
+            (
+                decision_time
+                + timedelta(minutes=hazard.max_finite_minutes + hazard.bin_width_minutes)
+            ).isoformat(),
+        ),
+        observed_d_ob=(d_ob.max_finite_minutes, d_ob.max_finite_minutes + 0.001),
+        observed_d_tx=(d_tx.max_finite_minutes, d_tx.max_finite_minutes + 0.001),
+        count=2,
+        seed=7,
+        return_indices=True,
+    )
+    assert result.support.tolist() == [True, True]
+    assert result.tail_representative_used.tolist() == [False, True]
+    assert result.sampled_indices is not None
+    for target in ("T_IB_A00", "D_OB", "D_TX"):
+        finite_contract = hazard if target == "T_IB_A00" else pipeline.contracts[target]
+        assert torch.equal(
+            result.sampled_indices[target][0],
+            torch.full((2,), finite_contract.overflow_index - 1),
+        )
+        assert torch.equal(
+            result.sampled_indices[target][1],
+            torch.full((2,), finite_contract.overflow_index),
+        )

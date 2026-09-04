@@ -12,8 +12,8 @@ import pytest
 from pydantic import ValidationError
 
 from model.M3.contracts import ActionTemplate
-from model.M3.instantiate import instantiate_candidates
-from model.M3.registry import PRINCIPAL_IDS, ActionRegistry
+from model.M3.instantiation_layer.builder import instantiate_candidates
+from model.M3.registry_layer.actions import PRINCIPAL_IDS, ActionRegistry
 from model.M3.response_registry import ResponseScenarioRegistry, load_response_registry
 from model.M1.contracts import STOCHASTIC_TARGETS
 from model.M2.contracts import COMPONENTS

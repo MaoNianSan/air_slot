@@ -11,7 +11,7 @@ from pathlib import Path
 
 import torch
 
-from .calibration import (
+from .calibration_layer.hurdle_temperature import (
     common_calibration_policy,
     fit_hazard_temperature,
     fit_zero_mass_temperature,
@@ -34,7 +34,7 @@ from .contracts import (
 )
 from .data import episode_normalized_weights, fast_features_from_sequence
 from .semantics import M1_V2_HAZARD_COORDINATE_TARGET
-from model.PRE.contracts.pre_state import TargetSupportState
+from model.PRE import TargetSupportState
 
 # V1 support names -> V2 internal training-target names (the hazard label is
 # the internal remaining-time coordinate, never the public absolute T_IB_A00).

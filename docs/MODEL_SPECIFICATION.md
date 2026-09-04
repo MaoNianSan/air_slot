@@ -85,8 +85,8 @@ For scenario `s`, M2 emits exactly these seven components in fixed order:
 | `F_execution` | `D_OB` | minutes | derived from M1 |
 | `F_propagation` | `D_TO * expected_downstream_exposure` | exposure-minutes | derived using frozen exposure reference |
 | `P_time` | `Nbar_pax * D_TO` | passenger-minutes | T-100 expected passengers per performed flight |
-| `P_itinerary` | `Nbar_pax * r_conn * 1[D_TO > 45]` | expected disrupted connecting-passenger exposure | DB1B historical continuation-share reference plus 45-min assumption |
-| `P_service` | `Nbar_pax * 1[D_TO >= 180]` | expected long-delay passenger-service exposure | 180-min policy/scenario reference |
+| `P_itinerary` | `Nbar_pax * r_conn * 1[D_TO > 45]` | expected disrupted connecting-passenger exposure | DB1B historical continuation-share reference plus 45-min representative itinerary-disruption reference |
+| `P_service` | `Nbar_pax * 1[D_TO >= 180]` | expected long-delay passenger-service exposure | 180-min long-delay passenger-service reference |
 | `R_operating` | `D_TX` | excess-taxi minutes | derived from M1 |
 
 Each row retains native quantity, CU quantity, support state, source/reference
@@ -95,14 +95,26 @@ zero-fill, component dropping, or denominator renormalization is allowed.
 CU normalization is separate from monetary mapping. M2 output is the baseline
 `C^(0,CU)`; M3 owns action-conditioned `C^(a,CU)`.
 
+Each component has two distinct meanings: `consequence_semantics` describes
+the channel represented by the model, while `baseline_empirical_realization`
+describes the public-data proxy used to construct the baseline. In particular,
+`R_operating` represents operating/recovery-resource burden while its baseline
+proxy is `D_TX`; `P_service` represents passenger service/care burden while its
+baseline proxy is `Nbar_pax * I[D_TO >= 180]`. An action-side induced burden in
+one of these channels is a declared scenario burden on that channel, not a
+claim that the baseline proxy is the action outcome.
+
 The active CU scales for all seven components are frozen positive Train medians
 `Median_Train(q_k | q_k > 0)`. Passenger scales are materialized from the new
 T-100/DB1B references; no passenger component uses an assumption scale.
-Historical five-component and assumption-event registries remain immutable and
-are marked superseded. The prior five principal components had scales that were
-Train-artifact medians `43`, `17`, `11`, `1,037,820`, and `5`, respectively.
-The active registry is `M2_DATA2_FORMAL_CU_V3`; the historical V1/V2 artifacts
-are provenance-only.
+Historical V1/V2/V3 registries remain immutable and are provenance-only. The
+active registry is `M2_DATA2_FORMAL_CU_V4`, whose seven scales are independently
+normalized by `Median_Train(q_k | q_k > 0)`. `Nbar_pax` is a T-100 H1
+Train-frozen expected-passengers-per-performed-flight reference, not an actual
+passenger count. `r_conn` is a DB1B Q1/Q2 Train-frozen historical continuation
+share, not live connecting-passenger information. `P_itinerary` and `P_service`
+are domain proxies, not observed missed connections, service delivery, or
+airline expenditure. All seven CU components enter `M4_RMB_BASE_MAPPING_V2`.
 
 ## M3 action contract
 
@@ -114,6 +126,18 @@ Every template declares: identity, family, required facts, required
 mathematical parameters, authority capability labels, preparation time,
 consequence footprint, response model and parameters, response support and
 provenance, and opportunity/deadline semantics.
+
+The consequence footprint is explicit for all seven components. Each cell has
+`role in {MITIGATION, INDUCED, UNTOUCHED}` and
+`level in {PRIMARY, SECONDARY, CONDITIONAL_SECONDARY, NONE}`. A structural
+level is not a numerical effect magnitude; a missing coefficient is reported
+as `NUMERICAL_PARAMETER_NOT_MATERIALIZED` rather than filled by convention.
+
+For non-A00 actions, `d_a,k` is a nonnegative ordinal structural burden score
+with unit `INDUCED_SCORE`. The frozen conversion is
+`gamma = 0.10 CU / INDUCED_SCORE`, so `gamma*d_a,k` is an action-attempt
+burden. It is present even when `rho = 0`; it is not multiplied by `rho` and
+does not represent an empirical cost, causal effect, or RMB coefficient.
 
 `A00` is the no-additional-action identity baseline. It copies each baseline
 CU component exactly and is a comparator only. The other templates currently

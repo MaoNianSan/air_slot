@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from model.M3.registry import ActionRegistry
-from model.M3.response import (
+from model.M3.registry_layer.actions import ActionRegistry
+from model.M3.response_layer.core import (
     response_draw,
     scenario_update,
 )
@@ -22,7 +22,7 @@ from model.M3.response_registry import (
     ResponseScenarioRegistry,
     load_response_registry,
 )
-from model.common.errors import RegistryError
+from model.common.errors import ContractError, RegistryError
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -190,8 +190,8 @@ def test_scenario_update_formula():
         induced_score=2.0, induced_score_to_cu=0.10,
     )
     assert post == pytest.approx(10.0 * (1 - 0.8 * 0.5) + 0.2)
-    clamped = scenario_update(
-        pre_cu=1.0, mitigation_coefficient=2.0, rho=1.0,
-        induced_score=0.0, induced_score_to_cu=0.10,
-    )
-    assert clamped == 0.0
+    with pytest.raises(ContractError, match="M3_SCENARIO_UPDATE_MITIGATION_OUT_OF_RANGE"):
+        scenario_update(
+            pre_cu=1.0, mitigation_coefficient=2.0, rho=1.0,
+            induced_score=0.0, induced_score_to_cu=0.10,
+        )

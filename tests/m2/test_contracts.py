@@ -4,6 +4,7 @@ from pydantic import ValidationError
 from model.M2.contracts import (
     COMPONENTS,
     ExposureConfidence,
+    M2ScientificContext,
     NativeQuantity,
     SourceType,
 )
@@ -52,3 +53,16 @@ def test_fixed_ontology_and_abstain_is_null():
         reason_code="NO_ITINERARY",
     )
     assert valid.native_quantity is None
+
+
+def test_v4_scientific_context_has_one_typed_passenger_path():
+    assert tuple(M2ScientificContext.model_fields) == (
+        "turnaround_reference",
+        "turnaround_floor",
+        "expected_downstream_exposure",
+        "expected_passengers_per_flight",
+        "connection_share_reference",
+        "itinerary_buffer_reference",
+        "service_policy_reference",
+        "taxi_reference",
+    )

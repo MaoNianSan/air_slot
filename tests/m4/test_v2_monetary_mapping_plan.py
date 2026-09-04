@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from model.M4.residual_risk import load_active_risk_policy
 from model.M4.scientific_registry import (
     PRINCIPAL_RMB_COMPONENTS,
@@ -69,11 +67,5 @@ def test_superseded_eur_registries_are_not_active_loader_inputs():
     assert "monetary_mapping_registry" not in active_loader
 
 
-def test_superseded_eur_builder_rejects_runtime_materialization():
-    from model.M4.monetary_mapping_registry import build_plan
-
-    with pytest.raises(
-        RuntimeError,
-        match="M4_LEGACY_EUR_MAPPING_SUPERSEDED_USE_ACTIVE_RMB_REGISTRY",
-    ):
-        build_plan()
+def test_superseded_eur_builder_is_not_an_active_runtime_module():
+    assert not (ROOT / "model/M4/monetary_mapping_registry.py").exists()

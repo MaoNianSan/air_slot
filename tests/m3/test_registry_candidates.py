@@ -1,7 +1,6 @@
 from pathlib import Path
-from model.M3.registry import ActionRegistry
-from model.M3.instantiate import instantiate_candidates
-from model.M4.lanes import assign_lane
+from model.M3.registry_layer.actions import ActionRegistry
+from model.M3.instantiation_layer.builder import instantiate_candidates
 
 def test_all_templates_load_and_unknown_precondition_retains_candidate():
     registry=ActionRegistry.load(Path("registries/action_templates.yaml"))
@@ -14,5 +13,4 @@ def test_all_templates_load_and_unknown_precondition_retains_candidate():
     assert {x.template_id for x in candidates} >= {"A13","A71","A72"}
     for template_id in ("A13", "A71", "A72"):
         candidate = next(x for x in candidates if x.template_id == template_id)
-        assert assign_lane(candidate, 1.0, baseline_valid=True,
-                           material_coverage_valid=True) in {"CONDITIONAL", "SCENARIO"}
+        assert candidate.precondition_state == "UNKNOWN"

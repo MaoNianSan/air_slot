@@ -31,3 +31,12 @@ and expose a no-money `ActionEvaluationEnvelope` for M4. Non-A00 scenario
 responses may be numerically materialized only with their assumption label.
 Factual state, response support, opportunity, numerical evaluability, and
 selection authority remain separate states. See `docs/ACTION_DECISION_CONTRACT.md`.
+
+The active footprint metadata is seven-component and role-explicit. Each cell
+declares `MITIGATION`, `INDUCED`, or `UNTOUCHED` plus a structural level. The
+numeric mitigation maps remain proportional coefficients in `[0,1]`; induced
+maps are nonnegative ordinal `INDUCED_SCORE` values. The response registry
+freezes `gamma=0.10 CU_PER_INDUCED_SCORE` and applies it as
+`ACTION_ATTEMPT_BURDEN`, independently of whether the realized response has
+`rho=0` or `rho>0`. Structural relevance never upgrades scenario assumptions
+to empirical response evidence.

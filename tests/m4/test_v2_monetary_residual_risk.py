@@ -11,7 +11,7 @@ from model.M4.m3_action_interface import (
     ConsequenceComparisonScope,
     M4ActionEnvelopeInput,
 )
-from model.M4.authority import project_authority
+from model.M4.authority_layer.prohibition import project_authority
 from model.M4.residual_risk import (
     M1_POSITIVE_TAIL_DECISION_REQUIRED,
     NumericalComparisonStatus,
@@ -178,11 +178,12 @@ def _mapping(
 
 def _policy(
     *,
+    alpha=0.75,
     status=RiskPolicyStatus.TEST_ONLY,
     tail=TailSupportState.SUPPORTED,
 ):
     return ResidualRiskPolicy.create(
-        alpha=0.75,
+        alpha=alpha,
         expected_loss_coefficient=0.5,
         cvar_coefficient=0.5,
         risk_metric_version="TEST-MEAN-CVAR-1",
@@ -322,6 +323,29 @@ def test_8_weighted_cvar_uses_fractional_tail_mass():
     )
     assert result.monetary_loss_var_alpha == 21.0
     assert result.monetary_loss_cvar_alpha == 21.0
+
+
+def test_8b_cvar_keeps_finite_empirical_tail_scenarios():
+    """Finite positive-tail draws remain in the M4 alpha=.90 tail mass."""
+    envelope = _action_input(
+        scenario_values=(0.0, 1.0, 10.0),
+        scenario_weights=(0.8, 0.1, 0.1),
+    )
+    result = evaluate_residual_risk(
+        envelope,
+        monetary_mapping=_mapping(),
+        risk_policy=_policy(alpha=0.90),
+    )
+    # Seven components share each synthetic scalar, so the largest tail draw
+    # maps to 70 CU and must be the complete 10% CVaR mass.
+    assert result.scenario_ids == (0, 1, 2)
+    assert tuple(item.total_loss_m for item in result.scenario_losses) == (
+        0.0,
+        7.0,
+        70.0,
+    )
+    assert result.monetary_loss_var_alpha == 7.0
+    assert result.monetary_loss_cvar_alpha == pytest.approx(70.0)
 
 
 def test_9_unresolved_positive_tail_gate_blocks_cvar():

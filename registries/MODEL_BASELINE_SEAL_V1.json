@@ -1,0 +1,433 @@
+{
+  "A00": {
+    "chi_sel": "UNIMPLEMENTED / NOT_AUTHORIZED",
+    "identity": true,
+    "recommendation_authorized": false
+  },
+  "M1": {
+    "architecture": "M1_STATE_ESTIMATOR_V2",
+    "calibration_hash": "sha256:31448e750fbbd44fc9bc6bce0ada59e083dc0ec5cf44dc9f49807a41615c1a36",
+    "checkpoint_hash": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
+    "checkpoint_path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST.pt",
+    "conditional_order": [
+      "T_IB_A00",
+      "D_OB",
+      "D_TX"
+    ],
+    "config_hash": "sha256:72e3232044ccb55f95aab27682f482ee4101b4e260fd0d466b9274570e92efab",
+    "derived_targets": [
+      "R_IB",
+      "D_TO"
+    ],
+    "development_e2e_hash": "sha256:67add51100195036e77ded3c20de04da335a0fdc5f5d49a72e56450b730747b8",
+    "hidden_dim": 8,
+    "layers": 1,
+    "positive_quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+    "positive_tail_closure_hash": "sha256:58b4a15c715c8654fa0323dc1d55716717f943ec72eccbb30562db46697f04a4",
+    "positive_tail_continuation_hash": "sha256:571dba89e71d049f44431929bbfc1b0941a12a4255be2d8847cd554f3db47cb6",
+    "positive_tail_method": "TRAIN_EMPIRICAL_EXCEEDANCE_CONTINUATION",
+    "primitive_targets": [
+      "T_IB_A00",
+      "D_OB",
+      "D_TX"
+    ],
+    "quantile_grid": [
+      0.1,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ],
+    "scenario_count_per_node": 64,
+    "scenario_materialization_hash": "sha256:97f559807939f388c68eabbe931fb4d9483964ec2e1f1ba7b77548c9d895ed81",
+    "supports": {
+      "D_OB": 180,
+      "D_TX": 60,
+      "T_IB_A00": 360
+    },
+    "tail_references": {
+      "D_OB": {
+        "max_excess": 252.0,
+        "positive_n": 669,
+        "tail_n": 59,
+        "train_positive_q90": 91.0
+      },
+      "D_TX": {
+        "max_excess": 26.0,
+        "positive_n": 664,
+        "tail_n": 55,
+        "train_positive_q90": 14.0
+      }
+    },
+    "target_contract_hash": "sha256:524bd12352762b4bde9f74f3c01f27da15d5adb2c4433f0a25d7cc2a6f3dacf9",
+    "target_manifest_hash": "sha256:ce4d0c14b2104978ed09879da104bcad8e278a002cb5d5f64e72e580dc592d10"
+  },
+  "M2": {
+    "cu_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
+    "cu_registry_id": "M2_DATA2_FORMAL_CU_V4",
+    "native_quantity_definitions": {
+      "F_continuity": {
+        "definition": "max(0, R_IB - turnaround_reference)",
+        "driver": "max(0, R_IB - turnaround_reference)",
+        "unit": "minutes"
+      },
+      "F_execution": {
+        "definition": "D_OB",
+        "driver": "D_OB",
+        "unit": "minutes"
+      },
+      "F_propagation": {
+        "definition": "D_TO * expected_downstream_exposure",
+        "driver": "D_TO * expected_downstream_exposure",
+        "unit": "exposure_minutes"
+      },
+      "P_itinerary": {
+        "definition": "expected_passengers_per_flight * connection_share * I[D_TO > itinerary_threshold_minutes]",
+        "driver": "expected_passengers_per_flight * connection_share * I[D_TO > itinerary_threshold_minutes]",
+        "unit": "expected_disrupted_connecting_passenger_exposure"
+      },
+      "P_service": {
+        "definition": "expected_passengers_per_flight * I[D_TO >= service_threshold_minutes]",
+        "driver": "expected_passengers_per_flight * I[D_TO >= service_threshold_minutes]",
+        "unit": "expected_long_delay_passenger_service_exposure"
+      },
+      "P_time": {
+        "definition": "expected_passengers_per_flight * D_TO",
+        "driver": "expected_passengers_per_flight * D_TO",
+        "unit": "passenger_minutes"
+      },
+      "R_operating": {
+        "definition": "D_TX",
+        "driver": "D_TX",
+        "unit": "excess_taxi_minutes"
+      }
+    },
+    "passenger_design_file_sha256": "sha256:bffc28fe9649e1787ffa5bb4269076b828d73c726bd5b2b3ec39a46030f9bc6e",
+    "passenger_design_id": "M2_PASSENGER_CONSEQUENCE_REFERENCE_REFACTOR",
+    "passenger_design_version": "4.0.0",
+    "passenger_reference_manifest": "artifacts/diagnostics/passenger_reference_freeze_v4/PASSENGER_REFERENCE_MANIFEST_V2.json",
+    "passenger_reference_manifest_file_sha256": "sha256:be8665b23e50bdc4a2555029711691ff1d7d28e362466487da11dae02a9a8c80",
+    "reference_artifacts": {
+      "connection_share": {
+        "artifact_hash": "sha256:b595af0009e8527836e867ad61ae1e2ef434a4e63d7a1e300e9b95c46ef445b2",
+        "manifest_freeze_id": "sha256:0b58f3bbbbbde7de38d6a71de903f05141c165b4e86bd4409609286798898e35",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\DB1B_CONNECTION_SHARE_REFERENCE.json",
+        "reference_id": "sha256:0b58f3bbbbbde7de38d6a71de903f05141c165b4e86bd4409609286798898e35"
+      },
+      "downstream_exposure": {
+        "artifact_hash": "sha256:f47a69f539c56efebee9ca812b2b2cbb580f9921d351ce8f3b031df7aa2712b3",
+        "manifest_freeze_id": "sha256:31c7be57fbf935d3e347ca7ae5b1ffc829f0c0f6a1b203523faf3dad25d8484c",
+        "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_DOWNSTREAM_EXPOSURE_REFERENCE_TRAIN_FROZEN_V1.json",
+        "reference_id": "sha256:71a5c42da0e38cff0e5e10eb89ebffd8fdd0c3733febf17a8c485cbf15c8767c"
+      },
+      "expected_pax": {
+        "artifact_hash": "sha256:b0f8f7b1e2e8c0d10c2a0c4ec6e13aae04fbf662e93b11afba0de65aca3e91ab",
+        "manifest_freeze_id": "sha256:0a190e1877a36f27296a6dcd7fc51228d0be94331e38674fe31fafcf29a9e1b9",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json",
+        "reference_id": "sha256:0a190e1877a36f27296a6dcd7fc51228d0be94331e38674fe31fafcf29a9e1b9"
+      },
+      "taxi": {
+        "artifact_hash": "sha256:9e67d6f5d0b9870947e1c882fdf65ecc7609404cdf209f7162f381889ecab4dc",
+        "manifest_freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+        "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json",
+        "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3"
+      },
+      "turnaround": {
+        "artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+        "manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+        "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
+        "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+      }
+    },
+    "scales": {
+      "F_continuity": 43.0,
+      "F_execution": 17.0,
+      "F_propagation": 10.0,
+      "P_itinerary": 9.882948210182091,
+      "P_service": 104.88473684210527,
+      "P_time": 990.3555555555556,
+      "R_operating": 5.0
+    },
+    "semantic_channels": {
+      "P_service": {
+        "baseline_empirical_realization": "expected passengers x I[D_TO >= 180]",
+        "consequence_semantics": "passenger service / care burden"
+      },
+      "R_operating": {
+        "baseline_empirical_realization": "D_TX",
+        "consequence_semantics": "operating / recovery-resource burden"
+      }
+    }
+  },
+  "M3": {
+    "action_registry_hash": "sha256:b70d5e39593f71f17104af4445e34fec95c3c1d7e66f960cd64d6f716a9de7ef",
+    "action_registry_id": "ACTION_TEMPLATES_V1",
+    "action_source_sha256": "sha256:83dfbcc9fa519827b0e9e8158ca4bf779f3c583abe4af389c0eb51d4d4e2752f",
+    "induced_burden": {
+      "evidence": "SCENARIO_ASSUMPTION",
+      "gamma_cu_per_induced_score": 0.1,
+      "requires_realized_mitigation": false,
+      "semantics": "ACTION_ATTEMPT_BURDEN",
+      "unit": "INDUCED_SCORE"
+    },
+    "missing_response_cell_ids": [
+      "A11 F_propagation",
+      "A13 P_time",
+      "A13 P_itinerary",
+      "A31 P_time",
+      "A41 F_propagation",
+      "A42 F_propagation",
+      "A43 F_continuity",
+      "A51 F_execution",
+      "A52 F_continuity",
+      "A54 P_itinerary",
+      "A55 F_execution",
+      "A71 F_continuity",
+      "A72 F_continuity"
+    ],
+    "missing_response_cells": 13,
+    "numerically_complete_actions": 11,
+    "numerically_partial_action_ids": [
+      "A11",
+      "A13",
+      "A31",
+      "A41",
+      "A42",
+      "A43",
+      "A51",
+      "A52",
+      "A54",
+      "A55",
+      "A71",
+      "A72"
+    ],
+    "numerically_partial_actions": 12,
+    "readiness_artifact_hash": "sha256:5dbb7788160b61829a7eacc9b02c250aab4247e1e3fa520b2f204c7c1305eaa4",
+    "readiness_file_sha256": "sha256:fa0de952b4f6e11c1cfdf1e8db01d06467f59d8a54ac85a455e6a431b26868b4",
+    "response_registry_hash": "sha256:9bbea9d6752d201b62df6a5327c98aa0a7a80d9ac6655ec068c264d6208144b8",
+    "response_registry_id": "M3_RESPONSE_SCENARIO_V1",
+    "response_source_sha256": "sha256:e06c113d76c901fb6f60cf8b87fe15284b76d044de65bb0fbfd3022cccdb80a1",
+    "structural_action_component_cells": 161,
+    "structural_actions": 23,
+    "structural_contract": "CLOSED"
+  },
+  "M4": {
+    "alpha": 0.9,
+    "beta_k": 1.0,
+    "lambda": 0.25,
+    "mapping_claim_boundary": "CONSTRUCTED_MEASUREMENT_CONVENTION_NOT_FX_ACCOUNTING_OR_EMPIRICAL_COST",
+    "mapping_convention": "1 CU = 1 RMB",
+    "risk_policy_file_sha256": "sha256:bf6c4128723717290495ba61c140d669ca2b6b4a49ce8dc6019d01e877d2c88a",
+    "risk_policy_hash": "sha256:5e08b7a7e1450ca5fc2eab0e615f40f43172eb682b2c40df59aca42c2ba66044",
+    "risk_policy_id": "M4_RISK_POLICY_BASE_V1@1.0.0",
+    "risk_registry_id": "M4_RISK_POLICY_BASE_V1",
+    "risk_registry_version": "1.0.0",
+    "rmb_registry_file_sha256": "sha256:f88b8d3ccd8b68d4cec0de34254b5ac31fb9b85f6d44a0c6f2b99a14efb4169e",
+    "rmb_registry_hash": "sha256:e80d939e5716286af8b828ff49dd37c7b1c98316eb52f04df4c9a65bd6659821",
+    "rmb_registry_id": "M4_RMB_BASE_MAPPING_V2",
+    "scope_components": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation",
+      "P_time",
+      "P_itinerary",
+      "P_service",
+      "R_operating"
+    ]
+  },
+  "PRE": {
+    "config_hash": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0",
+    "contract_status": "CLOSED",
+    "contract_version": "1.0.0"
+  },
+  "baseline_commit_recommended": "YES",
+  "baseline_fingerprint": "sha256:80133fa5a57593dcdeda3fb3871c037146b1faa98b135377a83ba8e1e4f86f1d",
+  "data_guards": {
+    "data1_modified": false,
+    "data2_modified": false,
+    "data_diff_output": "",
+    "experiment_created": false,
+    "final_test_access_count": 0,
+    "model_retrained": false,
+    "parameter_reselected": false
+  },
+  "dirty_worktree_reproducibility": {
+    "git_head": "35e52588d4c1a98cd2d1bef884d78d0b052095bc",
+    "initial_reason": "BASELINE_FINGERPRINT_DID_NOT_INCLUDE_ACTIVE_RUNTIME_CODE_HASHES",
+    "initial_status": "FAIL",
+    "runtime_code_manifest_hash": "sha256:981b9b63afc92aef6679665b18ea774aa22445e4e9eb75b285d624927fa0befa",
+    "status": "PASS",
+    "worktree_status": "DIRTY"
+  },
+  "final_status": {
+    "ACTIVE_MODEL_MISMATCHES": "NONE",
+    "MODEL_BASELINE_READY_FOR_EXPERIMENT_CONSUMPTION": "YES",
+    "MODEL_BASELINE_SEALED": "YES"
+  },
+  "fingerprint_payload": {
+    "m1": {
+      "calibration_file_sha256": "sha256:124019a04b02f90b9ae08b4bd032ad939410aa12c2aff39a5208cddda90ba59c",
+      "calibration_hash": "sha256:31448e750fbbd44fc9bc6bce0ada59e083dc0ec5cf44dc9f49807a41615c1a36",
+      "checkpoint_file_sha256": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
+      "checkpoint_hash": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
+      "checkpoint_manifest_file_sha256": "sha256:d2e8edf780aaf4fd2097d5294f0c4a76b579f89189f4cda43fa8fd4437400d12",
+      "development_e2e_file_sha256": "sha256:c3be2f64a675d68070b7501a795e8906bdcac00b2ad09f5ba17d887e95054103",
+      "development_e2e_hash": "sha256:67add51100195036e77ded3c20de04da335a0fdc5f5d49a72e56450b730747b8",
+      "engineering_config_hash": "sha256:72e3232044ccb55f95aab27682f482ee4101b4e260fd0d466b9274570e92efab",
+      "positive_tail_closure_file_sha256": "sha256:0b0db2b85d8ef7c54e8200ba52000c561051b8ce7915856e8b0cc615f576faa3",
+      "positive_tail_closure_hash": "sha256:58b4a15c715c8654fa0323dc1d55716717f943ec72eccbb30562db46697f04a4",
+      "positive_tail_continuation_file_sha256": "sha256:0699061941cd47869b003ba6f4f6c79042bd58b3bf85a011e560c73bc928bb1a",
+      "positive_tail_continuation_hash": "sha256:571dba89e71d049f44431929bbfc1b0941a12a4255be2d8847cd554f3db47cb6",
+      "scenario_materialization_file_sha256": "sha256:84644673984412e387bb1c6271a8c6448ffd5d6d5c333ecb0ed4cb5d67b12d87",
+      "scenario_materialization_hash": "sha256:97f559807939f388c68eabbe931fb4d9483964ec2e1f1ba7b77548c9d895ed81",
+      "scientific_config_hash": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0",
+      "target_manifest_file_sha256": "sha256:ef92acae7cbd3cc97854238b9a9233b40e765c9f28d8e4cb8986072414d81bf1",
+      "target_manifest_hash": "sha256:ce4d0c14b2104978ed09879da104bcad8e278a002cb5d5f64e72e580dc592d10"
+    },
+    "m2": {
+      "cu_registry_file_sha256": "sha256:e28ba89ef73fd5ba13ee67bd3aa16de8e097a64c133812c7ded341a9294c6e95",
+      "cu_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
+      "passenger_design_file_sha256": "sha256:bffc28fe9649e1787ffa5bb4269076b828d73c726bd5b2b3ec39a46030f9bc6e",
+      "passenger_reference_artifact_hashes": {
+        "connection_share": "sha256:b595af0009e8527836e867ad61ae1e2ef434a4e63d7a1e300e9b95c46ef445b2",
+        "expected_pax": "sha256:b0f8f7b1e2e8c0d10c2a0c4ec6e13aae04fbf662e93b11afba0de65aca3e91ab"
+      },
+      "passenger_reference_manifest_file_sha256": "sha256:be8665b23e50bdc4a2555029711691ff1d7d28e362466487da11dae02a9a8c80",
+      "passenger_reference_manifest_hash": "sha256:4ae4f2ecaf75a8b8ad83597a6459aec3f63fe531cfbb921870d394123ff601e4",
+      "reference_artifact_file_sha256s": {
+        "connection_share": "sha256:a0cd2d676f4908779329579f6ae42f22d415c0d20222c3ab55c75ece14944566",
+        "downstream_exposure": "sha256:b61b632131163b1d7d240a9475978247c0c98cfd28f86c80dfaa3af778c74538",
+        "expected_pax": "sha256:35f26a60e92833466ee9de10dfdbd27412d7390830d7b3598686a4102e55eebe",
+        "taxi": "sha256:12ca5e93a6f6f0dcfc0dfe217a14a132fea93811ecef94875a4042025a0d5b34",
+        "turnaround": "sha256:1b80ea32ae33bd383f68e233a4a0c49701ec426cd92fa512095a6fbdd889a440"
+      },
+      "scale_artifact_file_sha256s": {
+        "artifacts/diagnostics/passenger_reference_freeze_v4/M2_SEVEN_COMPONENT_TRAIN_SCALES.json": "sha256:f8058c97614d1761ba835578cdc8728f297fb0fe22d9da41ec5f02d5522e7711"
+      },
+      "seven_scale_artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba"
+    },
+    "m3": {
+      "action_registry_file_sha256": "sha256:83dfbcc9fa519827b0e9e8158ca4bf779f3c583abe4af389c0eb51d4d4e2752f",
+      "action_registry_hash": "sha256:b70d5e39593f71f17104af4445e34fec95c3c1d7e66f960cd64d6f716a9de7ef",
+      "readiness_artifact_hash": "sha256:5dbb7788160b61829a7eacc9b02c250aab4247e1e3fa520b2f204c7c1305eaa4",
+      "readiness_file_sha256": "sha256:fa0de952b4f6e11c1cfdf1e8db01d06467f59d8a54ac85a455e6a431b26868b4",
+      "response_registry_file_sha256": "sha256:e06c113d76c901fb6f60cf8b87fe15284b76d044de65bb0fbfd3022cccdb80a1",
+      "response_registry_hash": "sha256:9bbea9d6752d201b62df6a5327c98aa0a7a80d9ac6655ec068c264d6208144b8"
+    },
+    "m4": {
+      "risk_policy_file_sha256": "sha256:bf6c4128723717290495ba61c140d669ca2b6b4a49ce8dc6019d01e877d2c88a",
+      "risk_policy_hash": "sha256:5e08b7a7e1450ca5fc2eab0e615f40f43172eb682b2c40df59aca42c2ba66044",
+      "rmb_registry_file_sha256": "sha256:f88b8d3ccd8b68d4cec0de34254b5ac31fb9b85f6d44a0c6f2b99a14efb4169e",
+      "rmb_registry_hash": "sha256:e80d939e5716286af8b828ff49dd37c7b1c98316eb52f04df4c9a65bd6659821"
+    },
+    "pre_contract": {
+      "scientific_config_hash": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0",
+      "status": "CLOSED"
+    },
+    "runtime_code_manifest_hash": "sha256:981b9b63afc92aef6679665b18ea774aa22445e4e9eb75b285d624927fa0befa",
+    "schema_version": "MODEL_BASELINE_FINGERPRINT_V1"
+  },
+  "git_head": "35e52588d4c1a98cd2d1bef884d78d0b052095bc",
+  "git_head_or_worktree_identity": "DIRTY_WORKTREE_AT_HEAD:35e52588d4c1a98cd2d1bef884d78d0b052095bc:sha256:80133fa5a57593dcdeda3fb3871c037146b1faa98b135377a83ba8e1e4f86f1d",
+  "implementation_status": "MODEL_BASELINE_SEALED",
+  "known_scientific_boundaries": {
+    "A21_CHI_FACT": "UNKNOWN",
+    "A71_A72_AUTHORITY": "UNKNOWN",
+    "CHI_STATES_INDEPENDENT": [
+      "chi_inst",
+      "chi_fact",
+      "chi_num",
+      "chi_resp",
+      "chi_opp",
+      "chi_sel"
+    ],
+    "EMPIRICAL_NON_A00_RESPONSE_SUPPORT": "UNRESOLVED",
+    "M3_NUMERICAL_RESPONSE_COVERAGE": "PARTIAL",
+    "OPERATIONAL_SELECTION_AUTHORITY": "UNIMPLEMENTED",
+    "PASSENGER_CHANNELS": "PROXY_ONLY"
+  },
+  "overflow_regression": {
+    "D_OB_boundary_classification": "FINITE",
+    "D_OB_overflow_classification": true,
+    "D_TX_boundary_classification": "FINITE",
+    "D_TX_overflow_classification": true,
+    "boundary_semantics": "ACTIVE_CONTRACT_USES_VALUE_GT_MAX_AS_OVERFLOW",
+    "cvar_consumption": true,
+    "endpoint_cases": {
+      "D_OB": {
+        "classifications": {
+          "179.0": "FINITE",
+          "180.0": "FINITE",
+          "180.001": "OVERFLOW",
+          "185.0": "OVERFLOW"
+        },
+        "first_lattice_overflow": 185,
+        "maximum_finite": 180,
+        "status": true
+      },
+      "D_TX": {
+        "classifications": {
+          "59.0": "FINITE",
+          "60.0": "FINITE",
+          "60.001": "OVERFLOW",
+          "65.0": "OVERFLOW"
+        },
+        "first_lattice_overflow": 65,
+        "maximum_finite": 60,
+        "status": true
+      },
+      "T_IB": {
+        "classifications": {
+          "359.0": "FINITE",
+          "360.0": "FINITE",
+          "360.001": "OVERFLOW",
+          "365.0": "OVERFLOW"
+        },
+        "first_lattice_overflow": 365,
+        "maximum_finite": 360,
+        "status": true
+      }
+    },
+    "finite_overflow_scalar_retained": true,
+    "overflow_condition": "CONTINUOUS_SCALAR_VALUE_GT_SUPPORT_MAX_NO_ROUNDING",
+    "status": true,
+    "support_semantics": "MAXIMUM_FINITE_SUPPORTED_SCALAR_INCLUSIVE"
+  },
+  "runtime_code_manifest": {
+    "coverage_roles": [
+      "COMMON_RUNTIME_DEPENDENCY",
+      "M1_ENGINEERING_CONFIG",
+      "M1_RUNTIME",
+      "M2_RUNTIME",
+      "M3_RUNTIME",
+      "M4_RUNTIME",
+      "PRE_AUTHORITATIVE_RUNTIME",
+      "SCIENTIFIC_CONFIG"
+    ],
+    "entry_count": 177,
+    "file_sha256": "sha256:421cb57b6a647c1ccb0a619838e923da806019fa6b644c6dd2791caa5aa56e50",
+    "manifest_hash": "sha256:981b9b63afc92aef6679665b18ea774aa22445e4e9eb75b285d624927fa0befa",
+    "path": "registries/MODEL_RUNTIME_CODE_MANIFEST_V1.json"
+  },
+  "schema_version": "MODEL_BASELINE_SEAL_V1",
+  "scientific_status": "FROZEN",
+  "seal_date": "2026-09-03",
+  "seal_id": "MODEL_BASELINE_SEAL_V1:sha256:80133fa5a57593dcdeda3fb3871c037146b1faa98b135377a83ba8e1e4f86f1d",
+  "tests": {
+    "focused_overflow": {
+      "command": "pytest -q tests/m1/test_model_baseline_seal.py",
+      "output_tail": [
+        "3 passed in 2.73s"
+      ],
+      "returncode": 0,
+      "status": "PASS"
+    },
+    "full_suite": {
+      "command": "pytest -q",
+      "failed": 0,
+      "passed": 771,
+      "skipped": 1
+    }
+  },
+  "worktree_status": "DIRTY"
+}

@@ -7,10 +7,11 @@ from model import M1, M2, M3, M4, PRE
 from model.M2.contracts import M2ScientificContext, ScientificContextValue
 from model.M2.mapper import M2Mapper
 from model.M2.valuation import ValuationRegistry
-from model.PRE.transformation import ConstructionType
+from model.PRE import ConstructionType
 from model.common.enums import EvidenceClass, SupportState
-from tests.fixtures.p0_p1_contracts import candidate, consequence, coverage_contract, scope_fixture
+from tests.fixtures.p0_p1_contracts import scope_fixture
 from tests.fixtures.pre.foundation_cases import build_request
+from validation.validate_model_refactor_goldens_v1 import validate
 
 
 def _unsupported_context() -> M2ScientificContext:
@@ -66,14 +67,7 @@ def test_refactor_behavioral_equivalence_across_pre_m4():
     assert m3_candidates[0].template_id == "A00"
     assert len({row.candidate_action_id for row in m3_candidates}) == len(m3_candidates)
 
-    from tests.fixtures.p0_p1_contracts import monetary_fixture
-
-    decision = M4.evaluate_decision("episode",
-        [{"scenario_id": 0, "scenario_weight": 1.0, "deadline_minutes": 30}],
-        (consequence(),), (candidate("A00"), candidate("A11")),
-        material_coverage_contract=coverage_contract(),
-        monetary_mapping=monetary_fixture())
-    assert [row.template_id for row in decision.actions] == ["A00", "A11"]
-    assert decision.actions[0].post_totals == (10.0,)
-    assert decision.actions[1].residual_risk_j == 5.0
-    assert decision.authoritative_ranking == ("A11:instance-0", "A00:instance-0")
+    parity = validate()
+    assert parity["layer_parity"]["M4"] is True
+    assert parity["A00_best"] == 26
+    assert parity["non_A00_best"] == 38

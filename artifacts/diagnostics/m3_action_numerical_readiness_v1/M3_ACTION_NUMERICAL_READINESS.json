@@ -1,0 +1,436 @@
+{
+  "action_registry_hash": "sha256:b70d5e39593f71f17104af4445e34fec95c3c1d7e66f960cd64d6f716a9de7ef",
+  "action_registry_id": "ACTION_TEMPLATES_V1",
+  "actions": [
+    {
+      "action_id": "A00",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "STRUCTURAL_ZERO",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "STRUCTURAL_ZERO"
+      },
+      "reason": "NOT_REQUIRED",
+      "response_parameter_status": "NOT_REQUIRED",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A11",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_propagation"
+      ],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "P_itinerary": "NUMERICALLY_MATERIALIZED",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "NUMERICALLY_MATERIALIZED",
+        "R_operating": "STRUCTURAL_ZERO"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A13",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "P_time",
+        "P_itinerary"
+      ],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A21",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "NUMERICALLY_MATERIALIZED",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "NUMERICALLY_MATERIALIZED",
+        "R_operating": "STRUCTURAL_ZERO"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A22",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A23",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A31",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "P_time"
+      ],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "STRUCTURAL_ZERO",
+        "P_itinerary": "NUMERICALLY_MATERIALIZED",
+        "P_service": "NUMERICALLY_MATERIALIZED",
+        "P_time": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A32",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "STRUCTURAL_ZERO",
+        "P_itinerary": "NUMERICALLY_MATERIALIZED",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "NUMERICALLY_MATERIALIZED",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A33",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "STRUCTURAL_ZERO",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "NUMERICALLY_MATERIALIZED",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A41",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_propagation"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICALLY_MATERIALIZED",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A42",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_propagation"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICALLY_MATERIALIZED",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A43",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_continuity"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "STRUCTURAL_ZERO",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A51",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_execution"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICALLY_MATERIALIZED",
+        "F_execution": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A52",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_continuity"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A53",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "NUMERICALLY_MATERIALIZED",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A54",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "P_itinerary"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICALLY_MATERIALIZED",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A55",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_execution"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICALLY_MATERIALIZED",
+        "F_execution": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A61",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A62",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "STRUCTURAL_ZERO",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A63",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "NUMERICALLY_MATERIALIZED",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A64",
+      "chi_num_possible_if_state_complete": true,
+      "missing_response_cells": [],
+      "parameter_states": {
+        "F_continuity": "STRUCTURAL_ZERO",
+        "F_execution": "NUMERICALLY_MATERIALIZED",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "STRUCTURAL_ZERO",
+        "P_service": "STRUCTURAL_ZERO",
+        "P_time": "NUMERICALLY_MATERIALIZED",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "NUMERICAL_RESPONSE_COMPLETE",
+      "response_parameter_status": "FROZEN",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A71",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_continuity"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "NUMERICALLY_MATERIALIZED",
+        "P_service": "NUMERICALLY_MATERIALIZED",
+        "P_time": "NUMERICALLY_MATERIALIZED",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    },
+    {
+      "action_id": "A72",
+      "chi_num_possible_if_state_complete": false,
+      "missing_response_cells": [
+        "F_continuity"
+      ],
+      "parameter_states": {
+        "F_continuity": "NUMERICAL_PARAMETER_NOT_MATERIALIZED",
+        "F_execution": "STRUCTURAL_ZERO",
+        "F_propagation": "NUMERICALLY_MATERIALIZED",
+        "P_itinerary": "NUMERICALLY_MATERIALIZED",
+        "P_service": "NUMERICALLY_MATERIALIZED",
+        "P_time": "NUMERICALLY_MATERIALIZED",
+        "R_operating": "NUMERICALLY_MATERIALIZED"
+      },
+      "reason": "RESPONSE_PARAMETER_NOT_MATERIALIZED",
+      "response_parameter_status": "PARTIAL",
+      "structural_status": "COMPLETE"
+    }
+  ],
+  "artifact_hash": "sha256:5dbb7788160b61829a7eacc9b02c250aab4247e1e3fa520b2f204c7c1305eaa4",
+  "artifact_id": "M3_ACTION_NUMERICAL_READINESS",
+  "counts": {
+    "missing_response_cells": 13,
+    "numerically_complete_actions": 11,
+    "numerically_partial_actions": 12,
+    "structural_actions": 23
+  },
+  "experiment_created": false,
+  "final_test_access_count": 0,
+  "model_retrained": false,
+  "response_registry_hash": "sha256:9bbea9d6752d201b62df6a5327c98aa0a7a80d9ac6655ec068c264d6208144b8",
+  "response_registry_id": "M3_RESPONSE_SCENARIO_V1",
+  "schema_version": "M3_ACTION_NUMERICAL_READINESS_V1"
+}

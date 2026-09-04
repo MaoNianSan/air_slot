@@ -4,7 +4,7 @@ from datetime import timedelta
 from enum import Enum
 
 from model.M1.data import validate_history_sequence
-from model.PRE.contracts.pre_state import PREState
+from model.PRE import PREState
 
 
 class HistoryRepresentation(str, Enum):

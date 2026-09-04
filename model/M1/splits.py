@@ -13,7 +13,7 @@ Cohorts and train-frozen references are evaluation concerns; the split key is
 the typed episode service date, not a raw dataset column.
 """
 
-from model.PRE.cohort import (
+from model.PRE import (
     ALL_SPLITS,
     CALIBRATION_END,
     DEVELOPMENT_END,

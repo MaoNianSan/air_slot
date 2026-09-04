@@ -12,7 +12,7 @@ from model.common.enums import EvidenceClass, SupportState
 from model.common.estimand import ConsequenceScope, FormalEstimandStatus
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
-from model.PRE.transformation import ConstructionType
+from model.PRE import ConstructionType
 
 COMPONENTS = CONSEQUENCE_COMPONENTS
 Component = Literal[
@@ -216,15 +216,11 @@ class M2ScientificContext(FrozenModel):
     turnaround_reference: ScientificContextValue
     turnaround_floor: ScientificContextValue
     expected_downstream_exposure: ScientificContextValue
-    passenger_exposure: ScientificContextValue
-    expected_passengers_per_flight: ScientificContextValue | None = None
-    itinerary_disruption_events: ScientificContextValue
-    itinerary_buffer_reference: ScientificContextValue | None = None
+    expected_passengers_per_flight: ScientificContextValue
+    connection_share_reference: ScientificContextValue
+    itinerary_buffer_reference: ScientificContextValue
     service_policy_reference: ScientificContextValue
     taxi_reference: ScientificContextValue
-    # Historical DB1B continuation share used only as a frozen reference;
-    # optional for compatibility with pre-refactor callers.
-    connection_share_reference: ScientificContextValue | None = None
 
 
 class ComponentInputContract(FrozenModel):

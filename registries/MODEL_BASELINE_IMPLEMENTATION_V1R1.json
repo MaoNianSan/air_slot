@@ -1,0 +1,65 @@
+{
+  "active_scientific_authorities": {
+    "m1": {
+      "calibration_hash": "sha256:31448e750fbbd44fc9bc6bce0ada59e083dc0ec5cf44dc9f49807a41615c1a36",
+      "checkpoint_hash": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
+      "positive_tail_closure_hash": "sha256:58b4a15c715c8654fa0323dc1d55716717f943ec72eccbb30562db46697f04a4",
+      "positive_tail_continuation_hash": "sha256:571dba89e71d049f44431929bbfc1b0941a12a4255be2d8847cd554f3db47cb6",
+      "scientific_config_hash": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0"
+    },
+    "m2": {
+      "cu_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
+      "passenger_reference_manifest_hash": "sha256:4ae4f2ecaf75a8b8ad83597a6459aec3f63fe531cfbb921870d394123ff601e4",
+      "seven_scale_artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba"
+    },
+    "m3": {
+      "action_registry_hash": "sha256:b70d5e39593f71f17104af4445e34fec95c3c1d7e66f960cd64d6f716a9de7ef",
+      "readiness_artifact_hash": "sha256:5dbb7788160b61829a7eacc9b02c250aab4247e1e3fa520b2f204c7c1305eaa4",
+      "response_registry_hash": "sha256:9bbea9d6752d201b62df6a5327c98aa0a7a80d9ac6655ec068c264d6208144b8"
+    },
+    "m4": {
+      "risk_policy_hash": "sha256:5e08b7a7e1450ca5fc2eab0e615f40f43172eb682b2c40df59aca42c2ba66044",
+      "rmb_registry_hash": "sha256:e80d939e5716286af8b828ff49dd37c7b1c98316eb52f04df4c9a65bd6659821"
+    },
+    "pre": {
+      "scientific_config_hash": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0",
+      "status": "CLOSED"
+    }
+  },
+  "behavioral_equivalence": "PASS",
+  "canonical_namespaces": [
+    "model/M1/calibration_layer/hurdle_temperature.py",
+    "model/M1/model_layer/checkpoint.py",
+    "model/M1/model_layer/gru.py",
+    "model/M1/runtime/state_aware.py",
+    "model/M1/scenario_layer/sampler.py",
+    "model/M2/consequences",
+    "model/M2/consequences/engine.py",
+    "model/M2/cu",
+    "model/M2/cu/registry.py",
+    "model/M2/service.py",
+    "model/M3",
+    "model/M3/factual_layer/adapter.py",
+    "model/M3/instantiation_layer/builder.py",
+    "model/M3/registry_layer/actions.py",
+    "model/M3/response_layer",
+    "model/M3/response_layer/core.py",
+    "model/M4/authority_layer/prohibition.py",
+    "model/M4/comparison",
+    "model/M4/comparison/ranking.py",
+    "model/M4/m3_action_interface.py",
+    "model/M4/monetary",
+    "model/M4/risk_layer",
+    "model/M4/service.py"
+  ],
+  "compatibility_map_hash": "sha256:6860904346695198d8ec971268d680bc2e78e51a8ec588e771b89ec23181eafc",
+  "deletion_status": "COMPLETE",
+  "implementation_fingerprint": "sha256:18d4d6e9b4155fab71978f4e7ef5887a5fd91e4adc0076aae257f276ab62c74d",
+  "new_runtime_manifest_hash": "sha256:ac4a68c912df206c251ce6aa91fa1d05a5346805798510d3b31c3a731d1aea6d",
+  "post_refactor_import_audit_hash": "sha256:6cdef9c63570c896dc7e1856de1a08f4d9e6356b6fdd7dbcf76a74ac06495854",
+  "schema_version": "MODEL_BASELINE_IMPLEMENTATION_V1R1",
+  "scientific_parent": "MODEL_BASELINE_SEAL_V1",
+  "scientific_parent_fingerprint": "sha256:80133fa5a57593dcdeda3fb3871c037146b1faa98b135377a83ba8e1e4f86f1d",
+  "scientific_semantics_changed": false,
+  "source_snapshot_manifest_hash": "sha256:632e4600c8a66ee68df9b291e5f44db2ceb0c266510a2f6ad51a4337a8e5afec"
+}

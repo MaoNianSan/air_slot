@@ -2,7 +2,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .registry import ActionRegistry
+from .registry_layer.actions import ActionRegistry
 
 
 def main(argv=None):

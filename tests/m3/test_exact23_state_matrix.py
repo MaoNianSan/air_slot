@@ -3,8 +3,8 @@
 from pathlib import Path
 
 from model.M3.contracts import InstantiationState
-from model.M3.instantiate import instantiate_action_records
-from model.M3.registry import ActionRegistry
+from model.M3.instantiation_layer.builder import instantiate_action_records
+from model.M3.registry_layer.actions import ActionRegistry
 from model.M3.response_registry import ResponseScenarioRegistry
 
 

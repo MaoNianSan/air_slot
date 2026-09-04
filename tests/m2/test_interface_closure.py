@@ -8,7 +8,7 @@ from model.M2.contracts import (
     ScientificContextValue,
     SourceType,
 )
-from model.M2.drivers import native_quantities
+from model.M2.consequences.engine import native_quantities
 from model.M2.exposure import (
     NodeExposureReferences,
     NodeExposureRequest,

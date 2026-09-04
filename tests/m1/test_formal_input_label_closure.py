@@ -149,7 +149,8 @@ def test_formal_pipeline_uses_frozen_target_supports():
     for target, finite, overflow in (("T_IB_REMAINING_HAZARD",360,365),("D_OB",180,185),("D_TX",60,65)):
         bins=pipeline.bins[target]
         assert bins.encode(finite-0.001) == bins.class_count-2
-        assert bins.encode(finite) == bins.class_count-1
+        assert bins.encode(finite) == bins.class_count-2
+        assert bins.encode(finite+0.001) == bins.class_count-1
         assert bins.encode(overflow) == bins.class_count-1
         assert bins.encode(overflow+10_000) == bins.class_count-1
     # Formal D_OB / D_TX supports are nonnegative; signed DELTA_OB is legacy.

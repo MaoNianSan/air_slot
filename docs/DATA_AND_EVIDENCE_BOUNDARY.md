@@ -71,12 +71,15 @@ Passenger consequences use typed Train-frozen reference objects. T-100
 provides expected passengers per performed flight at a carrier-route-month
 grain with explicit fallback. DB1B Coupon provides a historical continuation
 share; blank `TripBreak` is only a historical continuation indicator, never a
-live passenger connection fact. `P_itinerary` uses the strict `D_TO > 45`
-assumption and `P_service` the strict `D_TO >= 180` policy/scenario reference.
-No empirical itinerary events, service records, or actual passenger counts are
-claimed.
+live passenger connection fact. T-100 fitting is row-gated to 2019 months 1-6,
+and DB1B fitting is restricted to Q1/Q2. `P_itinerary` uses `D_TO > 45` under a
+representative itinerary-disruption reference; `P_service` uses `D_TO >= 180`
+under a long-delay passenger-service reference. Neither threshold is a
+universal operational or legal fact. No empirical itinerary events, service
+records, airline expenditure, or actual passenger counts are claimed.
 
 The seven active CU numeric scales are positive Train medians from the new
-passenger-reference freeze and existing flight/resource Train references. No
+`passenger_reference_freeze_v4` and existing flight/resource Train references. No
 data directory is scanned during model loading. Historical five-component
-registries remain immutable and are marked superseded.
+registries and V3 remain immutable superseded provenance. All seven components
+enter `M4_RMB_BASE_MAPPING_V2`.

@@ -11,10 +11,7 @@ from pathlib import Path
 
 import psutil
 
-from model.M2.freeze import (
-    build_m2_data2_formal_registry,
-    write_m2_registry,
-)
+from model.M2.cu.registry import build_m2_data2_formal_registry
 from model.common.identity import content_id
 
 
@@ -28,8 +25,8 @@ def _write_status(path: Path, payload: dict) -> None:
 
 
 def build(*, root: Path, artifact_dir: Path) -> dict:
-    registry_path = root / "registries" / "m2_data2_formal_cu_v1.json"
-    manifest_path = artifact_dir / "M2_DATA2_FORMAL_CU_V1_MANIFEST.json"
+    registry_path = root / "registries" / "m2_data2_formal_cu_v4.json"
+    manifest_path = root / "artifacts" / "diagnostics" / "passenger_reference_freeze_v4" / "PASSENGER_REFERENCE_MANIFEST_V2.json"
     status_path = artifact_dir / "M2_FORMAL_FREEZE_STATUS.json"
     started = datetime.now(timezone.utc)
     _write_status(
@@ -45,12 +42,6 @@ def build(*, root: Path, artifact_dir: Path) -> dict:
     )
     registry, written = build_m2_data2_formal_registry(
         root=root, artifact_dir=artifact_dir
-    )
-    registry_path, manifest_path = write_m2_registry(
-        registry,
-        registry_path=registry_path,
-        manifest_path=manifest_path,
-        root=root,
     )
     elapsed = (datetime.now(timezone.utc) - started).total_seconds()
     payload = {
