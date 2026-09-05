@@ -16,8 +16,8 @@ development_evaluation:
   selection_rule: SAME_SEEDED_PRE_OUTCOME_COHORT_AS_MODEL_DEVELOPMENT_CACHE
   selection_pre_outcome: true
 development_selection:
-  runtime_hidden_size: 8
-  predefined_sensitivity_hidden_size: 16
+  runtime_hidden_size: 16
+  predefined_sensitivity_hidden_size: 8
   fixed_history_windows_minutes: [30, 60, 120, 180]
 training:
   seed: 20260821

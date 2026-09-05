@@ -31,7 +31,7 @@ def test_layers_load_separately():
     assert layers.scientific.parameters["downstream_exposure_horizon_minutes"].value == 360
     hidden_size = layers.scientific.parameters["m1_hidden_size"]
     assert hidden_size.freeze_state.value == "FROZEN"
-    assert hidden_size.value == 8
+    assert hidden_size.value == 16
     assert hidden_size.provenance["selection_state"] == (
         "HISTORICAL_MODEL_FREEZE_RECONCILIATION"
     )
@@ -41,8 +41,8 @@ def test_layers_load_separately():
         hidden_size.provenance["legacy_v1_provenance"])
     assert hidden_size.provenance["final_test_access_count"] == 0
     sensitivity = layers.scientific.parameters["m1_sensitivity_hidden_size"]
-    assert sensitivity.value == 16
-    assert sensitivity.provenance["role"] == "PREDEFINED_SENSITIVITY"
+    assert sensitivity.value == 8
+    assert sensitivity.provenance["role"] == "PREDEFINED_LOWER_CAPACITY_SENSITIVITY"
     assert sensitivity.provenance["tuning_candidate"] is False
     fixed_window = layers.scientific.parameters["m1_fixed_history_window_minutes"]
     assert fixed_window.freeze_state.value == "SENSITIVITY_ONLY"
@@ -60,6 +60,12 @@ def test_layers_load_separately():
     assert v2_contract.value == "M1_STATE_ESTIMATOR_V2"
     assert v2_contract.provenance["primitive_targets"] == ["T_IB_A00", "D_OB", "D_TX"]
     assert v2_contract.provenance["derived_targets"] == ["R_IB", "D_TO"]
+    assert v2_contract.provenance["state_aware"] == (
+        "causal_single_layer_unidirectional_GRU_H16_PRIMARY"
+    )
+    assert v2_contract.provenance["sensitivity"] == (
+        "causal_single_layer_unidirectional_GRU_H8_LOWER_CAPACITY_SENSITIVITY"
+    )
     assert v2_contract.provenance["predecessor_head"] == "DISCRETE_HAZARD"
     assert v2_contract.provenance["history"] == "FULL_ADAPTIVE_CAUSAL_PREFIX"
     assert v2_contract.provenance["final_test_access_count"] == 0

@@ -1,11 +1,14 @@
 {
   "active_scientific_authorities": {
     "m1": {
-      "calibration_hash": "sha256:31448e750fbbd44fc9bc6bce0ada59e083dc0ec5cf44dc9f49807a41615c1a36",
-      "checkpoint_hash": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
+      "active_model_manifest_hash": "sha256:8f4f5800989457bde57bdc3d0306008ae59b80569e29a776c88a88f9954ba794",
+      "active_model_role": "H16_PRIMARY",
+      "calibration_hash": "sha256:44fd067cf64f832a6ca7115b79ec1d89bff2496c71439ecf54ed296f2a6ce775",
+      "checkpoint_hash": "sha256:5a5e53f786d082e382bd3e6ba6a146eec1eadf91a6cf9f832bd64e62e24f854e",
+      "lower_capacity_sensitivity_role": "H8_PREDEFINED_LOWER_CAPACITY_SENSITIVITY",
       "positive_tail_closure_hash": "sha256:58b4a15c715c8654fa0323dc1d55716717f943ec72eccbb30562db46697f04a4",
       "positive_tail_continuation_hash": "sha256:571dba89e71d049f44431929bbfc1b0941a12a4255be2d8847cd554f3db47cb6",
-      "scientific_config_hash": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0"
+      "scientific_config_hash": "sha256:658b0bcae4bb827edb281f63eeeefd187e597f6b0ea79d025999ad5cda551012"
     },
     "m2": {
       "cu_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
@@ -53,9 +56,9 @@
     "model/M4/service.py"
   ],
   "compatibility_map_hash": "sha256:6860904346695198d8ec971268d680bc2e78e51a8ec588e771b89ec23181eafc",
-  "deletion_status": "COMPLETE",
-  "implementation_fingerprint": "sha256:18d4d6e9b4155fab71978f4e7ef5887a5fd91e4adc0076aae257f276ab62c74d",
-  "new_runtime_manifest_hash": "sha256:ac4a68c912df206c251ce6aa91fa1d05a5346805798510d3b31c3a731d1aea6d",
+  "deletion_status": "INCOMPLETE",
+  "implementation_fingerprint": "sha256:853df0f8725d33e9defc4a1476b810b31d4ba1d6aee7f626e8f2aed87590a6ce",
+  "new_runtime_manifest_hash": "sha256:27cf567a05e6174ddc7df47809b3dd90788e2763645e932115ea09310899603c",
   "post_refactor_import_audit_hash": "sha256:6cdef9c63570c896dc7e1856de1a08f4d9e6356b6fdd7dbcf76a74ac06495854",
   "schema_version": "MODEL_BASELINE_IMPLEMENTATION_V1R1",
   "scientific_parent": "MODEL_BASELINE_SEAL_V1",

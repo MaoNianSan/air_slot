@@ -2,7 +2,7 @@
 
 This is a validation boundary, not an experiment runner.  It refuses to
 execute downstream inference when the registered frozen artifact is absent or
-does not match the scientific contract.  In particular, a stale H8 checkpoint
+does not match the scientific contract.  In particular, a stale H16 checkpoint
 with D_OB support 210 must not be presented as the frozen D_OB support 180
 model.
 """
@@ -28,7 +28,7 @@ ARTIFACT = (
     / "artifacts"
     / "models"
     / "m1"
-    / "M1_FROZEN_H8"
+    / "M1_FROZEN_H16"
     / "DATA2_M1_V2_DEVELOPMENT_FAST.pt"
 )
 
@@ -85,7 +85,7 @@ def _contract_gate() -> dict[str, object]:
     }
     if not ARTIFACT.is_file():
         result["status"] = "FAIL"
-        result["failures"] = ["M1_H8_PRIMARY_ARTIFACT_NOT_MATERIALIZED"]
+        result["failures"] = ["M1_H16_PRIMARY_ARTIFACT_NOT_MATERIALIZED"]
         return result
     pipeline = M1Pipeline.load(ARTIFACT)
     actual = {
@@ -99,10 +99,10 @@ def _contract_gate() -> dict[str, object]:
     result["actual"] = actual
     failures: list[str] = []
     if actual["hidden_size"] != expected["hidden_size"]:
-        failures.append("M1_H8_PRIMARY_HIDDEN_SIZE_MISMATCH")
+        failures.append("M1_H16_PRIMARY_HIDDEN_SIZE_MISMATCH")
     for name, value in expected["support"].items():
         if actual["support"].get(name) != value:
-            failures.append(f"M1_H8_PRIMARY_SUPPORT_MISMATCH:{name}")
+            failures.append(f"M1_H16_PRIMARY_SUPPORT_MISMATCH:{name}")
     if expected["scenario_count"] != 64:
         failures.append("FROZEN_SCENARIO_COUNT_NOT_64")
     result["failures"] = failures

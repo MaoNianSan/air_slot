@@ -40,7 +40,7 @@ parameters:
       reference_rules: [EXPECTED_DOWNSTREAM_EXPOSURE@1.0.0, DATA2_DOWNSTREAM_EXPOSURE@1.0.0]
   m1_hidden_size:
     freeze_state: FROZEN
-    value: 8
+    value: 16
     provenance:
       selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
       decision_id: AIR_SLOT_MODEL_FREEZE_20260901
@@ -52,12 +52,12 @@ parameters:
       final_test_access_count: 0
   m1_sensitivity_hidden_size:
     freeze_state: FROZEN
-    value: 16
+    value: 8
     provenance:
       selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
       decision_id: AIR_SLOT_MODEL_FREEZE_20260901
       decision_date: "2026-09-01"
-      role: PREDEFINED_SENSITIVITY
+      role: PREDEFINED_LOWER_CAPACITY_SENSITIVITY
       tuning_candidate: false
       final_test_access_count: 0
   m1_fixed_history_window_minutes:
@@ -180,8 +180,8 @@ parameters:
       primitive_targets: [T_IB_A00, D_OB, D_TX]
       derived_targets: [R_IB, D_TO]
       dependency_chain: "T_IB_A00 -> D_OB -> D_TX"
-      state_aware: causal_single_layer_unidirectional_GRU_H8_PRIMARY
-      sensitivity: causal_single_layer_unidirectional_GRU_H16_PREDEFINED
+      state_aware: causal_single_layer_unidirectional_GRU_H16_PRIMARY
+      sensitivity: causal_single_layer_unidirectional_GRU_H8_LOWER_CAPACITY_SENSITIVITY
       predecessor_head: DISCRETE_HAZARD
       successor_heads: HURDLE_QUANTILE
       successor_conditioning: "D_TX | T_IB_A00, D_OB (formal D_OB only; never signed DELTA_OB)"
@@ -260,10 +260,15 @@ parameters:
       split_end: 2019-07-31
       primitive_calibration_objects: [T_IB_A00_HAZARD, D_OB_ZERO_MASS, D_TX_ZERO_MASS]
       path_semantics: "STATE_AWARE and FAST share the policy and output contract; fitted temperatures remain model/checkpoint specific"
-      active_primary_artifact_status: NOT_MATERIALIZED_FOR_H8
+      active_primary_artifact_status: MATERIALIZED_FOR_H16
+      active_primary_artifact: artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_MANIFEST.json
+      active_primary_checkpoint: artifacts/models/m1/M1_FROZEN_H16/DATA2_M1_V2_DEVELOPMENT_FAST.pt
+      active_primary_calibration: artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_CALIBRATION.json
+      active_primary_checkpoint_hash: sha256:5a5e53f786d082e382bd3e6ba6a146eec1eadf91a6cf9f832bd64e62e24f854e
+      active_primary_calibration_hash: sha256:44fd067cf64f832a6ca7115b79ec1d89bff2496c71439ecf54ed296f2a6ce775
       superseded_artifact: artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json
       superseded_artifact_scope: H32_AND_CURRENT_ONLY_ONLY
-      note: "Do not apply the H32/CURRENT_ONLY fitted temperatures to H8; no recalibration is performed by model freeze."
+      note: "Do not apply the H32/CURRENT_ONLY fitted temperatures to H16; H16-specific temperatures must be fitted on the frozen July calibration split."
       final_test_access_count: 0
   m1_episode_partition_contract:
     freeze_state: FROZEN

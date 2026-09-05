@@ -69,8 +69,10 @@ July 2019 contract; fitted temperatures remain checkpoint-specific and are not
 transferred across hidden-size settings.
 
 The frozen architecture is a single-layer, causal, unidirectional GRU without
-attention. `H=8` is primary; `H=16` is a predefined sensitivity setting, not a
-tuning candidate. The finite supports are `360/180/60` minutes for
+attention. `H=16` is primary; `H=8` is the predefined lower-capacity
+sensitivity setting, not a tuning candidate. `H=32` is not part of the active
+model contract; if used in an experiment, it is experiment-only capacity
+sensitivity. The finite supports are `360/180/60` minutes for
 `T_IB_A00_remaining/D_OB/D_TX`, with overflow beginning at `365/185/65` on the
 5-minute grid. The positive-quantile representation grid is
 `[0.1,0.3,0.5,0.7,0.9]`, and the active scenario budget is 64 per episode.

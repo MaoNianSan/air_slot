@@ -1,7 +1,7 @@
 """Read-only preparation and evaluation contracts for M1 V2 Stage 1.
 
-This module performs no automatic training. It exposes the frozen primary H=8
-and predefined H=16 sensitivity settings, the no-history diagnostic contract,
+This module performs no automatic training. It exposes the frozen primary H=16
+and predefined lower-capacity H=8 sensitivity settings, the no-history diagnostic contract,
 and a separately guarded FAST entry point used only after authorization.
 """
 
@@ -29,7 +29,7 @@ from .pipeline import M1Pipeline
 from .model_layer.gru import M1V2GRU
 from .semantics import EVALUATION_LEAD_TIMES_MINUTES
 
-FROZEN_HIDDEN_SIZE_SETTINGS: tuple[int, ...] = (8, 16)
+FROZEN_HIDDEN_SIZE_SETTINGS: tuple[int, ...] = (16, 8)
 # Compatibility export for historical audit readers. These are frozen primary
 # and sensitivity settings, not an active tuning candidate set.
 STAGE1_H_CANDIDATES: tuple[int, ...] = FROZEN_HIDDEN_SIZE_SETTINGS
@@ -399,6 +399,7 @@ def stage1_manifest(root: Path) -> dict[str, object]:
 
     scientific = load_config_layers(root / "configs").scientific
     contract = validate_stage1_contract(scientific)
+    primary_hidden_size = int(contract["primary_hidden_size"])
     closure_path = root / (
         "artifacts/diagnostics/model/m1_v2_model_closure/"
         "AIR_SLOT_M1_V2_MODEL_CLOSURE.json"
@@ -416,6 +417,11 @@ def stage1_manifest(root: Path) -> dict[str, object]:
                 "training_config_hash": training_hash,
                 "validation_result": None,
                 "run_status": "NOT_RUN",
+                "role": (
+                    "PRIMARY"
+                    if hidden_size == primary_hidden_size
+                    else "PREDEFINED_LOWER_CAPACITY_SENSITIVITY"
+                ),
             }
         )
     candidates.append(
@@ -456,7 +462,11 @@ def stage1_manifest(root: Path) -> dict[str, object]:
         "loss_version": "TARGET_SPECIFIC_EPISODE_BALANCED",
         "training_config": STAGE1_TRAINING_CONFIG,
         "training_config_hash": training_hash,
-        "setting_list": ["NO_HISTORY_DIAGNOSTIC", "H8_PRIMARY", "H16_SENSITIVITY"],
+        "setting_list": [
+            "NO_HISTORY_DIAGNOSTIC",
+            "H16_PRIMARY",
+            "H8_LOWER_CAPACITY_SENSITIVITY",
+        ],
         "candidates": candidates,
         "development_evaluation": {
             "principal": STAGE1_METRICS[0],
@@ -484,7 +494,7 @@ def run_fast_stage1_tuning(
 ) -> dict[str, object]:
     """Retired historical tuning entry point.
 
-    H=8 is the frozen primary setting and H=16 is a predefined sensitivity.
+    H=16 is the frozen primary setting and H=8 is a predefined lower-capacity sensitivity.
     The active model exposes no hidden-size selection workflow.
     """
 
@@ -594,15 +604,15 @@ def run_fast_stage1_tuning(
             HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION,
         ),
         (
-            "GRU_H8",
-            "M1_V2_GRU_H8",
-            8,
-            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
-        ),
-        (
             "GRU_H16",
             "M1_V2_GRU_H16",
             16,
+            HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
+        ),
+        (
+            "GRU_H8",
+            "M1_V2_GRU_H8",
+            8,
             HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX,
         ),
     )
@@ -702,8 +712,8 @@ def run_fast_stage1_tuning(
         },
         "history_lineage": {
             "NO_HISTORY": NO_HISTORY_BASELINE_CONTRACT,
-            "GRU_H8": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
             "GRU_H16": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
+            "GRU_H8": HistoryEncoderMode.FULL_ADAPTIVE_CAUSAL_PREFIX.value,
         },
         "FINAL_TEST_ACCESS_COUNT": 0,
         "PAPER_FULL_RUN": False,

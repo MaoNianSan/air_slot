@@ -23,12 +23,12 @@ def test_historical_tuning_preflight_is_not_active_authority():
     assert manifest["status"] == "M1_V2_TUNING_PREFLIGHT_H_READY"
     assert manifest["tuning_authorized"] is False
     assert manifest["candidate_update"]["decision_date"] == "2026-08-22"
-    assert scientific.parameters["m1_hidden_size"].value == 8
-    assert scientific.parameters["m1_sensitivity_hidden_size"].value == 16
-    assert engineering["development_selection"]["runtime_hidden_size"] == 8
+    assert scientific.parameters["m1_hidden_size"].value == 16
+    assert scientific.parameters["m1_sensitivity_hidden_size"].value == 8
+    assert engineering["development_selection"]["runtime_hidden_size"] == 16
     assert engineering["development_selection"][
         "predefined_sensitivity_hidden_size"
-    ] == 16
+    ] == 8
 
 
 def test_current_freeze_supersedes_historical_preflight_without_running_it():

@@ -1,0 +1,51 @@
+{
+  "artifact_hash": "sha256:8f4f5800989457bde57bdc3d0306008ae59b80569e29a776c88a88f9954ba794",
+  "artifact_status": "FROZEN_MODEL_RUNTIME_ARTIFACT_READY",
+  "calibration_hash": "sha256:44fd067cf64f832a6ca7115b79ec1d89bff2496c71439ecf54ed296f2a6ce775",
+  "calibration_partition": {
+    "end": "2019-07-31",
+    "start": "2019-07-01"
+  },
+  "calibration_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H16\\M1_FROZEN_H16_CALIBRATION.json",
+  "causal": true,
+  "checkpoint_hash": "sha256:5a5e53f786d082e382bd3e6ba6a146eec1eadf91a6cf9f832bd64e62e24f854e",
+  "checkpoint_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H16\\DATA2_M1_V2_DEVELOPMENT_FAST.pt",
+  "code_commit": "53988e31c39b8e811a3a4b0091ad6ee5b7a8374f",
+  "development_partition": {
+    "end": "2019-09-30",
+    "start": "2019-08-01"
+  },
+  "development_used_for_parameter_selection": false,
+  "feature_contract_hash": "sha256:56253d8ef9095588c48a31506f5bd3952ed52fbe457f5ef2c1f8d635a3cd4097",
+  "final_test_access_count": 0,
+  "hidden_dim": 16,
+  "history": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+  "layers": 1,
+  "lower_capacity_sensitivity_hidden_dim": 8,
+  "model_family": "M1_STATE_ESTIMATOR_V2",
+  "model_role": "PRIMARY",
+  "model_version": "M1_STATE_ESTIMATOR_V2_H16",
+  "overflow": {
+    "D_OB": 185,
+    "D_TX": 65,
+    "T_IB_A00": 365
+  },
+  "paper_result": false,
+  "parameter_registry_hash": "sha256:0d18a4b1fc2bea95d200cb321b4d1c677bc6d0342e4aa64084c4268b4c291957",
+  "roll_minutes": 5,
+  "scenario_count": 64,
+  "schema_version": "M1_FROZEN_H16_RUNTIME_ARTIFACT_MANIFEST_V1",
+  "selection_or_tuning": false,
+  "support": {
+    "D_OB": 180,
+    "D_TX": 60,
+    "T_IB_REMAINING_HAZARD": 360
+  },
+  "target_contract_hash": "sha256:524bd12352762b4bde9f74f3c01f27da15d5adb2c4433f0a25d7cc2a6f3dacf9",
+  "target_manifest_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H16\\M1_FROZEN_H16_TARGET_SUPPORT_MANIFEST.json",
+  "train_partition": {
+    "end": "2019-06-30",
+    "start": "2019-01-01"
+  },
+  "training_seed": 20260821
+}

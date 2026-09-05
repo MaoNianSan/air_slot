@@ -1,6 +1,6 @@
 {
   "active_implementation": "MODEL_BASELINE_IMPLEMENTATION_V1R1",
-  "artifact_index_hash": "sha256:ba228b1f66e16366a6b2acfc7a93ee808d7caa18133af078206550bf226df88d",
+  "artifact_index_hash": "sha256:0629ef72f393675cb084bd8bcc4874e5a1e469e2391b376725c49dc543b48092",
   "entries": [
     {
       "category": "ACTIVE_AUTHORITY",
@@ -19,7 +19,7 @@
     {
       "category": "ACTIVE_AUTHORITY",
       "path": "artifacts/diagnostics/m1_positive_tail_continuation_v1/M1_FROZEN_H8_DEVELOPMENT_SCENARIOS.json",
-      "role": "M1 frozen Development scenarios",
+      "role": "M1 historical H8 Development scenarios; not active model",
       "sha256": "sha256:84644673984412e387bb1c6271a8c6448ffd5d6d5c333ecb0ed4cb5d67b12d87",
       "size_bytes": 925402
     },
@@ -179,94 +179,80 @@
     },
     {
       "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST.pt",
-      "role": "M1 frozen checkpoint",
-      "sha256": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
-      "size_bytes": 30089
+      "path": "artifacts/models/m1/M1_FROZEN_H16/DATA2_M1_V2_DEVELOPMENT_FAST.pt",
+      "role": "M1 H16 primary checkpoint",
+      "sha256": "sha256:5a5e53f786d082e382bd3e6ba6a146eec1eadf91a6cf9f832bd64e62e24f854e",
+      "size_bytes": 50249
     },
     {
       "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3.npz",
-      "role": "M1 frozen Development cache",
-      "sha256": "sha256:7152d075f1430576c86117881c746be2f932a32f95dd16ba269eb68ff5d6cd67",
-      "size_bytes": 695250
+      "path": "artifacts/models/m1/M1_FROZEN_H16/DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3.npz",
+      "role": "M1 H16 frozen Development cache",
+      "sha256": "sha256:41e6e46b0e2783e19971abba19b01f89c1f91da714583dbbbcc39dac397575b0",
+      "size_bytes": 695307
     },
     {
       "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3_MANIFEST.json",
-      "role": "M1 frozen Development cache manifest",
-      "sha256": "sha256:08dc9f894bc35797d93006fa2c80b755767b51eeeb21c78a2aae35e5e7261fe8",
-      "size_bytes": 8208
+      "path": "artifacts/models/m1/M1_FROZEN_H16/DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3_MANIFEST.json",
+      "role": "M1 H16 frozen Development cache manifest",
+      "sha256": "sha256:498e85e009d01ab71b779d699560e7af201d3c4c6baf57344a1628f014407d1e",
+      "size_bytes": 8209
     },
     {
       "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST_MANIFEST.json",
-      "role": "M1 runtime artifact manifest",
-      "sha256": "sha256:bfdc206f744a840c4b5b877dc05da258aa2ee12850d262b745144a7a37b5316b",
-      "size_bytes": 7807
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_CALIBRATION.json",
+      "role": "M1 H16 primary calibration artifact",
+      "sha256": "sha256:d09c0ea1d1ac2eefe6e11a3313aeb4e2edb4dfbd29cf03173534c560b5c39dd1",
+      "size_bytes": 1732
     },
     {
       "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/M1_FROZEN_H8_CALIBRATION.json",
-      "role": "M1 calibration artifact",
-      "sha256": "sha256:124019a04b02f90b9ae08b4bd032ad939410aa12c2aff39a5208cddda90ba59c",
-      "size_bytes": 1601
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_MANIFEST.json",
+      "role": "M1 H16 primary frozen artifact manifest",
+      "sha256": "sha256:471c77f2c99fa4cc1c40eb3a0640010b760046bb8e08a5bd468f3a7a6912181e",
+      "size_bytes": 2136
     },
     {
       "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/M1_FROZEN_H8_MANIFEST.json",
-      "role": "M1 frozen artifact manifest",
-      "sha256": "sha256:d2e8edf780aaf4fd2097d5294f0c4a76b579f89189f4cda43fa8fd4437400d12",
-      "size_bytes": 1876
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_TARGET_SUPPORT_MANIFEST.json",
+      "role": "M1 H16 target support manifest",
+      "sha256": "sha256:7c6231a236ba5687a55ff6d457ce859ce576044f5d8eec8a439b7a36d968dab8",
+      "size_bytes": 756
     },
     {
       "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/M1_FROZEN_H8_TARGET_SUPPORT_MANIFEST.json",
-      "role": "M1 target support manifest",
-      "sha256": "sha256:ef92acae7cbd3cc97854238b9a9233b40e765c9f28d8e4cb8986072414d81bf1",
-      "size_bytes": 651
-    },
-    {
-      "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/SMOKE_PREP.json",
-      "role": "Development golden preparation manifest",
-      "sha256": "sha256:32e91fc30b97eebc8ab2a1724b89617785ea150aff9a6913ab9c552f9f55a8eb",
-      "size_bytes": 650
-    },
-    {
-      "category": "ACTIVE_AUTHORITY",
-      "path": "artifacts/models/m1/M1_FROZEN_H8/SMOKE_PREP.pt",
-      "role": "Development golden preparation state",
-      "sha256": "sha256:2015525eda4f7290d400c2a4255f9c67706789d1392cb59ed5ec53c5276d1b93",
-      "size_bytes": 2231889
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_TRAINING_MANIFEST.json",
+      "role": "M1 H16 frozen Train/calibration manifest",
+      "sha256": "sha256:def739de7f73d5f281db2356841fd956304ba2d0a3fe7ef4ace233e0dc1f4e28",
+      "size_bytes": 3754
     },
     {
       "category": "ACTIVE_AUTHORITY",
       "path": "configs/engineering/m1_data2_development_fast.yaml",
       "role": "M1 engineering configuration",
-      "sha256": "sha256:72e3232044ccb55f95aab27682f482ee4101b4e260fd0d466b9274570e92efab",
+      "sha256": "sha256:45860927b1c3ffeff9cb5efdecbd228ef56d62d961c193fe806dfe85393d3ac8",
       "size_bytes": 1029
     },
     {
       "category": "ACTIVE_AUTHORITY",
       "path": "configs/scientific/foundation.yaml",
       "role": "scientific configuration",
-      "sha256": "sha256:4979da782da9fb7abe8c083bc9b85acd2a22b50d966bf2f8802c3fba8ad464d0",
-      "size_bytes": 13578
+      "sha256": "sha256:658b0bcae4bb827edb281f63eeeefd187e597f6b0ea79d025999ad5cda551012",
+      "size_bytes": 14151
     },
     {
       "category": "ACTIVE_AUTHORITY",
       "path": "registries/ACTIVE_MODEL_IMPLEMENTATION.json",
       "role": "active implementation pointer",
-      "sha256": "sha256:5c67dbb1ac85b28c98b525347e7ac7bd48772b82b23de3d1a90a1a53cdd3a057",
+      "sha256": "sha256:856285f402e2e9926f4c1f4d719ae9d6f937980f77751a2bc6d1fb88996357c6",
       "size_bytes": 788
     },
     {
       "category": "ACTIVE_AUTHORITY",
       "path": "registries/MODEL_BASELINE_IMPLEMENTATION_V1R1.json",
       "role": "active implementation identity",
-      "sha256": "sha256:5c5477313954adf7f02e62d264c9ba66bc6a69333d97a27ae62fd7d5a2abfccb",
-      "size_bytes": 3422
+      "sha256": "sha256:3021ea25fb4c78ca014030a3c787f38653bfaa44f7e741b4bcfc3460d64fd385",
+      "size_bytes": 3665
     },
     {
       "category": "ACTIVE_AUTHORITY",
@@ -279,14 +265,14 @@
       "category": "ACTIVE_AUTHORITY",
       "path": "registries/MODEL_PARAMETER_REGISTRY.json",
       "role": "active scientific parameter registry",
-      "sha256": "sha256:0a9c7eb5598b84fef45867e25e04aef4ff3b5eecbb9b852a8767207fec633f97",
-      "size_bytes": 16974
+      "sha256": "sha256:0d18a4b1fc2bea95d200cb321b4d1c677bc6d0342e4aa64084c4268b4c291957",
+      "size_bytes": 16979
     },
     {
       "category": "ACTIVE_AUTHORITY",
       "path": "registries/MODEL_RUNTIME_CODE_MANIFEST_V1R1.json",
       "role": "active runtime manifest",
-      "sha256": "sha256:2b66ef322359e8160236bec516438977116879e012ce2c4bed560d94a3ceb8b7",
+      "sha256": "sha256:2995e0f5e9d80f435b5bea40fac1f115c9a5fe77e971c97793a1c6d9eb9a0392",
       "size_bytes": 44316
     },
     {
@@ -340,7 +326,7 @@
     "model_retrained": false,
     "parameter_reselected": false
   },
-  "implementation_fingerprint": "sha256:18d4d6e9b4155fab71978f4e7ef5887a5fd91e4adc0076aae257f276ab62c74d",
+  "implementation_fingerprint": "sha256:853df0f8725d33e9defc4a1476b810b31d4ba1d6aee7f626e8f2aed87590a6ce",
   "schema_version": "ACTIVE_MODEL_ARTIFACTS_V1",
   "scientific_baseline": "MODEL_BASELINE_SEAL_V1",
   "selection_policy": "EXPLICIT_PATH_ONLY_NO_LATEST_FILE_DISCOVERY"

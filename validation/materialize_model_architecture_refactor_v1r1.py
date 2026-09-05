@@ -14,6 +14,7 @@ import json
 import re
 import subprocess
 import sys
+import hashlib
 from pathlib import Path
 from typing import Any
 
@@ -199,17 +200,21 @@ def _architecture_status() -> dict[str, int]:
 
 def _scientific_authorities(parent: dict[str, Any]) -> dict[str, Any]:
     payload = parent["fingerprint_payload"]
+    h16 = _read(ROOT / "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_MANIFEST.json")
+    scientific_config_hash = "sha256:" + hashlib.sha256(
+        (ROOT / "configs/scientific/foundation.yaml").read_bytes()
+    ).hexdigest()
     return {
         "pre": payload["pre_contract"],
         "m1": {
-            key: payload["m1"][key]
-            for key in (
-                "checkpoint_hash",
-                "calibration_hash",
-                "positive_tail_closure_hash",
-                "positive_tail_continuation_hash",
-                "scientific_config_hash",
-            )
+            "checkpoint_hash": h16["checkpoint_hash"],
+            "calibration_hash": h16["calibration_hash"],
+            "positive_tail_closure_hash": payload["m1"]["positive_tail_closure_hash"],
+            "positive_tail_continuation_hash": payload["m1"]["positive_tail_continuation_hash"],
+            "scientific_config_hash": scientific_config_hash,
+            "active_model_manifest_hash": h16["artifact_hash"],
+            "active_model_role": "H16_PRIMARY",
+            "lower_capacity_sensitivity_role": "H8_PREDEFINED_LOWER_CAPACITY_SENSITIVITY",
         },
         "m2": {
             key: payload["m2"][key]

@@ -64,7 +64,7 @@ model.
 M1 calibration uses only the frozen July 1-31, 2019 calibration split and
 separate primitive-head procedures (hazard event-time NLL and hurdle zero-mass
 temperature). The existing August 26 H32/CURRENT_ONLY calibration artifact is
-historical superseded provenance; it is not an H8 runtime authority and is not
+historical superseded provenance; it is not an H16 runtime authority and is not
 re-fit during model freeze.
 
 Passenger consequences use typed Train-frozen reference objects. T-100

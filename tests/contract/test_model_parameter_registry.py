@@ -40,8 +40,8 @@ def test_frozen_active_baseline_has_no_implementation_mismatch():
     ]
     assert frozen
     assert all(item["implementation_status"] == "MATCH" for item in frozen)
-    assert entries["M1_PRIMARY_HIDDEN_SIZE"]["value"] == 8
-    assert entries["M1_SENSITIVITY_HIDDEN_SIZE"]["value"] == 16
+    assert entries["M1_PRIMARY_HIDDEN_SIZE"]["value"] == 16
+    assert entries["M1_SENSITIVITY_HIDDEN_SIZE"]["value"] == 8
     assert entries["M1_SCENARIO_COUNT"]["value"] == 64
     assert entries["M4_MONETARY_MAPPING"]["value"]["system"] == "RMB"
     assert entries["M4_RISK_POLICY"]["value"]["lambda"] == 0.25

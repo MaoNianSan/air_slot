@@ -22,9 +22,12 @@ def test_stage1_manifest_matches_frozen_contract_and_is_not_run():
     assert manifest["status"] == "M1_V2_FROZEN_SETTINGS_READY"
     assert manifest["execution_authorized"] is False
     assert manifest["setting_list"] == [
-        "NO_HISTORY_DIAGNOSTIC", "H8_PRIMARY", "H16_SENSITIVITY"
+        "NO_HISTORY_DIAGNOSTIC", "H16_PRIMARY", "H8_LOWER_CAPACITY_SENSITIVITY"
     ]
-    assert [row["hidden_size"] for row in manifest["candidates"][:2]] == [8, 16]
+    assert [row["hidden_size"] for row in manifest["candidates"][:2]] == [16, 8]
+    assert [row["role"] for row in manifest["candidates"][:2]] == [
+        "PRIMARY", "PREDEFINED_LOWER_CAPACITY_SENSITIVITY"
+    ]
     assert manifest["fixed_contract"]["total_feature_count"] == 43
     assert manifest["fixed_contract"]["support"] == {
         "T_IB_REMAINING_HAZARD": 360,
@@ -49,7 +52,7 @@ def test_stage1_manifest_file_matches_preparation_contract():
     manifest = json.loads(path.read_text(encoding="utf-8"))
     # The checked-in artifact is historical and is not current runtime authority.
     assert manifest["candidate_list"] == ["NO_HISTORY", "H8", "H16", "H32"]
-    assert STAGE1_H_CANDIDATES == (8, 16)
+    assert STAGE1_H_CANDIDATES == (16, 8)
     assert manifest["development_evaluation"]["principal"] == STAGE1_METRICS[0]
     assert manifest["development_evaluation"]["secondary"] == list(STAGE1_METRICS[1:])
     assert manifest["safety"]["M1_TRAINING_RUNS"] == 0
@@ -135,7 +138,7 @@ def test_downstream_artifact_contract_is_read_only_and_horizon_complete():
 
 def test_stage1_parameter_counts_are_deterministic_and_ordered():
     counts = [stage1_parameter_count(size) for size in STAGE1_H_CANDIDATES]
-    assert counts == [4660, 9620]
+    assert counts == [9620, 4660]
     assert stage1_parameter_count(
         16, history_mode=HistoryEncoderMode.NO_HISTORY_CURRENT_OBSERVATION,
     ) == 7524

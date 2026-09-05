@@ -7,8 +7,9 @@ sampling is ancestral and preserves episode-scenario lineage. Unsupported target
 
 Use `M1Service` at the module boundary. Its FAST and STATE_AWARE paths return the same typed
 `M1Forecast` contract, with explicit model path, cutoff, horizons, thresholds, support, and
-fallback status. Formal hidden-size selection is intentionally unresolved; validation-only smoke
-uses an explicit candidate and is not a paper result.
+fallback status. The formal hidden-size role is frozen as H=16 primary with H=8
+lower-capacity sensitivity; validation-only smoke uses an explicit setting and
+is not a paper result.
 
 ## Stage 1 tuning preparation
 
