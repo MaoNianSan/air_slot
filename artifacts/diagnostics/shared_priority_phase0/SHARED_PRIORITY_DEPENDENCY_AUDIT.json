@@ -1,0 +1,114 @@
+{
+  "audit_date": "2026-09-06",
+  "audit_status": "PASS",
+  "development_fixture": {
+    "active_m2_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
+    "active_cu_normalization_registry_hash": "sha256:8c9bfbed9d6b64c288cb5591f77fab9c3896ebc8d29d0a6450333ef2cc104d8e",
+    "fixture_scope": "DEVELOPMENT_ONLY_INTERFACE_SMOKE",
+    "m1_artifact": "artifacts/diagnostics/numerical_best_action_sanity_v1/M1_DEVELOPMENT_64_NODE_SCENARIOS.json",
+    "m1_role": "H8_LOWER_CAPACITY_SENSITIVITY",
+    "m2_context_fixture": "artifacts/diagnostics/model_refactor_v1/M2_GOLDEN.json",
+    "m2_golden_cu_normalization_registry_hash": "sha256:8c9bfbed9d6b64c288cb5591f77fab9c3896ebc8d29d0a6450333ef2cc104d8e",
+    "status": "FOUND",
+    "usage_rule": "Reuse the preselected fixture node and frozen M2 consequence records; validate both scientific-registry and CU-normalization lineage and do not select a node by score."
+  },
+  "dependencies": [
+    {
+      "object": "M1 scenario contract",
+      "authority": "model/M1/contracts.py:M1V2Scenario",
+      "status": "FOUND"
+    },
+    {
+      "object": "M1 d_to_minutes",
+      "authority": "M1V2Scenario.d_to_minutes",
+      "status": "FOUND"
+    },
+    {
+      "object": "scenario weight",
+      "authority": "M1V2Scenario.scenario_weight and M2ScenarioInput.scenario_weight",
+      "status": "FOUND"
+    },
+    {
+      "object": "M2 V4 formal scope",
+      "authority": "model/M2/cu/registry.py and registries/m2_data2_formal_cu_v4.json",
+      "status": "FOUND"
+    },
+    {
+      "object": "seven component ontology",
+      "authority": "model/common/consequence_ontology.py",
+      "status": "FOUND"
+    },
+    {
+      "object": "M2 native quantities",
+      "authority": "model/M2/contracts.py:NativeQuantity and ConsequenceRow.native_quantity",
+      "status": "FOUND"
+    },
+    {
+      "object": "M2 CU quantities",
+      "authority": "model/M2/contracts.py:CUQuantity and ConsequenceRow.constructed_value_cu",
+      "status": "FOUND"
+    },
+    {
+      "object": "V4 scales",
+      "authority": "registries/m2_data2_formal_cu_v4.json:train_scale_artifact",
+      "status": "FOUND"
+    },
+    {
+      "object": "V4 registry hash",
+      "authority": "model/M2/scientific_registry.py:load_active_m2_cu_registry",
+      "status": "FOUND"
+    },
+    {
+      "object": "support state semantics",
+      "authority": "model/M2/contracts.py and active registry support_rule",
+      "status": "FOUND"
+    },
+    {
+      "object": "current Development fixture/artifact",
+      "authority": "existing frozen Development artifacts only",
+      "status": "FOUND"
+    },
+    {
+      "object": "Final Test access needed",
+      "authority": "Phase 0 interface-only execution",
+      "status": "PASS",
+      "value": false
+    }
+  ],
+  "guards": {
+    "correlation_computed": false,
+    "final_test_required": false,
+    "kendall_computed": false,
+    "paper_result_generated": false,
+    "priority_definition_scanned": false,
+    "ranking_performed": false,
+    "top_k_computed": false
+  },
+  "hard_gate": {
+    "active_cu_registry": "M2_DATA2_FORMAL_CU_V4",
+    "d_to_field": "FOUND",
+    "final_test_required": false,
+    "m1_scenario_authority": "FOUND",
+    "m2_cu_lineage": "FOUND",
+    "m2_native_components": "FOUND",
+    "m2_v4_scope": "SEVEN_COMPONENTS",
+    "scenario_weight": "FOUND",
+    "status": "PASS"
+  },
+  "priority_contract": {
+    "separate_contract_file_found": false,
+    "source": "AIR_SLOT_PHASE0_SHARED_PRIORITY_RESEARCH_PROGRAMMING_INSTRUCTION_V1_20260906.md",
+    "status": "EXECUTION_INSTRUCTION_EMBEDS_FIXED_CONTRACT",
+    "version": "AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906"
+  },
+  "repository_head": "b6ed055d3ce92892b76eca99624d865f9d83444c",
+  "sources": {
+    "m1_scenario": "model/M1/contracts.py:M1V2Scenario",
+    "m2_consequence": "model/M2/contracts.py:ScenarioConsequenceDistribution",
+    "m2_registry": "registries/m2_data2_formal_cu_v4.json",
+    "m2_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
+    "m2_cu_normalization_registry_hash": "sha256:8c9bfbed9d6b64c288cb5591f77fab9c3896ebc8d29d0a6450333ef2cc104d8e",
+    "m2_scope_hash": "sha256:d95b404f683440b296b1897df9b8453cbb1161db88215c6fa1efc164d5ae4621",
+    "support_rule": "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY"
+  }
+}

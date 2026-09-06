@@ -1,0 +1,35 @@
+{
+  "bootstrap": {
+    "ci": "percentile_95",
+    "cluster": "episode",
+    "replicates": 2000,
+    "seed": 20260906
+  },
+  "components": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "final_test_access_count": 0,
+  "head": "731d1dab7c1e55f26bb7bbeafcf7cf60ce9718cb",
+  "inherited_support": {
+    "current_executable_artifact": null,
+    "exact_semantics": "S_i contains scenarios with finite D_TO and inherited formal consequence status FORMAL_AVAILABLE; support_fraction_i=|S_i|/250; primary >=0.90; sensitivity >=0.50. Exp2 must consume the inherited result and must not reconstruct it from M2 V4's seven-component aggregate.",
+    "rule_id": "EXP1_FROZEN_COMMON_SCENARIO_SUPPORT_V1",
+    "source_blob": "755569e43b381d3151b5679e539bc4a72bf611e4",
+    "source_path": "HISTORICAL_GIT_BLOB:35e5258^:exp/exp1/closure.py",
+    "status": "BLOCK_EXP2_INHERITED_SUPPORT_UNRESOLVED"
+  },
+  "m2_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
+  "m2_registry_id": "M2_DATA2_FORMAL_CU_V4",
+  "m2_scope_hash": "sha256:d95b404f683440b296b1897df9b8453cbb1161db88215c6fa1efc164d5ae4621",
+  "paper_result": false,
+  "repository_baseline_in_instruction": "9729354261de2a23c82b2e02350ba84aaba6dab7",
+  "schema_version": "EXP2_ANALYSIS_CONTRACT_V1",
+  "scientific_design": "AirSlot_EXP2_PRIORITY_DIVERGENCE_DESIGN_V1_20260906.md",
+  "status": "CONTRACT_READY_DEVELOPMENT_INPUT_BLOCKED"
+}
