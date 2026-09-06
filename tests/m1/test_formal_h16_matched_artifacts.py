@@ -55,7 +55,8 @@ def test_matched_audit_passes_and_records_only_intended_scientific_difference():
     assert audit["history_mode_history"] == "FULL_ADAPTIVE_CAUSAL_PREFIX"
     assert audit["history_mode_current"] == "NO_HISTORY_CURRENT_OBSERVATION"
     assert audit["development_used_for_parameter_selection"] is False
-    assert audit["final_test_access_count"] is True
+    assert audit["final_test_access_count"] == 0
+    assert audit["final_test_access_check"] is True
     assert all(audit[key] is True for key in audit if key.startswith("same_"))
 
 

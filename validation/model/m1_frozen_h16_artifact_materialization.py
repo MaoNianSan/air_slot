@@ -160,6 +160,19 @@ def _materialize_variant(*, cache: M1DevelopmentBaseCache, cohort: dict, output:
 
 
 def matched_audit(history_manifest: dict, current_manifest: dict, cohort: dict) -> dict:
+    final_test_access_count = max(
+        int(history_manifest["final_test_access_count"]),
+        int(current_manifest["final_test_access_count"]),
+        int(cohort["final_test_access_count"]),
+    )
+    final_test_access_check = all(
+        access_count == 0
+        for access_count in (
+            history_manifest["final_test_access_count"],
+            current_manifest["final_test_access_count"],
+            cohort["final_test_access_count"],
+        )
+    )
     checks = {
         "same_hidden_size": history_manifest["hidden_size"] == current_manifest["hidden_size"],
         "same_training_seed": history_manifest["training_seed"] == current_manifest["training_seed"],
@@ -176,9 +189,9 @@ def matched_audit(history_manifest: dict, current_manifest: dict, cohort: dict) 
         "same_scenario_count": history_manifest["scenario_count"] == current_manifest["scenario_count"],
         "different_history_mode": history_manifest["history_mode"] != current_manifest["history_mode"],
         "development_used_for_parameter_selection": not history_manifest["development_used_for_parameter_selection"] and not current_manifest["development_used_for_parameter_selection"],
-        "final_test_access_count": history_manifest["final_test_access_count"] == 0 and current_manifest["final_test_access_count"] == 0 and cohort["final_test_access_count"] == 0,
+        "final_test_access_check": final_test_access_check,
     }
-    audit = {"schema_version": "M1_H16_HISTORY_CURRENT_MATCHED_AUDIT_V1", **checks, "history_mode_history": history_manifest["history_mode"], "history_mode_current": current_manifest["history_mode"], "development_used_for_parameter_selection": False, "status": "PASS" if all(checks.values()) else "FAIL"}
+    audit = {"schema_version": "M1_H16_HISTORY_CURRENT_MATCHED_AUDIT_V1", **checks, "final_test_access_count": final_test_access_count, "history_mode_history": history_manifest["history_mode"], "history_mode_current": current_manifest["history_mode"], "development_used_for_parameter_selection": False, "status": "PASS" if all(checks.values()) else "FAIL"}
     _write_json(MATCHED_AUDIT_PATH, audit)
     if audit["status"] != "PASS":
         raise RuntimeError("M1_H16_HISTORY_CURRENT_MATCHED_CONTRACT_FAILED")
