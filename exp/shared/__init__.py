@@ -28,6 +28,15 @@ from .recovery_priority import (
     summarize_native_components,
     validate_authoritative_dependencies,
 )
+from .development_inputs import publish_from_exp2_materialization
+from .support import (
+    COMMON_SUPPORT_050,
+    COMMON_SUPPORT_090,
+    FULL,
+    SupportPolicy,
+    apply_node_support_policy,
+    policy,
+)
 
 __all__ = [
     "PRIORITY_CONTRACT_HASH",
@@ -52,4 +61,11 @@ __all__ = [
     "summarize_native_components",
     "validate_authoritative_dependencies",
     "validate_development_scope",
+    "publish_from_exp2_materialization",
+    "COMMON_SUPPORT_050",
+    "COMMON_SUPPORT_090",
+    "FULL",
+    "SupportPolicy",
+    "apply_node_support_policy",
+    "policy",
 ]

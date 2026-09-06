@@ -1,0 +1,59 @@
+{
+  "artifact_hash": "sha256:0a2426f92ba1298ef988c158c0e0b37c8debf1ebc622e80e979b146ace05d38a",
+  "artifact_id": "PRE_FORMAL_DEVELOPMENT_V1",
+  "artifact_scope": "FORMAL_DEVELOPMENT_PRESTATE_FREEZE",
+  "audit_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\pre\\PRE_FORMAL_DEVELOPMENT_V1\\PRE_FORMAL_DEVELOPMENT_AUDIT.json",
+  "audit_sha256": "sha256:99168e81b15b2447c3f4c1f5dbf0041a6374d9f2351b9f62b2b66f2bbaece220",
+  "decision_node_hash": "sha256:3d61ceca6f6e51193326dfd42662945912d48618f18986432b65d103a3f000d2",
+  "development_episode_count": 128,
+  "development_episode_hash": "sha256:79c3dd9d47e3ec6f15f228213f69bf84f40e8b8f5b6bb7fbea390fbe5613af79",
+  "final_test_access_count": 0,
+  "final_test_episode_count": 0,
+  "formal_cohort_hash": "sha256:b60a80f7ca1acc0d70b8e71ae1563a3263a6db8a7ff4bb5d689bee9de6628478",
+  "formal_cohort_id": "M1_FORMAL_TRAINING_COHORT_V1",
+  "formal_exp1_execution": false,
+  "m1_cache": {
+    "cache_hash": "sha256:599be2df0cbf7f2e761709a9e86ab38ddb2672c1e6edb6b6fe2df50991ed3d41",
+    "development_node_count": 1769,
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H16\\DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3.npz"
+  },
+  "node_identity_config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+  "paper_result": false,
+  "pre_config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+  "pre_registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+  "prestate_count": 1775,
+  "schema_version": "PRE_FORMAL_DEVELOPMENT_MANIFEST_V1",
+  "selection_pre_outcome": true,
+  "selection_reperformed": false,
+  "selection_seed": 20260813,
+  "source_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+  "source_preparation_artifact": {
+    "manifest_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v5_development_freeze\\M1_BASE_CACHE_PREPARATION_PROGRESS.json",
+    "manifest_sha256": "sha256:09026b5f5cdf5bd31de11fcea7730471d5622a888eab4783589653f875f2617e",
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v5_development_freeze\\M1_BASE_CACHE_PREPARATION_STATE.pt",
+    "sha256": "sha256:042662ecc9a6f2de7330a79462d157251ebc67517deaea89fdb4cb8b252dd751",
+    "state_key": "sha256:c4f2af99f145e0daf6ac3d6e7ec5312b12695c2c0dad99cb9c23a3a58f7c2800"
+  },
+  "states_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\pre\\PRE_FORMAL_DEVELOPMENT_V1\\PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+  "states_sha256": "sha256:a9fefa327aeeb5258dfc2fec7b36ef4660612aaeb121a8d49d86fc506ba02bee",
+  "status": "PASS",
+  "taxi_reference": {
+    "artifact_hash": "sha256:9e67d6f5d0b9870947e1c882fdf65ecc7609404cdf209f7162f381889ecab4dc",
+    "reference_hash": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+    "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3"
+  },
+  "turnaround_reference": {
+    "artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+    "reference_hash": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+    "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+  },
+  "weather_replay": {
+    "max_age_minutes": 60,
+    "publication_audit": {
+      "accepted_train_calibration_development_observations": 473979,
+      "airports": 48,
+      "final_test_access_count": 0
+    },
+    "replay_lag_minutes": 5
+  }
+}

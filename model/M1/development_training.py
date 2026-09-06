@@ -244,6 +244,14 @@ def _build_or_load_cache(
                 manifest_path,
                 expected_cache_key=key,
             )
+            audit = loaded.manifest.get("audit", {})
+            identity_matches = (
+                audit.get("source_manifest_hash") == identity["source_manifest_hash"]
+                and audit.get("PRE_registry_hash") == identity["registry_hash"]
+                and audit.get("config_hash") == identity["config_hash"]
+            )
+            if not identity_matches:
+                raise ValueError("M1_CACHE_PRE_INPUT_IDENTITY_STALE")
             return (
                 loaded,
                 None,

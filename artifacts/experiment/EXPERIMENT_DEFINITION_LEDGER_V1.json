@@ -1,0 +1,230 @@
+{
+  "schema_version": "AIR_SLOT_EXPERIMENT_DEFINITION_LEDGER_V1",
+  "version": "V1",
+  "date": "2026-09-06",
+  "scope": "EXP1_EXP4_DEVELOPMENT_PROGRAMMING",
+  "status": "WORKING_LEDGER",
+  "authority": {
+    "master_programming_spec": "AIR_SLOT_EXP1_4_MASTER_PROGRAMMING_SPEC_V1_20260906",
+    "supplemental_positioning": "AIR_SLOT_EXP1_EXP4_POSITIONING_SUPPLEMENT",
+    "paper_sections_1_4": "CURRENT_MANUSCRIPT_CONSTRAINT"
+  },
+  "boundaries": {
+    "data1_read_only": true,
+    "data2_read_only": true,
+    "model_scientific_definition_frozen": true,
+    "manuscript_editing_allowed": false,
+    "final_test_authorized": false,
+    "git_operations_allowed": false
+  },
+  "approved_definitions": [
+    {
+      "topic": "paper_positioning",
+      "definition": "A is the main empirical question and B is methodological support",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "exp1",
+      "definition": "Rolling-State Empirical Adequacy",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "exp2",
+      "definition": "Delay-Priority Divergence and Consequence Heterogeneity",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "exp3",
+      "definition": "Operating-Stage Variation",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "exp4",
+      "definition": "Capacity-Constrained Recovery Triage",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "delay_object",
+      "definition": "Decision-time scenario-weighted successor total take-off delay D_TO",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "node_consequence",
+      "definition": "Scenario-weighted node-level consequence",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "consequence_ontology",
+      "definition": "Frozen M2 seven-component consequence ontology",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "domain_aggregation",
+      "definition": "Domain-balanced F/P/R aggregate consequence score",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "exp2_primary_metric",
+      "definition": "Kendall tau-b between delay score and aggregate consequence score",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "exp3_primary_metrics",
+      "definition": "Stage-specific Kendall tau-b and similar-delay heterogeneity",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "exp4_interpretation",
+      "definition": "Retrospective screening attention reallocation, not action optimization or realized savings",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    },
+    {
+      "topic": "analysis_dependence",
+      "definition": "Episode/node analysis with episode-level dependence preserved",
+      "status": "APPROVED",
+      "blocked_experiments": []
+    }
+  ],
+  "unresolved_definitions": [
+    {
+      "topic": "primary_support_estimand",
+      "source": "Master programming specification U1",
+      "status": "UNRESOLVED",
+      "allowed_values": [
+        "FULL",
+        "COMMON_SUPPORT_CONDITIONAL_090"
+      ],
+      "decision_required": "Choose the primary support estimand",
+      "blocked_experiments": [
+        "EXP1",
+        "EXP2",
+        "EXP3",
+        "EXP4"
+      ]
+    },
+    {
+      "topic": "exp2_component_domain_population",
+      "source": "Master programming specification I1",
+      "status": "APPROVED_FOR_IMPLEMENTATION",
+      "definition": "Build a separate finite/support-applicable sample for each component and domain",
+      "decision_required": "Confirm only minimum sample threshold if required",
+      "blocked_experiments": [
+        "EXP2"
+      ]
+    },
+    {
+      "topic": "exp4_budget_comparison_set",
+      "source": "Master programming specification U2",
+      "status": "UNRESOLVED",
+      "allowed_values": [
+        "STAGE_STRATIFIED",
+        "TIME_WINDOW",
+        "CALENDAR_DAY",
+        "OTHER_EXPLICIT_COHORT"
+      ],
+      "decision_required": "Define which canonical events share one fixed screening budget",
+      "blocked_experiments": [
+        "EXP4"
+      ]
+    },
+    {
+      "topic": "exp4_unsupported_canonical_event",
+      "source": "Master programming specification U2",
+      "status": "UNRESOLVED",
+      "allowed_values": [
+        "EXCLUDE_WITH_TYPED_REASON",
+        "ABSTAIN_COHORT",
+        "BLOCK_COHORT"
+      ],
+      "decision_required": "Define handling of an unsupported first canonical event",
+      "blocked_experiments": [
+        "EXP4"
+      ]
+    },
+    {
+      "topic": "exp4_k_rounding",
+      "source": "Master programming specification",
+      "status": "UNRESOLVED",
+      "allowed_values": [
+        "CEIL",
+        "FLOOR"
+      ],
+      "decision_required": "Freeze deterministic K rounding",
+      "blocked_experiments": [
+        "EXP4"
+      ]
+    },
+    {
+      "topic": "exp4_consensus_threshold_m",
+      "source": "Master programming specification U4",
+      "status": "UNRESOLVED",
+      "allowed_values": [
+        "HUMAN_DEFINED_INTEGER"
+      ],
+      "decision_required": "Freeze robust priority consensus threshold",
+      "blocked_experiments": [
+        "EXP4"
+      ]
+    },
+    {
+      "topic": "passenger_threshold_sensitivity",
+      "source": "Teacher revision and master programming specification U3",
+      "status": "UNRESOLVED",
+      "allowed_values": [
+        "INCLUDED",
+        "APPENDIX_ONLY",
+        "DEFERRED_WITH_JUSTIFICATION",
+        "OUT_OF_SCOPE"
+      ],
+      "decision_required": "Record disposition before reporting freeze",
+      "blocked_experiments": [
+        "EXP1",
+        "EXP2",
+        "EXP3",
+        "EXP4"
+      ]
+    },
+    {
+      "topic": "support_filter_ordering",
+      "source": "Master programming specification U1/U5",
+      "status": "UNRESOLVED",
+      "allowed_values": [
+        "FILTER_BEFORE_CANONICAL_EVENT",
+        "CANONICAL_EVENT_BEFORE_FILTER"
+      ],
+      "decision_required": "Freeze support filtering and cohort construction order",
+      "blocked_experiments": [
+        "EXP2",
+        "EXP3",
+        "EXP4"
+      ]
+    }
+  ],
+  "implementation_rules": [
+    "UNRESOLVED values are blocking for formal runners",
+    "Smoke profiles must be explicitly NON_PAPER_DIAGNOSTIC",
+    "Development results cannot mutate the ledger",
+    "Final Test cannot resolve definitions",
+    "Historical manuscript numbers are not acceptance targets"
+  ],
+  "work_packages": [
+    "W0_DEFINITION_LEDGER",
+    "W1_FORMAL_SHARED_DEVELOPMENT_INPUTS",
+    "W2_SHARED_ANALYTICAL_VIEWS",
+    "W3_EXP1_EXP2_INTEGRATION",
+    "W4_EXP3_EXP4_IMPLEMENTATION",
+    "W5_DEVELOPMENT_REVIEW"
+  ]
+}
