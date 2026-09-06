@@ -1,0 +1,55 @@
+{
+  "blocker": "FORMAL_DEVELOPMENT_PRESTATE_ARTIFACT_UNAVAILABLE",
+  "final_test_access_count": 0,
+  "formal_exp1_execution": false,
+  "gate_a": {
+    "checks": {
+      "current_final_test_access_count": true,
+      "current_hidden_size": true,
+      "current_mode": true,
+      "current_seed": true,
+      "formal_cohort_development_count": true,
+      "formal_cohort_final_test_access_count": true,
+      "formal_cohort_final_test_episode_count": true,
+      "history_final_test_access_count": true,
+      "history_hidden_size": true,
+      "history_mode": true,
+      "history_seed": true,
+      "matched_fields": true,
+      "matched_final_test_access_check": true,
+      "matched_final_test_access_count": true,
+      "matched_status": true
+    },
+    "development_cohort_hash": "sha256:79c3dd9d47e3ec6f15f228213f69bf84f40e8b8f5b6bb7fbea390fbe5613af79",
+    "matched_contract_status": "PASS",
+    "status": "PASS"
+  },
+  "gates": {
+    "A_artifacts": "PASS",
+    "B_m1_history_current": "BLOCKED",
+    "C_joint": "NOT_RUN",
+    "D_point": "NOT_RUN",
+    "E_marginal": "NOT_RUN",
+    "F_m1_to_m2": "NOT_RUN",
+    "G_invariants": "NOT_RUN",
+    "H_support_lineage": "NOT_RUN"
+  },
+  "paper_result": false,
+  "prestate_availability": {
+    "blocker": "FORMAL_DEVELOPMENT_PRESTATE_ARTIFACT_UNAVAILABLE",
+    "cache_contains_encoded_inputs": true,
+    "cache_contains_pre_state": false,
+    "cache_development_node_count": 1769,
+    "formal_pre_state_available": false,
+    "formal_reservoir_ids_exact": true,
+    "pre_golden_formal_development_match_count": 0,
+    "pre_golden_formal_development_matches": [],
+    "pre_golden_state_count": 8,
+    "preparation_test_reservoir_count": 0
+  },
+  "schema_version": "EXP1_DEVELOPMENT_PLUMBING_SMOKE_V1",
+  "scope": "DEVELOPMENT_ONLY_DIAGNOSTIC",
+  "smoke_3d_node_count": 0,
+  "smoke_hc_node_count": 0,
+  "status": "BLOCKED"
+}
