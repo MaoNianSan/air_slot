@@ -4,8 +4,10 @@ import ast
 from dataclasses import dataclass, replace
 from pathlib import Path
 
+import pandas as pd
 import pytest
 
+from exp.exp2.priority import add_domain_scores
 from exp.shared.contracts import SupportedScore
 from exp.shared.recovery_priority import (
     compute_aggregate_priority,
@@ -412,3 +414,15 @@ def test_output_contract_contains_scores_not_ranks():
     )
     assert {"delay_score", "score_F", "score_P", "score_R", "score_C"} <= fields
     assert not {"rank", "percentile", "top10_flag", "priority_class"} & fields
+
+
+def test_exp2_domain_adapter_delegates_shared_arithmetic():
+    frame = pd.DataFrame(
+        [{f"Z_{component}": value for component, value in _arithmetic_values().items()}]
+    )
+    result = add_domain_scores(frame).iloc[0]
+    assert result["score_F"] == pytest.approx(6.0)
+    assert result["score_P"] == pytest.approx(4.0)
+    assert result["score_R"] == pytest.approx(5.0)
+    assert result["score_C"] == pytest.approx(5.0)
+    assert bool(result["aggregate_complete"])

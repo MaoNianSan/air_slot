@@ -15,9 +15,7 @@ from .metrics import midrank_percentiles, priority_metrics
 from .protocol import (
     ACTIVE_STAGES,
     COMPONENTS,
-    FLIGHT_COMPONENTS,
     MATERIAL_RANK_GAP,
-    PASSENGER_COMPONENTS,
     TOP_FRACTION_PRIMARY,
 )
 
