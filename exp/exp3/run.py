@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from .analysis import SHARED_INPUT, bootstrap_stage, stage_agreement, stage_contrasts, stage_heterogeneity
+from .analysis import SHARED_INPUT, bootstrap_stage_fast, stage_agreement, stage_contrasts, stage_heterogeneity
 
 
 def main(argv=None) -> int:
@@ -28,7 +28,7 @@ def main(argv=None) -> int:
     result = stage_agreement(frame)
     heterogeneity = pd.concat([stage_heterogeneity(frame, c) for c in (5.0, 10.0, 15.0)], ignore_index=True)
     contrasts = stage_contrasts(result)
-    bootstrap = bootstrap_stage(frame, replicates=20 if args.mode == "fast" else 2000)
+    bootstrap = bootstrap_stage_fast(frame, replicates=20 if args.mode == "fast" else 2000)
     output = Path(__file__).resolve().parents[2] / "artifacts" / "experiment" / "exp3" / "development"
     output.mkdir(parents=True, exist_ok=True)
     result.to_csv(output / "EXP3_STAGE_AGREEMENT.csv", index=False)

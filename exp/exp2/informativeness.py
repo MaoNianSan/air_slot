@@ -50,3 +50,19 @@ def informativeness_table(frame: pd.DataFrame) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
+
+
+def informativeness_population(frame: pd.DataFrame) -> pd.DataFrame:
+    """Return the union of Exp2B estimand-specific eligible rows.
+
+    The returned frame is intentionally not the Exp2A complete-case sample.
+    Each quantity is filtered again inside ``informativeness_table``.
+    """
+    required = {"episode_id", "delay_to_mean"}
+    missing = sorted(required - set(frame.columns))
+    if missing:
+        raise ValueError(f"EXP2_INFORMATIVENESS_POPULATION_COLUMNS_MISSING:{missing}")
+    return frame.loc[
+        frame["support_primary"].eq(True)
+        & np.isfinite(frame["delay_to_mean"].astype(float))
+    ].copy()

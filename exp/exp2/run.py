@@ -12,7 +12,7 @@ import pandas as pd
 from .bootstrap import percentile_interval, run_bootstrap
 from .development_inputs import materialize_h16_development_inputs
 from .figures import component_figure, priority_figure
-from .informativeness import informativeness_table
+from .informativeness import informativeness_population, informativeness_table
 from .model_inputs import active_model_contract, load_explicit_node_inputs
 from .priority import (
     add_domain_scores,
@@ -177,6 +177,7 @@ def execute_node_materialization(
     source: pd.DataFrame, *, fast: bool
 ) -> dict[str, object]:
     rows = add_domain_scores(source)
+    informativeness_source = informativeness_population(rows)
     sample = rank_base_sample(base_sample(rows))
     sensitivity_sample = rank_base_sample(
         base_sample(rows, support_column="support_sensitivity")
@@ -206,7 +207,7 @@ def execute_node_materialization(
         if len(full_sample) >= 2
         else {"status": "ABSTAIN_INSUFFICIENT_SUPPORT", "n_nodes": len(full_sample)}
     )
-    information = informativeness_table(sample)
+    information = informativeness_table(informativeness_source)
     pair_frames = {
         caliper: build_similar_delay_pairs(sample, caliper=caliper)
         for caliper in (SIMILAR_DELAY_PRIMARY, *SIMILAR_DELAY_SENSITIVITY)
@@ -226,6 +227,7 @@ def execute_node_materialization(
         replicates=bootstrap_replicates,
         seed=BOOTSTRAP_SEED,
         caliper=SIMILAR_DELAY_PRIMARY,
+        informativeness_frame=informativeness_source,
     )
 
     for key in (

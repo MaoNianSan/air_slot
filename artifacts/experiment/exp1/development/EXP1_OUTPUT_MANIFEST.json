@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "experiment_id": "EXP1",
+  "mode": "development",
+  "matched_node_count": 1769,
+  "history_current": [
+    {
+      "mode": "H16_HISTORY",
+      "n_nodes": 1769,
+      "n_episodes": 128,
+      "mae_minutes": 7.091341878671696,
+      "p90_absolute_error_minutes": 19.0,
+      "crps_minutes": 18.99074190501459,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY"
+    },
+    {
+      "mode": "H16_CURRENT",
+      "n_nodes": 1769,
+      "n_episodes": 128,
+      "mae_minutes": 7.140510267484324,
+      "p90_absolute_error_minutes": 19.0,
+      "crps_minutes": 21.512291039377104,
+      "crps_scope": "T_IB_FINITE_SUPPORT_CONDITIONAL_ONLY"
+    }
+  ],
+  "evaluation_lead_minutes": [
+    0,
+    30,
+    60,
+    120,
+    180,
+    240,
+    300,
+    360,
+    420,
+    480
+  ],
+  "lead_time_slice_status": "NOT_RUN_TARGET_ARTIFACT_HAS_NO_LEAD_TIME_AXIS",
+  "representation_status": "NOT_RUN_M2_SCENARIO_INTERFACE_NOT_EXPOSED_IN_FROZEN_ARTIFACT",
+  "downstream_native_distortion_status": "NOT_RUN_M2_SCENARIO_INTERFACE_NOT_EXPOSED_IN_FROZEN_ARTIFACT",
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 20260906,
+  "final_test_access_count": 0,
+  "paper_result": false,
+  "model_retrained": false,
+  "calibration_refit": false,
+  "parameter_reselected": false
+}

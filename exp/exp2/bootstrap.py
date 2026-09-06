@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .informativeness import informativeness_table
+from .informativeness import informativeness_population, informativeness_table
 from .priority import rank_base_sample, summarize_priority
 from .robustness import no_f_execution
 from .similar_delay import (
@@ -37,14 +37,19 @@ def resample_episode_clusters(
 
 
 def bootstrap_once(
-    frame: pd.DataFrame, generator: np.random.Generator, *, caliper: float
+    frame: pd.DataFrame,
+    generator: np.random.Generator,
+    *,
+    caliper: float,
+    informativeness_frame: pd.DataFrame | None = None,
 ) -> dict[str, object]:
     sample = rank_base_sample(resample_episode_clusters(frame, generator))
     priority = summarize_priority(sample)
     _, robustness = no_f_execution(sample)
-    information = (
-        informativeness_table(sample).set_index("quantity_id")["estimate"].to_dict()
+    info_source = sample if informativeness_frame is None else resample_episode_clusters(
+        informativeness_frame, generator
     )
+    information = informativeness_table(info_source).set_index("quantity_id")["estimate"].to_dict()
     pairs = build_similar_delay_pairs(sample, caliper=caliper)
     pair_summary = summarize_episode_pairs(aggregate_episode_pairs(pairs))
     return {
@@ -61,10 +66,17 @@ def run_bootstrap(
     replicates: int,
     seed: int,
     caliper: float,
+    informativeness_frame: pd.DataFrame | None = None,
 ) -> list[dict[str, object]]:
     generator = np.random.default_rng(seed)
     return [
-        bootstrap_once(frame, generator, caliper=caliper) for _ in range(replicates)
+        bootstrap_once(
+            frame,
+            generator,
+            caliper=caliper,
+            informativeness_frame=informativeness_frame,
+        )
+        for _ in range(replicates)
     ]
 
 
