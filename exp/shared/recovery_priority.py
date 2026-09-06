@@ -1,4 +1,4 @@
-"""Shared node-level recovery-priority materialization."""
+"""Shared node-level recovery-priority candidate computations."""
 
 from __future__ import annotations
 
@@ -22,8 +22,8 @@ from model.common.cu_normalization import CUNormalizationStatus
 from .contracts import (
     ComponentSupportRecord,
     NamedSupportRecord,
-    PRIORITY_CONTRACT_HASH,
-    PRIORITY_CONTRACT_VERSION,
+    PRIORITY_INTERFACE_HASH,
+    PRIORITY_INTERFACE_VERSION,
     RecoveryPriorityScoreRecord,
     SupportedScore,
 )
@@ -318,7 +318,7 @@ def _support_records(
     )
 
 
-def materialize_priority_score_record(
+def build_priority_score_candidate(
     scenarios: Sequence[Any],
     consequences: Sequence[ScenarioConsequence] | ScenarioConsequenceDistribution,
     *,
@@ -377,12 +377,12 @@ def materialize_priority_score_record(
         m2_cu_normalization_registry_hash=dependency[
             "cu_normalization_registry_hash"
         ],
-        priority_contract_version=PRIORITY_CONTRACT_VERSION,
-        priority_contract_hash=PRIORITY_CONTRACT_HASH,
+        priority_interface_version=PRIORITY_INTERFACE_VERSION,
+        priority_interface_hash=PRIORITY_INTERFACE_HASH,
     )
 
 
-def materialize_priority_scores(
+def build_priority_score_candidates(
     node_inputs: Iterable[
         tuple[
             Sequence[Any],
@@ -395,7 +395,7 @@ def materialize_priority_scores(
     registry: M2Data2FormalCuRegistry | None = None,
 ) -> tuple[RecoveryPriorityScoreRecord, ...]:
     records = tuple(
-        materialize_priority_score_record(
+        build_priority_score_candidate(
             scenarios,
             consequences,
             repository_head=repository_head,
@@ -407,11 +407,19 @@ def materialize_priority_scores(
     return tuple(sorted(records, key=lambda row: (row.episode_id, row.decision_node_id)))
 
 
+# Draft-name aliases retained for local callers; the returned objects remain
+# candidate score records and are not formal node-table materialization.
+materialize_priority_score_record = build_priority_score_candidate
+materialize_priority_scores = build_priority_score_candidates
+
+
 __all__ = [
     "compute_aggregate_priority",
     "compute_domain_scores",
     "compute_equal_component_priority",
     "compute_no_f_execution_priority",
+    "build_priority_score_candidate",
+    "build_priority_score_candidates",
     "materialize_priority_score_record",
     "materialize_priority_scores",
     "summarize_cu_components",

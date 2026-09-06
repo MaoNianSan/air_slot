@@ -1,16 +1,31 @@
 """Shared, experiment-facing recovery-priority score layer."""
 
 from .contracts import (
+    AggregationStatus,
+    CURRENT_AGGREGATION_CANDIDATE,
+    PRIORITY_INTERFACE_HASH,
+    PRIORITY_INTERFACE_PAYLOAD,
+    PRIORITY_INTERFACE_VERSION,
     PRIORITY_CONTRACT_HASH,
+    PRIORITY_CONTRACT_PAYLOAD,
     PRIORITY_CONTRACT_VERSION,
+    PriorityAggregationCandidate,
     RecoveryPriorityScoreRecord,
     SupportedScore,
+)
+from .priority import (
+    PriorityAggregator,
+    PriorityScoreProvider,
+    current_aggregation_candidate,
+    validate_development_scope,
 )
 from .recovery_priority import (
     compute_aggregate_priority,
     compute_domain_scores,
     compute_equal_component_priority,
     compute_no_f_execution_priority,
+    build_priority_score_candidate,
+    build_priority_score_candidates,
     materialize_priority_score_record,
     materialize_priority_scores,
     summarize_cu_components,
@@ -20,14 +35,27 @@ from .recovery_priority import (
 )
 
 __all__ = [
+    "PRIORITY_INTERFACE_HASH",
+    "PRIORITY_INTERFACE_PAYLOAD",
+    "PRIORITY_INTERFACE_VERSION",
     "PRIORITY_CONTRACT_HASH",
+    "PRIORITY_CONTRACT_PAYLOAD",
     "PRIORITY_CONTRACT_VERSION",
+    "AggregationStatus",
+    "CURRENT_AGGREGATION_CANDIDATE",
+    "PriorityAggregationCandidate",
     "RecoveryPriorityScoreRecord",
     "SupportedScore",
+    "PriorityAggregator",
+    "PriorityScoreProvider",
+    "current_aggregation_candidate",
+    "validate_development_scope",
     "compute_aggregate_priority",
     "compute_domain_scores",
     "compute_equal_component_priority",
     "compute_no_f_execution_priority",
+    "build_priority_score_candidate",
+    "build_priority_score_candidates",
     "materialize_priority_score_record",
     "materialize_priority_scores",
     "summarize_cu_components",

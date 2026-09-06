@@ -1,8 +1,8 @@
 # Shared Recovery-Priority Phase 0 Dependency Audit
 
 - Audit date: `2026-09-06`
-- Repository HEAD: `b6ed055d3ce92892b76eca99624d865f9d83444c`
-- Status: `PASS`
+- Repository HEAD: `f4db439771943e6b4c280a74d392e882e4e71ecb`
+- Status: `BLOCK_CONTRACT_RECONCILIATION_REQUIRED`
 
 ## Authoritative Dependencies
 
@@ -36,3 +36,7 @@ The existing Development-only M2 golden fixes the node and carries CU records wh
 ## Guards
 
 No Final Test input, raw-data reconstruction, model training, parameter selection, ranking, correlation, Kendall, Top-K, or paper-result computation was used in this audit.
+
+## Contract Reconciliation Block
+
+The attached execution instruction requires the fixed version `AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906`. The current local `exp/shared/contracts.py` instead declares `AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906` and marks the aggregation `DEVELOPMENT_CANDIDATE`. These authorities conflict. No Development priority artifact or `PHASE0_PASS` is authorized until a human chooses the governing contract status/version.

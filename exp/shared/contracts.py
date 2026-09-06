@@ -1,4 +1,9 @@
-"""Immutable contracts for shared recovery-priority scores."""
+"""Typed, candidate-only contracts for shared recovery-priority scores.
+
+This module deliberately describes an analytical interface, not the paper's
+final recovery-priority protocol.  Aggregation choices remain candidates until
+Exp2 freezes the downstream ``PD``/``PCP`` quantities.
+"""
 
 from __future__ import annotations
 
@@ -11,9 +16,9 @@ from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
 from model.common.identity import content_id
 from model.common.value_objects import FrozenModel
 
-PRIORITY_CONTRACT_VERSION = "AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906"
-PRIORITY_CONTRACT_PAYLOAD = {
-    "version": PRIORITY_CONTRACT_VERSION,
+PRIORITY_INTERFACE_VERSION = "AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906"
+PRIORITY_INTERFACE_PAYLOAD = {
+    "version": PRIORITY_INTERFACE_VERSION,
     "components": CONSEQUENCE_COMPONENTS,
     "delay": "sum(scenario_weight * authoritative_d_to_minutes)",
     "component_summary": "sum(scenario_weight * authoritative_component_value)",
@@ -27,8 +32,41 @@ PRIORITY_CONTRACT_PAYLOAD = {
     "equal_component": "mean(all_seven_CU_components)",
     "support": "FAIL_CLOSED_NO_DROP_NO_RENORMALIZATION_NO_ZERO_FILL",
     "ranking": "EXPERIMENT_SPECIFIC_NOT_SHARED",
+    "aggregation_status": "DEVELOPMENT_CANDIDATE",
+    "formal_protocol_id": None,
+    "final_test_authorized": False,
 }
-PRIORITY_CONTRACT_HASH = content_id(PRIORITY_CONTRACT_PAYLOAD)
+PRIORITY_INTERFACE_HASH = content_id(PRIORITY_INTERFACE_PAYLOAD)
+# Backwards-compatible names for callers written during the interface draft.
+# They are aliases, not a formal protocol registration.
+PRIORITY_CONTRACT_VERSION = PRIORITY_INTERFACE_VERSION
+PRIORITY_CONTRACT_PAYLOAD = PRIORITY_INTERFACE_PAYLOAD
+PRIORITY_CONTRACT_HASH = PRIORITY_INTERFACE_HASH
+
+AggregationStatus = Literal["DEVELOPMENT_CANDIDATE"]
+
+
+class PriorityAggregationCandidate(FrozenModel):
+    """A named candidate aggregation, never a registered final protocol."""
+
+    candidate_id: str = Field(min_length=1)
+    status: AggregationStatus = "DEVELOPMENT_CANDIDATE"
+    formal_protocol_id: str | None = None
+    final_test_authorized: Literal[False] = False
+    paper_result: Literal[False] = False
+
+    @model_validator(mode="after")
+    def candidate_only(self):
+        if self.status != "DEVELOPMENT_CANDIDATE":
+            raise ValueError("PRIORITY_AGGREGATION_MUST_REMAIN_CANDIDATE")
+        if self.formal_protocol_id is not None:
+            raise ValueError("PRIORITY_AGGREGATION_PROTOCOL_NOT_REGISTERED")
+        return self
+
+
+CURRENT_AGGREGATION_CANDIDATE = PriorityAggregationCandidate(
+    candidate_id="DOMAIN_BALANCED_MEAN_CANDIDATE_V0",
+)
 
 SupportState = Literal["SUPPORTED", "UNSUPPORTED"]
 
@@ -124,12 +162,18 @@ class RecoveryPriorityScoreRecord(FrozenModel):
     m2_cu_normalization_registry_hash: str = Field(
         pattern=r"^sha256:[0-9a-f]{64}$"
     )
-    priority_contract_version: Literal[
-        "AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906"
-    ] = PRIORITY_CONTRACT_VERSION
-    priority_contract_hash: str = Field(
-        default=PRIORITY_CONTRACT_HASH, pattern=r"^sha256:[0-9a-f]{64}$"
+    priority_interface_version: Literal[
+        "AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906"
+    ] = PRIORITY_INTERFACE_VERSION
+    priority_interface_hash: str = Field(
+        default=PRIORITY_INTERFACE_HASH, pattern=r"^sha256:[0-9a-f]{64}$"
     )
+
+    aggregation_candidate_id: str = CURRENT_AGGREGATION_CANDIDATE.candidate_id
+    aggregation_status: AggregationStatus = "DEVELOPMENT_CANDIDATE"
+    formal_protocol_id: str | None = None
+    final_test_authorized: Literal[False] = False
+    paper_result: Literal[False] = False
 
     object_type: Literal["RESEARCH_PRIORITY_SCORE"] = "RESEARCH_PRIORITY_SCORE"
     model_object: Literal[False] = False
@@ -143,8 +187,12 @@ class RecoveryPriorityScoreRecord(FrozenModel):
             raise ValueError("PRIORITY_NATIVE_SUPPORT_REQUIRES_EXACT_ONTOLOGY")
         if tuple(item.component_id for item in self.cu_component_support) != expected:
             raise ValueError("PRIORITY_CU_SUPPORT_REQUIRES_EXACT_ONTOLOGY")
-        if self.priority_contract_hash != PRIORITY_CONTRACT_HASH:
-            raise ValueError("PRIORITY_CONTRACT_HASH_MISMATCH")
+        if self.priority_interface_hash != PRIORITY_INTERFACE_HASH:
+            raise ValueError("PRIORITY_INTERFACE_HASH_MISMATCH")
+        if self.aggregation_status != "DEVELOPMENT_CANDIDATE":
+            raise ValueError("PRIORITY_AGGREGATION_MUST_REMAIN_CANDIDATE")
+        if self.formal_protocol_id is not None or self.final_test_authorized:
+            raise ValueError("PRIORITY_AGGREGATION_PROTOCOL_NOT_REGISTERED")
         return self
 
     @computed_field
@@ -157,7 +205,13 @@ class RecoveryPriorityScoreRecord(FrozenModel):
 
 __all__ = [
     "ComponentSupportRecord",
+    "CURRENT_AGGREGATION_CANDIDATE",
     "NamedSupportRecord",
+    "PriorityAggregationCandidate",
+    "AggregationStatus",
+    "PRIORITY_INTERFACE_HASH",
+    "PRIORITY_INTERFACE_PAYLOAD",
+    "PRIORITY_INTERFACE_VERSION",
     "PRIORITY_CONTRACT_HASH",
     "PRIORITY_CONTRACT_PAYLOAD",
     "PRIORITY_CONTRACT_VERSION",

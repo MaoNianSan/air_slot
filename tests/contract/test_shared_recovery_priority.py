@@ -14,8 +14,8 @@ from exp.shared.recovery_priority import (
     compute_domain_scores,
     compute_equal_component_priority,
     compute_no_f_execution_priority,
-    materialize_priority_score_record,
-    materialize_priority_scores,
+    build_priority_score_candidate,
+    build_priority_score_candidates,
     summarize_cu_components,
     summarize_delay_score,
     summarize_native_components,
@@ -293,13 +293,13 @@ def test_cu_registry_lineage_rejects_mixed_registry():
 def test_shared_score_is_independent_of_cohort_membership():
     first_scenarios = _scenarios(values=(10.0,), weights=(1.0,), node="node-a")
     first_consequence = (_consequence(_arithmetic_values(), node="node-a"),)
-    single = materialize_priority_scores(
+    single = build_priority_score_candidates(
         ((first_scenarios, first_consequence, ("fixture",)),),
         repository_head=HEAD,
     )[0]
     second_scenarios = _scenarios(values=(90.0,), weights=(1.0,), node="node-b")
     second_consequence = (_consequence(_arithmetic_values(), node="node-b"),)
-    cohort = materialize_priority_scores(
+    cohort = build_priority_score_candidates(
         (
             (second_scenarios, second_consequence, ("fixture",)),
             (first_scenarios, first_consequence, ("fixture",)),
@@ -321,13 +321,13 @@ def test_scenario_permutation_invariance():
         )
         for item in scenarios
     )
-    first = materialize_priority_score_record(
+    first = build_priority_score_candidate(
         scenarios,
         outputs,
         repository_head=HEAD,
         m1_lineage=("fixture",),
     )
-    second = materialize_priority_score_record(
+    second = build_priority_score_candidate(
         tuple(reversed(scenarios)),
         tuple(reversed(outputs)),
         repository_head=HEAD,
@@ -354,7 +354,7 @@ def test_m1_m2_scenario_alignment_is_exact():
     with pytest.raises(
         RuntimeError, match="BLOCK_M1_M2_SCENARIO_ALIGNMENT_MISMATCH"
     ):
-        materialize_priority_score_record(
+        build_priority_score_candidate(
             scenarios,
             (output,),
             repository_head=HEAD,
@@ -405,7 +405,7 @@ def test_phase0_dependency_validation_does_not_access_final_test():
 
 def test_output_contract_contains_scores_not_ranks():
     fields = set(
-        materialize_priority_score_record(
+        build_priority_score_candidate(
             _scenarios(values=(10.0,), weights=(1.0,)),
             (_consequence(_arithmetic_values()),),
             repository_head=HEAD,
