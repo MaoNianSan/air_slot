@@ -15,6 +15,7 @@ ACTIVE_STAGES = tuple(
 )
 PRIMARY_SUPPORT_THRESHOLD = 0.90
 SENSITIVITY_SUPPORT_THRESHOLD = 0.50
+FULL_SUPPORT_THRESHOLD = 1.0
 SIMILAR_DELAY_PRIMARY = 5.0
 SIMILAR_DELAY_SENSITIVITY = (10.0, 15.0)
 MATERIAL_RANK_GAP = 0.30
@@ -24,14 +25,13 @@ BOOTSTRAP_REPLICATES = 2000
 BOOTSTRAP_SEED = 20260906
 FAST_BOOTSTRAP_REPLICATES = 20
 
-INHERITED_SUPPORT_RULE_ID = "EXP1_FROZEN_COMMON_SCENARIO_SUPPORT_V1"
-INHERITED_SUPPORT_EXACT_SEMANTICS = (
-    "S_i contains scenarios with finite D_TO and inherited formal consequence "
-    "status FORMAL_AVAILABLE; support_fraction_i=|S_i|/250; primary >=0.90; "
-    "sensitivity >=0.50. Exp2 must consume the inherited result and must not "
-    "reconstruct it from M2 V4's seven-component aggregate."
+COMMON_SUPPORT_RULE_ID = "EXP2_COMMON_SUPPORT_MASS_V1"
+COMMON_SUPPORT_SEMANTICS = (
+    "Scenario-weight probability mass on which D_TO and all seven active M2 V4 "
+    "consequence components and constructed CUs are jointly supported, finite, "
+    "and compatible with the active registry."
 )
-INHERITED_SUPPORT_BLOCK = "BLOCK_EXP2_INHERITED_SUPPORT_UNRESOLVED"
+COMMON_SUPPORT_CONDITIONAL_ESTIMAND = "EXP2_COMMON_SUPPORT_CONDITIONAL"
 
 DEVELOPMENT_START = "2019-08-01"
 DEVELOPMENT_END = "2019-09-30"

@@ -1,9 +1,4 @@
-"""Thin model boundary for Exp2.
-
-NO SCIENTIFIC MODEL LOGIC IN THIS MODULE. ALL M1/M2 SEMANTICS ARE DELEGATED
-TO model/. Inherited 90%/50% support must be supplied by a frozen artifact;
-this module never reconstructs that historical rule from M2 V4 outputs.
-"""
+"""Thin M1/M2 boundary for Exp2 Development materialization."""
 
 from __future__ import annotations
 
@@ -20,9 +15,11 @@ from model.M2.contracts import M2ScenarioInput, ScenarioConsequence
 from model.M2.cu.registry import FrozenData2CUNormalizationRegistry
 from model.M2.scientific_registry import load_active_m2_cu_registry
 from model.common.consequence_ontology import CONSEQUENCE_COMPONENTS
-from model.common.enums import SupportState
-
-from .protocol import COMPONENTS, INHERITED_SUPPORT_BLOCK
+from .common_support import (
+    conditional_node_summary,
+    identify_common_supported_scenarios,
+)
+from .protocol import COMPONENTS
 
 
 def active_model_contract() -> (
@@ -75,79 +72,39 @@ def flatten_node(
     mapped: Iterable[ScenarioConsequence],
     *,
     metadata: Mapping[str, object],
-    inherited_support: Mapping[str, bool] | None,
 ) -> dict[str, object]:
     inputs = tuple(typed)
     outputs = tuple(mapped)
-    if inherited_support is None:
-        raise RuntimeError(INHERITED_SUPPORT_BLOCK)
-    if not inputs or len(inputs) != len(outputs):
-        raise ValueError("EXP2_NODE_SCENARIO_CARDINALITY_INVALID")
-    weights = [float(item.scenario_weight) for item in inputs]
-    if not isclose(sum(weights), 1.0, abs_tol=1e-6):
-        raise ValueError("EXP2_SCENARIO_WEIGHTS_MUST_SUM_TO_ONE")
-    if any(
-        item.d_to_support is SupportState.ABSTAIN
-        or item.d_to_minutes is None
-        or not isfinite(float(item.d_to_minutes))
-        for item in inputs
-    ):
-        delay = None
-    else:
-        delay = sum(
-            float(item.d_to_minutes) * weight for item, weight in zip(inputs, weights)
-        )
+    frozen, registry, _ = active_model_contract()
+    support_records = identify_common_supported_scenarios(inputs, outputs, registry)
+    summary = conditional_node_summary(support_records)
     row: dict[str, object] = {
         **metadata,
         "episode_id": inputs[0].episode_id,
         "decision_node_id": inputs[0].decision_node_id,
-        "inherited_support_primary": bool(inherited_support["primary"]),
-        "inherited_support_sensitivity": bool(inherited_support["sensitivity"]),
-        "delay_to_mean": delay,
+        **summary,
+        "delay_to_mean": summary["delay_to_mean_cs"],
     }
-    frozen = load_active_m2_cu_registry()
-    aggregate_complete = delay is not None
-    for component in COMPONENTS:
-        component_rows = []
-        for output in outputs:
-            matches = [
-                item
-                for item in output.component_vector.rows
-                if item.component_id == component
-            ]
-            if len(matches) != 1:
-                raise ValueError(f"EXP2_COMPONENT_ROW_CARDINALITY_INVALID:{component}")
-            component_rows.append(matches[0])
-        supported = all(
-            item.support_state is not SupportState.ABSTAIN
-            and item.native_quantity is not None
-            and item.constructed_value_cu is not None
-            and isfinite(float(item.native_quantity))
-            and isfinite(float(item.constructed_value_cu))
-            for item in component_rows
+    for reason in ("D_TO", *COMPONENTS):
+        row[f"unsupported_scenario_count_{reason}"] = sum(
+            reason in support_record["unsupported_reasons"]
+            for support_record in support_records
         )
-        if supported:
-            native = sum(
-                float(item.native_quantity) * weight
-                for item, weight in zip(component_rows, weights)
-            )
-            cu = sum(
-                float(item.constructed_value_cu) * weight
-                for item, weight in zip(component_rows, weights)
-            )
-            if not isclose(
-                cu, native / frozen.scale(component), rel_tol=1e-9, abs_tol=1e-9
-            ):
-                raise ValueError(f"EXP2_MODEL_CU_VALIDATION_FAILED:{component}")
-            row[f"{component}_native"] = native
-            row[f"Z_{component}"] = cu
-            row[f"{component}_status"] = "SUPPORTED"
-        else:
-            aggregate_complete = False
-            row[f"{component}_native"] = None
-            row[f"Z_{component}"] = None
-            row[f"{component}_status"] = "UNSUPPORTED"
-    row["aggregate_complete"] = aggregate_complete
+    for component in COMPONENTS:
+        native = summary[f"{component}_native_cs"]
+        cu = summary[f"Z_{component}_cs"]
+        if native is not None and not isclose(
+            float(cu),
+            float(native) / frozen.scale(component),
+            rel_tol=1e-9,
+            abs_tol=1e-9,
+        ):
+            raise ValueError(f"EXP2_MODEL_CU_VALIDATION_FAILED:{component}")
+        row[f"{component}_native"] = native
+        row[f"Z_{component}"] = cu
+        row[f"{component}_status"] = (
+            "SUPPORTED_CONDITIONAL" if native is not None else "UNSUPPORTED"
+        )
     row["m2_registry_id"] = frozen.registry_id
     row["m2_registry_hash"] = frozen.registry_hash
     return row
@@ -167,8 +124,14 @@ def load_explicit_node_inputs(path: Path) -> pd.DataFrame:
         "decision_time",
         "information_cutoff",
         "operational_stage",
-        "inherited_support_primary",
-        "inherited_support_sensitivity",
+        "common_support_mass",
+        "support_primary",
+        "support_sensitivity",
+        "support_full",
+        "conditional_aggregate_complete",
+        "formal_full_support",
+        "scenario_count_total",
+        "common_support_scenario_count",
         "delay_to_mean",
         *(f"{component}_native" for component in COMPONENTS),
         *(f"Z_{component}" for component in COMPONENTS),
@@ -176,11 +139,6 @@ def load_explicit_node_inputs(path: Path) -> pd.DataFrame:
     }
     if not required <= set(frame.columns):
         missing = sorted(required - set(frame.columns))
-        if {
-            "inherited_support_primary",
-            "inherited_support_sensitivity",
-        } & set(missing):
-            raise RuntimeError(INHERITED_SUPPORT_BLOCK)
         raise RuntimeError(f"BLOCK_EXP2_DEVELOPMENT_INPUT_COLUMNS_MISSING:{missing}")
     decision_time = pd.to_datetime(frame["decision_time"], utc=True, errors="coerce")
     information_cutoff = pd.to_datetime(
@@ -194,4 +152,8 @@ def load_explicit_node_inputs(path: Path) -> pd.DataFrame:
     end = pd.Timestamp("2019-10-01", tz="UTC")
     if ((decision_time < start) | (decision_time >= end)).any():
         raise RuntimeError("BLOCK_EXP2_DEVELOPMENT_TEST_SEPARATION_FAILED")
+    if "final_test_access_count" in frame and not frame[
+        "final_test_access_count"
+    ].fillna(0).eq(0).all():
+        raise RuntimeError("BLOCK_EXP2_FINAL_TEST_ACCESS_VIOLATION")
     return frame

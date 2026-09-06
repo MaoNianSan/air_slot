@@ -10,6 +10,7 @@ from pathlib import Path
 import pandas as pd
 
 from .bootstrap import percentile_interval, run_bootstrap
+from .development_inputs import materialize_h16_development_inputs
 from .figures import component_figure, priority_figure
 from .informativeness import informativeness_table
 from .model_inputs import active_model_contract, load_explicit_node_inputs
@@ -22,12 +23,15 @@ from .priority import (
 from .protocol import (
     BOOTSTRAP_REPLICATES,
     BOOTSTRAP_SEED,
+    COMMON_SUPPORT_CONDITIONAL_ESTIMAND,
+    COMMON_SUPPORT_RULE_ID,
+    COMMON_SUPPORT_SEMANTICS,
     COMPONENTS,
     FAST_BOOTSTRAP_REPLICATES,
     FINAL_TEST_ACCESS_COUNT,
-    INHERITED_SUPPORT_BLOCK,
-    INHERITED_SUPPORT_EXACT_SEMANTICS,
-    INHERITED_SUPPORT_RULE_ID,
+    FULL_SUPPORT_THRESHOLD,
+    PRIMARY_SUPPORT_THRESHOLD,
+    SENSITIVITY_SUPPORT_THRESHOLD,
     SIMILAR_DELAY_PRIMARY,
     SIMILAR_DELAY_SENSITIVITY,
 )
@@ -53,7 +57,7 @@ def contract_payload() -> dict[str, object]:
     frozen, _, scope = active_model_contract()
     return {
         "schema_version": "EXP2_ANALYSIS_CONTRACT_V1",
-        "status": "CONTRACT_READY_DEVELOPMENT_INPUT_BLOCKED",
+        "status": "COMMON_SUPPORT_CONTRACT_PASS_DEVELOPMENT_INPUT_PENDING",
         "scientific_design": "AirSlot_EXP2_PRIORITY_DIVERGENCE_DESIGN_V1_20260906.md",
         "head": _head(),
         "repository_baseline_in_instruction": "9729354261de2a23c82b2e02350ba84aaba6dab7",
@@ -67,13 +71,21 @@ def contract_payload() -> dict[str, object]:
             "cluster": "episode",
             "ci": "percentile_95",
         },
-        "inherited_support": {
-            "rule_id": INHERITED_SUPPORT_RULE_ID,
-            "source_path": "HISTORICAL_GIT_BLOB:35e5258^:exp/exp1/closure.py",
-            "source_blob": "755569e43b381d3151b5679e539bc4a72bf611e4",
-            "exact_semantics": INHERITED_SUPPORT_EXACT_SEMANTICS,
-            "current_executable_artifact": None,
-            "status": INHERITED_SUPPORT_BLOCK,
+        "common_support": {
+            "rule_id": COMMON_SUPPORT_RULE_ID,
+            "semantics": COMMON_SUPPORT_SEMANTICS,
+            "conditional_estimand": COMMON_SUPPORT_CONDITIONAL_ESTIMAND,
+            "historical_semantic_source": (
+                "Historical Exp1 closure diagnostic common-supported S_i with "
+                "thresholds 0.90 and 0.50."
+            ),
+            "historical_implementation": (
+                "Count fraction under 250 uniform frozen scenarios; superseded."
+            ),
+            "historical_source_blob": "755569e43b381d3151b5679e539bc4a72bf611e4",
+            "current_migration": "Sum scenario weights over common support.",
+            "analysis_level_conditional": True,
+            "m2_formal_support_rule_unchanged": True,
         },
         "final_test_access_count": FINAL_TEST_ACCESS_COUNT,
         "paper_result": False,
@@ -85,6 +97,48 @@ def write_contract_artifacts() -> dict[str, object]:
     contract = contract_payload()
     contract_dir = OUTPUT / "contract"
     write_json(contract_dir / "EXP2_ANALYSIS_CONTRACT.json", contract)
+    common_contract = {
+        "rule_id": COMMON_SUPPORT_RULE_ID,
+        "rule_version": "V1",
+        "historical_source_blob": "755569e43b381d3151b5679e539bc4a72bf611e4",
+        "historical_rule": "count_fraction_on_uniform_250_scenarios",
+        "migration_rule": "scenario_weight_support_mass",
+        "primary_threshold": PRIMARY_SUPPORT_THRESHOLD,
+        "sensitivity_threshold": SENSITIVITY_SUPPORT_THRESHOLD,
+        "full_support_threshold": FULL_SUPPORT_THRESHOLD,
+        "current_scenario_count_expected": 64,
+        "scenario_count_is_not_part_of_formula": True,
+        "current_m2_registry_id": frozen.registry_id,
+        "current_m2_registry_hash": frozen.registry_hash,
+        "current_m1_primary_lineage": {
+            "model_version": "M1_STATE_ESTIMATOR_V2_H16",
+            "manifest": "artifacts/models/m1/M1_H16_HISTORY_PRIMARY/M1_H16_HISTORY_PRIMARY_MANIFEST.json",
+            "checkpoint_hash": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+            "development_cohort_hash": "sha256:79c3dd9d47e3ec6f15f228213f69bf84f40e8b8f5b6bb7fbea390fbe5613af79",
+        },
+        "analysis_level_conditional": True,
+        "conditional_estimand": COMMON_SUPPORT_CONDITIONAL_ESTIMAND,
+        "m2_formal_support_rule_unchanged": True,
+        "zero_fill": False,
+        "model_retrained": False,
+        "calibration_refit": False,
+        "final_test_access_count": 0,
+    }
+    write_json(contract_dir / "EXP2_COMMON_SUPPORT_CONTRACT.json", common_contract)
+    write_json(
+        contract_dir / "EXP2_SUPPORT_MIGRATION_AUDIT.json",
+        {
+            "historical_scenario_count": 250,
+            "historical_count_status": "SUPERSEDED_IMPLEMENTATION",
+            "current_scenario_count": 64,
+            "migrated_scientific_quantity": "SCENARIO_WEIGHT_SUPPORT_MASS",
+            "thresholds_preserved": [0.90, 0.50],
+            "model_support_rule_changed": False,
+            "model_scientific_definition_changed": False,
+            "final_test_access_count": 0,
+            "status": "PASS",
+        },
+    )
     write_json(
         contract_dir / "EXP2_MODEL_REUSE_AUDIT.json",
         {
@@ -93,9 +147,10 @@ def write_contract_artifacts() -> dict[str, object]:
             "active_m2_registry": frozen.registry_id,
             "active_seven_component_scope": list(frozen.formal_scope),
             "development_input_sources": [],
-            "status": INHERITED_SUPPORT_BLOCK,
+            "status": "COMMON_SUPPORT_CONTRACT_PASS_DEVELOPMENT_INPUT_PENDING",
             "final_test_access_count": 0,
             "model_retrained": False,
+            "calibration_refit": False,
             "model_scientific_definition_changed": False,
             "parameter_reselected": False,
         },
@@ -123,6 +178,16 @@ def execute_node_materialization(
 ) -> dict[str, object]:
     rows = add_domain_scores(source)
     sample = rank_base_sample(base_sample(rows))
+    sensitivity_sample = rank_base_sample(
+        base_sample(rows, support_column="support_sensitivity")
+    )
+    full_sample = rank_base_sample(
+        base_sample(
+            rows,
+            support_column="support_full",
+            completeness_column="formal_full_support",
+        )
+    )
     if fast:
         episode_ids = tuple(sorted(sample["episode_id"].astype(str).unique()))[:8]
         sample = sample.loc[sample["episode_id"].astype(str).isin(episode_ids)].copy()
@@ -131,6 +196,16 @@ def execute_node_materialization(
         raise RuntimeError("BLOCK_EXP2_BASE_SAMPLE_INSUFFICIENT")
 
     priority = summarize_priority(sample)
+    sensitivity = (
+        summarize_priority(sensitivity_sample)
+        if len(sensitivity_sample) >= 2
+        else {"status": "ABSTAIN_INSUFFICIENT_SUPPORT", "n_nodes": len(sensitivity_sample)}
+    )
+    full_support = (
+        summarize_priority(full_sample)
+        if len(full_sample) >= 2
+        else {"status": "ABSTAIN_INSUFFICIENT_SUPPORT", "n_nodes": len(full_sample)}
+    )
     information = informativeness_table(sample)
     pair_frames = {
         caliper: build_similar_delay_pairs(sample, caliper=caliper)
@@ -220,6 +295,7 @@ def execute_node_materialization(
     results_dir = OUTPUT / "results"
     figures_dir = OUTPUT / "figures"
     write_frame(data_dir / "EXP2_PRIORITY_BASE.parquet", sample)
+    write_frame(data_dir / "EXP2_COMMON_SUPPORT_NODE_SUMMARY.parquet", rows)
     write_frame(data_dir / "EXP2_SIMILAR_DELAY_PAIRS.parquet", pair_frames[5.0])
     write_frame(data_dir / "EXP2_EPISODE_PAIR_SUMMARY.parquet", primary_episode_pairs)
     write_frame(results_dir / "EXP2_OVERALL_PRIORITY.csv", pd.DataFrame([priority]))
@@ -233,7 +309,16 @@ def execute_node_materialization(
             ]
         ),
     )
-    write_frame(results_dir / "EXP2_ROBUSTNESS.csv", pd.DataFrame([robustness]))
+    write_frame(
+        results_dir / "EXP2_ROBUSTNESS.csv",
+        pd.DataFrame(
+            [
+                {"robustness_id": "NO_F_EXECUTION", **robustness},
+                {"robustness_id": "SUPPORT_50", **sensitivity},
+                {"robustness_id": "FULL_SUPPORT_100", **full_support},
+            ]
+        ),
+    )
     diagnostics = {
         "status": "NON_PAPER_FAST_DIAGNOSTIC" if fast else "DEVELOPMENT_ONLY",
         "bootstrap_replicates": bootstrap_replicates,
@@ -249,6 +334,8 @@ def execute_node_materialization(
             "exp2b": information.to_dict(orient="records"),
             "exp2c": similar_summary,
             "no_f_execution": robustness,
+            "support_50_sensitivity": sensitivity,
+            "full_support_100": full_support,
             **diagnostics,
         },
     )
@@ -266,6 +353,7 @@ def execute_node_materialization(
         "bootstrap_replicates": bootstrap_replicates,
         "final_test_access_count": 0,
         "model_retrained": False,
+        "calibration_refit": False,
         "model_scientific_definition_changed": False,
         "parameter_reselected": False,
         "paper_result": False,
@@ -277,7 +365,9 @@ def execute_node_materialization(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--mode", choices=("contract", "fast", "development"), required=True
+        "--mode",
+        choices=("contract", "materialize", "fast", "development"),
+        required=True,
     )
     parser.add_argument("--input", type=Path)
     args = parser.parse_args(argv)
@@ -285,8 +375,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.mode == "contract":
         print(json.dumps(contract, sort_keys=True))
         return 0
+    if args.mode == "materialize":
+        result = materialize_h16_development_inputs()
+        print(json.dumps(result, sort_keys=True, default=str))
+        return 0
     if args.input is None:
-        raise RuntimeError(INHERITED_SUPPORT_BLOCK)
+        raise RuntimeError("BLOCK_EXP2_DEVELOPMENT_INPUT_MISSING")
     source = load_explicit_node_inputs(args.input)
     result = execute_node_materialization(source, fast=args.mode == "fast")
     print(json.dumps(result, sort_keys=True, default=str))
@@ -295,3 +389,6 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+    COMMON_SUPPORT_CONDITIONAL_ESTIMAND,
+    COMMON_SUPPORT_RULE_ID,
+    COMMON_SUPPORT_SEMANTICS,

@@ -54,14 +54,16 @@ def add_domain_scores(frame: pd.DataFrame) -> pd.DataFrame:
     result[["score_F", "score_P", "score_R", "score_C"]] = result.apply(
         shared_scores, axis=1
     )
-    result["aggregate_complete"] = result[required].apply(
+    result["conditional_aggregate_complete"] = result[required].apply(
         lambda row: bool(np.isfinite(row.to_numpy(dtype=float)).all()), axis=1
-    )
+    ) & result.get("conditional_aggregate_complete", True)
     return result
 
 
 def base_sample(
-    frame: pd.DataFrame, support_column: str = "inherited_support_primary"
+    frame: pd.DataFrame,
+    support_column: str = "support_primary",
+    completeness_column: str = "conditional_aggregate_complete",
 ) -> pd.DataFrame:
     required = {
         "decision_node_id",
@@ -69,7 +71,7 @@ def base_sample(
         "operational_stage",
         "delay_to_mean",
         "score_C",
-        "aggregate_complete",
+        completeness_column,
         support_column,
     }
     missing = sorted(required - set(frame.columns))
@@ -78,7 +80,7 @@ def base_sample(
     mask = (
         frame["operational_stage"].isin(ACTIVE_STAGES)
         & frame[support_column].eq(True)
-        & frame["aggregate_complete"].eq(True)
+        & frame[completeness_column].eq(True)
         & np.isfinite(frame["delay_to_mean"].astype(float))
         & np.isfinite(frame["score_C"].astype(float))
     )

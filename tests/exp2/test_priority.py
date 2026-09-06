@@ -8,7 +8,7 @@ from exp.exp2.metrics import (
     priority_metrics,
     top_k_ids,
 )
-from exp.exp2.priority import add_domain_scores
+from exp.exp2.priority import add_domain_scores, base_sample
 from exp.exp2.protocol import COMPONENTS
 
 
@@ -53,3 +53,18 @@ def test_top10_boundary_tie_is_deterministic_by_technical_id_only():
     selected, tie_count = top_k_ids([10, 10, 10, 1], ["c", "a", "b", "d"], 0.25)
     assert selected == ("a",)
     assert tie_count == 3
+
+
+def test_primary_base_uses_conditional_completeness_not_full_support():
+    row = {
+        "decision_node_id": "n1",
+        "episode_id": "e1",
+        "operational_stage": "PRE_IB",
+        "delay_to_mean": 10.0,
+        "support_primary": True,
+        "conditional_aggregate_complete": True,
+        "formal_full_support": False,
+        **{f"Z_{component}": 1.0 for component in COMPONENTS},
+    }
+    scored = add_domain_scores(pd.DataFrame([row]))
+    assert len(base_sample(scored)) == 1

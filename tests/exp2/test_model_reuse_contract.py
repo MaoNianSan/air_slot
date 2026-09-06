@@ -8,7 +8,7 @@ from exp.exp2.model_inputs import (
     map_model_outputs,
     typed_m1_inputs,
 )
-from exp.exp2.protocol import COMPONENTS, INHERITED_SUPPORT_BLOCK
+from exp.exp2.protocol import COMMON_SUPPORT_RULE_ID, COMPONENTS
 from model.M1.contracts import M1V2Scenario
 from model.M2.context import (
     AirportReferenceKeys,
@@ -98,7 +98,6 @@ def test_model_outputs_supply_native_and_frozen_cu_without_exp2_formula():
         typed,
         mapped,
         metadata={"operational_stage": "PRE_IB"},
-        inherited_support={"primary": True, "sensitivity": True},
     )
     frozen, _, _ = active_model_contract()
     assert row["delay_to_mean"] == pytest.approx(0.4 * 15 + 0.6 * 30)
@@ -106,21 +105,11 @@ def test_model_outputs_supply_native_and_frozen_cu_without_exp2_formula():
         assert row[f"Z_{component}"] == pytest.approx(
             row[f"{component}_native"] / frozen.scale(component)
         )
-
-
-def test_inherited_support_must_be_explicit():
-    scenarios = (_scenario(0, 1.0, 0, 0),)
-    typed = typed_m1_inputs(
-        scenarios, pre_lineage=("pre",), reference_lineage=("reference",)
-    )
-    mapped = map_model_outputs(typed, _context())
-    with pytest.raises(RuntimeError, match=INHERITED_SUPPORT_BLOCK):
-        flatten_node(
-            typed,
-            mapped,
-            metadata={"operational_stage": "PRE_IB"},
-            inherited_support=None,
-        )
+    assert row["common_support_rule_id"] == COMMON_SUPPORT_RULE_ID
+    assert row["common_support_mass"] == pytest.approx(1.0)
+    assert row["support_primary"] is True
+    assert row["support_sensitivity"] is True
+    assert row["support_full"] is True
 
 
 def test_missing_component_is_not_renormalized_and_valid_zero_survives():
@@ -133,7 +122,6 @@ def test_missing_component_is_not_renormalized_and_valid_zero_survives():
         typed,
         mapped,
         metadata={"operational_stage": "PRE_IB"},
-        inherited_support={"primary": True, "sensitivity": True},
     )
     assert complete["R_operating_native"] == 0
     assert complete["Z_R_operating"] == 0
@@ -151,18 +139,28 @@ def test_missing_component_is_not_renormalized_and_valid_zero_survives():
         update={
             "component_vector": mapped[1].component_vector.model_copy(
                 update={"rows": tuple(rows)}
-            )
+            ),
+            "formal_estimand_value": mapped[1].formal_estimand_value.model_copy(
+                update={
+                    "status": "FORMAL_AGGREGATE_UNRESOLVED",
+                    "value_cu": None,
+                    "reason_code": "INCLUDED_COMPONENT_ABSTAIN",
+                }
+            ),
         }
     )
     incomplete = flatten_node(
         typed,
         mapped,
         metadata={"operational_stage": "PRE_IB"},
-        inherited_support={"primary": True, "sensitivity": True},
     )
-    assert incomplete["P_time_native"] is None
-    assert incomplete["Z_P_time"] is None
-    assert incomplete["aggregate_complete"] is False
+    assert incomplete["common_support_mass"] == pytest.approx(0.5)
+    assert incomplete["support_primary"] is False
+    assert incomplete["support_sensitivity"] is True
+    assert incomplete["formal_full_support"] is False
+    assert incomplete["P_time_native"] == pytest.approx(
+        mapped[0].component_vector.rows[3].native_quantity
+    )
 
 
 def test_model_service_enforces_scenario_weights():

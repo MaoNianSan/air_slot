@@ -30,12 +30,22 @@ def test_fast_materialization_writes_non_paper_artifacts(tmp_path, monkeypatch):
                     "decision_time": "2019-08-15T10:00:00+00:00",
                     "information_cutoff": "2019-08-15T10:00:00+00:00",
                     "operational_stage": "PRE_IB",
-                    "inherited_support_primary": True,
-                    "inherited_support_sensitivity": True,
+                    "common_support_mass": 1.0,
+                    "common_support_scenario_count": 64,
+                    "scenario_count_total": 64,
+                    "support_primary": True,
+                    "support_sensitivity": True,
+                    "support_full": True,
+                    "conditional_aggregate_complete": True,
+                    "formal_full_support": True,
                     "delay_to_mean": value,
                     **{f"{component}_native": value for component in COMPONENTS},
                     **{f"Z_{component}": value for component in COMPONENTS},
                     **{f"{component}_status": "SUPPORTED" for component in COMPONENTS},
+                    **{
+                        f"unsupported_scenario_count_{reason}": 0
+                        for reason in ("D_TO", *COMPONENTS)
+                    },
                 }
             )
     monkeypatch.setattr(run, "OUTPUT", tmp_path / "development")
