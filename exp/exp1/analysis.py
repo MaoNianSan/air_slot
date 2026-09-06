@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Mapping, Sequence
 
-from .metrics import variogram_score, weighted_crps, weighted_wasserstein_1
+from .metrics import marginal_variogram_score, variogram_score, weighted_crps, weighted_wasserstein_1
 from .representations import JointRepresentation, MarginalRepresentation, PointRepresentation
 
 
@@ -30,13 +30,11 @@ def state_variogram_contrasts(
 ) -> tuple[float, float, float]:
     joint_score = variogram_score(joint.values, joint.weights, observation, p=p)
     point_score = variogram_score(point.values, point.weights, observation, p=p)
-    marginal_score = variogram_score(
-        marginal.values,
-        marginal.weights,
+    marginal_score = marginal_variogram_score(
+        tuple(tuple(value for value, _ in axis) for axis in marginal.marginals),
+        tuple(tuple(weight for _, weight in axis) for axis in marginal.marginals),
         observation,
         p=p,
-        marginal_values=tuple(tuple(value for value, _ in axis) for axis in marginal.marginals),
-        marginal_weights=tuple(tuple(weight for _, weight in axis) for axis in marginal.marginals),
     )
     return point_score - joint_score, marginal_score - joint_score, joint_score
 

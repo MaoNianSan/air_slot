@@ -16,6 +16,8 @@ import subprocess
 from hashlib import sha256
 from pathlib import Path
 
+import torch
+
 from model.M1.development_diagnostics import require_training_target_coverage, target_coverage
 from model.M1.development_training import (
     CACHE_MANIFEST_NAME,
@@ -28,6 +30,12 @@ from model.M1.history import HistoryEncoderMode
 from model.M1.lifecycle import M1Lifecycle
 from model.M1.data import FEATURE_NAMES_V2, STATIC_FEATURE_COUNT
 from model.M1.pipeline import M1Pipeline
+from model.M1.tuning_stage1 import (
+    STAGE1_SPLITS,
+    STAGE1_SUPPORT,
+    STAGE1_TRAINING_CONFIG,
+    validate_stage1_contract,
+)
 from model.common.config import load_config_layers
 from model.common.identity import content_id
 from model.common.paths import PROJECT_ROOT
@@ -41,6 +49,35 @@ SUPPORT = {
     "D_OB": 180,
     "D_TX": 60,
 }
+
+
+def formal_training_authority() -> dict[str, object]:
+    """Return and validate the sole authority for formal H16 training."""
+    scientific = load_config_layers(PROJECT_ROOT / "configs").scientific
+    validate_stage1_contract(scientific)
+    contract = {
+        "source": "model/M1/tuning_stage1.py:STAGE1_TRAINING_CONFIG",
+        "training": {
+            **STAGE1_TRAINING_CONFIG,
+            "paired_training_seeds": list(STAGE1_TRAINING_CONFIG["paired_training_seeds"]),
+        },
+        "splits": {
+            name: list(value) if isinstance(value, list) else value
+            for name, value in STAGE1_SPLITS.items()
+        },
+        "objective": "TARGET_SPECIFIC_EPISODE_BALANCED",
+        "support": dict(STAGE1_SUPPORT),
+    }
+    training = contract["training"]
+    if training["epochs"] != 8 or tuple(training["paired_training_seeds"]) != (
+        20260813,
+        20260814,
+        20260815,
+        20260816,
+        20260817,
+    ):
+        raise ValueError("M1_H16_FORMAL_TRAINING_AUTHORITY_MISMATCH")
+    return contract
 
 
 def _file_hash(path: Path) -> str:
@@ -68,7 +105,11 @@ def materialize(output: Path = OUTPUT) -> dict:
     if int(scientific.parameters["scenario_count"].value) != 64:
         raise ValueError("M1_SCENARIO_COUNT_CONTRACT_MISMATCH")
 
+    # FAST config is allowed only for bounded cache/plumbing details.  Formal
+    # training parameters come exclusively from the frozen M1 authority.
     config, fast_config_hash = _load_fast_config(PROJECT_ROOT)
+    formal_contract = formal_training_authority()
+    formal_training = formal_contract["training"]
     taxi, turnaround, references = _load_references(PROJECT_ROOT)
     cache, _, cache_status = _build_or_load_cache(
         PROJECT_ROOT, output, config, scientific, taxi, turnaround
@@ -86,29 +127,68 @@ def materialize(output: Path = OUTPUT) -> dict:
         static_input_size=STATIC_FEATURE_COUNT,
         static_normalization=cache.static_normalization,
     )
-    lifecycle = M1Lifecycle(pipeline, device=str(config["training"]["device"]))
-    batch_size = int(config["training"]["batch_size"])
-    history = lifecycle.train(
-        train,
-        epochs=int(config["training"]["epochs"]),
-        learning_rate=float(config["training"]["learning_rate"]),
-        batch_size=batch_size,
-        bucketed=True,
-        seed=int(config["training"]["seed"]),
-        teacher_forcing=True,
-    )
+    device = str(config["training"]["device"])
+    batch_size = int(formal_training["batch_size"])
+    paired_seeds = tuple(int(seed) for seed in formal_training["paired_training_seeds"])
+    seed_histories = []
+    seed_states = []
+    for seed in paired_seeds:
+        torch.manual_seed(seed)
+        seed_pipeline = M1Pipeline.from_scientific_config(
+            scientific,
+            input_size=len(FEATURE_NAMES_V2),
+            normalization=cache.normalization,
+            hidden_size=HIDDEN_SIZE,
+            static_input_size=STATIC_FEATURE_COUNT,
+            static_normalization=cache.static_normalization,
+        )
+        seed_lifecycle = M1Lifecycle(seed_pipeline, device=device)
+        seed_histories.append(
+            seed_lifecycle.train(
+                train,
+                epochs=int(formal_training["epochs"]),
+                learning_rate=float(formal_training["learning_rate"]),
+                weight_decay=float(formal_training["weight_decay"]),
+                batch_size=batch_size,
+                bucketed=True,
+                seed=seed,
+                teacher_forcing=True,
+            )
+        )
+        seed_states.append({name: value.detach().cpu().clone() for name, value in seed_lifecycle.pipeline.model.state_dict().items()})
+
+    # Formal paired-seed materialization: arithmetic mean in parameter space;
+    # no Development score is consulted for selection.
+    averaged_state = {}
+    for name in seed_states[0]:
+        values = [state[name] for state in seed_states]
+        averaged_state[name] = sum(values[1:], values[0].clone()) / len(values)
+    lifecycle = M1Lifecycle(pipeline, device=device)
+    lifecycle.pipeline.model.load_state_dict(averaged_state)
+    history = {
+        "paired_seed_histories": seed_histories,
+        "paired_training_seeds": list(paired_seeds),
+        "aggregation": formal_training["selection_aggregation"],
+        "materialization_semantics": "MEAN_PARAMETER_STATE_ACROSS_PAIRED_SEEDS",
+    }
     temperatures = lifecycle.calibrate(calibration, batch_size=batch_size)
     checkpoint = output / "DATA2_M1_V2_DEVELOPMENT_FAST.pt"
     lifecycle.save(checkpoint)
     training_manifest = {
         "schema_version": "M1_FROZEN_H16_TRAINING_MANIFEST_V1",
         "dataset": "DATA2_2019",
-        "train_split": config["partitions"]["train"],
-        "calibration_split": config["partitions"]["calibration"],
-        "development_split": config["partitions"]["development"],
-        "seed": int(config["training"]["seed"]),
-        "epochs": int(config["training"]["epochs"]),
+        "train_split": {"start": STAGE1_SPLITS["train"][0], "end": STAGE1_SPLITS["train"][1]},
+        "calibration_split": {"start": STAGE1_SPLITS["calibration"][0], "end": STAGE1_SPLITS["calibration"][1]},
+        "development_split": {"start": STAGE1_SPLITS["development"][0], "end": STAGE1_SPLITS["development"][1]},
+        "seed": paired_seeds[0],
+        "paired_training_seeds": list(paired_seeds),
+        "epochs": int(formal_training["epochs"]),
         "batch_size": batch_size,
+        "optimizer": formal_training["optimizer"],
+        "learning_rate": float(formal_training["learning_rate"]),
+        "weight_decay": float(formal_training["weight_decay"]),
+        "training_contract_source": formal_contract["source"],
+        "training_contract_hash": content_id(formal_contract),
         "hidden_size": HIDDEN_SIZE,
         "input_schema_hash": content_id({"feature_names": FEATURE_NAMES_V2}),
         "normalization_fitted_split": cache.normalization.fitted_split,
@@ -122,6 +202,7 @@ def materialize(output: Path = OUTPUT) -> dict:
         "development_diagnostics": "NOT_RUN",
         "scenario_generation": "NOT_RUN",
         "fast_config_hash": fast_config_hash,
+        "fast_config_role": "CACHE_AND_PLUMBING_ONLY_NOT_TRAINING_AUTHORITY",
         "references": references,
     }
     training_manifest_path = output / "M1_FROZEN_H16_TRAINING_MANIFEST.json"
@@ -217,6 +298,10 @@ def materialize(output: Path = OUTPUT) -> dict:
         "calibration_partition": training_manifest.get("calibration_split"),
         "development_partition": training_manifest.get("development_split"),
         "training_seed": training_manifest.get("seed"),
+        "paired_training_seeds": training_manifest.get("paired_training_seeds"),
+        "training_contract_source": training_manifest.get("training_contract_source"),
+        "training_contract_hash": training_manifest.get("training_contract_hash"),
+        "artifact_scope": "FROZEN_PRIMARY_FORMAL_TRAINING",
         "checkpoint_path": str(checkpoint),
         "checkpoint_hash": checkpoint_hash,
         "calibration_path": str(calibration_path),

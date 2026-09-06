@@ -6,6 +6,7 @@ semantics remain in :mod:`model` and are never reimplemented here.
 
 from .metrics import (
     energy_score,
+    marginal_variogram_score,
     variogram_score,
     weighted_crps,
     weighted_wasserstein_1,
@@ -41,5 +42,6 @@ __all__ = [
     "weighted_crps",
     "weighted_wasserstein_1",
     "variogram_score",
+    "marginal_variogram_score",
     "energy_score",
 ]

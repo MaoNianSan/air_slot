@@ -49,16 +49,11 @@ class JointRepresentation:
         ids = [s.scenario_id for s in self.scenarios]
         if len(ids) != len(set(ids)):
             raise ValueError("EXP1_DUPLICATE_SCENARIO_ID")
-        normalized = _weights([s.weight for s in self.scenarios])
-        if any(abs(a - b) > 1e-12 for a, b in zip(normalized, (s.weight for s in self.scenarios))):
-            object.__setattr__(
-                self,
-                "scenarios",
-                tuple(
-                    ScenarioState(s.scenario_id, s.r_ib, s.d_ob, s.d_tx, w)
-                    for s, w in zip(self.scenarios, normalized)
-                ),
-            )
+        weights = tuple(float(s.weight) for s in self.scenarios)
+        if any(not isfinite(w) or w <= 0 for w in weights):
+            raise ValueError("EXP1_JOINT_WEIGHTS_MUST_BE_POSITIVE_FINITE")
+        if abs(sum(weights) - 1.0) > 1e-9:
+            raise ValueError("EXP1_JOINT_WEIGHTS_NOT_NORMALIZED")
 
     @property
     def values(self) -> tuple[tuple[float, float, float], ...]:
@@ -124,8 +119,10 @@ class MarginalRepresentation:
 
 def build_point(
     joint: JointRepresentation,
-    supports: Sequence[float] = (1.0, 1.0, 1.0),
+    supports: Sequence[float] | None = None,
 ) -> PointRepresentation:
+    if supports is None:
+        raise ValueError("EXP1_POINT_SUPPORTS_REQUIRED")
     if len(supports) != 3 or any(float(s) <= 0 or not isfinite(float(s)) for s in supports):
         raise ValueError("EXP1_M1_SUPPORTS_MUST_BE_POSITIVE")
     best = None

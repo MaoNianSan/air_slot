@@ -1,10 +1,20 @@
 from __future__ import annotations
 
 from exp.exp1.analysis import consequence_wasserstein, history_delta_crps, state_variogram_contrasts
-from exp.exp1.history import episode_balanced_estimate, episode_cluster_bootstrap
-from exp.exp1.metrics import variogram_score, weighted_crps, weighted_wasserstein_1
+from exp.exp1.history import (
+    bootstrap_episode_mean,
+    episode_balanced_estimate,
+    episode_cluster_bootstrap,
+)
+from exp.exp1.metrics import (
+    marginal_variogram_score,
+    variogram_score,
+    weighted_crps,
+    weighted_wasserstein_1,
+)
 from exp.exp1.protocol import Exp1Protocol, ProtocolError
 from exp.exp1.representations import ScenarioState, JointRepresentation, build_marginal, build_point
+from validation.model.m1_frozen_h16_artifact_materialization import formal_training_authority
 
 
 def _joint() -> JointRepresentation:
@@ -38,18 +48,49 @@ def test_point_is_original_joint_scenario_and_marginal_preserves_marginals():
     assert all(abs(s.d_to - (s.d_ob + s.d_tx)) < 1e-12 for s in joint.scenarios)
 
 
+def test_point_requires_explicit_valid_supports_and_tie_breaks_by_scenario_id():
+    joint = JointRepresentation(
+        (
+            ScenarioState(9, 0.0, 0.0, 0.0, 0.5),
+            ScenarioState(2, 0.0, 0.0, 0.0, 0.5),
+        )
+    )
+    try:
+        build_point(joint)
+    except ValueError as exc:
+        assert str(exc) == "EXP1_POINT_SUPPORTS_REQUIRED"
+    else:
+        raise AssertionError("Point supports must be explicit")
+    assert build_point(joint, (360.0, 180.0, 60.0)).scenario.scenario_id == 2
+    try:
+        build_point(joint, (0.0, 180.0, 60.0))
+    except ValueError as exc:
+        assert str(exc) == "EXP1_M1_SUPPORTS_MUST_BE_POSITIVE"
+    else:
+        raise AssertionError("Invalid support must fail closed")
+
+
+def test_joint_weights_validate_without_silent_mutation():
+    try:
+        JointRepresentation((ScenarioState(1, 0.0, 0.0, 0.0, 2.0),))
+    except ValueError as exc:
+        assert str(exc) == "EXP1_JOINT_WEIGHTS_NOT_NORMALIZED"
+    else:
+        raise AssertionError("Joint weights must not be silently renormalized")
+
+
 def test_exact_primary_metrics_and_contrasts():
     assert weighted_crps((0.0, 2.0), (0.5, 0.5), 1.0) == 0.5
     assert weighted_wasserstein_1((0.0,), (1.0,), (2.0,), (1.0,)) == 2.0
     joint = _joint()
-    point = build_point(joint)
+    point = build_point(joint, supports=(360.0, 180.0, 60.0))
     marginal = build_marginal(joint)
     point_delta, marginal_delta, joint_score = state_variogram_contrasts(
         joint, point, marginal, (1.0, 2.0, 3.0)
     )
     assert joint_score >= 0.0
-    assert point_delta >= 0.0
-    assert marginal_delta >= 0.0
+    assert point_delta == point_delta
+    assert marginal_delta == marginal_delta
     history, current, delta = history_delta_crps((0.0,), (1.0,), (2.0,), (1.0,), 1.0)
     assert (history, current, delta) == (1.0, 1.0, 0.0)
     assert consequence_wasserstein((0.0,), (1.0,), (2.0,), (1.0,), 2.0) == 1.0
@@ -58,14 +99,28 @@ def test_exact_primary_metrics_and_contrasts():
 def test_exact_marginal_variogram_uses_product_expectation():
     joint = _joint()
     marginal = build_marginal(joint)
-    score = variogram_score(
-        marginal.values,
-        marginal.weights,
+    score = marginal_variogram_score(
+        tuple(tuple(v for v, _ in axis) for axis in marginal.marginals),
+        tuple(tuple(w for _, w in axis) for axis in marginal.marginals),
         (1.0, 2.0, 3.0),
-        marginal_values=tuple(tuple(v for v, _ in axis) for axis in marginal.marginals),
-        marginal_weights=tuple(tuple(w for _, w in axis) for axis in marginal.marginals),
     )
     assert score >= 0.0
+
+
+def test_variogram_preserves_joint_dependence_with_exact_toy_values():
+    values = ((0.0, 0.0), (1.0, 1.0))
+    weights = (0.5, 0.5)
+    observation = (0.0, 1.0)
+    joint = variogram_score(values, weights, observation, p=0.5)
+    marginal = marginal_variogram_score(
+        ((0.0, 1.0), (0.0, 1.0)),
+        ((0.5, 0.5), (0.5, 0.5)),
+        observation,
+        p=0.5,
+    )
+    assert joint == 1.0
+    assert marginal == 0.25
+    assert joint != marginal
 
 
 def test_episode_bootstrap_keeps_repeated_clusters():
@@ -78,3 +133,25 @@ def test_episode_bootstrap_keeps_repeated_clusters():
     estimate, low, high = episode_cluster_bootstrap(records, reps=25, seed=4)
     assert estimate == 3.5
     assert low <= estimate <= high
+    assert bootstrap_episode_mean((0.0, 0.0)) == 0.0
+    assert bootstrap_episode_mean((10.0, 10.0)) == 10.0
+
+
+def test_h16_formal_training_authority_is_not_fast_config():
+    contract = formal_training_authority()
+    assert contract["source"] == "model/M1/tuning_stage1.py:STAGE1_TRAINING_CONFIG"
+    assert contract["training"]["epochs"] == 8
+    assert contract["training"]["paired_training_seeds"] == [
+        20260813,
+        20260814,
+        20260815,
+        20260816,
+        20260817,
+    ]
+    assert contract["splits"]["calibration"] == ["2019-07-01", "2019-07-31"]
+
+
+def test_reporting_boundary_has_no_model_import():
+    source = __import__("pathlib").Path("exp/exp1/reporting.py").read_text(encoding="utf-8")
+    assert "import model" not in source
+    assert "from model" not in source

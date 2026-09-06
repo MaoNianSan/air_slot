@@ -64,11 +64,32 @@ def weighted_wasserstein_1(
     return total
 
 
-def _pair_expectation(values: Sequence[tuple[float, ...]], weights: Sequence[float], a: int, b: int, p: float) -> float:
+def _joint_pair_expectation(
+    values: Sequence[tuple[float, ...]],
+    weights: Sequence[float],
+    a: int,
+    b: int,
+    p: float,
+) -> float:
+    """Expectation over aligned Joint rows; dependence is preserved."""
     return sum(
-        wi * wj * abs(xi[a] - xj[b]) ** p
-        for xi, wi in zip(values, weights)
-        for xj, wj in zip(values, weights)
+        weight * abs(row[a] - row[b]) ** p
+        for row, weight in zip(values, weights)
+    )
+
+
+def _independent_marginal_pair_expectation(
+    values_a: Sequence[float],
+    weights_a: Sequence[float],
+    values_b: Sequence[float],
+    weights_b: Sequence[float],
+    p: float,
+) -> float:
+    """Exact expectation under the product of two empirical marginals."""
+    return sum(
+        wi * wj * abs(float(xi) - float(xj)) ** p
+        for xi, wi in zip(values_a, weights_a)
+        for xj, wj in zip(values_b, weights_b)
     )
 
 
@@ -88,6 +109,8 @@ def variogram_score(
     """
     if p <= 0 or not isfinite(float(p)):
         raise ValueError("EXP1_VARIogram_P_INVALID")
+    if not values:
+        raise ValueError("EXP1_VARIogram_EMPTY_VALUES")
     if len(observation) != len(values[0]) or len(observation) < 2:
         raise ValueError("EXP1_VARIogram_DIMENSION_MISMATCH")
     xs, ws = _normalize([0.0] * len(values), weights)
@@ -102,17 +125,55 @@ def variogram_score(
         for b in range(a + 1, dimension):
             observed = abs(y[a] - y[b]) ** p
             if marginal_values is None:
-                expected = _pair_expectation(vectors, ws, a, b, p)
+                expected = _joint_pair_expectation(vectors, ws, a, b, p)
             else:
                 if marginal_weights is None or len(marginal_values) != dimension or len(marginal_weights) != dimension:
                     raise ValueError("EXP1_MARGINAL_ARGUMENTS_INVALID")
                 _, wa = _normalize(marginal_values[a], marginal_weights[a])
                 _, wb = _normalize(marginal_values[b], marginal_weights[b])
-                expected = sum(
-                    wi * wj * abs(float(xi) - float(xj)) ** p
-                    for xi, wi in zip(marginal_values[a], wa)
-                    for xj, wj in zip(marginal_values[b], wb)
+                expected = _independent_marginal_pair_expectation(
+                    marginal_values[a],
+                    wa,
+                    marginal_values[b],
+                    wb,
+                    p,
                 )
+            result += (observed - expected) ** 2
+    return result
+
+
+def marginal_variogram_score(
+    marginal_values: Sequence[Sequence[float]],
+    marginal_weights: Sequence[Sequence[float]],
+    observation: Sequence[float],
+    *,
+    p: float = 0.5,
+) -> float:
+    """Variogram score for product-of-marginals without Cartesian expansion."""
+    if p <= 0 or not isfinite(float(p)):
+        raise ValueError("EXP1_VARIogram_P_INVALID")
+    if len(marginal_values) != len(observation) or len(observation) < 2:
+        raise ValueError("EXP1_MARGINAL_VARIogram_DIMENSION_MISMATCH")
+    if len(marginal_weights) != len(marginal_values):
+        raise ValueError("EXP1_MARGINAL_ARGUMENTS_INVALID")
+    normalized = [
+        _normalize(values, weights)
+        for values, weights in zip(marginal_values, marginal_weights)
+    ]
+    y = tuple(float(value) for value in observation)
+    if any(not isfinite(value) for value in y):
+        raise ValueError("EXP1_OBSERVATION_NOT_FINITE")
+    result = 0.0
+    for a in range(len(y)):
+        for b in range(a + 1, len(y)):
+            observed = abs(y[a] - y[b]) ** p
+            expected = _independent_marginal_pair_expectation(
+                normalized[a][0],
+                normalized[a][1],
+                normalized[b][0],
+                normalized[b][1],
+                p,
+            )
             result += (observed - expected) ** 2
     return result
 
