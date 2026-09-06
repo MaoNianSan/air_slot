@@ -30,6 +30,9 @@ from .model_layer.gru import M1V2GRU
 from .semantics import EVALUATION_LEAD_TIMES_MINUTES
 
 FROZEN_HIDDEN_SIZE_SETTINGS: tuple[int, ...] = (16, 8)
+PRIMARY_TRAINING_SEED = 20260813
+OPTIONAL_ROBUSTNESS_SEEDS: tuple[int, ...] = (20260814, 20260815, 20260816, 20260817)
+PRIMARY_EPOCHS = 8
 # Compatibility export for historical audit readers. These are frozen primary
 # and sensitivity settings, not an active tuning candidate set.
 STAGE1_H_CANDIDATES: tuple[int, ...] = FROZEN_HIDDEN_SIZE_SETTINGS
@@ -45,10 +48,11 @@ STAGE1_TRAINING_CONFIG = {
     "optimizer": "Adam",
     "learning_rate": 0.001,
     "weight_decay": 0.0,
-    "epochs": 8,
+    "epochs": PRIMARY_EPOCHS,
     "batch_size": 64,
-    "paired_training_seeds": [20260813, 20260814, 20260815, 20260816, 20260817],
-    "selection_aggregation": "MEAN_ACROSS_PAIRED_SEEDS",
+    "seed": PRIMARY_TRAINING_SEED,
+    "optional_robustness_seeds": list(OPTIONAL_ROBUSTNESS_SEEDS),
+    "selection_aggregation": "HISTORICAL_DEVELOPMENT_DIAGNOSTIC_ONLY",
 }
 STAGE1_SPLITS = {
     "train": ["2019-01-01", "2019-06-30"],
@@ -780,6 +784,9 @@ __all__ = [
     "STAGE1_H_CANDIDATES",
     "STAGE1_METRICS",
     "STAGE1_TRAINING_CONFIG",
+    "PRIMARY_TRAINING_SEED",
+    "OPTIONAL_ROBUSTNESS_SEEDS",
+    "PRIMARY_EPOCHS",
     "downstream_artifact_contract",
     "fast_train_mode",
     "fast_train_mode_contract",
