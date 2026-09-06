@@ -22,6 +22,8 @@ from model.common.cu_normalization import CUNormalizationStatus
 from .contracts import (
     ComponentSupportRecord,
     NamedSupportRecord,
+    PRIORITY_CONTRACT_HASH,
+    PRIORITY_CONTRACT_VERSION,
     PRIORITY_INTERFACE_HASH,
     PRIORITY_INTERFACE_VERSION,
     RecoveryPriorityScoreRecord,
@@ -163,7 +165,10 @@ def _component_summary(
                 cu = row.cu_quantity
                 if cu.registry_id not in (None, active.registry_id):
                     raise RuntimeError("BLOCK_MIXED_CU_REGISTRY")
-                if row.cu_status is CUNormalizationStatus.CU_FROZEN and not cu.compatible_with_registry(cu_registry):
+                if (
+                    row.cu_status is CUNormalizationStatus.CU_FROZEN
+                    and not cu.compatible_with_registry(cu_registry)
+                ):
                     raise RuntimeError("BLOCK_MIXED_CU_REGISTRY")
                 supported = (
                     row.cu_status is CUNormalizationStatus.CU_FROZEN
@@ -171,7 +176,9 @@ def _component_summary(
                 )
                 reason = row.reason_code or row.cu_status.value
             else:
-                supported = _state_value(row.support_state) != "ABSTAIN" and value is not None
+                supported = (
+                    _state_value(row.support_state) != "ABSTAIN" and value is not None
+                )
                 reason = row.reason_code or "NATIVE_COMPONENT_UNSUPPORTED"
             if not supported:
                 reasons.add(f"{component}:{reason}")
@@ -318,7 +325,7 @@ def _support_records(
     )
 
 
-def build_priority_score_candidate(
+def materialize_priority_score_record(
     scenarios: Sequence[Any],
     consequences: Sequence[ScenarioConsequence] | ScenarioConsequenceDistribution,
     *,
@@ -342,13 +349,17 @@ def build_priority_score_candidate(
         "score_C_no_F_execution": no_execution,
         "score_equal_component": equal_component,
     }
-    all_results = (delay, *native.values(), *cu.values(), *domains.values(), *aggregate_values.values())
+    all_results = (
+        delay,
+        *native.values(),
+        *cu.values(),
+        *domains.values(),
+        *aggregate_values.values(),
+    )
     reasons = tuple(
         sorted({reason for result in all_results for reason in result.reason_codes})
     )
-    values = {
-        f"native_{name}": native[name].value for name in CONSEQUENCE_COMPONENTS
-    }
+    values = {f"native_{name}": native[name].value for name in CONSEQUENCE_COMPONENTS}
     values.update({f"cu_{name}": cu[name].value for name in CONSEQUENCE_COMPONENTS})
     return RecoveryPriorityScoreRecord(
         episode_id=first.episode_id,
@@ -374,15 +385,15 @@ def build_priority_score_candidate(
         m2_scope_hash=dependency["scope_hash"],
         m2_registry_id=dependency["registry_id"],
         m2_registry_hash=dependency["registry_hash"],
-        m2_cu_normalization_registry_hash=dependency[
-            "cu_normalization_registry_hash"
-        ],
+        m2_cu_normalization_registry_hash=dependency["cu_normalization_registry_hash"],
+        priority_contract_version=PRIORITY_CONTRACT_VERSION,
+        priority_contract_hash=PRIORITY_CONTRACT_HASH,
         priority_interface_version=PRIORITY_INTERFACE_VERSION,
         priority_interface_hash=PRIORITY_INTERFACE_HASH,
     )
 
 
-def build_priority_score_candidates(
+def materialize_priority_scores(
     node_inputs: Iterable[
         tuple[
             Sequence[Any],
@@ -395,7 +406,7 @@ def build_priority_score_candidates(
     registry: M2Data2FormalCuRegistry | None = None,
 ) -> tuple[RecoveryPriorityScoreRecord, ...]:
     records = tuple(
-        build_priority_score_candidate(
+        materialize_priority_score_record(
             scenarios,
             consequences,
             repository_head=repository_head,
@@ -404,13 +415,9 @@ def build_priority_score_candidates(
         )
         for scenarios, consequences, m1_lineage in node_inputs
     )
-    return tuple(sorted(records, key=lambda row: (row.episode_id, row.decision_node_id)))
-
-
-# Draft-name aliases retained for local callers; the returned objects remain
-# candidate score records and are not formal node-table materialization.
-materialize_priority_score_record = build_priority_score_candidate
-materialize_priority_scores = build_priority_score_candidates
+    return tuple(
+        sorted(records, key=lambda row: (row.episode_id, row.decision_node_id))
+    )
 
 
 __all__ = [
@@ -418,8 +425,6 @@ __all__ = [
     "compute_domain_scores",
     "compute_equal_component_priority",
     "compute_no_f_execution_priority",
-    "build_priority_score_candidate",
-    "build_priority_score_candidates",
     "materialize_priority_score_record",
     "materialize_priority_scores",
     "summarize_cu_components",

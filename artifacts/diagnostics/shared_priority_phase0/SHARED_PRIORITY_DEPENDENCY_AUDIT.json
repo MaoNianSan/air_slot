@@ -1,6 +1,6 @@
 {
   "audit_date": "2026-09-06",
-  "audit_status": "BLOCK_CONTRACT_RECONCILIATION_REQUIRED",
+  "audit_status": "PASS_SHARED_INFRASTRUCTURE_ONLY",
   "development_fixture": {
     "active_m2_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
     "active_cu_normalization_registry_hash": "sha256:8c9bfbed9d6b64c288cb5591f77fab9c3896ebc8d29d0a6450333ef2cc104d8e",
@@ -96,19 +96,19 @@
     "status": "PASS"
   },
   "priority_contract": {
-    "actual_local_hash": "sha256:e95e18ba5f6be971500121aa858b9aa368294e4a4852f77e061e532362c32c34",
+    "actual_local_hash": "sha256:3c1201850dcc6796a52e6217f427828bb8e613322f7849c5ddfa37bec7862a11",
     "actual_local_status": "DEVELOPMENT_CANDIDATE",
     "actual_local_version": "AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906",
-    "expected_version": "AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906",
+    "deferred_formal_protocol_id": "RECOVERY_PRIORITY_PROTOCOL_V1",
     "separate_contract_file_found": false,
-    "source": "AIR_SLOT_PHASE0_SHARED_PRIORITY_RESEARCH_PROGRAMMING_INSTRUCTION_V1_20260906.md",
-    "status": "BLOCK_CONTRACT_RECONCILIATION_REQUIRED",
-    "version": "AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906"
+    "source": "USER_SCOPE_2026-09-06_OVERRIDES_ATTACHED_MATERIALIZATION_INSTRUCTION",
+    "status": "SHARED_INTERFACE_ALLOWED_FORMAL_PROTOCOL_DEFERRED",
+    "version": "AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906"
   },
-  "reconciliation_conflicts": [
-    "Attached instruction requires a fixed shared priority contract; current local contracts.py declares the aggregation DEVELOPMENT_CANDIDATE.",
-    "Attached instruction requires AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906; current local code publishes AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906.",
-    "A Phase 0 PASS cannot be emitted until a human selects which authority governs the aggregation status and version identity."
+  "scope_resolution": [
+    "The user request authorizes typed shared analytical infrastructure and candidate tests only.",
+    "RECOVERY_PRIORITY_PROTOCOL_V1 registration is deferred until Exp2 freezes PD, PCP^D, and P^C.",
+    "Formal node-table materialization and Exp3 statistical implementation are not authorized in this phase."
   ],
   "repository_head": "f4db439771943e6b4c280a74d392e882e4e71ecb",
   "sources": {

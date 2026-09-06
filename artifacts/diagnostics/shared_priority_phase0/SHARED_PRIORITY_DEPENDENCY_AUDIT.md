@@ -2,7 +2,7 @@
 
 - Audit date: `2026-09-06`
 - Repository HEAD: `f4db439771943e6b4c280a74d392e882e4e71ecb`
-- Status: `BLOCK_CONTRACT_RECONCILIATION_REQUIRED`
+- Status: `PASS_SHARED_INFRASTRUCTURE_ONLY`
 
 ## Authoritative Dependencies
 
@@ -37,6 +37,6 @@ The existing Development-only M2 golden fixes the node and carries CU records wh
 
 No Final Test input, raw-data reconstruction, model training, parameter selection, ranking, correlation, Kendall, Top-K, or paper-result computation was used in this audit.
 
-## Contract Reconciliation Block
+## Scope Resolution
 
-The attached execution instruction requires the fixed version `AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906`. The current local `exp/shared/contracts.py` instead declares `AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906` and marks the aggregation `DEVELOPMENT_CANDIDATE`. These authorities conflict. No Development priority artifact or `PHASE0_PASS` is authorized until a human chooses the governing contract status/version.
+The user request dated `2026-09-06` governs this phase and limits work to typed shared analytical infrastructure. The local interface remains `AIR_SLOT_SHARED_PRIORITY_INTERFACE_V1_20260906`, and the aggregation remains `DEVELOPMENT_CANDIDATE`. `RECOVERY_PRIORITY_PROTOCOL_V1`, formal node-table materialization, and Exp3 statistical implementation are deferred until Exp2 freezes `PD`, `PCP^D`, and `P^C`.

@@ -8,14 +8,18 @@ import pandas as pd
 import pytest
 
 from exp.exp2.priority import add_domain_scores
-from exp.shared.contracts import SupportedScore
+from exp.shared.contracts import (
+    PRIORITY_CONTRACT_VERSION,
+    SHARED_PRIORITY_AUTHORITY,
+    SupportedScore,
+)
 from exp.shared.recovery_priority import (
     compute_aggregate_priority,
     compute_domain_scores,
     compute_equal_component_priority,
     compute_no_f_execution_priority,
-    build_priority_score_candidate,
-    build_priority_score_candidates,
+    materialize_priority_score_record,
+    materialize_priority_scores,
     summarize_cu_components,
     summarize_delay_score,
     summarize_native_components,
@@ -293,13 +297,13 @@ def test_cu_registry_lineage_rejects_mixed_registry():
 def test_shared_score_is_independent_of_cohort_membership():
     first_scenarios = _scenarios(values=(10.0,), weights=(1.0,), node="node-a")
     first_consequence = (_consequence(_arithmetic_values(), node="node-a"),)
-    single = build_priority_score_candidates(
+    single = materialize_priority_scores(
         ((first_scenarios, first_consequence, ("fixture",)),),
         repository_head=HEAD,
     )[0]
     second_scenarios = _scenarios(values=(90.0,), weights=(1.0,), node="node-b")
     second_consequence = (_consequence(_arithmetic_values(), node="node-b"),)
-    cohort = build_priority_score_candidates(
+    cohort = materialize_priority_scores(
         (
             (second_scenarios, second_consequence, ("fixture",)),
             (first_scenarios, first_consequence, ("fixture",)),
@@ -321,13 +325,13 @@ def test_scenario_permutation_invariance():
         )
         for item in scenarios
     )
-    first = build_priority_score_candidate(
+    first = materialize_priority_score_record(
         scenarios,
         outputs,
         repository_head=HEAD,
         m1_lineage=("fixture",),
     )
-    second = build_priority_score_candidate(
+    second = materialize_priority_score_record(
         tuple(reversed(scenarios)),
         tuple(reversed(outputs)),
         repository_head=HEAD,
@@ -351,10 +355,8 @@ def test_mixed_decision_nodes_rejected():
 def test_m1_m2_scenario_alignment_is_exact():
     scenarios = _scenarios(values=(10.0,), weights=(1.0,))
     output = _consequence(_arithmetic_values(), scenario_id=1)
-    with pytest.raises(
-        RuntimeError, match="BLOCK_M1_M2_SCENARIO_ALIGNMENT_MISMATCH"
-    ):
-        build_priority_score_candidate(
+    with pytest.raises(RuntimeError, match="BLOCK_M1_M2_SCENARIO_ALIGNMENT_MISMATCH"):
+        materialize_priority_score_record(
             scenarios,
             (output,),
             repository_head=HEAD,
@@ -404,16 +406,21 @@ def test_phase0_dependency_validation_does_not_access_final_test():
 
 
 def test_output_contract_contains_scores_not_ranks():
-    fields = set(
-        build_priority_score_candidate(
-            _scenarios(values=(10.0,), weights=(1.0,)),
-            (_consequence(_arithmetic_values()),),
-            repository_head=HEAD,
-            m1_lineage=("fixture",),
-        ).model_dump(mode="json")
+    record = materialize_priority_score_record(
+        _scenarios(values=(10.0,), weights=(1.0,)),
+        (_consequence(_arithmetic_values()),),
+        repository_head=HEAD,
+        m1_lineage=("fixture",),
     )
+    fields = set(record.model_dump(mode="json"))
     assert {"delay_score", "score_F", "score_P", "score_R", "score_C"} <= fields
     assert not {"rank", "percentile", "top10_flag", "priority_class"} & fields
+    assert record.priority_contract_version == PRIORITY_CONTRACT_VERSION
+    assert record.scientific_contract_authority == "HUMAN_APPROVED"
+    assert record.scientific_contract_status == "FROZEN_FOR_EXP2_EXP3_EXP4"
+    assert record.artifact_stage == "DEVELOPMENT_ONLY_PHASE0_VALIDATION"
+    assert record.final_test_authorized is False
+    assert record.paper_result is False
 
 
 def test_exp2_domain_adapter_delegates_shared_arithmetic():
@@ -425,4 +432,11 @@ def test_exp2_domain_adapter_delegates_shared_arithmetic():
     assert result["score_P"] == pytest.approx(4.0)
     assert result["score_R"] == pytest.approx(5.0)
     assert result["score_C"] == pytest.approx(5.0)
-    assert bool(result["aggregate_complete"])
+    assert bool(result["conditional_aggregate_complete"])
+
+
+def test_scientific_contract_is_human_approved_and_frozen():
+    assert PRIORITY_CONTRACT_VERSION == "AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906"
+    assert SHARED_PRIORITY_AUTHORITY.authority == "HUMAN_APPROVED"
+    assert SHARED_PRIORITY_AUTHORITY.status == "FROZEN_FOR_EXP2_EXP3_EXP4"
+    assert SHARED_PRIORITY_AUTHORITY.final_test_authorized is False

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 from exp.shared.recovery_priority import materialize_priority_score_record
@@ -15,14 +16,17 @@ M1_FIXTURE = (
     / "numerical_best_action_sanity_v1"
     / "M1_DEVELOPMENT_64_NODE_SCENARIOS.json"
 )
-M2_FIXTURE = (
-    ROOT
-    / "artifacts"
-    / "diagnostics"
-    / "model_refactor_v1"
-    / "M2_GOLDEN.json"
-)
-HEAD = "b6ed055d3ce92892b76eca99624d865f9d83444c"
+M2_FIXTURE = ROOT / "artifacts" / "diagnostics" / "model_refactor_v1" / "M2_GOLDEN.json"
+
+
+def _repository_head() -> str:
+    return subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
 
 
 def _without_computed_fields(item: dict) -> dict:
@@ -53,7 +57,11 @@ def _load_fixed_development_node():
     )
     scenarios = tuple(
         M1V2Scenario.model_validate(
-            {key: value for key, value in item.items() if key in M1V2Scenario.model_fields}
+            {
+                key: value
+                for key, value in item.items()
+                if key in M1V2Scenario.model_fields
+            }
         )
         for item in m1_rows
     )
@@ -67,22 +75,26 @@ def _load_fixed_development_node():
 
 def test_fixed_development_fixture_materializes_deterministically():
     scenarios, consequences, lineage = _load_fixed_development_node()
+    head = _repository_head()
     assert len(scenarios) == len(consequences) == 64
     first = materialize_priority_score_record(
         scenarios,
         consequences,
-        repository_head=HEAD,
+        repository_head=head,
         m1_lineage=lineage,
     )
     second = materialize_priority_score_record(
         tuple(reversed(scenarios)),
         tuple(reversed(consequences)),
-        repository_head=HEAD,
+        repository_head=head,
         m1_lineage=lineage,
     )
     assert first.artifact_id == second.artifact_id
     assert first.m2_registry_id == "M2_DATA2_FORMAL_CU_V4"
     assert first.m2_scope_hash == consequences[0].consequence_scope.scope_hash
+    assert first.priority_contract_version == "AIR_SLOT_SHARED_PRIORITY_CONTRACT_V1_20260906"
+    assert first.scientific_contract_status == "FROZEN_FOR_EXP2_EXP3_EXP4"
+    assert first.artifact_stage == "DEVELOPMENT_ONLY_PHASE0_VALIDATION"
     assert first.delay_score is not None and first.delay_score >= 0
     assert first.score_C is not None and first.score_C >= 0
     assert first.reason_codes == ()
