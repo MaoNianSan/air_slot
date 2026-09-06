@@ -16,10 +16,21 @@ def informativeness_table(frame: pd.DataFrame) -> pd.DataFrame:
     for quantity_id, column in quantities:
         if column not in frame:
             raise ValueError(f"EXP2_INFORMATIVENESS_COLUMN_MISSING:{column}")
-        sample = frame.loc[
-            np.isfinite(frame["delay_to_mean"].astype(float))
-            & np.isfinite(frame[column].astype(float))
-        ]
+        # Exp2B has an estimand-specific population. A component must not
+        # inherit Exp2A's seven-component complete-case gate.
+        support_column = (
+            f"{quantity_id}_status"
+            if quantity_id in COMPONENTS and f"{quantity_id}_status" in frame
+            else None
+        )
+        mask = np.isfinite(frame["delay_to_mean"].astype(float)) & np.isfinite(
+            frame[column].astype(float)
+        )
+        if support_column is not None:
+            mask &= frame[support_column].astype(str).str.startswith("SUPPORTED")
+        if "support_primary" in frame:
+            mask &= frame["support_primary"].eq(True)
+        sample = frame.loc[mask].copy()
         estimate = kendall_tau_b(sample["delay_to_mean"], sample[column])
         rows.append(
             {
@@ -29,6 +40,10 @@ def informativeness_table(frame: pd.DataFrame) -> pd.DataFrame:
                 "ci_high": None,
                 "n_nodes": int(len(sample)),
                 "n_episodes": int(sample["episode_id"].nunique()),
+                "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+                "support_population": (
+                    "COMPONENT_SPECIFIC" if support_column is not None else "DOMAIN_COMPLETE"
+                ),
                 "support_status": (
                     "SUPPORTED" if estimate is not None else "ABSTAIN_NO_RANK_VARIATION"
                 ),
