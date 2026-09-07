@@ -1,0 +1,97 @@
+{
+  "schema_version": "AIR_SLOT_FINAL_TEST_COHORT_AUTHORITY_V1",
+  "authority_status": "FINAL_TEST_COHORT_AUTHORITY_LOCKED",
+  "authority_date": "2026-09-07",
+  "parent_final_test_lock": {
+    "path": "formal/FINAL_TEST_LOCK_20260907.md",
+    "commit": "99114195f11d7cb3446e53729daab611c88f4d36",
+    "sha256": "6a68b08226076cb5f8601139569077b8b37ca0483805725be0f30d24e76174a5"
+  },
+  "scientific_code_lock": {
+    "commit": "c70c306dfb8bcc40ccb2c1329594fe6b1a54acb6",
+    "scientific_code_diff": "none"
+  },
+  "final_test_episode_count": 128,
+  "selection": {
+    "rule": "SEEDED_RESERVOIR_OVER_SPLIT_CONTAINED_EPISODES_FROZEN_SOURCE",
+    "seed": 20260813,
+    "rng_scope": "FINAL_TEST_ONLY_FRESH_SEED",
+    "rng_initialization": "random.Random(20260813)",
+    "selection_pre_outcome": true,
+    "replacement_policy": "NO_REPLACEMENT_AFTER_SELECTION"
+  },
+  "source_window": {
+    "dataset_id": "DATA2",
+    "source_dataset_id": "data2_2019",
+    "months": [10, 11, 12],
+    "service_date_start": "2019-10-01",
+    "service_date_end": "2019-12-31",
+    "temporal_split_authority": "DATA2_TEMPORAL_SPLIT@1.0.0",
+    "assignment_field": "successor_canonical_service_date",
+    "test_rule": "service_date > 2019-09-30"
+  },
+  "candidate_universe": {
+    "canonical_parsing": "existing Data2 canonical BTS parsing",
+    "episode_builder": "model.PRE.episode.builder.build_data2_episode_records",
+    "aircraft_chain": "existing aircraft-chain construction",
+    "episode_contract": "existing frozen episode contract",
+    "processing_order": [
+      "month=10",
+      "month=11",
+      "month=12",
+      "existing cross-month aircraft carry semantics",
+      "deterministic episode ordering",
+      "successor service date Test assignment",
+      "full episode containment",
+      "seeded reservoir sampling"
+    ]
+  },
+  "containment": {
+    "authority": "model.PRE.episode.containment",
+    "required_scope": [
+      "predecessor service date",
+      "successor service date",
+      "episode interval",
+      "all relevant decision-time support"
+    ],
+    "eligibility_rule": "every required support time belongs to Test",
+    "cross_split_policy": "exclude",
+    "september_to_october_policy": "exclude"
+  },
+  "post_selection_policy": {
+    "retain_selected_episode_on_unsupported_targets": true,
+    "target_denominators": "experiment-specific frozen support and eligibility",
+    "later_episode_replacement": false,
+    "selection_inputs_excluded": [
+      "delay severity",
+      "prediction error",
+      "target support",
+      "M1 likelihood or CRPS",
+      "M2 consequence values",
+      "common-support mass",
+      "S_F",
+      "S_P",
+      "S_R",
+      "S_C",
+      "Exp2-Exp4 metrics",
+      "stage balance",
+      "passenger exposure"
+    ]
+  },
+  "prohibitions": {
+    "old_h32_episode_ids": false,
+    "old_h32_sampler_state": false,
+    "old_h32_result_artifacts": false,
+    "raw_date_redefinition": false,
+    "test_pool_size_driven_budget": false,
+    "target_count_reduction": false
+  },
+  "final_test_access_count": 0,
+  "test_cohort_materialized": false,
+  "test_data_read": false,
+  "test_inference_run": false,
+  "model_retrained": false,
+  "calibration_refit": false,
+  "parameter_reselected": false,
+  "paper_result": false
+}
