@@ -1,0 +1,40 @@
+{
+  "schema_version": "EXP4_DEVELOPMENT_CONTRACT_V1",
+  "experiment_id": "EXP4",
+  "canonical_rule": "first_chronological_node_then_primary_support_evaluation",
+  "unsupported_canonical_policy": "typed_exclusion_without_later_replacement",
+  "support_policy_id": "COMMON_SUPPORT_CONDITIONAL_090",
+  "budget_cohort": "stage_stratified_supported_canonical_events",
+  "capacities_q": [
+    0.05,
+    0.1,
+    0.2,
+    0.3
+  ],
+  "rounding": "ceil(q*N)",
+  "robust_views": 8,
+  "consensus_m_primary": 4,
+  "consensus_m_sensitivity": [
+    3,
+    5
+  ],
+  "no_f_execution_authority": "exp.shared.recovery_priority.compute_no_f_execution_priority",
+  "bootstrap": {
+    "cluster": "original_episode_id",
+    "replicates": 2000,
+    "seed": 20260906,
+    "confidence_interval": "percentile_95",
+    "replicate_rebuild": [
+      "canonical_cohort",
+      "support_eligibility",
+      "K",
+      "ranking",
+      "selection_statistics"
+    ]
+  },
+  "final_test_access_count": 0,
+  "paper_result": false,
+  "model_retrained": false,
+  "calibration_refit": false,
+  "parameter_reselected": false
+}

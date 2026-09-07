@@ -1,0 +1,27 @@
+{
+  "schema_version": "EXP3_DEVELOPMENT_CONTRACT_V1",
+  "experiment_id": "EXP3",
+  "support_policy_id": "COMMON_SUPPORT_CONDITIONAL_090",
+  "primary_cohort_rule": [
+    "support_primary == True",
+    "conditional_aggregate_complete == True"
+  ],
+  "heterogeneity_estimand": "same_stage_abs_consequence_priority_percentile_gap",
+  "bootstrap": {
+    "cluster": "original_episode_id",
+    "replicates": 2000,
+    "seed": 20260906,
+    "confidence_interval": "percentile_95",
+    "replicate_rebuild": [
+      "cohort",
+      "stage_rank",
+      "top10",
+      "similar_delay_pairs"
+    ]
+  },
+  "final_test_access_count": 0,
+  "paper_result": false,
+  "model_retrained": false,
+  "calibration_refit": false,
+  "parameter_reselected": false
+}

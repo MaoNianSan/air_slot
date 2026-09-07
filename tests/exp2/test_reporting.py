@@ -54,5 +54,5 @@ def test_fast_materialization_writes_non_paper_artifacts(tmp_path, monkeypatch):
     assert result["manifest"]["status"] == "NON_PAPER_FAST_DIAGNOSTIC"
     assert result["manifest"]["bootstrap_replicates"] == 20
     assert result["manifest"]["final_test_access_count"] == 0
-    assert (tmp_path / "development/data/EXP2_PRIORITY_BASE.parquet").is_file()
-    assert (tmp_path / "development/results/EXP2_DEVELOPMENT_SUMMARY.json").is_file()
+    assert (tmp_path / "fast/data/EXP2_PRIORITY_BASE.parquet").is_file()
+    assert (tmp_path / "fast/results/EXP2_DEVELOPMENT_SUMMARY.json").is_file()

@@ -7,7 +7,7 @@ from typing import Sequence
 
 
 def _normalize(values: Sequence[float], weights: Sequence[float]) -> tuple[tuple[float, ...], tuple[float, ...]]:
-    if len(values) != len(weights) or not values:
+    if len(values) != len(weights) or len(values) == 0:
         raise ValueError("EXP1_VALUES_WEIGHTS_LENGTH_MISMATCH")
     xs = tuple(float(x) for x in values)
     ws = tuple(float(w) for w in weights)

@@ -1,0 +1,40 @@
+{
+  "bootstrap": {
+    "ci": "percentile_95",
+    "cluster": "episode",
+    "replicates": 2000,
+    "seed": 20260906
+  },
+  "common_support": {
+    "analysis_level_conditional": true,
+    "conditional_estimand": "EXP2_COMMON_SUPPORT_CONDITIONAL",
+    "current_migration": "Sum scenario weights over common support.",
+    "historical_implementation": "Count fraction under 250 uniform frozen scenarios; superseded.",
+    "historical_semantic_source": "Historical Exp1 closure diagnostic common-supported S_i with thresholds 0.90 and 0.50.",
+    "historical_source_blob": "755569e43b381d3151b5679e539bc4a72bf611e4",
+    "m2_formal_support_rule_unchanged": true,
+    "rule_id": "EXP2_COMMON_SUPPORT_MASS_V1",
+    "semantics": "Scenario-weight probability mass on which D_TO and all seven active M2 V4 consequence components and constructed CUs are jointly supported, finite, and compatible with the active registry."
+  },
+  "components": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "final_test_access_count": 0,
+  "head": "0552cc537d3574398d3a1e613ce7353d43c2c2b6",
+  "input_manifest_hash": "sha256:51b6de81c5c2e607ceebe82e4eb7738e27d9eb3c7cc931920772ba38e2603e23",
+  "input_path": "artifacts\\experiment\\exp2\\development\\data\\EXP2_H16_M2_V4_NODE_INPUT.parquet",
+  "m2_registry_hash": "sha256:a566efb5ff02980f10eb22eaa1a27a47d9a52f88abe302cd00c1627363022f99",
+  "m2_registry_id": "M2_DATA2_FORMAL_CU_V4",
+  "m2_scope_hash": "sha256:d95b404f683440b296b1897df9b8453cbb1161db88215c6fa1efc164d5ae4621",
+  "paper_result": false,
+  "repository_baseline_in_instruction": "9729354261de2a23c82b2e02350ba84aaba6dab7",
+  "schema_version": "EXP2_ANALYSIS_CONTRACT_V1",
+  "scientific_design": "AirSlot_EXP2_PRIORITY_DIVERGENCE_DESIGN_V1_20260906.md",
+  "status": "DEVELOPMENT_COMPLETE"
+}

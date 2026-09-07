@@ -1,13 +1,30 @@
 {
-  "status": "PASS",
   "experiment_id": "EXP3",
-  "mode": "fast",
-  "rows": 3,
+  "mode": "development",
+  "status": "DEVELOPMENT_COMPLETE",
+  "bootstrap_replicates_required": 2000,
+  "bootstrap_replicates_completed": 2000,
   "bootstrap_seed": 20260906,
-  "bootstrap_replicates": 20,
+  "cluster": "original_episode_id",
+  "input_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\shared\\development\\SHARED_DEVELOPMENT_INPUTS.parquet",
+  "input_hash": "sha256:6718ed52349aa284ca5bd591179b6a848b9190f3104e134be76e2362cd4cfa76",
+  "outputs": {
+    "EXP3_ANALYSIS_CONTRACT.json": "sha256:17d7bbaccb045a9b0bc6020ed2ca26857caa9fd4c8ff507cf7d36a3ec2726a97",
+    "EXP3_BOOTSTRAP.csv": "sha256:f21ae95995d7cafcd7cbe694346dc6bb4e5c43f5c68da6c4d455ca21c534822a",
+    "EXP3_BOOTSTRAP_DRAWS.npy": "sha256:9a3bb194d0423e6e896aac7412a795f25613d53e5a2b76ca85e7804b6886e302",
+    "EXP3_COMMON_EPISODE_BOOTSTRAP.csv": "sha256:d12f04c32c2f906a89b6ebbc32347d80e1da6313de89847b6a013b3ea8c04b42",
+    "EXP3_COMMON_EPISODE_ROBUSTNESS.csv": "sha256:0ff5755d489e909d52d2649a49223942dfca15bd913e06dae0b05acacb811f4c",
+    "EXP3_MATCH_COVERAGE.csv": "sha256:fcfaf32785106b715fe5034d8a393d9e6a8bb4fe01b965b2b1bb43c594a0a608",
+    "EXP3_STAGE_AGREEMENT.csv": "sha256:2462b74896e1797102506e5d767d5b98b90d2cedf3b502aee1ec86e13ee3167e",
+    "EXP3_STAGE_COHORT.csv": "sha256:58357aa0b365261d44a319697e62353e7b806cf5e8f3711bc7e784fd0a4d5600",
+    "EXP3_STAGE_CONTRASTS.csv": "sha256:d3c44483572f5525944daeb5ab8c33a9fb7ab5a49dfca47fb8234a61aedd4338",
+    "EXP3_STAGE_CONTRAST_BOOTSTRAP.csv": "sha256:da5cd847022e55f115e26f1d148649933a9c928fa1bcf5a9d24ab0fbfc991c81",
+    "EXP3_STAGE_HETEROGENEITY.csv": "sha256:37868a2f1b01e5626bff23aec5c28c640fd303ea9618aaf671935d917a1c0e7f"
+  },
   "final_test_access_count": 0,
   "paper_result": false,
   "model_retrained": false,
   "calibration_refit": false,
-  "parameter_reselected": false
+  "parameter_reselected": false,
+  "common_episode_count": 14
 }

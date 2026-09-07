@@ -34,8 +34,10 @@ from .protocol import (
     SENSITIVITY_SUPPORT_THRESHOLD,
     SIMILAR_DELAY_PRIMARY,
     SIMILAR_DELAY_SENSITIVITY,
+    TOP_FRACTION_PRIMARY,
 )
 from .reporting import support_audit, write_frame, write_json
+from exp.shared.output import digest
 from .robustness import no_f_execution
 from .similar_delay import (
     aggregate_episode_pairs,
@@ -174,7 +176,7 @@ def _ci(replicates: list[dict[str, object]], section: str, key: str):
 
 
 def execute_node_materialization(
-    source: pd.DataFrame, *, fast: bool
+    source: pd.DataFrame, *, fast: bool, output_root: Path | None = None
 ) -> dict[str, object]:
     rows = add_domain_scores(source)
     informativeness_source = informativeness_population(rows)
@@ -293,9 +295,10 @@ def execute_node_materialization(
         },
     )
 
-    data_dir = OUTPUT / "data"
-    results_dir = OUTPUT / "results"
-    figures_dir = OUTPUT / "figures"
+    output_root = output_root or (OUTPUT.parent / "fast" if fast else OUTPUT)
+    data_dir = output_root / "data"
+    results_dir = output_root / "results"
+    figures_dir = output_root / "figures"
     write_frame(data_dir / "EXP2_PRIORITY_BASE.parquet", sample)
     write_frame(data_dir / "EXP2_COMMON_SUPPORT_NODE_SUMMARY.parquet", rows)
     write_frame(data_dir / "EXP2_SIMILAR_DELAY_PAIRS.parquet", pair_frames[5.0])
@@ -321,6 +324,86 @@ def execute_node_materialization(
             ]
         ),
     )
+    exp2a_bootstrap = pd.DataFrame(
+        [{"replicate": replicate, **item["priority"]}
+         for replicate, item in enumerate(bootstrap)]
+    )
+    exp2b_bootstrap = pd.DataFrame(
+        [
+            {
+                "replicate": replicate,
+                "quantity_id": quantity,
+                "estimate": estimate,
+                "n_nodes": item["informativeness_n_nodes"].get(quantity),
+            }
+            for replicate, item in enumerate(bootstrap)
+            for quantity, estimate in item["informativeness"].items()
+        ]
+    )
+    exp2c_bootstrap = pd.DataFrame(
+        [
+            {"replicate": replicate, "caliper_minutes": SIMILAR_DELAY_PRIMARY, **item["similar_delay"]}
+            for replicate, item in enumerate(bootstrap)
+        ]
+    )
+    write_frame(data_dir / "EXP2A_NODE_RECORDS.parquet", sample)
+    write_frame(results_dir / "EXP2A_SUMMARY.csv", pd.DataFrame([priority]))
+    write_frame(results_dir / "EXP2A_BOOTSTRAP.csv", exp2a_bootstrap)
+    write_frame(
+        results_dir / "EXP2A_TIE_AUDIT.csv",
+        pd.DataFrame([{
+            "top_fraction": TOP_FRACTION_PRIMARY,
+            "n_nodes": priority["n_nodes"],
+            "delay_boundary_tie_count": priority["delay_boundary_tie_count"],
+            "consequence_boundary_tie_count": priority["consequence_boundary_tie_count"],
+            "delay_boundary_tie_fraction": priority["delay_boundary_tie_count"] / priority["n_nodes"],
+            "consequence_boundary_tie_fraction": priority["consequence_boundary_tie_count"] / priority["n_nodes"],
+        }]),
+    )
+    write_frame(results_dir / "EXP2B_COMPONENT_DOMAIN_SUMMARY.csv", information)
+    write_frame(results_dir / "EXP2B_BOOTSTRAP.csv", exp2b_bootstrap)
+    write_frame(data_dir / "EXP2C_MATCHED_PAIRS.parquet", pair_frames[SIMILAR_DELAY_PRIMARY])
+    write_frame(
+        results_dir / "EXP2C_PAIR_BALANCED_SUMMARY.csv",
+        pd.DataFrame([{"caliper_minutes": SIMILAR_DELAY_PRIMARY, **primary_summary}]),
+    )
+    write_frame(results_dir / "EXP2C_BOOTSTRAP.csv", exp2c_bootstrap)
+    write_frame(
+        results_dir / "EXP2_ROBUSTNESS_SUMMARY.csv",
+        pd.DataFrame([
+            {"robustness_id": "NO_F_EXECUTION", **robustness},
+            {"robustness_id": "SUPPORT_50", **sensitivity},
+            {"robustness_id": "FULL_SUPPORT_100", **full_support},
+        ]),
+    )
+    representative = sample.sort_values(
+        ["decision_node_id"], kind="mergesort"
+    ).head(5).copy()
+    representative["representative_case_rule"] = "first_five_lexicographic_decision_node_id"
+    write_frame(results_dir / "EXP2_REPRESENTATIVE_CASES.csv", representative)
+    contract = contract_payload()
+    contract["status"] = "DEVELOPMENT_COMPLETE" if not fast else "NON_PAPER_FAST_DIAGNOSTIC"
+    input_path = source.attrs.get("input_path")
+    contract["input_path"] = str(input_path) if input_path else None
+    contract["input_manifest_hash"] = (
+        digest(input_path) if input_path and Path(input_path).is_file() else None
+    )
+    write_json(output_root / "EXP2_ANALYSIS_CONTRACT.json", contract)
+    write_json(output_root / "EXP2_SUPPORT_AUDIT.json", audit)
+    write_json(output_root / "EXP2_INPUT_MANIFEST.json", {
+        "schema_version": "EXP2_DEVELOPMENT_INPUT_MANIFEST_V2",
+        "artifact_scope": "DEVELOPMENT_ONLY",
+        "source_rows": int(len(source)),
+        "source_episodes": int(source["episode_id"].astype(str).nunique()),
+        "primary_sample_rows": int(len(sample)),
+        "primary_sample_episodes": int(sample["episode_id"].astype(str).nunique()),
+        "exp2b_population_rows": int(len(informativeness_source)),
+        "bootstrap_replicates": bootstrap_replicates,
+        "bootstrap_replicates_completed": int(len(bootstrap)),
+        "bootstrap_seed": BOOTSTRAP_SEED,
+        "final_test_access_count": 0,
+        "paper_result": False,
+    })
     diagnostics = {
         "status": "NON_PAPER_FAST_DIAGNOSTIC" if fast else "DEVELOPMENT_ONLY",
         "bootstrap_replicates": bootstrap_replicates,
@@ -348,11 +431,29 @@ def execute_node_materialization(
             component_gaps,
             figures_dir / "FIG3_COMPONENT_EVIDENCE_DEV.pdf",
         )
+    required_outputs = [
+        "EXP2_ANALYSIS_CONTRACT.json", "EXP2_INPUT_MANIFEST.json",
+        "EXP2_SUPPORT_AUDIT.json", "data/EXP2A_NODE_RECORDS.parquet",
+        "results/EXP2A_SUMMARY.csv", "results/EXP2A_BOOTSTRAP.csv",
+        "results/EXP2A_TIE_AUDIT.csv",
+        "results/EXP2B_COMPONENT_DOMAIN_SUMMARY.csv",
+        "results/EXP2B_BOOTSTRAP.csv", "data/EXP2C_MATCHED_PAIRS.parquet",
+        "results/EXP2C_PAIR_BALANCED_SUMMARY.csv",
+        "results/EXP2C_BOOTSTRAP.csv", "results/EXP2_ROBUSTNESS_SUMMARY.csv",
+        "results/EXP2_REPRESENTATIVE_CASES.csv",
+    ]
     manifest = {
         "schema_version": "EXP2_DEVELOPMENT_MANIFEST_V1",
-        "status": diagnostics["status"],
+        "status": "DEVELOPMENT_COMPLETE" if not fast else diagnostics["status"],
         "head": _head(),
         "bootstrap_replicates": bootstrap_replicates,
+        "bootstrap_replicates_required": bootstrap_replicates,
+        "bootstrap_replicates_completed": len(bootstrap),
+        "bootstrap_seed": BOOTSTRAP_SEED,
+        "cluster": "original_episode_id",
+        "input_path": str(source.attrs.get("input_path", "")),
+        "required_outputs": required_outputs,
+        "outputs": {name: digest(output_root / name) for name in required_outputs},
         "final_test_access_count": 0,
         "model_retrained": False,
         "calibration_refit": False,
@@ -360,7 +461,7 @@ def execute_node_materialization(
         "parameter_reselected": False,
         "paper_result": False,
     }
-    write_json(OUTPUT / "EXP2_MANIFEST.json", manifest)
+    write_json(output_root / "EXP2_MANIFEST.json", manifest)
     return {"manifest": manifest, "support_audit": audit}
 
 
@@ -372,9 +473,10 @@ def main(argv: list[str] | None = None) -> int:
         required=True,
     )
     parser.add_argument("--input", type=Path)
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
-    contract = write_contract_artifacts()
     if args.mode == "contract":
+        contract = write_contract_artifacts()
         print(json.dumps(contract, sort_keys=True))
         return 0
     if args.mode == "materialize":
@@ -384,7 +486,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.input is None:
         raise RuntimeError("BLOCK_EXP2_DEVELOPMENT_INPUT_MISSING")
     source = load_explicit_node_inputs(args.input)
-    result = execute_node_materialization(source, fast=args.mode == "fast")
+    source.attrs["input_path"] = str(args.input)
+    result = execute_node_materialization(
+        source, fast=args.mode == "fast", output_root=args.output
+    )
     print(json.dumps(result, sort_keys=True, default=str))
     return 0
 

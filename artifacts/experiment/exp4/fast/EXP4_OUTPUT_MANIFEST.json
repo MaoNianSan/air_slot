@@ -1,0 +1,32 @@
+{
+  "experiment_id": "EXP4",
+  "mode": "fast",
+  "status": "NON_PAPER_FAST_DIAGNOSTIC",
+  "bootstrap_replicates_required": 20,
+  "bootstrap_replicates_completed": 20,
+  "bootstrap_seed": 20260906,
+  "cluster": "original_episode_id",
+  "input_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\shared\\development\\SHARED_DEVELOPMENT_INPUTS.parquet",
+  "input_hash": "sha256:6718ed52349aa284ca5bd591179b6a848b9190f3104e134be76e2362cd4cfa76",
+  "outputs": {
+    "EXP4_BOOTSTRAP.csv": "sha256:849b7755d05a51f13b604ca078feb493c5c810d05ee2add771c8b799d992a8b9",
+    "EXP4_BOOTSTRAP_DRAWS.npy": "sha256:a7d961ebc19cbf08acb128301b72cab35e3cbb9634722c6d81e24dffc1f13dac",
+    "EXP4_CANONICAL_EVENTS.parquet": "sha256:ec592a79a2b815de90720eec87e11c10a7e1cca4b0576eaaf1e4f22e94269bea",
+    "EXP4_DELTA_CAPTURE.csv": "sha256:363b5f54af198ced36509866f57f51de2f45e4afe457d67c72566be26744b408",
+    "EXP4_DOMAIN_CAPTURE.csv": "sha256:160fcc6f7da158f450df483ea249191951990ebcbc0d549462982e8d51ff0030",
+    "EXP4_NATIVE_COMPONENT_CAPTURE.csv": "sha256:652f9214c73bb2e108b14e2ef5f73c7faae043d3d93c96a4db3cf3f8107f7ccc",
+    "EXP4_PARETO_EVIDENCE.csv": "sha256:7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "EXP4_PARETO_SUMMARY.csv": "sha256:49309a5bde6627c09151ddebb658f9020dc166867276db8d14e3f06088872ab3",
+    "EXP4_ROBUSTNESS_SUMMARY.csv": "sha256:925d74ba3d1fb30a1d4b4782f304165799770a3ba6d914cff52f02517a4e9a34",
+    "EXP4_ROBUST_MEMBERSHIP.csv": "sha256:da6f02704385ab113af7baed49b8e3879a513ab77fc1c92857561d095ec9b969",
+    "EXP4_SCREENING_RESULTS.csv": "sha256:46329e46345c121bf1c448db679ee5e6bc62f35b81343c4c169302aef3617633",
+    "EXP4_TIE_AUDIT.csv": "sha256:4c0ecc69729d6773df6ea110f5cd3d788e8a1fde4b3b5ee7185f489e3b0db318"
+  },
+  "final_test_access_count": 0,
+  "paper_result": false,
+  "model_retrained": false,
+  "calibration_refit": false,
+  "parameter_reselected": false,
+  "canonical_event_count": 17,
+  "excluded_canonical_event_count": 0
+}

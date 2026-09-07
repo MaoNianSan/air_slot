@@ -1,0 +1,97 @@
+{
+  "active_decision_node_count": 1769,
+  "base_sample_node_count": 1765,
+  "common_support_mass": {
+    "max": 1.0,
+    "median": 1.0,
+    "min": 0.0,
+    "p10": 1.0,
+    "p90": 1.0
+  },
+  "components": {
+    "F_continuity": {
+      "rank_variation_status": "SUPPORTED",
+      "supported_episodes": 127,
+      "supported_nodes": 1765,
+      "valid_zero_fraction": 0.9467422096317281
+    },
+    "F_execution": {
+      "rank_variation_status": "SUPPORTED",
+      "supported_episodes": 127,
+      "supported_nodes": 1765,
+      "valid_zero_fraction": 0.055524079320113315
+    },
+    "F_propagation": {
+      "rank_variation_status": "SUPPORTED",
+      "supported_episodes": 127,
+      "supported_nodes": 1765,
+      "valid_zero_fraction": 0.026628895184135977
+    },
+    "P_itinerary": {
+      "rank_variation_status": "SUPPORTED",
+      "supported_episodes": 127,
+      "supported_nodes": 1765,
+      "valid_zero_fraction": 0.26175637393767703
+    },
+    "P_service": {
+      "rank_variation_status": "SUPPORTED",
+      "supported_episodes": 127,
+      "supported_nodes": 1765,
+      "valid_zero_fraction": 0.6623229461756374
+    },
+    "P_time": {
+      "rank_variation_status": "SUPPORTED",
+      "supported_episodes": 127,
+      "supported_nodes": 1765,
+      "valid_zero_fraction": 0.018130311614730877
+    },
+    "R_operating": {
+      "rank_variation_status": "SUPPORTED",
+      "supported_episodes": 127,
+      "supported_nodes": 1765,
+      "valid_zero_fraction": 0.19036827195467423
+    }
+  },
+  "conditional_aggregate_complete_node_count": 1765,
+  "formal_full_support_node_count": 1765,
+  "full_support_100": {
+    "n_episodes": 127,
+    "n_nodes": 1765
+  },
+  "primary_90": {
+    "n_episodes": 127,
+    "n_nodes": 1765
+  },
+  "scenario_level_unsupported_reason_counts": {
+    "D_TO": 0,
+    "F_continuity": 0,
+    "F_execution": 0,
+    "F_propagation": 256,
+    "P_itinerary": 0,
+    "P_service": 0,
+    "P_time": 0,
+    "R_operating": 0
+  },
+  "sensitivity_50": {
+    "n_episodes": 127,
+    "n_nodes": 1765
+  },
+  "similar_delay": {
+    "10_min_unique_episode_pairs": 7293,
+    "15_min_unique_episode_pairs": 7445,
+    "5_min_qualifying_node_pairs": 749918,
+    "5_min_unique_episode_pairs": 6336
+  },
+  "support_bands": {
+    "eq_1_00": 1765,
+    "ge_0_50_lt_0_90": 0,
+    "ge_0_90_lt_1_00": 0,
+    "lt_0_50": 4
+  },
+  "top10": {
+    "consequence_boundary_tie_count": 1,
+    "delay_boundary_tie_count": 1
+  },
+  "total_decision_node_count": 1769,
+  "total_episode_count": 128
+}

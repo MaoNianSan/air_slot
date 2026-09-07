@@ -14,8 +14,8 @@ import torch
 from model.M1.cache import M1DevelopmentBaseCache
 from model.M1.coverage import active_node_prefixes
 from model.M1.data import encode_pre_sequence
+from model.M1.factual_state import factual_observed_state
 from model.M1.pipeline import M1Pipeline
-from model.M1.scenario_layer.sampler import required_observations_v2
 from model.M1.tail import load_tail_continuations
 from model.M2.context import (
     AirportReferenceKeys,
@@ -105,25 +105,19 @@ def _reference_payloads() -> dict[str, dict]:
     }
 
 
-def _observed(prepared, state) -> dict[str, object]:
-    required = required_observations_v2(
-        state.decision_node.operational_stage.value
+def _observed(state, taxi_reference) -> dict[str, object]:
+    """Return only PRE-published, cutoff-legal factual observations."""
+    schedule = state.successor_state.get("schedule_reference")
+    schedule_value = None if schedule is None else schedule.value
+    origin = schedule_value.get("origin_airport_id") if isinstance(schedule_value, dict) else None
+    lookup = taxi_reference.lookup(origin) if origin is not None else None
+    minutes = (
+        float(lookup.value)
+        if lookup is not None and getattr(lookup, "value", None) is not None
+        and getattr(getattr(lookup, "support_state", None), "value", None) == "SUPPORTED"
+        else None
     )
-    observed: dict[str, object] = {}
-    if "T_IB_A00" in required:
-        observed["T_IB_A00"] = (
-            prepared.predecessor_outcome.actual_arrival_utc.isoformat()
-        )
-    if "D_OB" in required:
-        observed["D_OB"] = max(
-            0.0,
-            (
-                prepared.successor_outcome.actual_departure_utc
-                - prepared.successor_schedule.scheduled_departure_utc
-            ).total_seconds()
-            / 60.0,
-        )
-    return observed
+    return factual_observed_state(state, taxi_reference_minutes=minutes)
 
 
 def _destination(state) -> str:
@@ -237,6 +231,10 @@ def materialize_h16_development_inputs(
         )
         if split == "development"
     }
+    expected_positions = {
+        (example.episode_id, len(example.values) - 1)
+        for example in cache.partition("development")
+    }
     prepared_rows = []
     for prepared in cohorts.development:
         reference_minutes = None
@@ -275,6 +273,23 @@ def materialize_h16_development_inputs(
     }
     if not materialized_node_ids:
         raise RuntimeError("BLOCK_EXP2_H16_PRE_NODE_SET_EMPTY")
+    # Publish the exact frozen M1 cache positions.  Cache decision-node IDs
+    # and PRE published node IDs are distinct namespaces; position within the
+    # exact episode prefix is the cross-artifact identity authority.
+    prepared_rows = [
+        item
+        for item in prepared_rows
+        if (
+            item[0].episode.episode_id,
+            item[1][-1].decision_node.node_index,
+        ) in expected_positions
+    ]
+    materialized_positions = {
+        (prepared.episode.episode_id, prefix[-1].decision_node.node_index)
+        for prepared, prefix in prepared_rows
+    }
+    if materialized_positions != expected_positions:
+        raise RuntimeError("BLOCK_EXP2_H16_PRE_POSITION_SET_MISMATCH")
     node_lineage_audit = {
         "frozen_cache_decision_node_count": len(expected_nodes),
         "current_pre_decision_node_count": len(materialized_node_ids),
@@ -300,7 +315,7 @@ def materialize_h16_development_inputs(
             state,
             values.unsqueeze(0),
             torch.tensor([len(values)]),
-            observed=_observed(prepared, state),
+            observed=_observed(state, taxi),
             count=EXPECTED_SCENARIO_COUNT,
             seed=int(manifest["training_seed"]),
             taxi_reference=taxi,
@@ -363,8 +378,15 @@ def materialize_h16_development_inputs(
             scenario_payload = {
                 "episode_id": typed_row.episode_id,
                 "decision_node_id": typed_row.decision_node_id,
+                "pre_decision_node_id": typed_row.decision_node_id,
                 "scenario_id": typed_row.scenario_id,
                 "scenario_weight": typed_row.scenario_weight,
+                "R_IB": typed_row.r_ib_minutes,
+                "R_IB_support": typed_row.r_ib_support.value,
+                "D_OB": typed_row.d_ob_minutes,
+                "D_OB_support": typed_row.d_ob_support.value,
+                "D_TX": typed_row.d_tx_minutes,
+                "D_TX_support": typed_row.d_tx_support.value,
                 "D_TO": typed_row.d_to_minutes,
                 "D_TO_support": typed_row.d_to_support.value,
                 "common_supported": support_row["common_supported"],

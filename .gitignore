@@ -96,6 +96,14 @@ artifacts/paper_results_v2_final_test_rmb/exp2/M2_FINAL_TEST_CONSEQUENCES.parque
 artifacts/diagnostics/passenger_reference_freeze/T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json
 artifacts/diagnostics/passenger_reference_freeze_v4/T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json
 
+# ===== Large regenerable bootstrap draws & freeze references (kept local) =====
+# EXP3/EXP4 bootstrap draw matrices (~73MB each) are regenerable from frozen
+# draw seeds; DB1B connection-share freeze reference is regenerable via the
+# passenger-reference freeze pipeline.
+artifacts/experiment/exp3/development/EXP3_BOOTSTRAP_DRAWS.npy
+artifacts/experiment/exp4/development/EXP4_BOOTSTRAP_DRAWS.npy
+artifacts/diagnostics/passenger_reference_freeze_v4/DB1B_CONNECTION_SHARE_REFERENCE.json
+
 # ===== Local reference material (not tracked; user decision 2026-09-02) =====
 Rolling_Airline_Recovery (4).pdf
 Rolling_Airline_Recovery (7).pdf
