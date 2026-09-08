@@ -104,6 +104,13 @@ artifacts/experiment/exp3/development/EXP3_BOOTSTRAP_DRAWS.npy
 artifacts/experiment/exp4/development/EXP4_BOOTSTRAP_DRAWS.npy
 artifacts/diagnostics/passenger_reference_freeze_v4/DB1B_CONNECTION_SHARE_REFERENCE.json
 
+# ===== Large regenerable final-test data (kept local; user decision 2026-09-08) =====
+# Full record-level pair parquets and PRE states are regenerable from the
+# frozen final-test inputs & pipeline; summaries/manifests stay versioned.
+artifacts/experiment/final_test/exp2/data/EXP2_SIMILAR_DELAY_PAIRS.parquet
+artifacts/experiment/final_test/exp2/data/EXP2C_MATCHED_PAIRS.parquet
+artifacts/experiment/final_test/FINAL_TEST_PRE_STATES.jsonl
+
 # ===== Local reference material (not tracked; user decision 2026-09-02) =====
 Rolling_Airline_Recovery (4).pdf
 Rolling_Airline_Recovery (7).pdf

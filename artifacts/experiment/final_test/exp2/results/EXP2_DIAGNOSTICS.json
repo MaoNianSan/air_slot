@@ -1,0 +1,104 @@
+{
+  "bootstrap_replicates": 2000,
+  "final_test_access_count": 1,
+  "paper_result": true,
+  "status": "FINAL_TEST_ONLY",
+  "support_audit": {
+    "active_decision_node_count": 1656,
+    "base_sample_node_count": 1656,
+    "common_support_mass": {
+      "max": 1.0,
+      "median": 1.0,
+      "min": 1.0,
+      "p10": 1.0,
+      "p90": 1.0
+    },
+    "components": {
+      "F_continuity": {
+        "rank_variation_status": "SUPPORTED",
+        "supported_episodes": 128,
+        "supported_nodes": 1656,
+        "valid_zero_fraction": 0.9734299516908212
+      },
+      "F_execution": {
+        "rank_variation_status": "SUPPORTED",
+        "supported_episodes": 128,
+        "supported_nodes": 1656,
+        "valid_zero_fraction": 0.07306763285024155
+      },
+      "F_propagation": {
+        "rank_variation_status": "SUPPORTED",
+        "supported_episodes": 128,
+        "supported_nodes": 1656,
+        "valid_zero_fraction": 0.025966183574879228
+      },
+      "P_itinerary": {
+        "rank_variation_status": "SUPPORTED",
+        "supported_episodes": 128,
+        "supported_nodes": 1656,
+        "valid_zero_fraction": 0.18840579710144928
+      },
+      "P_service": {
+        "rank_variation_status": "SUPPORTED",
+        "supported_episodes": 128,
+        "supported_nodes": 1656,
+        "valid_zero_fraction": 0.6147342995169082
+      },
+      "P_time": {
+        "rank_variation_status": "SUPPORTED",
+        "supported_episodes": 128,
+        "supported_nodes": 1656,
+        "valid_zero_fraction": 0.025966183574879228
+      },
+      "R_operating": {
+        "rank_variation_status": "SUPPORTED",
+        "supported_episodes": 128,
+        "supported_nodes": 1656,
+        "valid_zero_fraction": 0.13405797101449277
+      }
+    },
+    "conditional_aggregate_complete_node_count": 1656,
+    "formal_full_support_node_count": 1656,
+    "full_support_100": {
+      "n_episodes": 128,
+      "n_nodes": 1656
+    },
+    "primary_90": {
+      "n_episodes": 128,
+      "n_nodes": 1656
+    },
+    "scenario_level_unsupported_reason_counts": {
+      "D_TO": 0,
+      "F_continuity": 0,
+      "F_execution": 0,
+      "F_propagation": 0,
+      "P_itinerary": 0,
+      "P_service": 0,
+      "P_time": 0,
+      "R_operating": 0
+    },
+    "sensitivity_50": {
+      "n_episodes": 128,
+      "n_nodes": 1656
+    },
+    "similar_delay": {
+      "10_min_unique_episode_pairs": 7943,
+      "15_min_unique_episode_pairs": 8029,
+      "5_min_qualifying_node_pairs": 726455,
+      "5_min_unique_episode_pairs": 7045
+    },
+    "support_bands": {
+      "eq_1_00": 1656,
+      "ge_0_50_lt_0_90": 0,
+      "ge_0_90_lt_1_00": 0,
+      "lt_0_50": 0
+    },
+    "top10": {
+      "consequence_boundary_tie_count": 1,
+      "delay_boundary_tie_count": 1
+    },
+    "total_decision_node_count": 1656,
+    "total_episode_count": 128
+  },
+  "artifact_scope": "FINAL_TEST_ONLY"
+}

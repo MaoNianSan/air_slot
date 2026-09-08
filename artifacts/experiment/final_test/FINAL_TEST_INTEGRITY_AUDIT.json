@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "final_test_access_count": 1,
+  "selected_episode_count": 128,
+  "bootstrap_unique_replicates": {
+    "exp1_paired": 2000,
+    "exp2a": 2000,
+    "exp2b": 2000,
+    "exp2c": 2000,
+    "exp3_primary": 2000,
+    "exp3_common_episode": 2000,
+    "exp3_contrast": 2000,
+    "exp4": 2000
+  },
+  "exp1_lead_slice_pass_rows": 16,
+  "exp1_lead_slice_abstention_rows": 14,
+  "exp2b_independent_component_population_n_nodes": 1656,
+  "exp3_primary_support_coverage": 1.0,
+  "exp4_capacity_grid": [
+    0.05,
+    0.1,
+    0.2,
+    0.3
+  ],
+  "exp4_canonical_before_support": true,
+  "figures": [
+    "exp1\\FIG1_HISTORY_CURRENT_MAE_FINAL_TEST.pdf",
+    "exp3\\FIG4_STAGE_AGREEMENT_FINAL_TEST.pdf",
+    "exp4\\FIG5_SCREENING_Q10_FINAL_TEST.pdf"
+  ]
+}

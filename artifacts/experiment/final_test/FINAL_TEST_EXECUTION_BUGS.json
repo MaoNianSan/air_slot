@@ -1,0 +1,45 @@
+{
+  "schema_version": "AIR_SLOT_FINAL_TEST_EXECUTION_BUG_LOG_V1",
+  "bugs": [
+    {
+      "bug_id": "FT-ADAPTER-001",
+      "class": "PURE_EXECUTION_INPUT_BINDING_BUG",
+      "status": "FIXED",
+      "location": "formal/final_test_run.py:_m1_examples",
+      "symptom": "np.argsort returned a multidimensional index for tuple sort keys",
+      "failure": "TypeError: only 0-dimensional arrays can be converted to Python scalars",
+      "impact": "No Exp1-Exp4 result was generated before failure",
+      "scientific_effect": "NONE",
+      "cohort_effect": "NONE; selected cohort manifest and PRE states were already fixed",
+      "fix": "Use stable Python index sorting by (episode_id, decision_node_id)",
+      "rerun_policy": "Reuse the same selected cohort and access audit"
+    },
+    {
+      "bug_id": "FT-ADAPTER-002",
+      "class": "PURE_EXECUTION_INPUT_BINDING_BUG",
+      "status": "FIXED",
+      "location": "formal/final_test_run.py:_scenarios",
+      "symptom": "Final-Test M1 state-node IDs were not rebound to the matched analysis-node namespace",
+      "failure": "Exp1B analyze_nodes raised KeyError for an exact matched node",
+      "impact": "Exp1B and downstream Exp2-Exp4 execution stopped after valid scenario materialization",
+      "scientific_effect": "NONE",
+      "cohort_effect": "NONE; the fixed cohort and generated model outputs are reused",
+      "fix": "Preserve pre_decision_node_id and bind decision/canonical/technical IDs to the exact analysis node ID",
+      "rerun_policy": "Reuse the same selected cohort and access audit"
+    },
+    {
+      "bug_id": "FT-ADAPTER-003",
+      "class": "PURE_EXECUTION_OUTPUT_BINDING_BUG",
+      "status": "FIXED",
+      "location": "formal/final_test_run.py:_exp2",
+      "symptom": "A WindowsPath stored in DataFrame attrs could not be serialized to Parquet metadata",
+      "failure": "TypeError: Object of type WindowsPath is not JSON serializable",
+      "impact": "Exp2 formal execution stopped after Exp1 and shared Final-Test inputs were generated",
+      "scientific_effect": "NONE",
+      "cohort_effect": "NONE; fixed cohort and shared inputs remain unchanged",
+      "fix": "Store the generated input path in DataFrame attrs as a string",
+      "rerun_policy": "Reuse the same selected cohort, access audit, and shared inputs"
+    }
+  ],
+  "final_test_access_count": 1
+}
