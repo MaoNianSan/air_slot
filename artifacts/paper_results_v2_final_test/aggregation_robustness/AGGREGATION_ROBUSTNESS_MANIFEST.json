@@ -1,0 +1,104 @@
+{
+  "artifact_scope": "FINAL_TEST_ONLY",
+  "baseline_reproduction": {
+    "checks": {
+      "kendall_tau_b": true,
+      "median_abs_priority_separation": true,
+      "median_abs_rank_displacement": true,
+      "share_priority_separation_ge_030": true,
+      "top_decile_overlap": true
+    },
+    "point_overall": {
+      "kendall_tau_b": 0.736488790649004,
+      "median_abs_rank_displacement": 0.06974637681159424,
+      "n_episode": 128,
+      "n_node": 1656,
+      "p90_abs_rank_displacement": 0.22705314009661837,
+      "share_abs_rank_displacement_ge_030": 0.04770531400966183,
+      "spearman_rho": 0.8960645135697696,
+      "support_status": "SUPPORTED",
+      "top_decile_overlap": 0.7289156626506024
+    },
+    "point_similar": {
+      "median_abs_priority_separation": 0.20410628019323673,
+      "n_episode": 128,
+      "n_node": 1656,
+      "n_pair": 7045,
+      "share_priority_separation_ge_030": 0.33782824698367636,
+      "support_status": "SUPPORTED"
+    },
+    "status": "PASS"
+  },
+  "bootstrap": {
+    "ci": "percentile_95",
+    "ranks_rebuilt_per_view_and_replicate": true,
+    "replicates": 2000,
+    "seed": 20260906,
+    "similar_delay_eligibility_universe_precomputed_once": true,
+    "similar_delay_rank_gaps_recomputed_per_view_and_replicate": true,
+    "unit": "EPISODE"
+  },
+  "canonical_event_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test\\exp4\\EXP4_CANONICAL_EVENTS.parquet",
+  "canonical_event_sha256": "sha256:008ab70edddf5f11866314122bdc5c975c099aef5b08e66499c142b056deea6e",
+  "date_max": "2019-12-31 16:30:00+00:00",
+  "date_min": "2019-10-01 18:15:00+00:00",
+  "final_test_access_count": 1,
+  "head": "860befd20e968ba702b1aad99e618830a3a6acfe",
+  "interpretation": "Values and percentile ranges are reported without an automatic robustness conclusion.",
+  "n_episode": 128,
+  "n_node": 1656,
+  "outputs": {
+    "AGGREGATION_ROBUSTNESS_OVERALL.csv": "sha256:a09641f675673a7cdf881d3dc2a22659195a141d82eb9bfa94cba49a9866209b",
+    "AGGREGATION_ROBUSTNESS_REPORT.md": "sha256:d525de1fec64c460c9a5303558a5cefd07fa9d2303469b406e849d1065f49ec2",
+    "AGGREGATION_ROBUSTNESS_SIMILAR_DELAY.csv": "sha256:5379eee32ba45313c0a1ad3605ba4cada02598945ce60840dff644ae49a3c3da",
+    "AGGREGATION_ROBUSTNESS_STAGE.csv": "sha256:620081e1af8601c868b2ded0fe7ffee6a630ca83860411afbbe13eb4ee02d0bc",
+    "AGGREGATION_VIEW_DEFINITIONS.json": "sha256:1c7f881632eb63ed25503252bd587ff495616d5eb8a7f273e88a04dcf49b05df"
+  },
+  "schema_version": "AIR_SLOT_AGGREGATION_ROBUSTNESS_FINAL_TEST_MANIFEST_V1",
+  "scientific_guards": {
+    "calibration_refit": false,
+    "cohort_modified": false,
+    "consequence_definitions_modified": false,
+    "domain_only_scores_included_as_aggregate_views": false,
+    "model_retrained": false,
+    "new_data_accessed": false,
+    "parameter_reselected": false,
+    "screening_rerun": false
+  },
+  "similar_delay": {
+    "base_qualifying_node_pairs": 726455,
+    "base_unique_episode_pairs": 7045,
+    "caliper_minutes": 5.0
+  },
+  "source_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test\\exp2\\data\\EXP2A_NODE_RECORDS.parquet",
+  "source_sha256": "sha256:90ff54051f9beb641ee4eb172a37ce2cc7357860b1e5b554e1adef3c7f864acc",
+  "stages": [
+    "PRE_IB",
+    "POST_IB_PRE_OB",
+    "POST_OB_PRE_TO"
+  ],
+  "status": "FINAL_TEST_COMPLETE",
+  "view_definition_check": {
+    "canonical_event_count": 238,
+    "status": "PASS",
+    "supported_canonical_event_count": 238,
+    "view_checks": {
+      "EQUAL_COMPONENT": true,
+      "FLIGHT_EMPHASIS": true,
+      "NO_F_EXECUTION": true,
+      "OPERATING_EMPHASIS": true,
+      "PASSENGER_EMPHASIS": true,
+      "S_F": true,
+      "S_P": true,
+      "S_R": true
+    }
+  },
+  "views": [
+    "BASE_EQUAL_DOMAIN",
+    "EQUAL_COMPONENT",
+    "NO_F_EXEC",
+    "FLIGHT_EMPHASIS",
+    "PASSENGER_EMPHASIS",
+    "OPERATING_EMPHASIS"
+  ]
+}

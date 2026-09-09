@@ -1,0 +1,380 @@
+{
+  "calibration_refit": false,
+  "component_domain_association": {
+    "recomputed": false,
+    "rows": [
+      {
+        "ci_high": 0.008894060211920591,
+        "ci_low": -0.1377410023192445,
+        "estimate": -0.071730162175184,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "F_continuity",
+        "support_population": "COMPONENT_SPECIFIC",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.8504368914424472,
+        "ci_low": 0.7594933020074875,
+        "estimate": 0.8085109730626443,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "F_execution",
+        "support_population": "COMPONENT_SPECIFIC",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 1.0,
+        "ci_low": 0.9999999999999998,
+        "estimate": 1.0,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "F_propagation",
+        "support_population": "COMPONENT_SPECIFIC",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.7165448727081933,
+        "ci_low": 0.5731506831250184,
+        "estimate": 0.647186398498069,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "P_time",
+        "support_population": "COMPONENT_SPECIFIC",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.5064040013984183,
+        "ci_low": 0.29349425296178533,
+        "estimate": 0.4082784340342855,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "P_itinerary",
+        "support_population": "COMPONENT_SPECIFIC",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.637787879948098,
+        "ci_low": 0.45010629656255535,
+        "estimate": 0.5562275281827643,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "P_service",
+        "support_population": "COMPONENT_SPECIFIC",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.309633625790907,
+        "ci_low": 0.11611484022326889,
+        "estimate": 0.21210888674266287,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "R_operating",
+        "support_population": "COMPONENT_SPECIFIC",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.9492385322553216,
+        "ci_low": 0.9123788926006466,
+        "estimate": 0.9322889625444618,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "score_F",
+        "support_population": "DOMAIN_COMPLETE",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.7210928579731029,
+        "ci_low": 0.5813059763608868,
+        "estimate": 0.6521154313780043,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "score_P",
+        "support_population": "DOMAIN_COMPLETE",
+        "support_status": "SUPPORTED"
+      },
+      {
+        "ci_high": 0.309633625790907,
+        "ci_low": 0.11611484022326889,
+        "estimate": 0.21210888674266287,
+        "n_episodes": 128,
+        "n_nodes": 1656,
+        "population_rule": "FINITE_SUPPORT_APPLICABLE_PER_COMPONENT_OR_DOMAIN",
+        "quantity_id": "score_R",
+        "support_population": "DOMAIN_COMPLETE",
+        "support_status": "SUPPORTED"
+      }
+    ],
+    "source": "artifacts/experiment/final_test/exp2/results/EXP2B_COMPONENT_DOMAIN_SUMMARY.csv",
+    "statistic": "Kendall tau-b"
+  },
+  "delay_stripped_score_created": false,
+  "exp4_rerun": false,
+  "final_test_cohort_rematerialized": false,
+  "final_test_secondary_derivation": true,
+  "human_gate": "Review secondary results before any manuscript edit.",
+  "interpretation": {
+    "not_established": [
+      "No causal decomposition or fraction of correlation attributable to any channel is identified.",
+      "NO_F_EXECUTION is not a delay-free score: other channels retain their frozen delay dependence.",
+      "A positive caliper permits residual delay differences; these comparisons do not prove exact-delay conditional independence.",
+      "Wider calipers change the qualifying pair set; they are not new primary estimands or evidence of causal superiority.",
+      "Screening capture describes allocation trade-offs, not uniformly improved capture in every domain or a causal recovery benefit."
+    ],
+    "observed": [
+      "Strong delay association is present in several frozen consequence channels, especially F_propagation and F_execution.",
+      "The existing NO_F_EXECUTION sensitivity retains substantial association and nonidentical priorities.",
+      "Similar-delay comparisons retain consequence-priority separation under the unchanged primary consequence score."
+    ],
+    "supported_reading": "These results are consistent with delay-linked consequence channels contributing to high overall association, while similar predicted delay severity need not imply identical consequence-based recovery priority. This evidence does not require removing delay from the primary consequence score."
+  },
+  "manuscript_modified": false,
+  "model_retrained": false,
+  "new_primary_estimand": false,
+  "no_f_execution": {
+    "audit_row_recomputed": false,
+    "new_definition": false,
+    "row": {
+      "consequence_boundary_tie_count": 1,
+      "delay_boundary_tie_count": 1,
+      "kendall_tau_b": 0.7116479253883166,
+      "kendall_tau_b_ci_high": 0.7690377754967326,
+      "kendall_tau_b_ci_low": 0.6469945900221916,
+      "median_rank_displacement": 0.07608695652173914,
+      "median_rank_displacement_ci_high": 0.10503902553372514,
+      "median_rank_displacement_ci_low": 0.053777940912877104,
+      "n_nodes": 1656,
+      "p90_rank_displacement": 0.24245169082125606,
+      "p90_rank_displacement_ci_high": 0.31231279687443336,
+      "p90_rank_displacement_ci_low": 0.19383060905492036,
+      "robustness_id": "NO_F_EXECUTION",
+      "share_rank_displacement_ge_030": 0.05615942028985507,
+      "share_rank_displacement_ge_030_ci_high": 0.11244283215104252,
+      "share_rank_displacement_ge_030_ci_low": 0.02220891004877729,
+      "share_signed_ge_030": 0.03985507246376811,
+      "share_signed_le_minus030": 0.016304347826086956,
+      "spearman_rho": 0.8776648655112814,
+      "top_overlap": 0.7108433734939759,
+      "top_overlap_ci_high": 0.8497256931224255,
+      "top_overlap_ci_low": 0.38603943524829604
+    },
+    "selection": "robustness_id == NO_F_EXECUTION",
+    "source": "artifacts/experiment/final_test/exp2/results/EXP2_ROBUSTNESS_SUMMARY.csv"
+  },
+  "parameter_reselected": false,
+  "preserved_source_abstentions": [
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.05,
+      "stage": "POST_IB_PRE_OB",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.1,
+      "stage": "POST_IB_PRE_OB",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.2,
+      "stage": "POST_IB_PRE_OB",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.3,
+      "stage": "POST_IB_PRE_OB",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.05,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_execution_status",
+      "q": 0.05,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_itinerary_status",
+      "q": 0.05,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_service_status",
+      "q": 0.05,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.1,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_execution_status",
+      "q": 0.1,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_itinerary_status",
+      "q": 0.1,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_service_status",
+      "q": 0.1,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.2,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_execution_status",
+      "q": 0.2,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_itinerary_status",
+      "q": 0.2,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_service_status",
+      "q": 0.2,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_continuity_status",
+      "q": 0.3,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_F_execution_status",
+      "q": 0.3,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_itinerary_status",
+      "q": 0.3,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    },
+    {
+      "field": "Capture_P_service_status",
+      "q": 0.3,
+      "stage": "POST_OB_PRE_TO",
+      "status": "ABSTAIN_UNSUPPORTED_OR_ZERO_DENOMINATOR"
+    }
+  ],
+  "primary": {
+    "row": {
+      "consequence_boundary_tie_count": 1,
+      "delay_boundary_tie_count": 1,
+      "kendall_tau_b": 0.736488790649004,
+      "kendall_tau_b_ci_high": 0.7884548698944603,
+      "kendall_tau_b_ci_low": 0.676346856682327,
+      "median_rank_displacement": 0.06974637681159424,
+      "median_rank_displacement_ci_high": 0.0939666733696766,
+      "median_rank_displacement_ci_low": 0.04776566668750558,
+      "n_nodes": 1656,
+      "p90_rank_displacement": 0.22705314009661837,
+      "p90_rank_displacement_ci_high": 0.2947600988213824,
+      "p90_rank_displacement_ci_low": 0.17817832887507803,
+      "share_rank_displacement_ge_030": 0.04770531400966183,
+      "share_rank_displacement_ge_030_ci_high": 0.09512668139303879,
+      "share_rank_displacement_ge_030_ci_low": 0.015158654727574657,
+      "share_signed_ge_030": 0.0320048309178744,
+      "share_signed_le_minus030": 0.01570048309178744,
+      "spearman_rho": 0.8960645135697696,
+      "top_overlap": 0.7289156626506024,
+      "top_overlap_ci_high": 0.8729423217732809,
+      "top_overlap_ci_low": 0.44098868094148413
+    },
+    "source": "artifacts/experiment/final_test/exp2/results/EXP2A_SUMMARY.csv",
+    "source_note": "PRIMARY is absent from the robustness CSV; read the manifest-tracked EXP2A_SUMMARY, not a support sensitivity."
+  },
+  "primary_scientific_object_changed": false,
+  "raw_final_test_data_read": false,
+  "remaining_blocked_items": [],
+  "schema_version": "SECTION5_DELAY_LINKAGE_AUDIT_V1",
+  "similar_delay_heterogeneity": {
+    "estimand": "EXP2_COMMON_SUPPORT_CONDITIONAL",
+    "pair_rule": "same stage; different original episodes; episode-pair balanced",
+    "rows": [
+      {
+        "bootstrap_cluster": "original_episode_id",
+        "bootstrap_replicates": 2000,
+        "bootstrap_seed": 20260906,
+        "caliper_minutes": 5.0,
+        "ci_method": "percentile_95",
+        "median_priority_separation": 0.20410628019323673,
+        "median_priority_separation_ci_high": 0.23429316364516928,
+        "median_priority_separation_ci_low": 0.18059552475578192,
+        "share_priority_separation_ge_030": 0.33782824698367636,
+        "share_priority_separation_ge_030_ci_high": 0.39497742286032156,
+        "share_priority_separation_ge_030_ci_low": 0.2793136958817691,
+        "support_status": "SUPPORTED",
+        "unique_episode_pairs": 7045
+      },
+      {
+        "bootstrap_cluster": "original_episode_id",
+        "bootstrap_replicates": 2000,
+        "bootstrap_seed": 20260906,
+        "caliper_minutes": 10.0,
+        "ci_method": "percentile_95",
+        "median_priority_separation": 0.2711352657004831,
+        "median_priority_separation_ci_high": 0.2941584563061763,
+        "median_priority_separation_ci_low": 0.25394563318970864,
+        "share_priority_separation_ge_030": 0.4587687271811658,
+        "share_priority_separation_ge_030_ci_high": 0.49240179147094043,
+        "share_priority_separation_ge_030_ci_low": 0.42823906713260673,
+        "support_status": "SUPPORTED",
+        "unique_episode_pairs": 7943
+      },
+      {
+        "bootstrap_cluster": "original_episode_id",
+        "bootstrap_replicates": 2000,
+        "bootstrap_seed": 20260906,
+        "caliper_minutes": 15.0,
+        "ci_method": "percentile_95",
+        "median_priority_separation": 0.28291062801932365,
+        "median_priority_separation_ci_high": 0.3012013743562343,
+        "median_priority_separation_ci_low": 0.26810252976507426,
+        "share_priority_separation_ge_030": 0.47452982936853905,
+        "share_priority_separation_ge_030_ci_high": 0.501735541237138,
+        "share_priority_separation_ge_030_ci_low": 0.4505893368271001,
+        "support_status": "SUPPORTED",
+        "unique_episode_pairs": 8029
+      }
+    ],
+    "source": "artifacts/experiment/final_test/section5_secondary/SECTION5_EXP2_CALIPER_SENSITIVITY.csv"
+  },
+  "status": "SECONDARY_REPORTING_COMPLETE_HUMAN_REVIEW_REQUIRED"
+}

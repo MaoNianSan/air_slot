@@ -1,0 +1,84 @@
+{
+  "alternative_views": {
+    "EQUAL_COMPONENT": {
+      "domain_weights": null,
+      "formula": "mean(all seven normalized consequence components)",
+      "source": "exp.shared.recovery_priority.compute_equal_component_priority"
+    },
+    "FLIGHT_EMPHASIS": {
+      "domain_weights": {
+        "Flight": 0.5,
+        "Operating": 0.25,
+        "Passenger": 0.25
+      },
+      "formula": "0.50*Flight + 0.25*Passenger + 0.25*Operating",
+      "source": "exp.exp4.triage._views"
+    },
+    "NO_F_EXEC": {
+      "domain_weights": {
+        "Flight": 0.3333333333333333,
+        "Operating": 0.3333333333333333,
+        "Passenger": 0.3333333333333333
+      },
+      "formula": "(mean(F_continuity,F_propagation) + mean(P_time,P_itinerary,P_service) + R_operating) / 3",
+      "source": "exp.shared.recovery_priority.compute_no_f_execution_priority"
+    },
+    "OPERATING_EMPHASIS": {
+      "domain_weights": {
+        "Flight": 0.25,
+        "Operating": 0.5,
+        "Passenger": 0.25
+      },
+      "formula": "0.25*Flight + 0.25*Passenger + 0.50*Operating",
+      "source": "exp.exp4.triage._views"
+    },
+    "PASSENGER_EMPHASIS": {
+      "domain_weights": {
+        "Flight": 0.25,
+        "Operating": 0.25,
+        "Passenger": 0.5
+      },
+      "formula": "0.25*Flight + 0.50*Passenger + 0.25*Operating",
+      "source": "exp.exp4.triage._views"
+    }
+  },
+  "base_view": {
+    "domain_weights": {
+      "Flight": 0.3333333333333333,
+      "Operating": 0.3333333333333333,
+      "Passenger": 0.3333333333333333
+    },
+    "formula": "(mean(F_continuity,F_execution,F_propagation) + mean(P_time,P_itinerary,P_service) + R_operating) / 3",
+    "id": "BASE_EQUAL_DOMAIN",
+    "source": "exp.shared.recovery_priority.compute_domain_scores + compute_aggregate_priority"
+  },
+  "component_order": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "diagnostic_only_views": [
+    "S_F",
+    "S_P",
+    "S_R"
+  ],
+  "normalization": "training-frozen normalized consequence component columns Z_*",
+  "schema_version": "AIR_SLOT_AGGREGATION_ROBUSTNESS_VIEW_DEFINITIONS_V1",
+  "thresholds": {
+    "material_rank_gap": 0.3,
+    "similar_delay_caliper_minutes": 5.0,
+    "top_fraction": 0.1
+  },
+  "view_order": [
+    "BASE_EQUAL_DOMAIN",
+    "EQUAL_COMPONENT",
+    "NO_F_EXEC",
+    "FLIGHT_EMPHASIS",
+    "PASSENGER_EMPHASIS",
+    "OPERATING_EMPHASIS"
+  ]
+}
