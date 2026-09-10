@@ -1,0 +1,370 @@
+{
+  "schema_version": "AIR_SLOT_FINAL_TEST_PROVENANCE_RECONCILIATION_V1",
+  "status": "FINAL_TEST_PROVENANCE_RECONCILED",
+  "created_by": {
+    "agent": "Codex",
+    "phase": "Phase B1 - FINAL TEST PROVENANCE AND PAPER-AUTHORITY CLOSURE",
+    "created_date": "2026-09-09",
+    "current_audit_commit": "753705f4fa62452bee86312bfed2eb59b5bade4e"
+  },
+  "current_head": "753705f4fa62452bee86312bfed2eb59b5bade4e",
+  "pre_access_authority_path": "formal/FINAL_TEST_COHORT_AUTHORITY_V1.json",
+  "pre_access_authority_sha256": "sha256:9832b198e221042bff6f40c718f07c82169885514030308b7d50d6172d7e0088",
+  "pre_access_access_count": 0,
+  "executed_cohort_manifest_path": "artifacts/experiment/final_test/FINAL_TEST_COHORT_MANIFEST_V1.json",
+  "executed_cohort_manifest_sha256": "sha256:3e10f0e125ed70f6487bda0f0864c9191ddde9ab2d539514a520879b0131d26f",
+  "access_audit_path": "artifacts/experiment/final_test/FINAL_TEST_ACCESS_AUDIT.json",
+  "access_audit_sha256": "sha256:5f7c1ef146feb4c32bf224a8c6a4815130b2cfd2d406dc0df5cd6eb4ff04b7d2",
+  "executed_access_count": 1,
+  "final_test_episode_count": 128,
+  "final_test_cohort_hash": "sha256:1208ea465a123a7a6333dc2fd95b182492d5636fb1d8add50845d2f716313d4f",
+  "cohort_identity_evidence": {
+    "selected_episode_count": 128,
+    "selected_episode_hash_field": "selected_episode_hash",
+    "selection_reused": true,
+    "selection_reperformed": false,
+    "cohort_modified": false,
+    "source_months": [
+      10,
+      11,
+      12
+    ],
+    "source_date_window": {
+      "start": "2019-10-01",
+      "end": "2019-12-31"
+    }
+  },
+  "paper_result_authorized": true,
+  "PRE_ACCESS_FROZEN_AUTHORITY": {
+    "role": "IMMUTABLE_PRE_ACCESS_FINAL_TEST_AUTHORITY",
+    "path": "formal/FINAL_TEST_COHORT_AUTHORITY_V1.json",
+    "sha256": "sha256:9832b198e221042bff6f40c718f07c82169885514030308b7d50d6172d7e0088",
+    "authority_status": "FINAL_TEST_COHORT_AUTHORITY_LOCKED",
+    "final_test_access_count": 0,
+    "final_test_episode_count": 128,
+    "test_cohort_materialized": false,
+    "test_data_read": false,
+    "test_inference_run": false,
+    "paper_result": false,
+    "authority_commit": "99114195f11d7cb3446e53729daab611c88f4d36",
+    "scientific_code_lock_commit": "c70c306dfb8bcc40ccb2c1329594fe6b1a54acb6"
+  },
+  "AUTHORIZED_FINAL_TEST_ACCESS": {
+    "role": "AUTHORIZED_ONE_TIME_HELD_OUT_FINAL_TEST_ACCESS",
+    "manifest_path": "artifacts/experiment/final_test/FINAL_TEST_COHORT_MANIFEST_V1.json",
+    "manifest_sha256": "sha256:3e10f0e125ed70f6487bda0f0864c9191ddde9ab2d539514a520879b0131d26f",
+    "access_audit_path": "artifacts/experiment/final_test/FINAL_TEST_ACCESS_AUDIT.json",
+    "access_audit_sha256": "sha256:5f7c1ef146feb4c32bf224a8c6a4815130b2cfd2d406dc0df5cd6eb4ff04b7d2",
+    "opened": true,
+    "open_event": "FIRST_FORMAL_HELD_OUT_TEST_SOURCE_READ",
+    "final_test_access_count": 1,
+    "execution_head": "c7bf2695335013994e09657e07bb023087a4039f",
+    "data_read_before_event": false,
+    "selection_reused": true,
+    "selection_reperformed": false
+  },
+  "EXECUTED_FINAL_TEST_RESULTS": {
+    "role": "AUTHORIZED_EXECUTED_FINAL_TEST_SCIENTIFIC_RESULTS",
+    "result_report_path": "artifacts/experiment/final_test/FINAL_TEST_RESULT_REPORT.json",
+    "result_report_sha256": "sha256:d0e8234caef05af16ff8cc712c6f9923fc74f7db529c0d8bd5a79e58f0887429",
+    "integrity_audit_path": "artifacts/experiment/final_test/FINAL_TEST_INTEGRITY_AUDIT.json",
+    "integrity_audit_sha256": "sha256:c8e2f63d5ee2761a015a1eb21b90ef33d0363ad94d76bcd36a5f7c9c5a356b86",
+    "status": "FINAL_TEST_COMPLETE_READY_FOR_HUMAN_RESULT_REVIEW",
+    "artifact_scope": "FINAL_TEST_ONLY",
+    "final_test_access_count": 1,
+    "final_test_episode_count": 128,
+    "active_priority_node_count": 1656,
+    "execution_head": "c7bf2695335013994e09657e07bb023087a4039f",
+    "scientific_code_lock_commit": "c70c306dfb8bcc40ccb2c1329594fe6b1a54acb6",
+    "cohort_authority_commit": "1c336fb42b0fa7df716f8bf3bc7a67ca0153c06b",
+    "integrity_status": "PASS",
+    "bootstrap_replicates": 2000,
+    "bootstrap_replicates_completed": 2000,
+    "model_retrained": false,
+    "calibration_refit": false,
+    "parameter_reselected": false,
+    "paper_result": true,
+    "experiment_authorities": {
+      "exp1": {
+        "path": "artifacts/experiment/final_test/exp1",
+        "producer_commit": "c7bf2695335013994e09657e07bb023087a4039f",
+        "publication_commit": "860befd20e968ba702b1aad99e618830a3a6acfe",
+        "manifest_path": "artifacts/experiment/final_test/exp1/FINAL_TEST_EXP1_MANIFEST.json",
+        "manifest_sha256": "sha256:9d4a886ba37a8c47a4bc5a922882db94e0bbc4018fc1f3299e2612b8b63507ef",
+        "status": "FINAL_TEST_COMPLETE",
+        "artifact_scope": "FINAL_TEST_ONLY",
+        "final_test_access_count": 1,
+        "episode_count": 128,
+        "active_priority_node_count": 1656,
+        "bootstrap_replicates": 2000,
+        "bootstrap_replicates_completed": 2000,
+        "bootstrap_seed": 20260906,
+        "model_retrained": false,
+        "calibration_refit": false,
+        "parameter_reselected": false,
+        "paper_result": true,
+        "authoritative_files": {
+          "EXP1_EVALUATION_LEAD_TIME.csv": "sha256:83dbb4e5cffb9317b4758e87b926a233e4d8cfcc561066943fc79d49f4a1cbef",
+          "EXP1_HISTORY_CURRENT_BOOTSTRAP.csv": "sha256:f299227e999e7dde73d2e4e17829c7592301315710312467de1fbfb5501e044c",
+          "EXP1_HISTORY_CURRENT_MATCHED_RECORDS.csv": "sha256:f8e095bc519563d4973e92351acea1697840e905775d5da5f4109b41943da7aa",
+          "EXP1_HISTORY_CURRENT_TARGET_SUMMARY.csv": "sha256:e3b1f65f7049d81321dcf58c949e9924c88fdb75dc9d78ab30987db0c049b65a",
+          "EXP1_REPRESENTATION_RECORDS.csv": "sha256:d4dd7b4b8d6275c5713f660a46a7ba238b6ee6c1dc81598ac75b250c81af6b47",
+          "EXP1B_DOWNSTREAM_NATIVE_BOOTSTRAP.csv": "sha256:11b52dc37cde3625d5448a1753b5a25018a21940862f4882bafe60f3590f85ca",
+          "EXP1B_DOWNSTREAM_NATIVE_DISTORTION.csv": "sha256:1cf13566654a25b6ebb8fdc9b6f3ca69b9404a64abc439366ff7d8f6278ea49e",
+          "EXP1B_REPRESENTATION_SUMMARY.csv": "sha256:d4dd7b4b8d6275c5713f660a46a7ba238b6ee6c1dc81598ac75b250c81af6b47",
+          "FIG1_HISTORY_CURRENT_MAE_FINAL_TEST_DATA.csv": "sha256:9fdafbe747abe07bad9c044cea0f2945a09e60c7a58dde89b36c78b869e730ff",
+          "FIG1_HISTORY_CURRENT_MAE_FINAL_TEST.pdf": "sha256:98cb764e5ebb282897bdcd33943a280dae3f1d72f634d3cd776651739a6ff19a",
+          "FINAL_TEST_EXP1_MANIFEST.json": "sha256:9d4a886ba37a8c47a4bc5a922882db94e0bbc4018fc1f3299e2612b8b63507ef"
+        }
+      },
+      "exp2": {
+        "path": "artifacts/experiment/final_test/exp2",
+        "producer_commit": "c7bf2695335013994e09657e07bb023087a4039f",
+        "publication_commit": "860befd20e968ba702b1aad99e618830a3a6acfe",
+        "manifest_path": "artifacts/experiment/final_test/exp2/FINAL_TEST_EXP2_MANIFEST.json",
+        "manifest_sha256": "sha256:5aec4f360762daec86f55361377a812a5158434db43ae030c2fcd18a1b510e3f",
+        "status": "FINAL_TEST_COMPLETE",
+        "artifact_scope": "FINAL_TEST_ONLY",
+        "final_test_access_count": 1,
+        "episode_count": 128,
+        "active_priority_node_count": 1656,
+        "bootstrap_replicates": 2000,
+        "bootstrap_replicates_completed": 2000,
+        "bootstrap_seed": 20260906,
+        "model_retrained": false,
+        "calibration_refit": false,
+        "parameter_reselected": false,
+        "paper_result": true,
+        "authoritative_files": {
+          "EXP2_ANALYSIS_CONTRACT.json": "sha256:4526a805838701c3263319c622ae5cb2423af3d14ccf1b692bba21b49e7af75b",
+          "EXP2_INPUT_MANIFEST.json": "sha256:a475fbfeb4b06f7cb6072e06da9abffeaa25708039e7874cd5512000b42b11c0",
+          "EXP2_MANIFEST.json": "sha256:9ee1b8e27bc28867cfab0baf3cd07a3205c8bc6e9fe1ef022c70c24102aa8840",
+          "EXP2_SUPPORT_AUDIT.json": "sha256:bb6912397bc9b39973cbcd3e87a0acf4ae39f9abf9d7c0e08f0413bbaaedc4ef",
+          "FIG2_PRIORITY_DIVERGENCE_FINAL_TEST.pdf": "sha256:be337ed217972504c4ceb944f72ef0c4d646c0e281d8da56500bc6176a3c61cc",
+          "FIG3_COMPONENT_EVIDENCE_FINAL_TEST.pdf": "sha256:80a81047f758d146100d2c0fee69f716e805d0ddf2d73d0c0a5d5c95f6a6e314",
+          "FINAL_TEST_EXP2_MANIFEST.json": "sha256:5aec4f360762daec86f55361377a812a5158434db43ae030c2fcd18a1b510e3f",
+          "data/EXP2A_NODE_RECORDS.parquet": "sha256:90ff54051f9beb641ee4eb172a37ce2cc7357860b1e5b554e1adef3c7f864acc",
+          "data/EXP2C_MATCHED_PAIRS.parquet": "sha256:cc88af1d02f082d2bb6e84b9cdf7f2a298d5ad1439db66882a87d055f3088264",
+          "results/EXP2A_SUMMARY.csv": "sha256:75c36afa16a168293acc73598a3c2ec038e1ff28528fa80dc44a0d49eca5c30a",
+          "results/EXP2A_BOOTSTRAP.csv": "sha256:50a9c503123110860a5275cd4d6f2c7e6672180213c5cd4a5a21de9c95597913",
+          "results/EXP2A_TIE_AUDIT.csv": "sha256:7f7fdf365bf4c2d623558cd05a4b0229be7cc7249544276292627ff1e9b950fe",
+          "results/EXP2B_COMPONENT_DOMAIN_SUMMARY.csv": "sha256:a38aa7243282ffcd887faf30a4cc0e977810321d1bb823e5f8e3dee2f8c31c23",
+          "results/EXP2B_BOOTSTRAP.csv": "sha256:9918c2aa471fd6a7c7dd7cce2caffe9fda343570f1100c6bccc6e310834b8353",
+          "results/EXP2C_PAIR_BALANCED_SUMMARY.csv": "sha256:a89bfc6ae36372ca7588f5ad21f14e81bb094d5d95e844e9f5c5f8e4bab97c38",
+          "results/EXP2C_BOOTSTRAP.csv": "sha256:4576e495d2cbf055ec48f67de5998dffb6888548fe6935eaf7d1f9d9272575a5",
+          "results/EXP2_ROBUSTNESS_SUMMARY.csv": "sha256:63d0d10a1f7d30a99737e41195c7cb37abbcead041c4c16cb0333f534bcb3590",
+          "results/EXP2_REPRESENTATIVE_CASES.csv": "sha256:a77087f35b44ae7f29d9cc6091a76fd076052d3fb22e16020f2c3e796a2ce551"
+        },
+        "development_and_diagnostic_outputs_excluded": [
+          "figures/FIG2_PRIORITY_DIVERGENCE_DEV.pdf",
+          "figures/FIG3_COMPONENT_EVIDENCE_DEV.pdf",
+          "results/EXP2_DEVELOPMENT_SUMMARY.json",
+          "results/EXP2_DIAGNOSTICS.json"
+        ]
+      },
+      "exp3": {
+        "path": "artifacts/experiment/final_test/exp3",
+        "producer_commit": "c7bf2695335013994e09657e07bb023087a4039f",
+        "publication_commit": "860befd20e968ba702b1aad99e618830a3a6acfe",
+        "manifest_path": "artifacts/experiment/final_test/exp3/FINAL_TEST_EXP3_MANIFEST.json",
+        "manifest_sha256": "sha256:d8a68a00d7078e7096ff78d533efbaa4a22553b1e0f741b499c212746cc79969",
+        "status": "FINAL_TEST_COMPLETE",
+        "artifact_scope": "FINAL_TEST_ONLY",
+        "final_test_access_count": 1,
+        "episode_count": 128,
+        "active_priority_node_count": 1656,
+        "bootstrap_replicates": 2000,
+        "bootstrap_replicates_completed": 2000,
+        "bootstrap_seed": 20260906,
+        "model_retrained": false,
+        "calibration_refit": false,
+        "parameter_reselected": false,
+        "paper_result": true,
+        "authoritative_files": {
+          "EXP3_BOOTSTRAP.csv": "sha256:2238e077da0bd4c3d45464023cd6469ee1aba1631d078afe82b1d19fed159f98",
+          "EXP3_COMMON_EPISODE_BOOTSTRAP.csv": "sha256:e98b3af4d2497514d1c65997fddfad12e08482e1eb267a154e6a554cf812c88a",
+          "EXP3_COMMON_EPISODE_ROBUSTNESS.csv": "sha256:20bf6534ddebbc39abc1ee7d3d7fc74697dcb36f6923927d71f8bb8f09c90d55",
+          "EXP3_STAGE_AGREEMENT.csv": "sha256:bc7ed89538217cc8a1f8621d6fffcdcaf0d474613ee389e89a568faa5509e1aa",
+          "EXP3_STAGE_COHORT.csv": "sha256:ada32f8f4ba30ab46c8881a0ef8781be81cbc4e2a1d7c9c427997fb5cd4d72af",
+          "EXP3_STAGE_CONTRAST_BOOTSTRAP.csv": "sha256:5437a3d2edf1671529df07788e02eed13228a81a101ad0914a9754f86ec9fef3",
+          "EXP3_STAGE_CONTRASTS.csv": "sha256:b9d564029d51f73bec7fcd308bd6b278fefb366aafbeeb0046b582e7d2b35a7a",
+          "EXP3_STAGE_HETEROGENEITY.csv": "sha256:2c5fe467975dd3ae98f17a10c78322848d691e7fa2f25f538291e3b053ff5968",
+          "FIG4_STAGE_AGREEMENT_FINAL_TEST_DATA.csv": "sha256:46d56baf4672c2360f5992a5b190965cbe5d192464b49eca5c30b8797670dd38",
+          "FIG4_STAGE_AGREEMENT_FINAL_TEST.pdf": "sha256:a95c66c983dabd38be9c36661c75157a19c8fe9cb2ce7acd9efa01f27ddeb57d",
+          "FINAL_TEST_EXP3_MANIFEST.json": "sha256:d8a68a00d7078e7096ff78d533efbaa4a22553b1e0f741b499c212746cc79969"
+        }
+      },
+      "exp4": {
+        "path": "artifacts/experiment/final_test/exp4",
+        "producer_commit": "c7bf2695335013994e09657e07bb023087a4039f",
+        "publication_commit": "860befd20e968ba702b1aad99e618830a3a6acfe",
+        "manifest_path": "artifacts/experiment/final_test/exp4/FINAL_TEST_EXP4_MANIFEST.json",
+        "manifest_sha256": "sha256:d585f46e101a5402949151c24774abf85d185cab7591f3f4ea9a49a4b61da745",
+        "status": "FINAL_TEST_COMPLETE",
+        "artifact_scope": "FINAL_TEST_ONLY",
+        "final_test_access_count": 1,
+        "episode_count": 128,
+        "active_priority_node_count": 1656,
+        "canonical_event_count": 238,
+        "supported_canonical_event_count": 238,
+        "excluded_canonical_event_count": 0,
+        "bootstrap_replicates": 2000,
+        "bootstrap_replicates_completed": 2000,
+        "bootstrap_seed": 20260906,
+        "model_retrained": false,
+        "calibration_refit": false,
+        "parameter_reselected": false,
+        "paper_result": true,
+        "authoritative_files": {
+          "EXP4_BOOTSTRAP.csv": "sha256:df9561700a691afe3b3f36be5670ae79c75af6c78b9a0f68acca880bad0da26f",
+          "EXP4_CANONICAL_EVENTS.parquet": "sha256:008ab70edddf5f11866314122bdc5c975c099aef5b08e66499c142b056deea6e",
+          "EXP4_CAPTURE.csv": "sha256:85b98cc22c91f1c80bf791a701216f9935bd322267f98308777b63a659c9faf2",
+          "EXP4_DELTA_CAPTURE.csv": "sha256:b957ff3a36d409f085886625301e484b2ae1b7d981a2a8fa68d35dc0514d4614",
+          "EXP4_DOMAIN_CAPTURE.csv": "sha256:551dd4f110f7535947301b3fcb28f1a47345ca29feb0bcd5f88ae42c1ec4c366",
+          "EXP4_NATIVE_COMPONENT_CAPTURE.csv": "sha256:f425b0298f0bd99e27a0ea4ba6a8bd590e493972f6f65c2af8d1a04aa692e5ea",
+          "EXP4_PARETO_EVIDENCE.csv": "sha256:7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+          "EXP4_PARETO_SUMMARY.csv": "sha256:562a5a19692d03037e60a94a7bd2148d07edaac7f725fee7e79bd743ac2026b5",
+          "EXP4_ROBUST_HIGH_CONSEQUENCE.csv": "sha256:17e4dbc7e4ee66dae3e0ab6c16d5c351c98ab78d9c30adb0e94531a7889bbfa5",
+          "EXP4_ROBUST_MEMBERSHIP.csv": "sha256:b28fd4a1afeb23675f8ad0364da8480db2717abf5699eb14fbcc119937e99557",
+          "EXP4_ROBUST_MISSED_NODES.csv": "sha256:3adad0d9fd322bc453174f6a6f706a2528d8241db3ec783700761d7ef99f6ae7",
+          "EXP4_ROBUSTNESS_SUMMARY.csv": "sha256:bcf3cf8ec3c6d57306169df7dd4a2faa0fc20dcb867fbf9d9e01f81f990c3b7b",
+          "EXP4_SCREENING_RESULTS.csv": "sha256:4d77e40a202372634c068d71b7cda1e5c547e09a49ea453d473156b167c244fd",
+          "EXP4_TIE_AUDIT.csv": "sha256:a48c9576d99e7f9005dbf146bbe52e478a3ccf1d2f0ba94ce99f4af87220871f",
+          "FIG5_SCREENING_Q10_FINAL_TEST_DATA.csv": "sha256:c03d6234c7ee515d9202e89d5059db235e1aa9e61e3bd28ed472ebd212362fa3",
+          "FIG5_SCREENING_Q10_FINAL_TEST.pdf": "sha256:66fe16b7b0804e9c18c3b1c79e9e66fe66c1198cc1d61d1accb3d03a1e6a2388",
+          "FINAL_TEST_EXP4_MANIFEST.json": "sha256:d585f46e101a5402949151c24774abf85d185cab7591f3f4ea9a49a4b61da745"
+        }
+      }
+    }
+  },
+  "PAPER_RESULT_AUTHORITY": {
+    "role": "CURRENT_MANUSCRIPT_NUMERICAL_AUTHORITY",
+    "paper_result_authorized": true,
+    "final_test_result_roots": [
+      "artifacts/experiment/final_test/exp1",
+      "artifacts/experiment/final_test/exp2",
+      "artifacts/experiment/final_test/exp3",
+      "artifacts/experiment/final_test/exp4"
+    ],
+    "aggregation": {
+      "role": "SOLE_PAPER_AUTHORITATIVE_AGGREGATION_ROBUSTNESS_ROOT",
+      "path": "artifacts/paper_results_v2_final_test/aggregation_robustness",
+      "producer_commit": "860befd20e968ba702b1aad99e618830a3a6acfe",
+      "manifest_path": "artifacts/paper_results_v2_final_test/aggregation_robustness/AGGREGATION_ROBUSTNESS_MANIFEST.json",
+      "manifest_sha256": "sha256:348d2d917d7db1ea2bf4cc46e8679a63b967d1ba76db0d67d2f9fb002fa39406",
+      "status": "FINAL_TEST_COMPLETE",
+      "artifact_scope": "FINAL_TEST_ONLY",
+      "final_test_access_count": 1,
+      "final_test_episode_count": 128,
+      "active_priority_node_count": 1656,
+      "bootstrap": {
+        "replicates": 2000,
+        "replicates_completed": 2000,
+        "unit": "EPISODE",
+        "seed": 20260906,
+        "confidence_interval": "percentile_95"
+      },
+      "similar_delay": {
+        "caliper_minutes": 5.0,
+        "eligible_similar_delay_node_pairs": 726455,
+        "unique_episode_pairs": 7045
+      },
+      "base_reproduction": {
+        "status": "PASS",
+        "atol_bound": 1e-12,
+        "checks": {
+          "kendall_tau_b": true,
+          "median_abs_priority_separation": true,
+          "median_abs_rank_displacement": true,
+          "share_priority_separation_ge_030": true,
+          "top_decile_overlap": true
+        },
+        "kendall_tau_b": 0.736488790649004,
+        "top_decile_overlap": 0.7289156626506024,
+        "median_abs_rank_displacement": 0.06974637681159424,
+        "median_abs_priority_separation": 0.20410628019323673,
+        "share_priority_separation_ge_030": 0.33782824698367636
+      },
+      "view_output_integrity": {
+        "view_count": 6,
+        "canonical_event_count": 238,
+        "supported_canonical_event_count": 238,
+        "blocked_count": 0,
+        "abstain_count": 0,
+        "status": "PASS"
+      },
+      "scientific_guards": {
+        "model_retrained": false,
+        "calibration_refit": false,
+        "parameter_reselected": false,
+        "cohort_modified": false,
+        "new_data_accessed": false,
+        "consequence_definitions_modified": false,
+        "screening_rerun": false
+      },
+      "authoritative_files": {
+        "AGGREGATION_ROBUSTNESS_MANIFEST.json": "sha256:348d2d917d7db1ea2bf4cc46e8679a63b967d1ba76db0d67d2f9fb002fa39406",
+        "AGGREGATION_ROBUSTNESS_OVERALL.csv": "sha256:a09641f675673a7cdf881d3dc2a22659195a141d82eb9bfa94cba49a9866209b",
+        "AGGREGATION_ROBUSTNESS_REPORT.md": "sha256:d525de1fec64c460c9a5303558a5cefd07fa9d2303469b406e849d1065f49ec2",
+        "AGGREGATION_ROBUSTNESS_SIMILAR_DELAY.csv": "sha256:5379eee32ba45313c0a1ad3605ba4cada02598945ce60840dff644ae49a3c3da",
+        "AGGREGATION_ROBUSTNESS_STAGE.csv": "sha256:620081e1af8601c868b2ded0fe7ffee6a630ca83860411afbbe13eb4ee02d0bc",
+        "AGGREGATION_VIEW_DEFINITIONS.json": "sha256:1c7f881632eb63ed25503252bd587ff495616d5eb8a7f273e88a04dcf49b05df"
+      }
+    },
+    "diagnostic_non_authoritative_roots": [
+      {
+        "path": "artifacts/paper_results_v2_final_test/aggregation_robustness_smoke",
+        "reason": "smoke validation output; not paper authority"
+      },
+      {
+        "path": "artifacts/paper_results_v2_final_test/aggregation_robustness_timing20",
+        "reason": "timing diagnostic output; not paper authority"
+      },
+      {
+        "path": "artifacts/paper_results_v2_final_test/aggregation_robustness_numba1",
+        "reason": "single-thread diagnostic output; not paper authority"
+      },
+      {
+        "path": "artifacts/paper_results_v2_final_test/aggregation_robustness_numba20",
+        "reason": "parallel diagnostic output; not paper authority"
+      },
+      {
+        "path": "artifacts/paper_results_v2_final_test/aggregation_robustness_reduced_replicates",
+        "reason": "reduced-replicate validation output; not paper authority"
+      }
+    ]
+  },
+  "producer_commits": {
+    "pre_access_authority_commit": "99114195f11d7cb3446e53729daab611c88f4d36",
+    "scientific_code_lock_commit": "c70c306dfb8bcc40ccb2c1329594fe6b1a54acb6",
+    "cohort_freeze_commit": "1c336fb42b0fa7df716f8bf3bc7a67ca0153c06b",
+    "final_test_execution_commit": "c7bf2695335013994e09657e07bb023087a4039f",
+    "final_test_artifact_publication_commit": "860befd20e968ba702b1aad99e618830a3a6acfe",
+    "current_audit_commit": "753705f4fa62452bee86312bfed2eb59b5bade4e"
+  },
+  "interpretation": {
+    "access_zero_belongs_to": "the immutable pre-access frozen authority state",
+    "access_one_belongs_to": "the authorized executed Final Test state",
+    "lifecycle_relation": "access=0 and access=1 describe different lifecycle stages and are not contradictory values",
+    "historical_evidence_policy": "do not reconcile these lifecycle values by mutating historical evidence",
+    "paper_authority_policy": "the manuscript uses the executed Final Test results and the sole aggregation robustness root recorded above",
+    "producer_head_policy": "different producer commits are valid provenance and must not be rewritten"
+  },
+  "mutation_policy": {
+    "existing_scientific_payloads_modified": false,
+    "existing_aggregation_payloads_modified": false,
+    "existing_authority_files_modified": false,
+    "existing_artifacts_renamed_or_moved": false,
+    "existing_artifacts_deleted": false,
+    "manuscript_scientific_values_modified": false,
+    "experiments_rerun": false,
+    "aggregation_bootstrap_rerun": false,
+    "model_retrained": false,
+    "calibration_refit": false,
+    "parameter_reselected": false
+  },
+  "new_record_paths": [
+    "formal/FINAL_TEST_PROVENANCE_RECONCILIATION_V1.json",
+    "formal/FINAL_TEST_PROVENANCE_RECONCILIATION_V1.md"
+  ]
+}
