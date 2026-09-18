@@ -1,0 +1,79 @@
+{
+  "cases": [
+    {
+      "case_id": "DEVELOPMENT_READS_TRAIN_CALIBRATION_DEVELOPMENT",
+      "expected": "PASS",
+      "observed": "PASS",
+      "reason": null,
+      "referenced_splits": [
+        "train",
+        "calibration",
+        "development"
+      ],
+      "split": "development",
+      "status": "OK"
+    },
+    {
+      "case_id": "DEVELOPMENT_READS_TEST",
+      "expected": "FAIL",
+      "observed": "FAIL",
+      "reason": "PRE_SPLIT_ISOLATION_VIOLATION:test",
+      "referenced_splits": [
+        "test"
+      ],
+      "split": "development",
+      "status": "OK"
+    },
+    {
+      "case_id": "DEVELOPMENT_READS_TEST_WITHIN_TRAIN",
+      "expected": "FAIL",
+      "observed": "FAIL",
+      "reason": "PRE_SPLIT_ISOLATION_VIOLATION:test",
+      "referenced_splits": [
+        "train",
+        "test"
+      ],
+      "split": "development",
+      "status": "OK"
+    },
+    {
+      "case_id": "TEST_READS_DEVELOPMENT",
+      "expected": "FAIL",
+      "observed": "FAIL",
+      "reason": "PRE_SPLIT_ISOLATION_VIOLATION:development",
+      "referenced_splits": [
+        "development"
+      ],
+      "split": "test",
+      "status": "OK"
+    },
+    {
+      "case_id": "TEST_READS_TRAIN_CALIBRATION_TEST",
+      "expected": "PASS",
+      "observed": "PASS",
+      "reason": null,
+      "referenced_splits": [
+        "train",
+        "calibration",
+        "test"
+      ],
+      "split": "test",
+      "status": "OK"
+    },
+    {
+      "case_id": "TRAIN_READS_DEVELOPMENT",
+      "expected": "FAIL",
+      "observed": "FAIL",
+      "reason": "PRE_SPLIT_ISOLATION_VIOLATION:development",
+      "referenced_splits": [
+        "development"
+      ],
+      "split": "train",
+      "status": "OK"
+    }
+  ],
+  "final_test_access_count": 0,
+  "scope": "PRE_EVIDENCE_BOUNDARY",
+  "status": "PASS",
+  "validator_id": "V2_SPLIT_ISOLATION"
+}
