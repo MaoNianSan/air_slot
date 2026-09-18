@@ -1,0 +1,69 @@
+{
+  "all_enumeration_highs_parity_passed": true,
+  "final_test_access_count": 0,
+  "final_test_paths_read": [],
+  "formal_path": "EXACT_ENUMERATION",
+  "highspy_version": "1.15.1",
+  "input_provenance": "SYNTHETIC_PARITY_INPUT_NOT_SCIENTIFIC_TRAIN_SUPPORT",
+  "node_stage_classes": [
+    "PRE",
+    "TURN"
+  ],
+  "parity_backend": "PYOMO_HIGHS",
+  "pyomo_version": "6.10.1",
+  "representative_nodes": [
+    {
+      "action_count": 10,
+      "j_star_enumeration": 11.872720199106334,
+      "j_star_highs": 11.872720199106334,
+      "j_zero": 13.035602970608625,
+      "node_id": "PRE_PARITY_1",
+      "objective_absolute_error": 0.0,
+      "objective_parity": true,
+      "objective_relative_error": 0.0,
+      "recoverable_value_enumeration": 1.1628827715022911,
+      "recoverable_value_highs": 1.1628827715022911,
+      "representation_id": "HISTORY_H16:JOINT",
+      "solver_status": "HIGHS_PARITY",
+      "stage": "PRE_IB",
+      "termination_condition": "TerminationCondition.optimal",
+      "u_star_enumeration": 45.0,
+      "u_star_highs": 45.0,
+      "u_star_parity": true
+    },
+    {
+      "action_count": 10,
+      "j_star_enumeration": 11.828037472437643,
+      "j_star_highs": 11.828037472437643,
+      "j_zero": 13.22945889367409,
+      "node_id": "TURN_PARITY_1",
+      "objective_absolute_error": 0.0,
+      "objective_parity": true,
+      "objective_relative_error": 0.0,
+      "recoverable_value_enumeration": 1.4014214212364475,
+      "recoverable_value_highs": 1.4014214212364475,
+      "representation_id": "HISTORY_H16:JOINT",
+      "solver_status": "HIGHS_PARITY",
+      "stage": "POST_IB_PRE_OB",
+      "termination_condition": "TerminationCondition.optimal",
+      "u_star_enumeration": 45.0,
+      "u_star_highs": 45.0,
+      "u_star_parity": true
+    }
+  ],
+  "scope": "DEVELOPMENT_TIME_PARITY_BACKEND_ONLY",
+  "status": "PASS",
+  "synthetic_parity_inputs": true,
+  "taxi_comp_typed_check": {
+    "action_grid": [
+      0.0
+    ],
+    "actionable_status": "NOT_ACTIONABLE",
+    "passed": true,
+    "recoverable_value": null,
+    "solver_status": "NOT_RUN",
+    "stage": "POST_OB_PRE_TO",
+    "u_star": 0.0
+  },
+  "validator_id": "V2_M3_ENUMERATION_HIGHS_PARITY"
+}
