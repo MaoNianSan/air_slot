@@ -70,6 +70,21 @@ SEVEN_SCOPE = (
     "R_operating",
 )
 
+#: V5 keeps the V4 recomputed Train medians for the five principal components
+#: and restores assumption-grounded event normalization for the two event
+#: components (scale = one native event unit, not an empirical median).
+V5_REGISTRY_ID = "M2_DATA2_FORMAL_CU_V5"
+V5_SCHEMA_VERSION = "M2_DATA2_FORMAL_CU_V5"
+PRINCIPAL_FIVE_SCOPE = (
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "R_operating",
+)
+EVENT_COMPONENTS = ("P_itinerary", "P_service")
+EVENT_NORMALIZATION_STATUS = "ASSUMPTION_EVENT_NORMALIZATION"
+
 _NATIVE_DEFINITIONS = M2_NATIVE_DEFINITIONS
 
 
@@ -138,6 +153,24 @@ class M2Data2FormalCuRegistry(FrozenModel):
             for component, expected in required_semantic_channels.items():
                 if self.semantic_channels.get(component) != expected:
                     raise ContractError(f"M2_V4_SEMANTIC_CHANNEL_METADATA_MISMATCH:{component}")
+        elif self.registry_id == V5_REGISTRY_ID:
+            if tuple(self.formal_scope) != tuple(CONSEQUENCE_COMPONENTS) or len(self.formal_scope) != 7 or len(set(self.formal_scope)) != 7:
+                raise ContractError("M2_V5_FORMAL_SCOPE_MISMATCH")
+            required_semantic_channels = {
+                "P_service": {
+                    "consequence_semantics": "passenger service / care burden",
+                    "baseline_empirical_realization": "expected passengers x I[D_TO >= 180]",
+                },
+                "R_operating": {
+                    "consequence_semantics": "operating / recovery-resource burden",
+                    "baseline_empirical_realization": "D_TX",
+                },
+            }
+            for component, expected in required_semantic_channels.items():
+                if self.semantic_channels.get(component) != expected:
+                    raise ContractError(
+                        f"M2_V5_SEMANTIC_CHANNEL_METADATA_MISMATCH:{component}"
+                    )
         else:
             raise ContractError("M2_REGISTRY_IDENTITY_UNKNOWN")
         if set(self.component_weights) != set(self.formal_scope):
@@ -147,6 +180,8 @@ class M2Data2FormalCuRegistry(FrozenModel):
         assumption_components = set(self.assumption_scale_artifact or {})
         if self.registry_id in {"M2_DATA2_FORMAL_CU_V3", "M2_DATA2_FORMAL_CU_V4"} and set(self.train_scale_artifact) != set(SEVEN_SCOPE):
             raise ContractError("M2_V4_REQUIRES_SEVEN_TRAIN_SCALES" if self.registry_id == "M2_DATA2_FORMAL_CU_V4" else "M2_V3_REQUIRES_SEVEN_TRAIN_SCALES")
+        if self.registry_id == V5_REGISTRY_ID and set(self.train_scale_artifact) != set(PRINCIPAL_FIVE_SCOPE):
+            raise ContractError("M2_V5_REQUIRES_FIVE_PRINCIPAL_TRAIN_SCALES")
         missing = (
             set(self.formal_scope)
             - set(self.train_scale_artifact)
@@ -164,29 +199,60 @@ class M2Data2FormalCuRegistry(FrozenModel):
                     raise ContractError("M2_V2_ASSUMPTION_NORMALIZATION_STATUS_INVALID")
                 if item.get("empirical_train_positive_median") is not False:
                     raise ContractError("M2_V2_ASSUMPTION_SCALE_CANNOT_CLAIM_EMPIRICAL_MEDIAN")
+        if self.registry_id == V5_REGISTRY_ID:
+            if assumption_components != set(EVENT_COMPONENTS):
+                raise ContractError("M2_V5_ASSUMPTION_NORMALIZATION_SET_MISMATCH")
+            for component in EVENT_COMPONENTS:
+                item = self.assumption_scale_artifact[component]
+                if item.get("normalization_status") != EVENT_NORMALIZATION_STATUS:
+                    raise ContractError(
+                        f"M2_V5_EVENT_NORMALIZATION_STATUS_INVALID:{component}"
+                    )
+                if float(item.get("scale", 0.0)) != 1.0:
+                    raise ContractError(f"M2_V5_EVENT_SCALE_NOT_UNITY:{component}")
+                if item.get("empirical_train_positive_median") is not False:
+                    raise ContractError(
+                        f"M2_V5_EVENT_SCALE_CANNOT_CLAIM_EMPIRICAL_MEDIAN:{component}"
+                    )
         required = (
             {"turnaround", "taxi", "downstream_exposure", "expected_pax", "connection_share"}
-            if self.registry_id in {"M2_DATA2_FORMAL_CU_V3", "M2_DATA2_FORMAL_CU_V4"}
+            if self.registry_id in {
+                "M2_DATA2_FORMAL_CU_V3",
+                "M2_DATA2_FORMAL_CU_V4",
+                V5_REGISTRY_ID,
+            }
             else {"turnaround", "taxi", "downstream_exposure", "passenger"}
         )
         if set(self.reference_artifacts) != required:
-            if self.registry_id == "M2_DATA2_FORMAL_CU_V4":
+            if self.registry_id in {"M2_DATA2_FORMAL_CU_V4", V5_REGISTRY_ID}:
                 raise ContractError("M2_V4_PASSENGER_REFERENCE_ARTIFACT_MISSING")
             raise ContractError("M2_REFERENCE_ARTIFACT_SET_MISMATCH")
-        if self.registry_id == "M2_DATA2_FORMAL_CU_V4":
+        if self.registry_id in {"M2_DATA2_FORMAL_CU_V4", V5_REGISTRY_ID}:
+            version_tag = (
+                "M2_V4" if self.registry_id == "M2_DATA2_FORMAL_CU_V4" else "M2_V5"
+            )
             if self.fit_year != 2019 or tuple(self.fit_months or ()) != (1, 2, 3, 4, 5, 6) or tuple(self.db1b_quarters or ()) != (1, 2):
-                raise ContractError("M2_V4_REFERENCE_PERIOD_MISMATCH")
-            for component in SEVEN_SCOPE:
+                raise ContractError(f"{version_tag}_REFERENCE_PERIOD_MISMATCH")
+            expected_scope = (
+                SEVEN_SCOPE
+                if self.registry_id == "M2_DATA2_FORMAL_CU_V4"
+                else PRINCIPAL_FIVE_SCOPE
+            )
+            for component in expected_scope:
                 item = self.train_scale_artifact.get(component, {})
                 if item.get("fit_period") != "2019-H1":
-                    raise ContractError("M2_V4_REFERENCE_PERIOD_MISMATCH")
+                    raise ContractError(f"{version_tag}_REFERENCE_PERIOD_MISMATCH")
                 if not item.get("artifact_hash") or not item.get("path"):
-                    raise ContractError("M2_V4_PASSENGER_REFERENCE_ARTIFACT_MISSING")
+                    raise ContractError(
+                        f"{version_tag}_PASSENGER_REFERENCE_ARTIFACT_MISSING"
+                    )
             expected_meta = self.reference_artifacts.get("expected_pax", {})
             connection_meta = self.reference_artifacts.get("connection_share", {})
             for meta in (expected_meta, connection_meta):
                 if not meta.get("path") or not meta.get("artifact_hash"):
-                    raise ContractError("M2_V4_PASSENGER_REFERENCE_ARTIFACT_MISSING")
+                    raise ContractError(
+                        f"{version_tag}_PASSENGER_REFERENCE_ARTIFACT_MISSING"
+                    )
         if self.registry_hash and self.registry_hash != self.digest():
             raise ContractError("M2_REGISTRY_HASH_MISMATCH")
         return self
@@ -548,12 +614,17 @@ def load_m2_registry(path: Path) -> M2Data2FormalCuRegistry:
 
 __all__ = [
     "AGGREGATION_RULE",
+    "EVENT_COMPONENTS",
+    "EVENT_NORMALIZATION_STATUS",
     "FORMAL_SCOPE",
     "FrozenData2ValuationRegistry",
     "M2Data2FormalCuRegistry",
+    "PRINCIPAL_FIVE_SCOPE",
     "REGISTRY_ID",
     "SCHEMA_VERSION",
     "SUPPORT_RULE",
+    "V5_REGISTRY_ID",
+    "V5_SCHEMA_VERSION",
     "build_m2_data2_formal_registry",
     "load_m2_registry",
     "reference_to_payload",

@@ -1,0 +1,70 @@
+{
+  "activation_status": "DRAFT_NOT_ACTIVATED",
+  "activation_authority": "Phase 6 scientific freeze not executed; no formal freeze is claimed",
+  "active_replacements": {
+    "m2_cu_registry": "registries/m2_data2_formal_cu_v5.json",
+    "passenger_design": "registries/m2_v5_passenger_consequence_design.json"
+  },
+  "components_changed": [
+    {
+      "component": "P_itinerary",
+      "new_normalization": "ASSUMPTION_EVENT_NORMALIZATION scale=1.0",
+      "previous_normalization": "empirical positive Train median 9.882948210182091",
+      "reason": "R2: one native event unit, never claimed as an empirical median; manuscript appendix corrected"
+    },
+    {
+      "component": "P_service",
+      "new_normalization": "ASSUMPTION_EVENT_NORMALIZATION scale=1.0",
+      "previous_normalization": "empirical positive Train median 104.88473684210527",
+      "reason": "R2: one native event unit, never claimed as an empirical median; manuscript appendix corrected"
+    }
+  ],
+  "components_retained": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "R_operating"
+  ],
+  "effective_date": "2026-09-18",
+  "final_test_access_count": 0,
+  "historical_artifacts_modified": false,
+  "legacy_frozen_registry": {
+    "artifact": "registries/m2_data2_formal_cu_v4.json",
+    "loader": "model.M2.scientific_registry:load_active_m2_cu_registry",
+    "registry_id": "M2_DATA2_FORMAL_CU_V4",
+    "retained_for": "frozen Final-Test-era pipelines and their recorded artifacts",
+    "status": "RETAINED_UNCHANGED"
+  },
+  "m_cs_nominal_threshold": 0.9,
+  "m_cs_sensitivity": {
+    "predefined_values": [],
+    "status": "NO_MANUSCRIPT_PREDEFINED_SENSITIVITY_VALUES"
+  },
+  "new_final_test_executed": false,
+  "paper_full_run": false,
+  "priority_authority": {
+    "a00_recommendation_forbidden": true,
+    "consequence": "P^C = Phi_C(C^CU) (unique consequence-based priority authority)",
+    "delay": "P^D = E[D^{TO} | Omega^CS] (parallel delay comparator)",
+    "shared_selector": "M3 Stage-I selector"
+  },
+  "registry_id": "PASSENGER_REFERENCE_SUPERSESSION_V3",
+  "registry_payload_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+  "registry_payload_hash_note": "digest of the M2Data2FormalCuRegistry payload without registry_hash",
+  "supersedes": [
+    {
+      "active_replacement": "M2_DATA2_FORMAL_CU_V5",
+      "artifact": "registries/m2_data2_formal_cu_v4.json",
+      "registry_id": "M2_DATA2_FORMAL_CU_V4",
+      "reason": "SEVEN_MEDIAN_PARTITION_REPLACED_BY_FIVE_PRINCIPAL_MEDIANS_PLUS_TWO_EVENT_NORMALIZATIONS",
+      "scope": "V2 paper-primary chain only",
+      "status": "SUPERSEDED_FOR_V2_CHAIN"
+    }
+  ],
+  "v2_chain_loaders": {
+    "cu_registry": "model.M2.scientific_registry:load_active_v2_cu_registry",
+    "passenger_design": "model.M2.scientific_registry:load_active_v2_passenger_consequence_design"
+  },
+  "version": "3.0.0"
+}
