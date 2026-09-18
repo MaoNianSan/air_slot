@@ -1,0 +1,710 @@
+{
+  "artifact_hash": "sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775",
+  "artifact_scope": "DEVELOPMENT_ONLY",
+  "consequence_layer": {
+    "audit_artifact": {
+      "hash": "sha256:9feb33a0860f6af08b231ec1c610a456118a2cc20b0550dbbe33e1b3008da8e7",
+      "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\REFERENCE_BINDING_AUDIT.json",
+      "payload_hash": "sha256:74c16f412f4a4d240d8bb95466e127a297ee930efd1dadd74d2e91c32c87ec3b"
+    },
+    "bound_node_count": 1765,
+    "inert_binding_fields": [
+      "taxi_reference_minutes"
+    ],
+    "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+    "registry_id": "M2_DATA2_FORMAL_CU_V5",
+    "unsupported_node_count": 4,
+    "unsupported_nodes": {
+      "sha256:640e0916571cb96b6fa7330d8da5c265b2d00186e15d7df71fc4d492fd602ac4": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      },
+      "sha256:c2a7e3fd65518e955a7a4a7db1bbb56980e19bd8ac8b8b4f710286fe474bfc5e": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      },
+      "sha256:d8c6bf7123b786eb2a9305fda5c9e57d272f8da40771ef8b095c9859f9dc5a6e": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      },
+      "sha256:eaef766d8ef13b30be6917f74ff8971cc48097ee59befa9cfc9605e3d0c63cd3": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      }
+    }
+  },
+  "directional_claims": "NONE",
+  "episode_count": 128,
+  "family": "A_STATE_FAMILIES",
+  "final_test_access_count": 0,
+  "loss_metrics_used": {
+    "L_att": false,
+    "L_rec": false,
+    "L_total": false
+  },
+  "models": {
+    "CURRENT_H16_COMPARATOR": {
+      "checkpoint_hash": "sha256:68a349a2d82f1d2c8c344c30e85777c55c644e63605e01a94364afdce7183ee3",
+      "consequence_transmission": {
+        "below_nominal_mass_nodes": 0,
+        "exclusion_reason_counts": {
+          "PHASE5_REFERENCE_UNSUPPORTED": 4
+        },
+        "expected_cu": {
+          "F_continuity": {
+            "label": "F_continuity",
+            "mean": 0.00017602444859221578,
+            "n": 1765,
+            "sd": 0.0012983724009245634
+          },
+          "F_execution": {
+            "label": "F_execution",
+            "mean": 0.2510491609573364,
+            "n": 1765,
+            "sd": 0.19186615943908691
+          },
+          "F_propagation": {
+            "label": "F_propagation",
+            "mean": 0.5915465950965881,
+            "n": 1765,
+            "sd": 0.32574597001075745
+          },
+          "P_itinerary": {
+            "label": "P_itinerary",
+            "mean": 0.42527830600738525,
+            "n": 1765,
+            "sd": 0.7724593877792358
+          },
+          "P_service": {
+            "label": "P_service",
+            "mean": 0.5286398530006409,
+            "n": 1765,
+            "sd": 1.0084264278411865
+          },
+          "P_time": {
+            "label": "P_time",
+            "mean": 0.5955925583839417,
+            "n": 1765,
+            "sd": 0.38224726915359497
+          },
+          "R_operating": {
+            "label": "R_operating",
+            "mean": 0.33548131585121155,
+            "n": 1765,
+            "sd": 0.09127070009708405
+          }
+        },
+        "included_nodes": 1765,
+        "supported_mass_mean": 1.0,
+        "supported_mass_min": 1.0,
+        "typed_excluded_nodes": 4
+      },
+      "coordinate_abstain_nodes": {
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "t_ib_minutes": 0
+      },
+      "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+      "manifest_hash": "sha256:3f50973c63042471552a68738385c21a54baf63e30ffb0bbb5921af7c19af0e8",
+      "representation_id": "CURRENT:JOINT",
+      "role": "CURRENT_OBSERVATION_COMPARATOR",
+      "scenario_count": 64,
+      "scenario_generator_seed": 20260813,
+      "short_key": "current",
+      "state_metrics": {
+        "d_ob_minutes": {
+          "coverage_90": {
+            "label": "d_ob_minutes",
+            "mean": 0.7905445694923401,
+            "n": 1671,
+            "sd": 0.4070417582988739
+          },
+          "crps": {
+            "label": "d_ob_minutes",
+            "mean": 6.787665367126465,
+            "n": 1671,
+            "sd": 16.434114456176758
+          },
+          "interval_width_90": {
+            "label": "d_ob_minutes",
+            "mean": 14.388582229614258,
+            "n": 1671,
+            "sd": 26.306150436401367
+          },
+          "mae_median": {
+            "label": "d_ob_minutes",
+            "mean": 7.433239459991455,
+            "n": 1671,
+            "sd": 17.634441375732422
+          }
+        },
+        "d_tx_minutes": {
+          "coverage_90": {
+            "label": "d_tx_minutes",
+            "mean": 0.7161473035812378,
+            "n": 1765,
+            "sd": 0.45099401473999023
+          },
+          "crps": {
+            "label": "d_tx_minutes",
+            "mean": 4.044522285461426,
+            "n": 1765,
+            "sd": 10.84842300415039
+          },
+          "interval_width_90": {
+            "label": "d_tx_minutes",
+            "mean": 6.176344871520996,
+            "n": 1765,
+            "sd": 2.823582649230957
+          },
+          "mae_median": {
+            "label": "d_tx_minutes",
+            "mean": 4.81843900680542,
+            "n": 1765,
+            "sd": 11.581408500671387
+          }
+        },
+        "t_ib_minutes": {
+          "coverage_90": {
+            "label": "t_ib_minutes",
+            "mean": 0.4423963129520416,
+            "n": 217,
+            "sd": 0.49781909584999084
+          },
+          "crps": {
+            "label": "t_ib_minutes",
+            "mean": 21.803762435913086,
+            "n": 217,
+            "sd": 28.011926651000977
+          },
+          "interval_width_90": {
+            "label": "t_ib_minutes",
+            "mean": 16.958524703979492,
+            "n": 217,
+            "sd": 4.926603317260742
+          },
+          "mae_median": {
+            "label": "t_ib_minutes",
+            "mean": 24.993087768554688,
+            "n": 217,
+            "sd": 28.942331314086914
+          }
+        }
+      }
+    },
+    "HISTORY_H16_PRIMARY": {
+      "checkpoint_hash": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+      "consequence_transmission": {
+        "below_nominal_mass_nodes": 0,
+        "exclusion_reason_counts": {
+          "PHASE5_REFERENCE_UNSUPPORTED": 4
+        },
+        "expected_cu": {
+          "F_continuity": {
+            "label": "F_continuity",
+            "mean": 0.0022156431805342436,
+            "n": 1765,
+            "sd": 0.011266417801380157
+          },
+          "F_execution": {
+            "label": "F_execution",
+            "mean": 0.2738328278064728,
+            "n": 1765,
+            "sd": 0.2018650621175766
+          },
+          "F_propagation": {
+            "label": "F_propagation",
+            "mean": 0.5497027635574341,
+            "n": 1765,
+            "sd": 0.36270633339881897
+          },
+          "P_itinerary": {
+            "label": "P_itinerary",
+            "mean": 0.41584646701812744,
+            "n": 1765,
+            "sd": 0.6751195788383484
+          },
+          "P_service": {
+            "label": "P_service",
+            "mean": 0.5838121175765991,
+            "n": 1765,
+            "sd": 1.02679443359375
+          },
+          "P_time": {
+            "label": "P_time",
+            "mean": 0.5567944049835205,
+            "n": 1765,
+            "sd": 0.4284307360649109
+          },
+          "R_operating": {
+            "label": "R_operating",
+            "mean": 0.1719416081905365,
+            "n": 1765,
+            "sd": 0.19616876542568207
+          }
+        },
+        "included_nodes": 1765,
+        "supported_mass_mean": 1.0,
+        "supported_mass_min": 1.0,
+        "typed_excluded_nodes": 4
+      },
+      "coordinate_abstain_nodes": {
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "t_ib_minutes": 0
+      },
+      "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+      "manifest_hash": "sha256:ed9b0cc193aa4c29a2a33778ff2edc215e77ed493ed36fdc5ab8e09d71389af7",
+      "representation_id": "HISTORY_H16:JOINT",
+      "role": "PRIMARY",
+      "scenario_count": 64,
+      "scenario_generator_seed": 20260813,
+      "short_key": "h16",
+      "state_metrics": {
+        "d_ob_minutes": {
+          "coverage_90": {
+            "label": "d_ob_minutes",
+            "mean": 0.8426092267036438,
+            "n": 1671,
+            "sd": 0.36427783966064453
+          },
+          "crps": {
+            "label": "d_ob_minutes",
+            "mean": 6.697451114654541,
+            "n": 1671,
+            "sd": 16.475173950195312
+          },
+          "interval_width_90": {
+            "label": "d_ob_minutes",
+            "mean": 17.790630340576172,
+            "n": 1671,
+            "sd": 27.8887996673584
+          },
+          "mae_median": {
+            "label": "d_ob_minutes",
+            "mean": 7.4158244132995605,
+            "n": 1671,
+            "sd": 17.62613296508789
+          }
+        },
+        "d_tx_minutes": {
+          "coverage_90": {
+            "label": "d_tx_minutes",
+            "mean": 0.6000000238418579,
+            "n": 1765,
+            "sd": 0.49003681540489197
+          },
+          "crps": {
+            "label": "d_tx_minutes",
+            "mean": 4.511022090911865,
+            "n": 1765,
+            "sd": 11.402981758117676
+          },
+          "interval_width_90": {
+            "label": "d_tx_minutes",
+            "mean": 2.9545466899871826,
+            "n": 1765,
+            "sd": 3.471585988998413
+          },
+          "mae_median": {
+            "label": "d_tx_minutes",
+            "mean": 4.858532905578613,
+            "n": 1765,
+            "sd": 11.53792953491211
+          }
+        },
+        "t_ib_minutes": {
+          "coverage_90": {
+            "label": "t_ib_minutes",
+            "mean": 0.557603657245636,
+            "n": 217,
+            "sd": 0.49781909584999084
+          },
+          "crps": {
+            "label": "t_ib_minutes",
+            "mean": 19.451154708862305,
+            "n": 217,
+            "sd": 25.426315307617188
+          },
+          "interval_width_90": {
+            "label": "t_ib_minutes",
+            "mean": 29.055299758911133,
+            "n": 217,
+            "sd": 11.742084503173828
+          },
+          "mae_median": {
+            "label": "t_ib_minutes",
+            "mean": 24.421659469604492,
+            "n": 217,
+            "sd": 27.71562385559082
+          }
+        }
+      }
+    },
+    "HISTORY_H8_SENSITIVITY": {
+      "checkpoint_hash": "sha256:20ffe5efa12156ff45435cc572182081000b4c87badd85684241c3f5f6f925b6",
+      "consequence_transmission": {
+        "below_nominal_mass_nodes": 0,
+        "exclusion_reason_counts": {
+          "PHASE5_REFERENCE_UNSUPPORTED": 4
+        },
+        "expected_cu": {
+          "F_continuity": {
+            "label": "F_continuity",
+            "mean": 0.00011312915739836171,
+            "n": 1765,
+            "sd": 0.0010493454756215215
+          },
+          "F_execution": {
+            "label": "F_execution",
+            "mean": 0.28245651721954346,
+            "n": 1765,
+            "sd": 0.20017828047275543
+          },
+          "F_propagation": {
+            "label": "F_propagation",
+            "mean": 0.6319239139556885,
+            "n": 1765,
+            "sd": 0.3412487506866455
+          },
+          "P_itinerary": {
+            "label": "P_itinerary",
+            "mean": 0.47054240107536316,
+            "n": 1765,
+            "sd": 0.845467746257782
+          },
+          "P_service": {
+            "label": "P_service",
+            "mean": 0.6053985953330994,
+            "n": 1765,
+            "sd": 1.058906078338623
+          },
+          "P_time": {
+            "label": "P_time",
+            "mean": 0.6426360011100769,
+            "n": 1765,
+            "sd": 0.4146402180194855
+          },
+          "R_operating": {
+            "label": "R_operating",
+            "mean": 0.30981749296188354,
+            "n": 1765,
+            "sd": 0.09189698845148087
+          }
+        },
+        "included_nodes": 1765,
+        "supported_mass_mean": 1.0,
+        "supported_mass_min": 1.0,
+        "typed_excluded_nodes": 4
+      },
+      "coordinate_abstain_nodes": {
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "t_ib_minutes": 0
+      },
+      "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+      "manifest_hash": "sha256:dc838c2edcf9abad76c2497d5875f7af5dcf94cc7246f3e08d149dc642d1bde4",
+      "representation_id": "HISTORY_H8:JOINT",
+      "role": "LOWER_CAPACITY_SENSITIVITY",
+      "scenario_count": 64,
+      "scenario_generator_seed": 20260813,
+      "short_key": "h8",
+      "state_metrics": {
+        "d_ob_minutes": {
+          "coverage_90": {
+            "label": "d_ob_minutes",
+            "mean": 0.8132854700088501,
+            "n": 1671,
+            "sd": 0.3897988498210907
+          },
+          "crps": {
+            "label": "d_ob_minutes",
+            "mean": 6.692890644073486,
+            "n": 1671,
+            "sd": 16.09471321105957
+          },
+          "interval_width_90": {
+            "label": "d_ob_minutes",
+            "mean": 18.178571701049805,
+            "n": 1671,
+            "sd": 30.305376052856445
+          },
+          "mae_median": {
+            "label": "d_ob_minutes",
+            "mean": 7.418473720550537,
+            "n": 1671,
+            "sd": 17.606603622436523
+          }
+        },
+        "d_tx_minutes": {
+          "coverage_90": {
+            "label": "d_tx_minutes",
+            "mean": 0.7019829750061035,
+            "n": 1765,
+            "sd": 0.4575166404247284
+          },
+          "crps": {
+            "label": "d_tx_minutes",
+            "mean": 4.105400085449219,
+            "n": 1765,
+            "sd": 10.91681957244873
+          },
+          "interval_width_90": {
+            "label": "d_tx_minutes",
+            "mean": 5.9260358810424805,
+            "n": 1765,
+            "sd": 3.2502002716064453
+          },
+          "mae_median": {
+            "label": "d_tx_minutes",
+            "mean": 4.8048415184021,
+            "n": 1765,
+            "sd": 11.549467086791992
+          }
+        },
+        "t_ib_minutes": {
+          "coverage_90": {
+            "label": "t_ib_minutes",
+            "mean": 0.4700460731983185,
+            "n": 217,
+            "sd": 0.5002559423446655
+          },
+          "crps": {
+            "label": "t_ib_minutes",
+            "mean": 20.732755661010742,
+            "n": 217,
+            "sd": 27.6212100982666
+          },
+          "interval_width_90": {
+            "label": "t_ib_minutes",
+            "mean": 18.70967674255371,
+            "n": 217,
+            "sd": 3.657000780105591
+          },
+          "mae_median": {
+            "label": "t_ib_minutes",
+            "mean": 23.573732376098633,
+            "n": 217,
+            "sd": 28.63991355895996
+          }
+        }
+      }
+    }
+  },
+  "no_final_test_family_branch": true,
+  "node_count": 1769,
+  "node_metrics_artifact": {
+    "array_count": 70,
+    "arrays": [
+      "coverage__current__d_ob_minutes",
+      "coverage__current__d_tx_minutes",
+      "coverage__current__t_ib_minutes",
+      "coverage__h16__d_ob_minutes",
+      "coverage__h16__d_tx_minutes",
+      "coverage__h16__t_ib_minutes",
+      "coverage__h8__d_ob_minutes",
+      "coverage__h8__d_tx_minutes",
+      "coverage__h8__t_ib_minutes",
+      "crps__current__d_ob_minutes",
+      "crps__current__d_tx_minutes",
+      "crps__current__t_ib_minutes",
+      "crps__h16__d_ob_minutes",
+      "crps__h16__d_tx_minutes",
+      "crps__h16__t_ib_minutes",
+      "crps__h8__d_ob_minutes",
+      "crps__h8__d_tx_minutes",
+      "crps__h8__t_ib_minutes",
+      "expected_cu__current__F_continuity",
+      "expected_cu__current__F_execution",
+      "expected_cu__current__F_propagation",
+      "expected_cu__current__P_itinerary",
+      "expected_cu__current__P_service",
+      "expected_cu__current__P_time",
+      "expected_cu__current__R_operating",
+      "expected_cu__h16__F_continuity",
+      "expected_cu__h16__F_execution",
+      "expected_cu__h16__F_propagation",
+      "expected_cu__h16__P_itinerary",
+      "expected_cu__h16__P_service",
+      "expected_cu__h16__P_time",
+      "expected_cu__h16__R_operating",
+      "expected_cu__h8__F_continuity",
+      "expected_cu__h8__F_execution",
+      "expected_cu__h8__F_propagation",
+      "expected_cu__h8__P_itinerary",
+      "expected_cu__h8__P_service",
+      "expected_cu__h8__P_time",
+      "expected_cu__h8__R_operating",
+      "included__current",
+      "included__h16",
+      "included__h8",
+      "mae__current__d_ob_minutes",
+      "mae__current__d_tx_minutes",
+      "mae__current__t_ib_minutes",
+      "mae__h16__d_ob_minutes",
+      "mae__h16__d_tx_minutes",
+      "mae__h16__t_ib_minutes",
+      "mae__h8__d_ob_minutes",
+      "mae__h8__d_tx_minutes",
+      "mae__h8__t_ib_minutes",
+      "node_id",
+      "observed__d_ob_minutes",
+      "observed__d_tx_minutes",
+      "observed__t_ib_minutes",
+      "observed_active__d_ob_minutes",
+      "observed_active__d_tx_minutes",
+      "observed_active__t_ib_minutes",
+      "supported_mass__current",
+      "supported_mass__h16",
+      "supported_mass__h8",
+      "width__current__d_ob_minutes",
+      "width__current__d_tx_minutes",
+      "width__current__t_ib_minutes",
+      "width__h16__d_ob_minutes",
+      "width__h16__d_tx_minutes",
+      "width__h16__t_ib_minutes",
+      "width__h8__d_ob_minutes",
+      "width__h8__d_tx_minutes",
+      "width__h8__t_ib_minutes"
+    ],
+    "hash": "sha256:6b85c038ecb4530335235269327af8ad897744388862e6bd4fd9374f9755bcaa",
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_A_STATE_METRICS.npz"
+  },
+  "observation_coverage": {
+    "d_ob_minutes": {
+      "active_nodes": 1671,
+      "resolved_nodes": 1671
+    },
+    "d_tx_minutes": {
+      "active_nodes": 1765,
+      "resolved_nodes": 1765
+    },
+    "t_ib_minutes": {
+      "active_nodes": 217,
+      "resolved_nodes": 217
+    }
+  },
+  "paired_distances_versus_primary": {
+    "CURRENT_H16_COMPARATOR": {
+      "F_continuity": {
+        "max_absolute_gap": 0.10537790507078171,
+        "mean_absolute_gap": 0.0020398248452693224,
+        "paired_nodes": 1765
+      },
+      "F_execution": {
+        "max_absolute_gap": 0.3567533493041992,
+        "mean_absolute_gap": 0.062154632061719894,
+        "paired_nodes": 1765
+      },
+      "F_propagation": {
+        "max_absolute_gap": 0.7069170475006104,
+        "mean_absolute_gap": 0.14198629558086395,
+        "paired_nodes": 1765
+      },
+      "P_itinerary": {
+        "max_absolute_gap": 3.0563809871673584,
+        "mean_absolute_gap": 0.10372737795114517,
+        "paired_nodes": 1765
+      },
+      "P_service": {
+        "max_absolute_gap": 4.586553573608398,
+        "mean_absolute_gap": 0.12945285439491272,
+        "paired_nodes": 1765
+      },
+      "P_time": {
+        "max_absolute_gap": 0.8022454977035522,
+        "mean_absolute_gap": 0.14627563953399658,
+        "paired_nodes": 1765
+      },
+      "R_operating": {
+        "max_absolute_gap": 0.5451093316078186,
+        "mean_absolute_gap": 0.24615627527236938,
+        "paired_nodes": 1765
+      },
+      "common_support": "PAIRED_NODES_WITH_BOTH_EXPECTATIONS_DEFINED",
+      "interpretation": "METRIC_DISTANCE_ONLY_NO_SUPERIORITY_CLAIM",
+      "versus": "HISTORY_H16_PRIMARY"
+    },
+    "HISTORY_H8_SENSITIVITY": {
+      "F_continuity": {
+        "max_absolute_gap": 0.10537790507078171,
+        "mean_absolute_gap": 0.002102514263242483,
+        "paired_nodes": 1765
+      },
+      "F_execution": {
+        "max_absolute_gap": 0.4113541543483734,
+        "mean_absolute_gap": 0.062240906059741974,
+        "paired_nodes": 1765
+      },
+      "F_propagation": {
+        "max_absolute_gap": 0.713344156742096,
+        "mean_absolute_gap": 0.1656913459300995,
+        "paired_nodes": 1765
+      },
+      "P_itinerary": {
+        "max_absolute_gap": 3.447838544845581,
+        "mean_absolute_gap": 0.1188286691904068,
+        "paired_nodes": 1765
+      },
+      "P_service": {
+        "max_absolute_gap": 4.586553573608398,
+        "mean_absolute_gap": 0.13179120421409607,
+        "paired_nodes": 1765
+      },
+      "P_time": {
+        "max_absolute_gap": 0.976368248462677,
+        "mean_absolute_gap": 0.17601028084754944,
+        "paired_nodes": 1765
+      },
+      "R_operating": {
+        "max_absolute_gap": 0.5004457831382751,
+        "mean_absolute_gap": 0.23585918545722961,
+        "paired_nodes": 1765
+      },
+      "common_support": "PAIRED_NODES_WITH_BOTH_EXPECTATIONS_DEFINED",
+      "interpretation": "METRIC_DISTANCE_ONLY_NO_SUPERIORITY_CLAIM",
+      "versus": "HISTORY_H16_PRIMARY"
+    }
+  },
+  "purpose": "Development state reconstruction, distributional calibration and consequence transmission for the frozen primary, the current comparator and the matched lower-capacity sensitivity",
+  "ranking_performed": false,
+  "schema_version": "V2_PHASE5_FAMILY_A_V1",
+  "selection_use": "NOT_USED_FOR_HISTORY_PRIMARY_SELECTION",
+  "status": "PASS"
+}

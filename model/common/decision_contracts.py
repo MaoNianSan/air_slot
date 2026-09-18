@@ -289,6 +289,7 @@ class StateScenario(FrozenModel):
     support: SupportState = SupportState.SUPPORTED
     ib_observed: bool = False
     ob_observed: bool = False
+    tx_observed: bool = False
 
     @model_validator(mode="after")
     def _derived_d_to(self):
@@ -303,7 +304,7 @@ class StateScenario(FrozenModel):
 
     @property
     def is_realized(self) -> bool:
-        return self.ib_observed and self.ob_observed
+        return self.ib_observed and self.ob_observed and self.tx_observed
 
     @property
     def T_IB(self) -> float | None:  # noqa: N802 - scientific name

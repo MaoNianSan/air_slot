@@ -1,0 +1,770 @@
+{
+  "artifact_hash": "sha256:9072108a15acc0e04a2675e68c0695bd7106f582352c988e4352d0b7c3408adf",
+  "artifact_scope": "DEVELOPMENT_ONLY",
+  "consequence_layer": {
+    "audit_artifact": {
+      "hash": "sha256:9feb33a0860f6af08b231ec1c610a456118a2cc20b0550dbbe33e1b3008da8e7",
+      "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\REFERENCE_BINDING_AUDIT.json",
+      "payload_hash": "sha256:74c16f412f4a4d240d8bb95466e127a297ee930efd1dadd74d2e91c32c87ec3b"
+    },
+    "bound_node_count": 1765,
+    "inert_binding_fields": [
+      "taxi_reference_minutes"
+    ],
+    "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+    "registry_id": "M2_DATA2_FORMAL_CU_V5",
+    "unsupported_node_count": 4,
+    "unsupported_nodes": {
+      "sha256:640e0916571cb96b6fa7330d8da5c265b2d00186e15d7df71fc4d492fd602ac4": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      },
+      "sha256:c2a7e3fd65518e955a7a4a7db1bbb56980e19bd8ac8b8b4f710286fe474bfc5e": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      },
+      "sha256:d8c6bf7123b786eb2a9305fda5c9e57d272f8da40771ef8b095c9859f9dc5a6e": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      },
+      "sha256:eaef766d8ef13b30be6917f74ff8971cc48097ee59befa9cfc9605e3d0c63cd3": {
+        "reason_codes": [
+          "PHASE5_REFERENCE_ABSTAIN:downstream_exposure"
+        ],
+        "reference_support": {
+          "connection_share": "SUPPORTED",
+          "downstream_exposure": "ABSTAIN",
+          "expected_pax": "SUPPORTED",
+          "taxi_reference_minutes": "ABSTAIN",
+          "turnaround_reference_minutes": "SUPPORTED"
+        },
+        "status": "UNSUPPORTED_REFERENCE"
+      }
+    }
+  },
+  "directional_claims": "NONE",
+  "distortion_versus_joint": {
+    "MARGINAL": {
+      "F_continuity": {
+        "max_absolute_gap": 0.0,
+        "mean_absolute_gap": 0.0,
+        "paired_nodes": 1765
+      },
+      "F_execution": {
+        "max_absolute_gap": 3.725290298461914e-09,
+        "mean_absolute_gap": 2.1106460763170576e-12,
+        "paired_nodes": 1765
+      },
+      "F_propagation": {
+        "max_absolute_gap": 0.0,
+        "mean_absolute_gap": 0.0,
+        "paired_nodes": 1765
+      },
+      "P_itinerary": {
+        "max_absolute_gap": 1.2578485012054443,
+        "mean_absolute_gap": 0.045677922666072845,
+        "paired_nodes": 1765
+      },
+      "P_service": {
+        "max_absolute_gap": 2.293276786804199,
+        "mean_absolute_gap": 0.004720279946923256,
+        "paired_nodes": 1765
+      },
+      "P_time": {
+        "max_absolute_gap": 0.0,
+        "mean_absolute_gap": 0.0,
+        "paired_nodes": 1765
+      },
+      "R_operating": {
+        "max_absolute_gap": 7.450580596923828e-09,
+        "mean_absolute_gap": 8.44258430526823e-12,
+        "paired_nodes": 1765
+      }
+    },
+    "POINT": {
+      "F_continuity": {
+        "max_absolute_gap": 0.10537790507078171,
+        "mean_absolute_gap": 0.0022156431805342436,
+        "paired_nodes": 1765
+      },
+      "F_execution": {
+        "max_absolute_gap": 0.9990158677101135,
+        "mean_absolute_gap": 0.26988211274147034,
+        "paired_nodes": 1765
+      },
+      "F_propagation": {
+        "max_absolute_gap": 1.7032933235168457,
+        "mean_absolute_gap": 0.503582775592804,
+        "paired_nodes": 1765
+      },
+      "P_itinerary": {
+        "max_absolute_gap": 3.614433526992798,
+        "mean_absolute_gap": 0.41584646701812744,
+        "paired_nodes": 1765
+      },
+      "P_service": {
+        "max_absolute_gap": 8.047224044799805,
+        "mean_absolute_gap": 0.5838121175765991,
+        "paired_nodes": 1765
+      },
+      "P_time": {
+        "max_absolute_gap": 2.214442491531372,
+        "mean_absolute_gap": 0.511985719203949,
+        "paired_nodes": 1765
+      },
+      "R_operating": {
+        "max_absolute_gap": 0.47715094685554504,
+        "mean_absolute_gap": 0.09339463710784912,
+        "paired_nodes": 1765
+      }
+    },
+    "interpretation": "DISTORTION_VERSUS_JOINT_SOURCE_NO_SUPERIORITY_CLAIM",
+    "reference": "JOINT"
+  },
+  "family": "B_REPRESENTATION_FAMILIES",
+  "final_test_access_count": 0,
+  "loss_metrics_used": {
+    "L_att": false,
+    "L_rec": false,
+    "L_total": false
+  },
+  "no_final_test_family_branch": true,
+  "node_count": 1769,
+  "node_metrics_artifact": {
+    "array_count": 82,
+    "arrays": [
+      "coverage__joint__d_ob_minutes",
+      "coverage__joint__d_tx_minutes",
+      "coverage__joint__t_ib_minutes",
+      "coverage__marginal__d_ob_minutes",
+      "coverage__marginal__d_tx_minutes",
+      "coverage__marginal__t_ib_minutes",
+      "coverage__point__d_ob_minutes",
+      "coverage__point__d_tx_minutes",
+      "coverage__point__t_ib_minutes",
+      "crps__joint__d_ob_minutes",
+      "crps__joint__d_tx_minutes",
+      "crps__joint__t_ib_minutes",
+      "crps__marginal__d_ob_minutes",
+      "crps__marginal__d_tx_minutes",
+      "crps__marginal__t_ib_minutes",
+      "crps__point__d_ob_minutes",
+      "crps__point__d_tx_minutes",
+      "crps__point__t_ib_minutes",
+      "energy__joint",
+      "energy__marginal",
+      "energy__point",
+      "expected_cu__joint__F_continuity",
+      "expected_cu__joint__F_execution",
+      "expected_cu__joint__F_propagation",
+      "expected_cu__joint__P_itinerary",
+      "expected_cu__joint__P_service",
+      "expected_cu__joint__P_time",
+      "expected_cu__joint__R_operating",
+      "expected_cu__marginal__F_continuity",
+      "expected_cu__marginal__F_execution",
+      "expected_cu__marginal__F_propagation",
+      "expected_cu__marginal__P_itinerary",
+      "expected_cu__marginal__P_service",
+      "expected_cu__marginal__P_time",
+      "expected_cu__marginal__R_operating",
+      "expected_cu__point__F_continuity",
+      "expected_cu__point__F_execution",
+      "expected_cu__point__F_propagation",
+      "expected_cu__point__P_itinerary",
+      "expected_cu__point__P_service",
+      "expected_cu__point__P_time",
+      "expected_cu__point__R_operating",
+      "included__joint",
+      "included__marginal",
+      "included__point",
+      "joint_variogram_rows",
+      "joint_variogram_weights",
+      "mae__joint__d_ob_minutes",
+      "mae__joint__d_tx_minutes",
+      "mae__joint__t_ib_minutes",
+      "mae__marginal__d_ob_minutes",
+      "mae__marginal__d_tx_minutes",
+      "mae__marginal__t_ib_minutes",
+      "mae__point__d_ob_minutes",
+      "mae__point__d_tx_minutes",
+      "mae__point__t_ib_minutes",
+      "marginal_variogram_rows",
+      "marginal_variogram_weights",
+      "node_id",
+      "observed__d_ob_minutes",
+      "observed__d_tx_minutes",
+      "observed__t_ib_minutes",
+      "observed_active__d_ob_minutes",
+      "observed_active__d_tx_minutes",
+      "observed_active__t_ib_minutes",
+      "point_variogram_rows",
+      "point_variogram_weights",
+      "supported_mass__joint",
+      "supported_mass__marginal",
+      "supported_mass__point",
+      "variogram__joint",
+      "variogram__marginal",
+      "variogram__point",
+      "width__joint__d_ob_minutes",
+      "width__joint__d_tx_minutes",
+      "width__joint__t_ib_minutes",
+      "width__marginal__d_ob_minutes",
+      "width__marginal__d_tx_minutes",
+      "width__marginal__t_ib_minutes",
+      "width__point__d_ob_minutes",
+      "width__point__d_tx_minutes",
+      "width__point__t_ib_minutes"
+    ],
+    "hash": "sha256:7777ef2956f888aac75de5905416f620912b7c8aae4bda8b34921c9758d3dd2d",
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_B_REPRESENTATION_METRICS.npz"
+  },
+  "observation_coverage": {
+    "d_ob_minutes": {
+      "active_nodes": 1671,
+      "resolved_nodes": 1671
+    },
+    "d_tx_minutes": {
+      "active_nodes": 1765,
+      "resolved_nodes": 1765
+    },
+    "t_ib_minutes": {
+      "active_nodes": 217,
+      "resolved_nodes": 217
+    }
+  },
+  "purpose": "Development representation metrics and consequence distortion for Point, Marginal and Joint derived from one frozen H16 Joint source",
+  "ranking_performed": false,
+  "representations": {
+    "JOINT": {
+      "consequence_transmission": {
+        "below_nominal_mass_nodes": 0,
+        "expected_cu": {
+          "F_continuity": {
+            "label": "F_continuity",
+            "mean": 0.0022156431805342436,
+            "n": 1765,
+            "sd": 0.011266417801380157
+          },
+          "F_execution": {
+            "label": "F_execution",
+            "mean": 0.2738328278064728,
+            "n": 1765,
+            "sd": 0.2018650621175766
+          },
+          "F_propagation": {
+            "label": "F_propagation",
+            "mean": 0.5497028231620789,
+            "n": 1765,
+            "sd": 0.36270633339881897
+          },
+          "P_itinerary": {
+            "label": "P_itinerary",
+            "mean": 0.41584646701812744,
+            "n": 1765,
+            "sd": 0.6751195788383484
+          },
+          "P_service": {
+            "label": "P_service",
+            "mean": 0.5838121175765991,
+            "n": 1765,
+            "sd": 1.02679443359375
+          },
+          "P_time": {
+            "label": "P_time",
+            "mean": 0.5567944049835205,
+            "n": 1765,
+            "sd": 0.4284307360649109
+          },
+          "R_operating": {
+            "label": "R_operating",
+            "mean": 0.1719416081905365,
+            "n": 1765,
+            "sd": 0.19616876542568207
+          }
+        },
+        "included_nodes": 1765,
+        "supported_mass_mean": 1.0,
+        "supported_mass_min": 1.0
+      },
+      "coordinate_abstain_nodes": {
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "t_ib_minutes": 0
+      },
+      "energy_score": {
+        "label": "joint_vector",
+        "mean": 36.54668426513672,
+        "n": 217,
+        "sd": 38.21720886230469
+      },
+      "marginal_identity_note": null,
+      "representation_id": "HISTORY_H16:JOINT",
+      "scenario_count_max": 64,
+      "short_key": "joint",
+      "source": "EXP2_COMMON_SUPPORT.parquet:frozen_H16_joint_source",
+      "state_metrics": {
+        "d_ob_minutes": {
+          "coverage_90": {
+            "label": "d_ob_minutes",
+            "mean": 0.8426092267036438,
+            "n": 1671,
+            "sd": 0.36427783966064453
+          },
+          "crps": {
+            "label": "d_ob_minutes",
+            "mean": 6.697450160980225,
+            "n": 1671,
+            "sd": 16.475175857543945
+          },
+          "interval_width_90": {
+            "label": "d_ob_minutes",
+            "mean": 17.79062843322754,
+            "n": 1671,
+            "sd": 27.8887996673584
+          },
+          "mae_median": {
+            "label": "d_ob_minutes",
+            "mean": 7.415823936462402,
+            "n": 1671,
+            "sd": 17.626134872436523
+          }
+        },
+        "d_tx_minutes": {
+          "coverage_90": {
+            "label": "d_tx_minutes",
+            "mean": 0.6000000238418579,
+            "n": 1765,
+            "sd": 0.49003681540489197
+          },
+          "crps": {
+            "label": "d_tx_minutes",
+            "mean": 4.511022567749023,
+            "n": 1765,
+            "sd": 11.402981758117676
+          },
+          "interval_width_90": {
+            "label": "d_tx_minutes",
+            "mean": 2.9545466899871826,
+            "n": 1765,
+            "sd": 3.471585988998413
+          },
+          "mae_median": {
+            "label": "d_tx_minutes",
+            "mean": 4.858532905578613,
+            "n": 1765,
+            "sd": 11.53792953491211
+          }
+        },
+        "t_ib_minutes": {
+          "coverage_90": {
+            "label": "t_ib_minutes",
+            "mean": 0.557603657245636,
+            "n": 217,
+            "sd": 0.49781909584999084
+          },
+          "crps": {
+            "label": "t_ib_minutes",
+            "mean": 19.451154708862305,
+            "n": 217,
+            "sd": 25.426315307617188
+          },
+          "interval_width_90": {
+            "label": "t_ib_minutes",
+            "mean": 29.055299758911133,
+            "n": 217,
+            "sd": 11.742084503173828
+          },
+          "mae_median": {
+            "label": "t_ib_minutes",
+            "mean": 24.421659469604492,
+            "n": 217,
+            "sd": 27.715625762939453
+          }
+        }
+      },
+      "variogram_score": {
+        "expectation_rule": "ALIGNED_REPRESENTATION_ROWS",
+        "label": "joint_vector",
+        "mean": 35.44861602783203,
+        "n": 217,
+        "p": 0.5,
+        "rows_hash": "sha256:343f946c76c39dc3a496d14782cdec507cbf3df4c316d8d5b98ce31f70257351",
+        "sd": 40.8551139831543
+      }
+    },
+    "MARGINAL": {
+      "consequence_transmission": {
+        "below_nominal_mass_nodes": 0,
+        "expected_cu": {
+          "F_continuity": {
+            "label": "F_continuity",
+            "mean": 0.0022156431805342436,
+            "n": 1765,
+            "sd": 0.011266417801380157
+          },
+          "F_execution": {
+            "label": "F_execution",
+            "mean": 0.2738328278064728,
+            "n": 1765,
+            "sd": 0.2018650621175766
+          },
+          "F_propagation": {
+            "label": "F_propagation",
+            "mean": 0.5497028231620789,
+            "n": 1765,
+            "sd": 0.36270633339881897
+          },
+          "P_itinerary": {
+            "label": "P_itinerary",
+            "mean": 0.4257305860519409,
+            "n": 1765,
+            "sd": 0.6541387438774109
+          },
+          "P_service": {
+            "label": "P_service",
+            "mean": 0.5885323882102966,
+            "n": 1765,
+            "sd": 1.029005527496338
+          },
+          "P_time": {
+            "label": "P_time",
+            "mean": 0.5567944049835205,
+            "n": 1765,
+            "sd": 0.4284307360649109
+          },
+          "R_operating": {
+            "label": "R_operating",
+            "mean": 0.1719416081905365,
+            "n": 1765,
+            "sd": 0.19616876542568207
+          }
+        },
+        "included_nodes": 1765,
+        "supported_mass_mean": 1.0,
+        "supported_mass_min": 1.0
+      },
+      "coordinate_abstain_nodes": {
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "t_ib_minutes": 0
+      },
+      "energy_score": {
+        "label": "joint_vector",
+        "mean": 37.04570007324219,
+        "n": 217,
+        "sd": 38.36201095581055
+      },
+      "marginal_identity_note": "DETERMINISTIC_COORDINATE_PERMUTATION_NOT_PHYSICAL_INDEPENDENCE",
+      "representation_id": "HISTORY_H16:MARGINAL",
+      "scenario_count_max": 64,
+      "short_key": "marginal",
+      "source": "EXP2_COMMON_SUPPORT.parquet:frozen_H16_joint_source",
+      "state_metrics": {
+        "d_ob_minutes": {
+          "coverage_90": {
+            "label": "d_ob_minutes",
+            "mean": 0.8426092267036438,
+            "n": 1671,
+            "sd": 0.36427783966064453
+          },
+          "crps": {
+            "label": "d_ob_minutes",
+            "mean": 6.697450160980225,
+            "n": 1671,
+            "sd": 16.475175857543945
+          },
+          "interval_width_90": {
+            "label": "d_ob_minutes",
+            "mean": 17.79062843322754,
+            "n": 1671,
+            "sd": 27.8887996673584
+          },
+          "mae_median": {
+            "label": "d_ob_minutes",
+            "mean": 7.415823936462402,
+            "n": 1671,
+            "sd": 17.626134872436523
+          }
+        },
+        "d_tx_minutes": {
+          "coverage_90": {
+            "label": "d_tx_minutes",
+            "mean": 0.6000000238418579,
+            "n": 1765,
+            "sd": 0.49003681540489197
+          },
+          "crps": {
+            "label": "d_tx_minutes",
+            "mean": 4.511022567749023,
+            "n": 1765,
+            "sd": 11.402981758117676
+          },
+          "interval_width_90": {
+            "label": "d_tx_minutes",
+            "mean": 2.9545466899871826,
+            "n": 1765,
+            "sd": 3.471585988998413
+          },
+          "mae_median": {
+            "label": "d_tx_minutes",
+            "mean": 4.858532905578613,
+            "n": 1765,
+            "sd": 11.53792953491211
+          }
+        },
+        "t_ib_minutes": {
+          "coverage_90": {
+            "label": "t_ib_minutes",
+            "mean": 0.557603657245636,
+            "n": 217,
+            "sd": 0.49781909584999084
+          },
+          "crps": {
+            "label": "t_ib_minutes",
+            "mean": 19.451154708862305,
+            "n": 217,
+            "sd": 25.426315307617188
+          },
+          "interval_width_90": {
+            "label": "t_ib_minutes",
+            "mean": 29.055299758911133,
+            "n": 217,
+            "sd": 11.742084503173828
+          },
+          "mae_median": {
+            "label": "t_ib_minutes",
+            "mean": 24.421659469604492,
+            "n": 217,
+            "sd": 27.715625762939453
+          }
+        }
+      },
+      "variogram_score": {
+        "expectation_rule": "PRODUCT_OF_MARGINALS_EXACT",
+        "label": "joint_vector",
+        "mean": 35.20390701293945,
+        "n": 217,
+        "p": 0.5,
+        "rows_hash": "sha256:3eb049c3ebd1eb02012c9a37a3a96d3f3f2f99eabc2315f8d114c9a17a16d769",
+        "sd": 40.78644943237305
+      }
+    },
+    "POINT": {
+      "consequence_transmission": {
+        "below_nominal_mass_nodes": 0,
+        "expected_cu": {
+          "F_continuity": {
+            "label": "F_continuity",
+            "mean": 0.0,
+            "n": 1765,
+            "sd": 0.0
+          },
+          "F_execution": {
+            "label": "F_execution",
+            "mean": 0.003950704820454121,
+            "n": 1765,
+            "sd": 0.014141392894089222
+          },
+          "F_propagation": {
+            "label": "F_propagation",
+            "mean": 0.0461200475692749,
+            "n": 1765,
+            "sd": 0.07712659984827042
+          },
+          "P_itinerary": {
+            "label": "P_itinerary",
+            "mean": 0.0,
+            "n": 1765,
+            "sd": 0.0
+          },
+          "P_service": {
+            "label": "P_service",
+            "mean": 0.0,
+            "n": 1765,
+            "sd": 0.0
+          },
+          "P_time": {
+            "label": "P_time",
+            "mean": 0.04480864852666855,
+            "n": 1765,
+            "sd": 0.08608660101890564
+          },
+          "R_operating": {
+            "label": "R_operating",
+            "mean": 0.0788637176156044,
+            "n": 1765,
+            "sd": 0.15345925092697144
+          }
+        },
+        "included_nodes": 1765,
+        "supported_mass_mean": 1.0,
+        "supported_mass_min": 1.0
+      },
+      "coordinate_abstain_nodes": {
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "t_ib_minutes": 0
+      },
+      "energy_score": {
+        "label": "joint_vector",
+        "mean": 43.549068450927734,
+        "n": 217,
+        "sd": 40.11787414550781
+      },
+      "marginal_identity_note": null,
+      "representation_id": "HISTORY_H16:POINT",
+      "scenario_count_max": 1,
+      "short_key": "point",
+      "source": "EXP2_COMMON_SUPPORT.parquet:frozen_H16_joint_source",
+      "state_metrics": {
+        "d_ob_minutes": {
+          "coverage_90": {
+            "label": "d_ob_minutes",
+            "mean": 0.5900658369064331,
+            "n": 1671,
+            "sd": 0.4919684827327728
+          },
+          "crps": {
+            "label": "d_ob_minutes",
+            "mean": 7.410198211669922,
+            "n": 1671,
+            "sd": 17.620771408081055
+          },
+          "interval_width_90": {
+            "label": "d_ob_minutes",
+            "mean": 0.0,
+            "n": 1671,
+            "sd": 0.0
+          },
+          "mae_median": {
+            "label": "d_ob_minutes",
+            "mean": 7.410198211669922,
+            "n": 1671,
+            "sd": 17.620771408081055
+          }
+        },
+        "d_tx_minutes": {
+          "coverage_90": {
+            "label": "d_tx_minutes",
+            "mean": 0.36430594325065613,
+            "n": 1765,
+            "sd": 0.48137134313583374
+          },
+          "crps": {
+            "label": "d_tx_minutes",
+            "mean": 4.859375,
+            "n": 1765,
+            "sd": 11.535276412963867
+          },
+          "interval_width_90": {
+            "label": "d_tx_minutes",
+            "mean": 0.0,
+            "n": 1765,
+            "sd": 0.0
+          },
+          "mae_median": {
+            "label": "d_tx_minutes",
+            "mean": 4.859375,
+            "n": 1765,
+            "sd": 11.535276412963867
+          }
+        },
+        "t_ib_minutes": {
+          "coverage_90": {
+            "label": "t_ib_minutes",
+            "mean": 0.0,
+            "n": 217,
+            "sd": 0.0
+          },
+          "crps": {
+            "label": "t_ib_minutes",
+            "mean": 24.407835006713867,
+            "n": 217,
+            "sd": 27.714496612548828
+          },
+          "interval_width_90": {
+            "label": "t_ib_minutes",
+            "mean": 0.0,
+            "n": 217,
+            "sd": 0.0
+          },
+          "mae_median": {
+            "label": "t_ib_minutes",
+            "mean": 24.407835006713867,
+            "n": 217,
+            "sd": 27.714496612548828
+          }
+        }
+      },
+      "variogram_score": {
+        "expectation_rule": "ALIGNED_REPRESENTATION_ROWS",
+        "label": "joint_vector",
+        "mean": 45.03097152709961,
+        "n": 217,
+        "p": 0.5,
+        "rows_hash": "sha256:973bc4f18f3ff23d924764fcec3b4e462470c817c3688ee6871765bae66ecabe",
+        "sd": 45.00215530395508
+      }
+    }
+  },
+  "schema_version": "V2_PHASE5_FAMILY_B_V1",
+  "selection_use": "NOT_USED_FOR_HISTORY_PRIMARY_SELECTION",
+  "source": {
+    "d_to_identity_max_abs_gap": 0.0,
+    "hash": "sha256:6e034a67cd5bbadc474d7047fb630204af60b19dc8a924b7d95775269ddc4356",
+    "joint_source_readonly": true,
+    "node_count": 1769,
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\exp2\\development\\data\\EXP2_COMMON_SUPPORT.parquet",
+    "scenario_count": 64,
+    "weights_sum_one_all_nodes": true
+  },
+  "status": "PASS",
+  "variogram_rows_artifact": {
+    "array_count": 6,
+    "arrays": [
+      "joint_variogram_rows",
+      "joint_variogram_weights",
+      "marginal_variogram_rows",
+      "marginal_variogram_weights",
+      "point_variogram_rows",
+      "point_variogram_weights"
+    ],
+    "cross_representation_sharing": false,
+    "hash": "sha256:4a408d8c872bde7b1909b6f382cf344292c29bfbee61d92e541dbd0a46038acc",
+    "note": "VARIogram_ROWS_ARE_REPRESENTATION_SPECIFIC",
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_B_VARIogram_ROWS.npz",
+    "rows_hashes": {
+      "joint": "sha256:343f946c76c39dc3a496d14782cdec507cbf3df4c316d8d5b98ce31f70257351",
+      "marginal": "sha256:3eb049c3ebd1eb02012c9a37a3a96d3f3f2f99eabc2315f8d114c9a17a16d769",
+      "point": "sha256:973bc4f18f3ff23d924764fcec3b4e462470c817c3688ee6871765bae66ecabe"
+    }
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "action_grid": {
+    "nominal": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0,
+      25.0,
+      30.0,
+      35.0,
+      40.0,
+      45.0
+    ],
+    "nominal_size": 10,
+    "step_minutes": 5.0
+  },
+  "artifact_hash": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
+  "artifact_scope": "TRAIN_PARTITION_SUPPORT_ONLY",
+  "episode_count": 2668531,
+  "excluded_rotations": 0,
+  "factual_headroom": {
+    "definition": "max(actual_departure - max(scheduled_departure, actual_arrival + turnaround_q20), 0)",
+    "headroom_summary": {
+      "floor_to_minutes": 5.0,
+      "headroom_positive_n": 752638,
+      "headroom_quantile": 0.9,
+      "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+      "turnaround_lower_bound_q": 41.0,
+      "turnaround_quantile": 0.2,
+      "u_max": 45.0
+    },
+    "nominal_turnaround_quantile": 0.2,
+    "positive_count": 752638,
+    "positive_share": 0.28204206733967113,
+    "zero_count": 1915893
+  },
+  "final_test_access_count": 0,
+  "no_final_test_family_branch": true,
+  "population_gates": {
+    "a2_streaming_boundary_delta": 2,
+    "a2_streaming_boundary_delta_consistent": true,
+    "a2_streaming_boundary_delta_rule": "FULL_H1_BUILD_MAY_INCLUDE_UP_TO_2_CROSS_MONTH_EPISODES",
+    "a2_streaming_sample_count": 2668529,
+    "count_authority_field": "train_scale_artifact.F_continuity.population_rows",
+    "count_authority_path": "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json",
+    "expected_median_minutes": 57.0,
+    "expected_sample_count": 2668531,
+    "median_match": true,
+    "observed_median_minutes": 57.0,
+    "observed_sample_count": 2668531,
+    "reference_artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+    "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+    "reference_semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+    "sample_count_match": true,
+    "semantic_correction_match": true
+  },
+  "quantile_rule": "LINEAR_INTERPOLATION_SORTED_TRAIN",
+  "rotation_count": 2668531,
+  "samples_artifact": {
+    "arrays": [
+      "turnaround_minutes",
+      "headroom_nominal_minutes"
+    ],
+    "hash": "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5",
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SAMPLES.npz",
+    "representation_independent": true
+  },
+  "schema_version": "V2_PHASE5_TRAIN_SUPPORT_V1",
+  "source_hashes": [
+    "sha256:d1af02fd2a5367cb429eb74c52087a68ccec623275ff55320bbc1fd989b02cef",
+    "sha256:6bb9dd77b40469552939bb42f1ae2654bb4de623322bd9ac3892397bfbaed3d3",
+    "sha256:eb1b298509e76482698faca3c4fad0fcf9032a1cfc551392a1d6b00d5a111022",
+    "sha256:7d9ca42f6d0c15b275fee83704115c88268ab846df142d2a85fb9e314d2a891b",
+    "sha256:17d4bfaf8963b4278c938b3b93c0950952135c4d39507367683b25eaf2ac0eed",
+    "sha256:377b33a3d390334de55871e17ad093645c7cbc5f6976edde810af11619292cc6"
+  ],
+  "source_paths": [
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=02\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=04\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=05\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=06\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv"
+  ],
+  "stage1_capacity": {
+    "grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.3
+    ],
+    "nominal_q": 0.1
+  },
+  "stage2_effort": {
+    "grid": [
+      0.1,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "nominal_lambda": 0.25
+  },
+  "status": "PASS",
+  "train_partition": {
+    "end": "2019-06-30",
+    "fit_period": "2019-H1",
+    "months": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "start": "2019-01-01"
+  },
+  "turnaround": {
+    "median_minutes": 57.0,
+    "nominal_quantile": 0.2,
+    "quantile_minutes": {
+      "q10": 34.0,
+      "q20": 41.0,
+      "q30": 47.0
+    },
+    "sensitivity_quantiles": [
+      0.1,
+      0.3
+    ]
+  },
+  "turnaround_count_authority": {
+    "artifact_hash": "sha256:f7174f3a490b5c1ce2f77a181fa4abd99f43e3dab623551255d377945e4e5a74",
+    "field": "train_scale_artifact.F_continuity.population_rows",
+    "path": "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json",
+    "population_rows": 2668531,
+    "role": "FULL_H1_EPISODE_BUILD_COUNT_AUTHORITY"
+  },
+  "turnaround_reference": {
+    "artifact_hash": "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f",
+    "global_sample_count": 2668529,
+    "global_value_minutes": 57.0,
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
+    "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+    "scope": "STAGE_II_TRAIN_TURNAROUND_LOWER_TAIL_ONLY",
+    "semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+    "superseded_uncorrected_reference": {
+      "artifact_hash": "sha256:1b80ea32ae33bd383f68e233a4a0c49701ec426cd92fa512095a6fbdd889a440",
+      "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json"
+    }
+  },
+  "turnaround_reference_artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
+  "turnaround_reference_source_hash": "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f",
+  "u_max": {
+    "floor_to_minutes": 5.0,
+    "nominal_minutes": 45.0,
+    "nominal_quantile": 0.9,
+    "raw_positive_quantiles_minutes": {
+      "q80": 25.0,
+      "q90": 46.0,
+      "q95": 76.0
+    },
+    "sensitivity_minutes": {
+      "q80": 25.0,
+      "q90": 45.0,
+      "q95": 75.0
+    },
+    "sensitivity_quantiles": [
+      0.8,
+      0.95
+    ]
+  }
+}

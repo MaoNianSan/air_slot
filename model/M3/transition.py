@@ -97,4 +97,5 @@ def apply_recovery(
         support=state.support,
         ib_observed=state.ib_observed,
         ob_observed=state.ob_observed,
+        tx_observed=state.tx_observed,
     )

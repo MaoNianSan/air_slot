@@ -145,6 +145,7 @@ def build_point_representation(source: StateScenarioSet) -> StateScenarioSet:
         support=chosen.support,
         ib_observed=chosen.ib_observed,
         ob_observed=chosen.ob_observed,
+        tx_observed=chosen.tx_observed,
     )
     return StateScenarioSet(
         episode_id=source.episode_id,
@@ -211,6 +212,7 @@ def build_marginal_representation(
                 support=slot.support,
                 ib_observed=slot.ib_observed,
                 ob_observed=slot.ob_observed,
+                tx_observed=slot.tx_observed,
             )
         )
     return StateScenarioSet(

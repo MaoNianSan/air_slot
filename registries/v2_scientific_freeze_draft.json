@@ -1,0 +1,592 @@
+{
+  "activation_owner": "PHASE_6_SCIENTIFIC_FREEZE",
+  "activation_requirements": [
+    "explicit human release of Phase 6",
+    "freeze_commit resolved to the activation commit",
+    "status moved from DRAFT_NOT_ACTIVATED to an activated freeze state"
+  ],
+  "artifact_hash": "sha256:ee64c5e5295eb85d46a94d2f3abcb76dcfb1e03826acb09710f15135f6ea4e4b",
+  "artifact_kind": "SCIENTIFIC_FREEZE_DRAFT",
+  "bootstrap": {
+    "B": 2000,
+    "interval": "percentile_95",
+    "paired": true,
+    "resampling_unit": "episode_id",
+    "shared_plan_and_seed_across_related_metrics": true
+  },
+  "calibration": {
+    "calibration_cohort_hash": "sha256:fb7f4a068dae322d8f34ac8abe0e67e013d0cbff4394a19e09fc68a7a98cb6f9",
+    "calibration_id": "sha256:f8747ac873c8bc930b50985b254912425a05e3384e50fabf91047ac4c26772e3",
+    "reused_h32_temperature": false,
+    "variant_specific": true
+  },
+  "canonical_node_rule": "Rolling decision nodes are rebuilt from the rolling PRE environment; the published PRE state at the frozen M1 cache position is the cross-artifact identity authority, and the node's information cutoff may never exceed its decision time.",
+  "common_support_rule": {
+    "below_threshold_policy": "TYPED_ABSTAIN_NO_ZERO_FILL",
+    "estimand": "COMMON_SUPPORT_CONDITIONAL",
+    "missing_vs_unsupported_vs_zero": "STRICTLY_DISTINCT",
+    "nominal_threshold": 0.9,
+    "owner": "M2_COMPARISON_SUPPORT",
+    "pre_ownership": "EVIDENCE_AND_DATA_SUPPORT_ONLY",
+    "predefined_sensitivity": [],
+    "rule_id": "M2_COMMON_SUPPORT_NOMINAL_0P90",
+    "sensitivity_status": "NO_MANUSCRIPT_PREDEFINED_SENSITIVITY_VALUES"
+  },
+  "consequence_definitions": {
+    "aggregation_rule": "DOMAIN_BALANCED_MEAN_ONLY_IF_ALL_SEVEN_SUPPORTED",
+    "cu_mapping": "C_k^CU = q_k / c_k^CU",
+    "native_formulas": {
+      "F_continuity": "max(0, T_IB - turnaround_reference)",
+      "F_execution": "D_OB",
+      "F_propagation": "D_TO * expected_downstream_exposure",
+      "P_itinerary": "N_pax * s_conn * I[D_TO > 45]",
+      "P_service": "N_pax * I[D_TO >= 180]",
+      "P_time": "N_pax * D_TO",
+      "R_operating": "D_TX"
+    },
+    "semantic_channels": {
+      "P_service": {
+        "baseline_empirical_realization": "expected passengers x I[D_TO >= 180]",
+        "consequence_semantics": "passenger service / care burden"
+      },
+      "R_operating": {
+        "baseline_empirical_realization": "D_TX",
+        "consequence_semantics": "operating / recovery-resource burden"
+      }
+    },
+    "support_rule": "UNAVAILABLE_ABSTAIN_NO_DROP_RENORM_ZERO_PROXY",
+    "version": "M2_DATA2_FORMAL_CU_V5"
+  },
+  "cu_references": {
+    "assumption_scale_artifact": {
+      "P_itinerary": {
+        "definition": "expected_passengers_per_flight * connection_share * I[D_TO > itinerary_threshold_minutes]",
+        "empirical_train_positive_median": false,
+        "native_unit": "expected_disrupted_connecting_passenger_exposure",
+        "normalization_status": "ASSUMPTION_EVENT_NORMALIZATION",
+        "scale": 1.0,
+        "scale_derivation": "ONE_NATIVE_EVENT_UNIT",
+        "source": "ASSUMPTION_GROUNDED",
+        "superseded_empirical_median": 9.882948210182091,
+        "superseded_empirical_median_reference": "M2_DATA2_FORMAL_CU_V4",
+        "unit": "events"
+      },
+      "P_service": {
+        "definition": "expected_passengers_per_flight * I[D_TO >= service_threshold_minutes]",
+        "empirical_train_positive_median": false,
+        "native_unit": "expected_long_delay_passenger_service_exposure",
+        "normalization_status": "ASSUMPTION_EVENT_NORMALIZATION",
+        "scale": 1.0,
+        "scale_derivation": "ONE_NATIVE_EVENT_UNIT",
+        "source": "ASSUMPTION_GROUNDED",
+        "superseded_empirical_median": 104.88473684210527,
+        "superseded_empirical_median_reference": "M2_DATA2_FORMAL_CU_V4",
+        "unit": "threshold_events"
+      }
+    },
+    "fit_months": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "fit_year": 2019,
+    "implementation_status": "MATCH",
+    "numeric_scale_adoption": {
+      "decision": "FIVE_PRINCIPAL_MEDIANS_PLUS_TWO_EVENT_NORMALIZATIONS",
+      "event_scale_source": "ASSUMPTION_EVENT_NORMALIZATION",
+      "final_test_access_count": 0,
+      "previous_registry": "M2_DATA2_FORMAL_CU_V4",
+      "principal_scale_source": "M2_DATA2_FORMAL_CU_V4"
+    },
+    "reference_artifacts": {
+      "connection_share": {
+        "artifact_hash": "sha256:b595af0009e8527836e867ad61ae1e2ef434a4e63d7a1e300e9b95c46ef445b2",
+        "manifest_freeze_id": "sha256:0b58f3bbbbbde7de38d6a71de903f05141c165b4e86bd4409609286798898e35",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\DB1B_CONNECTION_SHARE_REFERENCE.json",
+        "reference_id": "sha256:0b58f3bbbbbde7de38d6a71de903f05141c165b4e86bd4409609286798898e35"
+      },
+      "downstream_exposure": {
+        "artifact_hash": "sha256:f47a69f539c56efebee9ca812b2b2cbb580f9921d351ce8f3b031df7aa2712b3",
+        "manifest_freeze_id": "sha256:31c7be57fbf935d3e347ca7ae5b1ffc829f0c0f6a1b203523faf3dad25d8484c",
+        "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_DOWNSTREAM_EXPOSURE_REFERENCE_TRAIN_FROZEN_V1.json",
+        "reference_id": "sha256:71a5c42da0e38cff0e5e10eb89ebffd8fdd0c3733febf17a8c485cbf15c8767c"
+      },
+      "expected_pax": {
+        "artifact_hash": "sha256:b0f8f7b1e2e8c0d10c2a0c4ec6e13aae04fbf662e93b11afba0de65aca3e91ab",
+        "manifest_freeze_id": "sha256:0a190e1877a36f27296a6dcd7fc51228d0be94331e38674fe31fafcf29a9e1b9",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json",
+        "reference_id": "sha256:0a190e1877a36f27296a6dcd7fc51228d0be94331e38674fe31fafcf29a9e1b9"
+      },
+      "taxi": {
+        "artifact_hash": "sha256:9e67d6f5d0b9870947e1c882fdf65ecc7609404cdf209f7162f381889ecab4dc",
+        "manifest_freeze_id": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+        "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json",
+        "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3"
+      },
+      "turnaround": {
+        "artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+        "manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+        "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
+        "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+      }
+    },
+    "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+    "registry_id": "M2_DATA2_FORMAL_CU_V5",
+    "scientific_status": "HUMAN_APPROVED_PENDING_FREEZE",
+    "train_scale_artifact": {
+      "F_continuity": {
+        "active_quantity_definition": "max(0, R_IB - turnaround_reference)",
+        "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+        "definition": "max(0, R_IB - turnaround_reference)",
+        "fit_period": "2019-H1",
+        "median": 43.0,
+        "native_unit": "minutes",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "population_rows": 2668531,
+        "positive_n": 206787,
+        "unit": "minutes"
+      },
+      "F_execution": {
+        "active_quantity_definition": "D_OB",
+        "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+        "definition": "D_OB",
+        "fit_period": "2019-H1",
+        "median": 17.0,
+        "native_unit": "minutes",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "population_rows": 3497660,
+        "positive_n": 1250180,
+        "unit": "minutes"
+      },
+      "F_propagation": {
+        "active_quantity_definition": "D_TO * expected_downstream_exposure",
+        "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+        "definition": "D_TO * expected_downstream_exposure",
+        "fit_period": "2019-H1",
+        "median": 10.0,
+        "native_unit": "exposure_minutes",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "population_rows": 3497660,
+        "positive_n": 2267813,
+        "unit": "exposure_minutes"
+      },
+      "P_time": {
+        "active_quantity_definition": "expected_passengers_per_flight * D_TO",
+        "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+        "definition": "expected_passengers_per_flight * D_TO",
+        "fit_period": "2019-H1",
+        "median": 990.3555555555556,
+        "native_unit": "passenger_minutes",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "population_rows": 3497660,
+        "positive_n": 2275867,
+        "unit": "passenger_minutes"
+      },
+      "R_operating": {
+        "active_quantity_definition": "D_TX",
+        "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+        "definition": "D_TX",
+        "fit_period": "2019-H1",
+        "median": 5.0,
+        "native_unit": "excess_taxi_minutes",
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "population_rows": 3497660,
+        "positive_n": 1619429,
+        "unit": "excess_taxi_minutes"
+      }
+    }
+  },
+  "development_families": {
+    "family_a": {
+      "artifact_hash": "sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775",
+      "directional_claims": "NONE",
+      "models": [
+        "CURRENT_H16_COMPARATOR",
+        "HISTORY_H16_PRIMARY",
+        "HISTORY_H8_SENSITIVITY"
+      ],
+      "selection_use": "NOT_USED_FOR_HISTORY_PRIMARY_SELECTION"
+    },
+    "family_b": {
+      "artifact_hash": "sha256:9072108a15acc0e04a2675e68c0695bd7106f582352c988e4352d0b7c3408adf",
+      "directional_claims": "NONE",
+      "representations": [
+        "JOINT",
+        "MARGINAL",
+        "POINT"
+      ],
+      "selection_use": "NOT_USED_FOR_HISTORY_PRIMARY_SELECTION",
+      "variogram_rows_representation_specific": true
+    }
+  },
+  "evidence_artifacts": {
+    "cu_registry_v5": {
+      "hash": "sha256:f7174f3a490b5c1ce2f77a181fa4abd99f43e3dab623551255d377945e4e5a74",
+      "path": "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json",
+      "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef"
+    },
+    "family_a": {
+      "artifact_hash": "sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775",
+      "hash": "sha256:a2b23599d39d6b8ffb2141b569261b6641338da1bbfc1892398da0742ec076d8",
+      "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_A_STATE_FAMILIES.json"
+    },
+    "family_b": {
+      "artifact_hash": "sha256:9072108a15acc0e04a2675e68c0695bd7106f582352c988e4352d0b7c3408adf",
+      "hash": "sha256:5866b06aca660adfab94c7dc8a4781d3c3759992e07b4b7399f40bb8c175744d",
+      "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_B_REPRESENTATION_FAMILIES.json"
+    },
+    "h8_sensitivity": {
+      "checkpoint_hash": "sha256:20ffe5efa12156ff45435cc572182081000b4c87badd85684241c3f5f6f925b6",
+      "manifest_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_V2_PHASE5_H8_SENSITIVITY\\M1_V2_PHASE5_H8_SENSITIVITY_MANIFEST.json",
+      "matched_audit_status": "PASS"
+    },
+    "instruction": {
+      "hash": "sha256:1d38e85af493c8d6ad8e3b51b441e58374e57b405c4b701b86f04d26c5e0d339",
+      "path": "D:\\research\\air_slot\\code\\explore\\docs\\AirSlot_V2_Instruction_rev2_20260918.md",
+      "role": "single engineering instruction (rev2)"
+    },
+    "reference_binding_audit": {
+      "hash": "sha256:9feb33a0860f6af08b231ec1c610a456118a2cc20b0550dbbe33e1b3008da8e7",
+      "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\REFERENCE_BINDING_AUDIT.json"
+    },
+    "train_support": {
+      "hash": "sha256:af146e2e5aba46a8f47b6f4845edb4882d0ca00fa953f9c93fecf8287cc28b99",
+      "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SUMMARY.json"
+    }
+  },
+  "final_test_access_count": 1,
+  "final_test_path_touched": false,
+  "freeze_commit": "PENDING",
+  "m4_evaluation": {
+    "L_att": "L_att = [A*(H*) - A*(H^(r))] / A*(H*), reported with overlap, entered/displaced nodes, coverage and Kendall/Spearman statistics",
+    "L_rec": "L_rec = sum_i [J_i(u_i^*(r)) - J_i(u_i^*)] / sum_i V_i^* on the fixed cohort R_g* = H_g^{C,*} intersect StageIISupported; a zero denominator returns UNDEFINED_ZERO_RECOVERABLE_VALUE, and no L_total is ever constructed",
+    "L_total_constructed": false,
+    "common_basis_only": true,
+    "fixed_stage2_cohort": "R_g* = H_g^{C,*} intersect StageIISupported",
+    "monetary_branch": "SECONDARY_INTERPRETATION_ONLY",
+    "zero_denominator_status": "UNDEFINED_ZERO_RECOVERABLE_VALUE"
+  },
+  "new_final_test_execution": false,
+  "new_final_test_statement": "No new Final-Test run was executed in Phase 0-5. The single recorded Final-Test access predates this work; old Final-Test outputs are not reusable under the V5 consequence and V2 representation definitions.",
+  "not_a_formal_freeze": true,
+  "open_items": [
+    {
+      "id": "O1",
+      "item": "manuscript appendix CU section is not yet synchronised",
+      "status": "HUMAN_DECISION_REQUIRED"
+    },
+    {
+      "id": "O2",
+      "item": "m^CS predefined sensitivity values absent from the manuscript body",
+      "status": "OPEN_MANUSCRIPT_ITEM"
+    },
+    {
+      "id": "O3",
+      "item": "instruction rev2 contains 14 mechanically truncated '\\rightarrow' escapes ('ightarrow') inherited from the source attachment; text is unambiguously recoverable but the authority document was left byte-identical in Phase 0-5",
+      "status": "OPEN_DOCUMENTATION_ITEM"
+    },
+    {
+      "id": "O4",
+      "item": "four PGV->CLT Development nodes have no admissible reference binding and stay typed UNSUPPORTED_REFERENCE",
+      "status": "RECORDED_NOT_ZERO_FILLED"
+    }
+  ],
+  "predefined_sensitivity": {
+    "attention_capacity_q": {
+      "grid": [
+        0.05,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "nominal": 0.1
+    },
+    "headroom_quantile": {
+      "grid": [
+        0.8,
+        0.95
+      ],
+      "nominal": 0.9
+    },
+    "m_cs": {
+      "grid": [],
+      "nominal": 0.9,
+      "status": "NO_MANUSCRIPT_PREDEFINED_SENSITIVITY_VALUES"
+    },
+    "materialized_train_quantiles": {
+      "q10": 34.0,
+      "q20": 41.0,
+      "q30": 47.0
+    },
+    "materialized_u_max": {
+      "floor_to_minutes": 5.0,
+      "nominal_minutes": 45.0,
+      "nominal_quantile": 0.9,
+      "raw_positive_quantiles_minutes": {
+        "q80": 25.0,
+        "q90": 46.0,
+        "q95": 76.0
+      },
+      "sensitivity_minutes": {
+        "q80": 25.0,
+        "q90": 45.0,
+        "q95": 75.0
+      },
+      "sensitivity_quantiles": [
+        0.8,
+        0.95
+      ]
+    },
+    "stage2_effort_lambda": {
+      "grid": [
+        0.1,
+        0.25,
+        0.5,
+        1.0
+      ],
+      "nominal": 0.25
+    },
+    "turnaround_lower_bound_quantile": {
+      "grid": [
+        0.1,
+        0.3
+      ],
+      "nominal": 0.2
+    }
+  },
+  "primary_m1_model": {
+    "batch_size": 64,
+    "checkpoint_hash": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+    "epochs": 8,
+    "hidden_size": 16,
+    "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+    "history_primary_is_h16": true,
+    "learning_rate": 0.001,
+    "lower_capacity_sensitivity": {
+      "hidden_size": 8,
+      "matched_contract_status": "PASS",
+      "model_id": "HISTORY_H8_SENSITIVITY",
+      "role": "PREDEFINED_SENSITIVITY_ONLY"
+    },
+    "manifest_hash": "sha256:ed9b0cc193aa4c29a2a33778ff2edc215e77ed493ed36fdc5ab8e09d71389af7",
+    "model_id": "HISTORY_H16_PRIMARY",
+    "model_version": "M1_STATE_ESTIMATOR_V2_H16",
+    "optimizer": "Adam",
+    "training_cohort_hash": "sha256:b60a80f7ca1acc0d70b8e71ae1563a3263a6db8a7ff4bb5d689bee9de6628478",
+    "training_seed": 20260813,
+    "weight_decay": 0.0
+  },
+  "priority_signals": {
+    "P_C": {
+      "aggregation": "manuscript fixed domain-balanced mapping: equal weight within the F and P domains, equal weight across the three domains",
+      "authority": "manuscript section 4 consequence priority",
+      "definition": "P^C = Phi_C(C^CU)",
+      "role": "UNIQUE_CONSEQUENCE_BASED_PRIORITY_AUTHORITY"
+    },
+    "P_D": {
+      "authority": "manuscript section 4 eq:empirical_delay_score (lines 336-344)",
+      "definition": "P^D = E[D^{+,TO} | Omega^CS]",
+      "deviating_legacy_implementation": "exp/shared/recovery_priority.py::summarize_delay_score (weight sum without m^CS renormalisation, all-or-nothing scenario support) - recorded deviation, not paper-primary",
+      "estimator": "(1 / m^CS) * sum_{s in Omega^CS} w_s * D^{+,TO}_s",
+      "role": "PARALLEL_DELAY_COMPARATOR"
+    },
+    "shared_selector": {
+      "a00_recommendation_forbidden": true,
+      "shared_candidate_queue": true,
+      "signals_never_mixed": true,
+      "stage1_selector": true
+    }
+  },
+  "reference_representation": {
+    "marginal_identity_note": "NOT_A_CLAIM_OF_PHYSICAL_INDEPENDENCE",
+    "marginal_rule": "DETERMINISTIC_COORDINATE_PERMUTATION",
+    "point_rule": "FROZEN_WEIGHTED_JOINT_MEDOID",
+    "realized_milestones": "COLLAPSE_TO_WEIGHT_ONE_POINT",
+    "representation_id": "HISTORY_H16:JOINT",
+    "temporal": "HISTORY",
+    "uncertainty": "JOINT"
+  },
+  "rulings_this_round": [
+    {
+      "authority": "manuscript body (corrected in the review copy)",
+      "id": "R1",
+      "ruling": "P_itinerary = N_pax * s_conn * I[D_TO > 45]; the DB1B historical continuation share stays in the formula."
+    },
+    {
+      "authority": "owner decision; registry M2_DATA2_FORMAL_CU_V5",
+      "id": "R2",
+      "ruling": "CU normalization = five principal positive Train medians plus two assumption-grounded event components with scale 1.0."
+    },
+    {
+      "authority": "instruction rev2 section 11",
+      "id": "R3",
+      "ruling": "Stage-II formal path is exact enumeration; Pyomo+HiGHS is a parity backend only."
+    },
+    {
+      "authority": "instruction rev2 sections 5/7/8",
+      "id": "R4",
+      "ruling": "P^C is the unique consequence-based priority authority; P^D is the parallel delay comparator; both share one Stage-I selector."
+    },
+    {
+      "authority": "instruction rev2 sections 5/12",
+      "id": "R5",
+      "ruling": "common support m^CS >= 0.90 nominal belongs to M2; PRE owns evidence/data support only."
+    },
+    {
+      "authority": "manuscript body; appendix grid is not authoritative",
+      "id": "R6",
+      "ruling": "m^CS sensitivity stays empty because the current manuscript body predefines no numeric sensitivity values."
+    }
+  ],
+  "scenario_count": 64,
+  "schema_version": "V2_SCIENTIFIC_FREEZE_DRAFT_V1",
+  "split_definitions": {
+    "calibration": {
+      "role": "M1 calibration only",
+      "window": "2019-07-01..2019-07-31"
+    },
+    "development": {
+      "decision_nodes": 1769,
+      "episodes": 128,
+      "role": "Section-4 Development comparisons",
+      "window": "2019-08-01..2019-09-30"
+    },
+    "final_test": {
+      "final_test_access_count_this_round": 1,
+      "new_access_requested": false,
+      "role": "sealed; Phase 7 only",
+      "window": "2019-10-01 onward"
+    },
+    "train": {
+      "role": "parameter fitting and Train-derived support only",
+      "window": "2019-01-01..2019-06-30"
+    }
+  },
+  "stage1_attention": {
+    "a00_never_recommended": true,
+    "capacity_rule": "K = ceil(q * N)",
+    "nominal_q": 0.1,
+    "q_grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.3
+    ],
+    "stage1_operates_on": "COMMON_SUPPORT_NODES_ONLY",
+    "tie_break": "(-score, episode_id, node_id)"
+  },
+  "stage2_recovery": {
+    "action_step_minutes": 5.0,
+    "actionable_stages": [
+      "PRE",
+      "TURN"
+    ],
+    "lambda": {
+      "grid": [
+        0.1,
+        0.25,
+        0.5,
+        1.0
+      ],
+      "nominal": 0.25,
+      "tie_break": "SMALLER_U"
+    },
+    "non_actionable_stages": {
+      "COMP": {
+        "action_set": [
+          0
+        ],
+        "status": "NOT_ACTIONABLE"
+      },
+      "TAXI": {
+        "action_set": [
+          0
+        ],
+        "status": "NOT_ACTIONABLE"
+      }
+    },
+    "objective": "J(u) = sum_s w_s * Phi_C(C^CU(s, u)) + lambda * u / U_max, with ties broken towards the smaller u; the recoverable value is V = J(0) - J(u*).",
+    "transition": "A proposed recovery action shifts the node's successor departure time by u minutes inside PRE/TURN stages only; the post-action state is mapped through the same M2 consequence service. TAXI/COMP stages admit the singleton action set {0} and return NOT_ACTIONABLE; no action-specific percentage reduction is ever applied.",
+    "turnaround_lower_bound": {
+      "definition": "T^{turn,lb} = Q20(T^{turn} | Train)",
+      "nominal_quantile": 0.2,
+      "quantile_rule": "LINEAR_INTERPOLATION_SORTED_TRAIN",
+      "sensitivity_quantiles": [
+        0.1,
+        0.3
+      ]
+    },
+    "u_max": {
+      "definition": "U_max = floor5(Q90(H^{+,fact} | Train))",
+      "floor_to_minutes": 5.0,
+      "nominal_minutes": 45.0,
+      "nominal_quantile": 0.9,
+      "sensitivity_quantiles": [
+        0.8,
+        0.95
+      ]
+    }
+  },
+  "stage2_solver": {
+    "formal_path": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "instruction_reference": "instruction rev2 section 11",
+    "long_term_deviation": false,
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_CASES_ONLY"
+  },
+  "status": "DRAFT_NOT_ACTIVATED",
+  "train_support": {
+    "action_grid_size": 10,
+    "artifact_hash": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
+    "population_gates": {
+      "a2_streaming_boundary_delta": 2,
+      "a2_streaming_boundary_delta_consistent": true,
+      "a2_streaming_boundary_delta_rule": "FULL_H1_BUILD_MAY_INCLUDE_UP_TO_2_CROSS_MONTH_EPISODES",
+      "a2_streaming_sample_count": 2668529,
+      "count_authority_field": "train_scale_artifact.F_continuity.population_rows",
+      "count_authority_path": "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json",
+      "expected_median_minutes": 57.0,
+      "expected_sample_count": 2668531,
+      "median_match": true,
+      "observed_median_minutes": 57.0,
+      "observed_sample_count": 2668531,
+      "reference_artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+      "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+      "reference_semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+      "sample_count_match": true,
+      "semantic_correction_match": true
+    },
+    "rotation_count": 2668531,
+    "turnaround_quantile_minutes": {
+      "q10": 34.0,
+      "q20": 41.0,
+      "q30": 47.0
+    },
+    "u_max_nominal_minutes": 45.0
+  },
+  "v4_to_v5_supersession": {
+    "adopted_registry": "M2_DATA2_FORMAL_CU_V5",
+    "event_components": {
+      "P_itinerary": {
+        "empirical_train_positive_median": false,
+        "scale": 1.0,
+        "status": "ASSUMPTION_EVENT_NORMALIZATION"
+      },
+      "P_service": {
+        "empirical_train_positive_median": false,
+        "scale": 1.0,
+        "status": "ASSUMPTION_EVENT_NORMALIZATION"
+      }
+    },
+    "legacy_reference_retained": [
+      "T-100 expected pax",
+      "DB1B connection share"
+    ],
+    "passenger_formula": "P_itinerary = N_pax * s_conn * I[D_TO > 45] (DB1B continuation share retained)",
+    "principal_components": "FIVE_TRAIN_POSITIVE_MEDIANS_RETAINED_FROM_V4",
+    "superseded_registry": "M2_DATA2_FORMAL_CU_V4"
+  }
+}

@@ -59,6 +59,7 @@ def _scenario(
     support: SupportState = SupportState.SUPPORTED,
     ib_observed: bool = False,
     ob_observed: bool = False,
+    tx_observed: bool = False,
 ) -> StateScenario:
     return StateScenario(
         scenario_id=scenario_id,
@@ -71,6 +72,7 @@ def _scenario(
         support=support,
         ib_observed=ib_observed,
         ob_observed=ob_observed,
+        tx_observed=tx_observed,
     )
 
 
@@ -227,7 +229,16 @@ def test_joint_representation_is_returned_unchanged():
 
 
 def test_realized_milestones_collapse_to_point_under_the_shared_contract():
-    realized = _scenario(7, 1.0, 5.0, 20.0, 4.0, ib_observed=True, ob_observed=True)
+    realized = _scenario(
+        7,
+        1.0,
+        5.0,
+        20.0,
+        4.0,
+        ib_observed=True,
+        ob_observed=True,
+        tx_observed=True,
+    )
     collapsed = StateScenarioSet(
         episode_id="episode-1",
         chain_id="chain-1",
@@ -254,7 +265,16 @@ def test_realized_milestones_collapse_to_point_under_the_shared_contract():
             stage=STAGE,
             representation=_spec(uncertainty=UncertaintyKind.POINT),
             scenarios=(
-                _scenario(7, 0.5, 5.0, 20.0, 4.0, ib_observed=True, ob_observed=True),
+                _scenario(
+                    7,
+                    0.5,
+                    5.0,
+                    20.0,
+                    4.0,
+                    ib_observed=True,
+                    ob_observed=True,
+                    tx_observed=True,
+                ),
                 _scenario(8, 0.5, 6.0, 21.0, 5.0),
             ),
         )

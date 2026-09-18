@@ -160,6 +160,7 @@ def test_realized_milestones_replace_uncertainty():
         d_to_minutes=20.0,
         ib_observed=True,
         ob_observed=True,
+        tx_observed=True,
     )
     assert realized.is_realized is True
     collapsed = _scenario_set(_point(), (realized,))
@@ -175,6 +176,7 @@ def test_realized_milestones_replace_uncertainty():
                     stage=OperationalStage.POST_IB_PRE_OB,
                     ib_observed=True,
                     ob_observed=True,
+                    tx_observed=True,
                 ),
             ),
         )
