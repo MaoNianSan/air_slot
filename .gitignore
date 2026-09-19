@@ -114,3 +114,12 @@ artifacts/experiment/final_test/FINAL_TEST_PRE_STATES.jsonl
 # ===== Local reference material (not tracked; user decision 2026-09-02) =====
 Rolling_Airline_Recovery (4).pdf
 Rolling_Airline_Recovery (7).pdf
+
+# ===== Large regenerable Phase-7 Final-Test checkpoints (kept local) =====
+# The ~587MB sealed-run checkpoint payloads stay local; the committed
+# manifest artifacts/experiment/final_test_v2/CHECKPOINT_MANIFEST.json carries
+# their stage order, dependencies and hashes.
+artifacts/experiment/final_test_v2/checkpoints/
+
+# ===== Local scratch scripts, probes and run logs (kept local) =====
+tmp/
