@@ -31,34 +31,43 @@
       "expected_passengers": "sha256:0a190e1877a36f27296a6dcd7fc51228d0be94331e38674fe31fafcf29a9e1b9",
       "passenger": "sha256:30c3873a736eacf95d215266d025a8f0b11db93ed6a36cdc3928cd5eb775745b",
       "taxi": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
-      "turnaround": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+      "turnaround": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57"
     },
     "reference_lineage": {
+      "legacy_turnaround_artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+      "legacy_turnaround_reference_hash": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+      "legacy_turnaround_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+      "superseded_turnaround_reference_file_hash": "sha256:1b80ea32ae33bd383f68e233a4a0c49701ec426cd92fa512095a6fbdd889a440",
+      "superseded_turnaround_reference_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
       "taxi_artifact_hash": "sha256:9e67d6f5d0b9870947e1c882fdf65ecc7609404cdf209f7162f381889ecab4dc",
       "taxi_reference_hash": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
       "taxi_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
-      "turnaround_artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
-      "turnaround_reference_hash": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
-      "turnaround_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+      "turnaround_artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+      "turnaround_reference_file_hash": "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f",
+      "turnaround_reference_hash": "sha256:bfe4f24e40d554e874faac1d987b0126b393a7dd091068b8fd203aba3e06ae7b",
+      "turnaround_reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+      "turnaround_reference_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
+      "turnaround_reference_status": "CORRECTED_A2_ACTIVE",
+      "turnaround_semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION"
     },
-    "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+    "registry_hash": "sha256:fd3ccfa0c56ba64d840ab163b5a133a5b0d6a662249d89af38c7377f6f24b030",
     "registry_id": "M2_DATA2_FORMAL_CU_V5",
     "registry_implementation_status": "MATCH",
     "registry_scientific_status": "HUMAN_APPROVED_PENDING_FREEZE",
-    "registry_source_hash": "sha256:f7174f3a490b5c1ce2f77a181fa4abd99f43e3dab623551255d377945e4e5a74",
+    "registry_source_hash": "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1",
     "tail_manifest_hash": "sha256:0699061941cd47869b003ba6f4f6c79042bd58b3bf85a011e560c73bc928bb1a",
     "tail_manifest_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m1_positive_tail_continuation_v1\\M1_POSITIVE_TAIL_CONTINUATION_V1.json"
   },
-  "family_a_hash": "sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775",
-  "family_b_hash": "sha256:9072108a15acc0e04a2675e68c0695bd7106f582352c988e4352d0b7c3408adf",
+  "family_a_hash": "sha256:92dd3769c4e7516a8203f2a174868a61ad2d1a33d2e16fcea1e0816de56c1e52",
+  "family_b_hash": "sha256:e7706447a308d3c7b3c3338f23e752a85b31fb907a879e206f052c395e654467",
   "final_test_access_count": 1,
   "freeze_draft": {
-    "artifact_hash": "sha256:ee64c5e5295eb85d46a94d2f3abcb76dcfb1e03826acb09710f15135f6ea4e4b",
-    "draft_hash": "sha256:8e6b5dc01012a8740d79f268d33e4b477c0b519bb1cee4fa0c587bb01170330e",
+    "artifact_hash": "sha256:286c27fc858ec06721e84e13f311ce4c4e3b0e38b93d351807276b32c45b94d3",
+    "draft_hash": "sha256:416b6da3d733140a1c5d201a40f385f3dd68ad063e17e30bfc134e76e2674740",
     "draft_path": "D:\\research\\air_slot\\code\\explore\\registries\\v2_scientific_freeze_draft.json",
     "freeze_commit": "PENDING",
     "status": "DRAFT_NOT_ACTIVATED",
-    "summary_hash": "sha256:7e825eba024f7b4ae36c202844140f026ecf6726b7658d4054ad138d40aea0cd",
+    "summary_hash": "sha256:b324f85fbd82278db50702ce9caa9d22471a76d048366b55e8a55b78a852455f",
     "summary_path": "D:\\research\\air_slot\\code\\explore\\docs\\V2_SCIENTIFIC_FREEZE_SUMMARY.md"
   },
   "h8_sensitivity": {
@@ -75,17 +84,17 @@
   "schema_version": "V2_PHASE5_RUN_SUMMARY_V1",
   "status": "PASS",
   "timings_seconds": {
-    "consequence_service": 101.145,
-    "family_a": 268.284,
-    "family_b": 284.88,
-    "freeze_draft": 284.925,
-    "h8_sensitivity": 100.249,
-    "load_authorities": 3.088,
-    "load_development_bridge": 100.226,
-    "load_tail_continuations": 100.227,
-    "train_support": 100.227
+    "consequence_service": 107.546,
+    "family_a": 265.971,
+    "family_b": 284.428,
+    "freeze_draft": 284.473,
+    "h8_sensitivity": 106.677,
+    "load_authorities": 3.195,
+    "load_development_bridge": 106.658,
+    "load_tail_continuations": 106.659,
+    "train_support": 106.659
   },
-  "timings_total_seconds": 284.925,
+  "timings_total_seconds": 284.474,
   "train_support": {
     "artifact_hash": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
     "rotation_count": 2668531

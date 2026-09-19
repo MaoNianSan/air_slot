@@ -1,17 +1,17 @@
 {
-  "artifact_hash": "sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775",
+  "artifact_hash": "sha256:92dd3769c4e7516a8203f2a174868a61ad2d1a33d2e16fcea1e0816de56c1e52",
   "artifact_scope": "DEVELOPMENT_ONLY",
   "consequence_layer": {
     "audit_artifact": {
-      "hash": "sha256:9feb33a0860f6af08b231ec1c610a456118a2cc20b0550dbbe33e1b3008da8e7",
+      "hash": "sha256:9332c92a924abf9bc71e43be78fda1a38fdd3aea070ec6e4681f54793ee9ae53",
       "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\REFERENCE_BINDING_AUDIT.json",
-      "payload_hash": "sha256:74c16f412f4a4d240d8bb95466e127a297ee930efd1dadd74d2e91c32c87ec3b"
+      "payload_hash": "sha256:2bffd44b707af70f95a3b82c21e4c3d472a1cc910af9ff7c21536404a202d612"
     },
     "bound_node_count": 1765,
     "inert_binding_fields": [
       "taxi_reference_minutes"
     ],
-    "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+    "registry_hash": "sha256:fd3ccfa0c56ba64d840ab163b5a133a5b0d6a662249d89af38c7377f6f24b030",
     "registry_id": "M2_DATA2_FORMAL_CU_V5",
     "unsupported_node_count": 4,
     "unsupported_nodes": {
@@ -89,9 +89,9 @@
         "expected_cu": {
           "F_continuity": {
             "label": "F_continuity",
-            "mean": 0.00017602444859221578,
+            "mean": 0.000133997542434372,
             "n": 1765,
-            "sd": 0.0012983724009245634
+            "sd": 0.001090646954253316
           },
           "F_execution": {
             "label": "F_execution",
@@ -238,9 +238,9 @@
         "expected_cu": {
           "F_continuity": {
             "label": "F_continuity",
-            "mean": 0.0022156431805342436,
+            "mean": 0.0015744713600724936,
             "n": 1765,
-            "sd": 0.011266417801380157
+            "sd": 0.007973318919539452
           },
           "F_execution": {
             "label": "F_execution",
@@ -387,9 +387,9 @@
         "expected_cu": {
           "F_continuity": {
             "label": "F_continuity",
-            "mean": 0.00011312915739836171,
+            "mean": 9.355685324408114e-05,
             "n": 1765,
-            "sd": 0.0010493454756215215
+            "sd": 0.0008751112036406994
           },
           "F_execution": {
             "label": "F_execution",
@@ -603,7 +603,7 @@
       "width__h8__d_tx_minutes",
       "width__h8__t_ib_minutes"
     ],
-    "hash": "sha256:6b85c038ecb4530335235269327af8ad897744388862e6bd4fd9374f9755bcaa",
+    "hash": "sha256:bffb9632156ad247bb0e30f9817adf72f5218b996e4c803759f9a9f88ff1bff7",
     "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_A_STATE_METRICS.npz"
   },
   "observation_coverage": {
@@ -623,8 +623,8 @@
   "paired_distances_versus_primary": {
     "CURRENT_H16_COMPARATOR": {
       "F_continuity": {
-        "max_absolute_gap": 0.10537790507078171,
-        "mean_absolute_gap": 0.0020398248452693224,
+        "max_absolute_gap": 0.06036931648850441,
+        "mean_absolute_gap": 0.001440473715774715,
         "paired_nodes": 1765
       },
       "F_execution": {
@@ -663,8 +663,8 @@
     },
     "HISTORY_H8_SENSITIVITY": {
       "F_continuity": {
-        "max_absolute_gap": 0.10537790507078171,
-        "mean_absolute_gap": 0.002102514263242483,
+        "max_absolute_gap": 0.06036931648850441,
+        "mean_absolute_gap": 0.001480914419516921,
         "paired_nodes": 1765
       },
       "F_execution": {

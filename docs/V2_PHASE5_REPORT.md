@@ -143,3 +143,17 @@ Phase 4 checkpoint: `a70b805 v2(phase4): M4 common-basis attention and recovery 
 Phase 6 is not entered by this work. Activating the scientific freeze and any
 new Final-Test access remain separate human gates. The old Final-Test outputs
 are not reusable under the V5 consequence and V2 representation definitions.
+
+## 9. Post-report correction (freeze-precheck 2026-09-19)
+
+The statement above that the superseded uncorrected turnaround reference is
+"recorded, not used" held for the Train support, but not for the M2
+node-reference bundle: `F_continuity` was still reading the old artifact
+through `exp.exp2.development_inputs._reference_payloads()`. The bundle now
+binds the corrected Data Gate A2 reference, the `F_continuity` Train scale
+was recomputed (`43.0 -> 44.0` minutes, positive n `206,787 -> 186,742`,
+population `2,668,531` unchanged), the affected Development artifacts were
+regenerated, and the draft freeze records the lineage. M1 was not retrained,
+Train support and the H8 sensitivity were reused unchanged, and the focused
+tests, split isolation and enumeration-HiGHS parity were re-run (`97 passed`,
+both validators `PASS`). See `docs/V2_FREEZE_PRECHECK_REPORT.md`.

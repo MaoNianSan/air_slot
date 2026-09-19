@@ -5,7 +5,7 @@
     "freeze_commit resolved to the activation commit",
     "status moved from DRAFT_NOT_ACTIVATED to an activated freeze state"
   ],
-  "artifact_hash": "sha256:ee64c5e5295eb85d46a94d2f3abcb76dcfb1e03826acb09710f15135f6ea4e4b",
+  "artifact_hash": "sha256:286c27fc858ec06721e84e13f311ce4c4e3b0e38b93d351807276b32c45b94d3",
   "artifact_kind": "SCIENTIFIC_FREEZE_DRAFT",
   "bootstrap": {
     "B": 2000,
@@ -99,7 +99,15 @@
       "event_scale_source": "ASSUMPTION_EVENT_NORMALIZATION",
       "final_test_access_count": 0,
       "previous_registry": "M2_DATA2_FORMAL_CU_V4",
-      "principal_scale_source": "M2_DATA2_FORMAL_CU_V4"
+      "principal_scale_source": "M2_DATA2_FORMAL_CU_V4_PLUS_CORRECTED_F_CONTINUITY",
+      "principal_scale_source_detail": {
+        "F_continuity": "artifacts\\diagnostics\\v2_freeze_precheck\\M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json",
+        "F_execution": "M2_DATA2_FORMAL_CU_V4",
+        "F_propagation": "M2_DATA2_FORMAL_CU_V4",
+        "P_time": "M2_DATA2_FORMAL_CU_V4",
+        "R_operating": "M2_DATA2_FORMAL_CU_V4",
+        "reason": "freeze-precheck 2026-09-19 replaced the F_continuity positive Train median computed with the superseded turnaround reference"
+      }
     },
     "reference_artifacts": {
       "connection_share": {
@@ -127,26 +135,39 @@
         "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3"
       },
       "turnaround": {
-        "artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
-        "manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
-        "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
-        "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+        "artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+        "manifest_freeze_id": "sha256:bfe4f24e40d554e874faac1d987b0126b393a7dd091068b8fd203aba3e06ae7b",
+        "path": "artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
+        "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+        "semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+        "superseded_manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+        "superseded_path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
+        "superseded_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
       }
     },
-    "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+    "registry_hash": "sha256:fd3ccfa0c56ba64d840ab163b5a133a5b0d6a662249d89af38c7377f6f24b030",
     "registry_id": "M2_DATA2_FORMAL_CU_V5",
     "scientific_status": "HUMAN_APPROVED_PENDING_FREEZE",
     "train_scale_artifact": {
       "F_continuity": {
         "active_quantity_definition": "max(0, R_IB - turnaround_reference)",
-        "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+        "artifact_hash": "sha256:4f6851fae1a3f24f3742b5049bdb9465932cb2fcb190cefe396ab773be6c967f",
         "definition": "max(0, R_IB - turnaround_reference)",
         "fit_period": "2019-H1",
-        "median": 43.0,
+        "median": 44.0,
         "native_unit": "minutes",
-        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "path": "artifacts\\diagnostics\\v2_freeze_precheck\\M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json",
         "population_rows": 2668531,
-        "positive_n": 206787,
+        "positive_n": 186742,
+        "superseded_scale": {
+          "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+          "median": 43.0,
+          "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+          "population_rows": 2668531,
+          "positive_n": 206787,
+          "reason": "F_continuity_scale_was_computed_with_the_superseded_turnaround_reference_sha256_7c6ac016",
+          "scale_rule_unchanged": "Median_Train(q_k | q_k > 0)"
+        },
         "unit": "minutes"
       },
       "F_execution": {
@@ -201,7 +222,7 @@
   },
   "development_families": {
     "family_a": {
-      "artifact_hash": "sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775",
+      "artifact_hash": "sha256:92dd3769c4e7516a8203f2a174868a61ad2d1a33d2e16fcea1e0816de56c1e52",
       "directional_claims": "NONE",
       "models": [
         "CURRENT_H16_COMPARATOR",
@@ -211,7 +232,7 @@
       "selection_use": "NOT_USED_FOR_HISTORY_PRIMARY_SELECTION"
     },
     "family_b": {
-      "artifact_hash": "sha256:9072108a15acc0e04a2675e68c0695bd7106f582352c988e4352d0b7c3408adf",
+      "artifact_hash": "sha256:e7706447a308d3c7b3c3338f23e752a85b31fb907a879e206f052c395e654467",
       "directional_claims": "NONE",
       "representations": [
         "JOINT",
@@ -224,18 +245,18 @@
   },
   "evidence_artifacts": {
     "cu_registry_v5": {
-      "hash": "sha256:f7174f3a490b5c1ce2f77a181fa4abd99f43e3dab623551255d377945e4e5a74",
+      "hash": "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1",
       "path": "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json",
-      "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef"
+      "registry_hash": "sha256:fd3ccfa0c56ba64d840ab163b5a133a5b0d6a662249d89af38c7377f6f24b030"
     },
     "family_a": {
-      "artifact_hash": "sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775",
-      "hash": "sha256:a2b23599d39d6b8ffb2141b569261b6641338da1bbfc1892398da0742ec076d8",
+      "artifact_hash": "sha256:92dd3769c4e7516a8203f2a174868a61ad2d1a33d2e16fcea1e0816de56c1e52",
+      "hash": "sha256:90424341ade6ac11799c8ed10c3059466038e4d1f6a8bd72ddc20f74fc4e1412",
       "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_A_STATE_FAMILIES.json"
     },
     "family_b": {
-      "artifact_hash": "sha256:9072108a15acc0e04a2675e68c0695bd7106f582352c988e4352d0b7c3408adf",
-      "hash": "sha256:5866b06aca660adfab94c7dc8a4781d3c3759992e07b4b7399f40bb8c175744d",
+      "artifact_hash": "sha256:e7706447a308d3c7b3c3338f23e752a85b31fb907a879e206f052c395e654467",
+      "hash": "sha256:5d0d82cf19816e3a50178259c2d2ed52db7bd07e0b94f5263589cbb740e88cd6",
       "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\FAMILY_B_REPRESENTATION_FAMILIES.json"
     },
     "h8_sensitivity": {
@@ -249,7 +270,7 @@
       "role": "single engineering instruction (rev2)"
     },
     "reference_binding_audit": {
-      "hash": "sha256:9feb33a0860f6af08b231ec1c610a456118a2cc20b0550dbbe33e1b3008da8e7",
+      "hash": "sha256:9332c92a924abf9bc71e43be78fda1a38fdd3aea070ec6e4681f54793ee9ae53",
       "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\REFERENCE_BINDING_AUDIT.json"
     },
     "train_support": {
@@ -439,6 +460,16 @@
       "authority": "manuscript body; appendix grid is not authoritative",
       "id": "R6",
       "ruling": "m^CS sensitivity stays empty because the current manuscript body predefines no numeric sensitivity values."
+    },
+    {
+      "authority": "freeze-precheck audit 2026-09-19; registry M2_DATA2_FORMAL_CU_V5",
+      "id": "R7",
+      "ruling": "The superseded turnaround reference sha256:7c6ac016 was an active M2 node-reference input, not stale metadata. The V2 chain binds the corrected Data Gate A2 reference (sha256:aa241b90) and keeps the superseded artifact as provenance only."
+    },
+    {
+      "authority": "DATA2_TURNAROUND_REFERENCE@1.0.0 statistic MEDIAN; instruction rev2 sections 7/11",
+      "id": "R8",
+      "ruling": "The M2 node reference stays the airport-conditioned empirical Train median with global fallback; T^{turn,lb} = Q20 = 41 minutes stays a separate Stage-II lower-tail support. Substituting the scalar Q20 bound into the node reference was rejected because it would redefine F_continuity."
     }
   ],
   "scenario_count": 64,
@@ -566,6 +597,67 @@
       "q30": 47.0
     },
     "u_max_nominal_minutes": 45.0
+  },
+  "turnaround_reference_precheck": {
+    "active_call_path": [
+      "exp.exp2.development_inputs._reference_payloads",
+      "model.M2.context.load_data2_reference_bundle",
+      "validation.v2_phase5.common.build_node_binding",
+      "model.M2.consequence_service.M2ConsequenceService",
+      "F_continuity = max(0, R_IB - turnaround_reference)"
+    ],
+    "active_reference": {
+      "artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+      "cells_count": 349,
+      "file_hash": "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f",
+      "global_sample_count": 2668529,
+      "global_value_minutes": 57.0,
+      "manifest_freeze_id": "sha256:bfe4f24e40d554e874faac1d987b0126b393a7dd091068b8fd203aba3e06ae7b",
+      "path": "artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
+      "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+      "semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+      "status": "CORRECTED_A2_ACTIVE"
+    },
+    "audit_finding": "SUPERSEDED_REFERENCE_WAS_ACTIVE_NOT_STALE_METADATA",
+    "f_continuity_train_scale_correction": {
+      "active_artifact_hash": "sha256:4f6851fae1a3f24f3742b5049bdb9465932cb2fcb190cefe396ab773be6c967f",
+      "active_artifact_path": "artifacts\\diagnostics\\v2_freeze_precheck\\M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json",
+      "active_population_rows": 2668531,
+      "active_positive_n": 186742,
+      "active_scale_minutes": 44.0,
+      "reason": "F_continuity reads the corrected node reference",
+      "scale_rule_unchanged": "Median_Train(q_k | q_k > 0)",
+      "superseded_scale_minutes": 43.0
+    },
+    "m1_retrained_this_round": false,
+    "new_final_test_access_this_round": false,
+    "owner": "M2_NODE_REFERENCE_BUNDLE",
+    "reference_delta": {
+      "changed_cells": 332,
+      "global_median_delta_minutes": 6.0,
+      "max_abs_delta_minutes": 41.5,
+      "mean_abs_delta_minutes": 4.157593123209169,
+      "shared_cells": 349
+    },
+    "round": "FREEZE_PRECHECK_20260919",
+    "semantics": {
+      "node_reference_quantity": "AIRPORT_LEVEL_POSITIVE_TRAIN_MEDIAN_TURNAROUND_REFERENCE (DATA2_TURNAROUND_REFERENCE@1.0.0, statistic MEDIAN, global fallback)",
+      "same_quantity": false,
+      "scalar_substitution_reason": "Replacing the airport-conditioned median reference with the scalar Q20 bound would redefine F_continuity = max(0, R_IB - turnaround_reference) and therefore change the frozen consequence definition.",
+      "scalar_substitution_rejected": true,
+      "stage2_lower_tail_quantity": "T^{turn,lb} = Q20(T^{turn} | Train)",
+      "stage2_nominal_minutes": 41.0
+    },
+    "superseded_reference": {
+      "artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+      "file_hash": "sha256:1b80ea32ae33bd383f68e233a4a0c49701ec426cd92fa512095a6fbdd889a440",
+      "global_sample_count": 2670770,
+      "global_value_minutes": 51.0,
+      "manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+      "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
+      "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c",
+      "status": "SUPERSEDED_PROVENANCE_ONLY"
+    }
   },
   "v4_to_v5_supersession": {
     "adopted_registry": "M2_DATA2_FORMAL_CU_V5",

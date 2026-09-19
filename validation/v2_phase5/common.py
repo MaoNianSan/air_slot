@@ -85,6 +85,20 @@ TAIL_MANIFEST = (
 )
 REGISTRY_V5_PATH = PROJECT_ROOT / "registries" / "m2_data2_formal_cu_v5.json"
 INSTRUCTION_PATH = PROJECT_ROOT / "docs" / "AirSlot_V2_Instruction_rev2_20260918.md"
+CORRECTED_TURNAROUND_REFERENCE_PATH = (
+    PROJECT_ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "m1_v2_data_gate_a2"
+    / "DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json"
+)
+SUPERSEDED_TURNAROUND_REFERENCE_PATH = (
+    PROJECT_ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "v5_development_freeze"
+    / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json"
+)
 PASSENGER_DESIGN_V5_PATH = (
     PROJECT_ROOT / "registries" / "m2_v5_passenger_consequence_design.json"
 )
@@ -565,6 +579,38 @@ def load_authorities() -> Authorities:
     from exp.exp2.development_inputs import _reference_payloads
 
     bundle = load_data2_reference_bundle(_reference_payloads())
+    corrected_turnaround = read_json(CORRECTED_TURNAROUND_REFERENCE_PATH)
+    reference_lineage = dict(reference_audit)
+    reference_lineage.update(
+        {
+            "legacy_turnaround_reference_id": reference_audit.get(
+                "turnaround_reference_id"
+            ),
+            "legacy_turnaround_reference_hash": reference_audit.get(
+                "turnaround_reference_hash"
+            ),
+            "legacy_turnaround_artifact_hash": reference_audit.get(
+                "turnaround_artifact_hash"
+            ),
+            "turnaround_reference_id": bundle.turnaround.reference_id,
+            "turnaround_reference_hash": bundle.turnaround.manifest_freeze_id,
+            "turnaround_artifact_hash": corrected_turnaround.get("artifact_hash"),
+            "turnaround_reference_path": str(CORRECTED_TURNAROUND_REFERENCE_PATH),
+            "turnaround_reference_file_hash": file_hash(
+                CORRECTED_TURNAROUND_REFERENCE_PATH
+            ),
+            "turnaround_reference_status": "CORRECTED_A2_ACTIVE",
+            "turnaround_semantic_correction": corrected_turnaround.get(
+                "semantic_correction"
+            ),
+            "superseded_turnaround_reference_path": str(
+                SUPERSEDED_TURNAROUND_REFERENCE_PATH
+            ),
+            "superseded_turnaround_reference_file_hash": file_hash(
+                SUPERSEDED_TURNAROUND_REFERENCE_PATH
+            ),
+        }
+    )
     audit = {
         "final_test_access_count": 0,
         "final_test_paths_read": [],
@@ -597,7 +643,7 @@ def load_authorities() -> Authorities:
         "joint_source_hash": file_hash(joint_source),
         "node_input_path": str(node_input),
         "node_input_hash": file_hash(node_input),
-        "reference_lineage": reference_audit,
+        "reference_lineage": reference_lineage,
         "reference_bundle_ids": dict(bundle.reference_ids),
     }
     return Authorities(

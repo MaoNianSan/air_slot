@@ -2,7 +2,7 @@
 
 - status: `DRAFT_NOT_ACTIVATED`
 - freeze_commit: `PENDING`
-- draft artifact hash: `sha256:ee64c5e5295eb85d46a94d2f3abcb76dcfb1e03826acb09710f15135f6ea4e4b`
+- draft artifact hash: `sha256:286c27fc858ec06721e84e13f311ce4c4e3b0e38b93d351807276b32c45b94d3`
 - activation owner: `PHASE_6_SCIENTIFIC_FREEZE` (not executed)
 - new Final Test executed this round: `NO` (`FINAL_TEST_ACCESS_COUNT=1` unchanged)
 
@@ -58,9 +58,9 @@ Rolling decision nodes are rebuilt from the rolling PRE environment; the publish
 - `P_service = N_pax * I[D_TO >= 180]`
 - `R_operating = D_TX`
 
-CU registry: `M2_DATA2_FORMAL_CU_V5` `sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef` (scientific `HUMAN_APPROVED_PENDING_FREEZE`, implementation `MATCH`).
+CU registry: `M2_DATA2_FORMAL_CU_V5` `sha256:fd3ccfa0c56ba64d840ab163b5a133a5b0d6a662249d89af38c7377f6f24b030` (scientific `HUMAN_APPROVED_PENDING_FREEZE`, implementation `MATCH`).
 
-Scale adoption: `FIVE_PRINCIPAL_MEDIANS_PLUS_TWO_EVENT_NORMALIZATIONS`; principal scale source `M2_DATA2_FORMAL_CU_V4`; event scale source `ASSUMPTION_EVENT_NORMALIZATION`.
+Scale adoption: `FIVE_PRINCIPAL_MEDIANS_PLUS_TWO_EVENT_NORMALIZATIONS`; principal scale source `M2_DATA2_FORMAL_CU_V4_PLUS_CORRECTED_F_CONTINUITY`; event scale source `ASSUMPTION_EVENT_NORMALIZATION`.
 
 ## 7. Priority signals
 
@@ -124,8 +124,8 @@ Solver: formal path `EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID`; `PYOMO_HIGHS` i
 - Train rotations: `2668531` (population gates `True` / median match `True`)
 - turnaround quantiles (minutes): `{'q10': 34.0, 'q20': 41.0, 'q30': 47.0}`
 - `U_max`: `45.0` minutes; action grid size `10`
-- Family A artifact hash: `sha256:cdbe922ac90aec67f8c917df04b008aa52906b03f3be77fe60e13f2bbb833775`
-- Family B artifact hash: `sha256:9072108a15acc0e04a2675e68c0695bd7106f582352c988e4352d0b7c3408adf`
+- Family A artifact hash: `sha256:92dd3769c4e7516a8203f2a174868a61ad2d1a33d2e16fcea1e0816de56c1e52`
+- Family B artifact hash: `sha256:e7706447a308d3c7b3c3338f23e752a85b31fb907a879e206f052c395e654467`
 
 ## 15. Rulings recorded this round
 
@@ -135,6 +135,8 @@ Solver: formal path `EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID`; `PYOMO_HIGHS` i
 - `R4`: P^C is the unique consequence-based priority authority; P^D is the parallel delay comparator; both share one Stage-I selector. (authority: instruction rev2 sections 5/7/8)
 - `R5`: common support m^CS >= 0.90 nominal belongs to M2; PRE owns evidence/data support only. (authority: instruction rev2 sections 5/12)
 - `R6`: m^CS sensitivity stays empty because the current manuscript body predefines no numeric sensitivity values. (authority: manuscript body; appendix grid is not authoritative)
+- `R7`: The superseded turnaround reference sha256:7c6ac016 was an active M2 node-reference input, not stale metadata. The V2 chain binds the corrected Data Gate A2 reference (sha256:aa241b90) and keeps the superseded artifact as provenance only. (authority: freeze-precheck audit 2026-09-19; registry M2_DATA2_FORMAL_CU_V5)
+- `R8`: The M2 node reference stays the airport-conditioned empirical Train median with global fallback; T^{turn,lb} = Q20 = 41 minutes stays a separate Stage-II lower-tail support. Substituting the scalar Q20 bound into the node reference was rejected because it would redefine F_continuity. (authority: DATA2_TURNAROUND_REFERENCE@1.0.0 statistic MEDIAN; instruction rev2 sections 7/11)
 
 ## 16. Open items
 
@@ -148,3 +150,16 @@ Solver: formal path `EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID`; `PYOMO_HIGHS` i
 `freeze_commit = PENDING`. Phase 5 records the pending
 value only; resolving it is a Phase 6 action and requires explicit human
 release.
+
+## 18. Turnaround reference freeze-precheck (2026-09-19)
+
+- audit finding: `SUPERSEDED_REFERENCE_WAS_ACTIVE_NOT_STALE_METADATA` (owner `M2_NODE_REFERENCE_BUNDLE`)
+- active node reference: `sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57` (`BTS_SIGNED_DELAY_SEMANTIC_CORRECTION`, global median 57.0 minutes, 349 cells)
+- superseded node reference: `sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c` -> `SUPERSEDED_PROVENANCE_ONLY` (global median 51.0 minutes)
+- reference delta over 349 shared cells: 332 changed, max 41.5 minutes, mean 4.16 minutes
+- node reference quantity: AIRPORT_LEVEL_POSITIVE_TRAIN_MEDIAN_TURNAROUND_REFERENCE (DATA2_TURNAROUND_REFERENCE@1.0.0, statistic MEDIAN, global fallback)
+- Stage-II quantity: `T^{turn,lb} = Q20(T^{turn} | Train)` nominal 41.0 minutes; same quantity: `False`
+- scalar substitution rejected: `True`
+- `F_continuity` Train scale corrected: 43.0 -> 44.0 minutes (positive n 186742, population 2668531), scale rule `Median_Train(q_k | q_k > 0)`
+- M1 retrained this round: `False`; new Final-Test access: `False`
+- this precheck leaves the draft `DRAFT_NOT_ACTIVATED` with `freeze_commit = PENDING`

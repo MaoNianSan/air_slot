@@ -28,12 +28,23 @@ V5_PATH = ROOT / "registries" / "m2_data2_formal_cu_v5.json"
 SUPERSESSION_PATH = ROOT / "registries" / "passenger_reference_supersession_v3.json"
 
 V4_PRINCIPAL_MEDIANS = {
-    "F_continuity": 43.0,
     "F_execution": 17.0,
     "F_propagation": 10.0,
     "P_time": 990.3555555555556,
     "R_operating": 5.0,
 }
+
+#: The freeze-precheck (2026-09-19) recomputed F_continuity from the corrected
+#: Data Gate A2 turnaround reference, so only these four V4 medians carry over
+#: unchanged. F_continuity is asserted against its correction artifact.
+SUPERSEDED_F_CONTINUITY_MEDIAN = 43.0
+F_CONTINUITY_CORRECTION_PATH = (
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "v2_freeze_precheck"
+    / "M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json"
+)
 
 
 def test_v5_registry_keeps_v4_principal_medians_and_event_unit_scales():
@@ -48,6 +59,21 @@ def test_v5_registry_keeps_v4_principal_medians_and_event_unit_scales():
         assert (
             registry.train_scale_artifact[component]["fit_period"] == "2019-H1"
         )
+    continuity = registry.train_scale_artifact["F_continuity"]
+    assert continuity["fit_period"] == "2019-H1"
+    assert continuity["superseded_scale"]["median"] == pytest.approx(
+        SUPERSEDED_F_CONTINUITY_MEDIAN
+    )
+    assert "v2_freeze_precheck" in continuity["path"]
+    if F_CONTINUITY_CORRECTION_PATH.is_file():
+        correction = json.loads(
+            F_CONTINUITY_CORRECTION_PATH.read_text(encoding="utf-8")
+        )
+        assert registry.scale("F_continuity") == pytest.approx(
+            correction["median"]
+        )
+        assert continuity["artifact_hash"] == correction["artifact_hash"]
+        assert continuity["population_rows"] == correction["population_rows"]
     for component in EVENT_COMPONENTS:
         assert registry.scale(component) == pytest.approx(1.0)
     assert registry.scientific_status == "HUMAN_APPROVED_PENDING_FREEZE"

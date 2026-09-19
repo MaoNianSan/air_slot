@@ -50,7 +50,7 @@
     "shared_selector": "M3 Stage-I selector"
   },
   "registry_id": "PASSENGER_REFERENCE_SUPERSESSION_V3",
-  "registry_payload_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+  "registry_payload_hash": "sha256:fd3ccfa0c56ba64d840ab163b5a133a5b0d6a662249d89af38c7377f6f24b030",
   "registry_payload_hash_note": "digest of the M2Data2FormalCuRegistry payload without registry_hash",
   "supersedes": [
     {
@@ -62,6 +62,36 @@
       "status": "SUPERSEDED_FOR_V2_CHAIN"
     }
   ],
+  "turnaround_reference_lineage": {
+    "active_artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+    "active_file_hash": "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f",
+    "active_global_median_minutes": 57.0,
+    "active_manifest_freeze_id": "sha256:bfe4f24e40d554e874faac1d987b0126b393a7dd091068b8fd203aba3e06ae7b",
+    "active_path": "artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
+    "active_reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+    "active_semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+    "f_continuity_train_scale": {
+      "active_artifact": "artifacts\\diagnostics\\v2_freeze_precheck\\M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json",
+      "active_median_minutes": 44.0,
+      "active_population_rows": 2668531,
+      "active_positive_n": 186742,
+      "scale_rule": "Median_Train(q_k | q_k > 0)",
+      "superseded_median_minutes": 43.0,
+      "superseded_positive_n": 206787
+    },
+    "m1_retrained": false,
+    "m2_reference_quantity": "airport-conditioned empirical Train median with global fallback (DATA2_TURNAROUND_REFERENCE@1.0.0, statistic MEDIAN)",
+    "new_final_test_access": false,
+    "scalar_q20_substitution": "REJECTED_WOULD_REDEFINE_F_CONTINUITY",
+    "stage2_quantity": "T^{turn,lb} = Q20(Train) = 41 minutes (separate Stage-II lower-tail support, never the node reference)",
+    "status": "CORRECTED_A2_REFERENCE_ACTIVE_SUPERSEDED_PROVENANCE_ONLY",
+    "superseded_artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+    "superseded_file_hash": "sha256:1b80ea32ae33bd383f68e233a4a0c49701ec426cd92fa512095a6fbdd889a440",
+    "superseded_global_median_minutes": 51.0,
+    "superseded_manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+    "superseded_path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
+    "superseded_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+  },
   "v2_chain_loaders": {
     "cu_registry": "model.M2.scientific_registry:load_active_v2_cu_registry",
     "passenger_design": "model.M2.scientific_registry:load_active_v2_passenger_consequence_design"

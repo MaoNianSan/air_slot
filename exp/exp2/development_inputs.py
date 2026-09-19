@@ -63,6 +63,13 @@ TAIL_MANIFEST = (
 PASSENGER_REF_ROOT = (
     PROJECT_ROOT / "artifacts" / "diagnostics" / "passenger_reference_freeze_v4"
 )
+TURNAROUND_A2_REFERENCE = (
+    PROJECT_ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "m1_v2_data_gate_a2"
+    / "DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json"
+)
 OUTPUT = PROJECT_ROOT / "artifacts" / "experiment" / "exp2" / "development"
 EXPECTED_SCENARIO_COUNT = 64
 EXPECTED_DEVELOPMENT_EPISODES = 128
@@ -84,9 +91,7 @@ def _read_json(path: Path) -> dict:
 
 def _reference_payloads() -> dict[str, dict]:
     return {
-        "turnaround": _read_json(
-            PREP_ROOT / "DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json"
-        ),
+        "turnaround": _read_json(TURNAROUND_A2_REFERENCE),
         "taxi": _read_json(
             PREP_ROOT / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json"
         ),

@@ -38,9 +38,11 @@ from model.common.identity import content_id
 from .common import (
     DEVELOPMENT_EPISODES,
     DEVELOPMENT_NODE_COUNT,
+    CORRECTED_TURNAROUND_REFERENCE_PATH,
     INSTRUCTION_PATH,
     PROJECT_ROOT,
     SCENARIO_COUNT,
+    SUPERSEDED_TURNAROUND_REFERENCE_PATH,
     Authorities,
     file_hash,
     read_json,
@@ -189,6 +191,140 @@ def _sensitivity_block(train_support: Mapping[str, Any]) -> dict[str, Any]:
         "materialized_u_max": train_support.get("u_max", {}),
     }
 
+def _reference_cells(payload: Mapping[str, Any]) -> dict[str, float]:
+    cells = payload.get("cells") or payload.get("airport_cells") or ()
+    resolved: dict[str, float] = {}
+    for cell in cells:
+        airport = str(cell.get("airport_id") or cell.get("airport"))
+        value = cell.get("value_minutes", cell.get("value"))
+        if value is None:
+            raise ValueError(
+                f"TURNAROUND_REFERENCE_CELL_WITHOUT_VALUE:{airport}"
+            )
+        resolved[airport] = float(value)
+    return resolved
+
+
+def _turnaround_reference_precheck(
+    *,
+    registry: Mapping[str, Any],
+    authorities: Authorities,
+    train_support: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Record the 2026-09-19 turnaround-reference freeze precheck.
+
+    The precheck found that the superseded reference ``sha256:7c6ac016...``
+    was not stale metadata: it resolved the M2 node-reference bundle at
+    decision time. The V2 chain now binds the corrected Data Gate A2
+    reference, and the Stage-II lower-tail support stays a separate object.
+    """
+    lineage = dict(authorities.audit.get("reference_lineage") or {})
+    active = dict(
+        (registry.get("reference_artifacts") or {}).get("turnaround") or {}
+    )
+    scale = dict(
+        (registry.get("train_scale_artifact") or {}).get("F_continuity") or {}
+    )
+    quantiles = dict(
+        (train_support.get("turnaround") or {}).get("quantile_minutes") or {}
+    )
+    corrected = read_json(CORRECTED_TURNAROUND_REFERENCE_PATH)
+    superseded = read_json(SUPERSEDED_TURNAROUND_REFERENCE_PATH)
+    corrected_cells = _reference_cells(corrected)
+    superseded_cells = _reference_cells(superseded)
+    shared = sorted(set(corrected_cells) & set(superseded_cells))
+    deltas = [
+        abs(corrected_cells[key] - superseded_cells[key]) for key in shared
+    ]
+    corrected_global = float(corrected.get("global_value_minutes", 0.0))
+    superseded_global = float(superseded.get("global_value_minutes", 0.0))
+    return {
+        "round": "FREEZE_PRECHECK_20260919",
+        "owner": "M2_NODE_REFERENCE_BUNDLE",
+        "audit_finding": "SUPERSEDED_REFERENCE_WAS_ACTIVE_NOT_STALE_METADATA",
+        "active_call_path": [
+            "exp.exp2.development_inputs._reference_payloads",
+            "model.M2.context.load_data2_reference_bundle",
+            "validation.v2_phase5.common.build_node_binding",
+            "model.M2.consequence_service.M2ConsequenceService",
+            "F_continuity = max(0, R_IB - turnaround_reference)",
+        ],
+        "active_reference": {
+            "reference_id": active.get("reference_id")
+            or lineage.get("turnaround_reference_id"),
+            "manifest_freeze_id": active.get("manifest_freeze_id")
+            or lineage.get("turnaround_reference_hash"),
+            "artifact_hash": active.get("artifact_hash")
+            or lineage.get("turnaround_artifact_hash"),
+            "path": active.get("path")
+            or lineage.get("turnaround_reference_path"),
+            "file_hash": lineage.get("turnaround_reference_file_hash"),
+            "global_value_minutes": corrected.get("global_value_minutes"),
+            "global_sample_count": corrected.get("global_sample_count"),
+            "cells_count": corrected.get("cells_count"),
+            "semantic_correction": active.get("semantic_correction")
+            or corrected.get("semantic_correction"),
+            "status": lineage.get(
+                "turnaround_reference_status", "CORRECTED_A2_ACTIVE"
+            ),
+        },
+        "superseded_reference": {
+            "reference_id": active.get("superseded_reference_id")
+            or lineage.get("legacy_turnaround_reference_id"),
+            "manifest_freeze_id": active.get("superseded_manifest_freeze_id")
+            or lineage.get("legacy_turnaround_reference_hash"),
+            "artifact_hash": lineage.get("legacy_turnaround_artifact_hash"),
+            "path": active.get("superseded_path")
+            or lineage.get("superseded_turnaround_reference_path"),
+            "file_hash": lineage.get(
+                "superseded_turnaround_reference_file_hash"
+            ),
+            "global_value_minutes": superseded.get("global_value_minutes"),
+            "global_sample_count": superseded.get("global_sample_count"),
+            "status": "SUPERSEDED_PROVENANCE_ONLY",
+        },
+        "reference_delta": {
+            "shared_cells": len(shared),
+            "changed_cells": sum(1 for delta in deltas if delta > 0.0),
+            "max_abs_delta_minutes": max(deltas) if deltas else None,
+            "mean_abs_delta_minutes": (
+                sum(deltas) / len(deltas) if deltas else None
+            ),
+            "global_median_delta_minutes": corrected_global - superseded_global,
+        },
+        "semantics": {
+            "node_reference_quantity": (
+                "AIRPORT_LEVEL_POSITIVE_TRAIN_MEDIAN_TURNAROUND_REFERENCE "
+                "(DATA2_TURNAROUND_REFERENCE@1.0.0, statistic MEDIAN, "
+                "global fallback)"
+            ),
+            "stage2_lower_tail_quantity": "T^{turn,lb} = Q20(T^{turn} | Train)",
+            "same_quantity": False,
+            "stage2_nominal_minutes": quantiles.get("q20"),
+            "scalar_substitution_rejected": True,
+            "scalar_substitution_reason": (
+                "Replacing the airport-conditioned median reference with the "
+                "scalar Q20 bound would redefine F_continuity = "
+                "max(0, R_IB - turnaround_reference) and therefore change "
+                "the frozen consequence definition."
+            ),
+        },
+        "f_continuity_train_scale_correction": {
+            "active_scale_minutes": scale.get("median"),
+            "active_positive_n": scale.get("positive_n"),
+            "active_population_rows": scale.get("population_rows"),
+            "active_artifact_path": scale.get("path"),
+            "active_artifact_hash": scale.get("artifact_hash"),
+            "superseded_scale_minutes": (
+                (scale.get("superseded_scale") or {}).get("median")
+            ),
+            "reason": "F_continuity reads the corrected node reference",
+            "scale_rule_unchanged": "Median_Train(q_k | q_k > 0)",
+        },
+        "m1_retrained_this_round": False,
+        "new_final_test_access_this_round": False,
+    }
+
 
 def build_freeze_draft(
     *,
@@ -335,6 +471,11 @@ def build_freeze_draft(
             "fit_year": registry.get("fit_year"),
             "fit_months": registry.get("fit_months"),
         },
+        "turnaround_reference_precheck": _turnaround_reference_precheck(
+            registry=registry,
+            authorities=authorities,
+            train_support=train_support,
+        ),
         "priority_signals": dict(PRIORITY_SIGNALS),
         "stage1_attention": {
             "capacity_rule": "K = ceil(q * N)",
@@ -499,6 +640,34 @@ def build_freeze_draft(
                     "body predefines no numeric sensitivity values."
                 ),
                 "authority": "manuscript body; appendix grid is not authoritative",
+            },
+            {
+                "id": "R7",
+                "ruling": (
+                    "The superseded turnaround reference sha256:7c6ac016 was an "
+                    "active M2 node-reference input, not stale metadata. The V2 "
+                    "chain binds the corrected Data Gate A2 reference "
+                    "(sha256:aa241b90) and keeps the superseded artifact as "
+                    "provenance only."
+                ),
+                "authority": (
+                    "freeze-precheck audit 2026-09-19; registry "
+                    "M2_DATA2_FORMAL_CU_V5"
+                ),
+            },
+            {
+                "id": "R8",
+                "ruling": (
+                    "The M2 node reference stays the airport-conditioned empirical "
+                    "Train median with global fallback; T^{turn,lb} = Q20 = 41 "
+                    "minutes stays a separate Stage-II lower-tail support. "
+                    "Substituting the scalar Q20 bound into the node reference "
+                    "was rejected because it would redefine F_continuity."
+                ),
+                "authority": (
+                    "DATA2_TURNAROUND_REFERENCE@1.0.0 statistic MEDIAN; "
+                    "instruction rev2 sections 7/11"
+                ),
             },
         ],
         "open_items": [
@@ -784,6 +953,46 @@ def render_freeze_summary(draft: Mapping[str, Any]) -> str:
         f"`freeze_commit = {draft['freeze_commit']}`. Phase 5 records the pending",
         "value only; resolving it is a Phase 6 action and requires explicit human",
         "release.",
+        "",
+        "## 18. Turnaround reference freeze-precheck (2026-09-19)",
+        "",
+    ]
+    precheck = draft["turnaround_reference_precheck"]
+    active_reference = precheck["active_reference"]
+    superseded_reference = precheck["superseded_reference"]
+    delta = precheck["reference_delta"]
+    semantics = precheck["semantics"]
+    scale_correction = precheck["f_continuity_train_scale_correction"]
+    mean_delta = delta["mean_abs_delta_minutes"]
+    mean_delta_text = f"{mean_delta:.2f}" if mean_delta is not None else "NA"
+    lines += [
+        f"- audit finding: `{precheck['audit_finding']}` (owner "
+        f"`{precheck['owner']}`)",
+        f"- active node reference: `{active_reference['reference_id']}` ("
+        f"`{active_reference['semantic_correction']}`, global median "
+        f"{active_reference['global_value_minutes']} minutes, "
+        f"{active_reference['cells_count']} cells)",
+        f"- superseded node reference: `{superseded_reference['reference_id']}` -> "
+        f"`{superseded_reference['status']}` (global median "
+        f"{superseded_reference['global_value_minutes']} minutes)",
+        f"- reference delta over {delta['shared_cells']} shared cells: "
+        f"{delta['changed_cells']} changed, max {delta['max_abs_delta_minutes']} "
+        f"minutes, mean {mean_delta_text} minutes",
+        f"- node reference quantity: {semantics['node_reference_quantity']}",
+        f"- Stage-II quantity: `{semantics['stage2_lower_tail_quantity']}` nominal "
+        f"{semantics['stage2_nominal_minutes']} minutes; same quantity: "
+        f"`{semantics['same_quantity']}`",
+        f"- scalar substitution rejected: `{semantics['scalar_substitution_rejected']}`",
+        f"- `F_continuity` Train scale corrected: "
+        f"{scale_correction['superseded_scale_minutes']} -> "
+        f"{scale_correction['active_scale_minutes']} minutes (positive n "
+        f"{scale_correction['active_positive_n']}, population "
+        f"{scale_correction['active_population_rows']}), scale rule "
+        f"`{scale_correction['scale_rule_unchanged']}`",
+        f"- M1 retrained this round: `{precheck['m1_retrained_this_round']}`; new "
+        f"Final-Test access: `{precheck['new_final_test_access_this_round']}`",
+        "- this precheck leaves the draft `DRAFT_NOT_ACTIVATED` with "
+        "`freeze_commit = PENDING`",
         "",
     ]
     return "\n".join(lines)

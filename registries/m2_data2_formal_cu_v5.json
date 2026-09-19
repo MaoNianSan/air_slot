@@ -110,7 +110,15 @@
     "event_scale_source": "ASSUMPTION_EVENT_NORMALIZATION",
     "final_test_access_count": 0,
     "previous_registry": "M2_DATA2_FORMAL_CU_V4",
-    "principal_scale_source": "M2_DATA2_FORMAL_CU_V4"
+    "principal_scale_source": "M2_DATA2_FORMAL_CU_V4_PLUS_CORRECTED_F_CONTINUITY",
+    "principal_scale_source_detail": {
+      "F_continuity": "artifacts\\diagnostics\\v2_freeze_precheck\\M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json",
+      "F_execution": "M2_DATA2_FORMAL_CU_V4",
+      "F_propagation": "M2_DATA2_FORMAL_CU_V4",
+      "P_time": "M2_DATA2_FORMAL_CU_V4",
+      "R_operating": "M2_DATA2_FORMAL_CU_V4",
+      "reason": "freeze-precheck 2026-09-19 replaced the F_continuity positive Train median computed with the superseded turnaround reference"
+    }
   },
   "paper_full_run": false,
   "passenger_manifest": "artifacts/diagnostics/passenger_reference_freeze_v4/PASSENGER_REFERENCE_MANIFEST_V2.json",
@@ -140,13 +148,17 @@
       "reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3"
     },
     "turnaround": {
-      "artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
-      "manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
-      "path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
-      "reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+      "artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+      "manifest_freeze_id": "sha256:bfe4f24e40d554e874faac1d987b0126b393a7dd091068b8fd203aba3e06ae7b",
+      "path": "artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
+      "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
+      "semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+      "superseded_manifest_freeze_id": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+      "superseded_path": "artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json",
+      "superseded_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
     }
   },
-  "registry_hash": "sha256:219c6d37a47080df1b6687cae682ca57bdd0233eb83f3bb746cdacd25cea1bef",
+  "registry_hash": "sha256:fd3ccfa0c56ba64d840ab163b5a133a5b0d6a662249d89af38c7377f6f24b030",
   "registry_id": "M2_DATA2_FORMAL_CU_V5",
   "schema_version": "M2_DATA2_FORMAL_CU_V5",
   "scientific_status": "HUMAN_APPROVED_PENDING_FREEZE",
@@ -164,14 +176,23 @@
   "train_scale_artifact": {
     "F_continuity": {
       "active_quantity_definition": "max(0, R_IB - turnaround_reference)",
-      "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+      "artifact_hash": "sha256:4f6851fae1a3f24f3742b5049bdb9465932cb2fcb190cefe396ab773be6c967f",
       "definition": "max(0, R_IB - turnaround_reference)",
       "fit_period": "2019-H1",
-      "median": 43.0,
+      "median": 44.0,
       "native_unit": "minutes",
-      "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "path": "artifacts\\diagnostics\\v2_freeze_precheck\\M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json",
       "population_rows": 2668531,
-      "positive_n": 206787,
+      "positive_n": 186742,
+      "superseded_scale": {
+        "artifact_hash": "sha256:21ec86f38b97aa6cc5b06581f1f4c36651d970fb73648799b6b7bf0260fde1ba",
+        "median": 43.0,
+        "path": "artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+        "population_rows": 2668531,
+        "positive_n": 206787,
+        "reason": "F_continuity_scale_was_computed_with_the_superseded_turnaround_reference_sha256_7c6ac016",
+        "scale_rule_unchanged": "Median_Train(q_k | q_k > 0)"
+      },
       "unit": "minutes"
     },
     "F_execution": {

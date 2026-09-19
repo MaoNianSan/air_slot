@@ -98,6 +98,9 @@ contracts; this map records only fields touched by the V2 decision chain.
    `F_execution 17.0`, `F_propagation 10.0`, `P_time 990.3555555555556`,
    `R_operating 5.0`; dropped from the empirical partition:
    `P_itinerary 9.882948210182091`, `P_service 104.88473684210527`.
+   Erratum (freeze-precheck 2026-09-19): the `F_continuity 43.0` value was
+   derived from the superseded turnaround reference; the V5 chain now uses the
+   corrected A2 recomputation `44.0`. See `docs/V2_FREEZE_PRECHECK_REPORT.md`.
 2. `registry M2_DATA2_FORMAL_CU_V2` semantics (five+two) — restored as the CU
    *partition*, but its stale medians (`11.0`, `1037820.0`) are **not** adopted;
    V5 uses the V4 recomputed medians for the five principal components.

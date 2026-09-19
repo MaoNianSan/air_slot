@@ -73,6 +73,11 @@ Phase 1 checkpoint: `a70c871 v2(phase1): decision contracts and PRE decision env
   (`F_continuity 43.0`, `F_execution 17.0`, `F_propagation 10.0`,
   `P_time 990.3555555555556`, `R_operating 5.0`); the stale V2 medians are not
   adopted and the V2 seven-median partition is not restored.
+  Erratum (freeze-precheck 2026-09-19): the `F_continuity 43.0` median was
+  computed from the superseded turnaround reference and is superseded by the
+  corrected A2 recomputation (`44.0`, positive n `186,742`); see
+  `docs/V2_FREEZE_PRECHECK_REPORT.md`. The other four medians are unaffected
+  because they never read the turnaround reference.
 - `p_itinerary_native` already carries `s_conn`, so `P_itinerary = N_pax · s_conn ·
   1(D_TO > 45)` needs no code change (ruling R1).
 - V4 registry file retained unchanged:
