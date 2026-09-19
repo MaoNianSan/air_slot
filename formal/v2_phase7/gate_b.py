@@ -26,6 +26,10 @@ from .access_audit import (
 from .errors import TypedBlocker
 from .materialization import _read_json
 from .release import validate_release_schema
+from .stage2_authority import (
+    production_solver_metadata,
+    validate_stage2_production_authority,
+)
 
 
 def execute_gate_b(
@@ -76,7 +80,8 @@ def execute_gate_b(
 
 PRODUCTION_EXECUTOR_CALLBACK = "formal.v2_phase7.gate_b:production_pipeline"
 PRODUCTION_EXECUTOR_MODULE = "formal.v2_phase7.executor.runner"
-GATE_B_PRE_OPEN_STATUS = "PRE_OPEN_AUTHORIZATION_READINESS"
+GATE_B_PRE_OPEN_STATUS = "PRE_OPEN_AUTHORIZATION_READY_ONLY"
+GATE_B_PRE_OPEN_STATUS = "PRE_OPEN_AUTHORIZATION_READY_ONLY"
 
 
 def production_pipeline(context: dict[str, Any]) -> dict[str, Any]:
@@ -96,11 +101,25 @@ def production_binding_record() -> dict[str, Any]:
 
     from .executor import stages as S
 
+    solver = production_solver_metadata()
+    authority = validate_stage2_production_authority()
+
     return {
         "status": "PRODUCTION_EXECUTOR_BOUND",
         "callback_path": PRODUCTION_EXECUTOR_CALLBACK,
         "executor_module": PRODUCTION_EXECUTOR_MODULE,
         "dag_stages": list(S.SCIENCE_DAG_STAGES),
+        "stage2_primary_solver": solver["stage2_primary_solver"],
+        "final_test_primary_solver": solver["final_test_primary_solver"],
+        "highs_role": solver["highs_role"],
+        "highs_required_for_production_rows": solver[
+            "highs_required_for_production_rows"
+        ],
+        "deterministic_tie_break": solver["deterministic_tie_break"],
+        "solver_status_semantics": solver["solver_status_semantics"],
+        "parity_backend": solver["parity_backend"],
+        "parity_scope": solver["parity_scope"],
+        "stage2_solver_authority": authority,
         "production_executor_bound": True,
         "production_executor_ready": False,
         "gate_b_authorized": False,

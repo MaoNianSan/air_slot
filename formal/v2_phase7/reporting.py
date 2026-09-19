@@ -7,7 +7,7 @@ from typing import Any
 from . import constants as C
 from .authority import (
     validate_instruction_copies,
-    validate_r2_authority,
+    validate_phase7_authority,
 )
 from .cohort import validate_cohort_reference
 from .dry_run import run_dry_run
@@ -22,10 +22,35 @@ def _gate_a_commit_value() -> str:
     return head
 
 
+def _access_boundary_disclosure(gate_b_release_present: bool) -> dict[str, Any]:
+    """Return the pre-open access disclosure, including the incidental audit read.
+
+    A repository-level ``rg`` audit necessarily traversed legacy Final-Test
+    paths. That incidental read is disclosed explicitly and is not used for
+    scientific computation, cohort selection, or a Phase-7 access increment.
+    """
+
+    return {
+        "q4_raw_reads": 0,
+        "repository_level_rg_incidental_audit_reads": 1,
+        "legacy_final_test_result_tree_incidental_audit_reads": 1,
+        "legacy_final_test_result_tree_scientific_reads": 0,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+        "legacy_final_test_result_tree_reads_used_for_selection": 0,
+        "phase7_scientific_access_increment": 0,
+        "final_test_data_reads": 0,
+        "legacy_final_test_writes": 0,
+        "allow_final_test_true_occurrences": 0,
+        "gate_b_release_present": gate_b_release_present,
+        "phase7_access_epoch_opened": False,
+    }
+
+
 def build_gate_a_preflight() -> dict[str, Any]:
     """Build the Gate-A preflight object without writing it."""
 
-    r2 = validate_r2_authority()
+    phase7_authority = validate_phase7_authority()
+    r2 = phase7_authority["freeze_r2"]
     cohort = validate_cohort_reference()
     instruction = validate_instruction_copies()
     dry_run = run_dry_run()
@@ -43,19 +68,16 @@ def build_gate_a_preflight() -> dict[str, Any]:
         "gate_a_commit": _gate_a_commit_value(),
         "authority": {
             "freeze_r2": r2,
+            "stage2_production_authority": phase7_authority[
+                "stage2_production_authority"
+            ],
             "instruction": instruction,
             "cohort": cohort,
         },
         "dry_run": dry_run,
-        "access_boundary": {
-            "q4_raw_reads": 0,
-            "old_final_test_result_tree_reads": 0,
-            "final_test_data_reads": 0,
-            "legacy_final_test_writes": 0,
-            "allow_final_test_true_occurrences": 0,
-            "gate_b_release_present": False,
-            "phase7_access_epoch_opened": False,
-        },
+        "access_boundary": _access_boundary_disclosure(
+            gate_b_release_present
+        ),
         "final_test_accounting": {
             "historical_access_total": C.HISTORICAL_FINAL_TEST_ACCESS_TOTAL,
             "current_freeze_run_increment": 0,
@@ -95,15 +117,9 @@ def _blocked_payload(code: str, detail: Any = None) -> dict[str, Any]:
         "gate": "PHASE_7_GATE_A",
         "gate_b_authorized": False,
         "blocker": {"code": code, "detail": detail},
-        "access_boundary": {
-            "q4_raw_reads": 0,
-            "old_final_test_result_tree_reads": 0,
-            "final_test_data_reads": 0,
-            "legacy_final_test_writes": 0,
-            "allow_final_test_true_occurrences": 0,
-            "gate_b_release_present": C.GATE_B_RELEASE_PATH.exists(),
-            "phase7_access_epoch_opened": False,
-        },
+        "access_boundary": _access_boundary_disclosure(
+            C.GATE_B_RELEASE_PATH.exists()
+        ),
         "final_test_accounting": {
             "historical_access_total": C.HISTORICAL_FINAL_TEST_ACCESS_TOTAL,
             "current_freeze_run_increment": 0,
@@ -115,6 +131,7 @@ def _blocked_payload(code: str, detail: Any = None) -> dict[str, Any]:
 
 
 __all__ = [
+    "_access_boundary_disclosure",
     "_blocked_payload",
     "_gate_a_commit_value",
     "build_gate_a_preflight",

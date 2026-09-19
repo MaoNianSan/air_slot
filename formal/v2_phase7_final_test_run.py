@@ -38,6 +38,7 @@ from formal.v2_phase7.executor.runner import (  # noqa: E402
 from formal.v2_phase7.materialization import *  # noqa: E402,F401,F403
 from formal.v2_phase7.release import *  # noqa: E402,F401,F403
 from formal.v2_phase7.reporting import *  # noqa: E402,F401,F403
+from formal.v2_phase7.stage2_authority import *  # noqa: E402,F401,F403
 
 for _name in _constants.__all__:
     globals()[_name] = getattr(_constants, _name)
@@ -69,7 +70,9 @@ __all__ = sorted(
         "materialize_canonical_nodes",
         "open_access_epoch",
         "production_binding_record",
+        "production_solver_metadata",
         "production_pipeline",
+        "require_enumeration_primary",
         "run_development_safe_dag",
         "run_dry_run",
         "run_executor",
@@ -78,7 +81,10 @@ __all__ = sorted(
         "run_sealed_pipeline",
         "validate_cohort_reference",
         "validate_instruction_copies",
+        "validate_phase7_authority",
         "validate_r2_authority",
+        "validate_solver_status_semantics",
+        "validate_stage2_production_authority",
         "validate_release_schema",
         "_read_json",
         "_access_epoch_id",

@@ -17,6 +17,10 @@ from . import constants as C
 from .errors import TypedBlocker, _require
 from .access_audit import open_access_epoch
 from .release import make_release, validate_release_schema
+from .stage2_authority import (
+    production_solver_metadata,
+    validate_stage2_production_authority,
+)
 
 
 def _dry_run_attention() -> dict[str, Any]:
@@ -152,6 +156,7 @@ def _dry_run_stage2_and_typed() -> dict[str, Any]:
     )
 
     registry = load_active_v2_cu_registry()
+    authority = production_solver_metadata()
     binding = ConsequenceReferenceBinding(
         reference_id="GATE_A_SYNTHETIC_NODE",
         turnaround_reference_minutes=C.NOMINAL_TURNAROUND_Q20,
@@ -342,6 +347,10 @@ def _dry_run_stage2_and_typed() -> dict[str, Any]:
         "status": "PASS",
         "formal_solver": parity.formal_solver,
         "parity_oracle": parity.parity_oracle,
+        "parity_fixture_scope": (
+            "REPRESENTATIVE_PRE_TURN_ONLY_NOT_PRODUCTION_ROW"
+        ),
+        **authority,
         "u_star_formal": parity.u_star_formal,
         "u_star_oracle": parity.u_star_oracle,
         "objective_absolute_error": parity.objective_absolute_error,
@@ -411,9 +420,14 @@ def run_dry_run() -> dict[str, Any]:
     return {
         "status": "PASS",
         "scope": "SYNTHETIC_AND_DEVELOPMENT_SAFE_FIXTURES_ONLY",
-        "final_test_data_read": False,
+        "final_test_data_scientific_read_during_dry_run": False,
         "q4_raw_read": False,
-        "legacy_final_test_result_tree_read": False,
+        "legacy_final_test_result_tree_scientific_read_during_dry_run": False,
+        "legacy_final_test_result_tree_incidental_repository_audit_reads": 1,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": False,
+        "legacy_final_test_result_tree_reads_used_for_selection": False,
+        "phase7_scientific_access_increment": 0,
+        "stage2_solver_authority": validate_stage2_production_authority(),
         "parity": parity,
         "attention": attention,
         "stage2": stage2,

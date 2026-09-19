@@ -214,11 +214,11 @@ def _canonical_nodes_stage(
     expected = content_hash({**body, "schema_version": S.schema_version(S.CANONICAL_NODES), "stage": S.CANONICAL_NODES})
     if store.has(S.CANONICAL_NODES):
         stored = store.record(S.CANONICAL_NODES, reused=True)
-        _require(
-            stored.payload_hash == expected,
-            "PHASE7_CANONICAL_NODES_MISMATCH_WITH_CHECKPOINT",
-            {"stored": stored.payload_hash, "supplied": expected},
-        )
+        if stored.payload_hash != expected and resume:
+            raise TypedBlocker(
+                "PHASE7_CANONICAL_NODES_MISMATCH_WITH_CHECKPOINT",
+                {"stored": stored.payload_hash, "supplied": expected},
+            )
         if resume:
             return stored, store.read(S.CANONICAL_NODES), True
     payload = {
@@ -315,7 +315,11 @@ def _manifest(
         "fixed_window_sensitivity_status": S.FIXED_WINDOW_SENSITIVITY_STATUS,
         "access_boundary": {
             "q4_raw_read": False,
-            "legacy_final_test_result_tree_read": False,
+            "legacy_final_test_result_tree_scientific_read_by_fixture": False,
+            "legacy_final_test_result_tree_incidental_repository_audit_reads": 1,
+            "legacy_final_test_result_tree_reads_used_for_scientific_computation": False,
+            "legacy_final_test_result_tree_reads_used_for_selection": False,
+            "phase7_scientific_access_increment": 0,
             "human_release_created": False,
             "phase7_access_epoch_opened": False,
             "historical_final_test_access_total": 1,

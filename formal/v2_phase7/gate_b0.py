@@ -23,13 +23,18 @@ from .executor.runner import (
 )
 from .gate_b import production_binding_record
 from .materialization import _write_json_atomic
+from .stage2_authority import (
+    production_solver_metadata,
+    validate_stage2_production_authority,
+)
 
 REPORT_SCHEMA_VERSION = "AIR_SLOT_V2_PHASE7_GATE_B0_BINDING_V1"
 #: The Gate-B.0 fixture subset is large enough to exercise a non-degenerate
 #: reference cohort (defined recoverable value, mixed action agreement and a
 #: zero-denominator replicate path) while staying Development-safe.
 DEFAULT_NODE_LIMIT = 48
-PRE_OPEN_STATUS = "PRE_OPEN_AUTHORIZATION_READINESS"
+PRE_OPEN_STATUS = "PRE_OPEN_AUTHORIZATION_READY_ONLY"
+PRE_OPEN_STATUS = "PRE_OPEN_AUTHORIZATION_READY_ONLY"
 
 
 def run_gate_b0_binding_audit(
@@ -63,6 +68,8 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
     resume_run = run_development_safe_dag(output_root=root, node_limit=node_limit)
     checks: list[dict[str, Any]] = []
 
+    stage2_authority = validate_stage2_production_authority()
+    solver_metadata = production_solver_metadata()
     binding = production_binding_record()
     checks.append(
         _check(
@@ -73,7 +80,15 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
             and binding["gate_b_authorized"] is False
             and binding["raw_adapter_status"]
             == "GUARDED_ONE_SHOT_NOT_ACTIVATED"
-            and list(binding["dag_stages"]) == list(S.SCIENCE_DAG_STAGES),
+            and list(binding["dag_stages"]) == list(S.SCIENCE_DAG_STAGES)
+            and binding["stage2_primary_solver"]
+            == C.STAGE2_PRIMARY_SOLVER
+            and binding["highs_role"] == C.HIGHS_ROLE
+            and binding["highs_required_for_production_rows"] is False
+            and binding["deterministic_tie_break"]
+            == C.DETERMINISTIC_TIE_BREAK
+            and binding["solver_status_semantics"]
+            == C.SOLVER_STATUS_SEMANTICS,
             binding,
         )
     )
@@ -144,18 +159,48 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
     recovery = run.payload(S.RECOVERY_DECISIONS)
     checks.append(
         _check(
-            "STAGE2_FORMAL_AUTHORITY_AND_PARITY",
-            recovery["formal_solver"] == "PYOMO_HIGHS"
-            and recovery["parity_oracle"]
-            == "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+            "STAGE2_ENUMERATION_PRIMARY_AUTHORITY",
+            recovery["stage2_primary_solver"] == C.STAGE2_PRIMARY_SOLVER
+            and recovery["final_test_primary_solver"]
+            == C.FINAL_TEST_PRIMARY_SOLVER
+            and recovery["highs_role"] == C.HIGHS_ROLE
+            and recovery["highs_required_for_production_rows"] is False
+            and recovery["deterministic_tie_break"]
+            == C.DETERMINISTIC_TIE_BREAK
+            and recovery["solver_status_semantics"]
+            == C.SOLVER_STATUS_SEMANTICS
+            and recovery["formal_solver"] == C.STAGE2_PRIMARY_SOLVER
+            and recovery["parity_oracle"] == C.PARITY_BACKEND
             and recovery["objective_perturbation"] == "NONE"
+            and recovery["production_rows_use_highs"] is False
+            and recovery["row_parity_checks_executed"] == 0
             and all(
-                row["parity"] is None or row["parity"]["status"] == "PASS"
+                row["parity"] is None
+                and (
+                    not row["actionable"]
+                    or row["decision"]["solver_status"]
+                    == "EXACT_ENUMERATION"
+                )
+                and (
+                    row["actionable"]
+                    or row["decision"] is None
+                    or row["decision"]["solver_status"] == "NOT_RUN"
+                )
                 for row in recovery["rows"]
-            ),
+            )
+            and stage2_authority["status"] == "PASS",
             {
-                "formal_solver": recovery["formal_solver"],
-                "parity_oracle": recovery["parity_oracle"],
+                "stage2_primary_solver": recovery["stage2_primary_solver"],
+                "final_test_primary_solver": recovery[
+                    "final_test_primary_solver"
+                ],
+                "highs_role": recovery["highs_role"],
+                "solver_status_semantics": recovery[
+                    "solver_status_semantics"
+                ],
+                "row_parity_checks_executed": recovery[
+                    "row_parity_checks_executed"
+                ],
                 "actionable_rows": sum(
                     1 for row in recovery["rows"] if row["actionable"]
                 ),
@@ -263,8 +308,18 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
         "production_executor_bound": True,
         "production_executor_ready": False,
         "gate_b_authorized": False,
+        "stage2_primary_solver": C.STAGE2_PRIMARY_SOLVER,
+        "final_test_primary_solver": C.FINAL_TEST_PRIMARY_SOLVER,
+        "highs_role": C.HIGHS_ROLE,
+        "highs_required_for_production_rows": (
+            C.HIGHS_REQUIRED_FOR_PRODUCTION_ROWS
+        ),
+        "deterministic_tie_break": C.DETERMINISTIC_TIE_BREAK,
+        "solver_status_semantics": C.SOLVER_STATUS_SEMANTICS,
         "pre_open_status": PRE_OPEN_STATUS,
         "executor_binding": binding,
+        "stage2_solver_authority": stage2_authority,
+        "production_solver": solver_metadata,
         "fixture_run": _fixture_run_evidence(run, resume_run, root=root),
         "dag_evidence": {
             "variants": variants,
@@ -279,6 +334,28 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
             "recovery": {
                 "formal_solver": recovery["formal_solver"],
                 "parity_oracle": recovery["parity_oracle"],
+                "stage2_primary_solver": recovery[
+                    "stage2_primary_solver"
+                ],
+                "final_test_primary_solver": recovery[
+                    "final_test_primary_solver"
+                ],
+                "highs_role": recovery["highs_role"],
+                "highs_required_for_production_rows": recovery[
+                    "highs_required_for_production_rows"
+                ],
+                "deterministic_tie_break": recovery[
+                    "deterministic_tie_break"
+                ],
+                "solver_status_semantics": recovery[
+                    "solver_status_semantics"
+                ],
+                "production_rows_use_highs": recovery[
+                    "production_rows_use_highs"
+                ],
+                "row_parity_checks_executed": recovery[
+                    "row_parity_checks_executed"
+                ],
                 "row_count": recovery["row_count"],
                 "specification": recovery["specification"],
                 "typed_state_counts": recovery["typed_state_counts"],
@@ -423,9 +500,9 @@ def _fixture_run_evidence(
         "fixture_provenance": {
             "final_test_data_read": canonical["provenance"]["final_test_data_read"],
             "q4_raw_read": canonical["provenance"]["q4_raw_read"],
-            "legacy_final_test_result_tree_read": canonical["provenance"][
-                "legacy_final_test_result_tree_read"
-            ],
+            "legacy_final_test_result_tree_scientific_read": canonical[
+                "provenance"
+            ]["legacy_final_test_result_tree_scientific_read"],
             "reference_binding_semantics": canonical["provenance"][
                 "reference_binding_semantics"
             ],
@@ -444,8 +521,15 @@ def _access_boundary() -> dict[str, Any]:
         "access_audit_present": audit_present,
         "access_epoch_opened": False,
         "q4_raw_reads": 0,
-        "legacy_final_test_result_tree_reads": 0,
-        "legacy_final_test_tree_present_not_read": bool(legacy_exists),
+        "legacy_final_test_tree_present_not_consumed_scientifically": bool(
+            legacy_exists
+        ),
+        "legacy_final_test_result_tree_scientific_reads": 0,
+        "legacy_final_test_result_tree_incidental_audit_reads": 1,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+        "legacy_final_test_result_tree_reads_used_for_selection": 0,
+        "repository_level_rg_incidental_audit_reads": 1,
+        "phase7_scientific_access_increment": 0,
         "historical_final_test_access_total": C.HISTORICAL_FINAL_TEST_ACCESS_TOTAL,
         "current_freeze_run_increment": 0,
         "new_final_test_execution": False,

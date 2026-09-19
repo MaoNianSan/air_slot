@@ -15,6 +15,7 @@ from .materialization import (
     _require_file_hash,
     _sha256_bytes,
 )
+from .stage2_authority import validate_stage2_production_authority
 
 
 def _instruction_sha256() -> str:
@@ -379,4 +380,21 @@ __all__ = [
     "_instruction_sha256",
     "validate_instruction_copies",
     "validate_r2_authority",
+    "validate_phase7_authority",
 ]
+
+
+def validate_phase7_authority() -> dict[str, Any]:
+    """Return immutable Freeze-R2 authority plus the active post-R2 overlay.
+
+    The historical R2 validator is intentionally left byte-for-byte and
+    semantics-for-semantics unchanged. The active Stage-II solver authority
+    is the separately published post-R2 reconciliation overlay, so callers
+    must consume both blocks instead of treating the historical HiGHS labels
+    in R2 as the current production contract.
+    """
+
+    return {
+        "freeze_r2": validate_r2_authority(),
+        "stage2_production_authority": validate_stage2_production_authority(),
+    }

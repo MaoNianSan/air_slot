@@ -6,11 +6,16 @@
     "historical_final_test_access_total": 1,
     "human_release_created": false,
     "human_release_present": false,
-    "legacy_final_test_result_tree_reads": 0,
-    "legacy_final_test_tree_present_not_read": true,
+    "legacy_final_test_result_tree_incidental_audit_reads": 1,
+    "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+    "legacy_final_test_result_tree_reads_used_for_selection": 0,
+    "legacy_final_test_result_tree_scientific_reads": 0,
+    "legacy_final_test_tree_present_not_consumed_scientifically": true,
     "new_final_test_execution": false,
+    "phase7_scientific_access_increment": 0,
     "phase_7_gate_b_entered": false,
     "q4_raw_reads": 0,
+    "repository_level_rg_incidental_audit_reads": 1,
     "status": "PASS"
   },
   "checks": [
@@ -30,15 +35,56 @@
           "BOOTSTRAP",
           "PAPER_VIEWS"
         ],
+        "deterministic_tie_break": "SMALLEST_U",
         "executor_module": "formal.v2_phase7.executor.runner",
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
         "fixed_window_sensitivity_status": "NOT_AVAILABLE_NOT_FROZEN",
         "gate_b_authorized": false,
+        "highs_required_for_production_rows": false,
+        "highs_role": "PARITY_BACKEND_ONLY",
         "historical_final_test_access_total": 1,
         "human_release_present": false,
-        "pre_open_status": "PRE_OPEN_AUTHORIZATION_READINESS",
+        "parity_backend": "PYOMO_HIGHS",
+        "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+        "pre_open_status": "PRE_OPEN_AUTHORIZATION_READY_ONLY",
         "production_executor_bound": true,
         "production_executor_ready": false,
         "raw_adapter_status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "stage2_solver_authority": {
+          "active_contract": {
+            "deterministic_tie_break": "SMALLEST_U",
+            "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+            "highs_required_for_production_rows": false,
+            "highs_role": "PARITY_BACKEND_ONLY",
+            "parity_backend": "PYOMO_HIGHS",
+            "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+            "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+            "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+            "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+          },
+          "historical_registry_labels": {
+            "formal_solver": "PYOMO_HIGHS",
+            "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+            "stage2_solver.formal_path": "PYOMO_HIGHS"
+          },
+          "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+          "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+          "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+          "scientific_definition_change": false,
+          "solver_status_contract": {
+            "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+            "member_values": [
+              "PYOMO_HIGHS",
+              "EXACT_ENUMERATION",
+              "NOT_RUN"
+            ],
+            "status": "PASS",
+            "termination_condition_is_separate": true
+          },
+          "status": "PASS"
+        },
         "status": "PRODUCTION_EXECUTOR_BOUND"
       },
       "name": "PRODUCTION_EXECUTOR_BOUND",
@@ -122,10 +168,13 @@
     {
       "detail": {
         "actionable_rows": 20,
-        "formal_solver": "PYOMO_HIGHS",
-        "parity_oracle": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "row_parity_checks_executed": 0,
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
       },
-      "name": "STAGE2_FORMAL_AUTHORITY_AND_PARITY",
+      "name": "STAGE2_ENUMERATION_PRIMARY_AUTHORITY",
       "status": "PASS"
     },
     {
@@ -213,11 +262,16 @@
         "historical_final_test_access_total": 1,
         "human_release_created": false,
         "human_release_present": false,
-        "legacy_final_test_result_tree_reads": 0,
-        "legacy_final_test_tree_present_not_read": true,
+        "legacy_final_test_result_tree_incidental_audit_reads": 1,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+        "legacy_final_test_result_tree_reads_used_for_selection": 0,
+        "legacy_final_test_result_tree_scientific_reads": 0,
+        "legacy_final_test_tree_present_not_consumed_scientifically": true,
         "new_final_test_execution": false,
+        "phase7_scientific_access_increment": 0,
         "phase_7_gate_b_entered": false,
         "q4_raw_reads": 0,
+        "repository_level_rg_incidental_audit_reads": 1,
         "status": "PASS"
       },
       "name": "ACCESS_BOUNDARY_PRE_OPEN",
@@ -306,9 +360,16 @@
       ]
     },
     "recovery": {
-      "formal_solver": "PYOMO_HIGHS",
-      "parity_oracle": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "deterministic_tie_break": "SMALLEST_U",
+      "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "formal_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "highs_required_for_production_rows": false,
+      "highs_role": "PARITY_BACKEND_ONLY",
+      "parity_oracle": "PYOMO_HIGHS",
+      "production_rows_use_highs": false,
       "row_count": 20,
+      "row_parity_checks_executed": 0,
+      "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
       "specification": {
         "action_floor_minutes": 5.0,
         "headroom_quantile": 0.9,
@@ -324,6 +385,7 @@
           "nominal": 45.0
         }
       },
+      "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
       "typed_state_counts": {}
     },
     "reference_cohort": {
@@ -369,6 +431,7 @@
       "reference_variant": "HISTORY_JOINT"
     }
   },
+  "deterministic_tie_break": "SMALLEST_U",
   "executor_binding": {
     "access_audit_present": false,
     "callback_path": "formal.v2_phase7.gate_b:production_pipeline",
@@ -384,22 +447,64 @@
       "BOOTSTRAP",
       "PAPER_VIEWS"
     ],
+    "deterministic_tie_break": "SMALLEST_U",
     "executor_module": "formal.v2_phase7.executor.runner",
+    "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
     "fixed_window_sensitivity_status": "NOT_AVAILABLE_NOT_FROZEN",
     "gate_b_authorized": false,
+    "highs_required_for_production_rows": false,
+    "highs_role": "PARITY_BACKEND_ONLY",
     "historical_final_test_access_total": 1,
     "human_release_present": false,
-    "pre_open_status": "PRE_OPEN_AUTHORIZATION_READINESS",
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+    "pre_open_status": "PRE_OPEN_AUTHORIZATION_READY_ONLY",
     "production_executor_bound": true,
     "production_executor_ready": false,
     "raw_adapter_status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
+    "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+    "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "stage2_solver_authority": {
+      "active_contract": {
+        "deterministic_tie_break": "SMALLEST_U",
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "highs_required_for_production_rows": false,
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "parity_backend": "PYOMO_HIGHS",
+        "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+      },
+      "historical_registry_labels": {
+        "formal_solver": "PYOMO_HIGHS",
+        "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+        "stage2_solver.formal_path": "PYOMO_HIGHS"
+      },
+      "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+      "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+      "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+      "scientific_definition_change": false,
+      "solver_status_contract": {
+        "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+        "member_values": [
+          "PYOMO_HIGHS",
+          "EXACT_ENUMERATION",
+          "NOT_RUN"
+        ],
+        "status": "PASS",
+        "termination_condition_is_separate": true
+      },
+      "status": "PASS"
+    },
     "status": "PRODUCTION_EXECUTOR_BOUND"
   },
+  "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
   "fixture_run": {
     "episode_count": 5,
     "fixture_provenance": {
       "final_test_data_read": false,
-      "legacy_final_test_result_tree_read": false,
+      "legacy_final_test_result_tree_scientific_read": false,
       "q4_raw_read": false,
       "reference_binding_semantics": "TURNAROUND_FROM_PRE_PUBLISHED_A2_REFERENCE; PAX_CONNECTION_DOWNSTREAM_SYNTHETIC_FIXTURE_CONSTANTS"
     },
@@ -460,19 +565,19 @@
         "schema_version": "AIR_SLOT_V2_PHASE7_BOOTSTRAP_V1"
       },
       "CANONICAL_NODES": {
-        "file_sha256": "sha256:1318259b03d404bd3d000fb62cea023a164f0fcd82b8f3279c1fb2522c607c12",
-        "payload_hash": "sha256:203c6bf9d101e7d594810434089e6b287cc6fa7843a487991dafd5a77308955a",
+        "file_sha256": "sha256:55a66eaa71b3b0c32afb74887cb32b05c56ac88ae0e687b3ed75cb73caf200f1",
+        "payload_hash": "sha256:115f0e2819f3db0c624fd96c4ff92f87d1dc79a2e975d593c2e20ed134d74d6a",
         "reused": false,
         "schema_version": "AIR_SLOT_V2_PHASE7_CANONICAL_NODES_V1"
       },
       "CONSEQUENCE_VARIANTS": {
-        "file_sha256": "sha256:1f74205e54cfa12052d8dcff205ea1f3c820b45c071111bf2ab59dc017fb04a4",
+        "file_sha256": "sha256:ecd7c64314d27672a83c4a4479646df824a884c59afc712f1d390f86f079e270",
         "payload_hash": "sha256:7e1e5e7b4d3c625621c5efb8da8fd5f3e922d806698cf7340db4569edccb1c8f",
         "reused": false,
         "schema_version": "AIR_SLOT_V2_PHASE7_CONSEQUENCE_VARIANTS_V1"
       },
       "M4_COMPARISONS": {
-        "file_sha256": "sha256:b0f1f255ae35bf0e1569202b970065ab94e60249525a8b01f7d52dc770c8ff99",
+        "file_sha256": "sha256:de34ef42c30d0544baedf73090a8686d357e8fc04c58a2d8c18039707324fcf3",
         "payload_hash": "sha256:ea62e4dde68533c7908c9ef4fbd6bc258c8b9b851220990991cf4f2075c52593",
         "reused": false,
         "schema_version": "AIR_SLOT_V2_PHASE7_M4_COMPARISONS_V1"
@@ -484,19 +589,19 @@
         "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1"
       },
       "RECOVERY_DECISIONS": {
-        "file_sha256": "sha256:2c87fda16db084216eb25d71eb10040ee753e7f2c8144431591338a187472f86",
-        "payload_hash": "sha256:16015798c98f2f8c68b9535acffd236b080b4eec0eb0a95f5682cd1183111854",
+        "file_sha256": "sha256:a2f7de179e5f7101c085ba74c2fab457294f214b79005d102c0b9ec676df9947",
+        "payload_hash": "sha256:f4cb9206dcd20d56db83f70cfccd40821eb6a437afdb4551895ccd01350291c3",
         "reused": false,
         "schema_version": "AIR_SLOT_V2_PHASE7_RECOVERY_DECISIONS_V1"
       },
       "REFERENCE_RECOVERY_COHORT": {
-        "file_sha256": "sha256:f8e56b4a62239e9aa850c2a8e989b8ef0271f5854b02563b50e0689ad041b0b9",
+        "file_sha256": "sha256:ed29fcff19abf17566c3ac5bcf80419055ce0f5405b06fe87b866bfc21475602",
         "payload_hash": "sha256:1503cdfa2371a7212d6f5e8393afbc3d482df594dca9221ac6442254d4a05d10",
         "reused": false,
         "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1"
       },
       "STATE_VARIANTS": {
-        "file_sha256": "sha256:40d0eb237da1abba2b38b39723201b83fe52dda66d67efd5959c81bd2f0b085a",
+        "file_sha256": "sha256:d390e3efaa5aed1b8b6f485add32d4cd89fc0b5d8d6166c739644e5d8719cdb3",
         "payload_hash": "sha256:35eeab297d79769aef28cb04f5b1a244030c9e46c4c373bdc084df8d4978e96d",
         "reused": false,
         "schema_version": "AIR_SLOT_V2_PHASE7_STATE_VARIANTS_V1"
@@ -505,6 +610,8 @@
   },
   "gate": "PHASE_7_GATE_B0_SCIENTIFIC_EXECUTOR_BINDING",
   "gate_b_authorized": false,
+  "highs_required_for_production_rows": false,
+  "highs_role": "PARITY_BACKEND_ONLY",
   "not_claimed": [
     "FORMAL_GATE_B_EXECUTION",
     "FINAL_TEST_RAW_MATERIALIZATION",
@@ -529,10 +636,55 @@
       "status": "OUT_OF_SCOPE_OF_BOUND_DAG_DECLARED_ONLY"
     }
   ],
-  "pre_open_status": "PRE_OPEN_AUTHORIZATION_READINESS",
+  "pre_open_status": "PRE_OPEN_AUTHORIZATION_READY_ONLY",
   "production_executor_bound": true,
   "production_executor_ready": false,
+  "production_solver": {
+    "deterministic_tie_break": "SMALLEST_U",
+    "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "highs_required_for_production_rows": false,
+    "highs_role": "PARITY_BACKEND_ONLY",
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+    "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+    "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+  },
   "schema_version": "AIR_SLOT_V2_PHASE7_GATE_B0_BINDING_V1",
+  "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+  "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+  "stage2_solver_authority": {
+    "active_contract": {
+      "deterministic_tie_break": "SMALLEST_U",
+      "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "highs_required_for_production_rows": false,
+      "highs_role": "PARITY_BACKEND_ONLY",
+      "parity_backend": "PYOMO_HIGHS",
+      "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+      "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+      "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+    },
+    "historical_registry_labels": {
+      "formal_solver": "PYOMO_HIGHS",
+      "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+      "stage2_solver.formal_path": "PYOMO_HIGHS"
+    },
+    "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+    "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+    "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+    "scientific_definition_change": false,
+    "solver_status_contract": {
+      "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+      "member_values": [
+        "PYOMO_HIGHS",
+        "EXACT_ENUMERATION",
+        "NOT_RUN"
+      ],
+      "status": "PASS",
+      "termination_condition_is_separate": true
+    },
+    "status": "PASS"
+  },
   "status": "PASS",
   "typed_state_evidence": {
     "dedicated_tests": [

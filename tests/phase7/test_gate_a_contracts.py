@@ -44,6 +44,33 @@ def test_r2_authority_and_instruction_copies_are_frozen() -> None:
     assert instruction["sha256"].startswith("sha256:")
 
 
+def test_active_stage2_authority_is_enumeration_primary() -> None:
+    active = runner.validate_stage2_production_authority()
+    assert active["status"] == "PASS"
+    contract = active["active_contract"]
+    assert contract["stage2_primary_solver"] == (
+        "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+    )
+    assert contract["final_test_primary_solver"] == (
+        "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+    )
+    assert contract["highs_role"] == "PARITY_BACKEND_ONLY"
+    assert contract["highs_required_for_production_rows"] is False
+    assert contract["deterministic_tie_break"] == "SMALLEST_U"
+    assert contract["solver_status_semantics"] == (
+        "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE"
+    )
+    assert active["historical_registry_labels"]["formal_solver"] == (
+        "PYOMO_HIGHS"
+    )
+    assert active["historical_registry_labels"]["semantics"] == (
+        "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT"
+    )
+    assert runner.validate_phase7_authority()[
+        "stage2_production_authority"
+    ] == active
+
+
 def test_r2_text_artifact_hashes_bind_canonical_lf_bytes() -> None:
     authority = runner.validate_r2_authority()
     compatibility = authority["text_artifact_hash_compatibility"]
@@ -80,9 +107,24 @@ def test_cohort_reference_is_reused_not_reselected() -> None:
 def test_gate_a_dry_run_preserves_typed_states_and_reference_invariants() -> None:
     result = runner.run_dry_run()
     assert result["status"] == "PASS"
-    assert result["final_test_data_read"] is False
+    assert result["final_test_data_scientific_read_during_dry_run"] is False
     assert result["q4_raw_read"] is False
-    assert result["legacy_final_test_result_tree_read"] is False
+    assert (
+        result[
+            "legacy_final_test_result_tree_scientific_read_during_dry_run"
+        ]
+        is False
+    )
+    assert result[
+        "legacy_final_test_result_tree_incidental_repository_audit_reads"
+    ] == 1
+    assert result[
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation"
+    ] is False
+    assert result[
+        "legacy_final_test_result_tree_reads_used_for_selection"
+    ] is False
+    assert result["phase7_scientific_access_increment"] == 0
     assert result["parity"]["status"] == "PASS"
     assert result["parity"]["formal_solver"] == "PYOMO_HIGHS"
     assert result["parity"]["parity_oracle"] == (
@@ -90,6 +132,20 @@ def test_gate_a_dry_run_preserves_typed_states_and_reference_invariants() -> Non
     )
     assert result["stage2"]["formal_solver"] == "PYOMO_HIGHS"
     assert result["stage2"]["parity_oracle"] == "EXACT_ENUMERATION"
+    assert result["stage2"]["stage2_primary_solver"] == (
+        runner.STAGE2_PRIMARY_SOLVER
+    )
+    assert result["stage2"]["final_test_primary_solver"] == (
+        runner.FINAL_TEST_PRIMARY_SOLVER
+    )
+    assert result["stage2"]["highs_role"] == runner.HIGHS_ROLE
+    assert result["stage2"]["highs_required_for_production_rows"] is False
+    assert result["stage2"]["deterministic_tie_break"] == (
+        runner.DETERMINISTIC_TIE_BREAK
+    )
+    assert result["stage2"]["solver_status_semantics"] == (
+        runner.SOLVER_STATUS_SEMANTICS
+    )
     assert result["stage2"]["u_star_formal"] == result["stage2"]["u_star_oracle"]
     assert result["stage2"]["objective_absolute_error"] <= 1e-6
     assert result["stage2"]["recoverable_value_absolute_error"] <= 1e-6
@@ -120,7 +176,12 @@ def test_run_gate_a_writes_ready_preflight_without_access(tmp_path: Path) -> Non
     )
     assert result["access_boundary"] == {
         "q4_raw_reads": 0,
-        "old_final_test_result_tree_reads": 0,
+        "repository_level_rg_incidental_audit_reads": 1,
+        "legacy_final_test_result_tree_incidental_audit_reads": 1,
+        "legacy_final_test_result_tree_scientific_reads": 0,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+        "legacy_final_test_result_tree_reads_used_for_selection": 0,
+        "phase7_scientific_access_increment": 0,
         "final_test_data_reads": 0,
         "legacy_final_test_writes": 0,
         "allow_final_test_true_occurrences": 0,

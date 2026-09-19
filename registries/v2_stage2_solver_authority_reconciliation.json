@@ -1,0 +1,45 @@
+{
+  "active_contract": {
+    "deterministic_tie_break": "SMALLEST_U",
+    "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "highs_required_for_production_rows": false,
+    "highs_role": "PARITY_BACKEND_ONLY",
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+    "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+    "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+  },
+  "artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+  "authority_source": "HUMAN_GATE_B0A_SOLVER_AUTHORITY_RULING_20260919",
+  "final_test_accounting": {
+    "current_freeze_run_increment": 0,
+    "historical_access_total": 1,
+    "new_final_test_execution": false,
+    "phase_7_entered": false
+  },
+  "historical_registry_labels": {
+    "formal_solver": "PYOMO_HIGHS",
+    "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+    "stage2_solver.formal_path": "PYOMO_HIGHS"
+  },
+  "parent_freeze": {
+    "registry_file_sha256": "sha256:15c1e8bf5ec5fbb5ee783595a124b1255b550d7d7bc96e34b2cd3df0a4e88e6f",
+    "registry_payload_sha256": "sha256:4e7d3bb454e83779e6cbb592d4cf9d6ffddc0edf3435a7bc3d2822e4523417f2",
+    "tag": "v2-scientific-freeze-r2",
+    "tag_object": "2dcca6c159dedde3803e63cb48bd8bfefff574cf",
+    "tag_target_commit": "3834eed33d4a2ea4bdba111fc29cca3529525a3a"
+  },
+  "schema_version": "V2_STAGE2_SOLVER_AUTHORITY_RECONCILIATION_V1",
+  "scientific_definition_change": false,
+  "solver_status_contract": {
+    "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+    "member_values": [
+      "PYOMO_HIGHS",
+      "EXACT_ENUMERATION",
+      "NOT_RUN"
+    ],
+    "termination_condition_is_separate": true
+  },
+  "status": "ACTIVE_POST_R2_STAGE2_SOLVER_AUTHORITY"
+}

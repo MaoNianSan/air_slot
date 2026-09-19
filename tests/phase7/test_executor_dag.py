@@ -8,6 +8,7 @@ from typing import Any
 
 import pytest
 
+from formal import v2_phase7_final_test_run as runner
 from formal.v2_phase7 import constants as C
 from formal.v2_phase7.executor import stages as S
 from formal.v2_phase7.executor.attention_decisions import (
@@ -64,7 +65,11 @@ def test_full_dag_computes_every_stage(dag: dict[str, Any]) -> None:
     assert run.manifest["atomic_results_before_views"] is True
     assert run.manifest["access_boundary"] == {
         "q4_raw_read": False,
-        "legacy_final_test_result_tree_read": False,
+        "legacy_final_test_result_tree_scientific_read_by_fixture": False,
+        "legacy_final_test_result_tree_incidental_repository_audit_reads": 1,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": False,
+        "legacy_final_test_result_tree_reads_used_for_selection": False,
+        "phase7_scientific_access_increment": 0,
         "human_release_created": False,
         "phase7_access_epoch_opened": False,
         "historical_final_test_access_total": 1,
@@ -88,9 +93,12 @@ def test_gate_b0_report_binds_executor_before_authorization(
     assert report["production_executor_bound"] is True
     assert report["production_executor_ready"] is False
     assert report["gate_b_authorized"] is False
-    assert report["pre_open_status"] == "PRE_OPEN_AUTHORIZATION_READINESS"
+    assert report["pre_open_status"] == "PRE_OPEN_AUTHORIZATION_READY_ONLY"
     assert report["access_boundary"]["current_freeze_run_increment"] == 0
     assert report["access_boundary"]["historical_final_test_access_total"] == 1
+    assert report["stage2_primary_solver"] == C.STAGE2_PRIMARY_SOLVER
+    assert report["highs_role"] == C.HIGHS_ROLE
+    assert report["solver_status_semantics"] == C.SOLVER_STATUS_SEMANTICS
     names = {check["name"] for check in report["checks"]}
     assert "PRODUCTION_EXECUTOR_BOUND" in names
     assert "TYPED_STATE_CONTRACTS" in names
@@ -181,11 +189,19 @@ def test_reference_cohort_follows_history_joint_shortlist(dag: dict[str, Any]) -
     assert cohort["shortlist_stage_counts"]
 
 
-def test_stage2_formal_authority_grid_and_parity(dag: dict[str, Any]) -> None:
+def test_stage2_enumeration_primary_authority(dag: dict[str, Any]) -> None:
     payload = dag["run"].payload(S.RECOVERY_DECISIONS)
-    assert payload["formal_solver"] == "PYOMO_HIGHS"
-    assert payload["parity_oracle"] == "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+    assert payload["stage2_primary_solver"] == C.STAGE2_PRIMARY_SOLVER
+    assert payload["final_test_primary_solver"] == C.FINAL_TEST_PRIMARY_SOLVER
+    assert payload["highs_role"] == C.HIGHS_ROLE
+    assert payload["highs_required_for_production_rows"] is False
+    assert payload["deterministic_tie_break"] == C.DETERMINISTIC_TIE_BREAK
+    assert payload["solver_status_semantics"] == C.SOLVER_STATUS_SEMANTICS
+    assert payload["formal_solver"] == C.STAGE2_PRIMARY_SOLVER
+    assert payload["parity_oracle"] == C.PARITY_BACKEND
     assert payload["objective_perturbation"] == "NONE"
+    assert payload["production_rows_use_highs"] is False
+    assert payload["row_parity_checks_executed"] == 0
     assert payload["invariants"]["status"] == "PASS"
     assert payload["specification"]["lambda"] == C.NOMINAL_LAMBDA
     assert payload["specification"]["u_max"] == C.NOMINAL_U_MAX
@@ -196,22 +212,69 @@ def test_stage2_formal_authority_grid_and_parity(dag: dict[str, Any]) -> None:
     }
     actionable = 0
     for row in payload["rows"]:
+        assert row["parity"] is None
         if not row["actionable"]:
+            if row["decision"] is not None:
+                assert row["decision"]["solver_status"] == "NOT_RUN"
             continue
         actionable += 1
         decision = row["decision"]
-        assert row["parity"]["status"] == "PASS"
-        assert row["parity"]["u_star_formal"] == row["parity"]["u_star_oracle"]
-        assert row["parity"]["objective_absolute_error"] <= C.M3_NUMERICAL_COMPARISON_TOLERANCE
-        assert (
-            row["parity"]["recoverable_value_absolute_error"]
-            <= C.M3_NUMERICAL_COMPARISON_TOLERANCE
-        )
+        assert decision["solver_status"] == "EXACT_ENUMERATION"
         assert decision["u_star"] in decision["action_grid"]
         assert decision["action_grid"][0] == 0.0
         assert decision["action_grid"][-1] == C.NOMINAL_U_MAX
         assert decision["recoverable_value"] >= -C.M3_NUMERICAL_COMPARISON_TOLERANCE
     assert actionable > 0
+
+
+def test_production_recovery_never_calls_highs(
+    dag: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import model.M3.solver as solver_module
+
+    def _explode(*args: Any, **kwargs: Any) -> Any:
+        raise AssertionError("production recovery must not call HiGHS")
+
+    monkeypatch.setattr(solver_module, "solve_stage2_with_highs", _explode)
+    monkeypatch.setattr(solver_module, "solve_with_highs", _explode)
+    run = dag["run"]
+    payload = build_recovery_decisions(
+        run.payload(S.CANONICAL_NODES),
+        run.payload(S.STATE_VARIANTS),
+        run.payload(S.REFERENCE_RECOVERY_COHORT),
+        services=load_frozen_services(),
+    )
+    assert payload["stage2_primary_solver"] == C.STAGE2_PRIMARY_SOLVER
+    assert payload["row_parity_checks_executed"] == 0
+    assert all(row["parity"] is None for row in payload["rows"])
+
+
+def test_forced_highs_primary_is_typed_blocker() -> None:
+    from formal.v2_phase7 import stage2_authority
+
+    with pytest.raises(runner.TypedBlocker) as error:
+        stage2_authority.require_enumeration_primary("PYOMO_HIGHS")
+    assert error.value.code == "PHASE7_STAGE2_PRIMARY_SOLVER_VIOLATION"
+
+
+def test_solver_status_is_backend_identity_not_termination_state() -> None:
+    from model.common.decision_contracts import SolverStatus
+    from formal.v2_phase7.stage2_authority import (
+        validate_solver_status_semantics,
+    )
+
+    contract = validate_solver_status_semantics()
+    assert contract["status"] == "PASS"
+    assert contract["field_role"] == (
+        "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY"
+    )
+    assert contract["member_values"] == [
+        "PYOMO_HIGHS",
+        "EXACT_ENUMERATION",
+        "NOT_RUN",
+    ]
+    assert contract["termination_condition_is_separate"] is True
+    assert not hasattr(SolverStatus, "OPTIMAL")
 
 
 def test_not_actionable_stage_keeps_typed_zero_action(dag: dict[str, Any]) -> None:

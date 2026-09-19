@@ -209,7 +209,7 @@ def build_development_safe_nodes(
         "m1_cache_manifest_path": str(M1_CACHE_MANIFEST_PATH),
         "final_test_data_read": False,
         "q4_raw_read": False,
-        "legacy_final_test_result_tree_read": False,
+        "legacy_final_test_result_tree_scientific_read": False,
         "reference_binding_semantics": (
             "TURNAROUND_FROM_PRE_PUBLISHED_A2_REFERENCE; "
             "PAX_CONNECTION_DOWNSTREAM_SYNTHETIC_FIXTURE_CONSTANTS"

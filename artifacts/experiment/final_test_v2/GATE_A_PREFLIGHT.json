@@ -3,10 +3,15 @@
     "allow_final_test_true_occurrences": 0,
     "final_test_data_reads": 0,
     "gate_b_release_present": false,
+    "legacy_final_test_result_tree_incidental_audit_reads": 1,
+    "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+    "legacy_final_test_result_tree_reads_used_for_selection": 0,
+    "legacy_final_test_result_tree_scientific_reads": 0,
     "legacy_final_test_writes": 0,
-    "old_final_test_result_tree_reads": 0,
     "phase7_access_epoch_opened": false,
-    "q4_raw_reads": 0
+    "phase7_scientific_access_increment": 0,
+    "q4_raw_reads": 0,
+    "repository_level_rg_incidental_audit_reads": 1
   },
   "authority": {
     "cohort": {
@@ -131,6 +136,39 @@
       "repo_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\docs\\AirSlot_V2_Phase7_Final_Test_OneShot_Instruction_R2_20260919.md",
       "sha256": "sha256:075da95f7726c10ddbab04a53cbbc5f3889cfbd982d189b53960842692704617",
       "status": "PASS"
+    },
+    "stage2_production_authority": {
+      "active_contract": {
+        "deterministic_tie_break": "SMALLEST_U",
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "highs_required_for_production_rows": false,
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "parity_backend": "PYOMO_HIGHS",
+        "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+      },
+      "historical_registry_labels": {
+        "formal_solver": "PYOMO_HIGHS",
+        "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+        "stage2_solver.formal_path": "PYOMO_HIGHS"
+      },
+      "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+      "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+      "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+      "scientific_definition_change": false,
+      "solver_status_contract": {
+        "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+        "member_values": [
+          "PYOMO_HIGHS",
+          "EXACT_ENUMERATION",
+          "NOT_RUN"
+        ],
+        "status": "PASS",
+        "termination_condition_is_separate": true
+      },
+      "status": "PASS"
     }
   },
   "dry_run": {
@@ -196,8 +234,11 @@
       ],
       "status": "PASS"
     },
-    "final_test_data_read": false,
-    "legacy_final_test_result_tree_read": false,
+    "final_test_data_scientific_read_during_dry_run": false,
+    "legacy_final_test_result_tree_incidental_repository_audit_reads": 1,
+    "legacy_final_test_result_tree_reads_used_for_scientific_computation": false,
+    "legacy_final_test_result_tree_reads_used_for_selection": false,
+    "legacy_final_test_result_tree_scientific_read_during_dry_run": false,
     "parity": {
       "all_enumeration_highs_parity_passed": true,
       "all_formal_oracle_parity_passed": true,
@@ -278,6 +319,7 @@
       },
       "validator_id": "V2_M3_ENUMERATION_HIGHS_PARITY"
     },
+    "phase7_scientific_access_increment": 0,
     "q4_raw_read": false,
     "release_schema": {
       "freeze_tag_object": "2dcca6c159dedde3803e63cb48bd8bfefff574cf",
@@ -337,10 +379,17 @@
           45.0
         ]
       },
+      "deterministic_tie_break": "SMALLEST_U",
+      "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
       "formal_solver": "PYOMO_HIGHS",
+      "highs_required_for_production_rows": false,
+      "highs_role": "PARITY_BACKEND_ONLY",
       "near_tie_candidate_count": 1,
       "objective_absolute_error": 0.0,
+      "parity_backend": "PYOMO_HIGHS",
+      "parity_fixture_scope": "REPRESENTATIVE_PRE_TURN_ONLY_NOT_PRODUCTION_ROW",
       "parity_oracle": "EXACT_ENUMERATION",
+      "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
       "recoverable_value_absolute_error": 0.0,
       "recoverable_value_formal": 0.7140914246594381,
       "reference_authority": {
@@ -354,6 +403,8 @@
         "L_att": 0.0,
         "L_rec": 0.0
       },
+      "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+      "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
       "status": "PASS",
       "tie_break_applied": false,
       "typed_states": {
@@ -363,6 +414,39 @@
       },
       "u_star_formal": 30.0,
       "u_star_oracle": 30.0
+    },
+    "stage2_solver_authority": {
+      "active_contract": {
+        "deterministic_tie_break": "SMALLEST_U",
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "highs_required_for_production_rows": false,
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "parity_backend": "PYOMO_HIGHS",
+        "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+      },
+      "historical_registry_labels": {
+        "formal_solver": "PYOMO_HIGHS",
+        "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+        "stage2_solver.formal_path": "PYOMO_HIGHS"
+      },
+      "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+      "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+      "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+      "scientific_definition_change": false,
+      "solver_status_contract": {
+        "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+        "member_values": [
+          "PYOMO_HIGHS",
+          "EXACT_ENUMERATION",
+          "NOT_RUN"
+        ],
+        "status": "PASS",
+        "termination_condition_is_separate": true
+      },
+      "status": "PASS"
     },
     "status": "PASS"
   },
@@ -374,7 +458,7 @@
     "phase_7_entered": false
   },
   "gate": "PHASE_7_GATE_A",
-  "gate_a_commit": "74f9acf8be8df326d9394e87da07186949e2ffe7",
+  "gate_a_commit": "e178c285fde91f1affc89156857d527a2856256b",
   "gate_b_authorized": false,
   "nominal_specification": {
     "history_capacity": 16,
