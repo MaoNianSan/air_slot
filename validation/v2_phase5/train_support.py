@@ -363,13 +363,35 @@ def materialize_train_support(
             "global_sample_count": reference_payload.get(
                 "global_sample_count"
             ),
-            "scope": "STAGE_II_TRAIN_TURNAROUND_LOWER_TAIL_ONLY",
+            "scope": "M2_NODE_REFERENCE_BUNDLE_FOR_F_CONTINUITY",
+            "statistic_id": reference_payload.get("statistic_id"),
+            "applicability_scope": reference_payload.get(
+                "applicability_scope"
+            ),
+            "cells_count": reference_payload.get("cells_count"),
+            "distinct_from_stage2_lower_bound": True,
             "superseded_uncorrected_reference": {
                 "path": str(SUPERSEDED_TURNAROUND_REFERENCE_ARTIFACT),
                 "artifact_hash": file_hash(
                     SUPERSEDED_TURNAROUND_REFERENCE_ARTIFACT
                 ),
             },
+        },
+        "stage2_turnaround_lower_bound": {
+            "scope": "M3_STAGE2_FEASIBILITY_ONLY",
+            "definition": "T^{turn,lb} = Q20(T^{turn} | Train)",
+            "nominal_quantile": TURNAROUND_QUANTILE_NOMINAL,
+            "value_minutes": turnaround_quantiles["q20"],
+            "sensitivity_quantiles": list(
+                TURNAROUND_QUANTILE_SENSITIVITY
+            ),
+            "sensitivity_minutes": {
+                "q10": turnaround_quantiles["q10"],
+                "q30": turnaround_quantiles["q30"],
+            },
+            "quantile_rule": QUANTILE_RULE,
+            "population_rows": len(turnaround),
+            "samples_artifact": str(samples_path),
         },
         "turnaround_count_authority": {
             "path": str(TURNAROUND_COUNT_AUTHORITY_ARTIFACT),

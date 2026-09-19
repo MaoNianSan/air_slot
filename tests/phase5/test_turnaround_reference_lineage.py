@@ -92,9 +92,21 @@ def test_m2_median_reference_and_stage2_q20_bound_are_separate_quantities():
     assert quantiles["q20"] == pytest.approx(41.0)
     assert summary["turnaround"]["nominal_quantile"] == 0.20
     assert quantiles["q20"] != pytest.approx(reference["global_value_minutes"])
-    assert (
-        summary["turnaround_reference"]["scope"]
-        == "STAGE_II_TRAIN_TURNAROUND_LOWER_TAIL_ONLY"
+    assert reference["scope"] == "M2_NODE_REFERENCE_BUNDLE_FOR_F_CONTINUITY"
+    assert reference["statistic_id"] == "MEDIAN"
+    assert reference["applicability_scope"] == "AIRPORT_GROUP"
+    assert reference["cells_count"] == 349
+    assert reference["distinct_from_stage2_lower_bound"] is True
+    stage2 = summary["stage2_turnaround_lower_bound"]
+    assert stage2["scope"] == "M3_STAGE2_FEASIBILITY_ONLY"
+    assert stage2["value_minutes"] == pytest.approx(41.0)
+    assert stage2["sensitivity_minutes"] == {
+        "q10": pytest.approx(34.0),
+        "q30": pytest.approx(47.0),
+    }
+    assert stage2["population_rows"] == summary["rotation_count"]
+    assert stage2["value_minutes"] != pytest.approx(
+        reference["global_value_minutes"]
     )
 
 

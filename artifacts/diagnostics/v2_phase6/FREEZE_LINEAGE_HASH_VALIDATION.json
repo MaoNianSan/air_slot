@@ -1,0 +1,468 @@
+{
+  "active_registry": {
+    "artifact_hash": "sha256:3828b17ac93cbaf81579e865faf32ed9547a1d540a65d3679ab4248a2bf17e2d",
+    "file_sha256": "sha256:bf6b3891079c947af192e3e23e2d80a2fbcfba3d082e2833ac574bb9932347bc",
+    "path": "D:\\research\\air_slot\\code\\explore\\registries\\v2_scientific_freeze.json",
+    "relative_path": "registries/v2_scientific_freeze.json"
+  },
+  "baseline_commit": "2d74af9ee5a1cb5db59e0e94fac83f2aa608db01",
+  "baseline_tree": "4bb3257666421c46e18bd17703c11d2a78d347d2",
+  "checks": {
+    "activation_tag": {
+      "detail": "v2-scientific-freeze",
+      "status": "PASS"
+    },
+    "activation_tag_target_placeholder": {
+      "detail": "RESOLVED_AFTER_COMMIT",
+      "status": "PASS"
+    },
+    "active_not_a_formal_freeze_false": {
+      "detail": false,
+      "status": "PASS"
+    },
+    "active_registry_payload_hash": {
+      "detail": "sha256:3828b17ac93cbaf81579e865faf32ed9547a1d540a65d3679ab4248a2bf17e2d",
+      "status": "PASS"
+    },
+    "active_status": {
+      "detail": "SCIENTIFIC_FREEZE_ACTIVE",
+      "status": "PASS"
+    },
+    "cu_registry_byte_identity": {
+      "detail": {
+        "file_sha256": "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1",
+        "registry_id": "M2_DATA2_FORMAL_CU_V5",
+        "scientific_status": "HUMAN_APPROVED_PENDING_FREEZE"
+      },
+      "status": "PASS"
+    },
+    "draft_unchanged": {
+      "detail": {
+        "file_sha256": "sha256:416b6da3d733140a1c5d201a40f385f3dd68ad063e17e30bfc134e76e2674740",
+        "freeze_commit": "PENDING",
+        "status": "DRAFT_NOT_ACTIVATED"
+      },
+      "status": "PASS"
+    },
+    "f_continuity_scale": {
+      "detail": {
+        "artifact_hash": "sha256:4f6851fae1a3f24f3742b5049bdb9465932cb2fcb190cefe396ab773be6c967f",
+        "median": 44.0,
+        "population_rows": 2668531,
+        "positive_n": 186742,
+        "scale_rule": "Median_Train(q_k | q_k > 0)"
+      },
+      "status": "PASS"
+    },
+    "final_test_accounting": {
+      "detail": {
+        "current_freeze_run_increment": 0,
+        "final_test_path": "artifacts/experiment/final_test",
+        "final_test_path_touched": false,
+        "historical_access_total": 1,
+        "new_final_test_execution": false,
+        "phase_7_entered": false,
+        "sealed": true
+      },
+      "status": "PASS"
+    },
+    "freeze_commit_semantics": {
+      "detail": "PRE_FREEZE_SCIENTIFIC_BASELINE_NOT_ACTIVATION_COMMIT",
+      "status": "PASS"
+    },
+    "m2_reference_identity": {
+      "detail": {
+        "artifact_hash": "sha256:eff3da4508af5a597516db61e5f8ed45cb84b36c0a06698b43232c5cc76eed41",
+        "file_sha256": "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f",
+        "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57"
+      },
+      "status": "PASS"
+    },
+    "m2_reference_statistic": {
+      "detail": {
+        "applicability_scope": "AIRPORT_GROUP",
+        "global_value_minutes": 57.0,
+        "statistic_id": "MEDIAN"
+      },
+      "status": "PASS"
+    },
+    "m2_scope_corrected": {
+      "detail": "M2_NODE_REFERENCE_BUNDLE_FOR_F_CONTINUITY",
+      "status": "PASS"
+    },
+    "m3_q20_support": {
+      "detail": {
+        "definition": "T^{turn,lb} = Q20(T^{turn} | Train)",
+        "nominal_quantile": 0.2,
+        "population_rows": 2668531,
+        "quantile_rule": "LINEAR_INTERPOLATION_SORTED_TRAIN",
+        "samples_artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SAMPLES.npz",
+        "scope": "M3_STAGE2_FEASIBILITY_ONLY",
+        "sensitivity_minutes": {
+          "q10": 34.0,
+          "q30": 47.0
+        },
+        "sensitivity_quantiles": [
+          0.1,
+          0.3
+        ],
+        "value_minutes": 41.0
+      },
+      "status": "PASS"
+    },
+    "metadata_only_correction": {
+      "detail": {
+        "allowed_differences": [
+          {
+            "kind": "SUMMARY_ARTIFACT_HASH",
+            "new": "sha256:769b393f945b3a71dfd20a5b997f7f5c7d0b627d6fe035fad5b49e52121b73d4",
+            "old": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
+            "path": "artifact_hash"
+          },
+          {
+            "kind": "ADDED_STAGE2_LOWER_BOUND_BLOCK",
+            "new": {
+              "definition": "T^{turn,lb} = Q20(T^{turn} | Train)",
+              "nominal_quantile": 0.2,
+              "population_rows": 2668531,
+              "quantile_rule": "LINEAR_INTERPOLATION_SORTED_TRAIN",
+              "samples_artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SAMPLES.npz",
+              "scope": "M3_STAGE2_FEASIBILITY_ONLY",
+              "sensitivity_minutes": {
+                "q10": 34.0,
+                "q30": 47.0
+              },
+              "sensitivity_quantiles": [
+                0.1,
+                0.3
+              ],
+              "value_minutes": 41.0
+            },
+            "old": "<missing>",
+            "path": "stage2_turnaround_lower_bound"
+          },
+          {
+            "kind": "DEPENDENT_REGISTRY_FILE_HASH",
+            "new": "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1",
+            "old": "sha256:f7174f3a490b5c1ce2f77a181fa4abd99f43e3dab623551255d377945e4e5a74",
+            "path": "turnaround_count_authority.artifact_hash"
+          },
+          {
+            "kind": "PROVENANCE_SCOPE_METADATA",
+            "new": "AIRPORT_GROUP",
+            "old": "<missing>",
+            "path": "turnaround_reference.applicability_scope"
+          },
+          {
+            "kind": "PROVENANCE_SCOPE_METADATA",
+            "new": 349,
+            "old": "<missing>",
+            "path": "turnaround_reference.cells_count"
+          },
+          {
+            "kind": "PROVENANCE_SCOPE_METADATA",
+            "new": true,
+            "old": "<missing>",
+            "path": "turnaround_reference.distinct_from_stage2_lower_bound"
+          },
+          {
+            "kind": "PROVENANCE_SCOPE_METADATA",
+            "new": "M2_NODE_REFERENCE_BUNDLE_FOR_F_CONTINUITY",
+            "old": "STAGE_II_TRAIN_TURNAROUND_LOWER_TAIL_ONLY",
+            "path": "turnaround_reference.scope"
+          },
+          {
+            "kind": "PROVENANCE_SCOPE_METADATA",
+            "new": "MEDIAN",
+            "old": "<missing>",
+            "path": "turnaround_reference.statistic_id"
+          }
+        ],
+        "baseline_file_sha256": "sha256:1add20bf93005c3e6e872d580266993624ee8e3b958f154996eff274924a112b",
+        "baseline_payload_artifact_hash": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
+        "corrected_file_sha256": "sha256:35e570a5b9f718d44f9b60d2c0525d53c756529a590865f511a7aef1be5436bc",
+        "corrected_payload_artifact_hash": "sha256:769b393f945b3a71dfd20a5b997f7f5c7d0b627d6fe035fad5b49e52121b73d4",
+        "failures": [],
+        "numeric_payload_unchanged": true,
+        "preserved_all_required_fields": true,
+        "preserved_fields": {
+          "action_grid": true,
+          "artifact_scope": true,
+          "episode_count": true,
+          "excluded_rotations": true,
+          "factual_headroom": true,
+          "final_test_access_count": true,
+          "no_final_test_family_branch": true,
+          "population_gates": true,
+          "quantile_rule": true,
+          "rotation_count": true,
+          "samples_artifact": true,
+          "schema_version": true,
+          "source_hashes": true,
+          "source_paths": true,
+          "stage1_capacity": true,
+          "stage2_effort": true,
+          "status": true,
+          "train_partition": true,
+          "turnaround.median_minutes": true,
+          "turnaround.nominal_quantile": true,
+          "turnaround.quantile_minutes": true,
+          "turnaround.sensitivity_quantiles": true,
+          "turnaround_count_authority.field": true,
+          "turnaround_count_authority.path": true,
+          "turnaround_count_authority.population_rows": true,
+          "turnaround_count_authority.role": true,
+          "turnaround_reference.artifact_hash": true,
+          "turnaround_reference.global_sample_count": true,
+          "turnaround_reference.global_value_minutes": true,
+          "turnaround_reference.path": true,
+          "turnaround_reference.reference_id": true,
+          "turnaround_reference.semantic_correction": true,
+          "turnaround_reference.superseded_uncorrected_reference": true,
+          "turnaround_reference_artifact": true,
+          "turnaround_reference_source_hash": true,
+          "u_max": true
+        },
+        "sample_arrays": {
+          "arrays": {
+            "headroom_nominal_minutes": {
+              "baseline_array_sha256": "sha256:599ac3c41c9e85a37d6f3a5b256d715c1f11c7e6972e679b150281777abb83d0",
+              "current_array_sha256": "sha256:599ac3c41c9e85a37d6f3a5b256d715c1f11c7e6972e679b150281777abb83d0",
+              "dtype": "int32",
+              "dtype_equal": true,
+              "exact_equal": true,
+              "shape": [
+                2668531
+              ],
+              "shape_equal": true,
+              "sorted_membership_equal": true,
+              "unique_membership_equal": true
+            },
+            "turnaround_minutes": {
+              "baseline_array_sha256": "sha256:8901acd4051267ad4ec244403e72e55e34ceb4e9dc95ca6dfb3cb4ac84cf8806",
+              "current_array_sha256": "sha256:8901acd4051267ad4ec244403e72e55e34ceb4e9dc95ca6dfb3cb4ac84cf8806",
+              "dtype": "int32",
+              "dtype_equal": true,
+              "exact_equal": true,
+              "shape": [
+                2668531
+              ],
+              "shape_equal": true,
+              "sorted_membership_equal": true,
+              "unique_membership_equal": true
+            }
+          },
+          "baseline_file_sha256": "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5",
+          "current_file_sha256": "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5",
+          "failures": [],
+          "file_bytes_equal": true,
+          "status": "PASS"
+        },
+        "sample_membership_unchanged": true,
+        "scientific_statistics_unchanged": true,
+        "status": "PASS",
+        "unexpected_differences": []
+      },
+      "status": "PASS"
+    },
+    "non_merge_flags": {
+      "detail": {
+        "41_is_not_the_m2_node_reference": true,
+        "57_is_not_the_stage2_lower_bound": true,
+        "merge_forbidden": true
+      },
+      "status": "PASS"
+    },
+    "pre_freeze_baseline_commit": {
+      "detail": "2d74af9ee5a1cb5db59e0e94fac83f2aa608db01",
+      "status": "PASS"
+    },
+    "pre_freeze_baseline_tree": {
+      "detail": "4bb3257666421c46e18bd17703c11d2a78d347d2",
+      "status": "PASS"
+    },
+    "supersession_byte_identity": {
+      "detail": {
+        "activation_status": "DRAFT_NOT_ACTIVATED",
+        "file_sha256": "sha256:6d7a49d14d76484703b312ea8fe851679476bb5f135cd854d9c14dc52b8d80b1"
+      },
+      "status": "PASS"
+    },
+    "train_summary_hash": {
+      "detail": {
+        "samples_file_sha256": "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5",
+        "summary_artifact_hash": "sha256:769b393f945b3a71dfd20a5b997f7f5c7d0b627d6fe035fad5b49e52121b73d4",
+        "summary_file_sha256": "sha256:35e570a5b9f718d44f9b60d2c0525d53c756529a590865f511a7aef1be5436bc"
+      },
+      "status": "PASS"
+    }
+  },
+  "current_freeze_run_increment": 0,
+  "failures": [],
+  "final_test_access_count": 1,
+  "final_test_accounting": {
+    "current_freeze_run_increment": 0,
+    "final_test_path_touched": false,
+    "historical_access_total": 1,
+    "new_final_test_execution": false,
+    "phase_7_entered": false
+  },
+  "metadata_diff": {
+    "allowed_differences": [
+      {
+        "kind": "SUMMARY_ARTIFACT_HASH",
+        "new": "sha256:769b393f945b3a71dfd20a5b997f7f5c7d0b627d6fe035fad5b49e52121b73d4",
+        "old": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
+        "path": "artifact_hash"
+      },
+      {
+        "kind": "ADDED_STAGE2_LOWER_BOUND_BLOCK",
+        "new": {
+          "definition": "T^{turn,lb} = Q20(T^{turn} | Train)",
+          "nominal_quantile": 0.2,
+          "population_rows": 2668531,
+          "quantile_rule": "LINEAR_INTERPOLATION_SORTED_TRAIN",
+          "samples_artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SAMPLES.npz",
+          "scope": "M3_STAGE2_FEASIBILITY_ONLY",
+          "sensitivity_minutes": {
+            "q10": 34.0,
+            "q30": 47.0
+          },
+          "sensitivity_quantiles": [
+            0.1,
+            0.3
+          ],
+          "value_minutes": 41.0
+        },
+        "old": "<missing>",
+        "path": "stage2_turnaround_lower_bound"
+      },
+      {
+        "kind": "DEPENDENT_REGISTRY_FILE_HASH",
+        "new": "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1",
+        "old": "sha256:f7174f3a490b5c1ce2f77a181fa4abd99f43e3dab623551255d377945e4e5a74",
+        "path": "turnaround_count_authority.artifact_hash"
+      },
+      {
+        "kind": "PROVENANCE_SCOPE_METADATA",
+        "new": "AIRPORT_GROUP",
+        "old": "<missing>",
+        "path": "turnaround_reference.applicability_scope"
+      },
+      {
+        "kind": "PROVENANCE_SCOPE_METADATA",
+        "new": 349,
+        "old": "<missing>",
+        "path": "turnaround_reference.cells_count"
+      },
+      {
+        "kind": "PROVENANCE_SCOPE_METADATA",
+        "new": true,
+        "old": "<missing>",
+        "path": "turnaround_reference.distinct_from_stage2_lower_bound"
+      },
+      {
+        "kind": "PROVENANCE_SCOPE_METADATA",
+        "new": "M2_NODE_REFERENCE_BUNDLE_FOR_F_CONTINUITY",
+        "old": "STAGE_II_TRAIN_TURNAROUND_LOWER_TAIL_ONLY",
+        "path": "turnaround_reference.scope"
+      },
+      {
+        "kind": "PROVENANCE_SCOPE_METADATA",
+        "new": "MEDIAN",
+        "old": "<missing>",
+        "path": "turnaround_reference.statistic_id"
+      }
+    ],
+    "baseline_file_sha256": "sha256:1add20bf93005c3e6e872d580266993624ee8e3b958f154996eff274924a112b",
+    "baseline_payload_artifact_hash": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
+    "corrected_file_sha256": "sha256:35e570a5b9f718d44f9b60d2c0525d53c756529a590865f511a7aef1be5436bc",
+    "corrected_payload_artifact_hash": "sha256:769b393f945b3a71dfd20a5b997f7f5c7d0b627d6fe035fad5b49e52121b73d4",
+    "failures": [],
+    "numeric_payload_unchanged": true,
+    "preserved_all_required_fields": true,
+    "preserved_fields": {
+      "action_grid": true,
+      "artifact_scope": true,
+      "episode_count": true,
+      "excluded_rotations": true,
+      "factual_headroom": true,
+      "final_test_access_count": true,
+      "no_final_test_family_branch": true,
+      "population_gates": true,
+      "quantile_rule": true,
+      "rotation_count": true,
+      "samples_artifact": true,
+      "schema_version": true,
+      "source_hashes": true,
+      "source_paths": true,
+      "stage1_capacity": true,
+      "stage2_effort": true,
+      "status": true,
+      "train_partition": true,
+      "turnaround.median_minutes": true,
+      "turnaround.nominal_quantile": true,
+      "turnaround.quantile_minutes": true,
+      "turnaround.sensitivity_quantiles": true,
+      "turnaround_count_authority.field": true,
+      "turnaround_count_authority.path": true,
+      "turnaround_count_authority.population_rows": true,
+      "turnaround_count_authority.role": true,
+      "turnaround_reference.artifact_hash": true,
+      "turnaround_reference.global_sample_count": true,
+      "turnaround_reference.global_value_minutes": true,
+      "turnaround_reference.path": true,
+      "turnaround_reference.reference_id": true,
+      "turnaround_reference.semantic_correction": true,
+      "turnaround_reference.superseded_uncorrected_reference": true,
+      "turnaround_reference_artifact": true,
+      "turnaround_reference_source_hash": true,
+      "u_max": true
+    },
+    "sample_arrays": {
+      "arrays": {
+        "headroom_nominal_minutes": {
+          "baseline_array_sha256": "sha256:599ac3c41c9e85a37d6f3a5b256d715c1f11c7e6972e679b150281777abb83d0",
+          "current_array_sha256": "sha256:599ac3c41c9e85a37d6f3a5b256d715c1f11c7e6972e679b150281777abb83d0",
+          "dtype": "int32",
+          "dtype_equal": true,
+          "exact_equal": true,
+          "shape": [
+            2668531
+          ],
+          "shape_equal": true,
+          "sorted_membership_equal": true,
+          "unique_membership_equal": true
+        },
+        "turnaround_minutes": {
+          "baseline_array_sha256": "sha256:8901acd4051267ad4ec244403e72e55e34ceb4e9dc95ca6dfb3cb4ac84cf8806",
+          "current_array_sha256": "sha256:8901acd4051267ad4ec244403e72e55e34ceb4e9dc95ca6dfb3cb4ac84cf8806",
+          "dtype": "int32",
+          "dtype_equal": true,
+          "exact_equal": true,
+          "shape": [
+            2668531
+          ],
+          "shape_equal": true,
+          "sorted_membership_equal": true,
+          "unique_membership_equal": true
+        }
+      },
+      "baseline_file_sha256": "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5",
+      "current_file_sha256": "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5",
+      "failures": [],
+      "file_bytes_equal": true,
+      "status": "PASS"
+    },
+    "sample_membership_unchanged": true,
+    "scientific_statistics_unchanged": true,
+    "status": "PASS",
+    "unexpected_differences": []
+  },
+  "new_final_test_execution": false,
+  "no_final_test_path_read": true,
+  "phase_7_entered": false,
+  "schema_version": "V2_PHASE6_LINEAGE_HASH_VALIDATION_V1",
+  "status": "PASS",
+  "validator_id": "V2_PHASE6_LINEAGE_HASH_VALIDATION"
+}

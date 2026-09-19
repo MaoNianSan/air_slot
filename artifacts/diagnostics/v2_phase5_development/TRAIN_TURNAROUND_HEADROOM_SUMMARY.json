@@ -15,7 +15,7 @@
     "nominal_size": 10,
     "step_minutes": 5.0
   },
-  "artifact_hash": "sha256:828781fd16288f1cc4ff8d805b5c8f9682b5f9303fb686ad1ec04df1b980b7da",
+  "artifact_hash": "sha256:769b393f945b3a71dfd20a5b997f7f5c7d0b627d6fe035fad5b49e52121b73d4",
   "artifact_scope": "TRAIN_PARTITION_SUPPORT_ONLY",
   "episode_count": 2668531,
   "excluded_rotations": 0,
@@ -101,6 +101,23 @@
     ],
     "nominal_lambda": 0.25
   },
+  "stage2_turnaround_lower_bound": {
+    "definition": "T^{turn,lb} = Q20(T^{turn} | Train)",
+    "nominal_quantile": 0.2,
+    "population_rows": 2668531,
+    "quantile_rule": "LINEAR_INTERPOLATION_SORTED_TRAIN",
+    "samples_artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SAMPLES.npz",
+    "scope": "M3_STAGE2_FEASIBILITY_ONLY",
+    "sensitivity_minutes": {
+      "q10": 34.0,
+      "q30": 47.0
+    },
+    "sensitivity_quantiles": [
+      0.1,
+      0.3
+    ],
+    "value_minutes": 41.0
+  },
   "status": "PASS",
   "train_partition": {
     "end": "2019-06-30",
@@ -129,20 +146,24 @@
     ]
   },
   "turnaround_count_authority": {
-    "artifact_hash": "sha256:f7174f3a490b5c1ce2f77a181fa4abd99f43e3dab623551255d377945e4e5a74",
+    "artifact_hash": "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1",
     "field": "train_scale_artifact.F_continuity.population_rows",
     "path": "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json",
     "population_rows": 2668531,
     "role": "FULL_H1_EPISODE_BUILD_COUNT_AUTHORITY"
   },
   "turnaround_reference": {
+    "applicability_scope": "AIRPORT_GROUP",
     "artifact_hash": "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f",
+    "cells_count": 349,
+    "distinct_from_stage2_lower_bound": true,
     "global_sample_count": 2668529,
     "global_value_minutes": 57.0,
     "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m1_v2_data_gate_a2\\DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json",
     "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57",
-    "scope": "STAGE_II_TRAIN_TURNAROUND_LOWER_TAIL_ONLY",
+    "scope": "M2_NODE_REFERENCE_BUNDLE_FOR_F_CONTINUITY",
     "semantic_correction": "BTS_SIGNED_DELAY_SEMANTIC_CORRECTION",
+    "statistic_id": "MEDIAN",
     "superseded_uncorrected_reference": {
       "artifact_hash": "sha256:1b80ea32ae33bd383f68e233a4a0c49701ec426cd92fa512095a6fbdd889a440",
       "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v5_development_freeze\\DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN_V1.json"
