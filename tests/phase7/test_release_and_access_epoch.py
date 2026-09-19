@@ -114,6 +114,7 @@ def test_bound_executor_uses_one_completed_epoch(tmp_path: Path) -> None:
     )
     assert result["status"] == "PASS"
     assert len(calls) == 1
+    assert calls[0]["access_epoch"]["raw_read_started"] is True
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
     assert audit["status"] == "PHASE7_ACCESS_EPOCH_COMPLETE"
     assert audit["raw_read_started"] is True

@@ -60,19 +60,19 @@ def execute_gate_b(
         )
     binding = production_binding_record() if use_production_executor else None
     epoch = open_access_epoch(target_audit, release)
-    mark_access_read_started(target_audit)
+    started = mark_access_read_started(target_audit)
     result = pipeline(
         {
             "release": release,
             "release_validation": validated,
-            "access_epoch": epoch,
+            "access_epoch": started,
         }
     )
     mark_access_read_completed(target_audit)
     return {
         "status": "PASS",
         "release_validation": validated,
-        "access_epoch": epoch,
+        "access_epoch": started,
         "executor_binding": binding,
         "result": result,
     }
