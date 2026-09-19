@@ -1,21 +1,22 @@
-"""M3 Stage-II recovery decision (Phase 3).
+"""M3 Stage-II recovery decision (Phase 3, Freeze R2 authority).
 
-Manuscript section 4 Stage-II problem, evaluated exactly over the finite
+Manuscript section 4 Stage-II problem, defined over the finite
 five-minute grid:
 
 ``J(u; lambda) = sum_s w_s Phi_C(C^{CU}_{i,s}(u)) + lambda * u / U_max``,
-``u* = argmin_{u in U_i} J(u; lambda)`` (ties resolve to the smaller ``u``),
-``V = J(0) - J(u*)``.
+``u* = argmin_{u in U_i(theta)} J(u; lambda)`` (ties resolve to the smaller
+``u``), ``V = J(0) - J(u*)``.
 
-The formal production path is complete enumeration
-(:class:`~model.common.decision_contracts.SolverStatus.EXACT_ENUMERATION`); the
-Pyomo + HiGHS backend in :mod:`model.M3.solver` is a development-time parity
-check only. The baseline action ``u = 0`` is the no-new-intervention
-counterfactual: it is reported as a typed baseline outcome, never as a
-recommendation of a template action.
+The formal production path is the frozen Pyomo one-hot model solved by
+HiGHS. Exact enumeration of the same finite grid remains an independent
+deterministic oracle for reconciliation and testing. The baseline action
+``u = 0`` is the no-new-intervention counterfactual: it is reported as a
+typed baseline outcome, never as a recommendation of a template action.
 """
 
 from __future__ import annotations
+
+from collections.abc import Callable
 
 from pydantic import Field
 
@@ -42,6 +43,7 @@ __all__ = [
     "RecoveryPolicy",
     "action_grid",
     "consequence_value",
+    "enumerate_recovery_decision",
     "expected_objective",
     "objective_by_grid",
     "solve_recovery",
@@ -169,7 +171,27 @@ def objective_by_grid(
     )
 
 
-def solve_recovery(
+_NUMERICAL_TIE_DIAGNOSTIC_TOLERANCE = 1e-6
+
+
+def _not_actionable_decision(state_set: StateScenarioSet) -> RecoveryDecision:
+    return RecoveryDecision(
+        episode_id=state_set.episode_id,
+        chain_id=state_set.chain_id,
+        node_id=state_set.node_id,
+        representation_id=state_set.representation.representation_id,
+        stage=state_set.stage,
+        actionable_status=TypedStatus.NOT_ACTIONABLE,
+        action_grid=(0.0,),
+        u_star=0.0,
+        solver_status=SolverStatus.NOT_RUN,
+        tie_break_applied=False,
+        near_tie_candidate_count=0,
+        reason_codes=("M3_STAGE_NOT_ACTIONABLE_LOCAL_ACTION_SET_IS_ZERO",),
+    )
+
+
+def enumerate_recovery_decision(
     state_set: StateScenarioSet,
     *,
     context: TransitionContext,
@@ -177,27 +199,16 @@ def solve_recovery(
     headroom_summary: HeadroomSummary | None = None,
     policy: RecoveryPolicy | None = None,
 ) -> RecoveryDecision:
-    """Solve Stage II exactly for one node."""
+    """Independent exact oracle over the complete finite action grid."""
 
     active = (policy or RecoveryPolicy()).validate()
     if not is_actionable(state_set.stage):
-        return RecoveryDecision(
-            episode_id=state_set.episode_id,
-            chain_id=state_set.chain_id,
-            node_id=state_set.node_id,
-            representation_id=state_set.representation.representation_id,
-            stage=state_set.stage,
-            actionable_status=TypedStatus.NOT_ACTIONABLE,
-            action_grid=(0.0,),
-            u_star=0.0,
-            solver_status=SolverStatus.NOT_RUN,
-            reason_codes=("M3_STAGE_NOT_ACTIONABLE_LOCAL_ACTION_SET_IS_ZERO",),
-        )
+        return _not_actionable_decision(state_set)
     if headroom_summary is None:
         raise ContractError("M3_HEADROOM_SUMMARY_REQUIRED_FOR_ACTIONABLE_STAGE")
     if abs(
         headroom_summary.turnaround_lower_bound_q - context.turnaround_lower_bound_minutes
-    ) > 1e-6:
+    ) > _NUMERICAL_TIE_DIAGNOSTIC_TOLERANCE:
         raise ContractError("M3_TRANSITION_CONTEXT_HEADROOM_SUMMARY_MISMATCH")
 
     table = objective_by_grid(
@@ -212,6 +223,11 @@ def solve_recovery(
     u_star, j_star = min(table, key=lambda item: (item[1], item[0]))
     j_zero = table[0][1]
     recoverable = j_zero - j_star
+    near_tie_count = sum(
+        1
+        for _, objective in table
+        if objective <= j_star + _NUMERICAL_TIE_DIAGNOSTIC_TOLERANCE
+    )
     reasons = ["M3_A00_BASELINE_NEVER_A_RECOMMENDATION"]
     if u_star == 0.0:
         reasons.append("M3_BASELINE_ACTION_SELECTED_NO_NEW_INTERVENTION")
@@ -235,5 +251,44 @@ def solve_recovery(
         recoverable_value=recoverable,
         lambda_policy=active.lambda_policy,
         solver_status=SolverStatus.EXACT_ENUMERATION,
+        tie_break_applied=near_tie_count > 1,
+        near_tie_candidate_count=near_tie_count,
         reason_codes=tuple(reasons),
+    )
+
+
+def solve_recovery(
+    state_set: StateScenarioSet,
+    *,
+    context: TransitionContext,
+    service: M2ConsequenceService,
+    headroom_summary: HeadroomSummary | None = None,
+    policy: RecoveryPolicy | None = None,
+    solver_backend: Callable[..., RecoveryDecision] | None = None,
+) -> RecoveryDecision:
+    """Solve Stage II with the frozen formal Pyomo+HiGHS authority.
+
+    ``solver_backend`` is an internal injection point used by reconciliation
+    tests to substitute the exact oracle without changing scientific inputs.
+    Production callers leave it unset.
+    """
+
+    if not is_actionable(state_set.stage):
+        return _not_actionable_decision(state_set)
+    if solver_backend is not None:
+        return solver_backend(
+            state_set,
+            context=context,
+            service=service,
+            headroom_summary=headroom_summary,
+            policy=policy,
+        )
+    from model.M3.solver import solve_stage2_with_highs
+
+    return solve_stage2_with_highs(
+        state_set,
+        context=context,
+        service=service,
+        headroom_summary=headroom_summary,
+        policy=policy,
     )

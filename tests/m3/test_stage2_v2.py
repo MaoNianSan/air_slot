@@ -399,7 +399,7 @@ def test_stage2_selects_interior_breakpoint_and_reports_recoverable_value() -> N
         headroom_summary=_headroom_summary(),
     )
     assert decision.actionable_status is TypedStatus.SUPPORTED
-    assert decision.solver_status is SolverStatus.EXACT_ENUMERATION
+    assert decision.solver_status is SolverStatus.PYOMO_HIGHS
     assert decision.action_grid == (0.0, 5.0, 10.0)
     assert decision.u_star == 5.0
     assert decision.j_star is not None
@@ -509,11 +509,16 @@ def test_highs_parity_matches_enumeration_on_interior_case() -> None:
         service=_minimal_service(),
         headroom_summary=_headroom_summary(),
     )
-    assert result.solver_status == SolverStatus.HIGHS_PARITY.value
-    assert result.u_star_highs == result.u_star_enumeration == 5.0
+    assert result.formal_solver == SolverStatus.PYOMO_HIGHS.value
+    assert result.parity_oracle == SolverStatus.EXACT_ENUMERATION.value
+    assert result.u_star_formal == result.u_star_oracle == 5.0
     assert result.objective_parity
     assert result.u_star_parity
+    assert result.recoverable_value_parity
     assert result.objective_absolute_error <= 1e-6
+    assert result.recoverable_value_absolute_error <= 1e-6
+    assert not result.tie_break_applied
+    assert result.near_tie_candidate_count == 1
 
 
 def test_highs_parity_keeps_smaller_action_on_tie() -> None:
@@ -523,15 +528,17 @@ def test_highs_parity_keeps_smaller_action_on_tie() -> None:
         service=_minimal_service(scale=8.88888888888889),
         headroom_summary=_headroom_summary(),
     )
-    assert result.u_star_enumeration == 0.0
-    assert result.u_star_highs == 0.0
+    assert result.u_star_oracle == 0.0
+    assert result.u_star_formal == 0.0
     assert result.u_star_parity
     assert result.objective_parity
+    assert result.tie_break_applied
+    assert result.near_tie_candidate_count >= 2
 
 
 def test_highs_parity_rejects_non_actionable_stage() -> None:
     with pytest.raises(
-        ContractError, match="M3_HIGHS_PARITY_REQUIRES_ACTIONABLE_STAGE"
+        ContractError, match="M3_HIGHS_REQUIRES_ACTIONABLE_STAGE"
     ):
         solve_with_highs(
             _state_set(stage=OperationalStage.POST_OB_PRE_TO),

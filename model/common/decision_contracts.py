@@ -143,13 +143,18 @@ class SplitName(str, Enum):
 class SolverStatus(str, Enum):
     """Stage-II solution provenance.
 
-    The formal path is exact enumeration over the finite action grid; the HiGHS
-    backend exists only for development-time parity checks.
+    The formal Stage-II authority is the frozen Pyomo one-hot model solved by
+    HiGHS. Exact enumeration over the same finite action grid is retained only
+    as the independent deterministic parity oracle.
     """
 
+    PYOMO_HIGHS = "PYOMO_HIGHS"
     EXACT_ENUMERATION = "EXACT_ENUMERATION"
-    HIGHS_PARITY = "HIGHS_PARITY"
     NOT_RUN = "NOT_RUN"
+
+    #: Backward-compatible alias for code written before Freeze R2. It resolves
+    #: to the formal solver and therefore does not denote a separate backend.
+    HIGHS_PARITY = PYOMO_HIGHS
 
 
 class EvaluationFamily(str, Enum):
@@ -623,6 +628,8 @@ class RecoveryDecision(FrozenModel):
     recoverable_value: float | None = None
     lambda_policy: float | None = None
     solver_status: SolverStatus = SolverStatus.NOT_RUN
+    tie_break_applied: bool | None = None
+    near_tie_candidate_count: int | None = Field(default=None, ge=0)
     reason_codes: tuple[str, ...] = ()
 
     @model_validator(mode="after")
