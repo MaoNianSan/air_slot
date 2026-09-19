@@ -9,6 +9,7 @@ have not been rewritten.
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import subprocess
 import sys
@@ -394,6 +395,62 @@ def _read_report() -> dict[str, Any]:
     return json.loads(target.read_text(encoding="utf-8"))
 
 
+def _report_comparison_failures(
+    observed: Mapping[str, Any],
+    expected: Mapping[str, Any],
+    *,
+    ancestor_check: Any = _is_ancestor,
+) -> list[str]:
+    """Compare a stored report while allowing only a lagging HEAD field."""
+
+    if not isinstance(observed, Mapping) or not isinstance(expected, Mapping):
+        return ["PHASE7_FREEZE_ANCESTRY_REPORT_MISMATCH"]
+    if expected.get("status") != "PASS":
+        return ["PHASE7_FREEZE_ANCESTRY_RECOMPUTED_FAILURE"]
+    expected_ancestry = expected.get("ancestry")
+    if not isinstance(expected_ancestry, Mapping) or expected_ancestry != {
+        "phase6_is_ancestor_of_r2": True,
+        "r2_is_ancestor_of_head": True,
+    }:
+        return ["PHASE7_FREEZE_ANCESTRY_RECOMPUTED_FAILURE"]
+
+    observed_registry = observed.get("registry")
+    expected_registry = expected.get("registry")
+    if not isinstance(observed_registry, Mapping) or not isinstance(
+        expected_registry, Mapping
+    ):
+        return ["PHASE7_FREEZE_ANCESTRY_REPORT_MISMATCH"]
+
+    observed_head = observed_registry.get("current_head")
+    expected_head = expected_registry.get("current_head")
+    if not isinstance(observed_head, str) or not isinstance(expected_head, str):
+        return ["PHASE7_FREEZE_ANCESTRY_REPORT_HEAD_MISSING"]
+    if len(observed_head) != 40 or len(expected_head) != 40:
+        return ["PHASE7_FREEZE_ANCESTRY_REPORT_HEAD_INVALID"]
+    try:
+        int(observed_head, 16)
+        int(expected_head, 16)
+    except ValueError:
+        return ["PHASE7_FREEZE_ANCESTRY_REPORT_HEAD_INVALID"]
+
+    comparison = copy.deepcopy(dict(observed))
+    comparison_registry = comparison.get("registry")
+    if not isinstance(comparison_registry, Mapping):
+        return ["PHASE7_FREEZE_ANCESTRY_REPORT_MISMATCH"]
+    if observed_head != expected_head:
+        try:
+            is_ancestor = bool(ancestor_check(observed_head, expected_head))
+        except Exception:
+            is_ancestor = False
+        if not is_ancestor:
+            return ["PHASE7_FREEZE_ANCESTRY_REPORT_HEAD_NOT_ANCESTOR"]
+        comparison_registry["current_head"] = expected_head
+
+    if comparison != expected:
+        return ["PHASE7_FREEZE_ANCESTRY_REPORT_MISMATCH"]
+    return []
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -419,13 +476,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             )
             return 1
-        if observed != report:
+        comparison_failures = _report_comparison_failures(observed, report)
+        if comparison_failures:
             print(
                 json.dumps(
                     {
                         "status": "FAIL",
                         "reason": "PHASE7_FREEZE_ANCESTRY_REPORT_MISMATCH",
                         "report_path": str(REPORT_PATH),
+                        "failures": comparison_failures,
                     },
                     indent=2,
                     sort_keys=True,

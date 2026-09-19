@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import copy
+
 from validation.v2_phase7 import freeze_ancestry
 
 
@@ -54,3 +56,33 @@ def test_freeze_ancestry_never_reads_legacy_final_test_tree() -> None:
     ) or report["final_test_boundary"]["final_test_absolute_path"].endswith(
         "artifacts/experiment/final_test"
     )
+
+
+def test_freeze_ancestry_report_allows_only_lagging_ancestor_head() -> None:
+    report = freeze_ancestry.check_freeze_ancestry()
+    observed = copy.deepcopy(report)
+    observed["registry"]["current_head"] = freeze_ancestry._git_text(
+        "rev-parse", "HEAD^"
+    )
+
+    assert freeze_ancestry._report_comparison_failures(observed, report) == []
+
+
+def test_freeze_ancestry_report_rejects_non_ancestor_head() -> None:
+    report = freeze_ancestry.check_freeze_ancestry()
+    observed = copy.deepcopy(report)
+    observed["registry"]["current_head"] = "0" * 40
+
+    assert freeze_ancestry._report_comparison_failures(observed, report) == [
+        "PHASE7_FREEZE_ANCESTRY_REPORT_HEAD_NOT_ANCESTOR"
+    ]
+
+
+def test_freeze_ancestry_report_rejects_non_head_mutations() -> None:
+    report = freeze_ancestry.check_freeze_ancestry()
+    observed = copy.deepcopy(report)
+    observed["schema_version"] = "MUTATED"
+
+    assert freeze_ancestry._report_comparison_failures(observed, report) == [
+        "PHASE7_FREEZE_ANCESTRY_REPORT_MISMATCH"
+    ]
