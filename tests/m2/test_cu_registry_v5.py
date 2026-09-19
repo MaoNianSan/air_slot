@@ -129,8 +129,18 @@ def test_v5_registry_rejects_empirical_scale_claims_or_missing_partition():
 
 
 def test_v4_registry_file_is_retained_unchanged():
-    digest = hashlib.sha256(V4_PATH.read_bytes()).hexdigest()
-    assert digest == "e28ba89ef73fd5ba13ee67bd3aa16de8e097a64c133812c7ded341a9294c6e95"
+    # The legacy baseline seal recorded the CRLF worktree encoding of this
+    # payload while `.gitattributes` checks JSON out as canonical LF.  Bind
+    # the canonical bytes and accept either recorded worktree encoding.
+    raw = V4_PATH.read_bytes()
+    canonical = hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()
+    assert canonical == (
+        "70a2028fcdc94b75d4221c6fd1926113a7867765ca970d19a6d1e443011f1baa"
+    )
+    assert hashlib.sha256(raw).hexdigest() in {
+        canonical,
+        "e28ba89ef73fd5ba13ee67bd3aa16de8e097a64c133812c7ded341a9294c6e95",
+    }
     v4 = load_active_m2_cu_registry()
     assert v4.registry_id == "M2_DATA2_FORMAL_CU_V4"
     assert v4.scale("P_itinerary") == pytest.approx(9.882948210182091)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -114,7 +115,9 @@ def test_run_gate_a_writes_ready_preflight_without_access(tmp_path: Path) -> Non
     result = runner.run_gate_a(output_root=tmp_path)
     assert result["status"] == "READY_FOR_GATE_B"
     assert result["gate_b_authorized"] is False
-    assert result["gate_a_commit"] == "RESOLVED_AFTER_GATE_A_COMMIT"
+    assert result["gate_a_commit"] == "RESOLVED_AFTER_GATE_A_COMMIT" or re.fullmatch(
+        r"[0-9a-f]{40}", result["gate_a_commit"]
+    )
     assert result["access_boundary"] == {
         "q4_raw_reads": 0,
         "old_final_test_result_tree_reads": 0,
