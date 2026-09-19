@@ -1,0 +1,233 @@
+{
+  "access_epoch_idempotence": {
+    "current_total": 2,
+    "epoch_increment": 1,
+    "one_epoch_per_release": true,
+    "same_epoch_retry_increment": 0,
+    "status": "PASS"
+  },
+  "attention": {
+    "abstaining_node_typed": true,
+    "capacity_rows": [
+      {
+        "consequence_selected": [
+          "node-a"
+        ],
+        "delay_selected": [
+          "node-e"
+        ],
+        "k": 1,
+        "q": 0.05
+      },
+      {
+        "consequence_selected": [
+          "node-a"
+        ],
+        "delay_selected": [
+          "node-e"
+        ],
+        "k": 1,
+        "q": 0.1
+      },
+      {
+        "consequence_selected": [
+          "node-a"
+        ],
+        "delay_selected": [
+          "node-e"
+        ],
+        "k": 1,
+        "q": 0.2
+      },
+      {
+        "consequence_selected": [
+          "node-a",
+          "node-b"
+        ],
+        "delay_selected": [
+          "node-e",
+          "node-d"
+        ],
+        "k": 2,
+        "q": 0.3
+      }
+    ],
+    "nominal_q": 0.1,
+    "q_grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.3
+    ],
+    "status": "PASS"
+  },
+  "final_test_data_read": false,
+  "legacy_final_test_result_tree_read": false,
+  "parity": {
+    "all_enumeration_highs_parity_passed": true,
+    "all_formal_oracle_parity_passed": true,
+    "final_test_access_count": 0,
+    "final_test_paths_read": [],
+    "formal_solver": "PYOMO_HIGHS",
+    "highspy_version": "1.15.1",
+    "input_provenance": "SYNTHETIC_PARITY_INPUT_NOT_SCIENTIFIC_TRAIN_SUPPORT",
+    "node_stage_classes": [
+      "PRE",
+      "TURN"
+    ],
+    "parity_oracle": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "pyomo_version": "6.10.1",
+    "representative_nodes": [
+      {
+        "action_count": 10,
+        "formal_solver": "PYOMO_HIGHS",
+        "j_star_formal": 11.836485761709106,
+        "j_star_oracle": 11.836485761709106,
+        "j_zero": 12.9993685332114,
+        "near_tie_candidate_count": 1,
+        "node_id": "PRE_PARITY_1",
+        "objective_absolute_error": 0.0,
+        "objective_parity": true,
+        "objective_relative_error": 0.0,
+        "parity_oracle": "EXACT_ENUMERATION",
+        "recoverable_value_absolute_error": 0.0,
+        "recoverable_value_formal": 1.1628827715022947,
+        "recoverable_value_oracle": 1.1628827715022947,
+        "recoverable_value_parity": true,
+        "representation_id": "HISTORY_H16:JOINT",
+        "stage": "PRE_IB",
+        "termination_condition": "optimal",
+        "tie_break_applied": false,
+        "u_star_formal": 45.0,
+        "u_star_oracle": 45.0,
+        "u_star_parity": true
+      },
+      {
+        "action_count": 10,
+        "formal_solver": "PYOMO_HIGHS",
+        "j_star_formal": 11.795737730835578,
+        "j_star_oracle": 11.795737730835578,
+        "j_zero": 13.197159152072024,
+        "near_tie_candidate_count": 1,
+        "node_id": "TURN_PARITY_1",
+        "objective_absolute_error": 0.0,
+        "objective_parity": true,
+        "objective_relative_error": 0.0,
+        "parity_oracle": "EXACT_ENUMERATION",
+        "recoverable_value_absolute_error": 0.0,
+        "recoverable_value_formal": 1.4014214212364458,
+        "recoverable_value_oracle": 1.4014214212364458,
+        "recoverable_value_parity": true,
+        "representation_id": "HISTORY_H16:JOINT",
+        "stage": "POST_IB_PRE_OB",
+        "termination_condition": "optimal",
+        "tie_break_applied": false,
+        "u_star_formal": 45.0,
+        "u_star_oracle": 45.0,
+        "u_star_parity": true
+      }
+    ],
+    "scope": "FORMAL_HIGHS_WITH_EXACT_ENUMERATION_ORACLE",
+    "status": "PASS",
+    "synthetic_parity_inputs": true,
+    "taxi_comp_typed_check": {
+      "action_grid": [
+        0.0
+      ],
+      "actionable_status": "NOT_ACTIONABLE",
+      "passed": true,
+      "recoverable_value": null,
+      "solver_status": "NOT_RUN",
+      "stage": "POST_OB_PRE_TO",
+      "u_star": 0.0
+    },
+    "validator_id": "V2_M3_ENUMERATION_HIGHS_PARITY"
+  },
+  "q4_raw_read": false,
+  "release_schema": {
+    "freeze_tag_object": "2dcca6c159dedde3803e63cb48bd8bfefff574cf",
+    "freeze_tag_target_commit": "3834eed33d4a2ea4bdba111fc29cca3529525a3a",
+    "human_approved": true,
+    "schema_fields": [
+      "gate_a_commit",
+      "instruction_sha256",
+      "freeze_tag_object",
+      "freeze_tag_target_commit",
+      "cohort_authority_sha256",
+      "cohort_manifest_sha256",
+      "human_approved",
+      "human_approval_timestamp"
+    ],
+    "status": "PASS"
+  },
+  "scope": "SYNTHETIC_AND_DEVELOPMENT_SAFE_FIXTURES_ONLY",
+  "stage2": {
+    "action_grid_by_specification": {
+      "Q80": [
+        0.0,
+        5.0,
+        10.0,
+        15.0,
+        20.0,
+        25.0
+      ],
+      "Q95": [
+        0.0,
+        5.0,
+        10.0,
+        15.0,
+        20.0,
+        25.0,
+        30.0,
+        35.0,
+        40.0,
+        45.0,
+        50.0,
+        55.0,
+        60.0,
+        65.0,
+        70.0,
+        75.0
+      ],
+      "nominal": [
+        0.0,
+        5.0,
+        10.0,
+        15.0,
+        20.0,
+        25.0,
+        30.0,
+        35.0,
+        40.0,
+        45.0
+      ]
+    },
+    "formal_solver": "PYOMO_HIGHS",
+    "near_tie_candidate_count": 1,
+    "objective_absolute_error": 0.0,
+    "parity_oracle": "EXACT_ENUMERATION",
+    "recoverable_value_absolute_error": 0.0,
+    "recoverable_value_formal": 0.7140914246594381,
+    "reference_authority": {
+      "H_C_STAR": "H_CSTAR_EQUALS_H_HISTORY_JOINT",
+      "R_STAR": "FIXED_REFERENCE_STAGE_II_COHORT",
+      "reference_representation_id": "HISTORY_H16:JOINT"
+    },
+    "reference_invariants": {
+      "A0": 1.0,
+      "A5": 1.0,
+      "L_att": 0.0,
+      "L_rec": 0.0
+    },
+    "status": "PASS",
+    "tie_break_applied": false,
+    "typed_states": {
+      "N/A_NOT_DEFINED": true,
+      "NOT_ACTIONABLE": true,
+      "UNDEFINED_ZERO_RECOVERABLE_VALUE": true
+    },
+    "u_star_formal": 30.0,
+    "u_star_oracle": 30.0
+  },
+  "status": "PASS"
+}
