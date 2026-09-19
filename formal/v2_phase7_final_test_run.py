@@ -19,6 +19,22 @@ from formal.v2_phase7.dry_run import *  # noqa: E402,F401,F403
 from formal.v2_phase7.errors import *  # noqa: E402,F401,F403
 from formal.v2_phase7.gate_a import *  # noqa: E402,F401,F403
 from formal.v2_phase7.gate_b import *  # noqa: E402,F401,F403
+from formal.v2_phase7.gate_b0 import *  # noqa: E402,F401,F403
+from formal.v2_phase7.executor.bootstrap import (  # noqa: E402
+    bootstrap_seed_provenance,
+)
+from formal.v2_phase7.executor.pipeline import (  # noqa: E402
+    run_sealed_pipeline,
+)
+from formal.v2_phase7.executor.raw_entry import (  # noqa: E402
+    materialize_canonical_nodes,
+)
+from formal.v2_phase7.executor.runner import (  # noqa: E402
+    ExecutorRun,
+    assert_dag_order,
+    run_development_safe_dag,
+    run_executor,
+)
 from formal.v2_phase7.materialization import *  # noqa: E402,F401,F403
 from formal.v2_phase7.release import *  # noqa: E402,F401,F403
 from formal.v2_phase7.reporting import *  # noqa: E402,F401,F403
@@ -39,17 +55,27 @@ if __name__ == "__main__":
 __all__ = sorted(
     set(_constants.__all__)
     | {
+        "ExecutorRun",
         "Phase7Error",
         "TypedBlocker",
+        "assert_dag_order",
+        "bootstrap_seed_provenance",
         "build_gate_a_preflight",
         "execute_gate_b",
         "main",
         "make_release",
         "mark_access_read_completed",
         "mark_access_read_started",
+        "materialize_canonical_nodes",
         "open_access_epoch",
+        "production_binding_record",
+        "production_pipeline",
+        "run_development_safe_dag",
         "run_dry_run",
+        "run_executor",
         "run_gate_a",
+        "run_gate_b0_binding_audit",
+        "run_sealed_pipeline",
         "validate_cohort_reference",
         "validate_instruction_copies",
         "validate_r2_authority",

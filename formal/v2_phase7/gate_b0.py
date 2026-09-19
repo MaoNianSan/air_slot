@@ -1,0 +1,484 @@
+"""Gate B.0: bind and prove the Phase-7 scientific executor pre-open.
+
+This module runs the *whole* frozen DAG on the Development-safe fixture, proves
+checkpoint reuse, collects the evidence for every Gate B.0 acceptance item, and
+writes the pre-open report. It never creates a human release, never opens an
+access epoch, never reads Q4 raw data and never touches the legacy Final-Test
+result tree; the report only claims ``pre-open / authorization readiness``.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any, Mapping
+
+from . import constants as C
+from .errors import TypedBlocker
+from .executor import stages as S
+from .executor.nodes import nodes_from_payload
+from .executor.runner import (
+    FIXTURE_PRODUCER,
+    ExecutorRun,
+    run_development_safe_dag,
+)
+from .gate_b import production_binding_record
+from .materialization import _write_json_atomic
+
+REPORT_SCHEMA_VERSION = "AIR_SLOT_V2_PHASE7_GATE_B0_BINDING_V1"
+#: The Gate-B.0 fixture subset is large enough to exercise a non-degenerate
+#: reference cohort (defined recoverable value, mixed action agreement and a
+#: zero-denominator replicate path) while staying Development-safe.
+DEFAULT_NODE_LIMIT = 48
+PRE_OPEN_STATUS = "PRE_OPEN_AUTHORIZATION_READINESS"
+
+
+def run_gate_b0_binding_audit(
+    *,
+    output_root: Path | None = None,
+    fixture_root: Path | None = None,
+    node_limit: int = DEFAULT_NODE_LIMIT,
+    write: bool = True,
+) -> dict[str, Any]:
+    """Run the fixture DAG, collect evidence and (optionally) write the report."""
+
+    root = Path(fixture_root) if fixture_root is not None else (
+        C.FIXTURE_DAG_DIAGNOSTICS_ROOT
+    )
+    try:
+        report = _build_report(root=root, node_limit=node_limit)
+    except TypedBlocker as error:
+        report = _blocked_report(error)
+    if write:
+        target = Path(output_root) if output_root is not None else C.PRE_OPEN_REPORT_PATH
+        _write_json_atomic(target, report)
+    return report
+
+
+def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
+    run = run_development_safe_dag(
+        output_root=root,
+        node_limit=node_limit,
+        resume=False,
+    )
+    resume_run = run_development_safe_dag(output_root=root, node_limit=node_limit)
+    checks: list[dict[str, Any]] = []
+
+    binding = production_binding_record()
+    checks.append(
+        _check(
+            "PRODUCTION_EXECUTOR_BOUND",
+            binding["status"] == "PRODUCTION_EXECUTOR_BOUND"
+            and binding["production_executor_bound"] is True
+            and binding["production_executor_ready"] is False
+            and binding["gate_b_authorized"] is False
+            and binding["raw_adapter_status"]
+            == "GUARDED_ONE_SHOT_NOT_ACTIVATED"
+            and list(binding["dag_stages"]) == list(S.SCIENCE_DAG_STAGES),
+            binding,
+        )
+    )
+
+    checks.append(
+        _check(
+            "DAG_STAGE_COUNT",
+            len(run.manifest["dag_stages"]) == 9
+            and list(run.manifest["dag_stages"]) == list(S.SCIENCE_DAG_STAGES),
+            {"stages": list(run.manifest["dag_stages"])},
+        )
+    )
+    checks.append(
+        _check(
+            "DAG_FULLY_COMPUTED",
+            run.manifest["computed_stages"] == list(S.SCIENCE_DAG_STAGES),
+            {"computed": list(run.manifest["computed_stages"])},
+        )
+    )
+    checks.append(
+        _check(
+            "CHECKPOINT_RESUME_REUSES_EVERY_STAGE",
+            resume_run.manifest["reused_stages"] == list(S.SCIENCE_DAG_STAGES)
+            and resume_run.manifest["computed_stages"] == []
+            and resume_run.manifest["frozen_services_loaded"] is False,
+            {
+                "reused": list(resume_run.manifest["reused_stages"]),
+                "computed": list(resume_run.manifest["computed_stages"]),
+                "frozen_services_loaded": resume_run.manifest[
+                    "frozen_services_loaded"
+                ],
+            },
+        )
+    )
+
+    variants = _variant_evidence(run)
+    checks.append(
+        _check(
+            "FOUR_PRIMARY_VARIANTS",
+            all(
+                block["node_count"] == variants["node_count"]
+                for block in variants["blocks"]
+            )
+            and [block["variant"] for block in variants["blocks"]]
+            == list(S.PRIMARY_STATE_VARIANTS),
+            {
+                "variants": [block["variant"] for block in variants["blocks"]],
+                "node_count": variants["node_count"],
+            },
+        )
+    )
+
+    reference = run.payload(S.REFERENCE_RECOVERY_COHORT)
+    checks.append(
+        _check(
+            "REFERENCE_AUTHORITY_FIXED",
+            reference["reference_variant"] == S.REFERENCE_VARIANT
+            and reference["reference_authority"] == C.REFERENCE_AUTHORITY
+            and reference["alternative_representations_use_fixed_r_star"] is True,
+            {
+                "reference_variant": reference["reference_variant"],
+                "shortlist_size": reference["shortlist_size"],
+                "cohort_size": reference["stage2_cohort_size"],
+            },
+        )
+    )
+
+    recovery = run.payload(S.RECOVERY_DECISIONS)
+    checks.append(
+        _check(
+            "STAGE2_FORMAL_AUTHORITY_AND_PARITY",
+            recovery["formal_solver"] == "PYOMO_HIGHS"
+            and recovery["parity_oracle"]
+            == "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+            and recovery["objective_perturbation"] == "NONE"
+            and all(
+                row["parity"] is None or row["parity"]["status"] == "PASS"
+                for row in recovery["rows"]
+            ),
+            {
+                "formal_solver": recovery["formal_solver"],
+                "parity_oracle": recovery["parity_oracle"],
+                "actionable_rows": sum(
+                    1 for row in recovery["rows"] if row["actionable"]
+                ),
+            },
+        )
+    )
+
+    m4 = run.payload(S.M4_COMPARISONS)
+    invariants = m4["invariants"]
+    checks.append(
+        _check(
+            "M4_REFERENCE_INVARIANTS",
+            invariants["status"] == "PASS"
+            and invariants["delta_objective_violations"] == []
+            and abs(invariants["reference_attention_identity"] or 0.0) <= 1e-6
+            and abs(invariants["reference_recovery_identity"] or 0.0) <= 1e-6
+            and (invariants["reference_action_agreement"]["A0"] is None
+                 or invariants["reference_action_agreement"]["A0"] == 1.0)
+            and (invariants["reference_action_agreement"]["A5"] is None
+                 or invariants["reference_action_agreement"]["A5"] == 1.0),
+            invariants,
+        )
+    )
+
+    checks.append(
+        _check(
+            "TYPED_STATE_CONTRACTS",
+            recovery["invariants"]["status"] == "PASS"
+            and m4["invariants"]["typed_states_are_legal"] is True
+            and all(
+                state in C.TYPED_SCIENTIFIC_STATES for state in m4["typed_states"]
+            ),
+            {
+                "recovery_typed_state_counts": recovery["typed_state_counts"],
+                "m4_typed_states": list(m4["typed_states"]),
+                "frozen_states": list(C.TYPED_SCIENTIFIC_STATES),
+                "dedicated_tests": [
+                    "tests/phase7/test_executor_dag.py::test_not_actionable_stage_keeps_typed_zero_action",
+                    "tests/phase7/test_executor_dag.py::test_attention_abstaining_candidate_is_excluded_not_zero_filled",
+                    "tests/phase7/test_executor_dag.py::test_abstaining_reference_state_is_typed_excluded",
+                ],
+            },
+        )
+    )
+
+    bootstrap = run.payload(S.BOOTSTRAP)
+    provenance = bootstrap["seed_provenance"]
+    checks.append(
+        _check(
+            "BOOTSTRAP_SEED_PRE_LOCK_PROVENANCE",
+            provenance["status"] == "PASS"
+            and provenance["seed"] == C.BOOTSTRAP_SEED
+            and provenance["seed_predates_lock"] is True
+            and provenance["result_driven"] is False,
+            provenance,
+        )
+    )
+    checks.append(
+        _check(
+            "BOOTSTRAP_PLAN_FROZEN",
+            bootstrap["replicates"] == 2000
+            and bootstrap["seed"] == C.BOOTSTRAP_SEED
+            and bootstrap["interval"] == "percentile_95"
+            and bootstrap["resampling_unit"] == "episode_id"
+            and bootstrap["paired"] is True,
+            {
+                "replicates": bootstrap["replicates"],
+                "seed": bootstrap["seed"],
+                "interval": bootstrap["interval"],
+                "unit": bootstrap["resampling_unit"],
+            },
+        )
+    )
+
+    views = run.payload(S.PAPER_VIEWS)
+    checks.append(
+        _check(
+            "PAPER_VIEWS_FROM_CHECKPOINTS_ONLY",
+            views["scientific_recomputation_performed"] is False
+            and views["primary_design"] == "STAGE_X_Q"
+            and views["section_5_5"]["crossed_with_q_grid"] is False
+            and views["section_5_5"]["fixed_window_history_status"]
+            == "NOT_AVAILABLE_NOT_FROZEN"
+            and views["no_total_loss_constructed"] is True,
+            {
+                "source_stages": list(views["source_stages"]),
+                "fixed_window": views["section_5_5"][
+                    "fixed_window_history_status"
+                ],
+            },
+        )
+    )
+
+    access = _access_boundary()
+    checks.append(_check("ACCESS_BOUNDARY_PRE_OPEN", access["status"] == "PASS", access))
+
+    if not all(item["status"] == "PASS" for item in checks):
+        failed = [item for item in checks if item["status"] != "PASS"]
+        raise TypedBlocker("PHASE7_GATE_B0_EVIDENCE_INCOMPLETE", failed)
+
+    return {
+        "schema_version": REPORT_SCHEMA_VERSION,
+        "status": "PASS",
+        "gate": "PHASE_7_GATE_B0_SCIENTIFIC_EXECUTOR_BINDING",
+        "production_executor_bound": True,
+        "production_executor_ready": False,
+        "gate_b_authorized": False,
+        "pre_open_status": PRE_OPEN_STATUS,
+        "executor_binding": binding,
+        "fixture_run": _fixture_run_evidence(run, resume_run, root=root),
+        "dag_evidence": {
+            "variants": variants,
+            "reference_cohort": {
+                "reference_variant": reference["reference_variant"],
+                "shortlist_size": reference["shortlist_size"],
+                "shortlist_stage_counts": reference["shortlist_stage_counts"],
+                "stage2_cohort_size": reference["stage2_cohort_size"],
+                "stage2_excluded_count": reference["stage2_excluded_count"],
+                "stage2_support_rule": reference["stage2_support_rule"],
+            },
+            "recovery": {
+                "formal_solver": recovery["formal_solver"],
+                "parity_oracle": recovery["parity_oracle"],
+                "row_count": recovery["row_count"],
+                "specification": recovery["specification"],
+                "typed_state_counts": recovery["typed_state_counts"],
+            },
+            "m4": {
+                "attention_comparators": sorted(m4["attention"]["comparators"]),
+                "recovery_comparators": sorted(m4["recovery"]["comparators"]),
+                "invariants": invariants,
+                "typed_states": m4["typed_states"],
+                "no_total_loss_constructed": m4["no_total_loss_constructed"],
+            },
+            "bootstrap": {
+                "seed": bootstrap["seed"],
+                "replicates": bootstrap["replicates"],
+                "interval": bootstrap["interval"],
+                "resampling_unit": bootstrap["resampling_unit"],
+                "paired": bootstrap["paired"],
+                "episode_count": bootstrap["episode_count"],
+                "typed_states": bootstrap["typed_states"],
+                "seed_provenance": provenance,
+            },
+            "paper_views": {
+                "primary_design": views["primary_design"],
+                "section_5_2_rows": len(views["section_5_2"]["rows"]),
+                "section_5_4_comparators": [
+                    item["comparator_id"] for item in views["section_5_4"]["comparators"]
+                ],
+                "excluded_from_final_test_scope": views[
+                    "excluded_from_final_test_scope"
+                ],
+                "no_total_loss_constructed": views["no_total_loss_constructed"],
+                "scientific_recomputation_performed": views[
+                    "scientific_recomputation_performed"
+                ],
+            },
+        },
+        "typed_state_evidence": {
+            "frozen_states": list(C.TYPED_SCIENTIFIC_STATES),
+            "fixture_not_actionable_rows": int(
+                recovery["typed_state_counts"].get("NOT_ACTIONABLE", 0)
+            ),
+            "preserved_as_typed_not_zero_filled": True,
+            "dedicated_tests": [
+                "tests/phase7/test_executor_dag.py::test_not_actionable_stage_keeps_typed_zero_action",
+                "tests/phase7/test_executor_dag.py::test_attention_abstaining_candidate_is_excluded_not_zero_filled",
+                "tests/phase7/test_executor_dag.py::test_abstaining_reference_state_is_typed_excluded",
+            ],
+        },
+        "checks": checks,
+        "access_boundary": access,
+        "not_claimed": [
+            "FORMAL_GATE_B_EXECUTION",
+            "FINAL_TEST_RAW_MATERIALIZATION",
+            "SECTION_5_5_SENSITIVITY_EXECUTION_RESULTS",
+            "H8_SENSITIVITY_EXECUTION",
+            "FIXED_WINDOW_SENSITIVITY",
+        ],
+        "open_items": [
+            {
+                "item": "RAW_FINAL_TEST_SOURCE_ADAPTER",
+                "status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
+                "owner": "GATE_B",
+            },
+            {
+                "item": "HUMAN_RELEASE",
+                "status": "NOT_CREATED",
+                "owner": "HUMAN",
+            },
+            {
+                "item": "OFAT_SENSITIVITY_OUTPUTS",
+                "status": "OUT_OF_SCOPE_OF_BOUND_DAG_DECLARED_ONLY",
+                "owner": "GATE_B",
+            },
+        ],
+    }
+
+
+def _variant_evidence(run: ExecutorRun) -> dict[str, Any]:
+    payload = run.payload(S.STATE_VARIANTS)
+    blocks = [
+        {
+            "variant": block["variant"],
+            "representation_id": block["representation_id"],
+            "node_count": block["node_count"],
+            "source": block["source"],
+        }
+        for block in payload["variants"]
+    ]
+    return {
+        "node_count": int(payload["node_count"]),
+        "reference_variant": payload["reference_variant"],
+        "blocks": blocks,
+        "marginal_identity_note": payload["marginal_identity_note"],
+        "fixed_window_sensitivity_status": payload[
+            "fixed_window_sensitivity_status"
+        ],
+    }
+
+
+def _fixture_run_evidence(
+    run: ExecutorRun, resume_run: ExecutorRun, *, root: Path
+) -> dict[str, Any]:
+    canonical = run.payload(S.CANONICAL_NODES)
+    nodes = nodes_from_payload(canonical)
+    stage_records = {
+        stage: {
+            "payload_hash": run.record(stage).payload_hash,
+            "file_sha256": run.record(stage).file_sha256,
+            "reused": run.record(stage).reused,
+            "schema_version": run.record(stage).schema_version,
+        }
+        for stage in S.SCIENCE_DAG_STAGES
+    }
+    return {
+        "scope": str(canonical["materialization_scope"]),
+        "producer": FIXTURE_PRODUCER,
+        "output_root": str(root),
+        "node_count": len(nodes),
+        "node_limit": int(canonical["provenance"]["node_limit"]),
+        "episode_count": int(canonical["episode_count"]),
+        "stage_counts": dict(canonical["stage_counts"]),
+        "stage_records": stage_records,
+        "manifest": {
+            "schema_version": run.manifest["schema_version"],
+            "reused_stages": list(run.manifest["reused_stages"]),
+            "computed_stages": list(run.manifest["computed_stages"]),
+            "frozen_services_loaded": run.manifest["frozen_services_loaded"],
+            "immutable_checkpoint_consumption": run.manifest[
+                "immutable_checkpoint_consumption"
+            ],
+            "atomic_results_before_views": run.manifest[
+                "atomic_results_before_views"
+            ],
+        },
+        "resume_proof": {
+            "reused_stages": list(resume_run.manifest["reused_stages"]),
+            "computed_stages": list(resume_run.manifest["computed_stages"]),
+            "frozen_services_loaded": resume_run.manifest[
+                "frozen_services_loaded"
+            ],
+        },
+        "fixture_provenance": {
+            "final_test_data_read": canonical["provenance"]["final_test_data_read"],
+            "q4_raw_read": canonical["provenance"]["q4_raw_read"],
+            "legacy_final_test_result_tree_read": canonical["provenance"][
+                "legacy_final_test_result_tree_read"
+            ],
+            "reference_binding_semantics": canonical["provenance"][
+                "reference_binding_semantics"
+            ],
+        },
+    }
+
+
+def _access_boundary() -> dict[str, Any]:
+    release_present = C.GATE_B_RELEASE_PATH.exists()
+    audit_present = C.PHASE7_ACCESS_AUDIT_PATH.exists()
+    legacy_exists = C.LEGACY_FINAL_TEST_ROOT.exists()
+    return {
+        "status": "PASS" if not release_present and not audit_present else "FAIL",
+        "human_release_created": False,
+        "human_release_present": release_present,
+        "access_audit_present": audit_present,
+        "access_epoch_opened": False,
+        "q4_raw_reads": 0,
+        "legacy_final_test_result_tree_reads": 0,
+        "legacy_final_test_tree_present_not_read": bool(legacy_exists),
+        "historical_final_test_access_total": C.HISTORICAL_FINAL_TEST_ACCESS_TOTAL,
+        "current_freeze_run_increment": 0,
+        "new_final_test_execution": False,
+        "phase_7_gate_b_entered": False,
+    }
+
+
+def _blocked_report(error: TypedBlocker) -> dict[str, Any]:
+    return {
+        "schema_version": REPORT_SCHEMA_VERSION,
+        "status": "TYPED_BLOCKER",
+        "gate": "PHASE_7_GATE_B0_SCIENTIFIC_EXECUTOR_BINDING",
+        "production_executor_bound": False,
+        "production_executor_ready": False,
+        "gate_b_authorized": False,
+        "pre_open_status": PRE_OPEN_STATUS,
+        "blocker": {"code": error.code, "detail": error.detail},
+        "access_boundary": _access_boundary(),
+        "not_claimed": ["FORMAL_GATE_B_EXECUTION"],
+    }
+
+
+def _check(name: str, condition: bool, detail: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "name": name,
+        "status": "PASS" if condition else "FAIL",
+        "detail": dict(detail),
+    }
+
+
+__all__ = [
+    "DEFAULT_NODE_LIMIT",
+    "PRE_OPEN_STATUS",
+    "REPORT_SCHEMA_VERSION",
+    "run_gate_b0_binding_audit",
+]
