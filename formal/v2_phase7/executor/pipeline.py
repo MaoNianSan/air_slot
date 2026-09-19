@@ -10,7 +10,9 @@ callback for the real frozen executor:
 
 The pipeline never creates the release, never opens the epoch and never reads
 raw data by itself - those transitions belong to the caller. With no activated
-raw adapter it fails closed with ``PHASE7_FINAL_TEST_RAW_ADAPTER_NOT_ACTIVATED``.
+raw adapter it fails closed with ``PHASE7_FINAL_TEST_RAW_ADAPTER_NOT_ACTIVATED``;
+the production callback binds :func:`.raw_source.production_raw_adapter`,
+which materializes only after the authorized raw entry accepts the release.
 """
 
 from __future__ import annotations

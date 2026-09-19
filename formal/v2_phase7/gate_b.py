@@ -88,12 +88,15 @@ def production_pipeline(context: dict[str, Any]) -> dict[str, Any]:
     """The bound Phase-7 scientific executor callback.
 
     The executor modules are imported lazily so that binding the callback can
-    never read a Final-Test path at import time.
+    never read a Final-Test path at import time. The production callback binds
+    the real raw-source adapter; the adapter stays inert until the authorized
+    raw entry has validated a human release and an open access epoch.
     """
 
     from .executor.pipeline import run_sealed_pipeline
+    from .executor.raw_source import production_raw_adapter
 
-    return run_sealed_pipeline(context)
+    return run_sealed_pipeline(context, adapter=production_raw_adapter)
 
 
 def production_binding_record() -> dict[str, Any]:
@@ -127,6 +130,10 @@ def production_binding_record() -> dict[str, Any]:
         "human_release_present": C.GATE_B_RELEASE_PATH.exists(),
         "access_audit_present": C.PHASE7_ACCESS_AUDIT_PATH.exists(),
         "raw_adapter_status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
+        "raw_adapter_binding": "PRODUCTION_RAW_SOURCE_ADAPTER_BOUND",
+        "raw_adapter_id": C.RAW_SOURCE_ADAPTER_ID,
+        "raw_adapter_activation": C.RAW_SOURCE_ADAPTER_ACTIVATION,
+        "raw_adapter_local_input_root_env": C.PHASE7_LOCAL_INPUT_ROOT_ENV,
         "historical_final_test_access_total": (
             C.HISTORICAL_FINAL_TEST_ACCESS_TOTAL
         ),

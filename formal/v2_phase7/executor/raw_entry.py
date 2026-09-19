@@ -9,9 +9,11 @@ boundary:
 * it publishes the ``CANONICAL_NODES`` payload that every later stage consumes
   as an immutable, hash-validated checkpoint.
 
-Gate B.0 deliberately activates no adapter: the entry is bound but refuses to
-read anything, so no Final-Test raw read, no epoch and no materialization can
-happen before the human release. Nothing here reads Q4 raw data at import time.
+The production raw-source adapter is implemented in
+:mod:`formal.v2_phase7.executor.raw_source` and bound by the Gate-B callback,
+but this entry still refuses to read anything without a validated human
+release and an open access epoch: no raw read, no epoch and no materialization
+can happen before the release. Nothing here reads Q4 raw data at import time.
 """
 
 from __future__ import annotations
