@@ -1,3 +1,8 @@
+> **CURRENT JATM PAPER AUTHORITY:**
+> Read `CURRENT_PAPER_AUTHORITY.md` before using experiment results.
+> Current final held-out results are NOT on `main` and are NOT the legacy
+> `final_test_v2` outputs.
+
 # Air Slot
 
 Air Slot is an evidence-aware airline-recovery research implementation. Its

@@ -1,0 +1,112 @@
+{
+  "schema_version": "AIR_SLOT_CURRENT_PAPER_AUTHORITY_V1",
+  "status": "FINAL_RESULTS_FROZEN",
+  "published": "2026-09-20",
+  "paper_primary": {
+    "branch": "v2/paper-primary",
+    "commit": "b753db8251812faec2eb2dbdabf34c325eb76f9b"
+  },
+  "final_test": {
+    "branch": "v2/phase7-gate-a",
+    "commit": "8360dd7d88958ae139322d0ea5c66f1c5fe6455c",
+    "epoch": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2",
+    "complete": true,
+    "paper_results_frozen": true
+  },
+  "final_test_state": {
+    "execution_status": "PASS",
+    "post_execution_audit": "PASS",
+    "epoch_seal_status": "SEALED_AUDIT_PASS",
+    "ready_for_freeze": true,
+    "scientific_definition_changed": false,
+    "blocking_failure_codes": []
+  },
+  "superseded_epochs": [
+    "artifacts/experiment/final_test_v2",
+    "artifacts/experiment/final_test_v2_stage_matched",
+    "artifacts/experiment/final_test_v2_stage_matched_canonical_v1"
+  ],
+  "authoritative_evidence": {
+    "freeze": {
+      "json": "formal/JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V2.json",
+      "md": "formal/JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V2.md",
+      "artifact_hash": "sha256:05b6327ae842dc23b5449e61d541337a18da4aa388063f9ab6862ae2a1808ecc",
+      "hash_note": "content identity hash (artifact_hash field) of the freeze payload"
+    },
+    "epoch_seal": {
+      "path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/EPOCH_SEAL.json",
+      "file_sha256": "sha256:eb4a22a2079183f1eca3511c5002334eeccb9f19b282f9781189475ce9c21614",
+      "committed_blob_sha256": "06fe4f62e2f48ac5b3c535ef47a0b8b15023b4235a6a46e6b19fb5cc52b05c4a"
+    },
+    "execution_result": {
+      "path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/FINAL_TEST_EXECUTION_RESULT.json",
+      "file_sha256": "sha256:0687b21aef9e09f28ba9a3ad573ac57930af8017ff46450b3000d6266f8fd0fd",
+      "committed_blob_sha256": "794f314b966eb753147daf900ae06fc3ed36b32c48dfb2e9b0b26a85f7552684"
+    },
+    "post_execution_audit": {
+      "json": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/POST_EXECUTION_AUDIT.json",
+      "json_file_sha256": "sha256:efb3c26ad85d3cdc780df26513e3896f9d52c421298a7c2b1e776463bb9be693",
+      "json_committed_blob_sha256": "129c3c901d010886e4fac9f022a0ba08ce6cdd6e32330ab4316e59ab39e13e55",
+      "md": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/POST_EXECUTION_AUDIT.md",
+      "md_file_sha256": "sha256:60db1d5c3afbe425c1cae9af8fb2f40e0638294d7c6b2979d8a8e4707f409de7",
+      "md_committed_blob_sha256": "f488045fbc3af401d0ce20a702f9e56702976f961f43853e8667d7daf0bf38a8"
+    },
+    "access_audit": {
+      "path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/PHASE7_ACCESS_AUDIT.json",
+      "file_sha256": "sha256:3ab883ba89f4c7822832ad296a37bb83671fd9a33467a8b52ab7365924527a1e",
+      "status": "PHASE7_ACCESS_EPOCH_COMPLETE"
+    }
+  },
+  "paper_views": {
+    "checkpoint_path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/checkpoints/PAPER_VIEWS.json",
+    "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1",
+    "file_sha256": "sha256:cfedca4f4f99d5fcdb7f745c23603b884f9df19ff3efc9a4c97af807fc5424a3",
+    "payload_hash": "sha256:88b470adbf6b54634fc196c8f4be94d1ec99caa82ce3af74faf2b4840a595466",
+    "committed_to_repository": false,
+    "contains": [
+      "section_5_2",
+      "section_5_4",
+      "section_5_5",
+      "information_value",
+      "primary_design",
+      "typed_scientific_states"
+    ],
+    "identity_recorded_in": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/FINAL_TEST_EXECUTION_RESULT.json",
+    "note": "sealed epoch checkpoint; the checkpoints/ tree is local to the sealed Phase-7 execution worktree and is not committed"
+  },
+  "section_4_capacity_diagnostic": {
+    "scope": "SECTION_4_M1_CAPACITY_DIAGNOSTIC_ONLY",
+    "does_not_select_or_mutate_section5_model": true,
+    "section5_primary_model": "H16_FROZEN_PRIMARY",
+    "active_model_mutation": "NONE",
+    "h_capacity_downstream_execution": "NONE",
+    "section4_status_during_final_test": "REUSED_NOT_RERUN",
+    "paper_primary_files": [
+      "artifacts/diagnostics/jatm_section4/h_capacity/H_CAPACITY_SELECTION.md",
+      "artifacts/diagnostics/jatm_section4/h_capacity/H_CAPACITY_SELECTION.json",
+      "artifacts/diagnostics/jatm_section4/h_capacity/H_CAPACITY_MODEL_PERFORMANCE.csv",
+      "artifacts/diagnostics/jatm_section4/h_capacity/H_CAPACITY_TARGET_PERFORMANCE.csv"
+    ]
+  },
+  "do_not_use_for_current_results": [
+    "artifacts/experiment/final_test_v2",
+    "artifacts/experiment/final_test_v2_stage_matched",
+    "artifacts/experiment/final_test_v2_stage_matched_canonical_v1",
+    "artifacts/experiment/final_test_v2/PAPER_FACING_SECTION5_VIEWS.md",
+    "paper-primary Development result artifacts (valid development evidence only)",
+    "artifacts/diagnostics/v2_phase7/gate_b0_dag (pre-open safe-fixture DAG dump)"
+  ],
+  "default_branch": {
+    "name": "main",
+    "role": "repository/default navigation plus authority pointer; not a scientific branch"
+  },
+  "hash_semantics": {
+    "recorded_file_sha256": "recorded over the sealed epoch working-copy files as written (CRLF line endings); these are the identities recorded inside EPOCH_SEAL.json / POST_EXECUTION_AUDIT.* and match the JATM freeze and epoch seal documents",
+    "committed_blob_sha256": "sha256 over the LF-normalized blob content as stored in git; differs from the recorded file hash only because the repository stores line-ending-normalized copies",
+    "artifact_hash": "content identity hash of a canonical JSON payload (artifact_hash field), not a file byte hash"
+  },
+  "locating_tags": [
+    "jatm-paper-primary-freeze-20260920",
+    "jatm-final-test-freeze-20260920"
+  ]
+}
