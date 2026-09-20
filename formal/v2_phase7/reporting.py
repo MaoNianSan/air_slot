@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from . import constants as C
@@ -22,7 +23,17 @@ def _gate_a_commit_value() -> str:
     return head
 
 
-def _access_boundary_disclosure(gate_b_release_present: bool) -> dict[str, Any]:
+def _relative_repo_path(path: Path) -> str:
+    try:
+        return str(Path(path).relative_to(C.ROOT))
+    except ValueError:
+        return str(path)
+
+
+def _access_boundary_disclosure(
+    epoch_paths: C.EpochPaths | None = None,
+    historical_paths: C.EpochPaths | None = None,
+) -> dict[str, Any]:
     """Return the pre-open access disclosure, including the incidental audit read.
 
     A repository-level ``rg`` audit necessarily traversed legacy Final-Test
@@ -30,6 +41,16 @@ def _access_boundary_disclosure(gate_b_release_present: bool) -> dict[str, Any]:
     scientific computation, cohort selection, or a Phase-7 access increment.
     """
 
+    current = epoch_paths or C.stage_matched_epoch_paths()
+    historical = historical_paths or C.historical_epoch_paths()
+    release_present = current.gate_b_release_path.exists()
+    audit_present = current.access_audit_path.exists()
+    historical_release_present = (
+        historical.gate_b_release_path.exists()
+    )
+    historical_audit_present = (
+        historical.access_audit_path.exists()
+    )
     return {
         "q4_raw_reads": 0,
         "repository_level_rg_incidental_audit_reads": 1,
@@ -41,24 +62,40 @@ def _access_boundary_disclosure(gate_b_release_present: bool) -> dict[str, Any]:
         "final_test_data_reads": 0,
         "legacy_final_test_writes": 0,
         "allow_final_test_true_occurrences": 0,
-        "gate_b_release_present": gate_b_release_present,
+        "gate_b_release_present": release_present,
+        "current_epoch_root": str(current.root),
+        "current_epoch_release_present": release_present,
+        "current_epoch_access_audit_present": audit_present,
+        "current_epoch_access_count": 1 if audit_present else 0,
+        "historical_epoch_root": str(historical.root),
+        "historical_epoch_present": historical.root.exists(),
+        "historical_epoch_release_present": historical_release_present,
+        "historical_epoch_access_audit_present": historical_audit_present,
+        "historical_epoch_used_for_scientific_computation": False,
+        "historical_epoch_used_for_selection": False,
         "phase7_access_epoch_opened": False,
     }
 
 
-def build_gate_a_preflight() -> dict[str, Any]:
+def build_gate_a_preflight(
+    *,
+    epoch_paths: C.EpochPaths | None = None,
+    historical_paths: C.EpochPaths | None = None,
+) -> dict[str, Any]:
     """Build the Gate-A preflight object without writing it."""
 
+    current = epoch_paths or C.stage_matched_epoch_paths()
+    historical = historical_paths or C.historical_epoch_paths()
     phase7_authority = validate_phase7_authority()
     r2 = phase7_authority["freeze_r2"]
     cohort = validate_cohort_reference()
     instruction = validate_instruction_copies()
     dry_run = run_dry_run()
-    gate_b_release_present = C.GATE_B_RELEASE_PATH.exists()
+    gate_b_release_present = current.gate_b_release_path.exists()
     _require(
         gate_b_release_present is False,
         "GATE_A_GATE_B_RELEASE_ALREADY_PRESENT",
-        str(C.GATE_B_RELEASE_PATH),
+        str(current.gate_b_release_path),
     )
     return {
         "schema_version": "AIR_SLOT_V2_PHASE7_GATE_A_PREFLIGHT_V1",
@@ -76,7 +113,8 @@ def build_gate_a_preflight() -> dict[str, Any]:
         },
         "dry_run": dry_run,
         "access_boundary": _access_boundary_disclosure(
-            gate_b_release_present
+            current,
+            historical,
         ),
         "final_test_accounting": {
             "historical_access_total": C.HISTORICAL_FINAL_TEST_ACCESS_TOTAL,
@@ -86,7 +124,8 @@ def build_gate_a_preflight() -> dict[str, Any]:
             "phase_7_entered": False,
         },
         "release_schema": {
-            "path": str(C.GATE_B_RELEASE_PATH.relative_to(C.ROOT)),
+            "path": _relative_repo_path(current.gate_b_release_path),
+            "current_epoch_root": str(current.root),
             "required_fields": list(C.RELEASE_FIELDS),
             "human_release_required": True,
         },
@@ -110,7 +149,13 @@ def build_gate_a_preflight() -> dict[str, Any]:
     }
 
 
-def _blocked_payload(code: str, detail: Any = None) -> dict[str, Any]:
+def _blocked_payload(
+    code: str,
+    detail: Any = None,
+    *,
+    epoch_paths: C.EpochPaths | None = None,
+    historical_paths: C.EpochPaths | None = None,
+) -> dict[str, Any]:
     return {
         "schema_version": "AIR_SLOT_V2_PHASE7_GATE_A_PREFLIGHT_V1",
         "status": "TYPED_BLOCKER",
@@ -118,7 +163,8 @@ def _blocked_payload(code: str, detail: Any = None) -> dict[str, Any]:
         "gate_b_authorized": False,
         "blocker": {"code": code, "detail": detail},
         "access_boundary": _access_boundary_disclosure(
-            C.GATE_B_RELEASE_PATH.exists()
+            epoch_paths,
+            historical_paths,
         ),
         "final_test_accounting": {
             "historical_access_total": C.HISTORICAL_FINAL_TEST_ACCESS_TOTAL,
@@ -134,5 +180,6 @@ __all__ = [
     "_access_boundary_disclosure",
     "_blocked_payload",
     "_gate_a_commit_value",
+    "_relative_repo_path",
     "build_gate_a_preflight",
 ]

@@ -1,27 +1,9 @@
-"""``REFERENCE_RECOVERY_COHORT``: the frozen reference shortlist and ``R_g*``.
+"""``REFERENCE_RECOVERY_COHORT``: stage-local ``R_g*`` and their union.
 
-The frozen Freeze-R2 authority fixes
-
-``H_g^{C,*} = H_g^{C,History+Joint}``
-
-and
-
-``R_g* = H_g^{C,History+Joint} \u2229 StageIISupported``.
-
-``H_g^{C,*}`` is the consequence-based Stage-I shortlist of the
-``HISTORY_JOINT`` reference variant at the nominal attention environment
-``q_0 = 0.10``. ``StageIISupported`` means the node can actually carry a
-Stage-II decision under the reference representation:
-
-* the operational stage has a non-empty local off-block recovery action set
-  (``PRE_IB`` / ``POST_IB_PRE_OB``), and
-* every scenario of the reference state set is supported, because the frozen
-  Stage-II objective is undefined on an abstaining scenario.
-
-Nodes that fail either condition stay typed (``NOT_ACTIONABLE`` /
-``ABSTAIN_NO_COMMON_SUPPORT``): they are excluded from ``R_g*`` and are never
-zero-filled. Every alternative representation is later evaluated on exactly
-this same ``R_g*``; only the reference variant defines the cohort.
+The frozen authority defines the consequence Stage-I shortlist independently
+inside PRE and TURN. Each stage-local shortlist is then support-qualified
+against the reference state set. The formal Stage-II cohort is the deterministic
+union, ordered PRE then TURN. TAXI and COMP never enter this cohort.
 """
 
 from __future__ import annotations
@@ -40,17 +22,28 @@ from .state_variants import state_sets_by_node
 
 NOT_ACTIONABLE_TYPED_STATE = "NOT_ACTIONABLE"
 ABSTAIN_TYPED_STATE = "ABSTAIN_NO_COMMON_SUPPORT"
+FLATTENED_UNION_SEMANTICS = (
+    "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION"
+)
 
 
 def reference_shortlist_node_ids(
     attention_decisions: Mapping[str, Any],
     *,
     variant: str = S.REFERENCE_VARIANT,
+    stage: str,
     q: float = C.NOMINAL_Q,
 ) -> tuple[str, ...]:
-    """``H_g^{C,*}``: selected nodes of the consequence Stage-I decision."""
+    """``H_g^{C,*}`` for one Stage-I actionable stage."""
 
-    decision = attention_decision(attention_decisions, variant, q, "CONSEQUENCE")
+    _require(
+        stage in S.ACTIONABLE_STAGE_I_STAGES,
+        "PHASE7_REFERENCE_NON_ACTIONABLE_STAGE",
+        stage,
+    )
+    decision = attention_decision(
+        attention_decisions, variant, stage, q, "CONSEQUENCE"
+    )
     return tuple(entry.node_id for entry in decision.entries if entry.selected)
 
 
@@ -59,87 +52,150 @@ def build_reference_recovery_cohort(
     state_variants: Mapping[str, Any],
     attention_decisions: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Publish ``H_g^{C,*}`` and ``R_g*`` for the frozen reference authority."""
+    """Publish stage-local shortlists and the deterministic support-qualified union."""
 
     nodes = nodes_by_id(nodes_payload)
-    shortlist = reference_shortlist_node_ids(attention_decisions)
-    _require(bool(shortlist), "PHASE7_REFERENCE_SHORTLIST_EMPTY")
-    reference_state_sets = state_sets_by_node(state_variants, S.REFERENCE_VARIANT)
+    shortlist_by_stage: dict[str, tuple[str, ...]] = {}
+    for stage in S.ACTIONABLE_STAGE_I_STAGES:
+        if not any(node.stage == stage for node in nodes.values()):
+            shortlist_by_stage[str(stage)] = ()
+            continue
+        try:
+            shortlist_by_stage[str(stage)] = reference_shortlist_node_ids(
+                attention_decisions, stage=stage
+            )
+        except KeyError as error:
+            raise TypedBlocker(
+                "PHASE7_REFERENCE_ATTENTION_ROW_MISSING", stage
+            ) from error
+    _require(
+        any(shortlist_by_stage[stage] for stage in S.ACTIONABLE_STAGE_I_STAGES),
+        "PHASE7_REFERENCE_SHORTLIST_EMPTY",
+    )
 
-    included: list[str] = []
+    reference_state_sets = state_sets_by_node(
+        state_variants, S.REFERENCE_VARIANT
+    )
+    included_by_stage: dict[str, list[str]] = {
+        str(stage): [] for stage in S.ACTIONABLE_STAGE_I_STAGES
+    }
     excluded: list[dict[str, Any]] = []
-    for node_id in shortlist:
-        node = nodes.get(node_id)
-        if node is None:
-            raise TypedBlocker(
-                "PHASE7_REFERENCE_SHORTLIST_NODE_NOT_MATERIALIZED", node_id
-            )
-        stage = OperationalStage(node.stage)
-        if not is_actionable(stage):
-            excluded.append(
-                _exclusion(
-                    node,
-                    typed_state=NOT_ACTIONABLE_TYPED_STATE,
-                    reason_codes=(
-                        "PHASE7_STAGE_NOT_ACTIONABLE_LOCAL_ACTION_SET_IS_ZERO",
-                    ),
+    for stage in S.ACTIONABLE_STAGE_I_STAGES:
+        for node_id in shortlist_by_stage[str(stage)]:
+            node = nodes.get(node_id)
+            if node is None:
+                raise TypedBlocker(
+                    "PHASE7_REFERENCE_SHORTLIST_NODE_NOT_MATERIALIZED", node_id
                 )
-            )
-            continue
-        state_set = reference_state_sets.get(node_id)
-        if state_set is None:
-            raise TypedBlocker(
-                "PHASE7_REFERENCE_STATE_SET_MISSING", node_id
-            )
-        abstaining = tuple(
-            scenario.scenario_id
-            for scenario in state_set.scenarios
-            if scenario.support is SupportState.ABSTAIN
-        )
-        if abstaining:
-            excluded.append(
-                {
-                    **_exclusion(
-                        node,
-                        typed_state=ABSTAIN_TYPED_STATE,
-                        reason_codes=(
-                            "PHASE7_REFERENCE_STATE_SCENARIO_UNSUPPORTED",
-                        ),
-                    ),
-                    "abstaining_scenario_ids": [int(value) for value in abstaining],
+            operational_stage = OperationalStage(node.stage)
+            if (
+                operational_stage.value != str(stage)
+                or operational_stage not in {
+                    OperationalStage(value) for value in S.ACTIONABLE_STAGE_I_STAGES
                 }
+            ):
+                excluded.append(
+                    _exclusion(
+                        node,
+                        typed_state=NOT_ACTIONABLE_TYPED_STATE,
+                        reason_codes=(
+                            "PHASE7_STAGE2_STAGE_SCOPE_VIOLATION",
+                        ),
+                    )
+                )
+                continue
+            if not is_actionable(operational_stage):
+                excluded.append(
+                    _exclusion(
+                        node,
+                        typed_state=NOT_ACTIONABLE_TYPED_STATE,
+                        reason_codes=(
+                            "PHASE7_STAGE_NOT_ACTIONABLE_LOCAL_ACTION_SET_IS_ZERO",
+                        ),
+                    )
+                )
+                continue
+            state_set = reference_state_sets.get(node_id)
+            if state_set is None:
+                raise TypedBlocker("PHASE7_REFERENCE_STATE_SET_MISSING", node_id)
+            abstaining = tuple(
+                scenario.scenario_id
+                for scenario in state_set.scenarios
+                if scenario.support is SupportState.ABSTAIN
             )
-            continue
-        included.append(node_id)
+            if abstaining:
+                excluded.append(
+                    {
+                        **_exclusion(
+                            node,
+                            typed_state=ABSTAIN_TYPED_STATE,
+                            reason_codes=(
+                                "PHASE7_REFERENCE_STATE_SCENARIO_UNSUPPORTED",
+                            ),
+                        ),
+                        "abstaining_scenario_ids": [
+                            int(value) for value in abstaining
+                        ],
+                    }
+                )
+                continue
+            included_by_stage[str(stage)].append(node_id)
 
-    stage_counts = _stage_counts(tuple(shortlist), nodes)
+    flattened_shortlist = tuple(
+        node_id
+        for stage in S.ACTIONABLE_STAGE_I_STAGES
+        for node_id in shortlist_by_stage[str(stage)]
+    )
+    flattened = tuple(
+        node_id
+        for stage in S.ACTIONABLE_STAGE_I_STAGES
+        for node_id in included_by_stage[str(stage)]
+    )
+    if len(set(flattened)) != len(flattened):
+        raise TypedBlocker("PHASE7_REFERENCE_COHORT_NOT_UNIQUE", flattened)
+    if any(node_id not in nodes for node_id in flattened):
+        raise TypedBlocker("PHASE7_REFERENCE_COHORT_NODE_NOT_MATERIALIZED", flattened)
+
     return {
         "reference_variant": S.REFERENCE_VARIANT,
         "reference_authority": C.REFERENCE_AUTHORITY,
         "reference_representation_id": C.REFERENCE_REPRESENTATION_ID,
         "nominal_q": float(C.NOMINAL_Q),
         "cohort_id": C.STAGE2_INFORMATION_COHORT,
-        "shortlist_rule": "STAGE_I_CONSEQUENCE_TOP_K_SHARED_SELECTOR",
+        "stage1_actionable_stages": list(S.ACTIONABLE_STAGE_I_STAGES),
+        "shortlist_rule": "STAGE_LOCAL_CONSEQUENCE_TOP_K_SHARED_SELECTOR",
         "shortlist_authority": "P^C = Phi_C(C^CU)",
-        "shortlist_node_ids": list(shortlist),
-        "shortlist_size": len(shortlist),
-        "shortlist_stage_counts": stage_counts,
+        "shortlist_node_ids_by_stage": {
+            stage: list(shortlist_by_stage[str(stage)])
+            for stage in S.ACTIONABLE_STAGE_I_STAGES
+        },
+        "shortlist_node_ids": list(flattened_shortlist),
+        "shortlist_size": len(flattened_shortlist),
+        "shortlist_stage_counts": {
+            stage: len(shortlist_by_stage[str(stage)])
+            for stage in S.ACTIONABLE_STAGE_I_STAGES
+        },
+        "flattened_union_semantics": FLATTENED_UNION_SEMANTICS,
         "stage2_support_rule": (
             "ACTIONABLE_STAGE_AND_REFERENCE_STATE_FULLY_SUPPORTED"
         ),
-        "stage2_actionable_node_ids": included,
-        "stage2_cohort_size": len(included),
+        "stage2_actionable_node_ids_by_stage": {
+            stage: list(included_by_stage[str(stage)])
+            for stage in S.ACTIONABLE_STAGE_I_STAGES
+        },
+        "stage2_actionable_node_ids_flattened": list(flattened),
+        "stage2_actionable_node_ids": list(flattened),
+        "stage2_cohort_size": len(flattened),
         "stage2_excluded": excluded,
         "stage2_excluded_count": len(excluded),
         "alternative_representations_use_fixed_r_star": True,
-        "typed_states": sorted(
-            {entry["typed_state"] for entry in excluded}
-        ),
+        "no_pooled_stage1_decision": True,
+        "typed_states": sorted({entry["typed_state"] for entry in excluded}),
     }
 
 
 def actionable_cohort(payload: Mapping[str, Any]) -> tuple[str, ...]:
-    """Decode ``R_g*`` from the published cohort checkpoint."""
+    """Decode the deterministic ``R*`` union from the published cohort."""
 
     cohort = tuple(str(value) for value in payload["stage2_actionable_node_ids"])
     _require(
@@ -161,18 +217,9 @@ def _exclusion(
     }
 
 
-def _stage_counts(
-    node_ids: Sequence[str], nodes: Mapping[str, CanonicalNode]
-) -> dict[str, int]:
-    counts: dict[str, int] = {}
-    for node_id in node_ids:
-        stage = nodes[node_id].stage
-        counts[stage] = counts.get(stage, 0) + 1
-    return dict(sorted(counts.items()))
-
-
 __all__ = [
     "ABSTAIN_TYPED_STATE",
+    "FLATTENED_UNION_SEMANTICS",
     "NOT_ACTIONABLE_TYPED_STATE",
     "actionable_cohort",
     "build_reference_recovery_cohort",

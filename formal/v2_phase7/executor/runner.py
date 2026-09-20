@@ -28,6 +28,7 @@ from .nodes import nodes_from_payload
 from .paper_views import build_paper_views
 from .recovery_decisions import build_recovery_decisions
 from .reference_cohort import build_reference_recovery_cohort
+from .robustness import build_robustness
 from .services import FrozenScienceServices, load_frozen_services
 from .state_variants import build_state_variants
 
@@ -280,11 +281,20 @@ def _compute_stage(
         )
     if stage == S.BOOTSTRAP:
         return build_bootstrap(inputs[S.M4_COMPARISONS])
+    if stage == S.ROBUSTNESS:
+        return build_robustness(
+            inputs[S.CANONICAL_NODES],
+            inputs[S.STATE_VARIANTS],
+            inputs[S.REFERENCE_RECOVERY_COHORT],
+            inputs[S.RECOVERY_DECISIONS],
+            services=holder.get(),
+        )
     if stage == S.PAPER_VIEWS:
         return build_paper_views(
             inputs[S.ATTENTION_DECISIONS],
             inputs[S.M4_COMPARISONS],
             inputs[S.BOOTSTRAP],
+            inputs[S.ROBUSTNESS],
         )
     raise TypedBlocker("PHASE7_DAG_STAGE_NOT_IMPLEMENTED", stage)
 

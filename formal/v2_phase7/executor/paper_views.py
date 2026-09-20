@@ -1,27 +1,12 @@
-"""``PAPER_VIEWS``: reporting views built only from frozen checkpoints.
-
-The views are pure projections of the persisted atomic results:
-
-* Section 5.2 primary design - the ``stage x q`` operating axis
-  (``q in {0.05, 0.10, 0.20, 0.30}``), read from ``ATTENTION_DECISIONS``;
-* Section 5.4 representation identification - the common-basis ``L_att`` and
-  ``L_rec`` comparisons against ``HISTORY_JOINT`` on the fixed cohort ``R_g*``,
-  read from ``M4_COMPARISONS``;
-* Section 5.5 sensitivity scope - the nominal base specification and the frozen
-  one-factor-at-a-time axes, read from the frozen constants.
-
-No scientific quantity is recomputed here: the module never imports an M1, M2,
-M3 or M4 service. Everything downstream of the immutable manifest is a view.
-The fixed-window history sensitivity keeps the status
-``NOT_AVAILABLE_NOT_FROZEN`` and no substitute model is trained for it.
-"""
+"""``PAPER_VIEWS``: read-only projections of the frozen stage checkpoints."""
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping
 
 from .. import constants as C
 from . import stages as S
+from .checkpoints import content_hash
 
 PRIMARY_DESIGN = "STAGE_X_Q"
 SENSITIVITY_DESIGN = "ONE_FACTOR_AT_A_TIME"
@@ -52,13 +37,6 @@ SECTION_5_5_AXES: tuple[dict[str, Any], ...] = (
         "quantiles": ["Q80", "Q90", "Q95"],
         "status": "FROZEN_SENSITIVITY_AXIS_DECLARED",
     },
-    {
-        "axis": "history_capacity",
-        "nominal": 16,
-        "grid": [8, 16],
-        "levels": ["H8", "H16"],
-        "status": "FROZEN_SENSITIVITY_AXIS_DECLARED",
-    },
 )
 
 EXCLUDED_FROM_FINAL_TEST_SCOPE: tuple[dict[str, str], ...] = (
@@ -76,9 +54,8 @@ def build_paper_views(
     attention_decisions: Mapping[str, Any],
     m4_comparisons: Mapping[str, Any],
     bootstrap: Mapping[str, Any],
+    robustness: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Build every paper-facing view from the persisted checkpoints."""
-
     return {
         "primary_design": PRIMARY_DESIGN,
         "scientific_recomputation_performed": False,
@@ -86,10 +63,12 @@ def build_paper_views(
             S.ATTENTION_DECISIONS,
             S.M4_COMPARISONS,
             S.BOOTSTRAP,
+            S.ROBUSTNESS,
         ],
-        "section_5_2": _section_5_2(attention_decisions),
+        "section_5_2": _section_5_2(attention_decisions, m4_comparisons),
         "section_5_4": _section_5_4(m4_comparisons, bootstrap),
-        "section_5_5": _section_5_5(),
+        "information_value": _information_value(m4_comparisons, bootstrap),
+        "section_5_5": _section_5_5(robustness),
         "excluded_from_final_test_scope": [
             dict(item) for item in EXCLUDED_FROM_FINAL_TEST_SCOPE
         ],
@@ -98,34 +77,86 @@ def build_paper_views(
     }
 
 
-def _section_5_2(attention_decisions: Mapping[str, Any]) -> dict[str, Any]:
+def _section_5_2(
+    attention_decisions: Mapping[str, Any],
+    m4_comparisons: Mapping[str, Any],
+) -> dict[str, Any]:
     reference_variant = S.REFERENCE_VARIANT
     rows: list[dict[str, Any]] = []
-    for row in attention_decisions["rows"]:
-        if row["variant"] != reference_variant:
-            continue
+    for q in C.Q_GRID:
+        stage_rows: list[dict[str, Any]] = []
+        for stage in S.ACTIONABLE_STAGE_I_STAGES:
+            matching = [
+                row
+                for row in attention_decisions["rows"]
+                if row["variant"] == reference_variant
+                and row["stage"] == stage
+                and abs(float(row["q"]) - float(q)) <= 1e-9
+            ]
+            if not matching:
+                continue
+            row = matching[0]
+            stage_rows.append(row)
+            rows.append(
+                {
+                    "q": float(row["q"]),
+                    "stage": stage,
+                    "k": int(row["k"]),
+                    "cohort_size": int(row["cohort_size"]),
+                    "canonical_stage_node_count": int(
+                        row["canonical_stage_node_count"]
+                    ),
+                    "eligible_candidate_count": int(
+                        row["eligible_candidate_count"]
+                    ),
+                    "abstaining_node_count": int(row["abstaining_node_count"]),
+                    "selected_node_count": len(row["selected_node_ids"]),
+                    "selected_stage_counts": dict(row["selected_stage_counts"]),
+                    "selected_stage_class_counts": dict(
+                        row["selected_stage_class_counts"]
+                    ),
+                }
+            )
         rows.append(
             {
-                "q": float(row["q"]),
-                "k": int(row["k"]),
-                "cohort_size": int(row["cohort_size"]),
-                "abstaining_node_count": int(row["abstaining_node_count"]),
-                "selected_node_count": len(row["selected_node_ids"]),
-                "selected_stage_counts": dict(row["selected_stage_counts"]),
-                "selected_stage_class_counts": dict(
-                    row["selected_stage_class_counts"]
+                "q": float(q),
+                "stage": "OVERALL",
+                "k": sum(int(row["k"]) for row in stage_rows),
+                "cohort_size": sum(int(row["cohort_size"]) for row in stage_rows),
+                "canonical_stage_node_count": sum(
+                    int(row["canonical_stage_node_count"]) for row in stage_rows
+                ),
+                "eligible_candidate_count": sum(
+                    int(row["eligible_candidate_count"]) for row in stage_rows
+                ),
+                "abstaining_node_count": sum(
+                    int(row["abstaining_node_count"]) for row in stage_rows
+                ),
+                "selected_node_count": sum(
+                    len(row["selected_node_ids"]) for row in stage_rows
+                ),
+                "selected_stage_counts": {},
+                "selected_stage_class_counts": {},
+                "aggregation": "PRE_TURN_OBJECTIVE_ROWS_NOT_A_POOLED_STAGE1_RANKING",
+                "attention_aggregate": m4_comparisons["attention"]["aggregation"],
+                "L_att_overall": (
+                    m4_comparisons["attention"]["self_reference"].get("L_att")
+                    if abs(float(q) - float(C.NOMINAL_Q)) <= 1e-9
+                    else None
                 ),
             }
         )
-    rows.sort(key=lambda item: item["q"])
     return {
         "reference_variant": reference_variant,
         "reference_representation_id": C.REFERENCE_REPRESENTATION_ID,
-        "capacity_rule": "K = ceil(q * N)",
+        "stage1_actionable_stages": list(S.ACTIONABLE_STAGE_I_STAGES),
+        "capacity_rule": "K_STAGE = ceil(q * N_STAGE); K_OVERALL = sum_g K_g",
         "q_grid": [float(value) for value in attention_decisions["q_grid"]],
         "nominal_q": float(attention_decisions["nominal_q"]),
         "q_is_primary_operating_axis": True,
         "q_is_sensitivity_axis": False,
+        "pooled_stage1_ranking": False,
+        "overall_rule": "OBJECTIVES_THEN_NORMALIZE",
         "rows": rows,
     }
 
@@ -135,6 +166,8 @@ def _section_5_4(
 ) -> dict[str, Any]:
     attention = m4_comparisons["attention"]
     recovery = m4_comparisons["recovery"]
+    cross_state_attention = attention["comparators"]["HISTORY_MARGINAL"]
+    cross_state_recovery = recovery["comparators"]["HISTORY_MARGINAL"]
     comparators: list[dict[str, Any]] = []
     for variant in S.COMPARATOR_VARIANTS:
         attention_record = attention["comparators"][variant]
@@ -148,9 +181,6 @@ def _section_5_4(
                     "L_att": attention_record.get("L_att"),
                     "typed_state": attention_record.get("typed_state"),
                     "overlap_count": attention_record.get("overlap_count"),
-                    "overlap_fraction_of_reference": attention_record.get(
-                        "overlap_fraction_of_reference"
-                    ),
                     "entered_count": len(attention_record.get("entered", ()) or ()),
                     "displaced_count": len(
                         attention_record.get("displaced", ()) or ()
@@ -159,6 +189,7 @@ def _section_5_4(
                     "spearman_rho": attention_record.get("spearman_rho"),
                     "ci": attention_interval.get("ci"),
                     "ci_status": attention_interval.get("status"),
+                    "aggregation": "OBJECTIVES_THEN_NORMALIZE",
                 },
                 "recovery": {
                     "L_rec": recovery_record.get("L_rec"),
@@ -171,19 +202,75 @@ def _section_5_4(
                 },
             }
         )
+    paired = bootstrap["marginal_uncertainty_increment"]
     return {
         "reference_id": m4_comparisons["reference_variant"],
         "reference_representation_id": C.REFERENCE_REPRESENTATION_ID,
         "fixed_cohort_id": m4_comparisons["cohort_id"],
         "fixed_cohort_size": int(m4_comparisons["cohort_size"]),
+        "stage1_actionable_stages": list(S.ACTIONABLE_STAGE_I_STAGES),
         "stage2_comparisons_use_fixed_r_star": True,
         "losses_reported_separately": True,
         "loss_total_defined": False,
+        "attention_stage_aggregation": m4_comparisons["attention"]["aggregation"],
+        "CROSS_STATE_DEPENDENCE_L_ATT": cross_state_attention.get("L_att"),
+        "CROSS_STATE_DEPENDENCE_L_REC": cross_state_recovery.get("L_rec"),
+        "MARGINAL_UNCERTAINTY_INCREMENT_L_ATT": paired["attention"].get(
+            "estimate"
+        ),
+        "MARGINAL_UNCERTAINTY_INCREMENT_L_ATT_CI_LOW": paired[
+            "attention"].get("ci_low"),
+        "MARGINAL_UNCERTAINTY_INCREMENT_L_ATT_CI_HIGH": paired[
+            "attention"].get("ci_high"),
+        "MARGINAL_UNCERTAINTY_INCREMENT_L_REC": paired["recovery"].get(
+            "estimate"
+        ),
+        "MARGINAL_UNCERTAINTY_INCREMENT_L_REC_CI_LOW": paired[
+            "recovery"].get("ci_low"),
+        "MARGINAL_UNCERTAINTY_INCREMENT_L_REC_CI_HIGH": paired[
+            "recovery"].get("ci_high"),
         "comparators": comparators,
     }
 
 
-def _section_5_5() -> dict[str, Any]:
+def _information_value(
+    m4_comparisons: Mapping[str, Any], bootstrap: Mapping[str, Any]
+) -> dict[str, Any]:
+    paired = bootstrap["marginal_uncertainty_increment"]
+    return {
+        "components": list(S.COMPARATOR_VARIANTS),
+        "cross_state_dependence": {
+            "comparator": "HISTORY_MARGINAL",
+            "reference": S.REFERENCE_VARIANT,
+            "definition": "L_HISTORY_MARGINAL - L_HISTORY_JOINT",
+            "CROSS_STATE_DEPENDENCE_L_ATT": m4_comparisons["attention"]
+            ["comparators"]["HISTORY_MARGINAL"].get("L_att"),
+            "CROSS_STATE_DEPENDENCE_L_REC": m4_comparisons["recovery"]
+            ["comparators"]["HISTORY_MARGINAL"].get("L_rec"),
+        },
+        "marginal_uncertainty_increment": {
+            "definition": paired["definition"],
+            "paired": bool(paired["paired"]),
+            "attention": dict(paired["attention"]),
+            "recovery": dict(paired["recovery"]),
+            "MARGINAL_UNCERTAINTY_INCREMENT_L_ATT": paired["attention"]
+            .get("estimate"),
+            "MARGINAL_UNCERTAINTY_INCREMENT_L_ATT_CI_LOW": paired[
+                "attention"].get("ci_low"),
+            "MARGINAL_UNCERTAINTY_INCREMENT_L_ATT_CI_HIGH": paired[
+                "attention"].get("ci_high"),
+            "MARGINAL_UNCERTAINTY_INCREMENT_L_REC": paired["recovery"]
+            .get("estimate"),
+            "MARGINAL_UNCERTAINTY_INCREMENT_L_REC_CI_LOW": paired[
+                "recovery"].get("ci_low"),
+            "MARGINAL_UNCERTAINTY_INCREMENT_L_REC_CI_HIGH": paired[
+                "recovery"].get("ci_high"),
+        },
+        "no_ambiguous_marginal_labels": True,
+    }
+
+
+def _section_5_5(robustness: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "design": SENSITIVITY_DESIGN,
         "nominal_base": {
@@ -198,9 +285,14 @@ def _section_5_5() -> dict[str, Any]:
         "one_factor_at_a_time": True,
         "crossed_with_q_grid": False,
         "fixed_window_history_status": S.FIXED_WINDOW_SENSITIVITY_STATUS,
-        "sensitivity_results_status": (
-            "DECLARED_SCOPE_ONLY_NO_SENSITIVITY_RESULTS_IN_THIS_RUN"
-        ),
+        "sensitivity_results_status": "EXECUTED",
+        "source_stage": S.ROBUSTNESS,
+        "source_payload_hash": content_hash(robustness),
+        "nominal_reference_id": robustness.get("nominal_reference_id"),
+        "fixed_r_star": bool(robustness.get("fixed_r_star")),
+        "stage1_rerun": bool(robustness.get("stage1_rerun")),
+        "row_count": int(robustness.get("row_count", 0)),
+        "results": [dict(row) for row in robustness.get("rows", ())],
     }
 
 

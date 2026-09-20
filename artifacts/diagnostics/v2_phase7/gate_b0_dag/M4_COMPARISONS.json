@@ -1,0 +1,2024 @@
+{
+  "checkpoint_schema_version": "AIR_SLOT_V2_PHASE7_CHECKPOINT_V1",
+  "dependencies": {
+    "ATTENTION_DECISIONS": "sha256:f659930b55329dc0c2aba8a2b3dcaa7726f5402e36e7fb28bdf919365770e2f0",
+    "CONSEQUENCE_VARIANTS": "sha256:84d1a73c02f414f65afb54fbeaf5159ee6f6ac5ee619ac35e5aa3e581fe37f49",
+    "RECOVERY_DECISIONS": "sha256:b0993fe4052a1f757fac741e27d3679a17d6bc33063b8754d8e94f891796cb58",
+    "REFERENCE_RECOVERY_COHORT": "sha256:32039a3bcf57f3627ff2c378a6ca3d619b763aa065a999799bfede2f522ea665"
+  },
+  "payload": {
+    "alternative_representations_may_define_h_r_for_l_att": true,
+    "attention": {
+      "aggregation": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+      "bootstrap_rows": {
+        "CURRENT_JOINT": [
+          {
+            "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "comparator_score": 0.6656817411447911,
+            "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "in_comparator_shortlist": true,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+            "reference_priority": 0.27620754150852084,
+            "reference_score": 0.27620754150852084,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "comparator_score": 0.39682827282872285,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": true,
+            "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "reference_priority": 0.4685716486656794,
+            "reference_score": 0.4685716486656794,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "comparator_score": 0.3301960349683392,
+            "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+            "reference_priority": 0.28768251731680483,
+            "reference_score": 0.28768251731680483,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "comparator_score": 0.5347081805738606,
+            "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+            "reference_priority": 0.20208144257427652,
+            "reference_score": 0.20208144257427652,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "comparator_score": 0.8701329797413985,
+            "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "in_comparator_shortlist": true,
+            "in_reference_shortlist": true,
+            "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "reference_priority": 1.124013107340162,
+            "reference_score": 1.124013107340162,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+            "comparator_score": 0.29992855069885854,
+            "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+            "reference_priority": 0.3567549839371773,
+            "reference_score": 0.3567549839371773,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "comparator_score": 0.3068714029161524,
+            "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+            "reference_priority": 0.3015820554049835,
+            "reference_score": 0.3015820554049835,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "comparator_score": 0.25008958630155065,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+            "reference_priority": 0.48689629569754694,
+            "reference_score": 0.48689629569754694,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          }
+        ],
+        "HISTORY_MARGINAL": [
+          {
+            "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "comparator_score": 0.3673533748418542,
+            "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+            "reference_priority": 0.27620754150852084,
+            "reference_score": 0.27620754150852084,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "comparator_score": 0.5597174819990127,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "in_comparator_shortlist": true,
+            "in_reference_shortlist": true,
+            "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "reference_priority": 0.4685716486656794,
+            "reference_score": 0.4685716486656794,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "comparator_score": 0.28768251731680483,
+            "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+            "reference_priority": 0.28768251731680483,
+            "reference_score": 0.28768251731680483,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "comparator_score": 0.20208144257427652,
+            "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+            "reference_priority": 0.20208144257427652,
+            "reference_score": 0.20208144257427652,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "comparator_score": 1.124013107340162,
+            "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "in_comparator_shortlist": true,
+            "in_reference_shortlist": true,
+            "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "reference_priority": 1.124013107340162,
+            "reference_score": 1.124013107340162,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+            "comparator_score": 0.3567549839371773,
+            "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+            "reference_priority": 0.3567549839371773,
+            "reference_score": 0.3567549839371773,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "comparator_score": 0.3015820554049835,
+            "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+            "reference_priority": 0.3015820554049835,
+            "reference_score": 0.3015820554049835,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "comparator_score": 0.5780421290308803,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+            "reference_priority": 0.48689629569754694,
+            "reference_score": 0.48689629569754694,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          }
+        ],
+        "HISTORY_POINT": [
+          {
+            "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "comparator_score": 0.0,
+            "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+            "reference_priority": 0.27620754150852084,
+            "reference_score": 0.27620754150852084,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "comparator_score": 0.12350666482920536,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "in_comparator_shortlist": true,
+            "in_reference_shortlist": true,
+            "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "reference_priority": 0.4685716486656794,
+            "reference_score": 0.4685716486656794,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "comparator_score": 0.025064538713136575,
+            "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+            "reference_priority": 0.28768251731680483,
+            "reference_score": 0.28768251731680483,
+            "stage": "PRE_IB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "comparator_score": 0.0,
+            "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+            "reference_priority": 0.20208144257427652,
+            "reference_score": 0.20208144257427652,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "comparator_score": 0.15170183442019103,
+            "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "in_comparator_shortlist": true,
+            "in_reference_shortlist": true,
+            "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "reference_priority": 1.124013107340162,
+            "reference_score": 1.124013107340162,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+            "comparator_score": 0.0,
+            "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+            "reference_priority": 0.3567549839371773,
+            "reference_score": 0.3567549839371773,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "comparator_score": 0.040880912797980055,
+            "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+            "reference_priority": 0.3015820554049835,
+            "reference_score": 0.3015820554049835,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          },
+          {
+            "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "comparator_score": 0.14737548135135073,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "in_comparator_shortlist": false,
+            "in_reference_shortlist": false,
+            "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+            "reference_priority": 0.48689629569754694,
+            "reference_score": 0.48689629569754694,
+            "stage": "POST_IB_PRE_OB",
+            "support_mass": 1.0,
+            "support_threshold": 0.9
+          }
+        ]
+      },
+      "by_stage": {
+        "POST_IB_PRE_OB": {
+          "bootstrap_rows": {
+            "CURRENT_JOINT": [
+              {
+                "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "comparator_score": 0.5347081805738606,
+                "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+                "reference_priority": 0.20208144257427652,
+                "reference_score": 0.20208144257427652,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+                "comparator_score": 0.8701329797413985,
+                "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+                "in_comparator_shortlist": true,
+                "in_reference_shortlist": true,
+                "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+                "reference_priority": 1.124013107340162,
+                "reference_score": 1.124013107340162,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+                "comparator_score": 0.29992855069885854,
+                "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+                "reference_priority": 0.3567549839371773,
+                "reference_score": 0.3567549839371773,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "comparator_score": 0.3068714029161524,
+                "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+                "reference_priority": 0.3015820554049835,
+                "reference_score": 0.3015820554049835,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "comparator_score": 0.25008958630155065,
+                "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+                "reference_priority": 0.48689629569754694,
+                "reference_score": 0.48689629569754694,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              }
+            ],
+            "HISTORY_MARGINAL": [
+              {
+                "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "comparator_score": 0.20208144257427652,
+                "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+                "reference_priority": 0.20208144257427652,
+                "reference_score": 0.20208144257427652,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+                "comparator_score": 1.124013107340162,
+                "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+                "in_comparator_shortlist": true,
+                "in_reference_shortlist": true,
+                "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+                "reference_priority": 1.124013107340162,
+                "reference_score": 1.124013107340162,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+                "comparator_score": 0.3567549839371773,
+                "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+                "reference_priority": 0.3567549839371773,
+                "reference_score": 0.3567549839371773,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "comparator_score": 0.3015820554049835,
+                "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+                "reference_priority": 0.3015820554049835,
+                "reference_score": 0.3015820554049835,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "comparator_score": 0.5780421290308803,
+                "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+                "reference_priority": 0.48689629569754694,
+                "reference_score": 0.48689629569754694,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              }
+            ],
+            "HISTORY_POINT": [
+              {
+                "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "comparator_score": 0.0,
+                "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+                "reference_priority": 0.20208144257427652,
+                "reference_score": 0.20208144257427652,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+                "comparator_score": 0.15170183442019103,
+                "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+                "in_comparator_shortlist": true,
+                "in_reference_shortlist": true,
+                "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+                "reference_priority": 1.124013107340162,
+                "reference_score": 1.124013107340162,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+                "comparator_score": 0.0,
+                "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+                "reference_priority": 0.3567549839371773,
+                "reference_score": 0.3567549839371773,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "comparator_score": 0.040880912797980055,
+                "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+                "reference_priority": 0.3015820554049835,
+                "reference_score": 0.3015820554049835,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "comparator_score": 0.14737548135135073,
+                "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+                "reference_priority": 0.48689629569754694,
+                "reference_score": 0.48689629569754694,
+                "stage": "POST_IB_PRE_OB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              }
+            ]
+          },
+          "capacity": {
+            "cohort_size": 5,
+            "k": 1,
+            "q": 0.1,
+            "selector": "M3_STAGE1_SHARED_SELECTOR",
+            "signal": "P^C = Phi_C(C^CU)"
+          },
+          "comparators": {
+            "CURRENT_JOINT": {
+              "L_att": 0.0,
+              "candidate_node_ids": [
+                "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+                "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+                "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+                "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+              ],
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+              "comparator_attention_value": 1.124013107340162,
+              "comparator_id": "CURRENT_JOINT",
+              "comparator_shortlist": [
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+              ],
+              "decision_evaluation": {
+                "A0": null,
+                "A5": null,
+                "L_att": 0.0,
+                "L_rec": null,
+                "activation_events": {},
+                "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+                "comparator_id": "CURRENT_JOINT",
+                "delta_attention_value": 0.0,
+                "delta_recovery_objective": null,
+                "diagnostics": {
+                  "candidate_count": 5.0,
+                  "comparator_shortlist_size": 1.0,
+                  "coverage_total_comparator": 0.4548215209253859,
+                  "coverage_total_reference": 0.4548215209253859,
+                  "displaced_count": 0.0,
+                  "entered_count": 0.0,
+                  "kendall_tau": -0.19999999999999998,
+                  "max_rank_displacement": 0.0,
+                  "mean_rank_displacement": 0.0,
+                  "overlap_count": 1.0,
+                  "overlap_fraction_of_reference": 1.0,
+                  "reference_shortlist_size": 1.0,
+                  "spearman_rho": 0.0
+                },
+                "family": "ATTENTION",
+                "reference_attention_value": 1.124013107340162,
+                "reference_id": "HISTORY_JOINT",
+                "reference_recoverable_value": null,
+                "support_status": "SUPPORTED",
+                "value_status": "SUPPORTED"
+              },
+              "delta_attention_value": 0.0,
+              "diagnostics": {
+                "candidate_count": 5.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.4548215209253859,
+                "coverage_total_reference": 0.4548215209253859,
+                "displaced_count": 0.0,
+                "entered_count": 0.0,
+                "kendall_tau": -0.19999999999999998,
+                "max_rank_displacement": 0.0,
+                "mean_rank_displacement": 0.0,
+                "overlap_count": 1.0,
+                "overlap_fraction_of_reference": 1.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": 0.0
+              },
+              "displaced": [],
+              "entered": [],
+              "kendall_tau": -0.19999999999999998,
+              "max_rank_displacement": 0,
+              "mean_rank_displacement": 0.0,
+              "overlap_count": 1,
+              "overlap_fraction_of_reference": 1.0,
+              "reason_codes": [],
+              "record_kind": "EVALUATED",
+              "reference_attention_value": 1.124013107340162,
+              "reference_id": "HISTORY_JOINT",
+              "reference_shortlist": [
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+              ],
+              "spearman_rho": 0.0,
+              "status": "SUPPORTED",
+              "typed_state": null
+            },
+            "HISTORY_MARGINAL": {
+              "L_att": 0.0,
+              "candidate_node_ids": [
+                "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+                "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+                "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+                "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+              ],
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+              "comparator_attention_value": 1.124013107340162,
+              "comparator_id": "HISTORY_MARGINAL",
+              "comparator_shortlist": [
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+              ],
+              "decision_evaluation": {
+                "A0": null,
+                "A5": null,
+                "L_att": 0.0,
+                "L_rec": null,
+                "activation_events": {},
+                "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+                "comparator_id": "HISTORY_MARGINAL",
+                "delta_attention_value": 0.0,
+                "delta_recovery_objective": null,
+                "diagnostics": {
+                  "candidate_count": 5.0,
+                  "comparator_shortlist_size": 1.0,
+                  "coverage_total_comparator": 0.4548215209253859,
+                  "coverage_total_reference": 0.4548215209253859,
+                  "displaced_count": 0.0,
+                  "entered_count": 0.0,
+                  "kendall_tau": 0.9999999999999999,
+                  "max_rank_displacement": 0.0,
+                  "mean_rank_displacement": 0.0,
+                  "overlap_count": 1.0,
+                  "overlap_fraction_of_reference": 1.0,
+                  "reference_shortlist_size": 1.0,
+                  "spearman_rho": 0.9999999999999999
+                },
+                "family": "ATTENTION",
+                "reference_attention_value": 1.124013107340162,
+                "reference_id": "HISTORY_JOINT",
+                "reference_recoverable_value": null,
+                "support_status": "SUPPORTED",
+                "value_status": "SUPPORTED"
+              },
+              "delta_attention_value": 0.0,
+              "diagnostics": {
+                "candidate_count": 5.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.4548215209253859,
+                "coverage_total_reference": 0.4548215209253859,
+                "displaced_count": 0.0,
+                "entered_count": 0.0,
+                "kendall_tau": 0.9999999999999999,
+                "max_rank_displacement": 0.0,
+                "mean_rank_displacement": 0.0,
+                "overlap_count": 1.0,
+                "overlap_fraction_of_reference": 1.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": 0.9999999999999999
+              },
+              "displaced": [],
+              "entered": [],
+              "kendall_tau": 0.9999999999999999,
+              "max_rank_displacement": 0,
+              "mean_rank_displacement": 0.0,
+              "overlap_count": 1,
+              "overlap_fraction_of_reference": 1.0,
+              "reason_codes": [],
+              "record_kind": "EVALUATED",
+              "reference_attention_value": 1.124013107340162,
+              "reference_id": "HISTORY_JOINT",
+              "reference_shortlist": [
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+              ],
+              "spearman_rho": 0.9999999999999999,
+              "status": "SUPPORTED",
+              "typed_state": null
+            },
+            "HISTORY_POINT": {
+              "L_att": 0.0,
+              "candidate_node_ids": [
+                "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+                "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+                "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+                "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+              ],
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+              "comparator_attention_value": 1.124013107340162,
+              "comparator_id": "HISTORY_POINT",
+              "comparator_shortlist": [
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+              ],
+              "decision_evaluation": {
+                "A0": null,
+                "A5": null,
+                "L_att": 0.0,
+                "L_rec": null,
+                "activation_events": {},
+                "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+                "comparator_id": "HISTORY_POINT",
+                "delta_attention_value": 0.0,
+                "delta_recovery_objective": null,
+                "diagnostics": {
+                  "candidate_count": 5.0,
+                  "comparator_shortlist_size": 1.0,
+                  "coverage_total_comparator": 0.4548215209253859,
+                  "coverage_total_reference": 0.4548215209253859,
+                  "displaced_count": 0.0,
+                  "entered_count": 0.0,
+                  "kendall_tau": 0.7378647873726218,
+                  "max_rank_displacement": 0.0,
+                  "mean_rank_displacement": 0.0,
+                  "overlap_count": 1.0,
+                  "overlap_fraction_of_reference": 1.0,
+                  "reference_shortlist_size": 1.0,
+                  "spearman_rho": 0.8207826816681233
+                },
+                "family": "ATTENTION",
+                "reference_attention_value": 1.124013107340162,
+                "reference_id": "HISTORY_JOINT",
+                "reference_recoverable_value": null,
+                "support_status": "SUPPORTED",
+                "value_status": "SUPPORTED"
+              },
+              "delta_attention_value": 0.0,
+              "diagnostics": {
+                "candidate_count": 5.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.4548215209253859,
+                "coverage_total_reference": 0.4548215209253859,
+                "displaced_count": 0.0,
+                "entered_count": 0.0,
+                "kendall_tau": 0.7378647873726218,
+                "max_rank_displacement": 0.0,
+                "mean_rank_displacement": 0.0,
+                "overlap_count": 1.0,
+                "overlap_fraction_of_reference": 1.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": 0.8207826816681233
+              },
+              "displaced": [],
+              "entered": [],
+              "kendall_tau": 0.7378647873726218,
+              "max_rank_displacement": 0,
+              "mean_rank_displacement": 0.0,
+              "overlap_count": 1,
+              "overlap_fraction_of_reference": 1.0,
+              "reason_codes": [],
+              "record_kind": "EVALUATED",
+              "reference_attention_value": 1.124013107340162,
+              "reference_id": "HISTORY_JOINT",
+              "reference_shortlist": [
+                "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+              ],
+              "spearman_rho": 0.8207826816681233,
+              "status": "SUPPORTED",
+              "typed_state": null
+            }
+          },
+          "reference_candidate_node_ids": [
+            "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+            "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+          ],
+          "reference_priority": {
+            "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7": 0.20208144257427652,
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.124013107340162,
+            "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e": 0.3567549839371773,
+            "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f": 0.3015820554049835,
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde": 0.48689629569754694
+          },
+          "reference_shortlist_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "self_reference": {
+            "L_att": 0.0,
+            "candidate_node_ids": [
+              "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+            ],
+            "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+            "comparator_attention_value": 1.124013107340162,
+            "comparator_id": "HISTORY_JOINT",
+            "comparator_shortlist": [
+              "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+            ],
+            "decision_evaluation": {
+              "A0": null,
+              "A5": null,
+              "L_att": 0.0,
+              "L_rec": null,
+              "activation_events": {},
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_POST_IB_PRE_OB",
+              "comparator_id": "HISTORY_JOINT",
+              "delta_attention_value": 0.0,
+              "delta_recovery_objective": null,
+              "diagnostics": {
+                "candidate_count": 5.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.4548215209253859,
+                "coverage_total_reference": 0.4548215209253859,
+                "displaced_count": 0.0,
+                "entered_count": 0.0,
+                "kendall_tau": 0.9999999999999999,
+                "max_rank_displacement": 0.0,
+                "mean_rank_displacement": 0.0,
+                "overlap_count": 1.0,
+                "overlap_fraction_of_reference": 1.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": 0.9999999999999999
+              },
+              "family": "ATTENTION",
+              "reference_attention_value": 1.124013107340162,
+              "reference_id": "HISTORY_JOINT",
+              "reference_recoverable_value": null,
+              "support_status": "SUPPORTED",
+              "value_status": "SUPPORTED"
+            },
+            "delta_attention_value": 0.0,
+            "diagnostics": {
+              "candidate_count": 5.0,
+              "comparator_shortlist_size": 1.0,
+              "coverage_total_comparator": 0.4548215209253859,
+              "coverage_total_reference": 0.4548215209253859,
+              "displaced_count": 0.0,
+              "entered_count": 0.0,
+              "kendall_tau": 0.9999999999999999,
+              "max_rank_displacement": 0.0,
+              "mean_rank_displacement": 0.0,
+              "overlap_count": 1.0,
+              "overlap_fraction_of_reference": 1.0,
+              "reference_shortlist_size": 1.0,
+              "spearman_rho": 0.9999999999999999
+            },
+            "displaced": [],
+            "entered": [],
+            "kendall_tau": 0.9999999999999999,
+            "max_rank_displacement": 0,
+            "mean_rank_displacement": 0.0,
+            "overlap_count": 1,
+            "overlap_fraction_of_reference": 1.0,
+            "reason_codes": [],
+            "record_kind": "EVALUATED",
+            "reference_attention_value": 1.124013107340162,
+            "reference_id": "HISTORY_JOINT",
+            "reference_shortlist": [
+              "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+            ],
+            "spearman_rho": 0.9999999999999999,
+            "status": "SUPPORTED",
+            "typed_state": null
+          },
+          "stage_class": "TURN"
+        },
+        "PRE_IB": {
+          "bootstrap_rows": {
+            "CURRENT_JOINT": [
+              {
+                "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "comparator_score": 0.6656817411447911,
+                "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "in_comparator_shortlist": true,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+                "reference_priority": 0.27620754150852084,
+                "reference_score": 0.27620754150852084,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "comparator_score": 0.39682827282872285,
+                "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": true,
+                "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+                "reference_priority": 0.4685716486656794,
+                "reference_score": 0.4685716486656794,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "comparator_score": 0.3301960349683392,
+                "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+                "reference_priority": 0.28768251731680483,
+                "reference_score": 0.28768251731680483,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              }
+            ],
+            "HISTORY_MARGINAL": [
+              {
+                "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "comparator_score": 0.3673533748418542,
+                "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+                "reference_priority": 0.27620754150852084,
+                "reference_score": 0.27620754150852084,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "comparator_score": 0.5597174819990127,
+                "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "in_comparator_shortlist": true,
+                "in_reference_shortlist": true,
+                "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+                "reference_priority": 0.4685716486656794,
+                "reference_score": 0.4685716486656794,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "comparator_score": 0.28768251731680483,
+                "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+                "reference_priority": 0.28768251731680483,
+                "reference_score": 0.28768251731680483,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              }
+            ],
+            "HISTORY_POINT": [
+              {
+                "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "comparator_score": 0.0,
+                "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+                "reference_priority": 0.27620754150852084,
+                "reference_score": 0.27620754150852084,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "comparator_score": 0.12350666482920536,
+                "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+                "in_comparator_shortlist": true,
+                "in_reference_shortlist": true,
+                "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+                "reference_priority": 0.4685716486656794,
+                "reference_score": 0.4685716486656794,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              },
+              {
+                "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "comparator_score": 0.025064538713136575,
+                "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+                "in_comparator_shortlist": false,
+                "in_reference_shortlist": false,
+                "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+                "reference_priority": 0.28768251731680483,
+                "reference_score": 0.28768251731680483,
+                "stage": "PRE_IB",
+                "support_mass": 1.0,
+                "support_threshold": 0.9
+              }
+            ]
+          },
+          "capacity": {
+            "cohort_size": 3,
+            "k": 1,
+            "q": 0.1,
+            "selector": "M3_STAGE1_SHARED_SELECTOR",
+            "signal": "P^C = Phi_C(C^CU)"
+          },
+          "comparators": {
+            "CURRENT_JOINT": {
+              "L_att": 0.41053296268551703,
+              "candidate_node_ids": [
+                "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+                "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+              ],
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+              "comparator_attention_value": 0.27620754150852084,
+              "comparator_id": "CURRENT_JOINT",
+              "comparator_shortlist": [
+                "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+              ],
+              "decision_evaluation": {
+                "A0": null,
+                "A5": null,
+                "L_att": 0.41053296268551703,
+                "L_rec": null,
+                "activation_events": {},
+                "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+                "comparator_id": "CURRENT_JOINT",
+                "delta_attention_value": 0.19236410715715857,
+                "delta_recovery_objective": null,
+                "diagnostics": {
+                  "candidate_count": 3.0,
+                  "comparator_shortlist_size": 1.0,
+                  "coverage_total_comparator": 0.26752327907611745,
+                  "coverage_total_reference": 0.45383925163128797,
+                  "displaced_count": 1.0,
+                  "entered_count": 1.0,
+                  "kendall_tau": -0.33333333333333337,
+                  "max_rank_displacement": 2.0,
+                  "mean_rank_displacement": 1.5,
+                  "overlap_count": 0.0,
+                  "overlap_fraction_of_reference": 0.0,
+                  "reference_shortlist_size": 1.0,
+                  "spearman_rho": -0.5
+                },
+                "family": "ATTENTION",
+                "reference_attention_value": 0.4685716486656794,
+                "reference_id": "HISTORY_JOINT",
+                "reference_recoverable_value": null,
+                "support_status": "SUPPORTED",
+                "value_status": "SUPPORTED"
+              },
+              "delta_attention_value": 0.19236410715715857,
+              "diagnostics": {
+                "candidate_count": 3.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.26752327907611745,
+                "coverage_total_reference": 0.45383925163128797,
+                "displaced_count": 1.0,
+                "entered_count": 1.0,
+                "kendall_tau": -0.33333333333333337,
+                "max_rank_displacement": 2.0,
+                "mean_rank_displacement": 1.5,
+                "overlap_count": 0.0,
+                "overlap_fraction_of_reference": 0.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": -0.5
+              },
+              "displaced": [
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+              ],
+              "entered": [
+                "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+              ],
+              "kendall_tau": -0.33333333333333337,
+              "max_rank_displacement": 2,
+              "mean_rank_displacement": 1.5,
+              "overlap_count": 0,
+              "overlap_fraction_of_reference": 0.0,
+              "reason_codes": [],
+              "record_kind": "EVALUATED",
+              "reference_attention_value": 0.4685716486656794,
+              "reference_id": "HISTORY_JOINT",
+              "reference_shortlist": [
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+              ],
+              "spearman_rho": -0.5,
+              "status": "SUPPORTED",
+              "typed_state": null
+            },
+            "HISTORY_MARGINAL": {
+              "L_att": 0.0,
+              "candidate_node_ids": [
+                "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+                "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+              ],
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+              "comparator_attention_value": 0.4685716486656794,
+              "comparator_id": "HISTORY_MARGINAL",
+              "comparator_shortlist": [
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+              ],
+              "decision_evaluation": {
+                "A0": null,
+                "A5": null,
+                "L_att": 0.0,
+                "L_rec": null,
+                "activation_events": {},
+                "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+                "comparator_id": "HISTORY_MARGINAL",
+                "delta_attention_value": 0.0,
+                "delta_recovery_objective": null,
+                "diagnostics": {
+                  "candidate_count": 3.0,
+                  "comparator_shortlist_size": 1.0,
+                  "coverage_total_comparator": 0.45383925163128797,
+                  "coverage_total_reference": 0.45383925163128797,
+                  "displaced_count": 0.0,
+                  "entered_count": 0.0,
+                  "kendall_tau": 0.33333333333333337,
+                  "max_rank_displacement": 0.0,
+                  "mean_rank_displacement": 0.0,
+                  "overlap_count": 1.0,
+                  "overlap_fraction_of_reference": 1.0,
+                  "reference_shortlist_size": 1.0,
+                  "spearman_rho": 0.5
+                },
+                "family": "ATTENTION",
+                "reference_attention_value": 0.4685716486656794,
+                "reference_id": "HISTORY_JOINT",
+                "reference_recoverable_value": null,
+                "support_status": "SUPPORTED",
+                "value_status": "SUPPORTED"
+              },
+              "delta_attention_value": 0.0,
+              "diagnostics": {
+                "candidate_count": 3.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.45383925163128797,
+                "coverage_total_reference": 0.45383925163128797,
+                "displaced_count": 0.0,
+                "entered_count": 0.0,
+                "kendall_tau": 0.33333333333333337,
+                "max_rank_displacement": 0.0,
+                "mean_rank_displacement": 0.0,
+                "overlap_count": 1.0,
+                "overlap_fraction_of_reference": 1.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": 0.5
+              },
+              "displaced": [],
+              "entered": [],
+              "kendall_tau": 0.33333333333333337,
+              "max_rank_displacement": 0,
+              "mean_rank_displacement": 0.0,
+              "overlap_count": 1,
+              "overlap_fraction_of_reference": 1.0,
+              "reason_codes": [],
+              "record_kind": "EVALUATED",
+              "reference_attention_value": 0.4685716486656794,
+              "reference_id": "HISTORY_JOINT",
+              "reference_shortlist": [
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+              ],
+              "spearman_rho": 0.5,
+              "status": "SUPPORTED",
+              "typed_state": null
+            },
+            "HISTORY_POINT": {
+              "L_att": 0.0,
+              "candidate_node_ids": [
+                "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+                "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+              ],
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+              "comparator_attention_value": 0.4685716486656794,
+              "comparator_id": "HISTORY_POINT",
+              "comparator_shortlist": [
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+              ],
+              "decision_evaluation": {
+                "A0": null,
+                "A5": null,
+                "L_att": 0.0,
+                "L_rec": null,
+                "activation_events": {},
+                "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+                "comparator_id": "HISTORY_POINT",
+                "delta_attention_value": 0.0,
+                "delta_recovery_objective": null,
+                "diagnostics": {
+                  "candidate_count": 3.0,
+                  "comparator_shortlist_size": 1.0,
+                  "coverage_total_comparator": 0.45383925163128797,
+                  "coverage_total_reference": 0.45383925163128797,
+                  "displaced_count": 0.0,
+                  "entered_count": 0.0,
+                  "kendall_tau": 1.0,
+                  "max_rank_displacement": 0.0,
+                  "mean_rank_displacement": 0.0,
+                  "overlap_count": 1.0,
+                  "overlap_fraction_of_reference": 1.0,
+                  "reference_shortlist_size": 1.0,
+                  "spearman_rho": 1.0
+                },
+                "family": "ATTENTION",
+                "reference_attention_value": 0.4685716486656794,
+                "reference_id": "HISTORY_JOINT",
+                "reference_recoverable_value": null,
+                "support_status": "SUPPORTED",
+                "value_status": "SUPPORTED"
+              },
+              "delta_attention_value": 0.0,
+              "diagnostics": {
+                "candidate_count": 3.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.45383925163128797,
+                "coverage_total_reference": 0.45383925163128797,
+                "displaced_count": 0.0,
+                "entered_count": 0.0,
+                "kendall_tau": 1.0,
+                "max_rank_displacement": 0.0,
+                "mean_rank_displacement": 0.0,
+                "overlap_count": 1.0,
+                "overlap_fraction_of_reference": 1.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": 1.0
+              },
+              "displaced": [],
+              "entered": [],
+              "kendall_tau": 1.0,
+              "max_rank_displacement": 0,
+              "mean_rank_displacement": 0.0,
+              "overlap_count": 1,
+              "overlap_fraction_of_reference": 1.0,
+              "reason_codes": [],
+              "record_kind": "EVALUATED",
+              "reference_attention_value": 0.4685716486656794,
+              "reference_id": "HISTORY_JOINT",
+              "reference_shortlist": [
+                "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+              ],
+              "spearman_rho": 1.0,
+              "status": "SUPPORTED",
+              "typed_state": null
+            }
+          },
+          "reference_candidate_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+          ],
+          "reference_priority": {
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f": 0.27620754150852084,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4685716486656794,
+            "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301": 0.28768251731680483
+          },
+          "reference_shortlist_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "self_reference": {
+            "L_att": 0.0,
+            "candidate_node_ids": [
+              "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+            ],
+            "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+            "comparator_attention_value": 0.4685716486656794,
+            "comparator_id": "HISTORY_JOINT",
+            "comparator_shortlist": [
+              "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+            ],
+            "decision_evaluation": {
+              "A0": null,
+              "A5": null,
+              "L_att": 0.0,
+              "L_rec": null,
+              "activation_events": {},
+              "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT_PRE_IB",
+              "comparator_id": "HISTORY_JOINT",
+              "delta_attention_value": 0.0,
+              "delta_recovery_objective": null,
+              "diagnostics": {
+                "candidate_count": 3.0,
+                "comparator_shortlist_size": 1.0,
+                "coverage_total_comparator": 0.45383925163128797,
+                "coverage_total_reference": 0.45383925163128797,
+                "displaced_count": 0.0,
+                "entered_count": 0.0,
+                "kendall_tau": 1.0,
+                "max_rank_displacement": 0.0,
+                "mean_rank_displacement": 0.0,
+                "overlap_count": 1.0,
+                "overlap_fraction_of_reference": 1.0,
+                "reference_shortlist_size": 1.0,
+                "spearman_rho": 1.0
+              },
+              "family": "ATTENTION",
+              "reference_attention_value": 0.4685716486656794,
+              "reference_id": "HISTORY_JOINT",
+              "reference_recoverable_value": null,
+              "support_status": "SUPPORTED",
+              "value_status": "SUPPORTED"
+            },
+            "delta_attention_value": 0.0,
+            "diagnostics": {
+              "candidate_count": 3.0,
+              "comparator_shortlist_size": 1.0,
+              "coverage_total_comparator": 0.45383925163128797,
+              "coverage_total_reference": 0.45383925163128797,
+              "displaced_count": 0.0,
+              "entered_count": 0.0,
+              "kendall_tau": 1.0,
+              "max_rank_displacement": 0.0,
+              "mean_rank_displacement": 0.0,
+              "overlap_count": 1.0,
+              "overlap_fraction_of_reference": 1.0,
+              "reference_shortlist_size": 1.0,
+              "spearman_rho": 1.0
+            },
+            "displaced": [],
+            "entered": [],
+            "kendall_tau": 1.0,
+            "max_rank_displacement": 0,
+            "mean_rank_displacement": 0.0,
+            "overlap_count": 1,
+            "overlap_fraction_of_reference": 1.0,
+            "reason_codes": [],
+            "record_kind": "EVALUATED",
+            "reference_attention_value": 0.4685716486656794,
+            "reference_id": "HISTORY_JOINT",
+            "reference_shortlist": [
+              "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+            ],
+            "spearman_rho": 1.0,
+            "status": "SUPPORTED",
+            "typed_state": null
+          },
+          "stage_class": "PRE"
+        }
+      },
+      "comparators": {
+        "CURRENT_JOINT": {
+          "L_att": 0.12078735931116316,
+          "comparator_attention_value": 1.4002206488486828,
+          "comparator_shortlist": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "diagnostics": {
+            "aggregation": "OBJECTIVE_THEN_NORMALIZE",
+            "stage_scope": [
+              "PRE_IB",
+              "POST_IB_PRE_OB"
+            ]
+          },
+          "displaced": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "entered": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "kendall_tau": null,
+          "mean_rank_displacement": null,
+          "overlap_count": 1,
+          "reason_codes": [],
+          "record_kind": "EVALUATED",
+          "reference_attention_value": 1.5925847560058415,
+          "reference_shortlist": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "spearman_rho": null,
+          "status": "SUPPORTED",
+          "typed_state": null
+        },
+        "HISTORY_MARGINAL": {
+          "L_att": 0.0,
+          "comparator_attention_value": 1.5925847560058415,
+          "comparator_shortlist": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "diagnostics": {
+            "aggregation": "OBJECTIVE_THEN_NORMALIZE",
+            "stage_scope": [
+              "PRE_IB",
+              "POST_IB_PRE_OB"
+            ]
+          },
+          "displaced": [],
+          "entered": [],
+          "kendall_tau": null,
+          "mean_rank_displacement": null,
+          "overlap_count": 2,
+          "reason_codes": [],
+          "record_kind": "EVALUATED",
+          "reference_attention_value": 1.5925847560058415,
+          "reference_shortlist": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "spearman_rho": null,
+          "status": "SUPPORTED",
+          "typed_state": null
+        },
+        "HISTORY_POINT": {
+          "L_att": 0.0,
+          "comparator_attention_value": 1.5925847560058415,
+          "comparator_shortlist": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "diagnostics": {
+            "aggregation": "OBJECTIVE_THEN_NORMALIZE",
+            "stage_scope": [
+              "PRE_IB",
+              "POST_IB_PRE_OB"
+            ]
+          },
+          "displaced": [],
+          "entered": [],
+          "kendall_tau": null,
+          "mean_rank_displacement": null,
+          "overlap_count": 2,
+          "reason_codes": [],
+          "record_kind": "EVALUATED",
+          "reference_attention_value": 1.5925847560058415,
+          "reference_shortlist": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "spearman_rho": null,
+          "status": "SUPPORTED",
+          "typed_state": null
+        }
+      },
+      "pooled_stage1_ranking": false,
+      "reference_candidate_node_ids": [
+        "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+        "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+        "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+        "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+        "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+      ],
+      "reference_shortlist_node_ids": [
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+      ],
+      "self_reference": {
+        "L_att": 0.0,
+        "comparator_attention_value": 1.5925847560058415,
+        "comparator_shortlist": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "diagnostics": {
+          "aggregation": "OBJECTIVE_THEN_NORMALIZE",
+          "stage_scope": [
+            "PRE_IB",
+            "POST_IB_PRE_OB"
+          ]
+        },
+        "displaced": [],
+        "entered": [],
+        "kendall_tau": null,
+        "mean_rank_displacement": null,
+        "overlap_count": 2,
+        "reason_codes": [],
+        "record_kind": "EVALUATED",
+        "reference_attention_value": 1.5925847560058415,
+        "reference_shortlist": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "spearman_rho": null,
+        "status": "SUPPORTED",
+        "typed_state": null
+      },
+      "stage_order": [
+        "PRE_IB",
+        "POST_IB_PRE_OB"
+      ]
+    },
+    "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+    "cohort_node_ids": [
+      "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+      "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+    ],
+    "cohort_size": 2,
+    "invariants": {
+      "delta_objective_lower_bound": -1e-06,
+      "delta_objective_violations": [],
+      "reference_action_agreement": {
+        "A0": 1.0,
+        "A5": 1.0
+      },
+      "reference_attention_identity": 0.0,
+      "reference_recovery_identity": 0.0,
+      "status": "PASS",
+      "typed_states_are_legal": true
+    },
+    "no_total_loss_constructed": true,
+    "nominal_q": 0.1,
+    "one_stage1_decision_per_stage": true,
+    "pooled_stage1_ranking_constructed": false,
+    "priority_authority": {
+      "consequence_based_priority_authority": "P^C = Phi_C(C^CU)",
+      "delay_comparator": "P^D = E[D^TO | Omega^CS]",
+      "delay_comparator_is_l_att_basis": false,
+      "shared_stage1_selector": true,
+      "stage_local_selector": true
+    },
+    "recovery": {
+      "bootstrap_rows": {
+        "CURRENT_JOINT": [
+          {
+            "comparator_action": 5.0,
+            "delta_objective": 0.0,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "j_comparator": 0.4519841106126769,
+            "j_star": 0.4519841106126769,
+            "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "reference_action": 5.0,
+            "reference_value": 0.016587538053002504,
+            "stage": "PRE_IB"
+          },
+          {
+            "comparator_action": 0.0,
+            "delta_objective": 0.0023582505337864657,
+            "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "j_comparator": 1.1240131073401616,
+            "j_star": 1.1216548568063751,
+            "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "reference_action": 5.0,
+            "reference_value": 0.0023582505337864657,
+            "stage": "POST_IB_PRE_OB"
+          }
+        ],
+        "HISTORY_MARGINAL": [
+          {
+            "comparator_action": 20.0,
+            "delta_objective": 0.04892872039090729,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "j_comparator": 0.5009128310035842,
+            "j_star": 0.4519841106126769,
+            "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "reference_action": 5.0,
+            "reference_value": 0.016587538053002504,
+            "stage": "PRE_IB"
+          },
+          {
+            "comparator_action": 5.0,
+            "delta_objective": 0.0,
+            "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "j_comparator": 1.1216548568063751,
+            "j_star": 1.1216548568063751,
+            "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "reference_action": 5.0,
+            "reference_value": 0.0023582505337864657,
+            "stage": "POST_IB_PRE_OB"
+          }
+        ],
+        "HISTORY_POINT": [
+          {
+            "comparator_action": 0.0,
+            "delta_objective": 0.016587538053002504,
+            "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+            "j_comparator": 0.4685716486656794,
+            "j_star": 0.4519841106126769,
+            "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "reference_action": 5.0,
+            "reference_value": 0.016587538053002504,
+            "stage": "PRE_IB"
+          },
+          {
+            "comparator_action": 0.0,
+            "delta_objective": 0.0023582505337864657,
+            "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+            "j_comparator": 1.1240131073401616,
+            "j_star": 1.1216548568063751,
+            "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "reference_action": 5.0,
+            "reference_value": 0.0023582505337864657,
+            "stage": "POST_IB_PRE_OB"
+          }
+        ]
+      },
+      "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+      "cohort_node_ids": [
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+      ],
+      "cohort_size": 2,
+      "comparators": {
+        "CURRENT_JOINT": {
+          "A0": 0.5,
+          "A5": 1.0,
+          "L_rec": 0.12447360124301662,
+          "activation_events": {
+            "FALSE_ACTIVATION": 0,
+            "MISSED_ACTIVATION": 1,
+            "OVER_RECOVERY": 0,
+            "UNDER_RECOVERY": 0
+          },
+          "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+          "comparator_actions": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 5.0
+          },
+          "comparator_id": "CURRENT_JOINT",
+          "comparator_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1240131073401616,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4519841106126769
+          },
+          "decision_evaluation": {
+            "A0": 0.5,
+            "A5": 1.0,
+            "L_att": null,
+            "L_rec": 0.12447360124301662,
+            "activation_events": {
+              "FALSE_ACTIVATION": 0,
+              "MISSED_ACTIVATION": 1,
+              "OVER_RECOVERY": 0,
+              "UNDER_RECOVERY": 0
+            },
+            "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+            "comparator_id": "CURRENT_JOINT",
+            "delta_attention_value": null,
+            "delta_recovery_objective": 0.0023582505337864657,
+            "diagnostics": {
+              "cohort_size": 2.0,
+              "comparator_activation_rate": 0.5,
+              "max_absolute_intensity_error": 5.0,
+              "max_delta_objective": 0.0023582505337864657,
+              "mean_absolute_intensity_error": 2.5,
+              "mean_delta_objective": 0.0011791252668932328,
+              "mean_signed_intensity_error": -2.5,
+              "reference_activation_rate": 1.0
+            },
+            "family": "RECOVERY",
+            "reference_attention_value": null,
+            "reference_id": "HISTORY_JOINT",
+            "reference_recoverable_value": 0.01894578858678897,
+            "support_status": "SUPPORTED",
+            "value_status": "SUPPORTED"
+          },
+          "delta_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0023582505337864657,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.0
+          },
+          "delta_recovery_objective": 0.0023582505337864657,
+          "diagnostics": {
+            "cohort_size": 2.0,
+            "comparator_activation_rate": 0.5,
+            "max_absolute_intensity_error": 5.0,
+            "max_delta_objective": 0.0023582505337864657,
+            "mean_absolute_intensity_error": 2.5,
+            "mean_delta_objective": 0.0011791252668932328,
+            "mean_signed_intensity_error": -2.5,
+            "reference_activation_rate": 1.0
+          },
+          "exact_action_count": 1,
+          "fixed_cohort": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "reason_codes": [],
+          "record_kind": "EVALUATED",
+          "reference_actions": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 5.0,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 5.0
+          },
+          "reference_id": "HISTORY_JOINT",
+          "reference_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1216548568063751,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4519841106126769
+          },
+          "reference_recoverable_value": 0.01894578858678897,
+          "reference_recoverable_values": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0023582505337864657,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.016587538053002504
+          },
+          "status": "SUPPORTED",
+          "typed_state": null,
+          "within_five_count": 2
+        },
+        "HISTORY_MARGINAL": {
+          "A0": 0.5,
+          "A5": 0.5,
+          "L_rec": 2.582564466333464,
+          "activation_events": {
+            "FALSE_ACTIVATION": 0,
+            "MISSED_ACTIVATION": 0,
+            "OVER_RECOVERY": 1,
+            "UNDER_RECOVERY": 0
+          },
+          "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+          "comparator_actions": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 5.0,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 20.0
+          },
+          "comparator_id": "HISTORY_MARGINAL",
+          "comparator_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1216548568063751,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.5009128310035842
+          },
+          "decision_evaluation": {
+            "A0": 0.5,
+            "A5": 0.5,
+            "L_att": null,
+            "L_rec": 2.582564466333464,
+            "activation_events": {
+              "FALSE_ACTIVATION": 0,
+              "MISSED_ACTIVATION": 0,
+              "OVER_RECOVERY": 1,
+              "UNDER_RECOVERY": 0
+            },
+            "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+            "comparator_id": "HISTORY_MARGINAL",
+            "delta_attention_value": null,
+            "delta_recovery_objective": 0.04892872039090729,
+            "diagnostics": {
+              "cohort_size": 2.0,
+              "comparator_activation_rate": 1.0,
+              "max_absolute_intensity_error": 15.0,
+              "max_delta_objective": 0.04892872039090729,
+              "mean_absolute_intensity_error": 7.5,
+              "mean_delta_objective": 0.024464360195453644,
+              "mean_signed_intensity_error": 7.5,
+              "reference_activation_rate": 1.0
+            },
+            "family": "RECOVERY",
+            "reference_attention_value": null,
+            "reference_id": "HISTORY_JOINT",
+            "reference_recoverable_value": 0.01894578858678897,
+            "support_status": "SUPPORTED",
+            "value_status": "SUPPORTED"
+          },
+          "delta_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.04892872039090729
+          },
+          "delta_recovery_objective": 0.04892872039090729,
+          "diagnostics": {
+            "cohort_size": 2.0,
+            "comparator_activation_rate": 1.0,
+            "max_absolute_intensity_error": 15.0,
+            "max_delta_objective": 0.04892872039090729,
+            "mean_absolute_intensity_error": 7.5,
+            "mean_delta_objective": 0.024464360195453644,
+            "mean_signed_intensity_error": 7.5,
+            "reference_activation_rate": 1.0
+          },
+          "exact_action_count": 1,
+          "fixed_cohort": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "reason_codes": [],
+          "record_kind": "EVALUATED",
+          "reference_actions": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 5.0,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 5.0
+          },
+          "reference_id": "HISTORY_JOINT",
+          "reference_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1216548568063751,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4519841106126769
+          },
+          "reference_recoverable_value": 0.01894578858678897,
+          "reference_recoverable_values": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0023582505337864657,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.016587538053002504
+          },
+          "status": "SUPPORTED",
+          "typed_state": null,
+          "within_five_count": 1
+        },
+        "HISTORY_POINT": {
+          "A0": 0.0,
+          "A5": 1.0,
+          "L_rec": 1.0,
+          "activation_events": {
+            "FALSE_ACTIVATION": 0,
+            "MISSED_ACTIVATION": 2,
+            "OVER_RECOVERY": 0,
+            "UNDER_RECOVERY": 0
+          },
+          "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+          "comparator_actions": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.0
+          },
+          "comparator_id": "HISTORY_POINT",
+          "comparator_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1240131073401616,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4685716486656794
+          },
+          "decision_evaluation": {
+            "A0": 0.0,
+            "A5": 1.0,
+            "L_att": null,
+            "L_rec": 1.0,
+            "activation_events": {
+              "FALSE_ACTIVATION": 0,
+              "MISSED_ACTIVATION": 2,
+              "OVER_RECOVERY": 0,
+              "UNDER_RECOVERY": 0
+            },
+            "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+            "comparator_id": "HISTORY_POINT",
+            "delta_attention_value": null,
+            "delta_recovery_objective": 0.01894578858678897,
+            "diagnostics": {
+              "cohort_size": 2.0,
+              "comparator_activation_rate": 0.0,
+              "max_absolute_intensity_error": 5.0,
+              "max_delta_objective": 0.016587538053002504,
+              "mean_absolute_intensity_error": 5.0,
+              "mean_delta_objective": 0.009472894293394485,
+              "mean_signed_intensity_error": -5.0,
+              "reference_activation_rate": 1.0
+            },
+            "family": "RECOVERY",
+            "reference_attention_value": null,
+            "reference_id": "HISTORY_JOINT",
+            "reference_recoverable_value": 0.01894578858678897,
+            "support_status": "SUPPORTED",
+            "value_status": "SUPPORTED"
+          },
+          "delta_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0023582505337864657,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.016587538053002504
+          },
+          "delta_recovery_objective": 0.01894578858678897,
+          "diagnostics": {
+            "cohort_size": 2.0,
+            "comparator_activation_rate": 0.0,
+            "max_absolute_intensity_error": 5.0,
+            "max_delta_objective": 0.016587538053002504,
+            "mean_absolute_intensity_error": 5.0,
+            "mean_delta_objective": 0.009472894293394485,
+            "mean_signed_intensity_error": -5.0,
+            "reference_activation_rate": 1.0
+          },
+          "exact_action_count": 0,
+          "fixed_cohort": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "reason_codes": [],
+          "record_kind": "EVALUATED",
+          "reference_actions": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 5.0,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 5.0
+          },
+          "reference_id": "HISTORY_JOINT",
+          "reference_objectives": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1216548568063751,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4519841106126769
+          },
+          "reference_recoverable_value": 0.01894578858678897,
+          "reference_recoverable_values": {
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0023582505337864657,
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.016587538053002504
+          },
+          "status": "SUPPORTED",
+          "typed_state": null,
+          "within_five_count": 2
+        }
+      },
+      "reference_actions": {
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 5.0,
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 5.0
+      },
+      "reference_recoverable_values": {
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0023582505337864657,
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.016587538053002504
+      },
+      "self_reference": {
+        "A0": 1.0,
+        "A5": 1.0,
+        "L_rec": 0.0,
+        "activation_events": {
+          "FALSE_ACTIVATION": 0,
+          "MISSED_ACTIVATION": 0,
+          "OVER_RECOVERY": 0,
+          "UNDER_RECOVERY": 0
+        },
+        "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+        "comparator_actions": {
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 5.0,
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 5.0
+        },
+        "comparator_id": "HISTORY_JOINT",
+        "comparator_objectives": {
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1216548568063751,
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4519841106126769
+        },
+        "decision_evaluation": {
+          "A0": 1.0,
+          "A5": 1.0,
+          "L_att": null,
+          "L_rec": 0.0,
+          "activation_events": {
+            "FALSE_ACTIVATION": 0,
+            "MISSED_ACTIVATION": 0,
+            "OVER_RECOVERY": 0,
+            "UNDER_RECOVERY": 0
+          },
+          "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+          "comparator_id": "HISTORY_JOINT",
+          "delta_attention_value": null,
+          "delta_recovery_objective": 0.0,
+          "diagnostics": {
+            "cohort_size": 2.0,
+            "comparator_activation_rate": 1.0,
+            "max_absolute_intensity_error": 0.0,
+            "max_delta_objective": 0.0,
+            "mean_absolute_intensity_error": 0.0,
+            "mean_delta_objective": 0.0,
+            "mean_signed_intensity_error": 0.0,
+            "reference_activation_rate": 1.0
+          },
+          "family": "RECOVERY",
+          "reference_attention_value": null,
+          "reference_id": "HISTORY_JOINT",
+          "reference_recoverable_value": 0.01894578858678897,
+          "support_status": "SUPPORTED",
+          "value_status": "SUPPORTED"
+        },
+        "delta_objectives": {
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0,
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.0
+        },
+        "delta_recovery_objective": 0.0,
+        "diagnostics": {
+          "cohort_size": 2.0,
+          "comparator_activation_rate": 1.0,
+          "max_absolute_intensity_error": 0.0,
+          "max_delta_objective": 0.0,
+          "mean_absolute_intensity_error": 0.0,
+          "mean_delta_objective": 0.0,
+          "mean_signed_intensity_error": 0.0,
+          "reference_activation_rate": 1.0
+        },
+        "exact_action_count": 2,
+        "fixed_cohort": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "reason_codes": [],
+        "record_kind": "EVALUATED",
+        "reference_actions": {
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 5.0,
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 5.0
+        },
+        "reference_id": "HISTORY_JOINT",
+        "reference_objectives": {
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 1.1216548568063751,
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.4519841106126769
+        },
+        "reference_recoverable_value": 0.01894578858678897,
+        "reference_recoverable_values": {
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": 0.0023582505337864657,
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": 0.016587538053002504
+        },
+        "status": "SUPPORTED",
+        "typed_state": null,
+        "within_five_count": 2
+      },
+      "stage2_actionable_node_ids_by_stage": {
+        "POST_IB_PRE_OB": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "PRE_IB": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ]
+      },
+      "stage2_actionable_node_ids_flattened": [
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+      ]
+    },
+    "reference_objective_basis": "M3_FORMAL_HIGHS_OBJECTIVE_ON_FIXED_REFERENCE_COHORT",
+    "reference_representation_id": "HISTORY_H16:JOINT",
+    "reference_variant": "HISTORY_JOINT",
+    "schema_version": "AIR_SLOT_V2_PHASE7_M4_COMPARISONS_V1",
+    "stage": "M4_COMPARISONS",
+    "stage1_actionable_stages": [
+      "PRE_IB",
+      "POST_IB_PRE_OB"
+    ],
+    "stage2_information_comparison_uses_fixed_r_star": true,
+    "typed_states": []
+  },
+  "payload_hash": "sha256:0578aba96717bbbc0d8db1b1671bc211695733332741dcb8bd064635ee759a5f",
+  "produced_by": "PHASE7_GATE_B0_DEVELOPMENT_SAFE_FIXTURE",
+  "schema_version": "AIR_SLOT_V2_PHASE7_M4_COMPARISONS_V1",
+  "stage": "M4_COMPARISONS"
+}

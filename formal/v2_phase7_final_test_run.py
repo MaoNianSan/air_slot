@@ -17,6 +17,7 @@ from formal.v2_phase7.cli import main  # noqa: E402
 from formal.v2_phase7.cohort import *  # noqa: E402,F401,F403
 from formal.v2_phase7.dry_run import *  # noqa: E402,F401,F403
 from formal.v2_phase7.errors import *  # noqa: E402,F401,F403
+from formal.v2_phase7.execution_freeze import *  # noqa: E402,F401,F403
 from formal.v2_phase7.gate_a import *  # noqa: E402,F401,F403
 from formal.v2_phase7.gate_b import *  # noqa: E402,F401,F403
 from formal.v2_phase7.gate_b0 import *  # noqa: E402,F401,F403
@@ -62,6 +63,7 @@ __all__ = sorted(
         "assert_dag_order",
         "bootstrap_seed_provenance",
         "build_gate_a_preflight",
+        "build_execution_freeze",
         "execute_gate_b",
         "main",
         "make_release",
@@ -69,6 +71,7 @@ __all__ = sorted(
         "mark_access_read_started",
         "materialize_canonical_nodes",
         "open_access_epoch",
+        "pre_open_gate",
         "production_binding_record",
         "production_solver_metadata",
         "production_pipeline",
@@ -80,12 +83,14 @@ __all__ = sorted(
         "run_gate_b0_binding_audit",
         "run_sealed_pipeline",
         "validate_cohort_reference",
+        "validate_execution_freeze",
         "validate_instruction_copies",
         "validate_phase7_authority",
         "validate_r2_authority",
         "validate_solver_status_semantics",
         "validate_stage2_production_authority",
         "validate_release_schema",
+        "write_execution_freeze",
         "_read_json",
         "_access_epoch_id",
         "_release_fingerprint",

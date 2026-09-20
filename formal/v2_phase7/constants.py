@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -142,10 +143,106 @@ INSTRUCTION_DOWNLOAD_PATH = Path(
 )
 FINAL_TEST_V2_ROOT = ROOT / "artifacts" / "experiment" / "final_test_v2"
 LEGACY_FINAL_TEST_ROOT = ROOT / "artifacts" / "experiment" / "final_test"
-GATE_A_PREFLIGHT_PATH = FINAL_TEST_V2_ROOT / "GATE_A_PREFLIGHT.json"
-GATE_A_DRY_RUN_PATH = FINAL_TEST_V2_ROOT / "GATE_A_DRY_RUN.json"
-GATE_B_RELEASE_PATH = FINAL_TEST_V2_ROOT / "GATE_B_HUMAN_RELEASE.json"
-PHASE7_ACCESS_AUDIT_PATH = FINAL_TEST_V2_ROOT / "PHASE7_ACCESS_AUDIT.json"
+#: The consumed stage-matched epoch. The post-execution audit sealed it with
+#: ``SEALED_AUDIT_FAILED`` (``CANONICALIZATION_BEFORE_SUPPORT``). It is frozen
+#: historical provenance: never reused as a current epoch, never rewritten,
+#: never re-pointed.
+CONSUMED_STAGE_MATCHED_FINAL_TEST_ROOT = (
+    ROOT / "artifacts" / "experiment" / "final_test_v2_stage_matched"
+)
+
+CONSUMED_CANONICAL_V1_FINAL_TEST_ROOT = (
+    ROOT
+    / "artifacts"
+    / "experiment"
+    / "final_test_v2_stage_matched_canonical_v1"
+)
+
+#: The current stage-matched epoch root. After the canonical-stage-node
+#: reconciliation the next authorized epoch must not share a root with the
+#: consumed epoch or with the legacy ``final_test_v2`` tree.
+STAGE_MATCHED_FINAL_TEST_ROOT = (
+    ROOT
+    / "artifacts"
+    / "experiment"
+    / "final_test_v2_stage_matched_canonical_v2"
+)
+
+@dataclass(frozen=True)
+class EpochPaths:
+    """All mutable governance and output paths owned by one access epoch."""
+
+    root: Path
+    gate_a_preflight_path: Path
+    gate_a_dry_run_path: Path
+    gate_b_release_path: Path
+    access_audit_path: Path
+    scientific_output_root: Path
+    checkpoint_root: Path
+
+    def as_dict(self) -> dict[str, str]:
+        return {
+            "root": str(self.root),
+            "gate_a_preflight_path": str(self.gate_a_preflight_path),
+            "gate_a_dry_run_path": str(self.gate_a_dry_run_path),
+            "gate_b_release_path": str(self.gate_b_release_path),
+            "access_audit_path": str(self.access_audit_path),
+            "scientific_output_root": str(self.scientific_output_root),
+            "checkpoint_root": str(self.checkpoint_root),
+        }
+
+
+def epoch_paths_for(root: Path) -> EpochPaths:
+    """Resolve the complete path bundle for an explicit epoch root."""
+
+    epoch_root = Path(root)
+    checkpoint_root = epoch_root / "checkpoints"
+    return EpochPaths(
+        root=epoch_root,
+        gate_a_preflight_path=epoch_root / "GATE_A_PREFLIGHT.json",
+        gate_a_dry_run_path=epoch_root / "GATE_A_DRY_RUN.json",
+        gate_b_release_path=epoch_root / "GATE_B_HUMAN_RELEASE.json",
+        access_audit_path=epoch_root / "PHASE7_ACCESS_AUDIT.json",
+        scientific_output_root=checkpoint_root,
+        checkpoint_root=checkpoint_root,
+    )
+
+
+def historical_epoch_paths() -> EpochPaths:
+    """Return the immutable legacy epoch path bundle."""
+
+    return epoch_paths_for(FINAL_TEST_V2_ROOT)
+
+
+def stage_matched_epoch_paths(root: Path | None = None) -> EpochPaths:
+    """Return the new stage-matched epoch bundle, optionally overridden."""
+
+    return epoch_paths_for(
+        STAGE_MATCHED_FINAL_TEST_ROOT if root is None else Path(root)
+    )
+
+
+HISTORICAL_FINAL_TEST_EPOCH_PATHS = historical_epoch_paths()
+STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS = stage_matched_epoch_paths()
+GATE_A_PREFLIGHT_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.gate_a_preflight_path
+GATE_A_DRY_RUN_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.gate_a_dry_run_path
+GATE_B_RELEASE_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.gate_b_release_path
+PHASE7_ACCESS_AUDIT_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.access_audit_path
+STAGE_MATCHED_GATE_B_RELEASE_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.gate_b_release_path
+)
+STAGE_MATCHED_ACCESS_AUDIT_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.access_audit_path
+)
+STAGE_MATCHED_GATE_A_PREFLIGHT_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.gate_a_preflight_path
+)
+STAGE_MATCHED_GATE_A_DRY_RUN_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.gate_a_dry_run_path
+)
+STAGE_MATCHED_SCIENTIFIC_OUTPUT_ROOT = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.scientific_output_root
+)
 
 HISTORICAL_FINAL_TEST_ACCESS_TOTAL = 1
 SCENARIO_COUNT = 64
@@ -230,13 +327,25 @@ __all__ = [
     "COHORT_MANIFEST_PATH",
     "COMMIT_RE",
     "EXECUTED_COHORT_MANIFEST_SHA256",
+    "EpochPaths",
     "FINAL_TEST_V2_ROOT",
+    "STAGE_MATCHED_FINAL_TEST_ROOT",
+    "CONSUMED_STAGE_MATCHED_FINAL_TEST_ROOT",
+    "HISTORICAL_FINAL_TEST_EPOCH_PATHS",
+    "STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS",
+    "epoch_paths_for",
+    "historical_epoch_paths",
+    "stage_matched_epoch_paths",
     "F_CONTINUITY_SCALE_DECLARED_WORKTREE_SHA256",
     "F_CONTINUITY_SCALE_FILE_SHA256",
     "F_CONTINUITY_SCALE_PATH",
     "GATE_A_DRY_RUN_PATH",
     "GATE_A_PREFLIGHT_PATH",
     "GATE_B_RELEASE_PATH",
+    "STAGE_MATCHED_GATE_B_RELEASE_PATH",
+    "STAGE_MATCHED_GATE_A_PREFLIGHT_PATH",
+    "STAGE_MATCHED_GATE_A_DRY_RUN_PATH",
+    "STAGE_MATCHED_SCIENTIFIC_OUTPUT_ROOT",
     "HISTORICAL_FINAL_TEST_ACCESS_TOTAL",
     "INSTRUCTION_DOWNLOAD_PATH",
     "INSTRUCTION_REPO_PATH",
@@ -259,6 +368,7 @@ __all__ = [
     "PASSENGER_SUPERSESSION_V3_FILE_SHA256",
     "PASSENGER_SUPERSESSION_V3_PATH",
     "PHASE7_ACCESS_AUDIT_PATH",
+    "STAGE_MATCHED_ACCESS_AUDIT_PATH",
     "PHASE7_ACCESS_INCREMENT",
     "PHASE7_CURRENT_TOTAL",
     "Q_GRID",

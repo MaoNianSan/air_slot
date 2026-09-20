@@ -43,23 +43,42 @@ def run_gate_b0_binding_audit(
     fixture_root: Path | None = None,
     node_limit: int = DEFAULT_NODE_LIMIT,
     write: bool = True,
+    epoch_paths: C.EpochPaths | None = None,
+    historical_paths: C.EpochPaths | None = None,
 ) -> dict[str, Any]:
     """Run the fixture DAG, collect evidence and (optionally) write the report."""
 
     root = Path(fixture_root) if fixture_root is not None else (
         C.FIXTURE_DAG_DIAGNOSTICS_ROOT
     )
+    current_paths = epoch_paths or C.stage_matched_epoch_paths()
+    prior_paths = historical_paths or C.historical_epoch_paths()
     try:
-        report = _build_report(root=root, node_limit=node_limit)
+        report = _build_report(
+            root=root,
+            node_limit=node_limit,
+            epoch_paths=current_paths,
+            historical_paths=prior_paths,
+        )
     except TypedBlocker as error:
-        report = _blocked_report(error)
+        report = _blocked_report(
+            error,
+            epoch_paths=current_paths,
+            historical_paths=prior_paths,
+        )
     if write:
         target = Path(output_root) if output_root is not None else C.PRE_OPEN_REPORT_PATH
         _write_json_atomic(target, report)
     return report
 
 
-def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
+def _build_report(
+    *,
+    root: Path,
+    node_limit: int,
+    epoch_paths: C.EpochPaths,
+    historical_paths: C.EpochPaths,
+) -> dict[str, Any]:
     run = run_development_safe_dag(
         output_root=root,
         node_limit=node_limit,
@@ -70,7 +89,7 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
 
     stage2_authority = validate_stage2_production_authority()
     solver_metadata = production_solver_metadata()
-    binding = production_binding_record()
+    binding = production_binding_record(epoch_paths=epoch_paths)
     checks.append(
         _check(
             "PRODUCTION_EXECUTOR_BOUND",
@@ -96,7 +115,7 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
     checks.append(
         _check(
             "DAG_STAGE_COUNT",
-            len(run.manifest["dag_stages"]) == 9
+            len(run.manifest["dag_stages"]) == len(S.SCIENCE_DAG_STAGES)
             and list(run.manifest["dag_stages"]) == list(S.SCIENCE_DAG_STAGES),
             {"stages": list(run.manifest["dag_stages"])},
         )
@@ -274,6 +293,54 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
             },
         )
     )
+    paired_increment = bootstrap["marginal_uncertainty_increment"]
+    paired_sections = (
+        paired_increment["attention"],
+        paired_increment["recovery"],
+    )
+    checks.append(
+        _check(
+            "PAIRED_MARGINAL_INCREMENT_EXECUTABLE",
+            paired_increment["paired"] is True
+            and paired_increment["definition"]
+            == "HISTORY_POINT_MINUS_HISTORY_MARGINAL"
+            and all(
+                section["replicate_count"] == C.BOOTSTRAP_REPLICATES
+                and len(section["replicates"]) == C.BOOTSTRAP_REPLICATES
+                and all(
+                    value is True
+                    for value in section["paired_assertions"].values()
+                )
+                and section["full_sample_increment_verification"]
+                in {"PASS", "TYPED"}
+                for section in paired_sections
+            ),
+            {
+                "attention": paired_increment["attention"]["status"],
+                "recovery": paired_increment["recovery"]["status"],
+                "replicates": C.BOOTSTRAP_REPLICATES,
+            },
+        )
+    )
+    robustness = run.payload(S.ROBUSTNESS)
+    checks.append(
+        _check(
+            "ROBUSTNESS_OFAT_EXECUTED",
+            robustness["status"] == "PASS"
+            and robustness["fixed_r_star"] is True
+            and robustness["stage1_rerun"] is False
+            and robustness["section4_h_capacity_called"] is False
+            and robustness["exact_enumeration"] is True
+            and robustness["node_relative_sobt"] is True
+            and robustness["taxi_comp_actions"] == []
+            and robustness["row_count"] > 0,
+            {
+                "row_count": robustness["row_count"],
+                "axes": sorted(robustness["axis_grids"]),
+                "cohort_size": robustness["cohort_size"],
+            },
+        )
+    )
 
     views = run.payload(S.PAPER_VIEWS)
     checks.append(
@@ -284,6 +351,12 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
             and views["section_5_5"]["crossed_with_q_grid"] is False
             and views["section_5_5"]["fixed_window_history_status"]
             == "NOT_AVAILABLE_NOT_FROZEN"
+            and views["section_5_5"]["sensitivity_results_status"]
+            == "EXECUTED"
+            and views["section_5_5"]["fixed_r_star"] is True
+            and views["section_5_5"]["stage1_rerun"] is False
+            and views["information_value"]["no_ambiguous_marginal_labels"]
+            is True
             and views["no_total_loss_constructed"] is True,
             {
                 "source_stages": list(views["source_stages"]),
@@ -294,7 +367,19 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
         )
     )
 
-    access = _access_boundary()
+    guard_results = _scientific_guard_results(run)
+    checks.append(
+        _check(
+            "SCIENTIFIC_GUARD_RESULTS",
+            guard_results["status"] == "PASS",
+            guard_results,
+        )
+    )
+
+    access = _access_boundary(
+        epoch_paths=epoch_paths,
+        historical_paths=historical_paths,
+    )
     checks.append(_check("ACCESS_BOUNDARY_PRE_OPEN", access["status"] == "PASS", access))
 
     if not all(item["status"] == "PASS" for item in checks):
@@ -405,11 +490,11 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
             ],
         },
         "checks": checks,
+        "scientific_guard_results": guard_results,
         "access_boundary": access,
         "not_claimed": [
             "FORMAL_GATE_B_EXECUTION",
             "FINAL_TEST_RAW_MATERIALIZATION",
-            "SECTION_5_5_SENSITIVITY_EXECUTION_RESULTS",
             "H8_SENSITIVITY_EXECUTION",
             "FIXED_WINDOW_SENSITIVITY",
         ],
@@ -426,7 +511,7 @@ def _build_report(*, root: Path, node_limit: int) -> dict[str, Any]:
             },
             {
                 "item": "OFAT_SENSITIVITY_OUTPUTS",
-                "status": "OUT_OF_SCOPE_OF_BOUND_DAG_DECLARED_ONLY",
+                "status": "EXECUTED_IN_BOUND_DEVELOPMENT_SAFE_DAG",
                 "owner": "GATE_B",
             },
         ],
@@ -510,19 +595,39 @@ def _fixture_run_evidence(
     }
 
 
-def _access_boundary() -> dict[str, Any]:
-    release_present = C.GATE_B_RELEASE_PATH.exists()
-    audit_present = C.PHASE7_ACCESS_AUDIT_PATH.exists()
-    legacy_exists = C.LEGACY_FINAL_TEST_ROOT.exists()
+def _access_boundary(
+    *,
+    epoch_paths: C.EpochPaths,
+    historical_paths: C.EpochPaths,
+) -> dict[str, Any]:
+    release_present = epoch_paths.gate_b_release_path.exists()
+    audit_present = epoch_paths.access_audit_path.exists()
+    historical_exists = historical_paths.root.exists()
+    historical_release_present = (
+        historical_paths.gate_b_release_path.exists()
+    )
+    historical_audit_present = (
+        historical_paths.access_audit_path.exists()
+    )
     return {
         "status": "PASS" if not release_present and not audit_present else "FAIL",
+        "current_epoch_root": str(epoch_paths.root),
+        "current_epoch_release_present": release_present,
+        "current_epoch_access_audit_present": audit_present,
+        "current_epoch_access_count": 0,
+        "historical_epoch_root": str(historical_paths.root),
+        "historical_epoch_present": historical_exists,
+        "historical_epoch_release_present": historical_release_present,
+        "historical_epoch_access_audit_present": historical_audit_present,
+        "historical_epoch_used_for_scientific_computation": False,
+        "historical_epoch_used_for_selection": False,
         "human_release_created": False,
         "human_release_present": release_present,
         "access_audit_present": audit_present,
         "access_epoch_opened": False,
         "q4_raw_reads": 0,
         "legacy_final_test_tree_present_not_consumed_scientifically": bool(
-            legacy_exists
+            historical_exists
         ),
         "legacy_final_test_result_tree_scientific_reads": 0,
         "legacy_final_test_result_tree_incidental_audit_reads": 1,
@@ -537,7 +642,12 @@ def _access_boundary() -> dict[str, Any]:
     }
 
 
-def _blocked_report(error: TypedBlocker) -> dict[str, Any]:
+def _blocked_report(
+    error: TypedBlocker,
+    *,
+    epoch_paths: C.EpochPaths,
+    historical_paths: C.EpochPaths,
+) -> dict[str, Any]:
     return {
         "schema_version": REPORT_SCHEMA_VERSION,
         "status": "TYPED_BLOCKER",
@@ -547,7 +657,10 @@ def _blocked_report(error: TypedBlocker) -> dict[str, Any]:
         "gate_b_authorized": False,
         "pre_open_status": PRE_OPEN_STATUS,
         "blocker": {"code": error.code, "detail": error.detail},
-        "access_boundary": _access_boundary(),
+        "access_boundary": _access_boundary(
+            epoch_paths=epoch_paths,
+            historical_paths=historical_paths,
+        ),
         "not_claimed": ["FORMAL_GATE_B_EXECUTION"],
     }
 
@@ -557,6 +670,195 @@ def _check(name: str, condition: bool, detail: Mapping[str, Any]) -> dict[str, A
         "name": name,
         "status": "PASS" if condition else "FAIL",
         "detail": dict(detail),
+    }
+
+
+def _scientific_guard_results(run: ExecutorRun) -> dict[str, Any]:
+    """Recompute the frozen structural guards from formal DAG payloads."""
+
+    canonical = run.payload(S.CANONICAL_NODES)
+    attention = run.payload(S.ATTENTION_DECISIONS)
+    reference = run.payload(S.REFERENCE_RECOVERY_COHORT)
+    robustness = run.payload(S.ROBUSTNESS)
+    views = run.payload(S.PAPER_VIEWS)
+
+    canonical_nodes = list(canonical.get("nodes") or ())
+    canonical_groups = [
+        (str(node.get("episode_id")), str(node.get("stage")))
+        for node in canonical_nodes
+    ]
+    duplicate_groups = len(canonical_groups) - len(set(canonical_groups))
+    canonicalization = canonical.get("canonicalization") or {}
+    canonicalization_before_support = (
+        canonicalization.get("rule")
+        == "ONE_NODE_PER_EPISODE_STAGE_BY_DECISION_TIME_NODE_ID_BEFORE_SUPPORT"
+        and canonicalization.get("support_filtering_after_canonicalization")
+        is True
+        and canonicalization.get("selected_without_support_information")
+        is True
+        and duplicate_groups == 0
+        and int(canonical.get("canonical_decision_node_count", -1))
+        == len(canonical_groups)
+    )
+
+    stage_by_node = {
+        str(node.get("node_id")): str(node.get("stage"))
+        for node in canonical_nodes
+    }
+    actionable_stages = tuple(str(value) for value in S.ACTIONABLE_STAGE_I_STAGES)
+    actionable_set = set(actionable_stages)
+    attention_rows = list(attention.get("rows") or ())
+
+    def stage_queue_is_valid(stage: str) -> bool:
+        rows = [
+            row for row in attention_rows if str(row.get("stage")) == stage
+        ]
+        if not rows:
+            return False
+        for row in rows:
+            eligible = tuple(
+                str(value)
+                for value in row.get("eligible_candidate_node_ids", ())
+            )
+            canonical_ids = set(
+                str(value)
+                for value in row.get("canonical_stage_node_ids", ())
+            )
+            delay = row.get("delay_decision") or {}
+            consequence = row.get("consequence_decision") or {}
+            delay_candidates = {
+                str(entry.get("node_id"))
+                for entry in delay.get("entries", ())
+            }
+            consequence_candidates = {
+                str(entry.get("node_id"))
+                for entry in consequence.get("entries", ())
+            }
+            if (
+                len(eligible) != len(set(eligible))
+                or not set(eligible) <= canonical_ids
+                or any(stage_by_node.get(node_id) != stage for node_id in eligible)
+                or int(row.get("cohort_size", -1)) != len(eligible)
+                or int(row.get("eligible_candidate_count", -1))
+                != len(eligible)
+                or int(delay.get("cohort_size", -1)) != len(eligible)
+                or int(consequence.get("cohort_size", -1)) != len(eligible)
+                or delay_candidates != set(eligible)
+                or consequence_candidates != set(eligible)
+                or delay.get("k") != consequence.get("k")
+                or abs(float(delay.get("q")) - float(row.get("q"))) > 1e-9
+                or abs(float(consequence.get("q")) - float(row.get("q")))
+                > 1e-9
+                or delay.get("signal_type") != "DELAY"
+                or consequence.get("signal_type") != "CONSEQUENCE"
+                or not set(delay.get("selected_node_ids", ())) <= set(eligible)
+                or not set(consequence.get("selected_node_ids", ()))
+                <= set(eligible)
+            ):
+                return False
+        return True
+
+    pre_stage1_uniqueness = stage_queue_is_valid("PRE_IB")
+    turn_stage1_uniqueness = stage_queue_is_valid("POST_IB_PRE_OB")
+    selector = attention.get("selector") or {}
+    no_pooled_stage1_ranking = (
+        selector.get("operated_per_stage") is True
+        and selector.get("pooled_stage1_queue") is False
+        and list(attention.get("stage1_actionable_stages") or ())
+        == list(actionable_stages)
+        and all(str(row.get("stage")) in actionable_set for row in attention_rows)
+    )
+
+    non_actionable_hits = sorted(
+        {
+            str(row.get("stage"))
+            for row in attention_rows
+            if str(row.get("stage")) not in actionable_set
+        }
+        | {
+            stage_by_node.get(str(node_id), str(node_id))
+            for row in attention_rows
+            for node_id in row.get("selected_node_ids", ())
+            if stage_by_node.get(str(node_id)) not in actionable_set
+        }
+    )
+    taxi_comp_participation = (
+        "NONE" if not non_actionable_hits else "PRESENT"
+    )
+
+    by_stage = reference.get("stage2_actionable_node_ids_by_stage") or {}
+    flattened = tuple(
+        str(value)
+        for value in reference.get("stage2_actionable_node_ids_flattened", ())
+    )
+    expected_union = tuple(
+        str(node_id)
+        for stage in actionable_stages
+        for node_id in by_stage.get(stage, ())
+    )
+    r_star_pass = (
+        bool(flattened)
+        and flattened == expected_union
+        and tuple(
+            str(value)
+            for value in reference.get("stage2_actionable_node_ids", ())
+        )
+        == flattened
+        and len(set(flattened)) == len(flattened)
+        and all(stage_by_node.get(node_id) in actionable_set for node_id in flattened)
+        and reference.get("reference_variant") == S.REFERENCE_VARIANT
+        and abs(float(reference.get("nominal_q", -1.0)) - float(C.NOMINAL_Q))
+        <= 1e-9
+        and reference.get("shortlist_rule")
+        == "STAGE_LOCAL_CONSEQUENCE_TOP_K_SHARED_SELECTOR"
+        and reference.get("stage2_support_rule")
+        == "ACTIONABLE_STAGE_AND_REFERENCE_STATE_FULLY_SUPPORTED"
+        and reference.get("no_pooled_stage1_decision") is True
+        and reference.get("flattened_union_semantics")
+        == "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION"
+    )
+    stage2_sobt = (
+        "NODE_RELATIVE_SOBT" if robustness.get("node_relative_sobt") is True else "FAIL"
+    )
+    overall_aggregation = (
+        str(views["section_5_2"].get("overall_rule"))
+        if isinstance(views.get("section_5_2"), Mapping)
+        else "FAIL"
+    )
+
+    passed = (
+        canonicalization_before_support
+        and pre_stage1_uniqueness
+        and turn_stage1_uniqueness
+        and no_pooled_stage1_ranking
+        and taxi_comp_participation == "NONE"
+        and r_star_pass
+        and stage2_sobt == "NODE_RELATIVE_SOBT"
+        and overall_aggregation == "OBJECTIVES_THEN_NORMALIZE"
+    )
+    return {
+        "status": "PASS" if passed else "FAIL",
+        "CANONICALIZATION_BEFORE_SUPPORT": (
+            "PASS" if canonicalization_before_support else "FAIL"
+        ),
+        "DUPLICATE_EPISODE_STAGE_GROUPS_AFTER_CANONICALIZATION": (
+            duplicate_groups
+        ),
+        "PRE_STAGE1_UNIQUENESS": (
+            "PASS" if pre_stage1_uniqueness else "FAIL"
+        ),
+        "TURN_STAGE1_UNIQUENESS": (
+            "PASS" if turn_stage1_uniqueness else "FAIL"
+        ),
+        "NO_POOLED_STAGE1_RANKING": (
+            "PASS" if no_pooled_stage1_ranking else "FAIL"
+        ),
+        "TAXI_COMP_STAGE1_PARTICIPATION": taxi_comp_participation,
+        "R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION": (
+            "PASS" if r_star_pass else "FAIL"
+        ),
+        "STAGE2_SOBT_COORDINATE": stage2_sobt,
+        "STAGE1_OVERALL_AGGREGATION": overall_aggregation,
     }
 
 

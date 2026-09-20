@@ -47,7 +47,14 @@ from typing import Any, Callable, Mapping, Sequence
 from .. import constants as C
 from ..errors import TypedBlocker, _require
 from ..materialization import _file_sha256, _read_json, _sha256_bytes
-from .nodes import CanonicalNode, canonical_nodes_payload, pre_environment_payload
+from .nodes import (
+    ROLLING_IDENTITY_SCHEMA,
+    ROLLING_REFERENCE_SUPPORTED,
+    ROLLING_REFERENCE_UNSUPPORTED,
+    CanonicalNode,
+    canonical_nodes_payload,
+    pre_environment_payload,
+)
 from .raw_entry import MATERIALIZATION_SCOPE
 from .services import FrozenScienceServices, load_frozen_services
 
@@ -428,7 +435,50 @@ def build_node_records(
     taxi_reference: Any,
     reference_bundle: Any,
 ) -> tuple[tuple[CanonicalNode, ...], tuple[dict[str, Any], ...]]:
-    """Build the canonical nodes and record typed reference exclusions."""
+    """Project materialized rolling nodes onto canonical stage nodes.
+
+    The frozen contract is a two-object projection:
+
+    * ``MATERIALIZED_ROLLING_NODES`` - every active rolling observation with
+      its frozen identity and its M2 reference-support status,
+    * ``CANONICAL_DECISION_NODES`` - exactly one decision node per
+      ``(episode_id, operational_stage)``.
+
+    The canonical identity is selected from the rolling identities alone, using
+    only ``(decision_time, node_id)`` inside each ``(episode_id, stage)`` group.
+    Support, representation, priority and realized-outcome information are
+    deliberately not consulted, so a canonical node that later fails support
+    stays a typed abstention instead of being replaced by a later node.
+    """
+
+    nodes, excluded, _rolling = materialize_node_records(
+        published,
+        normalization=normalization,
+        taxi_reference=taxi_reference,
+        reference_bundle=reference_bundle,
+    )
+    return nodes, excluded
+
+
+def materialize_node_records(
+    published: Sequence[Any],
+    *,
+    normalization: Any,
+    taxi_reference: Any,
+    reference_bundle: Any,
+) -> tuple[
+    tuple[CanonicalNode, ...],
+    tuple[dict[str, Any], ...],
+    tuple[dict[str, Any], ...],
+]:
+    """Build canonical nodes, typed exclusions and rolling identities.
+
+    Canonicalization happens *before* reference support: every materialized
+    rolling identity is enumerated first, the canonical node per
+    ``(episode_id, operational_stage)`` is selected from identity fields only,
+    and only then is the M2 reference binding resolved. A canonical node whose
+    reference abstains is preserved as a typed abstention.
+    """
 
     from model.M1.coverage import active_node_prefixes
     from model.M1.data import encode_pre_sequence
@@ -438,8 +488,7 @@ def build_node_records(
         chain_id_for_episode,
     )
 
-    nodes: list[CanonicalNode] = []
-    excluded: list[dict[str, Any]] = []
+    materialized: list[dict[str, Any]] = []
     for prepared in published:
         chain_id = str(chain_id_for_episode(prepared.episode))
         taxi_minutes, taxi_id, taxi_hash = _taxi_reference(
@@ -486,38 +535,24 @@ def build_node_records(
                 decision_time=node.decision_time,
                 bundle=reference_bundle,
             )
-            if resolved.binding is None:
-                excluded.append(
-                    {
-                        "node_id": str(node.decision_node_id),
-                        "episode_id": str(node.episode_id),
-                        "typed_state": UNSUPPORTED_REFERENCE_STATE,
-                        "status": resolved.audit.get("status"),
-                        "reason_codes": list(
-                            resolved.audit.get("reason_codes", ())
-                        ),
-                        "reference_support": dict(
-                            resolved.audit.get("reference_support", {})
-                        ),
-                        "zero_filled": False,
-                    }
+            record: CanonicalNode | None = None
+            if resolved.binding is not None:
+                binding = resolved.binding
+                scheduled_departure = schedule_value[
+                    "scheduled_departure_utc"
+                ]
+                if isinstance(scheduled_departure, str):
+                    scheduled_departure = datetime.fromisoformat(
+                        scheduled_departure
+                    )
+                sobt_minutes = (
+                    scheduled_departure - node.decision_time
+                ).total_seconds() / 60.0
+                observed = factual_observed_state(
+                    state, taxi_reference_minutes=taxi_minutes
                 )
-                continue
-            binding = resolved.binding
-            scheduled_departure = schedule_value["scheduled_departure_utc"]
-            if isinstance(scheduled_departure, str):
-                scheduled_departure = datetime.fromisoformat(
-                    scheduled_departure
-                )
-            sobt_minutes = (
-                scheduled_departure - node.decision_time
-            ).total_seconds() / 60.0
-            observed = factual_observed_state(
-                state, taxi_reference_minutes=taxi_minutes
-            )
-            history = encode_pre_sequence(prefix, normalization)
-            nodes.append(
-                CanonicalNode(
+                history = encode_pre_sequence(prefix, normalization)
+                record = CanonicalNode(
                     node_id=str(node.decision_node_id),
                     episode_id=str(node.episode_id),
                     chain_id=chain_id,
@@ -552,8 +587,108 @@ def build_node_records(
                     ),
                     pre_state=pre_environment_payload(state),
                 )
+            materialized.append(
+                {
+                    "node_id": str(node.decision_node_id),
+                    "episode_id": str(node.episode_id),
+                    "chain_id": chain_id,
+                    "stage": str(node.operational_stage.value),
+                    "decision_time": node.decision_time,
+                    "record": record,
+                    "abstention": (
+                        None
+                        if record is not None
+                        else {
+                            "node_id": str(node.decision_node_id),
+                            "episode_id": str(node.episode_id),
+                            "stage": str(node.operational_stage.value),
+                            "typed_state": UNSUPPORTED_REFERENCE_STATE,
+                            "status": resolved.audit.get("status"),
+                            "reason_codes": list(
+                                resolved.audit.get("reason_codes", ())
+                            ),
+                            "reference_support": dict(
+                                resolved.audit.get(
+                                    "reference_support", {}
+                                )
+                            ),
+                            "zero_filled": False,
+                        }
+                    ),
+                }
             )
-    return tuple(nodes), tuple(excluded)
+
+    canonical_ids = set(
+        _canonical_stage_identity_keys(materialized)
+    )
+    nodes: list[CanonicalNode] = []
+    excluded: list[dict[str, Any]] = []
+    rolling: list[dict[str, Any]] = []
+    for entry in materialized:
+        identity = (
+            entry["episode_id"],
+            entry["stage"],
+            entry["node_id"],
+        )
+        selected = identity in canonical_ids
+        record = entry["record"]
+        rolling.append(
+            {
+                "schema_version": ROLLING_IDENTITY_SCHEMA,
+                "node_id": entry["node_id"],
+                "episode_id": entry["episode_id"],
+                "chain_id": entry["chain_id"],
+                "stage": entry["stage"],
+                "decision_time": entry["decision_time"].isoformat(),
+                "canonical_selected": bool(selected),
+                "reference_support": (
+                    ROLLING_REFERENCE_SUPPORTED
+                    if record is not None
+                    else ROLLING_REFERENCE_UNSUPPORTED
+                ),
+            }
+        )
+        if not selected:
+            continue
+        if record is not None:
+            nodes.append(record)
+        else:
+            excluded.append(
+                {**entry["abstention"], "canonical_decision_node": True}
+            )
+    return tuple(nodes), tuple(excluded), tuple(rolling)
+
+
+def _canonical_stage_identity_keys(
+    materialized: Sequence[Mapping[str, Any]],
+) -> tuple[tuple[str, str, str], ...]:
+    """Select one identity per ``(episode_id, stage)`` from raw identities.
+
+    Only ``episode_id``, ``stage``, ``decision_time`` and ``node_id`` are read.
+    """
+
+    grouped: dict[tuple[str, str], list[Mapping[str, Any]]] = {}
+    for entry in materialized:
+        grouped.setdefault(
+            (str(entry["episode_id"]), str(entry["stage"])), []
+        ).append(entry)
+    selected = []
+    for group in grouped.values():
+        winner = min(
+            group,
+            key=lambda item: (
+                item["decision_time"],
+                str(item["node_id"]),
+            ),
+        )
+        selected.append(
+            (
+                str(winner["episode_id"]),
+                str(winner["stage"]),
+                str(winner["node_id"]),
+            )
+        )
+    return tuple(selected)
 
 
 def load_reference_payloads(
@@ -612,7 +747,7 @@ def materialize_raw_source(
         taxi_reference=services.taxi_reference,
         turnaround_reference=through_turnaround,
     )
-    nodes, excluded = build_node_records(
+    nodes, excluded, rolling = materialize_node_records(
         published,
         normalization=services.h16_pipeline.normalization,
         taxi_reference=services.taxi_reference,
@@ -652,6 +787,7 @@ def materialize_raw_source(
         provenance.update(dict(extra_provenance))
     return canonical_nodes_payload(
         nodes,
+        materialized_rolling_identities=rolling,
         scope=profile.materialization_scope,
         provenance=provenance,
     )

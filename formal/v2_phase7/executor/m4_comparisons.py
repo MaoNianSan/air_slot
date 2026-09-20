@@ -1,20 +1,4 @@
-"""``M4_COMPARISONS``: common-basis attention and recovery evaluation.
-
-Every comparison is formed on the frozen reference basis:
-
-* ``L_att = delta A / A*`` with ``A*`` the consequence-based Stage-I value of the
-  ``HISTORY_JOINT`` reference shortlist and ``delta A`` the value difference to
-  the comparator shortlist under that same reference priority;
-* ``L_rec = sum delta J / V_g*`` with every comparator action scored against the
-  reference objective table ``J_i^*(u)`` on the fixed cohort ``R_g*``.
-
-The two losses are always reported separately; no ``L_total`` is constructed.
-A comparison is only defined when the frozen M4 common-basis preconditions
-hold: identical eligible candidate queues for attention, and a complete
-comparator action vector on the fixed cohort for recovery. Otherwise the record
-is typed (``N/A_NOT_DEFINED``) with an explicit reason code instead of being
-silently recomputed on a different cohort.
-"""
+"""``M4_COMPARISONS``: stage-local attention and fixed-cohort recovery."""
 
 from __future__ import annotations
 
@@ -24,12 +8,15 @@ from model.M4.evaluation import (
     evaluate_attention_allocation,
     evaluate_recovery_loss,
 )
+from model.PRE.decision_environment import action_stage_class
+from model.common.enums import OperationalStage
+
 from .. import constants as C
 from ..errors import TypedBlocker, _require
 from . import stages as S
 from .attention_decisions import attention_decision
-from .consequence_variants import signals_by_variant
 from .codec import recovery_decision_from_payload
+from .consequence_variants import signals_by_variant
 from .reference_cohort import actionable_cohort
 from .recovery_decisions import rows_by_variant as recovery_rows_by_variant
 
@@ -43,7 +30,7 @@ def build_m4_comparisons(
     reference_cohort: Mapping[str, Any],
     recovery_decisions: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Evaluate every primary comparator against the frozen reference basis."""
+    """Evaluate PRE and TURN independently, then aggregate objective values."""
 
     cohort = actionable_cohort(reference_cohort)
     _require(bool(cohort), "PHASE7_M4_RECOVERY_COHORT_EMPTY")
@@ -63,9 +50,7 @@ def build_m4_comparisons(
             record.get("typed_state")
             for record in block["comparators"].values()
         )
-    typed_states = sorted(
-        {value for value in typed_candidates if value}
-    )
+    typed_states = sorted({value for value in typed_candidates if value})
     return {
         "reference_variant": S.REFERENCE_VARIANT,
         "reference_representation_id": C.REFERENCE_REPRESENTATION_ID,
@@ -73,6 +58,9 @@ def build_m4_comparisons(
         "cohort_node_ids": list(cohort),
         "cohort_size": len(cohort),
         "nominal_q": float(C.NOMINAL_Q),
+        "stage1_actionable_stages": list(S.ACTIONABLE_STAGE_I_STAGES),
+        "one_stage1_decision_per_stage": True,
+        "pooled_stage1_ranking_constructed": False,
         "reference_objective_basis": (
             "M3_FORMAL_HIGHS_OBJECTIVE_ON_FIXED_REFERENCE_COHORT"
         ),
@@ -83,6 +71,7 @@ def build_m4_comparisons(
             "delay_comparator": "P^D = E[D^TO | Omega^CS]",
             "delay_comparator_is_l_att_basis": False,
             "shared_stage1_selector": True,
+            "stage_local_selector": True,
         },
         "attention": attention,
         "recovery": recovery,
@@ -100,111 +89,234 @@ def _attention_block(
     reference_variant = S.REFERENCE_VARIANT
     q = float(C.NOMINAL_Q)
     cohort_id = str(reference_cohort["cohort_id"])
-    reference_signals = signals_by_variant(consequence_variants, reference_variant)
-    reference_decision = attention_decision(
-        attention_decisions, reference_variant, q, "CONSEQUENCE"
+    reference_signals = signals_by_variant(
+        consequence_variants, reference_variant
     )
-    reference_candidates = tuple(
-        sorted(entry.node_id for entry in reference_decision.entries)
-    )
-    reference_priority: dict[str, float] = {}
-    for node_id in reference_candidates:
-        signals = reference_signals.get(node_id)
-        if signals is None or signals[1].score is None:
-            continue
-        reference_priority[node_id] = float(signals[1].score)
-    reference_shortlist = tuple(
-        entry.node_id for entry in reference_decision.entries if entry.selected
-    )
-    self_value = (
-        evaluate_attention_allocation(
-            cohort_id=cohort_id,
-            reference_id=reference_variant,
-            comparator_id=reference_variant,
-            reference_decision=reference_decision,
-            comparator_decision=reference_decision,
-            reference_priority=reference_priority,
-        )
-        if len(reference_priority) == len(reference_candidates)
-        else None
-    )
-    self_record = (
-        _evaluation_record(self_value)
-        if self_value is not None
-        else _typed_record(
-            typed_state=N_A_NOT_DEFINED,
-            reason_codes=("PHASE7_ATTENTION_REFERENCE_PRIORITY_INCOMPLETE",),
-            detail={"candidate_count": len(reference_candidates)},
-        )
-    )
+    by_stage: dict[str, Any] = {}
+    stage_self: dict[str, dict[str, Any]] = {}
+    stage_bootstrap: dict[str, list[dict[str, Any]]] = {}
 
-    comparators: dict[str, Any] = {}
-    bootstrap_rows: dict[str, list[dict[str, Any]]] = {}
-    for variant in S.COMPARATOR_VARIANTS:
-        decision = attention_decision(
-            attention_decisions, variant, q, "CONSEQUENCE"
+    for stage in S.ACTIONABLE_STAGE_I_STAGES:
+        reference_decision = attention_decision(
+            attention_decisions, reference_variant, stage, q, "CONSEQUENCE"
         )
-        candidates = tuple(sorted(entry.node_id for entry in decision.entries))
-        if candidates != reference_candidates:
-            comparators[variant] = _typed_record(
-                typed_state=N_A_NOT_DEFINED,
-                reason_codes=(
-                    "PHASE7_ATTENTION_COMMON_BASIS_CANDIDATE_QUEUE_MISMATCH",
-                ),
-                detail={
-                    "reference_candidate_count": len(reference_candidates),
-                    "comparator_candidate_count": len(candidates),
-                    "entered_candidates": sorted(set(candidates) - set(reference_candidates)),
-                    "exited_candidates": sorted(set(reference_candidates) - set(candidates)),
-                },
-            )
-            continue
+        reference_candidates = tuple(
+            sorted(entry.node_id for entry in reference_decision.entries)
+        )
+        reference_priority: dict[str, float] = {}
+        for node_id in reference_candidates:
+            signal = reference_signals.get(node_id)
+            if signal is not None and signal[1].score is not None:
+                reference_priority[node_id] = float(signal[1].score)
+        reference_shortlist = tuple(
+            entry.node_id for entry in reference_decision.entries if entry.selected
+        )
         if len(reference_priority) != len(reference_candidates):
-            comparators[variant] = _typed_record(
+            self_record = _typed_record(
                 typed_state=N_A_NOT_DEFINED,
                 reason_codes=("PHASE7_ATTENTION_REFERENCE_PRIORITY_INCOMPLETE",),
-                detail={"candidate_count": len(reference_candidates)},
+                detail={
+                    "stage": stage,
+                    "candidate_count": len(reference_candidates),
+                },
             )
-            continue
-        evaluation = evaluate_attention_allocation(
-            cohort_id=cohort_id,
-            reference_id=reference_variant,
-            comparator_id=variant,
-            reference_decision=reference_decision,
-            comparator_decision=decision,
-            reference_priority=reference_priority,
-        )
-        comparators[variant] = _evaluation_record(evaluation)
-        comparator_shortlist = set(evaluation.comparator_shortlist)
-        bootstrap_rows[variant] = [
-            {
-                "node_id": node_id,
-                "episode_id": reference_signals[node_id][1].episode_id,
-                "reference_priority": reference_priority[node_id],
-                "in_reference_shortlist": node_id in set(reference_shortlist),
-                "in_comparator_shortlist": node_id in comparator_shortlist,
-            }
-            for node_id in reference_candidates
-        ]
+        else:
+            self_record = _evaluation_record(
+                evaluate_attention_allocation(
+                    cohort_id=f"{cohort_id}_{stage}",
+                    reference_id=reference_variant,
+                    comparator_id=reference_variant,
+                    reference_decision=reference_decision,
+                    comparator_decision=reference_decision,
+                    reference_priority=reference_priority,
+                )
+            )
+        stage_self[stage] = self_record
 
+        comparators: dict[str, Any] = {}
+        bootstrap_rows: dict[str, list[dict[str, Any]]] = {}
+        for variant in S.COMPARATOR_VARIANTS:
+            comparator_signals = signals_by_variant(
+                consequence_variants, variant
+            )
+            decision = attention_decision(
+                attention_decisions, variant, stage, q, "CONSEQUENCE"
+            )
+            candidates = tuple(sorted(entry.node_id for entry in decision.entries))
+            if candidates != reference_candidates:
+                comparators[variant] = _typed_record(
+                    typed_state=N_A_NOT_DEFINED,
+                    reason_codes=(
+                        "PHASE7_ATTENTION_COMMON_BASIS_CANDIDATE_QUEUE_MISMATCH",
+                    ),
+                    detail={
+                        "stage": stage,
+                        "reference_candidate_count": len(reference_candidates),
+                        "comparator_candidate_count": len(candidates),
+                        "entered_candidates": sorted(
+                            set(candidates) - set(reference_candidates)
+                        ),
+                        "exited_candidates": sorted(
+                            set(reference_candidates) - set(candidates)
+                        ),
+                    },
+                )
+                continue
+            if len(reference_priority) != len(reference_candidates):
+                comparators[variant] = _typed_record(
+                    typed_state=N_A_NOT_DEFINED,
+                    reason_codes=("PHASE7_ATTENTION_REFERENCE_PRIORITY_INCOMPLETE",),
+                    detail={"stage": stage, "candidate_count": len(reference_candidates)},
+                )
+                continue
+            evaluation = evaluate_attention_allocation(
+                cohort_id=f"{cohort_id}_{stage}",
+                reference_id=reference_variant,
+                comparator_id=variant,
+                reference_decision=reference_decision,
+                comparator_decision=decision,
+                reference_priority=reference_priority,
+            )
+            comparators[variant] = _evaluation_record(evaluation)
+            comparator_shortlist = set(evaluation.comparator_shortlist)
+            bootstrap_rows[variant] = [
+                {
+                    "stage": stage,
+                    "node_id": node_id,
+                    "episode_id": reference_signals[node_id][1].episode_id,
+                    "chain_id": reference_signals[node_id][1].chain_id,
+                    "reference_priority": reference_priority[node_id],
+                    "reference_score": float(
+                        reference_signals[node_id][1].score
+                    ),
+                    "comparator_score": float(
+                        comparator_signals[node_id][1].score
+                    ),
+                    "support_mass": float(
+                        reference_signals[node_id][1].comparison_support_mass
+                    ),
+                    "support_threshold": float(
+                        reference_signals[node_id][1].comparison_support_threshold
+                    ),
+                    "in_reference_shortlist": node_id in set(reference_shortlist),
+                    "in_comparator_shortlist": node_id in comparator_shortlist,
+                }
+                for node_id in reference_candidates
+            ]
+        by_stage[stage] = {
+            "stage_class": action_stage_class(
+                OperationalStage(stage)
+            ),
+            "capacity": {
+                "q": q,
+                "k": int(reference_decision.k),
+                "cohort_size": int(reference_decision.cohort_size),
+                "selector": "M3_STAGE1_SHARED_SELECTOR",
+                "signal": "P^C = Phi_C(C^CU)",
+            },
+            "reference_candidate_node_ids": list(reference_candidates),
+            "reference_shortlist_node_ids": list(reference_shortlist),
+            "reference_priority": dict(reference_priority),
+            "self_reference": self_record,
+            "comparators": comparators,
+            "bootstrap_rows": bootstrap_rows,
+        }
+        stage_bootstrap[stage] = bootstrap_rows
+
+    self_aggregate = _aggregate_records(
+        [stage_self[stage] for stage in S.ACTIONABLE_STAGE_I_STAGES],
+        stage_scope=S.ACTIONABLE_STAGE_I_STAGES,
+    )
+    comparators_aggregate: dict[str, Any] = {}
+    bootstrap_aggregate: dict[str, list[dict[str, Any]]] = {}
+    for variant in S.COMPARATOR_VARIANTS:
+        records = [
+            by_stage[stage]["comparators"][variant]
+            for stage in S.ACTIONABLE_STAGE_I_STAGES
+        ]
+        comparators_aggregate[variant] = _aggregate_records(
+            records, stage_scope=S.ACTIONABLE_STAGE_I_STAGES
+        )
+        bootstrap_aggregate[variant] = [
+            row
+            for stage in S.ACTIONABLE_STAGE_I_STAGES
+            for row in stage_bootstrap[stage].get(variant, ())
+        ]
     return {
-        "capacity": {
-            "q": q,
-            "k": int(reference_decision.k),
-            "cohort_size": int(reference_decision.cohort_size),
-            "selector": "M3_STAGE1_SHARED_SELECTOR",
-            "signal": "P^C = Phi_C(C^CU)",
+        "aggregation": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+        "pooled_stage1_ranking": False,
+        "stage_order": list(S.ACTIONABLE_STAGE_I_STAGES),
+        "by_stage": by_stage,
+        "self_reference": self_aggregate,
+        "comparators": comparators_aggregate,
+        "bootstrap_rows": bootstrap_aggregate,
+        "reference_candidate_node_ids": [
+            node_id
+            for stage in S.ACTIONABLE_STAGE_I_STAGES
+            for node_id in by_stage[stage]["reference_candidate_node_ids"]
+        ],
+        "reference_shortlist_node_ids": [
+            node_id
+            for stage in S.ACTIONABLE_STAGE_I_STAGES
+            for node_id in by_stage[stage]["reference_shortlist_node_ids"]
+        ],
+    }
+
+
+def _aggregate_records(
+    records: Sequence[Mapping[str, Any]], *, stage_scope: Sequence[str]
+) -> dict[str, Any]:
+    if len(records) != len(stage_scope):
+        return _typed_record(
+            typed_state=N_A_NOT_DEFINED,
+            reason_codes=("PHASE7_ATTENTION_STAGE_RECORD_MISSING",),
+            detail={"stage_scope": list(stage_scope)},
+        )
+    if any(record.get("record_kind") != "EVALUATED" for record in records):
+        return _typed_record(
+            typed_state=N_A_NOT_DEFINED,
+            reason_codes=("PHASE7_ATTENTION_STAGE_EVALUATION_TYPED",),
+            detail={"stage_scope": list(stage_scope)},
+        )
+    reference = sum(
+        float(record["reference_attention_value"]) for record in records
+    )
+    comparator = sum(
+        float(record["comparator_attention_value"]) for record in records
+    )
+    delta = reference - comparator
+    return {
+        "record_kind": "EVALUATED",
+        "typed_state": None,
+        "reference_attention_value": reference,
+        "comparator_attention_value": comparator,
+        "L_att": None if reference <= 0.0 else delta / reference,
+        "overlap_count": sum(int(record.get("overlap_count", 0)) for record in records),
+        "entered": [
+            value for record in records for value in record.get("entered", ())
+        ],
+        "displaced": [
+            value for record in records for value in record.get("displaced", ())
+        ],
+        "kendall_tau": None,
+        "spearman_rho": None,
+        "mean_rank_displacement": None,
+        "diagnostics": {
+            "aggregation": "OBJECTIVE_THEN_NORMALIZE",
+            "stage_scope": list(stage_scope),
         },
-        "reference_candidate_node_ids": list(reference_candidates),
-        "reference_shortlist_node_ids": list(reference_shortlist),
-        "reference_priority": {
-            node_id: reference_priority[node_id]
-            for node_id in reference_candidates
-            if node_id in reference_priority
-        },
-        "self_reference": self_record,
-        "comparators": comparators,
-        "bootstrap_rows": bootstrap_rows,
+        "reference_shortlist": [
+            value
+            for record in records
+            for value in record.get("reference_shortlist", ())
+        ],
+        "comparator_shortlist": [
+            value
+            for record in records
+            for value in record.get("comparator_shortlist", ())
+        ],
+        "status": "SUPPORTED",
+        "reason_codes": [],
     }
 
 
@@ -284,7 +396,11 @@ def _recovery_block(
                 reason_codes=(
                     "PHASE7_M4_COMPARATOR_DECISION_INCOMPLETE_ON_FIXED_COHORT",
                 ),
-                detail={"missing_node_ids": sorted(set(missing) | set(missing_reference))},
+                detail={
+                    "missing_node_ids": sorted(
+                        set(missing) | set(missing_reference)
+                    )
+                },
             )
             continue
         evaluation = evaluate_recovery_loss(
@@ -302,6 +418,7 @@ def _recovery_block(
             {
                 "node_id": node_id,
                 "episode_id": reference_rows[node_id]["episode_id"],
+                "stage": reference_rows[node_id]["stage"],
                 "reference_value": reference_values[node_id],
                 "j_star": float(evaluation.reference_objectives[node_id]),
                 "j_comparator": float(evaluation.comparator_objectives[node_id]),
@@ -316,6 +433,12 @@ def _recovery_block(
         "cohort_id": cohort_id,
         "cohort_size": len(cohort),
         "cohort_node_ids": list(cohort),
+        "stage2_actionable_node_ids_by_stage": reference_cohort.get(
+            "stage2_actionable_node_ids_by_stage", {}
+        ),
+        "stage2_actionable_node_ids_flattened": list(
+            reference_cohort.get("stage2_actionable_node_ids_flattened", cohort)
+        ),
         "reference_actions": reference_actions,
         "reference_recoverable_values": reference_values,
         "self_reference": self_record,
@@ -375,8 +498,6 @@ def _invariants(
                     }
                 )
 
-    reference_attention = attention["self_reference"]
-    reference_recovery = recovery["self_reference"]
     failures: list[str] = []
 
     def _check_reference_identity(
@@ -388,10 +509,10 @@ def _invariants(
         if abs(float(value) - expected) > TOLERANCE:
             failures.append(f"{field}_REFERENCE_IDENTITY_VIOLATION")
 
-    _check_reference_identity(reference_attention, "L_att", 0.0)
-    _check_reference_identity(reference_recovery, "L_rec", 0.0)
-    _check_reference_identity(reference_recovery, "A0", 1.0)
-    _check_reference_identity(reference_recovery, "A5", 1.0)
+    _check_reference_identity(attention["self_reference"], "L_att", 0.0)
+    _check_reference_identity(recovery["self_reference"], "L_rec", 0.0)
+    _check_reference_identity(recovery["self_reference"], "A0", 1.0)
+    _check_reference_identity(recovery["self_reference"], "A5", 1.0)
     if delta_violations:
         failures.append("DELTA_OBJECTIVE_BELOW_NEGATIVE_TOLERANCE")
     if failures:
@@ -404,11 +525,11 @@ def _invariants(
         )
     return {
         "status": "PASS",
-        "reference_attention_identity": reference_attention.get("L_att"),
-        "reference_recovery_identity": reference_recovery.get("L_rec"),
+        "reference_attention_identity": attention["self_reference"].get("L_att"),
+        "reference_recovery_identity": recovery["self_reference"].get("L_rec"),
         "reference_action_agreement": {
-            "A0": reference_recovery.get("A0"),
-            "A5": reference_recovery.get("A5"),
+            "A0": recovery["self_reference"].get("A0"),
+            "A5": recovery["self_reference"].get("A5"),
         },
         "delta_objective_lower_bound": -TOLERANCE,
         "delta_objective_violations": delta_violations,

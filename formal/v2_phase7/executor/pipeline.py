@@ -51,7 +51,11 @@ def run_sealed_pipeline(
         isinstance(release, Mapping) and isinstance(epoch, Mapping),
         "PHASE7_SEALED_PIPELINE_RELEASE_OR_EPOCH_MISSING",
     )
-    root = Path(output_root) if output_root is not None else C.FINAL_TEST_V2_ROOT
+    root = (
+        Path(output_root)
+        if output_root is not None
+        else C.stage_matched_epoch_paths().root
+    )
     canonical_nodes = materialize_canonical_nodes(
         authorization={
             "authorization_id": "GATE_B_HUMAN_RELEASE",

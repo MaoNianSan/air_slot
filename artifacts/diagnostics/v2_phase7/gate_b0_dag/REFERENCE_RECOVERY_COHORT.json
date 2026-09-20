@@ -1,0 +1,68 @@
+{
+  "checkpoint_schema_version": "AIR_SLOT_V2_PHASE7_CHECKPOINT_V1",
+  "dependencies": {
+    "ATTENTION_DECISIONS": "sha256:f659930b55329dc0c2aba8a2b3dcaa7726f5402e36e7fb28bdf919365770e2f0",
+    "CANONICAL_NODES": "sha256:595c649a0933cdb4ece58c3be7ff4c8909ba67137847891bce7be4efb6465019",
+    "STATE_VARIANTS": "sha256:ce7d028d2547d3d71cb5cf33e4bb4a716a19eea0e660cf875b703809fac11348"
+  },
+  "payload": {
+    "alternative_representations_use_fixed_r_star": true,
+    "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+    "flattened_union_semantics": "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION",
+    "no_pooled_stage1_decision": true,
+    "nominal_q": 0.1,
+    "reference_authority": "H_CSTAR_EQUALS_H_HISTORY_JOINT",
+    "reference_representation_id": "HISTORY_H16:JOINT",
+    "reference_variant": "HISTORY_JOINT",
+    "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1",
+    "shortlist_authority": "P^C = Phi_C(C^CU)",
+    "shortlist_node_ids": [
+      "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+      "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+    ],
+    "shortlist_node_ids_by_stage": {
+      "POST_IB_PRE_OB": [
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+      ],
+      "PRE_IB": [
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+      ]
+    },
+    "shortlist_rule": "STAGE_LOCAL_CONSEQUENCE_TOP_K_SHARED_SELECTOR",
+    "shortlist_size": 2,
+    "shortlist_stage_counts": {
+      "POST_IB_PRE_OB": 1,
+      "PRE_IB": 1
+    },
+    "stage": "REFERENCE_RECOVERY_COHORT",
+    "stage1_actionable_stages": [
+      "PRE_IB",
+      "POST_IB_PRE_OB"
+    ],
+    "stage2_actionable_node_ids": [
+      "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+      "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+    ],
+    "stage2_actionable_node_ids_by_stage": {
+      "POST_IB_PRE_OB": [
+        "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+      ],
+      "PRE_IB": [
+        "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+      ]
+    },
+    "stage2_actionable_node_ids_flattened": [
+      "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+      "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+    ],
+    "stage2_cohort_size": 2,
+    "stage2_excluded": [],
+    "stage2_excluded_count": 0,
+    "stage2_support_rule": "ACTIONABLE_STAGE_AND_REFERENCE_STATE_FULLY_SUPPORTED",
+    "typed_states": []
+  },
+  "payload_hash": "sha256:32039a3bcf57f3627ff2c378a6ca3d619b763aa065a999799bfede2f522ea665",
+  "produced_by": "PHASE7_GATE_B0_DEVELOPMENT_SAFE_FIXTURE",
+  "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1",
+  "stage": "REFERENCE_RECOVERY_COHORT"
+}

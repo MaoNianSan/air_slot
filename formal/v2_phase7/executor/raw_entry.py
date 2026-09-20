@@ -25,7 +25,11 @@ from .. import constants as C
 from ..errors import TypedBlocker, _require
 from ..materialization import _assert_not_legacy_final_test
 from ..release import validate_release_schema
-from .nodes import canonical_nodes_payload, nodes_from_payload
+from .nodes import (
+    canonical_nodes_payload,
+    nodes_from_payload,
+    rolling_nodes_from_payload,
+)
 
 MATERIALIZATION_SCOPE = "FINAL_TEST_SEALED_MATERIALIZATION"
 AUTHORIZATION_ID = "GATE_B_HUMAN_RELEASE"
@@ -124,8 +128,10 @@ def materialize_canonical_nodes(
         type(produced).__name__,
     )
     nodes = nodes_from_payload(produced)
+    rolling_nodes = rolling_nodes_from_payload(produced)
     payload = canonical_nodes_payload(
         nodes,
+        materialized_rolling_identities=rolling_nodes,
         scope=MATERIALIZATION_SCOPE,
         provenance={
             **dict(produced.get("provenance", {})),

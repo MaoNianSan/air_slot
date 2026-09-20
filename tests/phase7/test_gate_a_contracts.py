@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from formal import v2_phase7_final_test_run as runner
+from formal.v2_phase7 import constants as C
 
 
 def test_r2_authority_and_instruction_copies_are_frozen() -> None:
@@ -167,27 +168,26 @@ def test_gate_a_dry_run_preserves_typed_states_and_reference_invariants() -> Non
     assert grids["Q95"][-1] == 75.0
 
 
-def test_run_gate_a_writes_ready_preflight_without_access(tmp_path: Path) -> None:
+def test_run_gate_a_writes_ready_preflight_without_access(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     result = runner.run_gate_a(output_root=tmp_path)
     assert result["status"] == "READY_FOR_GATE_B"
     assert result["gate_b_authorized"] is False
     assert result["gate_a_commit"] == "RESOLVED_AFTER_GATE_A_COMMIT" or re.fullmatch(
         r"[0-9a-f]{40}", result["gate_a_commit"]
     )
-    assert result["access_boundary"] == {
-        "q4_raw_reads": 0,
-        "repository_level_rg_incidental_audit_reads": 1,
-        "legacy_final_test_result_tree_incidental_audit_reads": 1,
-        "legacy_final_test_result_tree_scientific_reads": 0,
-        "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
-        "legacy_final_test_result_tree_reads_used_for_selection": 0,
-        "phase7_scientific_access_increment": 0,
-        "final_test_data_reads": 0,
-        "legacy_final_test_writes": 0,
-        "allow_final_test_true_occurrences": 0,
-        "gate_b_release_present": False,
-        "phase7_access_epoch_opened": False,
-    }
+    access = result["access_boundary"]
+    assert access["current_epoch_root"] == str(tmp_path)
+    assert access["current_epoch_release_present"] is False
+    assert access["current_epoch_access_audit_present"] is False
+    assert access["current_epoch_access_count"] == 0
+    assert access["historical_epoch_present"] is True
+    assert access["historical_epoch_release_present"] is True
+    assert access["historical_epoch_access_audit_present"] is True
+    assert access["historical_epoch_used_for_scientific_computation"] is False
+    assert access["historical_epoch_used_for_selection"] is False
+    assert access["phase7_access_epoch_opened"] is False
     assert result["final_test_accounting"]["current_total"] == 1
     assert result["final_test_accounting"]["current_freeze_run_increment"] == 0
 

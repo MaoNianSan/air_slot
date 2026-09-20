@@ -108,20 +108,20 @@ def ontime_paths(
     source window beyond those requested partitions.
     """
     selected_months = tuple(int(month) for month in months)
-    paths = tuple(
-        next(
-            (
-                root
-                / "data2"
-                / "raw"
-                / "bts"
-                / "ontime"
-                / "2019"
-                / f"month={month:02d}"
-            ).glob("*.csv")
+    paths: list[Path] = []
+    for month in selected_months:
+        partition = (
+            root
+            / "data2"
+            / "raw"
+            / "bts"
+            / "ontime"
+            / "2019"
+            / f"month={month:02d}"
         )
-        for month in selected_months
-    )
+        candidates = tuple(partition.glob("*.csv"))
+        if candidates:
+            paths.append(candidates[0])
     if (
         not allow_final_test
         and any(path.parent.name in {"month=10", "month=11", "month=12"} for path in paths)

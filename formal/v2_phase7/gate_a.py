@@ -17,16 +17,24 @@ def run_gate_a(
 ) -> dict[str, Any]:
     """Run Gate A and atomically write its preflight and dry-run artifacts."""
 
-    root = Path(output_root) if output_root is not None else C.FINAL_TEST_V2_ROOT
-    preflight_path = root / C.GATE_A_PREFLIGHT_PATH.name
-    dry_run_path = root / C.GATE_A_DRY_RUN_PATH.name
+    paths = (
+        C.epoch_paths_for(Path(output_root))
+        if output_root is not None
+        else C.stage_matched_epoch_paths()
+    )
+    preflight_path = paths.gate_a_preflight_path
+    dry_run_path = paths.gate_a_dry_run_path
     try:
-        payload = build_gate_a_preflight()
+        payload = build_gate_a_preflight(epoch_paths=paths)
         _write_json_atomic(dry_run_path, payload["dry_run"])
         _write_json_atomic(preflight_path, payload)
         return payload
     except TypedBlocker as error:
-        payload = _blocked_payload(error.code, error.detail)
+        payload = _blocked_payload(
+            error.code,
+            error.detail,
+            epoch_paths=paths,
+        )
         _write_json_atomic(preflight_path, payload)
         return payload
 

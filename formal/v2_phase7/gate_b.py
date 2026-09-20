@@ -24,6 +24,7 @@ from .access_audit import (
     open_access_epoch,
 )
 from .errors import TypedBlocker
+from .errors import _require
 from .materialization import _read_json
 from .release import validate_release_schema
 from .stage2_authority import (
@@ -36,6 +37,8 @@ def execute_gate_b(
     *,
     release_path: Path,
     audit_path: Path | None = None,
+    final_test_root: Path | None = None,
+    epoch_paths: C.EpochPaths | None = None,
     pipeline: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
     use_production_executor: bool = False,
 ) -> dict[str, Any]:
@@ -48,8 +51,86 @@ def execute_gate_b(
 
     release = _read_json(Path(release_path))
     validated = validate_release_schema(release)
+    paths = (
+        epoch_paths
+        if epoch_paths is not None
+        else (
+            C.epoch_paths_for(Path(final_test_root))
+            if final_test_root is not None
+            else C.stage_matched_epoch_paths()
+        )
+    )
+    epoch_root = paths.root
+    if use_production_executor:
+        from .execution_freeze import (
+            FREEZE_JSON_PATH,
+            PRE_OPEN_REPORT_PATH,
+            validate_execution_freeze,
+        )
+
+        freeze = validate_execution_freeze()
+        frozen_manifest = _read_json(FREEZE_JSON_PATH)
+        _require(
+            frozen_manifest.get("artifact_hash") == freeze["artifact_hash"],
+            "GATE_B_FREEZE_MANIFEST_HASH_MISMATCH",
+            {
+                "manifest": frozen_manifest.get("artifact_hash"),
+                "validated": freeze["artifact_hash"],
+            },
+        )
+
+        _require(
+            PRE_OPEN_REPORT_PATH.is_file(),
+            "GATE_B_PRE_OPEN_GATE_REPORT_MISSING",
+            str(PRE_OPEN_REPORT_PATH),
+        )
+        pre_open = _read_json(PRE_OPEN_REPORT_PATH)
+        _require(
+            pre_open.get("status") == "PASS"
+            and pre_open.get("freeze_artifact_hash")
+            == freeze["artifact_hash"],
+            "GATE_B_PRE_OPEN_GATE_NOT_PASS",
+            {
+                "status": pre_open.get("status"),
+                "report_freeze_hash": pre_open.get(
+                    "freeze_artifact_hash"
+                ),
+                "current_freeze_hash": freeze["artifact_hash"],
+            },
+        )
+        frozen_root = Path(
+            frozen_manifest["stage_matched_final_test_epoch"]["output_root"]
+        ).resolve()
+        _require(
+            epoch_root.resolve() == frozen_root,
+            "GATE_B_FINAL_TEST_ROOT_NOT_FROZEN",
+            {"requested": str(epoch_root), "frozen": str(frozen_root)},
+        )
+        _require(
+            not paths.access_audit_path.exists(),
+            "GATE_B_STAGE_MATCHED_ACCESS_AUDIT_ALREADY_EXISTS",
+            str(paths.access_audit_path),
+        )
+        _require(
+            not paths.scientific_output_root.exists(),
+            "GATE_B_STAGE_MATCHED_CHECKPOINTS_ALREADY_EXIST",
+            str(paths.scientific_output_root),
+        )
+        _require(
+            Path(release_path).resolve() == paths.gate_b_release_path.resolve(),
+            "GATE_B_RELEASE_OUTSIDE_FROZEN_EPOCH",
+            str(release_path),
+        )
+        if audit_path is not None:
+            _require(
+                Path(audit_path).resolve() == paths.access_audit_path.resolve(),
+                "GATE_B_AUDIT_OUTSIDE_FROZEN_EPOCH",
+                str(audit_path),
+            )
     target_audit = (
-        Path(audit_path) if audit_path is not None else C.PHASE7_ACCESS_AUDIT_PATH
+        Path(audit_path)
+        if audit_path is not None
+        else paths.access_audit_path
     )
     if pipeline is None and use_production_executor:
         pipeline = production_pipeline
@@ -58,7 +139,11 @@ def execute_gate_b(
             "GATE_B_SCIENTIFIC_EXECUTOR_NOT_BOUND",
             "human release validated, but no sealed Phase-7 executor was supplied",
         )
-    binding = production_binding_record() if use_production_executor else None
+    binding = (
+        production_binding_record(epoch_paths=paths)
+        if use_production_executor
+        else None
+    )
     epoch = open_access_epoch(target_audit, release)
     started = mark_access_read_started(target_audit)
     result = pipeline(
@@ -66,6 +151,7 @@ def execute_gate_b(
             "release": release,
             "release_validation": validated,
             "access_epoch": started,
+            "output_root": str(epoch_root),
         }
     )
     mark_access_read_completed(target_audit)
@@ -96,19 +182,43 @@ def production_pipeline(context: dict[str, Any]) -> dict[str, Any]:
     from .executor.pipeline import run_sealed_pipeline
     from .executor.raw_source import production_raw_adapter
 
-    return run_sealed_pipeline(context, adapter=production_raw_adapter)
+    output_root = context.get("output_root")
+    return run_sealed_pipeline(
+        context,
+        output_root=Path(output_root) if output_root is not None else None,
+        adapter=production_raw_adapter,
+    )
 
 
-def production_binding_record() -> dict[str, Any]:
+def production_binding_record(
+    *,
+    final_test_root: Path | None = None,
+    epoch_paths: C.EpochPaths | None = None,
+) -> dict[str, Any]:
     """Describe the bound executor without authorizing or opening anything."""
 
     from .executor import stages as S
 
     solver = production_solver_metadata()
     authority = validate_stage2_production_authority()
+    paths = (
+        epoch_paths
+        if epoch_paths is not None
+        else (
+            C.epoch_paths_for(Path(final_test_root))
+            if final_test_root is not None
+            else C.stage_matched_epoch_paths()
+        )
+    )
 
     return {
         "status": "PRODUCTION_EXECUTOR_BOUND",
+        "final_test_root": str(paths.root),
+        "gate_a_preflight_path": str(paths.gate_a_preflight_path),
+        "gate_a_dry_run_path": str(paths.gate_a_dry_run_path),
+        "release_path": str(paths.gate_b_release_path),
+        "access_audit_path": str(paths.access_audit_path),
+        "scientific_output_root": str(paths.scientific_output_root),
         "callback_path": PRODUCTION_EXECUTOR_CALLBACK,
         "executor_module": PRODUCTION_EXECUTOR_MODULE,
         "dag_stages": list(S.SCIENCE_DAG_STAGES),
@@ -127,8 +237,16 @@ def production_binding_record() -> dict[str, Any]:
         "production_executor_ready": False,
         "gate_b_authorized": False,
         "pre_open_status": GATE_B_PRE_OPEN_STATUS,
-        "human_release_present": C.GATE_B_RELEASE_PATH.exists(),
-        "access_audit_present": C.PHASE7_ACCESS_AUDIT_PATH.exists(),
+        "human_release_present": paths.gate_b_release_path.exists(),
+        "access_audit_present": paths.access_audit_path.exists(),
+        "current_epoch_release_present": paths.gate_b_release_path.exists(),
+        "current_epoch_access_audit_present": paths.access_audit_path.exists(),
+        "current_epoch_access_count": 0,
+        "historical_epoch_present": C.FINAL_TEST_V2_ROOT.exists(),
+        "historical_epoch_release_present": C.GATE_B_RELEASE_PATH.exists(),
+        "historical_epoch_access_audit_present": C.PHASE7_ACCESS_AUDIT_PATH.exists(),
+        "historical_epoch_used_for_scientific_computation": False,
+        "historical_epoch_used_for_selection": False,
         "raw_adapter_status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
         "raw_adapter_binding": "PRODUCTION_RAW_SOURCE_ADAPTER_BOUND",
         "raw_adapter_id": C.RAW_SOURCE_ADAPTER_ID,

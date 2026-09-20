@@ -82,11 +82,19 @@ def test_full_dag_computes_every_stage(dag: dict[str, Any]) -> None:
 
 def test_gate_b0_report_binds_executor_before_authorization(
     dag: dict[str, Any],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(C, "GATE_B_RELEASE_PATH", tmp_path / "NO_RELEASE.json")
+    monkeypatch.setattr(C, "PHASE7_ACCESS_AUDIT_PATH", tmp_path / "NO_AUDIT.json")
+    epoch_paths = C.epoch_paths_for(tmp_path / "current_epoch")
+    historical_paths = C.epoch_paths_for(tmp_path / "historical_epoch")
     report = run_gate_b0_binding_audit(
         output_root=Path(dag["root"]) / "GATE_B0_REPORT.json",
         fixture_root=Path(dag["root"]) / "gate_b0_report_fixture",
         node_limit=NODE_LIMIT,
+        epoch_paths=epoch_paths,
+        historical_paths=historical_paths,
         write=False,
     )
     assert report["status"] == "PASS"
@@ -175,13 +183,36 @@ def test_reference_cohort_follows_history_joint_shortlist(dag: dict[str, Any]) -
     run = dag["run"]
     attention = run.payload(S.ATTENTION_DECISIONS)
     cohort = run.payload(S.REFERENCE_RECOVERY_COHORT)
-    shortlist = reference_shortlist_node_ids(attention)
-    assert list(shortlist) == cohort["shortlist_node_ids"]
-    assert cohort["shortlist_size"] == len(shortlist)
+    shortlist = reference_shortlist_node_ids(attention, stage="PRE_IB")
+    turn_shortlist = reference_shortlist_node_ids(
+        attention, stage="POST_IB_PRE_OB"
+    )
+    assert list(shortlist) == cohort["shortlist_node_ids_by_stage"]["PRE_IB"]
+    assert list(turn_shortlist) == cohort["shortlist_node_ids_by_stage"][
+        "POST_IB_PRE_OB"
+    ]
+    assert cohort["shortlist_node_ids"] == [
+        *cohort["shortlist_node_ids_by_stage"]["PRE_IB"],
+        *cohort["shortlist_node_ids_by_stage"]["POST_IB_PRE_OB"],
+    ]
+    assert cohort["shortlist_size"] == len(cohort["shortlist_node_ids"])
     assert cohort["reference_variant"] == REFERENCE_VARIANT
     assert cohort["reference_authority"] == C.REFERENCE_AUTHORITY
     assert cohort["alternative_representations_use_fixed_r_star"] is True
-    assert set(cohort["stage2_actionable_node_ids"]) <= set(shortlist)
+    assert cohort["flattened_union_semantics"] == (
+        "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION"
+    )
+    assert cohort["stage2_actionable_node_ids_flattened"] == [
+        *cohort["stage2_actionable_node_ids_by_stage"]["PRE_IB"],
+        *cohort["stage2_actionable_node_ids_by_stage"]["POST_IB_PRE_OB"],
+    ]
+    assert set(cohort["stage2_actionable_node_ids_by_stage"]) == {
+        "PRE_IB",
+        "POST_IB_PRE_OB",
+    }
+    assert set(cohort["stage2_actionable_node_ids"]) <= set(
+        cohort["shortlist_node_ids"]
+    )
     assert cohort["stage2_cohort_size"] == len(cohort["stage2_actionable_node_ids"])
     stages = {
         node.stage: node.node_id for node in nodes_from_payload(run.payload(S.CANONICAL_NODES))
@@ -415,7 +446,7 @@ def test_attention_abstaining_candidate_is_excluded_not_zero_filled() -> None:
         ("node-a", "node-b", "node-c"),
         consequence_variants={"rows": rows, "reference_variant": REFERENCE_VARIANT},
     )
-    row = decision_rows(payload, REFERENCE_VARIANT, C.NOMINAL_Q)
+    row = decision_rows(payload, REFERENCE_VARIANT, "PRE_IB", C.NOMINAL_Q)
     assert row["cohort_size"] == 2
     assert row["abstaining_node_count"] == 1
     assert "node-c" not in row["consequence_decision"]["selected_node_ids"]
@@ -499,6 +530,7 @@ def test_abstaining_reference_state_is_typed_excluded() -> None:
         "rows": [
             {
                 "variant": REFERENCE_VARIANT,
+                "stage": "PRE_IB",
                 "q": C.NOMINAL_Q,
                 "consequence_decision": attention_decision_to_payload(decision),
             }
@@ -531,10 +563,19 @@ def test_paper_views_are_a_read_only_projection(
         run.payload(S.ATTENTION_DECISIONS),
         run.payload(S.M4_COMPARISONS),
         run.payload(S.BOOTSTRAP),
+        run.payload(S.ROBUSTNESS),
     )
     assert views["scientific_recomputation_performed"] is False
     assert views["primary_design"] == "STAGE_X_Q"
-    assert [row["q"] for row in views["section_5_2"]["rows"]] == list(C.Q_GRID)
+    section_rows = views["section_5_2"]["rows"]
+    for stage in S.ACTIONABLE_STAGE_I_STAGES:
+        assert [
+            row["q"] for row in section_rows if row["stage"] == stage
+        ] == list(C.Q_GRID)
+    assert [
+        row["q"] for row in section_rows if row["stage"] == "OVERALL"
+    ] == list(C.Q_GRID)
+    assert views["section_5_2"]["pooled_stage1_ranking"] is False
     assert views["section_5_5"]["crossed_with_q_grid"] is False
     assert views["section_5_5"]["nominal_base"]["q"] == C.NOMINAL_Q
     assert views["section_5_5"]["fixed_window_history_status"] == (
@@ -575,6 +616,7 @@ def _attention_row(
 
     return {
         "node_id": node_id,
+        "episode_id": f"episode-{node_id}",
         "variant": variant,
         "stage": stage,
         "delay_signal": priority_signal_to_payload(signal(SignalKind.DELAY, delay_score)),
