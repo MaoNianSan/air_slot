@@ -1,42 +1,37 @@
-# M3 boundary
+# M3 Downstream Action-Space Interface
 
-M3 is an atomic recovery-action library plus response contract. It loads the 23-template action
-registry and instantiates `CandidateAction` objects from PRE facts and declared parameters.
+## CURRENT PUBLIC CONTRACT
 
-`ActionInstantiationRecord` records `chi_inst` for every template at every
-node, including source and lineage. Only `FORMED` records carry a
-`CandidateAction`; a missing required parameter is explicitly `NOT_FORMED` and
-remains auditable with no candidate. `ActionInstantiationEvaluation` is the
-internal declared-parameter check used to build the record. Each formed candidate separately
-preserves factual `TRUE`/`FALSE`/`UNKNOWN`, response parameters/provenance,
-material coverage, and authority capability labels. A factual FALSE does not
-erase a formed mathematical instance, and UNKNOWN is retained rather than
-guessed. `PURE_SCENARIO` and `STRUCTURAL_BOUNDED_SCENARIO` describe response
-provenance, not automatically a real-world treatment effect. A00 is the
-current decision-time framework baseline; this does not claim that no
-historical intervention ever occurred.
+M3 is the downstream interface defined by Section 3.6. It receives a
+decision-time node, the baseline M2-compatible scenarios, consequence context,
+and an explicit resource context. It exposes `candidate_actions`,
+`transition_state`, and `evaluate_post_action`.
 
-The registry loader exposes a stable `registry_hash` over `registry_id`, schema version, and all
-23 templates, plus the raw YAML `source_sha256`. A00 is `NOT_REQUIRED`. The
-separate response registry freezes the other 22 as reproducible
-assumption-grounded scenario specifications; this is not empirical-effectiveness
-or operational response support. `python -m model.M3.cli`
-can validate the structural registry or write an atomic manifest under `artifacts/diagnostics/overnight`.
+`A00` is always available as the identity continuation of the baseline state:
+no additional recovery action is supplied by this framework. It is not a
+claim that an airline, airport, crew, or ground operator stops normal work.
 
-`model.M3.m2_action_interface` is the contract-only bridge from immutable M2
-baseline `C^{0,CU}(s)` to an action-conditioned `C^{a,CU}(s)` result. The V2
-contracts in `model.M3.action_response` separate eligibility `I(a)` from the
-response mechanism `P(a)`, preserve all scenario weights, require provenance,
-and expose a no-money `ActionEvaluationEnvelope` for M4. Non-A00 scenario
-responses may be numerically materialized only with their assumption label.
-Factual state, response support, opportunity, numerical evaluability, and
-selection authority remain separate states. See `docs/ACTION_DECISION_CONTRACT.md`.
+Without an airline-specific provider, only the A00 identity state can be
+materialized. The default non-A00 candidate set is `NOT_MATERIALIZED`; M3
+does not load the historical action templates as a complete feasible action
+space and does not rank or recommend actions.
 
-The active footprint metadata is seven-component and role-explicit. Each cell
-declares `MITIGATION`, `INDUCED`, or `UNTOUCHED` plus a structural level. The
-numeric mitigation maps remain proportional coefficients in `[0,1]`; induced
-maps are nonnegative ordinal `INDUCED_SCORE` values. The response registry
-freezes `gamma=0.10 CU_PER_INDUCED_SCORE` and applies it as
-`ACTION_ATTEMPT_BURDEN`, independently of whether the realized response has
-`rho=0` or `rho>0`. Structural relevance never upgrades scenario assumptions
-to empirical response evidence.
+`M2PostActionConsequenceAdapter` delegates post-action consequence evaluation
+to `M2Service.map_scenarios` and preserves the supplied M2 context and
+lineage. It does not estimate an action effect.
+
+## LEGACY / APPENDIX-ONLY IMPLEMENTATION
+
+The historical 23-action registry, response models, numerical readiness
+checks, and action-conditioned envelopes remain in their original modules.
+The former service is available only as:
+
+```python
+from model.M3.legacy_service import M3Service
+```
+
+## NOT PART OF CURRENT EMPIRICAL MAINLINE
+
+The current empirical path stops at PRE -> M1 -> M2 -> M4 priority and
+screening. M3 is an extensible downstream contract and is not an executed
+action optimizer, causal action-effect model, or operational selector.

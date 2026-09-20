@@ -1,0 +1,37 @@
+{
+  "active_model_mutation": "NONE",
+  "comparisons": [
+    {
+      "calibration_worse": false,
+      "candidate": 16,
+      "development_loss_improvement_fraction": 0.019434137793327484,
+      "generalization_gap_worse": true,
+      "incumbent": 8,
+      "rule": "SELECT_LARGER_ONLY_IF_DEVELOPMENT_IMPROVEMENT_GE_0.1_PERCENT_AND_GAP_AND_CALIBRATION_DO_NOT_WORSEN",
+      "selected": false
+    },
+    {
+      "calibration_worse": false,
+      "candidate": 32,
+      "development_loss_improvement_fraction": 0.03681330298167242,
+      "generalization_gap_worse": true,
+      "incumbent": 8,
+      "rule": "SELECT_LARGER_ONLY_IF_DEVELOPMENT_IMPROVEMENT_GE_0.1_PERCENT_AND_GAP_AND_CALIBRATION_DO_NOT_WORSEN",
+      "selected": false
+    }
+  ],
+  "downstream_execution": "NONE",
+  "final_test_access_count": 0,
+  "h32_scope": "EXPERIMENT_LOCAL_CAPACITY_CANDIDATE",
+  "h_capacity_grid": [
+    8,
+    16,
+    32
+  ],
+  "schema_version": "JATM_SECTION4_H_CAPACITY_SELECTION_V1",
+  "scientific_definition_changed": false,
+  "section5_primary_model": "H16_FROZEN_PRIMARY",
+  "selected_history_capacity": 8,
+  "selection_metric": "development_joint_loss",
+  "status": "COMPLETE"
+}
