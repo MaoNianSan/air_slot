@@ -1,0 +1,88 @@
+{
+  "ancestry": {
+    "phase6_is_ancestor_of_r2": true,
+    "r2_is_ancestor_of_head": true
+  },
+  "failures": [],
+  "final_test_boundary": {
+    "final_test_absolute_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test",
+    "legacy_final_test_tree_read": false
+  },
+  "parent_linkage": {
+    "parent_bytes_rewritten_false": true,
+    "parent_registry_artifact_hash": true,
+    "parent_registry_blob_sha256": true,
+    "parent_registry_file_sha256": true,
+    "parent_status": true,
+    "parent_tag": true,
+    "parent_tag_object": true,
+    "parent_tag_target": true,
+    "r2_status": true
+  },
+  "registry": {
+    "current_head": "e178c285fde91f1affc89156857d527a2856256b",
+    "phase6": {
+      "object_type": "tag",
+      "snapshot": {
+        "artifact_hash": "sha256:3828b17ac93cbaf81579e865faf32ed9547a1d540a65d3679ab4248a2bf17e2d",
+        "commit": "d29fc769e74d6b46f86d3fdf7db18b3f9936f8b1",
+        "expected_artifact_hash": "sha256:3828b17ac93cbaf81579e865faf32ed9547a1d540a65d3679ab4248a2bf17e2d",
+        "expected_file_sha256": "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd",
+        "file_sha256": "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd",
+        "path": "registries/v2_scientific_freeze.json",
+        "payload_hash": "sha256:3828b17ac93cbaf81579e865faf32ed9547a1d540a65d3679ab4248a2bf17e2d",
+        "status": "PASS"
+      },
+      "tag": "v2-scientific-freeze",
+      "tag_object": "35d5fe1896dd9e17be92bec601f87ec33adb4d56",
+      "tag_target_commit": "d29fc769e74d6b46f86d3fdf7db18b3f9936f8b1"
+    },
+    "r2": {
+      "object_type": "tag",
+      "snapshot": {
+        "artifact_hash": "sha256:4e7d3bb454e83779e6cbb592d4cf9d6ffddc0edf3435a7bc3d2822e4523417f2",
+        "commit": "3834eed33d4a2ea4bdba111fc29cca3529525a3a",
+        "expected_artifact_hash": "sha256:4e7d3bb454e83779e6cbb592d4cf9d6ffddc0edf3435a7bc3d2822e4523417f2",
+        "expected_file_sha256": "sha256:15c1e8bf5ec5fbb5ee783595a124b1255b550d7d7bc96e34b2cd3df0a4e88e6f",
+        "file_sha256": "sha256:15c1e8bf5ec5fbb5ee783595a124b1255b550d7d7bc96e34b2cd3df0a4e88e6f",
+        "path": "registries/v2_scientific_freeze_r2.json",
+        "payload_hash": "sha256:4e7d3bb454e83779e6cbb592d4cf9d6ffddc0edf3435a7bc3d2822e4523417f2",
+        "status": "PASS"
+      },
+      "tag": "v2-scientific-freeze-r2",
+      "tag_object": "2dcca6c159dedde3803e63cb48bd8bfefff574cf",
+      "tag_target_commit": "3834eed33d4a2ea4bdba111fc29cca3529525a3a"
+    }
+  },
+  "registry_immutability": {
+    "registries/m2_data2_formal_cu_v5.json": {
+      "head_bytes_sha256": "sha256:25ee9641abf72777d14af0711e7ad46db5de5779170396fb377049458d59b637",
+      "immutable": true,
+      "parent_bytes_sha256": "sha256:25ee9641abf72777d14af0711e7ad46db5de5779170396fb377049458d59b637",
+      "r2_bytes_sha256": "sha256:25ee9641abf72777d14af0711e7ad46db5de5779170396fb377049458d59b637"
+    },
+    "registries/passenger_reference_supersession_v3.json": {
+      "head_bytes_sha256": "sha256:6d7a49d14d76484703b312ea8fe851679476bb5f135cd854d9c14dc52b8d80b1",
+      "immutable": true,
+      "parent_bytes_sha256": "sha256:6d7a49d14d76484703b312ea8fe851679476bb5f135cd854d9c14dc52b8d80b1",
+      "r2_bytes_sha256": "sha256:6d7a49d14d76484703b312ea8fe851679476bb5f135cd854d9c14dc52b8d80b1"
+    },
+    "registries/v2_scientific_freeze.json": {
+      "declared_file_sha256": "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd",
+      "head_bytes_sha256": "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd",
+      "immutable": true,
+      "parent_bytes_sha256": "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd",
+      "r2_bytes_sha256": "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd"
+    },
+    "registries/v2_scientific_freeze_r2.json": {
+      "declared_file_sha256": "sha256:15c1e8bf5ec5fbb5ee783595a124b1255b550d7d7bc96e34b2cd3df0a4e88e6f",
+      "head_bytes_sha256": "sha256:15c1e8bf5ec5fbb5ee783595a124b1255b550d7d7bc96e34b2cd3df0a4e88e6f",
+      "immutable": true,
+      "parent_bytes_sha256": null,
+      "r2_bytes_sha256": "sha256:15c1e8bf5ec5fbb5ee783595a124b1255b550d7d7bc96e34b2cd3df0a4e88e6f"
+    }
+  },
+  "schema_version": "V2_PHASE7_FREEZE_ANCESTRY_VALIDATION_V1",
+  "status": "PASS",
+  "validator_id": "V2_PHASE7_FREEZE_ANCESTRY"
+}

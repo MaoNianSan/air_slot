@@ -1,0 +1,646 @@
+{
+  "checkpoint_schema_version": "AIR_SLOT_V2_PHASE7_CHECKPOINT_V1",
+  "dependencies": {
+    "CANONICAL_NODES": "sha256:595c649a0933cdb4ece58c3be7ff4c8909ba67137847891bce7be4efb6465019",
+    "REFERENCE_RECOVERY_COHORT": "sha256:32039a3bcf57f3627ff2c378a6ca3d619b763aa065a999799bfede2f522ea665",
+    "STATE_VARIANTS": "sha256:ce7d028d2547d3d71cb5cf33e4bb4a716a19eea0e660cf875b703809fac11348"
+  },
+  "payload": {
+    "a00_never_a_recommendation": true,
+    "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+    "cohort_node_ids": [
+      "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+      "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+    ],
+    "compatibility_field_semantics": {
+      "formal_solver": "ACTIVE_STAGE2_PRIMARY_SOLVER",
+      "parity_oracle": "INDEPENDENT_PARITY_BACKEND_NOT_EXECUTED_PER_ROW"
+    },
+    "decision_node_ids": [
+      "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+      "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+    ],
+    "deterministic_tie_break": "SMALLEST_U",
+    "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "formal_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "highs_required_for_production_rows": false,
+    "highs_role": "PARITY_BACKEND_ONLY",
+    "invariants": {
+      "action_grid_violations": [],
+      "negative_recoverable_values": [],
+      "non_actionable_positive_actions": [],
+      "reference_objective_identity_violations": [],
+      "row_parity_checks_executed": 0,
+      "solver_oracle_action_disagreements": [],
+      "solver_oracle_objective_disagreements": [],
+      "solver_oracle_value_disagreements": [],
+      "solver_status_violations": [],
+      "status": "PASS"
+    },
+    "numerical_tolerance": {
+      "name": "M3_NUMERICAL_COMPARISON_TOLERANCE",
+      "scientific_parameter": false,
+      "value": 1e-06
+    },
+    "objective_perturbation": "NONE",
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_oracle": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+    "primary_variants": [
+      "HISTORY_JOINT",
+      "CURRENT_JOINT",
+      "HISTORY_POINT",
+      "HISTORY_MARGINAL"
+    ],
+    "production_rows_use_highs": false,
+    "reference_objectives": {
+      "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39": {
+        "action_grid": [
+          0.0,
+          5.0,
+          10.0,
+          15.0,
+          20.0,
+          25.0,
+          30.0,
+          35.0,
+          40.0,
+          45.0
+        ],
+        "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+        "j_star": 1.1216548568063751,
+        "j_zero": 1.1240131073401616,
+        "objective_by_action": [
+          [
+            0.0,
+            1.1240131073401616
+          ],
+          [
+            5.0,
+            1.1216548568063751
+          ],
+          [
+            10.0,
+            1.1408314813485465
+          ],
+          [
+            15.0,
+            1.1600081058907177
+          ],
+          [
+            20.0,
+            1.1791847304328893
+          ],
+          [
+            25.0,
+            1.1983613549750605
+          ],
+          [
+            30.0,
+            1.2175379795172319
+          ],
+          [
+            35.0,
+            1.236714604059403
+          ],
+          [
+            40.0,
+            1.2558912286015742
+          ],
+          [
+            45.0,
+            1.2750678531437454
+          ]
+        ]
+      },
+      "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6": {
+        "action_grid": [
+          0.0,
+          5.0,
+          10.0,
+          15.0,
+          20.0,
+          25.0,
+          30.0,
+          35.0,
+          40.0,
+          45.0
+        ],
+        "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+        "j_star": 0.4519841106126769,
+        "j_zero": 0.4685716486656794,
+        "objective_by_action": [
+          [
+            0.0,
+            0.4685716486656794
+          ],
+          [
+            5.0,
+            0.4519841106126769
+          ],
+          [
+            10.0,
+            0.46829368407631267
+          ],
+          [
+            15.0,
+            0.4846032575399484
+          ],
+          [
+            20.0,
+            0.5009128310035842
+          ],
+          [
+            25.0,
+            0.5172224044672201
+          ],
+          [
+            30.0,
+            0.5335319779308558
+          ],
+          [
+            35.0,
+            0.5538108773276196
+          ],
+          [
+            40.0,
+            0.5787216040268619
+          ],
+          [
+            45.0,
+            0.6036323307261042
+          ]
+        ]
+      }
+    },
+    "reference_variant": "HISTORY_JOINT",
+    "row_count": 8,
+    "row_parity_checks_executed": 0,
+    "rows": [
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 0.4519841106126769,
+          "j_zero": 0.4685716486656794,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_LOCAL_RECOVERY_SELECTED"
+          ],
+          "recoverable_value": 0.016587538053002504,
+          "representation_id": "HISTORY_H16:JOINT",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "PRE_IB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 5.0
+        },
+        "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+        "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_LOCAL_RECOVERY_SELECTED"
+        ],
+        "stage": "PRE_IB",
+        "typed_state": null,
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 1.1216548568063751,
+          "j_zero": 1.1240131073401616,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_LOCAL_RECOVERY_SELECTED"
+          ],
+          "recoverable_value": 0.0023582505337864657,
+          "representation_id": "HISTORY_H16:JOINT",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "POST_IB_PRE_OB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 5.0
+        },
+        "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+        "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_LOCAL_RECOVERY_SELECTED"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "typed_state": null,
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 0.3922692999052616,
+          "j_zero": 0.39682827282872296,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_LOCAL_RECOVERY_SELECTED"
+          ],
+          "recoverable_value": 0.004558972923461357,
+          "representation_id": "CURRENT:JOINT",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "PRE_IB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 5.0
+        },
+        "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+        "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_LOCAL_RECOVERY_SELECTED"
+        ],
+        "stage": "PRE_IB",
+        "typed_state": null,
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 0.8701329797413984,
+          "j_zero": 0.8701329797413984,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_BASELINE_ACTION_SELECTED_NO_NEW_INTERVENTION"
+          ],
+          "recoverable_value": 0.0,
+          "representation_id": "CURRENT:JOINT",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "POST_IB_PRE_OB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 0.0
+        },
+        "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+        "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_BASELINE_ACTION_SELECTED_NO_NEW_INTERVENTION"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "typed_state": null,
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 0.12350666482920536,
+          "j_zero": 0.12350666482920536,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_BASELINE_ACTION_SELECTED_NO_NEW_INTERVENTION"
+          ],
+          "recoverable_value": 0.0,
+          "representation_id": "HISTORY_H16:POINT",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "PRE_IB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 0.0
+        },
+        "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+        "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_BASELINE_ACTION_SELECTED_NO_NEW_INTERVENTION"
+        ],
+        "stage": "PRE_IB",
+        "typed_state": null,
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 0.15170183442019103,
+          "j_zero": 0.15170183442019103,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_BASELINE_ACTION_SELECTED_NO_NEW_INTERVENTION"
+          ],
+          "recoverable_value": 0.0,
+          "representation_id": "HISTORY_H16:POINT",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "POST_IB_PRE_OB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 0.0
+        },
+        "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+        "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_BASELINE_ACTION_SELECTED_NO_NEW_INTERVENTION"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "typed_state": null,
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 0.5009128310035842,
+          "j_zero": 0.5597174819990126,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_LOCAL_RECOVERY_SELECTED"
+          ],
+          "recoverable_value": 0.05880465099542842,
+          "representation_id": "HISTORY_H16:MARGINAL",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "PRE_IB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 20.0
+        },
+        "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+        "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_LOCAL_RECOVERY_SELECTED"
+        ],
+        "stage": "PRE_IB",
+        "typed_state": null,
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "actionable": true,
+        "decision": {
+          "action_grid": [
+            0.0,
+            5.0,
+            10.0,
+            15.0,
+            20.0,
+            25.0,
+            30.0,
+            35.0,
+            40.0,
+            45.0
+          ],
+          "actionable_status": "SUPPORTED",
+          "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "headroom_summary": {
+            "floor_to_minutes": 5.0,
+            "headroom_positive_n": 752638,
+            "headroom_quantile": 0.9,
+            "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+            "turnaround_lower_bound_q": 41.0,
+            "turnaround_quantile": 0.2,
+            "u_max": 45.0
+          },
+          "j_star": 1.1216548568063753,
+          "j_zero": 1.1240131073401622,
+          "lambda_policy": 0.25,
+          "near_tie_candidate_count": 1,
+          "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "reason_codes": [
+            "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+            "M3_LOCAL_RECOVERY_SELECTED"
+          ],
+          "recoverable_value": 0.0023582505337869097,
+          "representation_id": "HISTORY_H16:MARGINAL",
+          "solver_status": "EXACT_ENUMERATION",
+          "stage": "POST_IB_PRE_OB",
+          "tie_break_applied": false,
+          "u_max": 45.0,
+          "u_star": 5.0
+        },
+        "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+        "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+        "parity": null,
+        "reason_codes": [
+          "M3_A00_BASELINE_NEVER_A_RECOMMENDATION",
+          "M3_LOCAL_RECOVERY_SELECTED"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "typed_state": null,
+        "variant": "HISTORY_MARGINAL"
+      }
+    ],
+    "schema_version": "AIR_SLOT_V2_PHASE7_RECOVERY_DECISIONS_V1",
+    "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+    "specification": {
+      "action_floor_minutes": 5.0,
+      "headroom_quantile": 0.9,
+      "lambda": 0.25,
+      "specification_key": "nominal",
+      "train_support_source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+      "turnaround_lower_bound_q": 41.0,
+      "turnaround_quantile": 0.2,
+      "u_max": 45.0,
+      "u_max_by_specification": {
+        "Q80": 25.0,
+        "Q95": 75.0,
+        "nominal": 45.0
+      }
+    },
+    "stage": "RECOVERY_DECISIONS",
+    "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "typed_state_counts": {}
+  },
+  "payload_hash": "sha256:b0993fe4052a1f757fac741e27d3679a17d6bc33063b8754d8e94f891796cb58",
+  "produced_by": "PHASE7_GATE_B0_DEVELOPMENT_SAFE_FIXTURE",
+  "schema_version": "AIR_SLOT_V2_PHASE7_RECOVERY_DECISIONS_V1",
+  "stage": "RECOVERY_DECISIONS"
+}

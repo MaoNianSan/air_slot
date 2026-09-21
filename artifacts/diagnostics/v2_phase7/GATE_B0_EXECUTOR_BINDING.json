@@ -1,0 +1,704 @@
+{
+  "access_boundary": {
+    "access_audit_present": false,
+    "access_epoch_opened": false,
+    "current_freeze_run_increment": 0,
+    "historical_final_test_access_total": 1,
+    "human_release_created": false,
+    "human_release_present": false,
+    "legacy_final_test_result_tree_incidental_audit_reads": 1,
+    "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+    "legacy_final_test_result_tree_reads_used_for_selection": 0,
+    "legacy_final_test_result_tree_scientific_reads": 0,
+    "legacy_final_test_tree_present_not_consumed_scientifically": true,
+    "new_final_test_execution": false,
+    "phase7_scientific_access_increment": 0,
+    "phase_7_gate_b_entered": false,
+    "q4_raw_reads": 0,
+    "repository_level_rg_incidental_audit_reads": 1,
+    "status": "PASS"
+  },
+  "checks": [
+    {
+      "detail": {
+        "access_audit_present": false,
+        "callback_path": "formal.v2_phase7.gate_b:production_pipeline",
+        "current_freeze_run_increment": 0,
+        "dag_stages": [
+          "CANONICAL_NODES",
+          "STATE_VARIANTS",
+          "CONSEQUENCE_VARIANTS",
+          "ATTENTION_DECISIONS",
+          "REFERENCE_RECOVERY_COHORT",
+          "RECOVERY_DECISIONS",
+          "M4_COMPARISONS",
+          "BOOTSTRAP",
+          "PAPER_VIEWS"
+        ],
+        "deterministic_tie_break": "SMALLEST_U",
+        "executor_module": "formal.v2_phase7.executor.runner",
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "fixed_window_sensitivity_status": "NOT_AVAILABLE_NOT_FROZEN",
+        "gate_b_authorized": false,
+        "highs_required_for_production_rows": false,
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "historical_final_test_access_total": 1,
+        "human_release_present": false,
+        "parity_backend": "PYOMO_HIGHS",
+        "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+        "pre_open_status": "PRE_OPEN_AUTHORIZATION_READY_ONLY",
+        "production_executor_bound": true,
+        "production_executor_ready": false,
+        "raw_adapter_status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "stage2_solver_authority": {
+          "active_contract": {
+            "deterministic_tie_break": "SMALLEST_U",
+            "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+            "highs_required_for_production_rows": false,
+            "highs_role": "PARITY_BACKEND_ONLY",
+            "parity_backend": "PYOMO_HIGHS",
+            "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+            "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+            "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+            "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+          },
+          "historical_registry_labels": {
+            "formal_solver": "PYOMO_HIGHS",
+            "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+            "stage2_solver.formal_path": "PYOMO_HIGHS"
+          },
+          "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+          "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+          "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+          "scientific_definition_change": false,
+          "solver_status_contract": {
+            "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+            "member_values": [
+              "PYOMO_HIGHS",
+              "EXACT_ENUMERATION",
+              "NOT_RUN"
+            ],
+            "status": "PASS",
+            "termination_condition_is_separate": true
+          },
+          "status": "PASS"
+        },
+        "status": "PRODUCTION_EXECUTOR_BOUND"
+      },
+      "name": "PRODUCTION_EXECUTOR_BOUND",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "stages": [
+          "CANONICAL_NODES",
+          "STATE_VARIANTS",
+          "CONSEQUENCE_VARIANTS",
+          "ATTENTION_DECISIONS",
+          "REFERENCE_RECOVERY_COHORT",
+          "RECOVERY_DECISIONS",
+          "M4_COMPARISONS",
+          "BOOTSTRAP",
+          "PAPER_VIEWS"
+        ]
+      },
+      "name": "DAG_STAGE_COUNT",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "computed": [
+          "CANONICAL_NODES",
+          "STATE_VARIANTS",
+          "CONSEQUENCE_VARIANTS",
+          "ATTENTION_DECISIONS",
+          "REFERENCE_RECOVERY_COHORT",
+          "RECOVERY_DECISIONS",
+          "M4_COMPARISONS",
+          "BOOTSTRAP",
+          "PAPER_VIEWS"
+        ]
+      },
+      "name": "DAG_FULLY_COMPUTED",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "computed": [],
+        "frozen_services_loaded": false,
+        "reused": [
+          "CANONICAL_NODES",
+          "STATE_VARIANTS",
+          "CONSEQUENCE_VARIANTS",
+          "ATTENTION_DECISIONS",
+          "REFERENCE_RECOVERY_COHORT",
+          "RECOVERY_DECISIONS",
+          "M4_COMPARISONS",
+          "BOOTSTRAP",
+          "PAPER_VIEWS"
+        ]
+      },
+      "name": "CHECKPOINT_RESUME_REUSES_EVERY_STAGE",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "node_count": 48,
+        "variants": [
+          "HISTORY_JOINT",
+          "CURRENT_JOINT",
+          "HISTORY_POINT",
+          "HISTORY_MARGINAL"
+        ]
+      },
+      "name": "FOUR_PRIMARY_VARIANTS",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "cohort_size": 5,
+        "reference_variant": "HISTORY_JOINT",
+        "shortlist_size": 5
+      },
+      "name": "REFERENCE_AUTHORITY_FIXED",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "actionable_rows": 20,
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "row_parity_checks_executed": 0,
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+      },
+      "name": "STAGE2_ENUMERATION_PRIMARY_AUTHORITY",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "delta_objective_lower_bound": -1e-06,
+        "delta_objective_violations": [],
+        "reference_action_agreement": {
+          "A0": 1.0,
+          "A5": 1.0
+        },
+        "reference_attention_identity": 0.0,
+        "reference_recovery_identity": 0.0,
+        "status": "PASS",
+        "typed_states_are_legal": true
+      },
+      "name": "M4_REFERENCE_INVARIANTS",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "dedicated_tests": [
+          "tests/phase7/test_executor_dag.py::test_not_actionable_stage_keeps_typed_zero_action",
+          "tests/phase7/test_executor_dag.py::test_attention_abstaining_candidate_is_excluded_not_zero_filled",
+          "tests/phase7/test_executor_dag.py::test_abstaining_reference_state_is_typed_excluded"
+        ],
+        "frozen_states": [
+          "ABSTAIN_NO_COMMON_SUPPORT",
+          "UNDEFINED_ZERO_RECOVERABLE_VALUE",
+          "NOT_ACTIONABLE",
+          "N/A_NOT_DEFINED"
+        ],
+        "m4_typed_states": [],
+        "recovery_typed_state_counts": {}
+      },
+      "name": "TYPED_STATE_CONTRACTS",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "attestation": "SINGLE_AUTHOR_LOCAL_HISTORY_NO_THIRD_PARTY_ATTESTATION",
+        "interval": "percentile_95",
+        "lock_commit": "99114195f11d7cb3446e53729daab611c88f4d36",
+        "lock_created_at": "2026-09-07T19:59:48+08:00",
+        "lock_path": "formal/FINAL_TEST_LOCK_20260907.md",
+        "replicates": 2000,
+        "resampling_unit": "episode_id",
+        "result_driven": false,
+        "seed": 20260906,
+        "seed_introduced_at": "2026-09-07T19:25:25+08:00",
+        "seed_predates_lock": true,
+        "seed_source_commit": "c70c306dfb8bcc40ccb2c1329594fe6b1a54acb6",
+        "seed_source_path": "exp/shared/resampling.py",
+        "status": "PASS"
+      },
+      "name": "BOOTSTRAP_SEED_PRE_LOCK_PROVENANCE",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "interval": "percentile_95",
+        "replicates": 2000,
+        "seed": 20260906,
+        "unit": "episode_id"
+      },
+      "name": "BOOTSTRAP_PLAN_FROZEN",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "fixed_window": "NOT_AVAILABLE_NOT_FROZEN",
+        "source_stages": [
+          "ATTENTION_DECISIONS",
+          "M4_COMPARISONS",
+          "BOOTSTRAP"
+        ]
+      },
+      "name": "PAPER_VIEWS_FROM_CHECKPOINTS_ONLY",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "access_audit_present": false,
+        "access_epoch_opened": false,
+        "current_freeze_run_increment": 0,
+        "historical_final_test_access_total": 1,
+        "human_release_created": false,
+        "human_release_present": false,
+        "legacy_final_test_result_tree_incidental_audit_reads": 1,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": 0,
+        "legacy_final_test_result_tree_reads_used_for_selection": 0,
+        "legacy_final_test_result_tree_scientific_reads": 0,
+        "legacy_final_test_tree_present_not_consumed_scientifically": true,
+        "new_final_test_execution": false,
+        "phase7_scientific_access_increment": 0,
+        "phase_7_gate_b_entered": false,
+        "q4_raw_reads": 0,
+        "repository_level_rg_incidental_audit_reads": 1,
+        "status": "PASS"
+      },
+      "name": "ACCESS_BOUNDARY_PRE_OPEN",
+      "status": "PASS"
+    }
+  ],
+  "dag_evidence": {
+    "bootstrap": {
+      "episode_count": 5,
+      "interval": "percentile_95",
+      "paired": true,
+      "replicates": 2000,
+      "resampling_unit": "episode_id",
+      "seed": 20260906,
+      "seed_provenance": {
+        "attestation": "SINGLE_AUTHOR_LOCAL_HISTORY_NO_THIRD_PARTY_ATTESTATION",
+        "interval": "percentile_95",
+        "lock_commit": "99114195f11d7cb3446e53729daab611c88f4d36",
+        "lock_created_at": "2026-09-07T19:59:48+08:00",
+        "lock_path": "formal/FINAL_TEST_LOCK_20260907.md",
+        "replicates": 2000,
+        "resampling_unit": "episode_id",
+        "result_driven": false,
+        "seed": 20260906,
+        "seed_introduced_at": "2026-09-07T19:25:25+08:00",
+        "seed_predates_lock": true,
+        "seed_source_commit": "c70c306dfb8bcc40ccb2c1329594fe6b1a54acb6",
+        "seed_source_path": "exp/shared/resampling.py",
+        "status": "PASS"
+      },
+      "typed_states": []
+    },
+    "m4": {
+      "attention_comparators": [
+        "CURRENT_JOINT",
+        "HISTORY_MARGINAL",
+        "HISTORY_POINT"
+      ],
+      "invariants": {
+        "delta_objective_lower_bound": -1e-06,
+        "delta_objective_violations": [],
+        "reference_action_agreement": {
+          "A0": 1.0,
+          "A5": 1.0
+        },
+        "reference_attention_identity": 0.0,
+        "reference_recovery_identity": 0.0,
+        "status": "PASS",
+        "typed_states_are_legal": true
+      },
+      "no_total_loss_constructed": true,
+      "recovery_comparators": [
+        "CURRENT_JOINT",
+        "HISTORY_MARGINAL",
+        "HISTORY_POINT"
+      ],
+      "typed_states": []
+    },
+    "paper_views": {
+      "excluded_from_final_test_scope": [
+        {
+          "item": "similar_delay_5_10_15",
+          "status": "NOT_ACTIVATED_BY_PHASE6_FREEZE"
+        },
+        {
+          "item": "itinerary_threshold_30_60",
+          "status": "NOT_ACTIVATED_BY_PHASE6_FREEZE"
+        },
+        {
+          "item": "service_threshold_150_210",
+          "status": "NOT_ACTIVATED_BY_PHASE6_FREEZE"
+        },
+        {
+          "item": "fixed_window_history",
+          "status": "NOT_AVAILABLE_NOT_FROZEN"
+        }
+      ],
+      "no_total_loss_constructed": true,
+      "primary_design": "STAGE_X_Q",
+      "scientific_recomputation_performed": false,
+      "section_5_2_rows": 4,
+      "section_5_4_comparators": [
+        "CURRENT_JOINT",
+        "HISTORY_POINT",
+        "HISTORY_MARGINAL"
+      ]
+    },
+    "recovery": {
+      "deterministic_tie_break": "SMALLEST_U",
+      "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "formal_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "highs_required_for_production_rows": false,
+      "highs_role": "PARITY_BACKEND_ONLY",
+      "parity_oracle": "PYOMO_HIGHS",
+      "production_rows_use_highs": false,
+      "row_count": 20,
+      "row_parity_checks_executed": 0,
+      "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+      "specification": {
+        "action_floor_minutes": 5.0,
+        "headroom_quantile": 0.9,
+        "lambda": 0.25,
+        "specification_key": "nominal",
+        "train_support_source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+        "turnaround_lower_bound_q": 41.0,
+        "turnaround_quantile": 0.2,
+        "u_max": 45.0,
+        "u_max_by_specification": {
+          "Q80": 25.0,
+          "Q95": 75.0,
+          "nominal": 45.0
+        }
+      },
+      "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "typed_state_counts": {}
+    },
+    "reference_cohort": {
+      "reference_variant": "HISTORY_JOINT",
+      "shortlist_size": 5,
+      "shortlist_stage_counts": {
+        "POST_IB_PRE_OB": 5
+      },
+      "stage2_cohort_size": 5,
+      "stage2_excluded_count": 0,
+      "stage2_support_rule": "ACTIONABLE_STAGE_AND_REFERENCE_STATE_FULLY_SUPPORTED"
+    },
+    "variants": {
+      "blocks": [
+        {
+          "node_count": 48,
+          "representation_id": "HISTORY_H16:JOINT",
+          "source": "M1_FROZEN_H16_HISTORY_PIPELINE",
+          "variant": "HISTORY_JOINT"
+        },
+        {
+          "node_count": 48,
+          "representation_id": "CURRENT:JOINT",
+          "source": "M1_FROZEN_CURRENT_COMPARATOR_PIPELINE",
+          "variant": "CURRENT_JOINT"
+        },
+        {
+          "node_count": 48,
+          "representation_id": "HISTORY_H16:POINT",
+          "source": "M1_WEIGHTED_JOINT_MEDOID_FROM_HISTORY_JOINT",
+          "variant": "HISTORY_POINT"
+        },
+        {
+          "node_count": 48,
+          "representation_id": "HISTORY_H16:MARGINAL",
+          "source": "M1_DETERMINISTIC_COORDINATE_PERMUTATION_FROM_HISTORY_JOINT",
+          "variant": "HISTORY_MARGINAL"
+        }
+      ],
+      "fixed_window_sensitivity_status": "NOT_AVAILABLE_NOT_FROZEN",
+      "marginal_identity_note": "DETERMINISTIC_COORDINATE_PERMUTATION_NOT_PHYSICAL_INDEPENDENCE",
+      "node_count": 48,
+      "reference_variant": "HISTORY_JOINT"
+    }
+  },
+  "deterministic_tie_break": "SMALLEST_U",
+  "executor_binding": {
+    "access_audit_present": false,
+    "callback_path": "formal.v2_phase7.gate_b:production_pipeline",
+    "current_freeze_run_increment": 0,
+    "dag_stages": [
+      "CANONICAL_NODES",
+      "STATE_VARIANTS",
+      "CONSEQUENCE_VARIANTS",
+      "ATTENTION_DECISIONS",
+      "REFERENCE_RECOVERY_COHORT",
+      "RECOVERY_DECISIONS",
+      "M4_COMPARISONS",
+      "BOOTSTRAP",
+      "PAPER_VIEWS"
+    ],
+    "deterministic_tie_break": "SMALLEST_U",
+    "executor_module": "formal.v2_phase7.executor.runner",
+    "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "fixed_window_sensitivity_status": "NOT_AVAILABLE_NOT_FROZEN",
+    "gate_b_authorized": false,
+    "highs_required_for_production_rows": false,
+    "highs_role": "PARITY_BACKEND_ONLY",
+    "historical_final_test_access_total": 1,
+    "human_release_present": false,
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+    "pre_open_status": "PRE_OPEN_AUTHORIZATION_READY_ONLY",
+    "production_executor_bound": true,
+    "production_executor_ready": false,
+    "raw_adapter_status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
+    "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+    "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "stage2_solver_authority": {
+      "active_contract": {
+        "deterministic_tie_break": "SMALLEST_U",
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "highs_required_for_production_rows": false,
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "parity_backend": "PYOMO_HIGHS",
+        "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+      },
+      "historical_registry_labels": {
+        "formal_solver": "PYOMO_HIGHS",
+        "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+        "stage2_solver.formal_path": "PYOMO_HIGHS"
+      },
+      "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+      "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+      "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+      "scientific_definition_change": false,
+      "solver_status_contract": {
+        "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+        "member_values": [
+          "PYOMO_HIGHS",
+          "EXACT_ENUMERATION",
+          "NOT_RUN"
+        ],
+        "status": "PASS",
+        "termination_condition_is_separate": true
+      },
+      "status": "PASS"
+    },
+    "status": "PRODUCTION_EXECUTOR_BOUND"
+  },
+  "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+  "fixture_run": {
+    "episode_count": 5,
+    "fixture_provenance": {
+      "final_test_data_read": false,
+      "legacy_final_test_result_tree_scientific_read": false,
+      "q4_raw_read": false,
+      "reference_binding_semantics": "TURNAROUND_FROM_PRE_PUBLISHED_A2_REFERENCE; PAX_CONNECTION_DOWNSTREAM_SYNTHETIC_FIXTURE_CONSTANTS"
+    },
+    "manifest": {
+      "atomic_results_before_views": true,
+      "computed_stages": [
+        "CANONICAL_NODES",
+        "STATE_VARIANTS",
+        "CONSEQUENCE_VARIANTS",
+        "ATTENTION_DECISIONS",
+        "REFERENCE_RECOVERY_COHORT",
+        "RECOVERY_DECISIONS",
+        "M4_COMPARISONS",
+        "BOOTSTRAP",
+        "PAPER_VIEWS"
+      ],
+      "frozen_services_loaded": true,
+      "immutable_checkpoint_consumption": true,
+      "reused_stages": [],
+      "schema_version": "AIR_SLOT_V2_PHASE7_EXECUTOR_RUN_V1"
+    },
+    "node_count": 48,
+    "node_limit": 48,
+    "output_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\diagnostics\\v2_phase7\\gate_b0_dag",
+    "producer": "PHASE7_GATE_B0_DEVELOPMENT_SAFE_FIXTURE",
+    "resume_proof": {
+      "computed_stages": [],
+      "frozen_services_loaded": false,
+      "reused_stages": [
+        "CANONICAL_NODES",
+        "STATE_VARIANTS",
+        "CONSEQUENCE_VARIANTS",
+        "ATTENTION_DECISIONS",
+        "REFERENCE_RECOVERY_COHORT",
+        "RECOVERY_DECISIONS",
+        "M4_COMPARISONS",
+        "BOOTSTRAP",
+        "PAPER_VIEWS"
+      ]
+    },
+    "scope": "DEVELOPMENT_SAFE_FIXTURE_NOT_SCIENTIFIC_SUPPORT",
+    "stage_counts": {
+      "POST_IB_PRE_OB": 37,
+      "POST_OB_PRE_TO": 3,
+      "PRE_IB": 8
+    },
+    "stage_records": {
+      "ATTENTION_DECISIONS": {
+        "file_sha256": "sha256:317a7978290ed99e0b185337a4fb99e793690bad31f8966fd31530a7378484bd",
+        "payload_hash": "sha256:2f386a1d3b3d9f709d1d9e4113fa4a414c81067d19cd3622068b5efc492f0d5d",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_ATTENTION_DECISIONS_V1"
+      },
+      "BOOTSTRAP": {
+        "file_sha256": "sha256:6b080ea12197a5419d9753e57644d1215e4add81f8840669a842abd2ac4ff13d",
+        "payload_hash": "sha256:88c2a06a19c6c3ae9e048ea29d6cbadb077372ce4b02557cd0ae535eb5cf7554",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_BOOTSTRAP_V1"
+      },
+      "CANONICAL_NODES": {
+        "file_sha256": "sha256:55a66eaa71b3b0c32afb74887cb32b05c56ac88ae0e687b3ed75cb73caf200f1",
+        "payload_hash": "sha256:115f0e2819f3db0c624fd96c4ff92f87d1dc79a2e975d593c2e20ed134d74d6a",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_CANONICAL_NODES_V1"
+      },
+      "CONSEQUENCE_VARIANTS": {
+        "file_sha256": "sha256:ecd7c64314d27672a83c4a4479646df824a884c59afc712f1d390f86f079e270",
+        "payload_hash": "sha256:7e1e5e7b4d3c625621c5efb8da8fd5f3e922d806698cf7340db4569edccb1c8f",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_CONSEQUENCE_VARIANTS_V1"
+      },
+      "M4_COMPARISONS": {
+        "file_sha256": "sha256:de34ef42c30d0544baedf73090a8686d357e8fc04c58a2d8c18039707324fcf3",
+        "payload_hash": "sha256:ea62e4dde68533c7908c9ef4fbd6bc258c8b9b851220990991cf4f2075c52593",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_M4_COMPARISONS_V1"
+      },
+      "PAPER_VIEWS": {
+        "file_sha256": "sha256:fa3316631bc413be0a5ca4eb90382b4eee6ce8fb6554f55ecb7587360451e952",
+        "payload_hash": "sha256:30384f10f1dc4aa26f74d58247ea50a3de46251fe075e1d5de7f9915da338c39",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1"
+      },
+      "RECOVERY_DECISIONS": {
+        "file_sha256": "sha256:a2f7de179e5f7101c085ba74c2fab457294f214b79005d102c0b9ec676df9947",
+        "payload_hash": "sha256:f4cb9206dcd20d56db83f70cfccd40821eb6a437afdb4551895ccd01350291c3",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_RECOVERY_DECISIONS_V1"
+      },
+      "REFERENCE_RECOVERY_COHORT": {
+        "file_sha256": "sha256:ed29fcff19abf17566c3ac5bcf80419055ce0f5405b06fe87b866bfc21475602",
+        "payload_hash": "sha256:1503cdfa2371a7212d6f5e8393afbc3d482df594dca9221ac6442254d4a05d10",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1"
+      },
+      "STATE_VARIANTS": {
+        "file_sha256": "sha256:d390e3efaa5aed1b8b6f485add32d4cd89fc0b5d8d6166c739644e5d8719cdb3",
+        "payload_hash": "sha256:35eeab297d79769aef28cb04f5b1a244030c9e46c4c373bdc084df8d4978e96d",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_STATE_VARIANTS_V1"
+      }
+    }
+  },
+  "gate": "PHASE_7_GATE_B0_SCIENTIFIC_EXECUTOR_BINDING",
+  "gate_b_authorized": false,
+  "highs_required_for_production_rows": false,
+  "highs_role": "PARITY_BACKEND_ONLY",
+  "not_claimed": [
+    "FORMAL_GATE_B_EXECUTION",
+    "FINAL_TEST_RAW_MATERIALIZATION",
+    "SECTION_5_5_SENSITIVITY_EXECUTION_RESULTS",
+    "H8_SENSITIVITY_EXECUTION",
+    "FIXED_WINDOW_SENSITIVITY"
+  ],
+  "open_items": [
+    {
+      "item": "RAW_FINAL_TEST_SOURCE_ADAPTER",
+      "owner": "GATE_B",
+      "status": "GUARDED_ONE_SHOT_NOT_ACTIVATED"
+    },
+    {
+      "item": "HUMAN_RELEASE",
+      "owner": "HUMAN",
+      "status": "NOT_CREATED"
+    },
+    {
+      "item": "OFAT_SENSITIVITY_OUTPUTS",
+      "owner": "GATE_B",
+      "status": "OUT_OF_SCOPE_OF_BOUND_DAG_DECLARED_ONLY"
+    }
+  ],
+  "pre_open_status": "PRE_OPEN_AUTHORIZATION_READY_ONLY",
+  "production_executor_bound": true,
+  "production_executor_ready": false,
+  "production_solver": {
+    "deterministic_tie_break": "SMALLEST_U",
+    "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "highs_required_for_production_rows": false,
+    "highs_role": "PARITY_BACKEND_ONLY",
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+    "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+    "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+  },
+  "schema_version": "AIR_SLOT_V2_PHASE7_GATE_B0_BINDING_V1",
+  "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+  "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+  "stage2_solver_authority": {
+    "active_contract": {
+      "deterministic_tie_break": "SMALLEST_U",
+      "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "highs_required_for_production_rows": false,
+      "highs_role": "PARITY_BACKEND_ONLY",
+      "parity_backend": "PYOMO_HIGHS",
+      "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+      "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+      "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+      "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+    },
+    "historical_registry_labels": {
+      "formal_solver": "PYOMO_HIGHS",
+      "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+      "stage2_solver.formal_path": "PYOMO_HIGHS"
+    },
+    "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+    "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+    "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+    "scientific_definition_change": false,
+    "solver_status_contract": {
+      "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+      "member_values": [
+        "PYOMO_HIGHS",
+        "EXACT_ENUMERATION",
+        "NOT_RUN"
+      ],
+      "status": "PASS",
+      "termination_condition_is_separate": true
+    },
+    "status": "PASS"
+  },
+  "status": "PASS",
+  "typed_state_evidence": {
+    "dedicated_tests": [
+      "tests/phase7/test_executor_dag.py::test_not_actionable_stage_keeps_typed_zero_action",
+      "tests/phase7/test_executor_dag.py::test_attention_abstaining_candidate_is_excluded_not_zero_filled",
+      "tests/phase7/test_executor_dag.py::test_abstaining_reference_state_is_typed_excluded"
+    ],
+    "fixture_not_actionable_rows": 0,
+    "frozen_states": [
+      "ABSTAIN_NO_COMMON_SUPPORT",
+      "UNDEFINED_ZERO_RECOVERABLE_VALUE",
+      "NOT_ACTIONABLE",
+      "N/A_NOT_DEFINED"
+    ],
+    "preserved_as_typed_not_zero_filled": true
+  }
+}

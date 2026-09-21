@@ -1,0 +1,4192 @@
+{
+  "checkpoint_schema_version": "AIR_SLOT_V2_PHASE7_CHECKPOINT_V1",
+  "dependencies": {
+    "CONSEQUENCE_VARIANTS": "sha256:84d1a73c02f414f65afb54fbeaf5159ee6f6ac5ee619ac35e5aa3e581fe37f49"
+  },
+  "payload": {
+    "nominal_q": 0.1,
+    "q_grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.3
+    ],
+    "reference_variant": "HISTORY_JOINT",
+    "row_count": 32,
+    "rows": [
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.4685716486656794,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.27620754150852084,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.4685716486656794,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.27620754150852084,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.4685716486656794,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.27620754150852084,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.4685716486656794,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.27620754150852084,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.48689629569754694,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.48689629569754694,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.48689629569754694,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.48689629569754694,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 2,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 2
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 2
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 0.6656817411447911,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 0.39682827282872285,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.3301960349683392,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 7.862696740883238,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 5.4010901309375186,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 4.775396142267709,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 0.6656817411447911,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 0.39682827282872285,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.3301960349683392,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 7.862696740883238,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 5.4010901309375186,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 4.775396142267709,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 0.6656817411447911,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 0.39682827282872285,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.3301960349683392,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 7.862696740883238,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 5.4010901309375186,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 4.775396142267709,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 0.6656817411447911,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 0.39682827282872285,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.3301960349683392,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 1,
+              "score": 7.862696740883238,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 2,
+              "score": 5.4010901309375186,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 4.775396142267709,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.8701329797413985,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 0.5347081805738606,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.3068714029161524,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 0.29992855069885854,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 0.25008958630155065,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 8.444332467857748,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 6.773144510501879,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 4.252425437560305,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 4.082956230035052,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 3.828069790964946,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.8701329797413985,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 0.5347081805738606,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.3068714029161524,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 0.29992855069885854,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 0.25008958630155065,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 8.444332467857748,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 6.773144510501879,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 4.252425437560305,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 4.082956230035052,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 3.828069790964946,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.8701329797413985,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 0.5347081805738606,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.3068714029161524,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 0.29992855069885854,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 0.25008958630155065,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 8.444332467857748,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 6.773144510501879,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 4.252425437560305,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 4.082956230035052,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 3.828069790964946,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.8701329797413985,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 0.5347081805738606,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.3068714029161524,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 0.29992855069885854,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 0.25008958630155065,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 8.444332467857748,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 2,
+              "score": 6.773144510501879,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 4.252425437560305,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 4.082956230035052,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 5,
+              "score": 3.828069790964946,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 2,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 2
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 2
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "CURRENT_JOINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.12350666482920536,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.025064538713136575,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 1.2755135297775269,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.6829899549484253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.12350666482920536,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.025064538713136575,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 1.2755135297775269,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.6829899549484253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.12350666482920536,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.025064538713136575,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 1.2755135297775269,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.6829899549484253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.12350666482920536,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.025064538713136575,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 1.2755135297775269,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 0.6829899549484253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.15170183442019103,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.14737548135135073,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.040880912797980055,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.5666987895965576,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 1.5220184326171875,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 1.1139743328094482,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.15170183442019103,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.14737548135135073,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.040880912797980055,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.5666987895965576,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 1.5220184326171875,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 1.1139743328094482,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.15170183442019103,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.14737548135135073,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.040880912797980055,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.5666987895965576,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 1.5220184326171875,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 1.1139743328094482,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 0.15170183442019103,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.14737548135135073,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 0.040880912797980055,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.5666987895965576,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 1.5220184326171875,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 1.1139743328094482,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 4,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 5,
+              "score": 0.0,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 2,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 2
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 2
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_POINT"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.5597174819990127,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 2,
+              "score": 0.3673533748418542,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.5597174819990127,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 2,
+              "score": 0.3673533748418542,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.5597174819990127,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 2,
+              "score": 0.3673533748418542,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 3,
+        "canonical_stage_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "cohort_size": 3,
+        "consequence_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 0.5597174819990127,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 2,
+              "score": 0.3673533748418542,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 3,
+              "score": 0.28768251731680483,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 3,
+          "entries": [
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+              "rank": 1,
+              "score": 6.405868379864842,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301",
+              "rank": 2,
+              "score": 4.423260961659253,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+              "rank": 3,
+              "score": 3.908353880161141,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 3,
+        "eligible_candidate_ids_hash": "sha256:933071e5244b6ce11e63bc6fd7e1acc70beaa198f1825ba866d554c0072dd5d7",
+        "eligible_candidate_node_ids": [
+          "sha256:5d683adf57af938bcdbb68f0b8d1b7daf49589c1277cc60a8780993040ea228f",
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "sha256:aa7b7fb6fdf42f85434b0c8c77118a7ce1a36e0b03d844cd3bd4659985702301"
+        ],
+        "k": 1,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6"
+        ],
+        "selected_stage_class_counts": {
+          "PRE": 1
+        },
+        "selected_stage_counts": {
+          "PRE_IB": 1
+        },
+        "stage": "PRE_IB",
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.5780421290308803,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.05,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.05,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.5780421290308803,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.1,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.1,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.5780421290308803,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 1,
+          "q": 0.2,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 1,
+        "q": 0.2,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 1
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 1
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_MARGINAL"
+      },
+      {
+        "abstaining_node_count": 0,
+        "abstaining_node_ids": [],
+        "canonical_stage_node_count": 5,
+        "canonical_stage_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "cohort_size": 5,
+        "consequence_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 1.124013107340162,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 0.5780421290308803,
+              "selected": true,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 3,
+              "score": 0.3567549839371773,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 4,
+              "score": 0.3015820554049835,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 0.20208144257427652,
+              "selected": false,
+              "selected_for": "CONSEQUENCE"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+          ],
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED"
+        },
+        "delay_decision": {
+          "cohort_size": 5,
+          "entries": [
+            {
+              "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+              "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+              "rank": 1,
+              "score": 11.032764510600828,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+              "node_id": "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde",
+              "rank": 2,
+              "score": 6.6624034372507595,
+              "selected": true,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "episode_id": "sha256:00e8e773cd283d939ca84156277aff75b1c9ef7a14cb2e3f5e073116f61ab1cf",
+              "node_id": "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+              "rank": 3,
+              "score": 5.02967085968703,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "episode_id": "sha256:06175f5b45577085e11e76989574ab452a8bd8302e12d0b474181b63941dc70a",
+              "node_id": "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+              "rank": 4,
+              "score": 4.7539950591744855,
+              "selected": false,
+              "selected_for": "DELAY"
+            },
+            {
+              "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+              "node_id": "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+              "rank": 5,
+              "score": 2.8819781201798063,
+              "selected": false,
+              "selected_for": "DELAY"
+            }
+          ],
+          "k": 2,
+          "q": 0.3,
+          "selected_node_ids": [
+            "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+            "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+          ],
+          "signal_type": "DELAY",
+          "status": "SUPPORTED"
+        },
+        "eligible_candidate_count": 5,
+        "eligible_candidate_ids_hash": "sha256:401da82bfcdf36a858f4c88146603bf2d637d18311ef4db38f9205551a99ba44",
+        "eligible_candidate_node_ids": [
+          "sha256:2f3a0c93e1e478153cf050c94cc608fae9bf5e87777dab4c5ee1c2387699b9c7",
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:69811a481c2bd8f232521f5319e2a6fe6be4ad1ff5b014add71d53397d80f13e",
+          "sha256:6f567eaa70c3e9706e3a8c2f40a7361578fcd17196ec707ed46268948283e73f",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "k": 2,
+        "q": 0.3,
+        "selected_node_ids": [
+          "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "sha256:b7d3da26ddb8fbf3a5ad0b149c7f4732fbe97110cc61151e4447d7eb542e1bde"
+        ],
+        "selected_stage_class_counts": {
+          "TURN": 2
+        },
+        "selected_stage_counts": {
+          "POST_IB_PRE_OB": 2
+        },
+        "stage": "POST_IB_PRE_OB",
+        "variant": "HISTORY_MARGINAL"
+      }
+    ],
+    "schema_version": "AIR_SLOT_V2_PHASE7_ATTENTION_DECISIONS_V1",
+    "selector": {
+      "abstaining_nodes_excluded": true,
+      "capacity_rule": "K = ceil(q * N)",
+      "grid": [
+        0.05,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "nominal_q": 0.1,
+      "operated_per_stage": true,
+      "pooled_stage1_queue": false,
+      "selector_id": "M3_STAGE1_SHARED_SELECTOR",
+      "shared_for_signals": [
+        "DELAY",
+        "CONSEQUENCE"
+      ],
+      "tie_break": "(-score, episode_id, node_id)"
+    },
+    "stage": "ATTENTION_DECISIONS",
+    "stage1_actionable_stages": [
+      "PRE_IB",
+      "POST_IB_PRE_OB"
+    ],
+    "stage1_non_actionable_stages": [
+      "POST_OB_PRE_TO",
+      "COMPLETED"
+    ]
+  },
+  "payload_hash": "sha256:f659930b55329dc0c2aba8a2b3dcaa7726f5402e36e7fb28bdf919365770e2f0",
+  "produced_by": "PHASE7_GATE_B0_DEVELOPMENT_SAFE_FIXTURE",
+  "schema_version": "AIR_SLOT_V2_PHASE7_ATTENTION_DECISIONS_V1",
+  "stage": "ATTENTION_DECISIONS"
+}

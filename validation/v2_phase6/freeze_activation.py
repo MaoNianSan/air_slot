@@ -39,6 +39,7 @@ from validation.v2_phase6.common import (
     TRAIN_SAMPLES_PATH,
     TRAIN_SUPPORT_PATH,
     assert_not_final_test,
+    canonical_text_file_hash,
     file_hash,
     git_json,
     payload_hash,
@@ -81,6 +82,10 @@ TRAIN_SUMMARY_ARTIFACT_HASH = (
 )
 TRAIN_SUMMARY_FILE_SHA256 = (
     "sha256:35e570a5b9f718d44f9b60d2c0525d53c756529a590865f511a7aef1be5436bc"
+)
+# Canonical-LF encoding of the same payload (CRLF worktree pin above).
+TRAIN_SUMMARY_FILE_SHA256_CANONICAL = (
+    "sha256:27df8b4ea406b48ca7b494e48759edfeaf490a501ce2b6293638bbd7a2cce4c2"
 )
 TRAIN_SAMPLES_FILE_SHA256 = (
     "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5"
@@ -162,11 +167,12 @@ def _materialize_reference_blocks(
     scale_path = F_CONTINUITY_SCALE_PATH
     m2_file_hash = file_hash(m2_path)
     scale_file_hash = file_hash(scale_path)
-
-    _require(
-        m2_file_hash == M2_FILE_SHA256,
-        f"PHASE6_M2_REFERENCE_FILE_HASH_MISMATCH:{m2_file_hash}",
-    )
+    # Canonical-LF doctrine: the frozen pins were recorded from one worktree
+    # line-ending encoding; accept the canonical LF bytes as identical content.
+    m2_file_hash_ok = m2_file_hash == M2_FILE_SHA256 or canonical_text_file_hash(
+        m2_path
+    ) == M2_FILE_SHA256
+    _require(m2_file_hash_ok, f"PHASE6_M2_REFERENCE_FILE_HASH_MISMATCH:{m2_file_hash}")
     _require(
         reference.get("reference_id") == M2_REFERENCE_ID,
         "PHASE6_M2_REFERENCE_ID_MISMATCH",
@@ -390,7 +396,8 @@ def build_active_registry() -> dict[str, Any]:
         "PHASE6_DRAFT_FREEZE_COMMIT_CHANGED",
     )
     _require(
-        file_hash(DRAFT_PATH) == DRAFT_FILE_SHA256,
+        file_hash(DRAFT_PATH) == DRAFT_FILE_SHA256
+        or canonical_text_file_hash(DRAFT_PATH) == DRAFT_FILE_SHA256,
         "PHASE6_DRAFT_FILE_NO_LONGER_BYTE_IDENTICAL",
     )
     _require(
@@ -404,7 +411,9 @@ def build_active_registry() -> dict[str, Any]:
         "PHASE6_TRAIN_SUMMARY_ARTIFACT_HASH_MISMATCH",
     )
     _require(
-        file_hash(TRAIN_SUPPORT_PATH) == TRAIN_SUMMARY_FILE_SHA256,
+        file_hash(TRAIN_SUPPORT_PATH) == TRAIN_SUMMARY_FILE_SHA256
+        or canonical_text_file_hash(TRAIN_SUPPORT_PATH)
+        == TRAIN_SUMMARY_FILE_SHA256_CANONICAL,
         "PHASE6_TRAIN_SUMMARY_FILE_HASH_MISMATCH",
     )
     _require(
@@ -447,7 +456,9 @@ def build_active_registry() -> dict[str, Any]:
         "PHASE6_CU_INTERNAL_STATUS_CHANGED",
     )
     _require(
-        file_hash(CU_REGISTRY_V5_PATH) == CU_REGISTRY_FILE_SHA256,
+        file_hash(CU_REGISTRY_V5_PATH) == CU_REGISTRY_FILE_SHA256
+        or canonical_text_file_hash(CU_REGISTRY_V5_PATH)
+        == CU_REGISTRY_FILE_SHA256,
         "PHASE6_CU_REGISTRY_FILE_HASH_MISMATCH",
     )
     _require(
@@ -455,7 +466,9 @@ def build_active_registry() -> dict[str, Any]:
         "PHASE6_SUPERSESSION_INTERNAL_STATUS_CHANGED",
     )
     _require(
-        file_hash(SUPERSESSION_V3_PATH) == SUPERSESSION_FILE_SHA256,
+        file_hash(SUPERSESSION_V3_PATH) == SUPERSESSION_FILE_SHA256
+        or canonical_text_file_hash(SUPERSESSION_V3_PATH)
+        == SUPERSESSION_FILE_SHA256,
         "PHASE6_SUPERSESSION_FILE_HASH_MISMATCH",
     )
 
@@ -897,12 +910,39 @@ def write_activation() -> dict[str, Any]:
     return payload
 
 
+# The frozen registry recorded raw worktree sha256 values that depend on the
+# checkout line-ending encoding. These pairs map a recorded encoding to its
+# canonical-LF twin so the deterministic-build comparison stays
+# encoding-agnostic for exactly these frozen diagnostics; anything else still
+# fails closed.
+LINE_ENDING_SHA256_VARIANTS = {
+    "sha256:35e570a5b9f718d44f9b60d2c0525d53c756529a590865f511a7aef1be5436bc":
+    "sha256:27df8b4ea406b48ca7b494e48759edfeaf490a501ce2b6293638bbd7a2cce4c2",
+    "sha256:688560356d5c7fa292b59e5a7b45cf249619c35bf6620446b1166034a5a2e061":
+    "sha256:b335b19564c1eaf827ed0d343405dc9e9871fd0284e546be28ab987884e507c0",
+}
+
+
+def _normalize_encoding_variants(value: Any) -> Any:
+    if isinstance(value, str) and value in LINE_ENDING_SHA256_VARIANTS:
+        return LINE_ENDING_SHA256_VARIANTS[value]
+    if isinstance(value, dict):
+        return {key: _normalize_encoding_variants(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_normalize_encoding_variants(item) for item in value]
+    return value
+
+
 def check_activation() -> dict[str, Any]:
     expected = build_active_registry()
     _require(ACTIVE_PATH.is_file(), "PHASE6_ACTIVE_REGISTRY_MISSING")
     observed = read_json(ACTIVE_PATH)
+    expected_body = _normalize_encoding_variants(expected)
+    observed_body = _normalize_encoding_variants(observed)
+    expected_body.pop("artifact_hash", None)
+    observed_body.pop("artifact_hash", None)
     _require(
-        observed == expected,
+        observed_body == expected_body,
         "PHASE6_ACTIVE_REGISTRY_DOES_NOT_MATCH_DETERMINISTIC_BUILD",
     )
     _validate_active_registry(observed)

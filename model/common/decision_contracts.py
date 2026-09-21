@@ -143,13 +143,23 @@ class SplitName(str, Enum):
 class SolverStatus(str, Enum):
     """Stage-II solution provenance.
 
-    The formal path is exact enumeration over the finite action grid; the HiGHS
-    backend exists only for development-time parity checks.
+    The Stage-II production authority is exact enumeration over the finite
+    five-minute action grid (post-R2 ruling
+    ``HUMAN_GATE_B0A_SOLVER_AUTHORITY_RULING_20260919``; see
+    ``registries/v2_stage2_solver_authority_reconciliation.json``). The
+    Pyomo+HiGHS backend is retained strictly for parity checks, regression
+    validation, and historical-artifact compatibility; it must never produce a
+    canonical Stage-II decision.
     """
 
+    PYOMO_HIGHS = "PYOMO_HIGHS"
     EXACT_ENUMERATION = "EXACT_ENUMERATION"
-    HIGHS_PARITY = "HIGHS_PARITY"
     NOT_RUN = "NOT_RUN"
+
+    #: Backward-compatible alias kept so sealed checkpoints and pre-ruling
+    #: diagnostics remain deserializable. It denotes the HiGHS parity backend
+    #: only, not a formal authority.
+    HIGHS_PARITY = PYOMO_HIGHS
 
 
 class EvaluationFamily(str, Enum):
@@ -623,6 +633,8 @@ class RecoveryDecision(FrozenModel):
     recoverable_value: float | None = None
     lambda_policy: float | None = None
     solver_status: SolverStatus = SolverStatus.NOT_RUN
+    tie_break_applied: bool | None = None
+    near_tie_candidate_count: int | None = Field(default=None, ge=0)
     reason_codes: tuple[str, ...] = ()
 
     @model_validator(mode="after")

@@ -66,7 +66,9 @@ def build(*, root: Path, artifact_dir: Path) -> dict:
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=("build",))
-    parser.add_argument("--root", type=Path, default=Path("."))
+    parser.add_argument(
+        "--root", type=Path, default=Path(__file__).resolve().parents[2]
+    )
     parser.add_argument(
         "--artifact-dir",
         type=Path,

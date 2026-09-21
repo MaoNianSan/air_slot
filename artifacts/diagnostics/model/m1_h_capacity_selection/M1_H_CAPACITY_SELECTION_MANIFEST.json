@@ -1,0 +1,253 @@
+{
+  "artifact_scope": "M1_DEVELOPMENT_CAPACITY_SELECTION_ONLY",
+  "candidate_hidden_sizes": [
+    8,
+    16,
+    32
+  ],
+  "candidate_parameter_counts": {
+    "16": 9620,
+    "32": 20692,
+    "8": 4660
+  },
+  "contracts": {
+    "feature_contract_hash": "sha256:56253d8ef9095588c48a31506f5bd3952ed52fbe457f5ef2c1f8d635a3cd4097",
+    "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+    "quantile_grid": [
+      0.1,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ],
+    "support": {
+      "D_OB": 180,
+      "D_TX": 60,
+      "T_IB_REMAINING_HAZARD": 360,
+      "bin_width_minutes": 5
+    },
+    "support_contract_hash": "sha256:aadc580d2015c3c6f7c30d2f5ef346e25108775552d70fb3f62200a144573d8a",
+    "target_contract_hash": "sha256:524bd12352762b4bde9f74f3c01f27da15d5adb2c4433f0a25d7cc2a6f3dacf9"
+  },
+  "dataset": "DATA2_2019",
+  "declared_parameter_count_source": "artifacts/diagnostics/model/m1_v2_model_closure/M1_V2_TUNING_STAGE1_MANIFEST.json:candidates[].parameter_count",
+  "declared_parameter_counts": {
+    "16": 9716,
+    "32": 20884,
+    "8": 4708
+  },
+  "downstream_decision_metrics_used": false,
+  "early_stopping": "NOT_USED_BY_FROZEN_CONTRACT",
+  "final_test_access_count": 0,
+  "frozen_artifacts_modified": false,
+  "frozen_h16_architecture_check": {
+    "architecture_signature_hash": "sha256:e4999273aace858894c7def4e6c24e2bb1900c8dd46e43926ff0c78169269c7e",
+    "checkpoint_hash": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+    "checkpoint_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\models\\m1\\M1_H16_HISTORY_PRIMARY\\M1_H16_HISTORY_PRIMARY.pt",
+    "frozen_parameter_count": 9620,
+    "materialized_h16_parameter_count": 9620,
+    "status": "FROZEN_H16_ARCHITECTURE_EQUIVALENT"
+  },
+  "generated_at_utc": "2026-09-19T08:40:52.266770+00:00",
+  "initialization_control": "torch.manual_seed(run_seed) applied before candidate construction; identical for every candidate and seed",
+  "inputs": {
+    "cache_file_hash": "sha256:1f9b341208a6a0a85f2c99d574b0c532ce37addee96c46e29b7caad77848dd14",
+    "cache_hash": "sha256:599be2df0cbf7f2e761709a9e86ab38ddb2672c1e6edb6b6fe2df50991ed3d41",
+    "cache_key": "sha256:7ebf930cba9f21e5d7573bbba2748cea067e37f7e16798aa14abee7f81b7032d",
+    "cache_manifest_hash": "sha256:64befb0b61a4b96956bc0d0d31c430a295ae6ef505f45d4f7e10b178f360d0eb",
+    "cache_path": "artifacts\\models\\m1\\M1_FROZEN_H16\\DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3.npz",
+    "calibration_episode_hash": "sha256:fb7f4a068dae322d8f34ac8abe0e67e013d0cbff4394a19e09fc68a7a98cb6f9",
+    "cohort_file_hash": "sha256:8a2a35d6f4982e24a36dad68daeff3daf64cb8047c4a8680ba3bb535546b3f24",
+    "cohort_path": "artifacts\\models\\m1\\M1_FORMAL_TRAINING_COHORT_V1.json",
+    "development_episode_hash": "sha256:79c3dd9d47e3ec6f15f228213f69bf84f40e8b8f5b6bb7fbea390fbe5613af79",
+    "h16_manifest_hash": "sha256:5e75a16e0db957a8edb7a8007cc15fed84a0e84a2b522fc32ca58a00b701da6a",
+    "h16_manifest_path": "artifacts\\models\\m1\\M1_H16_HISTORY_PRIMARY\\M1_H16_HISTORY_PRIMARY_MANIFEST.json",
+    "node_metadata_file_hash": "sha256:51b6de81c5c2e607ceebe82e4eb7738e27d9eb3c7cc931920772ba38e2603e23",
+    "node_metadata_path": "artifacts\\experiment\\exp2\\development\\data\\EXP2_H16_M2_V4_NODE_INPUT.parquet",
+    "train_episode_hash": "sha256:8db8fd936c6a39e5b437e2c56f45061f00bf9caa284fc0a1a55d7c19b07eb7e7"
+  },
+  "outputs": {
+    "M1_H_CAPACITY_BY_HORIZON.csv": "sha256:00dc568183be2addd6d7daf8e196ba6ae6edb282df46899412d46d803cf3bf04",
+    "M1_H_CAPACITY_BY_SEED.csv": "sha256:9d310efd0dfdd840dd831bd25cccd9a6e2eb358763a50f7c62a44c86fed01b7f",
+    "M1_H_CAPACITY_BY_STAGE.csv": "sha256:ab2cb30e85db8dcc874cfc8a1db2cc5819362eaa9dca1a7dc849e9fe68203e08",
+    "M1_H_CAPACITY_CALIBRATION.csv": "sha256:e459805b3b8568f56830a9c0f301c8f07b6ac3828357623ec505ea5e2cf64288",
+    "M1_H_CAPACITY_GENERALIZATION.csv": "sha256:46b9a1cfb963434ea6311b339af44ed668b3312491abca22136ff450654c2e3d",
+    "M1_H_CAPACITY_SELECTION_REPORT.md": "sha256:6d5b4a66d9c1ead543484368c39b31a4d4425d5556c7919e2a3c9768a8e886ea",
+    "M1_H_CAPACITY_SELECTION_SUMMARY.csv": "sha256:f5028d049ce811f3a653864ee63c60ff535d13dd2f076ff1977498f277866a80",
+    "M1_H_CAPACITY_TARGET_METRICS.csv": "sha256:0f0477023d6b654c6af0be487245bffea2206c765d893edbedcd87331edae085"
+  },
+  "paired_training_seeds": [
+    20260813,
+    20260814,
+    20260815,
+    20260816,
+    20260817
+  ],
+  "parameter_count_declaration_match": {
+    "16": false,
+    "32": false,
+    "8": false
+  },
+  "parameter_count_note": "candidate_parameter_counts are materialized from the frozen architecture definition (M1V2GRU at the given hidden size) and are proven signature-equal to the frozen H16 runtime artifact; declared_parameter_counts preserve the closure-manifest declarations unchanged",
+  "repository_head": "8ee66e3491d92f63d7cc5d8d8272bd148c7d0cee",
+  "runs": [
+    {
+      "H": 8,
+      "development_joint_loss": 17.836007,
+      "model_state_hash": "sha256:40a8c11cc632841d329ae52b7c18cb24fb463de8eb22e50b57b40179c68da2a0",
+      "parameter_count": 4660,
+      "seed": 20260813,
+      "train_joint_loss": 30.06575
+    },
+    {
+      "H": 8,
+      "development_joint_loss": 17.819555,
+      "model_state_hash": "sha256:1b85cc091133170693c5b37683a3d21bb07e5c30eee7f1e829cf87460e60fec3",
+      "parameter_count": 4660,
+      "seed": 20260814,
+      "train_joint_loss": 30.262707
+    },
+    {
+      "H": 8,
+      "development_joint_loss": 17.639201,
+      "model_state_hash": "sha256:d0e81b80422f3c54859b48fdaec3b82012bedd12fbeec3e5657d973fbb29c612",
+      "parameter_count": 4660,
+      "seed": 20260815,
+      "train_joint_loss": 29.845284
+    },
+    {
+      "H": 8,
+      "development_joint_loss": 17.383305,
+      "model_state_hash": "sha256:815a79333d4589e9038b72063c8b584b49ae03bb5991b9f0c4ca447dfa00d605",
+      "parameter_count": 4660,
+      "seed": 20260816,
+      "train_joint_loss": 29.662665
+    },
+    {
+      "H": 8,
+      "development_joint_loss": 17.583438,
+      "model_state_hash": "sha256:5efebd654a26bcbd42cbce6d67d78b5040362527142a1a49f9c1e20af92d1017",
+      "parameter_count": 4660,
+      "seed": 20260817,
+      "train_joint_loss": 29.824163
+    },
+    {
+      "H": 16,
+      "development_joint_loss": 17.489379,
+      "model_state_hash": "sha256:24f34f919a556fc2610bc0a6f1ff2b8d5c818fae64501dde2b653b3635211491",
+      "parameter_count": 9620,
+      "seed": 20260813,
+      "train_joint_loss": 29.484011
+    },
+    {
+      "H": 16,
+      "development_joint_loss": 17.51067,
+      "model_state_hash": "sha256:040bc6b443a2636d2e12946374dd94d2644481153b04b0495cc7d33bf7a2e054",
+      "parameter_count": 9620,
+      "seed": 20260814,
+      "train_joint_loss": 29.69551
+    },
+    {
+      "H": 16,
+      "development_joint_loss": 17.542421,
+      "model_state_hash": "sha256:c640611e06c0cc7f25b44aca574a3b270e5b93038ecdcd3863d33b97f9f0aae2",
+      "parameter_count": 9620,
+      "seed": 20260815,
+      "train_joint_loss": 29.623712
+    },
+    {
+      "H": 16,
+      "development_joint_loss": 17.378174,
+      "model_state_hash": "sha256:7ff37e5ced485f10c71b4acb87dca721b3a254ba865ab6b96c7c443689849644",
+      "parameter_count": 9620,
+      "seed": 20260816,
+      "train_joint_loss": 29.497903
+    },
+    {
+      "H": 16,
+      "development_joint_loss": 17.387944,
+      "model_state_hash": "sha256:086333c9200835bd1bb8975bafbf895a6164de7f8d951219b01cf1ad14313b14",
+      "parameter_count": 9620,
+      "seed": 20260817,
+      "train_joint_loss": 29.552544
+    },
+    {
+      "H": 32,
+      "development_joint_loss": 17.179404,
+      "model_state_hash": "sha256:c7171486268353780b68327e79a8ad813c80dd1e67b5fadf1fdb0f905e990290",
+      "parameter_count": 20692,
+      "seed": 20260813,
+      "train_joint_loss": 29.054287
+    },
+    {
+      "H": 32,
+      "development_joint_loss": 17.129294,
+      "model_state_hash": "sha256:705942f310538b99587300e09a27287f608b7da6f748eb01742f17a49fc1803d",
+      "parameter_count": 20692,
+      "seed": 20260814,
+      "train_joint_loss": 28.967203
+    },
+    {
+      "H": 32,
+      "development_joint_loss": 17.144003,
+      "model_state_hash": "sha256:5d81f7a4fa145214ce7d5ccc9d49965e0597d89bad9ba8daeb200fd591a1d1d6",
+      "parameter_count": 20692,
+      "seed": 20260815,
+      "train_joint_loss": 28.969642
+    },
+    {
+      "H": 32,
+      "development_joint_loss": 17.085749,
+      "model_state_hash": "sha256:08dbbc1072f79501aba8e40b3fa89e0f5be1422a35a2bd69cb79e96f5ceb83a1",
+      "parameter_count": 20692,
+      "seed": 20260816,
+      "train_joint_loss": 28.9836
+    },
+    {
+      "H": 32,
+      "development_joint_loss": 17.252791,
+      "model_state_hash": "sha256:0d28af55da66395d766e0f43e4c97749c1327b65868baa4fe56b4489e27ba840",
+      "parameter_count": 20692,
+      "seed": 20260817,
+      "train_joint_loss": 29.063604
+    }
+  ],
+  "schema_version": "M1_H_CAPACITY_SELECTION_MANIFEST_V1",
+  "selection": {
+    "best_mean_h": 32,
+    "best_mean_loss": 17.158248,
+    "best_se": 0.028003,
+    "eligibility_threshold": 17.186251,
+    "eligible": [
+      32
+    ],
+    "guardrail_notes": [],
+    "scientific_reconciliation_required": true,
+    "selected_h": 32,
+    "selection_rule": "ONE_SE_THEN_SMALLEST_ELIGIBLE_WITH_CALIBRATION_TAIL_CORE_TARGET_GUARDRAILS",
+    "status": "SCIENTIFIC_RECONCILIATION_REQUIRED"
+  },
+  "split_roles": {
+    "calibration": [
+      "2019-07-01",
+      "2019-07-31"
+    ],
+    "development": [
+      "2019-08-01",
+      "2019-09-30"
+    ],
+    "final_test": "LOCKED_NOT_ACCESSED",
+    "train": [
+      "2019-01-01",
+      "2019-06-30"
+    ]
+  },
+  "training_config": {
+    "batch_size": 64,
+    "epochs": 8,
+    "learning_rate": 0.001,
+    "optimizer": "Adam",
+    "weight_decay": 0.0
+  },
+  "training_config_source": "model/M1/tuning_stage1.py:STAGE1_TRAINING_CONFIG"
+}

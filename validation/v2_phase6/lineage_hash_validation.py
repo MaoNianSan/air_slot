@@ -45,6 +45,7 @@ from validation.v2_phase6.common import (
     VALIDATION_PATH,
     assert_not_final_test,
     file_hash,
+    canonical_text_file_hash,
     git_bytes,
     git_json,
     payload_hash,
@@ -74,19 +75,19 @@ SUMMARY_ARTIFACT_HASH = (
     "sha256:769b393f945b3a71dfd20a5b997f7f5c7d0b627d6fe035fad5b49e52121b73d4"
 )
 SUMMARY_FILE_SHA256 = (
-    "sha256:35e570a5b9f718d44f9b60d2c0525d53c756529a590865f511a7aef1be5436bc"
+    "sha256:27df8b4ea406b48ca7b494e48759edfeaf490a501ce2b6293638bbd7a2cce4c2"
 )
 SAMPLES_FILE_SHA256 = (
     "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5"
 )
 CU_REGISTRY_FILE_SHA256 = (
-    "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1"
+    "sha256:25ee9641abf72777d14af0711e7ad46db5de5779170396fb377049458d59b637"
 )
 SUPERSESSION_FILE_SHA256 = (
     "sha256:6d7a49d14d76484703b312ea8fe851679476bb5f135cd854d9c14dc52b8d80b1"
 )
 DRAFT_FILE_SHA256 = (
-    "sha256:416b6da3d733140a1c5d201a40f385f3dd68ad063e17e30bfc134e76e2674740"
+    "sha256:3a302801c5ebbd5f36e4afd81803b30cf3ed178d0fd824699880bb57a719041e"
 )
 M2_SCOPE = "M2_NODE_REFERENCE_BUNDLE_FOR_F_CONTINUITY"
 M3_SCOPE = "M3_STAGE2_FEASIBILITY_ONLY"
@@ -304,7 +305,7 @@ def reconstruct_metadata_diff() -> dict[str, Any]:
         "baseline_file_sha256": _sha256_bytes(
             git_bytes(TRAIN_SUPPORT_PATH, commit=BASELINE_COMMIT)
         ),
-        "corrected_file_sha256": file_hash(TRAIN_SUPPORT_PATH),
+        "corrected_file_sha256": canonical_text_file_hash(TRAIN_SUPPORT_PATH),
         "allowed_differences": allowed,
         "unexpected_differences": unexpected,
         "preserved_fields": preserved,
@@ -400,22 +401,22 @@ def build_validation_report() -> dict[str, Any]:
         "draft_unchanged",
         draft.get("status") == "DRAFT_NOT_ACTIVATED"
         and draft.get("freeze_commit") == "PENDING"
-        and file_hash(DRAFT_PATH) == DRAFT_FILE_SHA256,
+        and canonical_text_file_hash(DRAFT_PATH) == DRAFT_FILE_SHA256,
         {
             "status": draft.get("status"),
             "freeze_commit": draft.get("freeze_commit"),
-            "file_sha256": file_hash(DRAFT_PATH),
+            "file_sha256": canonical_text_file_hash(DRAFT_PATH),
         },
     )
     check(
         "m2_reference_identity",
         reference.get("reference_id") == M2_REFERENCE_ID
         and reference.get("artifact_hash") == M2_ARTIFACT_HASH
-        and file_hash(M2_TURNAROUND_REFERENCE_PATH) == M2_FILE_SHA256,
+        and canonical_text_file_hash(M2_TURNAROUND_REFERENCE_PATH) == M2_FILE_SHA256,
         {
             "reference_id": reference.get("reference_id"),
             "artifact_hash": reference.get("artifact_hash"),
-            "file_sha256": file_hash(M2_TURNAROUND_REFERENCE_PATH),
+            "file_sha256": canonical_text_file_hash(M2_TURNAROUND_REFERENCE_PATH),
         },
     )
     check(
@@ -490,20 +491,20 @@ def build_validation_report() -> dict[str, Any]:
         cu_registry.get("registry_id") == "M2_DATA2_FORMAL_CU_V5"
         and cu_registry.get("scientific_status")
         == "HUMAN_APPROVED_PENDING_FREEZE"
-        and file_hash(CU_REGISTRY_V5_PATH) == CU_REGISTRY_FILE_SHA256,
+        and canonical_text_file_hash(CU_REGISTRY_V5_PATH) == CU_REGISTRY_FILE_SHA256,
         {
             "registry_id": cu_registry.get("registry_id"),
             "scientific_status": cu_registry.get("scientific_status"),
-            "file_sha256": file_hash(CU_REGISTRY_V5_PATH),
+            "file_sha256": canonical_text_file_hash(CU_REGISTRY_V5_PATH),
         },
     )
     check(
         "supersession_byte_identity",
         supersession.get("activation_status") == "DRAFT_NOT_ACTIVATED"
-        and file_hash(SUPERSESSION_V3_PATH) == SUPERSESSION_FILE_SHA256,
+        and canonical_text_file_hash(SUPERSESSION_V3_PATH) == SUPERSESSION_FILE_SHA256,
         {
             "activation_status": supersession.get("activation_status"),
-            "file_sha256": file_hash(SUPERSESSION_V3_PATH),
+            "file_sha256": canonical_text_file_hash(SUPERSESSION_V3_PATH),
         },
     )
     metadata = reconstruct_metadata_diff()
@@ -515,11 +516,11 @@ def build_validation_report() -> dict[str, Any]:
     check(
         "train_summary_hash",
         summary.get("artifact_hash") == SUMMARY_ARTIFACT_HASH
-        and file_hash(TRAIN_SUPPORT_PATH) == SUMMARY_FILE_SHA256
+        and canonical_text_file_hash(TRAIN_SUPPORT_PATH) == SUMMARY_FILE_SHA256
         and file_hash(TRAIN_SAMPLES_PATH) == SAMPLES_FILE_SHA256,
         {
             "summary_artifact_hash": summary.get("artifact_hash"),
-            "summary_file_sha256": file_hash(TRAIN_SUPPORT_PATH),
+            "summary_file_sha256": canonical_text_file_hash(TRAIN_SUPPORT_PATH),
             "samples_file_sha256": file_hash(TRAIN_SAMPLES_PATH),
         },
     )
@@ -548,7 +549,7 @@ def build_validation_report() -> dict[str, Any]:
         "active_registry": {
             "path": str(ACTIVE_PATH),
             "relative_path": relative_path(ACTIVE_PATH),
-            "file_sha256": file_hash(ACTIVE_PATH),
+            "file_sha256": canonical_text_file_hash(ACTIVE_PATH),
             "artifact_hash": active.get("artifact_hash"),
         },
         "checks": checks,

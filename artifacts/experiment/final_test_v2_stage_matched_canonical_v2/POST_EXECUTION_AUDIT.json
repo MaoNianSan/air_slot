@@ -1,0 +1,783 @@
+{
+  "access_audit_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\PHASE7_ACCESS_AUDIT.json",
+  "access_audit_sha256": "sha256:3ab883ba89f4c7822832ad296a37bb83671fd9a33467a8b52ab7365924527a1e",
+  "access_epoch_id": "sha256:e042bf3e28fe2136bfa58bed23b7b6eeddb34670f4f0d9acfbb99b38584ec557",
+  "audit_timestamp": "2026-09-20T03:28:24.830132+00:00",
+  "blocking_failure_codes": [],
+  "checks": [
+    {
+      "code": "CHECKPOINT_HASH_AND_DEPENDENCIES",
+      "detail": {
+        "ATTENTION_DECISIONS": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
+          "payload_hash": "sha256:23841da03e74af349988c14a581429a16da00bf73e096ecf430dc311426bf0df",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "BOOTSTRAP": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:5dac25bc83d030d0c4f3e37fc641622a8d451595ae57418cd0ebc096fce11974",
+          "payload_hash": "sha256:80ddf2465e4841ed3006fb3c783cf1ad89bf71fdf9b5802de4d7126c0d582287",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "CANONICAL_NODES": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:33ef4199b571af07604493c9054c6828a9d29c489c28f72d70d977befac8c439",
+          "payload_hash": "sha256:f72438c810d053cc56c80f36984070e3556625408a0e9df5a972338b815d4d8e",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "CONSEQUENCE_VARIANTS": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:2b65d255111d99a31d3fe1720ab986cc209f4f3b647ebb0f6169bc402a684d59",
+          "payload_hash": "sha256:5c14b19dc7c3832adec29f9e1900a4281b604c14ce762625f6243430eb9d665b",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "M4_COMPARISONS": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:a5caeedc0cfadf089bba217bfa8279f25515810e6f57358cc37fb0d8c8cd5a9c",
+          "payload_hash": "sha256:7292dd1e53e110a83c890d227c0877a74d2e83312591348d46b8eb10823de975",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "PAPER_VIEWS": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:cfedca4f4f99d5fcdb7f745c23603b884f9df19ff3efc9a4c97af807fc5424a3",
+          "payload_hash": "sha256:88b470adbf6b54634fc196c8f4be94d1ec99caa82ce3af74faf2b4840a595466",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "RECOVERY_DECISIONS": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:4561d385ae16d211d9489019b6a7f5b05b92e96654f8409970324f5cd6ce0161",
+          "payload_hash": "sha256:b34c7881c9cd1e05424a81a15eb87cb4d8e2a0411b006f764bfa4917c7e3e02c",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "REFERENCE_RECOVERY_COHORT": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:1f4f35781f760c96b307bac81a069f1b18699a724e180b36a7cdbe7c715e219a",
+          "payload_hash": "sha256:b70e4e154c066fb3acaf7690e09b192adb6913bc71a8a06a9e9cf008c0d053ae",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "ROBUSTNESS": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:1161261ae25f87c7f752911646f4af60ec2825256f8e2d9fe9fe91089f584c54",
+          "payload_hash": "sha256:2c30017f64898576c5e3e6175bf41d51055b91671492516102b7d31853a4f011",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        },
+        "STATE_VARIANTS": {
+          "dependencies_match": true,
+          "file_hash_match": true,
+          "file_sha256": "sha256:3134bf6d495a8fb8fdb121705f54fa2fd4335cc51b0ac139b3835074db050044",
+          "payload_hash": "sha256:4b7fd677eb4c701a5de5e22dcb4a4fa330768a3e324e84d747b2568dccd3be18",
+          "payload_hash_match": true,
+          "schema_match": true,
+          "stage_match": true
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CANONICALIZATION_BEFORE_SUPPORT",
+      "detail": {
+        "canonical_decision_node_count": 238,
+        "canonical_selected_rolling_count": 238,
+        "canonical_stage_counts": {
+          "POST_IB_PRE_OB": 127,
+          "POST_OB_PRE_TO": 82,
+          "PRE_IB": 29
+        },
+        "canonicalization_group_minimum_match": true,
+        "duplicate_episode_stage_groups_after_canonicalization": 0,
+        "materialized_rolling_node_count": 1656,
+        "max_nodes_per_episode_stage_after_canonicalization": 1
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "PRE_STAGE1_UNIQUENESS",
+      "detail": {
+        "canonical_count": 29,
+        "group_key": [
+          "episode_id",
+          "operational_stage"
+        ],
+        "max_nodes_per_group": 1
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "TURN_STAGE1_UNIQUENESS",
+      "detail": {
+        "canonical_count": 127,
+        "group_key": [
+          "episode_id",
+          "operational_stage"
+        ],
+        "max_nodes_per_group": 1
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE_I_QUEUE_IDENTITY_AND_K",
+      "detail": {
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 7,
+          "status": "PASS"
+        },
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 13,
+          "status": "PASS"
+        },
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 26,
+          "status": "PASS"
+        },
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 39,
+          "status": "PASS"
+        },
+        "CURRENT_JOINT|PRE_IB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 2,
+          "status": "PASS"
+        },
+        "CURRENT_JOINT|PRE_IB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 3,
+          "status": "PASS"
+        },
+        "CURRENT_JOINT|PRE_IB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 6,
+          "status": "PASS"
+        },
+        "CURRENT_JOINT|PRE_IB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 9,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 7,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 13,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 26,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 39,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|PRE_IB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 2,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|PRE_IB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 3,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|PRE_IB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 6,
+          "status": "PASS"
+        },
+        "HISTORY_JOINT|PRE_IB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 9,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 7,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 13,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 26,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 39,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 2,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 3,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 6,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 9,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 7,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 13,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 26,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 127,
+          "cohort_size": 127,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 127,
+          "k": 39,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|PRE_IB|0.05": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 2,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|PRE_IB|0.1": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 3,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|PRE_IB|0.2": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 6,
+          "status": "PASS"
+        },
+        "HISTORY_POINT|PRE_IB|0.3": {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 29,
+          "cohort_size": 29,
+          "delay_consequence_candidate_identity": true,
+          "eligible_candidate_count": 29,
+          "k": 9,
+          "status": "PASS"
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE_I_ACTIONABLE_STAGE_SCOPE",
+      "detail": {
+        "non_actionable_stages_present": [],
+        "stage1_actionable_stages": [
+          "PRE_IB",
+          "POST_IB_PRE_OB"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "NO_POOLED_STAGE1_RANKING",
+      "detail": {
+        "attention_pooled_stage1_ranking": false,
+        "attention_stage_rows_only": true,
+        "m4_pooled_stage1_ranking_constructed": false,
+        "reference_no_pooled_stage1_decision": true
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE1_OBJECTIVE_THEN_NORMALIZE",
+      "detail": {
+        "normalized_acceptance_label": "OBJECTIVE_THEN_NORMALIZE",
+        "source_aggregation": "STAGE_OBJECTIVES_THEN_NORMALIZE"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION",
+      "detail": {
+        "flattened_union_semantics": "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION",
+        "r_star_count": 16,
+        "r_star_stage_counts": {
+          "POST_IB_PRE_OB": 13,
+          "PRE_IB": 3
+        },
+        "stage2_excluded_count": 0,
+        "support_rule": "ACTIONABLE_STAGE_AND_REFERENCE_STATE_FULLY_SUPPORTED"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "RECOVERY_VALUE_OBJECTIVE_IDENTITY",
+      "detail": {
+        "a00_never_a_recommendation": true,
+        "row_count": 64,
+        "violations": []
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE2_SOBT_COORDINATE",
+      "detail": {
+        "node_relative_sobt": true,
+        "violation_count": 0,
+        "violations": []
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "PAIRED_MARGINAL_INCREMENT_EXECUTED",
+      "detail": {
+        "attention": {
+          "ci_high": 0.6538432281498671,
+          "ci_low": 0.38933634567710973,
+          "definition": "HISTORY_POINT_MINUS_HISTORY_MARGINAL",
+          "estimate": 0.557499838186944,
+          "full_sample_increment_verification": "PASS",
+          "numeric_replicate_count": 2000,
+          "pair_formula_ok": true,
+          "paired": true,
+          "paired_assertions": {
+            "POINT_MARGINAL_CANONICAL_IDENTITIES_IDENTICAL": true,
+            "POINT_MARGINAL_REFERENCE_EVALUATOR_IDENTICAL": true,
+            "POINT_MARGINAL_REPLICATE_IDS_IDENTICAL": true,
+            "POINT_MARGINAL_RESAMPLED_EPISODES_IDENTICAL": true
+          },
+          "paired_percentile_ci_recomputed_match": true,
+          "replicate_count": 2000,
+          "undefined_replicate_count": 0
+        },
+        "recovery": {
+          "ci_high": 1.0,
+          "ci_low": 0.6440497115191729,
+          "definition": "HISTORY_POINT_MINUS_HISTORY_MARGINAL",
+          "estimate": 0.9371770060374003,
+          "full_sample_increment_verification": "PASS",
+          "numeric_replicate_count": 2000,
+          "pair_formula_ok": true,
+          "paired": true,
+          "paired_assertions": {
+            "POINT_MARGINAL_CANONICAL_IDENTITIES_IDENTICAL": true,
+            "POINT_MARGINAL_REFERENCE_EVALUATOR_IDENTICAL": true,
+            "POINT_MARGINAL_REPLICATE_IDS_IDENTICAL": true,
+            "POINT_MARGINAL_RESAMPLED_EPISODES_IDENTICAL": true
+          },
+          "paired_percentile_ci_recomputed_match": true,
+          "replicate_count": 2000,
+          "undefined_replicate_count": 0
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "PAIRED_INCREMENT_REPLICATE_PERSISTENCE",
+      "detail": {
+        "attention_replicates": 2000,
+        "recovery_replicates": 2000
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ROBUSTNESS_LAMBDA",
+      "detail": {
+        "axis": "lambda",
+        "levels": [
+          0.1,
+          0.25,
+          0.5,
+          1.0
+        ],
+        "ofat_violations": []
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ROBUSTNESS_TURNAROUND",
+      "detail": {
+        "axis": "turnaround_lower_bound",
+        "levels": [
+          34.0,
+          41.0,
+          47.0
+        ],
+        "ofat_violations": []
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ROBUSTNESS_UMAX",
+      "detail": {
+        "axis": "u_max",
+        "levels": [
+          25.0,
+          45.0,
+          75.0
+        ],
+        "ofat_violations": []
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ROBUSTNESS_FIXED_RSTAR",
+      "detail": {
+        "fixed_r_star": true,
+        "fixed_r_star_node_ids": 16,
+        "stage1_rerun": false
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ROBUSTNESS_OFAT_INTEGRITY",
+      "detail": {
+        "axis_levels": {
+          "lambda": [
+            0.1,
+            0.25,
+            0.5,
+            1.0
+          ],
+          "turnaround_lower_bound": [
+            34.0,
+            41.0,
+            47.0
+          ],
+          "u_max": [
+            25.0,
+            45.0,
+            75.0
+          ]
+        },
+        "nominal_reference_ids": [
+          "sha256:52a6538a7b0a4d961a93448bb58c7cebbc3c3feed71ec97bf090c968e9b8f981"
+        ],
+        "nominal_row_count": 6,
+        "violations": []
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "PAPER_VIEWS_COMPLETE",
+      "detail": {
+        "ambiguous_marginal_labels": [],
+        "information_value_keys": [
+          "components",
+          "cross_state_dependence",
+          "marginal_uncertainty_increment",
+          "no_ambiguous_marginal_labels"
+        ],
+        "no_total_loss_constructed": true,
+        "scientific_recomputation_performed": false,
+        "section_5_2_row_count": 12,
+        "section_5_4_comparator_count": 3,
+        "section_5_5_row_count": 20,
+        "section_5_5_status": "EXECUTED",
+        "source_stages": [
+          "ATTENTION_DECISIONS",
+          "M4_COMPARISONS",
+          "BOOTSTRAP",
+          "ROBUSTNESS"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ACCESS_EPOCH_ACCOUNTING",
+      "detail": {
+        "current_total": 2,
+        "historical_access_total": 1,
+        "phase7_increment": 1,
+        "raw_read_completed": true,
+        "raw_read_started": true,
+        "retry_count": 1,
+        "status": "PHASE7_ACCESS_EPOCH_COMPLETE"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "FREEZE_HASH_MATCH",
+      "detail": {
+        "artifact_hash": "sha256:05b6327ae842dc23b5449e61d541337a18da4aa388063f9ab6862ae2a1808ecc",
+        "freeze_id": "JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V2",
+        "status": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "HISTORICAL_FAILED_EPOCH_HASH_STABILITY",
+      "detail": {
+        "epochs": [
+          {
+            "current_tree_sha256": "sha256:5bff383e2ccbd5254aaa5bda17c27bd3c5b5b581da32630580568ee55afa33b9",
+            "expected_tree_sha256": "sha256:5bff383e2ccbd5254aaa5bda17c27bd3c5b5b581da32630580568ee55afa33b9",
+            "file_hash_matches": {
+              "epoch_seal_sha256": true,
+              "human_release_sha256": true,
+              "post_execution_audit_sha256": true
+            },
+            "provenance_key": "consumed_stage_matched_epoch_provenance",
+            "root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1",
+            "tree_hash_match": true
+          },
+          {
+            "current_tree_sha256": "sha256:6c7bcc3ebb6a5565e24009b29ab4604078f94342d8d018d214a859d45823b2d3",
+            "expected_tree_sha256": "sha256:6c7bcc3ebb6a5565e24009b29ab4604078f94342d8d018d214a859d45823b2d3",
+            "file_hash_matches": {
+              "epoch_seal_sha256": true,
+              "human_release_sha256": true,
+              "post_execution_audit_sha256": true
+            },
+            "provenance_key": "previous_noncanonical_epoch_provenance",
+            "root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched",
+            "tree_hash_match": true
+          }
+        ],
+        "status": "PASS"
+      },
+      "status": "PASS"
+    }
+  ],
+  "counts": {
+    "FINAL_TEST_ACCESS_COUNT_THIS_EPOCH": 1,
+    "FINAL_TEST_CUMULATIVE_ACCESS_TOTAL": 2,
+    "R_STAR_COUNT": 16,
+    "R_STAR_STAGE_COUNTS": {
+      "POST_IB_PRE_OB": 13,
+      "PRE_IB": 3
+    },
+    "canonical_node_count": 238,
+    "canonical_node_counts_by_stage": {
+      "POST_IB_PRE_OB": 127,
+      "POST_OB_PRE_TO": 82,
+      "PRE_IB": 29
+    },
+    "eligible_stage1_counts_by_stage": {
+      "POST_IB_PRE_OB": [
+        127
+      ],
+      "PRE_IB": [
+        29
+      ]
+    },
+    "materialized_rolling_node_count": 1656,
+    "rolling_node_counts_by_stage": {
+      "POST_IB_PRE_OB": 1433,
+      "POST_OB_PRE_TO": 121,
+      "PRE_IB": 102
+    }
+  },
+  "epoch_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2",
+  "execution_result_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\FINAL_TEST_EXECUTION_RESULT.json",
+  "execution_result_sha256": "sha256:0687b21aef9e09f28ba9a3ad573ac57930af8017ff46450b3000d6266f8fd0fd",
+  "freeze_artifact_hash": "sha256:05b6327ae842dc23b5449e61d541337a18da4aa388063f9ab6862ae2a1808ecc",
+  "freeze_id": "JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V2",
+  "guard_results": {
+    "CANONICALIZATION_BEFORE_SUPPORT": "PASS",
+    "FINAL_TEST_COMPLETE": true,
+    "H_CAPACITY_ACTIVE_MODEL_MUTATION": "NONE",
+    "H_CAPACITY_DOWNSTREAM_EXECUTION": "NONE",
+    "NO_POOLED_STAGE1_RANKING": "PASS",
+    "PAIRED_MARGINAL_INCREMENT_EXECUTED": "PASS",
+    "ROBUSTNESS_FIXED_RSTAR": "PASS",
+    "ROBUSTNESS_LAMBDA": "PASS",
+    "ROBUSTNESS_STAGE1_RERUN": "NO",
+    "ROBUSTNESS_TURNAROUND": "PASS",
+    "ROBUSTNESS_UMAX": "PASS",
+    "R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION": "PASS",
+    "SECTION4_H_CAPACITY_STATUS": "REUSED_NOT_RERUN",
+    "SECTION5_PRIMARY_MODEL": "H16_FROZEN_PRIMARY",
+    "STAGE1_OVERALL_AGGREGATION": "OBJECTIVE_THEN_NORMALIZE",
+    "STAGE2_SOBT_COORDINATE": "NODE_RELATIVE_SOBT",
+    "TAXI_COMP_STAGE1_PARTICIPATION": "NONE"
+  },
+  "same_epoch_binding_retry_count": 1,
+  "schema_version": "AIR_SLOT_V2_PHASE7_POST_EXECUTION_AUDIT_V1",
+  "scientific_results": {
+    "MARGINAL_UNCERTAINTY_INCREMENT_L_ATT": 0.557499838186944,
+    "MARGINAL_UNCERTAINTY_INCREMENT_L_REC": 0.9371770060374003,
+    "cross_state_dependence_L_att": 0.0,
+    "cross_state_dependence_L_rec": 0.016464660023900957,
+    "marginal_uncertainty_increment_L_att": 0.557499838186944,
+    "marginal_uncertainty_increment_L_att_ci": [
+      0.38933634567710973,
+      0.6538432281498671
+    ],
+    "marginal_uncertainty_increment_L_rec": 0.9371770060374003,
+    "marginal_uncertainty_increment_L_rec_ci": [
+      0.6440497115191729,
+      1.0
+    ]
+  },
+  "status": "PASS"
+}

@@ -1,8 +1,8 @@
-"""V2 M3 enumeration/HiGHS parity validator (Phase 3 diagnostics).
+"""V2 M3 enumeration-authority / HiGHS-parity validator.
 
 Builds representative, contract-valid PRE and TURN nodes from synthetic
-parity-only inputs, solves Stage II on both the formal exact-enumeration path
-and the development-time Pyomo + HiGHS backend, and records the parity result.
+parity-only inputs, solves Stage II with the exact-enumeration production
+authority, and compares the result with the Pyomo + HiGHS parity backend.
 This validator is a numerical implementation check, not scientific Train
 support: the turnaround/headroom samples below are deliberately synthetic and
 are labelled as such in the output.
@@ -151,7 +151,7 @@ def run_cases() -> dict:
             headroom_summary=summary,
         )
         record = result.to_dict()
-        denominator = max(abs(result.j_star_enumeration), 1e-12)
+        denominator = max(abs(result.j_star_oracle), 1e-12)
         record["objective_relative_error"] = (
             result.objective_absolute_error / denominator
         )
@@ -173,7 +173,9 @@ def run_cases() -> dict:
     )
 
     all_parity = all(
-        record["u_star_parity"] and record["objective_parity"]
+        record["u_star_parity"]
+        and record["objective_parity"]
+        and record["recoverable_value_parity"]
         for record in records
     )
     taxi_typed = (
@@ -185,9 +187,9 @@ def run_cases() -> dict:
     passed = all_parity and taxi_typed
     return {
         "validator_id": "V2_M3_ENUMERATION_HIGHS_PARITY",
-        "scope": "DEVELOPMENT_TIME_PARITY_BACKEND_ONLY",
-        "formal_path": "EXACT_ENUMERATION",
-        "parity_backend": "PYOMO_HIGHS",
+        "scope": "FORMAL_HIGHS_WITH_EXACT_ENUMERATION_ORACLE",
+        "formal_solver": "PYOMO_HIGHS",
+        "parity_oracle": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
         "pyomo_version": pyomo.version.version,
         "highspy_version": highspy.Highs().version(),
         "input_provenance": PARITY_SOURCE_ID,
@@ -195,6 +197,7 @@ def run_cases() -> dict:
         "node_stage_classes": ["PRE", "TURN"],
         "representative_nodes": records,
         "all_enumeration_highs_parity_passed": all_parity,
+        "all_formal_oracle_parity_passed": all_parity,
         "taxi_comp_typed_check": {
             "stage": taxi_decision.stage.value,
             "actionable_status": taxi_decision.actionable_status.value,
@@ -228,8 +231,10 @@ def main(argv=None) -> None:
     output = args.output if args.output.is_absolute() else root / args.output
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_suffix(output.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(report, indent=2, sort_keys=True), encoding="utf-8"
+    temporary.write_bytes(
+        (json.dumps(report, indent=2, sort_keys=True) + "\n").encode(
+            "utf-8"
+        )
     )
     temporary.replace(output)
     print(json.dumps(report, sort_keys=True))

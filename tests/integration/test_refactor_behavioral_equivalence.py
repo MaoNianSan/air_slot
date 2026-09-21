@@ -5,6 +5,8 @@ import torch
 
 from model import M1, M2, M3, M4, PRE
 from model.M2.contracts import M2ScientificContext, ScientificContextValue
+from model.M3.instantiation_layer.builder import instantiate_candidates
+from model.M3.registry_layer.actions import ActionRegistry
 from model.M2.mapper import M2Mapper
 from model.M2.valuation import ValuationRegistry
 from model.PRE import ConstructionType
@@ -61,9 +63,9 @@ def test_refactor_behavioral_equivalence_across_pre_m4():
     assert [row.model_dump(mode="json") for row in public_m2] == [
         row.model_dump(mode="json") for row in direct_m2]
 
-    action_registry = M3.ActionRegistry.load(Path("registries/action_templates.yaml"))
-    m3_candidates = M3.instantiate_candidates({"episode_id": "episode", "decision_node_id": "node",
-                                                "facts": {}, "parameters": {}}, action_registry)
+    action_registry = ActionRegistry.load(Path("registries/action_templates.yaml"))
+    m3_candidates = instantiate_candidates({"episode_id": "episode", "decision_node_id": "node",
+                                            "facts": {}, "parameters": {}}, action_registry)
     assert m3_candidates[0].template_id == "A00"
     assert len({row.candidate_action_id for row in m3_candidates}) == len(m3_candidates)
 

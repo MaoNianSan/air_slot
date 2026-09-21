@@ -1,0 +1,416 @@
+"""Frozen paths, identities, and constants for the Phase-7 runner."""
+
+from __future__ import annotations
+
+import os
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+
+R2_TAG = "v2-scientific-freeze-r2"
+R2_TAG_OBJECT = "2dcca6c159dedde3803e63cb48bd8bfefff574cf"
+R2_TAG_TARGET_COMMIT = "3834eed33d4a2ea4bdba111fc29cca3529525a3a"
+R2_REGISTRY_PATH = ROOT / "registries" / "v2_scientific_freeze_r2.json"
+R2_REGISTRY_FILE_SHA256 = (
+    "sha256:15c1e8bf5ec5fbb5ee783595a124b1255b550d7d7bc96e34b2cd3df0a4e88e6f"
+)
+R2_REGISTRY_ARTIFACT_HASH = (
+    "sha256:4e7d3bb454e83779e6cbb592d4cf9d6ffddc0edf3435a7bc3d2822e4523417f2"
+)
+R2_RECONCILIATION_PATH = (
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "v2_phase6_r2"
+    / "R2_AUTHORITY_RECONCILIATION.json"
+)
+
+STAGE2_AUTHORITY_RECONCILIATION_PATH = (
+    ROOT / "registries" / "v2_stage2_solver_authority_reconciliation.json"
+)
+STAGE2_AUTHORITY_RECONCILIATION_FILE_SHA256 = (
+    "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1"
+)
+STAGE2_AUTHORITY_RECONCILIATION_ARTIFACT_HASH = (
+    "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e"
+)
+STAGE2_PRIMARY_SOLVER = "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID"
+FINAL_TEST_PRIMARY_SOLVER = STAGE2_PRIMARY_SOLVER
+HIGHS_ROLE = "PARITY_BACKEND_ONLY"
+HIGHS_REQUIRED_FOR_PRODUCTION_ROWS = False
+DETERMINISTIC_TIE_BREAK = "SMALLEST_U"
+SOLVER_STATUS_SEMANTICS = (
+    "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE"
+)
+PARITY_BACKEND = "PYOMO_HIGHS"
+PARITY_SCOPE = "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY"
+
+RAW_SOURCE_ADAPTER_ID = "PRODUCTION_FINAL_TEST_RAW_SOURCE_ADAPTER_V1"
+PHASE7_LOCAL_INPUT_ROOT_ENV = "AIRSLOT_PHASE7_LOCAL_INPUT_ROOT"
+RAW_SOURCE_ADAPTER_ACTIVATION = ("HUMAN_RELEASE_PLUS_OPEN_ACCESS_EPOCH")
+
+PARENT_TAG = "v2-scientific-freeze"
+PARENT_TAG_OBJECT = "35d5fe1896dd9e17be92bec601f87ec33adb4d56"
+PARENT_TAG_TARGET_COMMIT = "d29fc769e74d6b46f86d3fdf7db18b3f9936f8b1"
+PARENT_REGISTRY_PATH = ROOT / "registries" / "v2_scientific_freeze.json"
+PARENT_REGISTRY_FILE_SHA256 = (
+    "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd"
+)
+PARENT_REGISTRY_DECLARED_WORKTREE_SHA256 = (
+    "sha256:bf6b3891079c947af192e3e23e2d80a2fbcfba3d082e2833ac574bb9932347bc"
+)
+PARENT_REGISTRY_BLOB_OID_FIELD = (
+    "sha256:a8c43beffbdefaf2ca9c573ec7730ae9a2f55ce3"
+)
+
+M2_V5_REGISTRY_PATH = ROOT / "registries" / "m2_data2_formal_cu_v5.json"
+M2_V5_REGISTRY_FILE_SHA256 = (
+    "sha256:25ee9641abf72777d14af0711e7ad46db5de5779170396fb377049458d59b637"
+)
+M2_V5_REGISTRY_DECLARED_WORKTREE_SHA256 = (
+    "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1"
+)
+PASSENGER_SUPERSESSION_V3_PATH = (
+    ROOT / "registries" / "passenger_reference_supersession_v3.json"
+)
+PASSENGER_SUPERSESSION_V3_FILE_SHA256 = (
+    "sha256:6d7a49d14d76484703b312ea8fe851679476bb5f135cd854d9c14dc52b8d80b1"
+)
+M2_REFERENCE_PATH = (
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "m1_v2_data_gate_a2"
+    / "DATA2_TURNAROUND_REFERENCE_GATE_A2_DIAGNOSTIC.json"
+)
+M2_REFERENCE_FILE_SHA256 = (
+    "sha256:4a75c326b5ac193eb9b65eefa4741eac8a6ed36d1fde66e542d5cbd8e053803f"
+)
+F_CONTINUITY_SCALE_PATH = (
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "v2_freeze_precheck"
+    / "M2_F_CONTINUITY_TRAIN_SCALE_CORRECTED_V5.json"
+)
+F_CONTINUITY_SCALE_FILE_SHA256 = (
+    "sha256:b335b19564c1eaf827ed0d343405dc9e9871fd0284e546be28ab987884e507c0"
+)
+F_CONTINUITY_SCALE_DECLARED_WORKTREE_SHA256 = (
+    "sha256:688560356d5c7fa292b59e5a7b45cf249619c35bf6620446b1166034a5a2e061"
+)
+TRAIN_SUPPORT_SUMMARY_PATH = (
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "v2_phase5_development"
+    / "TRAIN_TURNAROUND_HEADROOM_SUMMARY.json"
+)
+TRAIN_SUPPORT_SUMMARY_FILE_SHA256 = (
+    "sha256:27df8b4ea406b48ca7b494e48759edfeaf490a501ce2b6293638bbd7a2cce4c2"
+)
+TRAIN_SUPPORT_SUMMARY_DECLARED_WORKTREE_SHA256 = (
+    "sha256:35e570a5b9f718d44f9b60d2c0525d53c756529a590865f511a7aef1be5436bc"
+)
+TRAIN_SUPPORT_SAMPLES_PATH = (
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "v2_phase5_development"
+    / "TRAIN_TURNAROUND_HEADROOM_SAMPLES.npz"
+)
+TRAIN_SUPPORT_SAMPLES_FILE_SHA256 = (
+    "sha256:0dbbcc329f6c94fb02e734fd1414bb727a4341627b9141380f24e642db74b7a5"
+)
+
+COHORT_AUTHORITY_PATH = ROOT / "formal" / "FINAL_TEST_COHORT_AUTHORITY_V1.json"
+COHORT_AUTHORITY_FILE_SHA256 = (
+    "sha256:9832b198e221042bff6f40c718f07c82169885514030308b7d50d6172d7e0088"
+)
+COHORT_MANIFEST_PATH = ROOT / "formal" / "FINAL_TEST_COHORT_MANIFEST_V1.json"
+COHORT_MANIFEST_FILE_SHA256 = (
+    "sha256:5024f6b0af07d7a71b3d341921925617cfe40b0b1131322c319972521cb19073"
+)
+COHORT_MANIFEST_DECLARED_WORKTREE_SHA256 = (
+    "sha256:b47906154cda463b39221ddfd5e1b13a671d2a09fb58c361ec057cf648a1a554"
+)
+EXECUTED_COHORT_MANIFEST_SHA256 = (
+    "sha256:3e10f0e125ed70f6487bda0f0864c9191ddde9ab2d539514a520879b0131d26f"
+)
+SELECTED_EPISODE_HASH = (
+    "sha256:1208ea465a123a7a6333dc2fd95b182492d5636fb1d8add50845d2f716313d4f"
+)
+
+INSTRUCTION_REPO_PATH = (
+    ROOT
+    / "docs"
+    / "AirSlot_V2_Phase7_Final_Test_OneShot_Instruction_R2_20260919.md"
+)
+#: Optional external copy of the instruction document. The in-repo copy
+#: (INSTRUCTION_REPO_PATH) is the runtime authority; this external path is
+#: only checked for byte-identity when it exists, and is otherwise treated as
+#: optional. It no longer creates a hard runtime dependency on D:\Download_all.
+INSTRUCTION_DOWNLOAD_PATH = Path(
+    os.environ.get(
+        "AIRSLOT_PHASE7_INSTRUCTION_DOWNLOAD_PATH",
+        r"D:\Download_all\AirSlot_V2_Phase7_Final_Test_OneShot_Instruction_R2_20260919.md",
+    )
+)
+FINAL_TEST_V2_ROOT = ROOT / "artifacts" / "experiment" / "final_test_v2"
+LEGACY_FINAL_TEST_ROOT = ROOT / "artifacts" / "experiment" / "final_test"
+#: The consumed stage-matched epoch. The post-execution audit sealed it with
+#: ``SEALED_AUDIT_FAILED`` (``CANONICALIZATION_BEFORE_SUPPORT``). It is frozen
+#: historical provenance: never reused as a current epoch, never rewritten,
+#: never re-pointed.
+CONSUMED_STAGE_MATCHED_FINAL_TEST_ROOT = (
+    ROOT / "artifacts" / "experiment" / "final_test_v2_stage_matched"
+)
+
+CONSUMED_CANONICAL_V1_FINAL_TEST_ROOT = (
+    ROOT
+    / "artifacts"
+    / "experiment"
+    / "final_test_v2_stage_matched_canonical_v1"
+)
+
+#: The current stage-matched epoch root. After the canonical-stage-node
+#: reconciliation the next authorized epoch must not share a root with the
+#: consumed epoch or with the legacy ``final_test_v2`` tree.
+STAGE_MATCHED_FINAL_TEST_ROOT = (
+    ROOT
+    / "artifacts"
+    / "experiment"
+    / "final_test_v2_stage_matched_canonical_v2"
+)
+
+@dataclass(frozen=True)
+class EpochPaths:
+    """All mutable governance and output paths owned by one access epoch."""
+
+    root: Path
+    gate_a_preflight_path: Path
+    gate_a_dry_run_path: Path
+    gate_b_release_path: Path
+    access_audit_path: Path
+    scientific_output_root: Path
+    checkpoint_root: Path
+
+    def as_dict(self) -> dict[str, str]:
+        return {
+            "root": str(self.root),
+            "gate_a_preflight_path": str(self.gate_a_preflight_path),
+            "gate_a_dry_run_path": str(self.gate_a_dry_run_path),
+            "gate_b_release_path": str(self.gate_b_release_path),
+            "access_audit_path": str(self.access_audit_path),
+            "scientific_output_root": str(self.scientific_output_root),
+            "checkpoint_root": str(self.checkpoint_root),
+        }
+
+
+def epoch_paths_for(root: Path) -> EpochPaths:
+    """Resolve the complete path bundle for an explicit epoch root."""
+
+    epoch_root = Path(root)
+    checkpoint_root = epoch_root / "checkpoints"
+    return EpochPaths(
+        root=epoch_root,
+        gate_a_preflight_path=epoch_root / "GATE_A_PREFLIGHT.json",
+        gate_a_dry_run_path=epoch_root / "GATE_A_DRY_RUN.json",
+        gate_b_release_path=epoch_root / "GATE_B_HUMAN_RELEASE.json",
+        access_audit_path=epoch_root / "PHASE7_ACCESS_AUDIT.json",
+        scientific_output_root=checkpoint_root,
+        checkpoint_root=checkpoint_root,
+    )
+
+
+def historical_epoch_paths() -> EpochPaths:
+    """Return the immutable legacy epoch path bundle."""
+
+    return epoch_paths_for(FINAL_TEST_V2_ROOT)
+
+
+def stage_matched_epoch_paths(root: Path | None = None) -> EpochPaths:
+    """Return the new stage-matched epoch bundle, optionally overridden."""
+
+    return epoch_paths_for(
+        STAGE_MATCHED_FINAL_TEST_ROOT if root is None else Path(root)
+    )
+
+
+HISTORICAL_FINAL_TEST_EPOCH_PATHS = historical_epoch_paths()
+STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS = stage_matched_epoch_paths()
+GATE_A_PREFLIGHT_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.gate_a_preflight_path
+GATE_A_DRY_RUN_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.gate_a_dry_run_path
+GATE_B_RELEASE_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.gate_b_release_path
+PHASE7_ACCESS_AUDIT_PATH = HISTORICAL_FINAL_TEST_EPOCH_PATHS.access_audit_path
+STAGE_MATCHED_GATE_B_RELEASE_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.gate_b_release_path
+)
+STAGE_MATCHED_ACCESS_AUDIT_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.access_audit_path
+)
+STAGE_MATCHED_GATE_A_PREFLIGHT_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.gate_a_preflight_path
+)
+STAGE_MATCHED_GATE_A_DRY_RUN_PATH = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.gate_a_dry_run_path
+)
+STAGE_MATCHED_SCIENTIFIC_OUTPUT_ROOT = (
+    STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS.scientific_output_root
+)
+
+HISTORICAL_FINAL_TEST_ACCESS_TOTAL = 1
+SCENARIO_COUNT = 64
+BOOTSTRAP_SEED = 20260906
+BOOTSTRAP_REPLICATES = 2000
+BOOTSTRAP_INTERVAL = "percentile_95"
+BOOTSTRAP_RESAMPLING_UNIT = "episode_id"
+STAGE_II_ACTIONABLE_STAGES = ("PRE_IB", "POST_IB_PRE_OB")
+STAGE_II_NON_ACTIONABLE_STAGES = ("POST_OB_PRE_TO", "COMPLETED")
+FIXTURE_DAG_DIAGNOSTICS_ROOT = (
+    ROOT / "artifacts" / "diagnostics" / "v2_phase7" / "gate_b0_dag"
+)
+PRE_OPEN_REPORT_PATH = (
+    ROOT
+    / "artifacts"
+    / "diagnostics"
+    / "v2_phase7"
+    / "GATE_B0_EXECUTOR_BINDING.json"
+)
+BOOTSTRAP_SEED_LOCK_PATH = ROOT / "formal" / "FINAL_TEST_LOCK_20260907.md"
+BOOTSTRAP_SEED_SOURCE_PATH = ROOT / "exp" / "shared" / "resampling.py"
+PHASE7_ACCESS_INCREMENT = 1
+PHASE7_CURRENT_TOTAL = 2
+M3_NUMERICAL_COMPARISON_TOLERANCE = 1e-6
+NOMINAL_Q = 0.10
+Q_GRID = (0.05, 0.10, 0.20, 0.30)
+NOMINAL_LAMBDA = 0.25
+NOMINAL_TURNAROUND_Q20 = 41.0
+NOMINAL_U_MAX = 45.0
+U_MAX_BY_SPECIFICATION = {"Q80": 25.0, "nominal": 45.0, "Q95": 75.0}
+REFERENCE_REPRESENTATION_ID = "HISTORY_H16:JOINT"
+REFERENCE_AUTHORITY = "H_CSTAR_EQUALS_H_HISTORY_JOINT"
+STAGE2_INFORMATION_COHORT = "FIXED_REFERENCE_STAGE_II_COHORT"
+TYPED_SCIENTIFIC_STATES = (
+    "ABSTAIN_NO_COMMON_SUPPORT",
+    "UNDEFINED_ZERO_RECOVERABLE_VALUE",
+    "NOT_ACTIONABLE",
+    "N/A_NOT_DEFINED",
+)
+RELEASE_FIELDS = (
+    "gate_a_commit",
+    "instruction_sha256",
+    "freeze_tag_object",
+    "freeze_tag_target_commit",
+    "cohort_authority_sha256",
+    "cohort_manifest_sha256",
+    "human_approved",
+    "human_approval_timestamp",
+)
+SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
+
+__all__ = [
+    "COHORT_AUTHORITY_FILE_SHA256",
+    "BOOTSTRAP_INTERVAL",
+    "BOOTSTRAP_REPLICATES",
+    "BOOTSTRAP_RESAMPLING_UNIT",
+    "BOOTSTRAP_SEED",
+    "BOOTSTRAP_SEED_LOCK_PATH",
+    "BOOTSTRAP_SEED_SOURCE_PATH",
+    "DETERMINISTIC_TIE_BREAK",
+    "FIXTURE_DAG_DIAGNOSTICS_ROOT",
+    "FINAL_TEST_PRIMARY_SOLVER",
+    "PRE_OPEN_REPORT_PATH",
+    "HIGHS_REQUIRED_FOR_PRODUCTION_ROWS",
+    "HIGHS_ROLE",
+    "SCENARIO_COUNT",
+    "PARITY_BACKEND",
+    "PARITY_SCOPE",
+    "PHASE7_LOCAL_INPUT_ROOT_ENV",
+    "RAW_SOURCE_ADAPTER_ACTIVATION",
+    "RAW_SOURCE_ADAPTER_ID",
+    "STAGE_II_ACTIONABLE_STAGES",
+    "STAGE_II_NON_ACTIONABLE_STAGES",
+    "SOLVER_STATUS_SEMANTICS",
+    "STAGE2_AUTHORITY_RECONCILIATION_ARTIFACT_HASH",
+    "STAGE2_AUTHORITY_RECONCILIATION_FILE_SHA256",
+    "STAGE2_AUTHORITY_RECONCILIATION_PATH",
+    "STAGE2_PRIMARY_SOLVER",
+    "COHORT_AUTHORITY_PATH",
+    "COHORT_MANIFEST_DECLARED_WORKTREE_SHA256",
+    "COHORT_MANIFEST_FILE_SHA256",
+    "COHORT_MANIFEST_PATH",
+    "COMMIT_RE",
+    "EXECUTED_COHORT_MANIFEST_SHA256",
+    "EpochPaths",
+    "FINAL_TEST_V2_ROOT",
+    "STAGE_MATCHED_FINAL_TEST_ROOT",
+    "CONSUMED_STAGE_MATCHED_FINAL_TEST_ROOT",
+    "HISTORICAL_FINAL_TEST_EPOCH_PATHS",
+    "STAGE_MATCHED_FINAL_TEST_EPOCH_PATHS",
+    "epoch_paths_for",
+    "historical_epoch_paths",
+    "stage_matched_epoch_paths",
+    "F_CONTINUITY_SCALE_DECLARED_WORKTREE_SHA256",
+    "F_CONTINUITY_SCALE_FILE_SHA256",
+    "F_CONTINUITY_SCALE_PATH",
+    "GATE_A_DRY_RUN_PATH",
+    "GATE_A_PREFLIGHT_PATH",
+    "GATE_B_RELEASE_PATH",
+    "STAGE_MATCHED_GATE_B_RELEASE_PATH",
+    "STAGE_MATCHED_GATE_A_PREFLIGHT_PATH",
+    "STAGE_MATCHED_GATE_A_DRY_RUN_PATH",
+    "STAGE_MATCHED_SCIENTIFIC_OUTPUT_ROOT",
+    "HISTORICAL_FINAL_TEST_ACCESS_TOTAL",
+    "INSTRUCTION_DOWNLOAD_PATH",
+    "INSTRUCTION_REPO_PATH",
+    "LEGACY_FINAL_TEST_ROOT",
+    "M2_REFERENCE_FILE_SHA256",
+    "M2_REFERENCE_PATH",
+    "M2_V5_REGISTRY_DECLARED_WORKTREE_SHA256",
+    "M2_V5_REGISTRY_FILE_SHA256",
+    "M2_V5_REGISTRY_PATH",
+    "M3_NUMERICAL_COMPARISON_TOLERANCE",
+    "NOMINAL_LAMBDA",
+    "NOMINAL_Q",
+    "NOMINAL_TURNAROUND_Q20",
+    "NOMINAL_U_MAX",
+    "PARENT_REGISTRY_BLOB_OID_FIELD",
+    "PARENT_REGISTRY_DECLARED_WORKTREE_SHA256",
+    "PARENT_REGISTRY_FILE_SHA256",
+    "PARENT_REGISTRY_PATH",
+    "PARENT_TAG",
+    "PARENT_TAG_OBJECT",
+    "PARENT_TAG_TARGET_COMMIT",
+    "PASSENGER_SUPERSESSION_V3_FILE_SHA256",
+    "PASSENGER_SUPERSESSION_V3_PATH",
+    "PHASE7_ACCESS_AUDIT_PATH",
+    "STAGE_MATCHED_ACCESS_AUDIT_PATH",
+    "PHASE7_ACCESS_INCREMENT",
+    "PHASE7_CURRENT_TOTAL",
+    "Q_GRID",
+    "R2_RECONCILIATION_PATH",
+    "R2_REGISTRY_ARTIFACT_HASH",
+    "R2_REGISTRY_FILE_SHA256",
+    "R2_REGISTRY_PATH",
+    "R2_TAG",
+    "R2_TAG_OBJECT",
+    "R2_TAG_TARGET_COMMIT",
+    "REFERENCE_AUTHORITY",
+    "REFERENCE_REPRESENTATION_ID",
+    "RELEASE_FIELDS",
+    "ROOT",
+    "SELECTED_EPISODE_HASH",
+    "SHA256_RE",
+    "STAGE2_INFORMATION_COHORT",
+    "TRAIN_SUPPORT_SAMPLES_FILE_SHA256",
+    "TRAIN_SUPPORT_SAMPLES_PATH",
+    "TRAIN_SUPPORT_SUMMARY_DECLARED_WORKTREE_SHA256",
+    "TRAIN_SUPPORT_SUMMARY_FILE_SHA256",
+    "TRAIN_SUPPORT_SUMMARY_PATH",
+    "TYPED_SCIENTIFIC_STATES",
+    "U_MAX_BY_SPECIFICATION",
+]

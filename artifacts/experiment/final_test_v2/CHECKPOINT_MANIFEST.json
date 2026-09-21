@@ -1,0 +1,143 @@
+{
+  "checkpoint_count": 9,
+  "checkpoint_dir": "artifacts/experiment/final_test_v2/checkpoints",
+  "checkpoints": [
+    {
+      "bytes": 53399028,
+      "dependencies": [],
+      "file_sha256": "sha256:2e243baf95c3ea151b1dcf2f151cee5b1ea8d5bb2062669961e3d31bd5c242d4",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/CANONICAL_NODES.json",
+      "payload_hash": "sha256:db53f914a33b8fa6e19783c8e38d7cf7de51bfcc73bdfad3a8b6b6c4855fab2a",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_CANONICAL_NODES_V1",
+      "stage": "CANONICAL_NODES"
+    },
+    {
+      "bytes": 186079057,
+      "dependencies": [
+        "CANONICAL_NODES"
+      ],
+      "file_sha256": "sha256:993af746950809c81de1a94c03c701ae317eb0f5c07e992a26defa136f3f7989",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/STATE_VARIANTS.json",
+      "payload_hash": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_STATE_VARIANTS_V1",
+      "stage": "STATE_VARIANTS"
+    },
+    {
+      "bytes": 315487067,
+      "dependencies": [
+        "CANONICAL_NODES",
+        "STATE_VARIANTS"
+      ],
+      "file_sha256": "sha256:b1854ee71d43b8a023769ede292168f2b0f6d419416f8f4bd566e2b18154a787",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/CONSEQUENCE_VARIANTS.json",
+      "payload_hash": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_CONSEQUENCE_VARIANTS_V1",
+      "stage": "CONSEQUENCE_VARIANTS"
+    },
+    {
+      "bytes": 26772260,
+      "dependencies": [
+        "CONSEQUENCE_VARIANTS"
+      ],
+      "file_sha256": "sha256:68676021900d9f0d2b3c2e0da40044e3f42eb2403aafb45bc39029ca76de07eb",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/ATTENTION_DECISIONS.json",
+      "payload_hash": "sha256:11f5e987aa66bc8f8d115b1c77ded62451efd178de5df19a5dafe86c4c9964da",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_ATTENTION_DECISIONS_V1",
+      "stage": "ATTENTION_DECISIONS"
+    },
+    {
+      "bytes": 28829,
+      "dependencies": [
+        "ATTENTION_DECISIONS",
+        "CANONICAL_NODES",
+        "STATE_VARIANTS"
+      ],
+      "file_sha256": "sha256:7939237719ca9d938ef1b756098d5810dfdfc0faf53da74c62888cbd19c7a4a0",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/REFERENCE_RECOVERY_COHORT.json",
+      "payload_hash": "sha256:3385656452f402304554e3dd10fb5b897c8b8aba80220761a4d54dda93bfeea6",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1",
+      "stage": "REFERENCE_RECOVERY_COHORT"
+    },
+    {
+      "bytes": 1886300,
+      "dependencies": [
+        "CANONICAL_NODES",
+        "REFERENCE_RECOVERY_COHORT",
+        "STATE_VARIANTS"
+      ],
+      "file_sha256": "sha256:52889a4ab8dafa646f3adc4f99944ddb496f764f27ad004e419087e6bde03bed",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/RECOVERY_DECISIONS.json",
+      "payload_hash": "sha256:1e80ef1f7e803b5b188f70868a58689bf55f9060ed4135ec6a03f145e9d32177",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_RECOVERY_DECISIONS_V1",
+      "stage": "RECOVERY_DECISIONS"
+    },
+    {
+      "bytes": 3698622,
+      "dependencies": [
+        "ATTENTION_DECISIONS",
+        "CONSEQUENCE_VARIANTS",
+        "RECOVERY_DECISIONS",
+        "REFERENCE_RECOVERY_COHORT"
+      ],
+      "file_sha256": "sha256:517049525660f7cfec9813e6a178da02479a919d833f5d413f4edabdea76dfea",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/M4_COMPARISONS.json",
+      "payload_hash": "sha256:b7715525e9f28b93144dcfce08088f7a6759b4ebb4d55b7d7effe88a365dbe10",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_M4_COMPARISONS_V1",
+      "stage": "M4_COMPARISONS"
+    },
+    {
+      "bytes": 15239,
+      "dependencies": [
+        "M4_COMPARISONS"
+      ],
+      "file_sha256": "sha256:d5303b01ccf379549ba502108d9587652af1be2f532b4610221f48f6e2b8391d",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/BOOTSTRAP.json",
+      "payload_hash": "sha256:e98413d344a845efa15997754ac215c171d139ba8c37c5f714c622ab14e721e6",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_BOOTSTRAP_V1",
+      "stage": "BOOTSTRAP"
+    },
+    {
+      "bytes": 9077,
+      "dependencies": [
+        "ATTENTION_DECISIONS",
+        "BOOTSTRAP",
+        "M4_COMPARISONS"
+      ],
+      "file_sha256": "sha256:02669f42871020ba4baf89000cf39a2cbcfd36cd6389e3dc359acf0c00b6908f",
+      "path": "artifacts/experiment/final_test_v2/checkpoints/PAPER_VIEWS.json",
+      "payload_hash": "sha256:067402c4b6c263fb85babe0857d57ab5f856383797d3c8918f4c9e8e0ce91f61",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1",
+      "stage": "PAPER_VIEWS"
+    }
+  ],
+  "evidence": {
+    "access_audit": "artifacts/experiment/final_test_v2/PHASE7_ACCESS_AUDIT.json",
+    "postrun_audit": "artifacts/experiment/final_test_v2/PHASE7_POSTRUN_SCIENTIFIC_AUDIT.json",
+    "run_result": "artifacts/experiment/final_test_v2/GATE_B_RUN_RESULT.json"
+  },
+  "hash_semantics": "file_sha256 is the canonical-LF byte hash of the persisted checkpoint file; payload_hash is the hash the runner recorded for the payload object",
+  "note": "The checkpoint payloads stay local (about 560 MB) and are intentionally not committed; this manifest carries their identities and hashes.",
+  "schema_version": "AIR_SLOT_V2_PHASE7_CHECKPOINT_MANIFEST_V1",
+  "stage_order": [
+    "CANONICAL_NODES",
+    "STATE_VARIANTS",
+    "CONSEQUENCE_VARIANTS",
+    "ATTENTION_DECISIONS",
+    "REFERENCE_RECOVERY_COHORT",
+    "RECOVERY_DECISIONS",
+    "M4_COMPARISONS",
+    "BOOTSTRAP",
+    "PAPER_VIEWS"
+  ],
+  "status": "LOCAL_ONLY_NOT_COMMITTED",
+  "total_bytes": 587375479
+}

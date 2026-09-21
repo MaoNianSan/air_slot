@@ -1,0 +1,6 @@
+{
+  "error": "'stage_matched_final_test_epoch'",
+  "error_type": "KeyError",
+  "status": "FAILED_EPOCH_SEALED_NO_RETRY",
+  "traceback": "Traceback (most recent call last):\n  File \"D:\\Local_Projects\\airslot\\_v2_phase7_execution\\tmp\\execute_stage_matched_final_test.py\", line 40, in main\n    result = execute_gate_b(\n             ^^^^^^^^^^^^^^^\n  File \"D:\\Local_Projects\\airslot\\_v2_phase7_execution\\formal\\v2_phase7\\gate_b.py\", line 90, in execute_gate_b\n    freeze[\"stage_matched_final_test_epoch\"][\"output_root\"]\n    ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nKeyError: 'stage_matched_final_test_epoch'\n"
+}

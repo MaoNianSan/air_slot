@@ -1,0 +1,87 @@
+{
+  "allowed_provenance_differences": [
+    "stage2_primary_solver",
+    "final_test_primary_solver",
+    "highs_role",
+    "highs_required_for_production_rows",
+    "deterministic_tie_break",
+    "solver_status_semantics",
+    "formal_solver_compatibility_label",
+    "parity_oracle_compatibility_label",
+    "actionable_row_solver_status",
+    "production_row_parity",
+    "payload_and_file_hashes",
+    "access_disclosure"
+  ],
+  "baseline_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\tmp\\gate_b0a_baseline",
+  "current_root": "D:\\Cache\\Python\\Temp\\air_slot_gate_b0a_equivalence_3te9k4kd",
+  "current_stage_payload_hashes": {
+    "ATTENTION_DECISIONS": "sha256:a66cdb45bde76f9162820209d38f58097276dc06caa717c2e908779b091cb9c8",
+    "BOOTSTRAP": "sha256:23a34891b6be3a676d8f7b70d7a27399fe0f38ebde8db18eeeda967431557c26",
+    "CANONICAL_NODES": "sha256:115f0e2819f3db0c624fd96c4ff92f87d1dc79a2e975d593c2e20ed134d74d6a",
+    "CONSEQUENCE_VARIANTS": "sha256:7e1e5e7b4d3c625621c5efb8da8fd5f3e922d806698cf7340db4569edccb1c8f",
+    "M4_COMPARISONS": "sha256:91d07d907f4d7a72f0cf07ce40ee73c035f1387880954b5852e93b7cc7a0bb36",
+    "PAPER_VIEWS": "sha256:e45e25900089f2a32a983add7a14f5973acae9f5a3451315339b50dfd0b70f54",
+    "RECOVERY_DECISIONS": "sha256:6c2e96b55a64caef9f6381338e0fd26e7516e8e1dc9712c7b3cf342c4c75dc3c",
+    "REFERENCE_RECOVERY_COHORT": "sha256:9a0075a03110142e5969d1368c98068ae8e03b1f922945b960d2fa638a04a806",
+    "STATE_VARIANTS": "sha256:35eeab297d79769aef28cb04f5b1a244030c9e46c4c373bdc084df8d4978e96d"
+  },
+  "exact_equal_stages": [
+    "STATE_VARIANTS",
+    "CONSEQUENCE_VARIANTS"
+  ],
+  "failures": [],
+  "final_test_paths_read": [],
+  "gate": "PHASE_7_GATE_B0A_SOLVER_AUTHORITY_RECONCILIATION",
+  "historical_final_test_access_total": 1,
+  "intentional_orchestration_differences": [
+    {
+      "field": "ATTENTION_DECISIONS.payload",
+      "reason": "STAGE_MATCHED_ORCHESTRATION_PATCH"
+    },
+    {
+      "field": "REFERENCE_RECOVERY_COHORT.payload",
+      "reason": "STAGE_MATCHED_ORCHESTRATION_PATCH"
+    },
+    {
+      "field": "RECOVERY_DECISIONS.payload",
+      "reason": "STAGE_MATCHED_ORCHESTRATION_PATCH"
+    },
+    {
+      "field": "M4_COMPARISONS.payload",
+      "reason": "STAGE_MATCHED_ORCHESTRATION_PATCH"
+    },
+    {
+      "field": "BOOTSTRAP.payload",
+      "reason": "STAGE_MATCHED_ORCHESTRATION_PATCH"
+    },
+    {
+      "field": "PAPER_VIEWS.payload",
+      "reason": "STAGE_MATCHED_ORCHESTRATION_PATCH"
+    },
+    {
+      "expected_count": 20,
+      "field": "RECOVERY_DECISIONS.rows",
+      "observed_count": 20,
+      "reason": "STAGE_MATCHED_REFERENCE_COHORT_CHANGED"
+    }
+  ],
+  "node_limit": 48,
+  "phase7_scientific_access_increment": 0,
+  "recovery_decision_fields_compared": [
+    "u_star",
+    "j_zero",
+    "j_star",
+    "recoverable_value",
+    "action_grid",
+    "lambda_policy",
+    "u_max",
+    "tie_break_applied",
+    "near_tie_candidate_count"
+  ],
+  "scientific_contract_preserved": true,
+  "scientific_exact_equality": false,
+  "stage_matched_orchestration_patch_applied": true,
+  "status": "PASS",
+  "validator_id": "V2_PHASE7_GATE_B0A_SOLVER_AUTHORITY_EQUIVALENCE"
+}

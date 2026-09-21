@@ -1,0 +1,22 @@
+{
+  "schema_version": "AIR_SLOT_V2_JATM_PRE_OPEN_ATTEMPT_ARCHIVE_V1",
+  "status": "PRE_OPEN_IMPLEMENTATION_FAILURE_NO_ACCESS_EPOCH_OPENED",
+  "access_epoch_opened": false,
+  "checkpoints_created": false,
+  "final_test_data_read": false,
+  "reason": "Gate B read the validated freeze summary instead of the persisted freeze manifest before open_access_epoch; corrected before any Final-Test access.",
+  "archived_files": [
+    {
+      "source": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\GATE_B_HUMAN_RELEASE.json",
+      "archived": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\diagnostics\\v2_phase7\\pre_open_attempts\\stage_matched_20260920T0051Z\\GATE_B_HUMAN_RELEASE.json",
+      "sha256": "5a2ef03497d092fa3bf9cf044de28cb2ee85d01441a5a875ae2353c5847c384c",
+      "length": 603
+    },
+    {
+      "source": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\FINAL_TEST_EXECUTION_FAILURE.json",
+      "archived": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\diagnostics\\v2_phase7\\pre_open_attempts\\stage_matched_20260920T0051Z\\FINAL_TEST_EXECUTION_FAILURE.json",
+      "sha256": "6858175c8299b9c913c5a953fd13382986a3adafed9aa25037ebee9dd1de9b9c",
+      "length": 640
+    }
+  ]
+}
