@@ -1,0 +1,200 @@
+{
+  "experiment": "STAGE_Q_SCREENING_SENSITIVITY",
+  "split": "FINAL_TEST",
+  "q_grid": [
+    0.05,
+    0.1,
+    0.2,
+    0.3
+  ],
+  "nominal_q": 0.1,
+  "model_retrained": false,
+  "model_recalibrated": false,
+  "parameter_reselected": false,
+  "state_recomputed": false,
+  "consequence_mapping_changed": false,
+  "reference_priority_changed": false,
+  "delay_priority_changed": false,
+  "support_rule_changed": false,
+  "canonical_stage_rule_changed": false,
+  "tie_breaking_changed": false,
+  "stage_pooling": false,
+  "stage2_cohort_changed": false,
+  "stage2_computation_performed": false,
+  "bootstrap_executed": false,
+  "final_test_raw_data_read": false,
+  "new_access_epoch_opened": false,
+  "canonical_nominal_artifact_overwritten": false,
+  "reference_variant": "HISTORY_JOINT",
+  "reference_representation_id": "HISTORY_H16:JOINT",
+  "stage1_actionable_stages": [
+    "PRE_IB",
+    "POST_IB_PRE_OB"
+  ],
+  "stage_class": {
+    "PRE_IB": "PRE",
+    "POST_IB_PRE_OB": "TURN"
+  },
+  "rounding_contract": "K = ceil(q * N)",
+  "tie_break_contract_id": "(-score, episode_id, node_id)",
+  "selector_id": "M3_STAGE1_SHARED_SELECTOR",
+  "objective_definition": {
+    "A_reference": "sum of frozen P^C over the consequence-based shortlist",
+    "A_delay": "sum of the same frozen P^C over the delay-based shortlist",
+    "attention_loss": "L_att = (A_reference - A_delay) / A_reference",
+    "retained_value": "A_delay / A_reference = 1 - L_att",
+    "reused_frozen_objective": "model.M4.evaluation.evaluate_attention_allocation",
+    "reused_frozen_selector": "model.M3.stage1.select_paired_attention"
+  },
+  "git_head": "8360dd7d88958ae139322d0ea5c66f1c5fe6455c",
+  "run_timestamp": "2026-09-21T12:01:48.300219+00:00",
+  "code_entrypoint": "formal/v2_phase7/stage_q_screening_sensitivity.py",
+  "epoch_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2",
+  "frozen_reference_inputs": {
+    "published_nominal_projection": {
+      "staged_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\inputs\\PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
+      "source_branch": "results/delay-vs-consequence-stage1-20260920",
+      "source_commit": "0032259",
+      "source_repo_path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
+      "source_blob_oid": "c6cb18ae3d574cba0b73f949d0195513b3fcedcc",
+      "sha256": "sha256:94c998c98b78ac49e1722c5070199ed9e2663e4435a7260fa47ee6fd019c9005",
+      "read_only": true
+    }
+  },
+  "input_artifact_paths": {
+    "ATTENTION_DECISIONS": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\ATTENTION_DECISIONS.json",
+    "CONSEQUENCE_VARIANTS": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+    "M4_COMPARISONS": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\M4_COMPARISONS.json",
+    "REFERENCE_RECOVERY_COHORT": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\REFERENCE_RECOVERY_COHORT.json"
+  },
+  "input_artifact_hashes": {
+    "ATTENTION_DECISIONS": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
+    "CONSEQUENCE_VARIANTS": "sha256:2b65d255111d99a31d3fe1720ab986cc209f4f3b647ebb0f6169bc402a684d59",
+    "M4_COMPARISONS": "sha256:a5caeedc0cfadf089bba217bfa8279f25515810e6f57358cc37fb0d8c8cd5a9c",
+    "REFERENCE_RECOVERY_COHORT": "sha256:1f4f35781f760c96b307bac81a069f1b18699a724e180b36a7cdbe7c715e219a"
+  },
+  "epoch_provenance": {
+    "epoch_seal_status": "SEALED_AUDIT_PASS",
+    "epoch_seal_file_sha256": "sha256:eb4a22a2079183f1eca3511c5002334eeccb9f19b282f9781189475ce9c21614",
+    "execution_result_sha256": "sha256:0687b21aef9e09f28ba9a3ad573ac57930af8017ff46450b3000d6266f8fd0fd",
+    "post_execution_audit_sha256": "sha256:efb3c26ad85d3cdc780df26513e3896f9d52c421298a7c2b1e776463bb9be693"
+  },
+  "output_artifact_paths": {
+    "STAGE_Q_SCREENING_SUMMARY.csv": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_SUMMARY.csv",
+    "STAGE_Q_SCREENING_RECORDS.parquet": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_RECORDS.parquet",
+    "STAGE_Q_SCREENING_TABLE.tex": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_TABLE.tex",
+    "STAGE_Q_SCREENING_FIGURE_DATA.csv": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_FIGURE_DATA.csv",
+    "STAGE_Q_SCREENING_MANIFEST.json": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_MANIFEST.json"
+  },
+  "output_artifact_hashes": {
+    "STAGE_Q_SCREENING_SUMMARY.csv": "sha256:3d2c0ace36cb13dfbc172365fc9940f1c011de3a3173b0c1a771bc82b8f15327",
+    "STAGE_Q_SCREENING_RECORDS.parquet": "sha256:8fee206b45cdc415a6a7a40ac7aa1675df016fb8f41746365b14faf3b94539b3",
+    "STAGE_Q_SCREENING_TABLE.tex": "sha256:fd39e249103a566b4109bd35d2855561ba134c322d3eea0efb6e961e826c7850",
+    "STAGE_Q_SCREENING_FIGURE_DATA.csv": "sha256:9dfdedecdb0bed80882d2d224240f0454db0204c97ef0decbcf17b93e0652bd9"
+  },
+  "regression_checks": {
+    "PRE_IB_supported_population_constant": true,
+    "PRE_IB_support_mask_identical_across_q": true,
+    "POST_IB_PRE_OB_supported_population_constant": true,
+    "POST_IB_PRE_OB_support_mask_identical_across_q": true,
+    "pre_supported_population_is_constant": true,
+    "turn_supported_population_is_constant": true,
+    "support_mask_identical_across_q": true,
+    "reference_scores_identical_across_q": true,
+    "delay_scores_identical_across_q": true,
+    "no_canonical_node_backfill": true,
+    "pre_and_turn_are_ranked_separately": true,
+    "stage_queues_are_disjoint_at_node_level": true,
+    "stage1_decision_identity_across_q": true,
+    "tie_break_contract_id": "(-score, episode_id, node_id)",
+    "nominal_pre_matches_canonical": true,
+    "nominal_turn_matches_canonical": true
+  },
+  "nominal_reproduction_check": {
+    "warnings": [],
+    "authorities": {
+      "m4_canonical_attention_block": true,
+      "reference_recovery_cohort_union": true,
+      "published_nominal_projection": {
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\inputs\\PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
+        "sha256": "sha256:94c998c98b78ac49e1722c5070199ed9e2663e4435a7260fa47ee6fd019c9005",
+        "source_checkpoint_file_sha256": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92"
+      }
+    },
+    "pre": {
+      "N_supported": 29,
+      "K": 3,
+      "intersection_count": 3,
+      "changed_positions": 0,
+      "overlap_rate": 1.0,
+      "attention_loss": 0.0,
+      "retained_value": 1.0,
+      "canonical_match": true,
+      "per_field": {
+        "N_supported": true,
+        "K": true,
+        "reference_shortlist_ids": true,
+        "reference_consequence_value": true,
+        "all_match": true,
+        "published_N_supported": true,
+        "published_K": true,
+        "published_intersection_count": true,
+        "published_changed_positions": true,
+        "published_overlap_rate": true,
+        "published_replacement_rate": true,
+        "published_reference_consequence_value": true,
+        "published_delay_shortlist_consequence_value": true,
+        "published_attention_loss": true,
+        "published_retained_value": true,
+        "published_reference_shortlist_ids": true,
+        "published_delay_shortlist_ids": true
+      }
+    },
+    "turn": {
+      "N_supported": 127,
+      "K": 13,
+      "intersection_count": 8,
+      "changed_positions": 5,
+      "overlap_rate": 0.6153846153846154,
+      "attention_loss": 0.07243028675170074,
+      "retained_value": 0.9275697132482993,
+      "canonical_match": true,
+      "per_field": {
+        "N_supported": true,
+        "K": true,
+        "reference_shortlist_ids": true,
+        "reference_consequence_value": true,
+        "all_match": true,
+        "published_N_supported": true,
+        "published_K": true,
+        "published_intersection_count": true,
+        "published_changed_positions": true,
+        "published_overlap_rate": true,
+        "published_replacement_rate": true,
+        "published_reference_consequence_value": true,
+        "published_delay_shortlist_consequence_value": true,
+        "published_attention_loss": true,
+        "published_retained_value": true,
+        "published_reference_shortlist_ids": true,
+        "published_delay_shortlist_ids": true
+      }
+    }
+  },
+  "output_artifact_hashes_note": "output_artifact_hashes covers the four data/table artifacts; the manifest cannot contain its own SHA256 by construction and is listed in output_artifact_paths only",
+  "warnings": [],
+  "output_artifact_tracking": {
+    "committed_to_git": [
+      "STAGE_Q_SCREENING_SUMMARY.csv",
+      "STAGE_Q_SCREENING_TABLE.tex",
+      "STAGE_Q_SCREENING_FIGURE_DATA.csv",
+      "STAGE_Q_SCREENING_MANIFEST.json"
+    ],
+    "local_only_regenerable": {
+      "STAGE_Q_SCREENING_RECORDS.parquet": {
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_RECORDS.parquet",
+        "sha256": "sha256:8fee206b45cdc415a6a7a40ac7aa1675df016fb8f41746365b14faf3b94539b3",
+        "reason": "PROJECT_ARTIFACT_POLICY: paper-results roots track CSV/JSON/MD only; row-level parquet stays local and is reproducible by re-running this entrypoint"
+      }
+    }
+  }
+}

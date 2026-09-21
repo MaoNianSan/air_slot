@@ -1,0 +1,319 @@
+{
+  "schema_version": "AIR_SLOT_PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1_V1",
+  "artifact_kind": "MANUSCRIPT_FACING_READ_ONLY_PROJECTION",
+  "projection_only": true,
+  "scientific_recomputation_performed": false,
+  "final_test_raw_data_read": false,
+  "new_final_test_execution": false,
+  "scientific_definition_changed": false,
+  "source_representation": "HISTORY_JOINT",
+  "source_representation_id": "HISTORY_H16:JOINT",
+  "nominal_q": 0.1,
+  "stage_evaluation": "PRE_AND_TURN_EVALUATED_INDEPENDENTLY",
+  "overall_rule": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+  "pooled_stage1_ranking": false,
+  "confidence_intervals": "NONE_REPORTED",
+  "bootstrap_invoked": false,
+  "point_results_only_note": "no confidence interval is created and no bootstrap is started; this projection reports deterministic held-out point results only",
+  "source_checkpoint": {
+    "path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/checkpoints/ATTENTION_DECISIONS.json",
+    "schema_version": "AIR_SLOT_V2_PHASE7_ATTENTION_DECISIONS_V1",
+    "file_sha256": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
+    "payload_hash": "sha256:23841da03e74af349988c14a581429a16da00bf73e096ecf430dc311426bf0df",
+    "identity_verification": {
+      "vs_final_test_execution_result": {
+        "file_match": true,
+        "payload_match": true,
+        "recorded_file_sha256": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
+        "recorded_payload_hash": "sha256:23841da03e74af349988c14a581429a16da00bf73e096ecf430dc311426bf0df"
+      },
+      "vs_post_execution_audit": {
+        "file_match": true,
+        "payload_match": true,
+        "recorded_file_sha256": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
+        "recorded_payload_hash": "sha256:23841da03e74af349988c14a581429a16da00bf73e096ecf430dc311426bf0df"
+      }
+    }
+  },
+  "canonical_v2_epoch": {
+    "epoch_path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2",
+    "branch": "v2/phase7-gate-a",
+    "scientific_commit": "8360dd7d88958ae139322d0ea5c66f1c5fe6455c",
+    "freeze_tag": "jatm-final-test-freeze-20260920",
+    "paper_primary_branch": "v2/paper-primary",
+    "paper_primary_commit": "b753db8251812faec2eb2dbdabf34c325eb76f9b",
+    "epoch_seal": {
+      "path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/EPOCH_SEAL.json",
+      "file_sha256": "sha256:eb4a22a2079183f1eca3511c5002334eeccb9f19b282f9781189475ce9c21614",
+      "status": "SEALED_AUDIT_PASS"
+    }
+  },
+  "materialization": {
+    "script": {
+      "path": "formal/v2_phase7/project_delay_vs_consequence_stage1.py",
+      "sha256": "dd6db7f4564ca19eece479466041bfb567089f8a07abbcceadbdc7c58dae8da2",
+      "sha256_source": "committed git blob (LF, as stored in the repository)"
+    },
+    "command": "python -m formal.v2_phase7.project_delay_vs_consequence_stage1 --epoch-root D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2 --out-dir artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2 --materializer-sha256 dd6db7f4564ca19eece479466041bfb567089f8a07abbcceadbdc7c58dae8da2",
+    "epoch_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2",
+    "definitions": {
+      "h_delay": "node IDs with selected=true in delay_decision",
+      "h_consequence": "node IDs with selected=true in consequence_decision",
+      "p_consequence": "frozen consequence priority score = consequence_decision.entries[*].score keyed by node_id",
+      "a_consequence": "sum of P^C over H_consequence",
+      "a_delay": "sum of the same frozen P^C over H_delay",
+      "delta_att": "A_consequence - A_delay",
+      "L_att": "delta_att / A_consequence",
+      "eta_att": "A_delay / A_consequence = 1 - L_att",
+      "changed_positions": "|H_consequence \\ H_delay| = |H_delay \\ H_consequence|",
+      "changed_share": "changed_positions / K"
+    }
+  },
+  "results": {
+    "PRE_IB": {
+      "stage": "PRE_IB",
+      "stage_class": "PRE",
+      "n_g": 29,
+      "k_g": 3,
+      "delay_shortlist_ids": [
+        "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7",
+        "sha256:920eb826c911d065249d12aa5a3cbaafcf23a4f1628a7f5b34d73f7c3bd02daf",
+        "sha256:5ba2f6018a54b5999919819f222242c1624654526cc6069abe95f61933c047dd"
+      ],
+      "consequence_shortlist_ids": [
+        "sha256:920eb826c911d065249d12aa5a3cbaafcf23a4f1628a7f5b34d73f7c3bd02daf",
+        "sha256:5ba2f6018a54b5999919819f222242c1624654526cc6069abe95f61933c047dd",
+        "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7"
+      ],
+      "overlap_count": 3,
+      "delay_only_count": 0,
+      "consequence_only_count": 0,
+      "changed_position_count": 0,
+      "changed_position_share": 0.0,
+      "a_consequence": 3.2615917421940086,
+      "a_delay": 3.2615917421940086,
+      "delta_att": 0.0,
+      "L_att": 0.0,
+      "eta_att": 1.0,
+      "decision_status": "SUPPORTED",
+      "counts_are_integers": true
+    },
+    "POST_IB_PRE_OB": {
+      "stage": "POST_IB_PRE_OB",
+      "stage_class": "TURN",
+      "n_g": 127,
+      "k_g": 13,
+      "delay_shortlist_ids": [
+        "sha256:2e116d4f3dff0bc188c99ceb1c03b7da5fb4ed23dd029fb72b6eb71441bbe1a2",
+        "sha256:6d97b8ffa8d13b3474692d47c8c687e4949ca336b411a512fcc0022b66eb80c7",
+        "sha256:6fe7a3c2eb1d2cae962086377963993be4e976171f6deb5c5064eb3636e0e9cd",
+        "sha256:9d871dfc97c21a5f54fce2c168050ec5815ec1fe8d9698007e985548fad5c825",
+        "sha256:55d3f3e108cd2fee4102428c8cf43aa679569f0f8ed2d38329db0bd05d737f96",
+        "sha256:0aafedb00bbefa8842d57c354f1f6aa7dd381d9d4572a3a746efcf8e19b26ea4",
+        "sha256:ed6a610d7ab80e348f8a64d76ed2c1fe9ca1822a041ddcd13c8a1d8e7a3e7253",
+        "sha256:51b9e494c1e3b460008f839eafc78c6255e58070f2afdd404f32adb591114bcf",
+        "sha256:ae75b237150415f7c476c0c614fb8459cf48a11072db98eff1b9c392e509c525",
+        "sha256:6a0bc84328f4192e46416b20b5ac1bb2b00b6d517dc9ac5c9ad7a03da0d61b27",
+        "sha256:531992bf2614589c565da4b81a7bbe6eb446c93bcedae35b247a3cfc5d75e0f9",
+        "sha256:92cc3df93e22ef13577305b4abd9a3f3d5b2cbe8c42b336fde0d8003c909a19d",
+        "sha256:aeab5c2262c5e364e18242545cd9976c1bba20abca42b0f6f402c8935d86339c"
+      ],
+      "consequence_shortlist_ids": [
+        "sha256:51b9e494c1e3b460008f839eafc78c6255e58070f2afdd404f32adb591114bcf",
+        "sha256:9d871dfc97c21a5f54fce2c168050ec5815ec1fe8d9698007e985548fad5c825",
+        "sha256:ed6a610d7ab80e348f8a64d76ed2c1fe9ca1822a041ddcd13c8a1d8e7a3e7253",
+        "sha256:531992bf2614589c565da4b81a7bbe6eb446c93bcedae35b247a3cfc5d75e0f9",
+        "sha256:ae75b237150415f7c476c0c614fb8459cf48a11072db98eff1b9c392e509c525",
+        "sha256:6d97b8ffa8d13b3474692d47c8c687e4949ca336b411a512fcc0022b66eb80c7",
+        "sha256:c07b6b59719db2b4f95d73ced5ad734f33eaf8fd737d4073ad5a0ab27fc330df",
+        "sha256:2e116d4f3dff0bc188c99ceb1c03b7da5fb4ed23dd029fb72b6eb71441bbe1a2",
+        "sha256:fb4a9be23572b446d6eb314f39df7cc3a1053995e82bc8d5f212caa237175c93",
+        "sha256:bc69a00f8823adb9f44ca0a56dd395399c4c829094e3ac115f1b48903beed75a",
+        "sha256:55d3f3e108cd2fee4102428c8cf43aa679569f0f8ed2d38329db0bd05d737f96",
+        "sha256:0f4769e7490d4474bbcbeb366cab4f787b801a86caadf7a6bdbdfdae80d96c2c",
+        "sha256:934d57620330f6839b56d2ba7cf2cd3ecc1cdef612a1b2848ad00fbc41402ad3"
+      ],
+      "overlap_count": 8,
+      "delay_only_count": 5,
+      "consequence_only_count": 5,
+      "changed_position_count": 5,
+      "changed_position_share": 0.38461538461538464,
+      "a_consequence": 13.501981165915817,
+      "a_delay": 12.524028798352472,
+      "delta_att": 0.9779523675633452,
+      "L_att": 0.07243028675170074,
+      "eta_att": 0.9275697132482993,
+      "decision_status": "SUPPORTED",
+      "counts_are_integers": true
+    },
+    "overall": {
+      "stage": "OVERALL",
+      "n_g": 156,
+      "k_g": 16,
+      "a_consequence": 16.763572908109825,
+      "a_delay": 15.78562054054648,
+      "delta_att": 0.9779523675633452,
+      "L_att": 0.058337943404071974,
+      "eta_att": 0.941662056595928,
+      "changed_position_count": 5,
+      "changed_position_share": 0.3125,
+      "overlap_count_total": 11,
+      "delay_only_count_total": 5,
+      "consequence_only_count_total": 5,
+      "aggregation_rule": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+      "stage_loss_not_averaged": true,
+      "stage_L_att_values": {
+        "PRE_IB": 0.0,
+        "POST_IB_PRE_OB": 0.07243028675170074
+      },
+      "note": "overall objectives are aggregated before normalization; the overall changed-position count is the sum of the independent stage counts (no cross-stage pairing or ranking)"
+    }
+  },
+  "validation": {
+    "source_checkpoint_hash_verification": {
+      "schema_match": true,
+      "file_hash_match_execution_result": true,
+      "payload_hash_match_execution_result": true,
+      "file_hash_match_post_execution_audit": true,
+      "payload_hash_match_post_execution_audit": true
+    },
+    "candidate_set_equality_delay_vs_consequence": {
+      "PRE_IB": {
+        "entries_node_sets_equal": true,
+        "cohort_size_equal": true,
+        "k_equal": true,
+        "q_equal": true,
+        "support_status_equal": true,
+        "support_status_value": "SUPPORTED",
+        "signal_types": [
+          "DELAY",
+          "CONSEQUENCE"
+        ],
+        "eligible_ids_equal": true,
+        "eligible_count_equal": true,
+        "entries_count_equal": true
+      },
+      "POST_IB_PRE_OB": {
+        "entries_node_sets_equal": true,
+        "cohort_size_equal": true,
+        "k_equal": true,
+        "q_equal": true,
+        "support_status_equal": true,
+        "support_status_value": "SUPPORTED",
+        "signal_types": [
+          "DELAY",
+          "CONSEQUENCE"
+        ],
+        "eligible_ids_equal": true,
+        "eligible_count_equal": true,
+        "entries_count_equal": true
+      }
+    },
+    "objective_identity_checks": [
+      {
+        "stage": "PRE_IB",
+        "check": "delta_identity",
+        "pass": true
+      },
+      {
+        "stage": "PRE_IB",
+        "check": "loss_identity",
+        "pass": true
+      },
+      {
+        "stage": "PRE_IB",
+        "check": "retained_identity",
+        "pass": true
+      },
+      {
+        "stage": "PRE_IB",
+        "check": "complement_identity",
+        "pass": true
+      },
+      {
+        "stage": "PRE_IB",
+        "check": "a_consequence_ge_a_delay",
+        "pass": true
+      },
+      {
+        "stage": "PRE_IB",
+        "check": "consequence_top_k_identity",
+        "pass": true
+      },
+      {
+        "stage": "PRE_IB",
+        "check": "changed_position_symmetry",
+        "pass": true
+      },
+      {
+        "stage": "PRE_IB",
+        "check": "zero_changed_implies_identical",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "delta_identity",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "loss_identity",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "retained_identity",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "complement_identity",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "a_consequence_ge_a_delay",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "consequence_top_k_identity",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "changed_position_symmetry",
+        "pass": true
+      },
+      {
+        "stage": "POST_IB_PRE_OB",
+        "check": "zero_changed_implies_identical",
+        "pass": true
+      }
+    ],
+    "overall_aggregation_identity": {
+      "a_consequence_overall_equals_stage_sum": true,
+      "a_delay_overall_equals_stage_sum": true,
+      "delta_overall_equals_stage_delta_sum": true,
+      "loss_overall_identity": true,
+      "retained_overall_identity": true,
+      "retained_overall_complement": true,
+      "changed_total_equals_stage_sum": true
+    },
+    "zero_not_confused_with_missing": {
+      "all_counts_integers": true,
+      "null_count_fields": 0,
+      "zero_stages": [
+        "PRE_IB"
+      ]
+    },
+    "boundaries": {
+      "final_test_raw_data_read": false,
+      "new_final_test_execution": false,
+      "new_access_epoch_opened": false,
+      "bootstrap_started": false,
+      "model_or_solver_executed": false,
+      "legacy_or_development_or_fixture_read": false
+    }
+  }
+}
