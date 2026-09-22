@@ -46,13 +46,13 @@
     "reused_frozen_objective": "model.M4.evaluation.evaluate_attention_allocation",
     "reused_frozen_selector": "model.M3.stage1.select_paired_attention"
   },
-  "git_head": "8360dd7d88958ae139322d0ea5c66f1c5fe6455c",
-  "run_timestamp": "2026-09-21T12:01:48.300219+00:00",
+  "git_head": "fc01603b15a8ab0a638acee38a1f60f42b493174",
+  "run_timestamp": "2026-09-21T15:26:22.279214+00:00",
   "code_entrypoint": "formal/v2_phase7/stage_q_screening_sensitivity.py",
-  "epoch_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2",
+  "epoch_root": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2",
   "frozen_reference_inputs": {
     "published_nominal_projection": {
-      "staged_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\inputs\\PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
+      "staged_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\inputs\\PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
       "source_branch": "results/delay-vs-consequence-stage1-20260920",
       "source_commit": "0032259",
       "source_repo_path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
@@ -62,10 +62,10 @@
     }
   },
   "input_artifact_paths": {
-    "ATTENTION_DECISIONS": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\ATTENTION_DECISIONS.json",
-    "CONSEQUENCE_VARIANTS": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CONSEQUENCE_VARIANTS.json",
-    "M4_COMPARISONS": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\M4_COMPARISONS.json",
-    "REFERENCE_RECOVERY_COHORT": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\REFERENCE_RECOVERY_COHORT.json"
+    "ATTENTION_DECISIONS": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\ATTENTION_DECISIONS.json",
+    "CONSEQUENCE_VARIANTS": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+    "M4_COMPARISONS": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\M4_COMPARISONS.json",
+    "REFERENCE_RECOVERY_COHORT": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\REFERENCE_RECOVERY_COHORT.json"
   },
   "input_artifact_hashes": {
     "ATTENTION_DECISIONS": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
@@ -80,11 +80,11 @@
     "post_execution_audit_sha256": "sha256:efb3c26ad85d3cdc780df26513e3896f9d52c421298a7c2b1e776463bb9be693"
   },
   "output_artifact_paths": {
-    "STAGE_Q_SCREENING_SUMMARY.csv": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_SUMMARY.csv",
-    "STAGE_Q_SCREENING_RECORDS.parquet": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_RECORDS.parquet",
-    "STAGE_Q_SCREENING_TABLE.tex": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_TABLE.tex",
-    "STAGE_Q_SCREENING_FIGURE_DATA.csv": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_FIGURE_DATA.csv",
-    "STAGE_Q_SCREENING_MANIFEST.json": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_MANIFEST.json"
+    "STAGE_Q_SCREENING_SUMMARY.csv": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_SUMMARY.csv",
+    "STAGE_Q_SCREENING_RECORDS.parquet": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_RECORDS.parquet",
+    "STAGE_Q_SCREENING_TABLE.tex": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_TABLE.tex",
+    "STAGE_Q_SCREENING_FIGURE_DATA.csv": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_FIGURE_DATA.csv",
+    "STAGE_Q_SCREENING_MANIFEST.json": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_MANIFEST.json"
   },
   "output_artifact_hashes": {
     "STAGE_Q_SCREENING_SUMMARY.csv": "sha256:3d2c0ace36cb13dfbc172365fc9940f1c011de3a3173b0c1a771bc82b8f15327",
@@ -116,7 +116,7 @@
       "m4_canonical_attention_block": true,
       "reference_recovery_cohort_union": true,
       "published_nominal_projection": {
-        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\inputs\\PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
+        "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\inputs\\PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
         "sha256": "sha256:94c998c98b78ac49e1722c5070199ed9e2663e4435a7260fa47ee6fd019c9005",
         "source_checkpoint_file_sha256": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92"
       }
@@ -191,7 +191,7 @@
     ],
     "local_only_regenerable": {
       "STAGE_Q_SCREENING_RECORDS.parquet": {
-        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_RECORDS.parquet",
+        "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\stage_q_sensitivity\\STAGE_Q_SCREENING_RECORDS.parquet",
         "sha256": "sha256:8fee206b45cdc415a6a7a40ac7aa1675df016fb8f41746365b14faf3b94539b3",
         "reason": "PROJECT_ARTIFACT_POLICY: paper-results roots track CSV/JSON/MD only; row-level parquet stays local and is reproducible by re-running this entrypoint"
       }
