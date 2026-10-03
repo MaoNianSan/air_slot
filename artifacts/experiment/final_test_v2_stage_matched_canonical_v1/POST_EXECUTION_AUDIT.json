@@ -1,0 +1,756 @@
+{
+  "access_audit_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\PHASE7_ACCESS_AUDIT.json",
+  "access_audit_sha256": "sha256:212cb6b1a3ea2558ce3f4a328d8f447d7a78e688471449e0feb45c9d08476e8f",
+  "audit_timestamp": "2026-09-20T01:56:17.398460+00:00",
+  "blocking_failures": [
+    {
+      "code": "PAIRED_MARGINAL_INCREMENT_NOT_EXECUTED",
+      "detail": {
+        "HISTORY_MARGINAL_semantics": "comparator_vs_HISTORY_JOINT",
+        "can_be_derived_without_rerun": false,
+        "paired_increment_object_present": false,
+        "per_replicate_values_persisted": false,
+        "reason": "The persisted BOOTSTRAP checkpoint contains comparator-specific point estimates and percentile CIs only. It does not persist replicate-level Point or Marginal losses, so the required paired difference cannot be reconstructed after epoch sealing.",
+        "required_definition": "replicate-level L_HISTORY_POINT - L_HISTORY_MARGINAL"
+      }
+    },
+    {
+      "code": "SECTION5_ROBUSTNESS_RESULTS_NOT_EXECUTED",
+      "detail": {
+        "robustness_rows_present": false,
+        "sensitivity_results_status": "DECLARED_SCOPE_ONLY_NO_SENSITIVITY_RESULTS_IN_THIS_RUN"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "code": "CHECKPOINT_HASH_AND_DEPENDENCIES",
+      "detail": {
+        "records": {
+          "ATTENTION_DECISIONS": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\ATTENTION_DECISIONS.json",
+            "payload_hash": "sha256:23841da03e74af349988c14a581429a16da00bf73e096ecf430dc311426bf0df",
+            "status": "PASS"
+          },
+          "BOOTSTRAP": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:536058c5a7e3242a9c5b55b0d70601f6a6e4bad47fb442e41272c3d870e404ad",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\BOOTSTRAP.json",
+            "payload_hash": "sha256:789da51550480d04e98c46c68b0a9721b3e8cac0ff6b12a52c14a373fb9682c4",
+            "status": "PASS"
+          },
+          "CANONICAL_NODES": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:95a4a3562ab769a0d2e7a700c2b035e93e5a463e46cc3840d9a2a418ba0c3a40",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\CANONICAL_NODES.json",
+            "payload_hash": "sha256:c133ac44a8183ac9a5f5273568204fa145b073f54af33675dc1959b2abd9019f",
+            "status": "PASS"
+          },
+          "CONSEQUENCE_VARIANTS": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:dac345eedbbd21d988322f0c9b9a1ccf31f22641e22b9fc43069a90b01c0d54e",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+            "payload_hash": "sha256:5c14b19dc7c3832adec29f9e1900a4281b604c14ce762625f6243430eb9d665b",
+            "status": "PASS"
+          },
+          "M4_COMPARISONS": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:de2e5357f71cdbcc4cf4c8f60e45259446278c5fa9ac2ea86c482c94d8321144",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\M4_COMPARISONS.json",
+            "payload_hash": "sha256:d0aec4dc4a6a671f0033a0301c91370fe0fe088a657984a6ffe6bd27bb87c955",
+            "status": "PASS"
+          },
+          "PAPER_VIEWS": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:5324fb8fa36b9f54bb0baf2f83751bbc4c9c971976588e82ead23ad04aaab8e2",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\PAPER_VIEWS.json",
+            "payload_hash": "sha256:ed6ed402e5767319f2046c5292c9c9d8163578e7ab79ab9a46d69522898c959c",
+            "status": "PASS"
+          },
+          "RECOVERY_DECISIONS": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:eb83e281dc4eb4519db377dfe7ee2abaafaddff1fd91dade6d17aa2925e629e5",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\RECOVERY_DECISIONS.json",
+            "payload_hash": "sha256:b34c7881c9cd1e05424a81a15eb87cb4d8e2a0411b006f764bfa4917c7e3e02c",
+            "status": "PASS"
+          },
+          "REFERENCE_RECOVERY_COHORT": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:2273a5827a2e3dfbb4d3031b0a84120af018bdb089117e8ffa81d8f419513270",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\REFERENCE_RECOVERY_COHORT.json",
+            "payload_hash": "sha256:b70e4e154c066fb3acaf7690e09b192adb6913bc71a8a06a9e9cf008c0d053ae",
+            "status": "PASS"
+          },
+          "STATE_VARIANTS": {
+            "dependencies_match": true,
+            "file_sha256": "sha256:33d5cc6058ae446ca6077dd5e42ca0228db0d418f58c807deac96797ba1b4941",
+            "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\checkpoints\\STATE_VARIANTS.json",
+            "payload_hash": "sha256:4b7fd677eb4c701a5de5e22dcb4a4fa330768a3e324e84d747b2568dccd3be18",
+            "status": "PASS"
+          }
+        },
+        "stage_count": 9
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CANONICALIZATION_BEFORE_SUPPORT",
+      "detail": {
+        "canonical_decision_node_count": 238,
+        "canonical_ids_match_support_blind_reprojection": true,
+        "duplicate_episode_stage_groups": 0,
+        "duplicate_group_examples": {},
+        "materialized_rolling_node_count": 1656,
+        "rule": "ONE_NODE_PER_EPISODE_STAGE_BY_DECISION_TIME_NODE_ID_BEFORE_SUPPORT"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "PRE_STAGE1_UNIQUENESS",
+      "detail": {
+        "canonical_count": 29,
+        "group_key": [
+          "episode_id",
+          "operational_stage"
+        ],
+        "max_nodes_per_group": 1
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "TURN_STAGE1_UNIQUENESS",
+      "detail": {
+        "canonical_count": 127,
+        "group_key": [
+          "episode_id",
+          "operational_stage"
+        ],
+        "max_nodes_per_group": 1
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CROSS_REPRESENTATION_CANONICAL_IDS",
+      "detail": {
+        "identity_fixed_before_representation": true,
+        "variants": [
+          "HISTORY_JOINT",
+          "CURRENT_JOINT",
+          "HISTORY_POINT",
+          "HISTORY_MARGINAL"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE_I_ACTIONABLE_STAGE_SCOPE",
+      "detail": {
+        "non_actionable_stages_present_in_stage1": [],
+        "stage1_actionable_stages": [
+          "PRE_IB",
+          "POST_IB_PRE_OB"
+        ],
+        "taxi_comp_stage1_participation": "NONE"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE_I_QUEUE_IDENTITY_AND_K",
+      "detail": {
+        "rows": {
+          "CURRENT_JOINT|POST_IB_PRE_OB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 7,
+            "status": "PASS"
+          },
+          "CURRENT_JOINT|POST_IB_PRE_OB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 13,
+            "status": "PASS"
+          },
+          "CURRENT_JOINT|POST_IB_PRE_OB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 26,
+            "status": "PASS"
+          },
+          "CURRENT_JOINT|POST_IB_PRE_OB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 39,
+            "status": "PASS"
+          },
+          "CURRENT_JOINT|PRE_IB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 2,
+            "status": "PASS"
+          },
+          "CURRENT_JOINT|PRE_IB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 3,
+            "status": "PASS"
+          },
+          "CURRENT_JOINT|PRE_IB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 6,
+            "status": "PASS"
+          },
+          "CURRENT_JOINT|PRE_IB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 9,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|POST_IB_PRE_OB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 7,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|POST_IB_PRE_OB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 13,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|POST_IB_PRE_OB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 26,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|POST_IB_PRE_OB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 39,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|PRE_IB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 2,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|PRE_IB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 3,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|PRE_IB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 6,
+            "status": "PASS"
+          },
+          "HISTORY_JOINT|PRE_IB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 9,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|POST_IB_PRE_OB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 7,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|POST_IB_PRE_OB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 13,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|POST_IB_PRE_OB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 26,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|POST_IB_PRE_OB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 39,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|PRE_IB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 2,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|PRE_IB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 3,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|PRE_IB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 6,
+            "status": "PASS"
+          },
+          "HISTORY_MARGINAL|PRE_IB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 9,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|POST_IB_PRE_OB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 7,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|POST_IB_PRE_OB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 13,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|POST_IB_PRE_OB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 26,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|POST_IB_PRE_OB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 127,
+            "cohort_size": 127,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 127,
+            "k": 39,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|PRE_IB|0.05": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 2,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|PRE_IB|0.1": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 3,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|PRE_IB|0.2": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 6,
+            "status": "PASS"
+          },
+          "HISTORY_POINT|PRE_IB|0.3": {
+            "abstaining_node_count": 0,
+            "canonical_stage_node_count": 29,
+            "cohort_size": 29,
+            "delay_consequence_candidate_identity": true,
+            "eligible_candidate_count": 29,
+            "k": 9,
+            "status": "PASS"
+          }
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "NO_POOLED_STAGE1_RANKING",
+      "detail": {
+        "m4_pooled_stage1_ranking_constructed": false,
+        "pooled_rows": 0,
+        "selector_pooled_stage1_queue": false
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE1_OVERALL_OBJECTIVE_THEN_NORMALIZE",
+      "detail": {
+        "CURRENT_JOINT": {
+          "L_att": 0.01857886281426188,
+          "comparator_attention_value_sum": 16.452124786773176,
+          "reference_attention_value_sum": 16.763572908109825,
+          "status": "PASS"
+        },
+        "HISTORY_MARGINAL": {
+          "L_att": 0.0,
+          "comparator_attention_value_sum": 16.763572908109825,
+          "reference_attention_value_sum": 16.763572908109825,
+          "status": "PASS"
+        },
+        "HISTORY_POINT": {
+          "L_att": 0.557499838186944,
+          "comparator_attention_value_sum": 7.417883724403559,
+          "reference_attention_value_sum": 16.763572908109825,
+          "status": "PASS"
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION",
+      "detail": {
+        "excluded_count": 0,
+        "flattened_union_semantics": "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION",
+        "r_star_count": 16,
+        "r_star_stage_counts": {
+          "POST_IB_PRE_OB": 13,
+          "PRE_IB": 3
+        },
+        "taxi_comp_member_count": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE2_NODE_RELATIVE_SOBT",
+      "detail": {
+        "coordinate": "NODE_RELATIVE_SOBT",
+        "implementation_file": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\formal\\v2_phase7\\executor\\recovery_decisions.py",
+        "implementation_sha256": "sha256:4e4c78e56a5dd07601886b4a45a1b71d9586db31f2b35aefef98702a972eb01b",
+        "required_expression_present": true
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "RECOVERY_DECISION_INVARIANTS",
+      "detail": {
+        "V_recompute_violations": [],
+        "action_grid_violations": [],
+        "all_actionable": true,
+        "cohort_size": 16,
+        "row_count": 64
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "BOOTSTRAP_PLAN",
+      "detail": {
+        "interval": "percentile_95",
+        "paired": true,
+        "replicates": 2000,
+        "resampling_unit": "episode_id",
+        "seed": 20260906,
+        "valid_replicates": {
+          "CURRENT_JOINT": {
+            "attention": 2000,
+            "recovery": 2000
+          },
+          "HISTORY_MARGINAL": {
+            "attention": 2000,
+            "recovery": 2000
+          },
+          "HISTORY_POINT": {
+            "attention": 2000,
+            "recovery": 2000
+          }
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "PAIRED_MARGINAL_INCREMENT",
+      "detail": {
+        "HISTORY_MARGINAL_semantics": "comparator_vs_HISTORY_JOINT",
+        "can_be_derived_without_rerun": false,
+        "paired_increment_object_present": false,
+        "per_replicate_values_persisted": false,
+        "reason": "The persisted BOOTSTRAP checkpoint contains comparator-specific point estimates and percentile CIs only. It does not persist replicate-level Point or Marginal losses, so the required paired difference cannot be reconstructed after epoch sealing.",
+        "required_definition": "replicate-level L_HISTORY_POINT - L_HISTORY_MARGINAL"
+      },
+      "status": "FAIL"
+    },
+    {
+      "code": "SECTION5_ROBUSTNESS_RESULTS",
+      "detail": {
+        "robustness_rows_present": false,
+        "sensitivity_results_status": "DECLARED_SCOPE_ONLY_NO_SENSITIVITY_RESULTS_IN_THIS_RUN"
+      },
+      "status": "FAIL"
+    },
+    {
+      "code": "SECTION5_NO_TOTAL_LOSS",
+      "detail": {
+        "m4_no_total_loss": true,
+        "paper_views_no_total_loss": true
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CURRENT_RELEASE_ACCESS_AUDIT_BINDING",
+      "detail": {
+        "access_epoch_id": "sha256:91c1e827b4d080f15e68d7c879929a7c9c5b0cec7c3b315c139c8ec007d95502",
+        "access_status": "PHASE7_ACCESS_EPOCH_COMPLETE",
+        "current_epoch_access_audit_present": true,
+        "current_epoch_access_count": 1,
+        "current_epoch_release_present": true,
+        "current_total": 2,
+        "execution_result_early_access_snapshot": {
+          "authoritative_state": "PHASE7_ACCESS_AUDIT.json",
+          "raw_read_completed": false
+        },
+        "release_binding_match": true
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "HISTORICAL_EPOCH_HASH_STABLE_READ_ONLY",
+      "detail": {
+        "failed_stage_matched_epoch": {
+          "access_audit_sha256": "sha256:61bb1fca18c741e6ef7be9210d7d6d5619717411e62dd16affd9c538c6aad759",
+          "content_hash_stability": true,
+          "epoch_seal_sha256": "sha256:826aeea96bc099ff272f31d70a01c3456477ca0fa9ac25c9b50159e7cd2627be",
+          "post_execution_audit_sha256": "sha256:757c9f10756dc497a45cccc1b52f1562d3ad4336efffaa3607b7796fdfdd83fa",
+          "release_sha256": "sha256:bf06e2477773b85e61f8ce1674a1bcdfa64a709d81d0cbe8968d98e803042e07",
+          "root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched",
+          "tree_sha256": "sha256:697abdda5bf9a3555b6c3338075e1f3bcc8c090973afd227b34de59bcafca5f3"
+        },
+        "legacy_completed_epoch": {
+          "access_audit_sha256": "sha256:530efb8e7209d5a442c87f84568a6ae62a6a093f9faf987de4a784421d34ab74",
+          "content_hash_stability": true,
+          "release_and_audit_read_only": true,
+          "release_sha256": "sha256:abc1fab3f8f8738a141f2c0687e199ca49017db9b9f72fd6a9bca27eed2e242d",
+          "root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2",
+          "tree_sha256": "sha256:8bed9efc6c8b059fc2c92bbdc0a891a8c7fefd688a9cd640d837342f3454b50b"
+        },
+        "roots_distinct": true
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CURRENT_HISTORICAL_EPOCH_ROOTS_DISTINCT",
+      "detail": {
+        "current_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1",
+        "failed_stage_matched_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched",
+        "legacy_completed_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ACTIVE_MODEL_MUTATION",
+      "detail": {
+        "files": {
+          "current_comparator_checkpoint": {
+            "actual_sha256": "sha256:68a349a2d82f1d2c8c344c30e85777c55c644e63605e01a94364afdce7183ee3",
+            "expected_sha256": "sha256:68a349a2d82f1d2c8c344c30e85777c55c644e63605e01a94364afdce7183ee3",
+            "status": "PASS"
+          },
+          "current_comparator_manifest": {
+            "actual_sha256": "sha256:9895214f7aa1a33ea49bc90baef30cae6835b9775c43976e3b7049e4b0d2275f",
+            "expected_sha256": "sha256:9895214f7aa1a33ea49bc90baef30cae6835b9775c43976e3b7049e4b0d2275f",
+            "status": "PASS"
+          },
+          "h16_primary_checkpoint": {
+            "actual_sha256": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+            "expected_sha256": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+            "status": "PASS"
+          },
+          "h16_primary_manifest": {
+            "actual_sha256": "sha256:5e75a16e0db957a8edb7a8007cc15fed84a0e84a2b522fc32ca58a00b701da6a",
+            "expected_sha256": "sha256:5e75a16e0db957a8edb7a8007cc15fed84a0e84a2b522fc32ca58a00b701da6a",
+            "status": "PASS"
+          }
+        },
+        "mutation": "NONE"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "EXECUTION_FREEZE_REVALIDATION",
+      "detail": {
+        "artifact_hash": "sha256:d0e6914562fdf316f4bd0b282ab2ebed58046e2f348a05e9f8f70cd314800a93",
+        "authority_scope": "CONTENT_ADDRESSED_RUNTIME_NOT_GIT_HEAD",
+        "cross_worktree_contract": "PASS",
+        "freeze_id": "JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V1",
+        "paper_primary_head": "d29fc769e74d6b46f86d3fdf7db18b3f9936f8b1",
+        "phase7_head": "9692e2f984a4646c10e3637a8ba26fc4b25a2c9b",
+        "runtime_file_count": {
+          "paper_primary": 306,
+          "phase7": 343
+        },
+        "status": "PASS"
+      },
+      "status": "PASS"
+    }
+  ],
+  "epoch_id": "sha256:91c1e827b4d080f15e68d7c879929a7c9c5b0cec7c3b315c139c8ec007d95502",
+  "epoch_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1",
+  "execution_result_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v1\\FINAL_TEST_EXECUTION_RESULT.json",
+  "execution_result_sha256": "sha256:3d93444ed19f0df6afa2e0047183dc34d4d2f475f5d1689ef09b096b5d85b89a",
+  "freeze_artifact_hash": "sha256:d0e6914562fdf316f4bd0b282ab2ebed58046e2f348a05e9f8f70cd314800a93",
+  "freeze_file_sha256": "sha256:00a8ac51b51d2ba759799bac4254e048d6c035e21a26b2c1712aa4dc471f1281",
+  "guard_fields": {
+    "ACCESS_BOUNDARY": "PASS",
+    "CANONICALIZATION_BEFORE_SUPPORT": "PASS",
+    "CHECKPOINT_HASH_AND_DEPENDENCIES": "PASS",
+    "FAILED_EPOCH_HASH_STABILITY": "PASS",
+    "FINAL_TEST_COMPLETE": "NO",
+    "FREEZE_HASH_MATCH": "PASS",
+    "H_CAPACITY_ACTIVE_MODEL_MUTATION": "NONE",
+    "H_CAPACITY_DOWNSTREAM_EXECUTION": "NONE",
+    "NO_POOLED_STAGE1_RANKING": "PASS",
+    "PAPER_RESULTS_FROZEN": "NO",
+    "POST_EXECUTION_AUDIT": "FAIL",
+    "PRE_STAGE1_UNIQUENESS": "PASS",
+    "READY_FOR_FREEZE": "NO",
+    "R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION": "PASS",
+    "SECTION5_1_STATUS": "PASS",
+    "SECTION5_2_STATUS": "PASS",
+    "SECTION5_3_STATUS": "FAIL",
+    "SECTION5_4_STATUS": "FAIL",
+    "SECTION5_PRIMARY_MODEL": "H16_FROZEN_PRIMARY",
+    "STAGE1_OVERALL_AGGREGATION": "OBJECTIVE_THEN_NORMALIZE",
+    "STAGE2_SOBT_COORDINATE": "NODE_RELATIVE_SOBT",
+    "TAXI_COMP_STAGE1_PARTICIPATION": "NONE",
+    "TURN_STAGE1_UNIQUENESS": "PASS"
+  },
+  "non_blocking_findings": [
+    {
+      "code": "EXECUTION_RESULT_EARLY_ACCESS_SNAPSHOT",
+      "detail": "FINAL_TEST_EXECUTION_RESULT.json contains an early access snapshot with raw_read_completed=false. PHASE7_ACCESS_AUDIT.json is the completed authoritative epoch access record."
+    },
+    {
+      "code": "DEVELOPMENT_PAIRED_INCREMENT_IS_NOT_FINAL_TEST_EVIDENCE",
+      "detail": "Paper-primary Development reports a precise paired MARGINAL_UNCERTAINTY increment, but that artifact does not satisfy the independent Final-Test execution requirement and must not be substituted for it."
+    }
+  ],
+  "production": {
+    "CANONICAL_NODE_COUNTS_BY_STAGE": {
+      "POST_IB_PRE_OB": 127,
+      "POST_OB_PRE_TO": 82,
+      "PRE_IB": 29
+    },
+    "DUPLICATE_EPISODE_STAGE_GROUPS_AFTER_CANONICALIZATION": 0,
+    "ELIGIBLE_STAGE1_COUNTS_BY_STAGE": {
+      "POST_IB_PRE_OB": 127,
+      "PRE_IB": 29
+    },
+    "MATERIALIZED_ROLLING_NODE_COUNT": 1656,
+    "ROLLING_NODE_COUNTS_BY_STAGE": {
+      "POST_IB_PRE_OB": 1433,
+      "POST_OB_PRE_TO": 121,
+      "PRE_IB": 102
+    },
+    "R_STAR_COUNT": 16,
+    "R_STAR_STAGE_COUNTS": {
+      "POST_IB_PRE_OB": 13,
+      "PRE_IB": 3
+    }
+  },
+  "raw_final_test_data_read_by_audit": false,
+  "read_only": true,
+  "schema_version": "AIR_SLOT_V2_PHASE7_POST_EXECUTION_AUDIT_V1",
+  "scientific_recomputation_performed": false,
+  "status": "FAIL",
+  "worktrees": {
+    "paper_primary": {
+      "branch_status": "## v2/paper-primary",
+      "dirty": true,
+      "head": "d29fc769e74d6b46f86d3fdf7db18b3f9936f8b1",
+      "status_line_count": 58
+    },
+    "phase7": {
+      "branch_status": "## v2/phase7-gate-a...origin/v2/phase7-gate-a [ahead 1]",
+      "dirty": true,
+      "head": "9692e2f984a4646c10e3637a8ba26fc4b25a2c9b",
+      "status_line_count": 39
+    }
+  }
+}

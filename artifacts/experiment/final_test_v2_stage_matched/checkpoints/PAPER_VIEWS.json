@@ -1,0 +1,450 @@
+{
+  "checkpoint_schema_version": "AIR_SLOT_V2_PHASE7_CHECKPOINT_V1",
+  "dependencies": {
+    "ATTENTION_DECISIONS": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+    "BOOTSTRAP": "sha256:683872c72e7551ec651228e488e1d1345107364e29ae6e3a77c2ff910e1b734b",
+    "M4_COMPARISONS": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb"
+  },
+  "payload": {
+    "excluded_from_final_test_scope": [
+      {
+        "item": "similar_delay_5_10_15",
+        "status": "NOT_ACTIVATED_BY_PHASE6_FREEZE"
+      },
+      {
+        "item": "itinerary_threshold_30_60",
+        "status": "NOT_ACTIVATED_BY_PHASE6_FREEZE"
+      },
+      {
+        "item": "service_threshold_150_210",
+        "status": "NOT_ACTIVATED_BY_PHASE6_FREEZE"
+      },
+      {
+        "item": "fixed_window_history",
+        "status": "NOT_AVAILABLE_NOT_FROZEN"
+      }
+    ],
+    "no_total_loss_constructed": true,
+    "primary_design": "STAGE_X_Q",
+    "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1",
+    "scientific_recomputation_performed": false,
+    "section_5_2": {
+      "capacity_rule": "K_STAGE = ceil(q * N_STAGE); K_OVERALL = sum_g K_g",
+      "nominal_q": 0.1,
+      "overall_rule": "OBJECTIVES_THEN_NORMALIZE",
+      "pooled_stage1_ranking": false,
+      "q_grid": [
+        0.05,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "q_is_primary_operating_axis": true,
+      "q_is_sensitivity_axis": false,
+      "reference_representation_id": "HISTORY_H16:JOINT",
+      "reference_variant": "HISTORY_JOINT",
+      "rows": [
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 102,
+          "cohort_size": 102,
+          "eligible_candidate_count": 102,
+          "k": 6,
+          "q": 0.05,
+          "selected_node_count": 6,
+          "selected_stage_class_counts": {
+            "PRE": 6
+          },
+          "selected_stage_counts": {
+            "PRE_IB": 6
+          },
+          "stage": "PRE_IB"
+        },
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 1433,
+          "cohort_size": 1433,
+          "eligible_candidate_count": 1433,
+          "k": 72,
+          "q": 0.05,
+          "selected_node_count": 72,
+          "selected_stage_class_counts": {
+            "TURN": 72
+          },
+          "selected_stage_counts": {
+            "POST_IB_PRE_OB": 72
+          },
+          "stage": "POST_IB_PRE_OB"
+        },
+        {
+          "L_att_overall": null,
+          "abstaining_node_count": 0,
+          "aggregation": "PRE_TURN_OBJECTIVE_ROWS_NOT_A_POOLED_STAGE1_RANKING",
+          "attention_aggregate": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+          "canonical_stage_node_count": 1535,
+          "cohort_size": 1535,
+          "eligible_candidate_count": 1535,
+          "k": 78,
+          "q": 0.05,
+          "selected_node_count": 78,
+          "selected_stage_class_counts": {},
+          "selected_stage_counts": {},
+          "stage": "OVERALL"
+        },
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 102,
+          "cohort_size": 102,
+          "eligible_candidate_count": 102,
+          "k": 11,
+          "q": 0.1,
+          "selected_node_count": 11,
+          "selected_stage_class_counts": {
+            "PRE": 11
+          },
+          "selected_stage_counts": {
+            "PRE_IB": 11
+          },
+          "stage": "PRE_IB"
+        },
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 1433,
+          "cohort_size": 1433,
+          "eligible_candidate_count": 1433,
+          "k": 144,
+          "q": 0.1,
+          "selected_node_count": 144,
+          "selected_stage_class_counts": {
+            "TURN": 144
+          },
+          "selected_stage_counts": {
+            "POST_IB_PRE_OB": 144
+          },
+          "stage": "POST_IB_PRE_OB"
+        },
+        {
+          "L_att_overall": 0.0,
+          "abstaining_node_count": 0,
+          "aggregation": "PRE_TURN_OBJECTIVE_ROWS_NOT_A_POOLED_STAGE1_RANKING",
+          "attention_aggregate": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+          "canonical_stage_node_count": 1535,
+          "cohort_size": 1535,
+          "eligible_candidate_count": 1535,
+          "k": 155,
+          "q": 0.1,
+          "selected_node_count": 155,
+          "selected_stage_class_counts": {},
+          "selected_stage_counts": {},
+          "stage": "OVERALL"
+        },
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 102,
+          "cohort_size": 102,
+          "eligible_candidate_count": 102,
+          "k": 21,
+          "q": 0.2,
+          "selected_node_count": 21,
+          "selected_stage_class_counts": {
+            "PRE": 21
+          },
+          "selected_stage_counts": {
+            "PRE_IB": 21
+          },
+          "stage": "PRE_IB"
+        },
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 1433,
+          "cohort_size": 1433,
+          "eligible_candidate_count": 1433,
+          "k": 287,
+          "q": 0.2,
+          "selected_node_count": 287,
+          "selected_stage_class_counts": {
+            "TURN": 287
+          },
+          "selected_stage_counts": {
+            "POST_IB_PRE_OB": 287
+          },
+          "stage": "POST_IB_PRE_OB"
+        },
+        {
+          "L_att_overall": null,
+          "abstaining_node_count": 0,
+          "aggregation": "PRE_TURN_OBJECTIVE_ROWS_NOT_A_POOLED_STAGE1_RANKING",
+          "attention_aggregate": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+          "canonical_stage_node_count": 1535,
+          "cohort_size": 1535,
+          "eligible_candidate_count": 1535,
+          "k": 308,
+          "q": 0.2,
+          "selected_node_count": 308,
+          "selected_stage_class_counts": {},
+          "selected_stage_counts": {},
+          "stage": "OVERALL"
+        },
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 102,
+          "cohort_size": 102,
+          "eligible_candidate_count": 102,
+          "k": 31,
+          "q": 0.3,
+          "selected_node_count": 31,
+          "selected_stage_class_counts": {
+            "PRE": 31
+          },
+          "selected_stage_counts": {
+            "PRE_IB": 31
+          },
+          "stage": "PRE_IB"
+        },
+        {
+          "abstaining_node_count": 0,
+          "canonical_stage_node_count": 1433,
+          "cohort_size": 1433,
+          "eligible_candidate_count": 1433,
+          "k": 430,
+          "q": 0.3,
+          "selected_node_count": 430,
+          "selected_stage_class_counts": {
+            "TURN": 430
+          },
+          "selected_stage_counts": {
+            "POST_IB_PRE_OB": 430
+          },
+          "stage": "POST_IB_PRE_OB"
+        },
+        {
+          "L_att_overall": null,
+          "abstaining_node_count": 0,
+          "aggregation": "PRE_TURN_OBJECTIVE_ROWS_NOT_A_POOLED_STAGE1_RANKING",
+          "attention_aggregate": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+          "canonical_stage_node_count": 1535,
+          "cohort_size": 1535,
+          "eligible_candidate_count": 1535,
+          "k": 461,
+          "q": 0.3,
+          "selected_node_count": 461,
+          "selected_stage_class_counts": {},
+          "selected_stage_counts": {},
+          "stage": "OVERALL"
+        }
+      ],
+      "stage1_actionable_stages": [
+        "PRE_IB",
+        "POST_IB_PRE_OB"
+      ]
+    },
+    "section_5_4": {
+      "attention_stage_aggregation": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+      "comparators": [
+        {
+          "attention": {
+            "L_att": 0.028016406869654568,
+            "aggregation": "OBJECTIVES_THEN_NORMALIZE",
+            "ci": [
+              -0.17617039081533167,
+              0.2223732221290123
+            ],
+            "ci_status": "PASS",
+            "displaced_count": 17,
+            "entered_count": 17,
+            "kendall_tau": null,
+            "overlap_count": 138,
+            "spearman_rho": null,
+            "typed_state": null
+          },
+          "comparator_id": "CURRENT_JOINT",
+          "recovery": {
+            "A0": 0.6774193548387096,
+            "A5": 0.9161290322580645,
+            "L_rec": 0.8327833039531747,
+            "activation_events": {
+              "FALSE_ACTIVATION": 14,
+              "MISSED_ACTIVATION": 28,
+              "OVER_RECOVERY": 2,
+              "UNDER_RECOVERY": 6
+            },
+            "ci": [
+              0.13940494649217183,
+              2.2098210094209394
+            ],
+            "ci_status": "PASS",
+            "typed_state": null
+          }
+        },
+        {
+          "attention": {
+            "L_att": 0.5726876550893686,
+            "aggregation": "OBJECTIVES_THEN_NORMALIZE",
+            "ci": [
+              -0.24471774588998838,
+              0.8243786467071063
+            ],
+            "ci_status": "PASS",
+            "displaced_count": 146,
+            "entered_count": 146,
+            "kendall_tau": null,
+            "overlap_count": 9,
+            "spearman_rho": null,
+            "typed_state": null
+          },
+          "comparator_id": "HISTORY_POINT",
+          "recovery": {
+            "A0": 0.432258064516129,
+            "A5": 0.9548387096774194,
+            "L_rec": 1.0,
+            "activation_events": {
+              "FALSE_ACTIVATION": 0,
+              "MISSED_ACTIVATION": 88,
+              "OVER_RECOVERY": 0,
+              "UNDER_RECOVERY": 0
+            },
+            "ci": [
+              1.0,
+              1.0
+            ],
+            "ci_status": "PASS",
+            "typed_state": null
+          }
+        },
+        {
+          "attention": {
+            "L_att": 0.0012812577321680656,
+            "aggregation": "OBJECTIVES_THEN_NORMALIZE",
+            "ci": [
+              -0.05429602575943917,
+              0.06137001464699291
+            ],
+            "ci_status": "PASS",
+            "displaced_count": 4,
+            "entered_count": 4,
+            "kendall_tau": null,
+            "overlap_count": 151,
+            "spearman_rho": null,
+            "typed_state": null
+          },
+          "comparator_id": "HISTORY_MARGINAL",
+          "recovery": {
+            "A0": 0.967741935483871,
+            "A5": 0.967741935483871,
+            "L_rec": 0.040113858726780846,
+            "activation_events": {
+              "FALSE_ACTIVATION": 0,
+              "MISSED_ACTIVATION": 0,
+              "OVER_RECOVERY": 1,
+              "UNDER_RECOVERY": 4
+            },
+            "ci": [
+              0.0,
+              0.15621745876532966
+            ],
+            "ci_status": "PASS",
+            "typed_state": null
+          }
+        }
+      ],
+      "fixed_cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+      "fixed_cohort_size": 155,
+      "loss_total_defined": false,
+      "losses_reported_separately": true,
+      "reference_id": "HISTORY_JOINT",
+      "reference_representation_id": "HISTORY_H16:JOINT",
+      "stage1_actionable_stages": [
+        "PRE_IB",
+        "POST_IB_PRE_OB"
+      ],
+      "stage2_comparisons_use_fixed_r_star": true
+    },
+    "section_5_5": {
+      "axes": [
+        {
+          "axis": "lambda",
+          "grid": [
+            0.1,
+            0.25,
+            0.5,
+            1.0
+          ],
+          "nominal": 0.25,
+          "status": "FROZEN_SENSITIVITY_AXIS_DECLARED"
+        },
+        {
+          "axis": "turnaround_lower_bound_q",
+          "grid": [
+            34.0,
+            41.0,
+            47.0
+          ],
+          "nominal": 41.0,
+          "quantiles": [
+            "Q10",
+            "Q20",
+            "Q30"
+          ],
+          "status": "FROZEN_SENSITIVITY_AXIS_DECLARED"
+        },
+        {
+          "axis": "u_max",
+          "grid": [
+            25.0,
+            45.0,
+            75.0
+          ],
+          "nominal": 45.0,
+          "quantiles": [
+            "Q80",
+            "Q90",
+            "Q95"
+          ],
+          "status": "FROZEN_SENSITIVITY_AXIS_DECLARED"
+        },
+        {
+          "axis": "history_capacity",
+          "grid": [
+            8,
+            16
+          ],
+          "levels": [
+            "H8",
+            "H16"
+          ],
+          "nominal": 16,
+          "status": "FROZEN_SENSITIVITY_AXIS_DECLARED"
+        }
+      ],
+      "crossed_with_q_grid": false,
+      "design": "ONE_FACTOR_AT_A_TIME",
+      "fixed_window_history_status": "NOT_AVAILABLE_NOT_FROZEN",
+      "nominal_base": {
+        "history_capacity": 16,
+        "lambda": 0.25,
+        "m_cs": 0.9,
+        "q": 0.1,
+        "turnaround_q20_minutes": 41.0,
+        "u_max_minutes": 45.0
+      },
+      "one_factor_at_a_time": true,
+      "sensitivity_results_status": "DECLARED_SCOPE_ONLY_NO_SENSITIVITY_RESULTS_IN_THIS_RUN"
+    },
+    "source_stages": [
+      "ATTENTION_DECISIONS",
+      "M4_COMPARISONS",
+      "BOOTSTRAP"
+    ],
+    "stage": "PAPER_VIEWS",
+    "typed_scientific_states": [
+      "ABSTAIN_NO_COMMON_SUPPORT",
+      "UNDEFINED_ZERO_RECOVERABLE_VALUE",
+      "NOT_ACTIONABLE",
+      "N/A_NOT_DEFINED"
+    ]
+  },
+  "payload_hash": "sha256:773c8f486afa3eafbb71781862d4c7c2222c215c97f9a4b0599f839787ab1660",
+  "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+  "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1",
+  "stage": "PAPER_VIEWS"
+}

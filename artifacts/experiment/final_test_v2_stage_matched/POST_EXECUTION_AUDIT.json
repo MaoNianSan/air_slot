@@ -1,0 +1,541 @@
+{
+  "access_audit_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\PHASE7_ACCESS_AUDIT.json",
+  "access_audit_sha256": "sha256:61bb1fca18c741e6ef7be9210d7d6d5619717411e62dd16affd9c538c6aad759",
+  "audit_timestamp": "2026-09-19T17:08:26.392561+00:00",
+  "blocking_failures": [
+    {
+      "code": "CANONICALIZATION_BEFORE_SUPPORT",
+      "detail": {
+        "POST_IB_PRE_OB": {
+          "canonical_stage_node_count": 1433,
+          "duplicate_group_count": 125,
+          "episode_stage_group_count": 127,
+          "max_nodes_in_one_episode_stage_group": 44,
+          "sample_duplicate_groups": {
+            "sha256:8f10fc3d06a1ceca09da607023ad97536daaa41a209b1dbc893855f966c4e6db|POST_IB_PRE_OB": 12,
+            "sha256:bc24e3930bea7251f86fe351a82a9983bae107469a72e1d8d0b10472e2083cac|POST_IB_PRE_OB": 18,
+            "sha256:c048336919f3e39d80d73a48d5b6fd5d5e0e9a3ace24fb201bc4897d9e1d6f19|POST_IB_PRE_OB": 4,
+            "sha256:c76bc28500075caf9834af73b017a1a789116d70bb9c8e405bb1daa51a85b53b|POST_IB_PRE_OB": 7,
+            "sha256:edbcacbc46f77257e51e2fd2273d78cdce82316370d8c4f48868254577e7d34d|POST_IB_PRE_OB": 13
+          }
+        },
+        "PRE_IB": {
+          "canonical_stage_node_count": 102,
+          "duplicate_group_count": 22,
+          "episode_stage_group_count": 29,
+          "max_nodes_in_one_episode_stage_group": 10,
+          "sample_duplicate_groups": {
+            "sha256:1dd5cc7105f57640595b7343292de576b3098e9d7a0024983d237c37d687bd49|PRE_IB": 5,
+            "sha256:419e155b9874ba532827d8753d6a5c6489c82d4a8e3c49eba2df80cc75b57369|PRE_IB": 5,
+            "sha256:901759615954c2672297afee40f268b7099a7323f77c41e357d1dc42a6819df8|PRE_IB": 2,
+            "sha256:d7ce77792223668e97638f9d4860d230c8160e71e3bc799dfc9459e660ca2ca4|PRE_IB": 6,
+            "sha256:e3a06db01f4ca40f07f3e8841f02d87e9642b25450778e924bcd23643c2103e6|PRE_IB": 6
+          }
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "code": "FINAL_TEST_EXECUTION_STATUS",
+      "detail": {
+        "manifest_status_field": "NOT_DEFINED",
+        "pipeline_status": "PASS",
+        "result_status": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CHECKPOINT_HASH_AND_DEPENDENCIES",
+      "detail": {
+        "records": {
+          "ATTENTION_DECISIONS": {
+            "dependency_match": true,
+            "file_sha256": "sha256:d68ed4364fdab6b84aea6b78cb16faf9244bc562f2e710b1c645fbde0a345fb0",
+            "manifest_file_sha256": "sha256:d68ed4364fdab6b84aea6b78cb16faf9244bc562f2e710b1c645fbde0a345fb0",
+            "manifest_payload_hash": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+            "payload_hash": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+            "status": "PASS"
+          },
+          "BOOTSTRAP": {
+            "dependency_match": true,
+            "file_sha256": "sha256:9d33240e3e88e51f9c7c6d10b95e684bae7291479c0aee3b720fcff906a76483",
+            "manifest_file_sha256": "sha256:9d33240e3e88e51f9c7c6d10b95e684bae7291479c0aee3b720fcff906a76483",
+            "manifest_payload_hash": "sha256:683872c72e7551ec651228e488e1d1345107364e29ae6e3a77c2ff910e1b734b",
+            "payload_hash": "sha256:683872c72e7551ec651228e488e1d1345107364e29ae6e3a77c2ff910e1b734b",
+            "status": "PASS"
+          },
+          "CANONICAL_NODES": {
+            "dependency_match": true,
+            "file_sha256": "sha256:49d03c08e5e44073991034229fb39291d773915b43404d4eacc5a499ef57e4b0",
+            "manifest_file_sha256": "sha256:49d03c08e5e44073991034229fb39291d773915b43404d4eacc5a499ef57e4b0",
+            "manifest_payload_hash": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+            "payload_hash": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+            "status": "PASS"
+          },
+          "CONSEQUENCE_VARIANTS": {
+            "dependency_match": true,
+            "file_sha256": "sha256:1262131188da8bee922c4084286f4544b695ee3eb1b1b39c2cb9bdf5b12abbcd",
+            "manifest_file_sha256": "sha256:1262131188da8bee922c4084286f4544b695ee3eb1b1b39c2cb9bdf5b12abbcd",
+            "manifest_payload_hash": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd",
+            "payload_hash": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd",
+            "status": "PASS"
+          },
+          "M4_COMPARISONS": {
+            "dependency_match": true,
+            "file_sha256": "sha256:b9e66adacc08083f322d83fe4eddff16f79f3a39f394f34d946cfb8f50ffe463",
+            "manifest_file_sha256": "sha256:b9e66adacc08083f322d83fe4eddff16f79f3a39f394f34d946cfb8f50ffe463",
+            "manifest_payload_hash": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb",
+            "payload_hash": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb",
+            "status": "PASS"
+          },
+          "PAPER_VIEWS": {
+            "dependency_match": true,
+            "file_sha256": "sha256:b62fc3cdeb47099ce42050625828792188faf28a836dc1e50ee13c610b9d2baa",
+            "manifest_file_sha256": "sha256:b62fc3cdeb47099ce42050625828792188faf28a836dc1e50ee13c610b9d2baa",
+            "manifest_payload_hash": "sha256:773c8f486afa3eafbb71781862d4c7c2222c215c97f9a4b0599f839787ab1660",
+            "payload_hash": "sha256:773c8f486afa3eafbb71781862d4c7c2222c215c97f9a4b0599f839787ab1660",
+            "status": "PASS"
+          },
+          "RECOVERY_DECISIONS": {
+            "dependency_match": true,
+            "file_sha256": "sha256:f457f7e7b566446221c0ae6e9e9c4b3cd685f50d1288532f6670082f637fbb05",
+            "manifest_file_sha256": "sha256:f457f7e7b566446221c0ae6e9e9c4b3cd685f50d1288532f6670082f637fbb05",
+            "manifest_payload_hash": "sha256:f82ca669c3baa67c660910db419438775d9310c7b455d5a5a153081de1d8bbbf",
+            "payload_hash": "sha256:f82ca669c3baa67c660910db419438775d9310c7b455d5a5a153081de1d8bbbf",
+            "status": "PASS"
+          },
+          "REFERENCE_RECOVERY_COHORT": {
+            "dependency_match": true,
+            "file_sha256": "sha256:9e350c1672f70159d3357d148c8473ac12f83eed85554743f12727a072756d75",
+            "manifest_file_sha256": "sha256:9e350c1672f70159d3357d148c8473ac12f83eed85554743f12727a072756d75",
+            "manifest_payload_hash": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99",
+            "payload_hash": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99",
+            "status": "PASS"
+          },
+          "STATE_VARIANTS": {
+            "dependency_match": true,
+            "file_sha256": "sha256:f79ecee2f939d1277cd5813cb92301b8d5d14dd6bceb801c49c41b41fe67c549",
+            "manifest_file_sha256": "sha256:f79ecee2f939d1277cd5813cb92301b8d5d14dd6bceb801c49c41b41fe67c549",
+            "manifest_payload_hash": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed",
+            "payload_hash": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed",
+            "status": "PASS"
+          }
+        },
+        "stage_count": 9
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE_I_ACTIONABLE_STAGE_SCOPE",
+      "detail": {
+        "selected_stage_check": true,
+        "stage1_actionable_stages": [
+          "PRE_IB",
+          "POST_IB_PRE_OB"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE_I_QUEUE_IDENTITY_AND_K",
+      "detail": {
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.05": {
+          "eligible": 1433,
+          "expected_k": 72,
+          "k": 72,
+          "queue_identity": true
+        },
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.1": {
+          "eligible": 1433,
+          "expected_k": 144,
+          "k": 144,
+          "queue_identity": true
+        },
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.2": {
+          "eligible": 1433,
+          "expected_k": 287,
+          "k": 287,
+          "queue_identity": true
+        },
+        "CURRENT_JOINT|POST_IB_PRE_OB|0.3": {
+          "eligible": 1433,
+          "expected_k": 430,
+          "k": 430,
+          "queue_identity": true
+        },
+        "CURRENT_JOINT|PRE_IB|0.05": {
+          "eligible": 102,
+          "expected_k": 6,
+          "k": 6,
+          "queue_identity": true
+        },
+        "CURRENT_JOINT|PRE_IB|0.1": {
+          "eligible": 102,
+          "expected_k": 11,
+          "k": 11,
+          "queue_identity": true
+        },
+        "CURRENT_JOINT|PRE_IB|0.2": {
+          "eligible": 102,
+          "expected_k": 21,
+          "k": 21,
+          "queue_identity": true
+        },
+        "CURRENT_JOINT|PRE_IB|0.3": {
+          "eligible": 102,
+          "expected_k": 31,
+          "k": 31,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.05": {
+          "eligible": 1433,
+          "expected_k": 72,
+          "k": 72,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.1": {
+          "eligible": 1433,
+          "expected_k": 144,
+          "k": 144,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.2": {
+          "eligible": 1433,
+          "expected_k": 287,
+          "k": 287,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|POST_IB_PRE_OB|0.3": {
+          "eligible": 1433,
+          "expected_k": 430,
+          "k": 430,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|PRE_IB|0.05": {
+          "eligible": 102,
+          "expected_k": 6,
+          "k": 6,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|PRE_IB|0.1": {
+          "eligible": 102,
+          "expected_k": 11,
+          "k": 11,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|PRE_IB|0.2": {
+          "eligible": 102,
+          "expected_k": 21,
+          "k": 21,
+          "queue_identity": true
+        },
+        "HISTORY_JOINT|PRE_IB|0.3": {
+          "eligible": 102,
+          "expected_k": 31,
+          "k": 31,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.05": {
+          "eligible": 1433,
+          "expected_k": 72,
+          "k": 72,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.1": {
+          "eligible": 1433,
+          "expected_k": 144,
+          "k": 144,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.2": {
+          "eligible": 1433,
+          "expected_k": 287,
+          "k": 287,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|POST_IB_PRE_OB|0.3": {
+          "eligible": 1433,
+          "expected_k": 430,
+          "k": 430,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.05": {
+          "eligible": 102,
+          "expected_k": 6,
+          "k": 6,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.1": {
+          "eligible": 102,
+          "expected_k": 11,
+          "k": 11,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.2": {
+          "eligible": 102,
+          "expected_k": 21,
+          "k": 21,
+          "queue_identity": true
+        },
+        "HISTORY_MARGINAL|PRE_IB|0.3": {
+          "eligible": 102,
+          "expected_k": 31,
+          "k": 31,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.05": {
+          "eligible": 1433,
+          "expected_k": 72,
+          "k": 72,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.1": {
+          "eligible": 1433,
+          "expected_k": 144,
+          "k": 144,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.2": {
+          "eligible": 1433,
+          "expected_k": 287,
+          "k": 287,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|POST_IB_PRE_OB|0.3": {
+          "eligible": 1433,
+          "expected_k": 430,
+          "k": 430,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|PRE_IB|0.05": {
+          "eligible": 102,
+          "expected_k": 6,
+          "k": 6,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|PRE_IB|0.1": {
+          "eligible": 102,
+          "expected_k": 11,
+          "k": 11,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|PRE_IB|0.2": {
+          "eligible": 102,
+          "expected_k": 21,
+          "k": 21,
+          "queue_identity": true
+        },
+        "HISTORY_POINT|PRE_IB|0.3": {
+          "eligible": 102,
+          "expected_k": 31,
+          "k": 31,
+          "queue_identity": true
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CANONICALIZATION_BEFORE_SUPPORT",
+      "detail": {
+        "POST_IB_PRE_OB": {
+          "canonical_stage_node_count": 1433,
+          "duplicate_group_count": 125,
+          "episode_stage_group_count": 127,
+          "max_nodes_in_one_episode_stage_group": 44,
+          "sample_duplicate_groups": {
+            "sha256:8f10fc3d06a1ceca09da607023ad97536daaa41a209b1dbc893855f966c4e6db|POST_IB_PRE_OB": 12,
+            "sha256:bc24e3930bea7251f86fe351a82a9983bae107469a72e1d8d0b10472e2083cac|POST_IB_PRE_OB": 18,
+            "sha256:c048336919f3e39d80d73a48d5b6fd5d5e0e9a3ace24fb201bc4897d9e1d6f19|POST_IB_PRE_OB": 4,
+            "sha256:c76bc28500075caf9834af73b017a1a789116d70bb9c8e405bb1daa51a85b53b|POST_IB_PRE_OB": 7,
+            "sha256:edbcacbc46f77257e51e2fd2273d78cdce82316370d8c4f48868254577e7d34d|POST_IB_PRE_OB": 13
+          }
+        },
+        "PRE_IB": {
+          "canonical_stage_node_count": 102,
+          "duplicate_group_count": 22,
+          "episode_stage_group_count": 29,
+          "max_nodes_in_one_episode_stage_group": 10,
+          "sample_duplicate_groups": {
+            "sha256:1dd5cc7105f57640595b7343292de576b3098e9d7a0024983d237c37d687bd49|PRE_IB": 5,
+            "sha256:419e155b9874ba532827d8753d6a5c6489c82d4a8e3c49eba2df80cc75b57369|PRE_IB": 5,
+            "sha256:901759615954c2672297afee40f268b7099a7323f77c41e357d1dc42a6819df8|PRE_IB": 2,
+            "sha256:d7ce77792223668e97638f9d4860d230c8160e71e3bc799dfc9459e660ca2ca4|PRE_IB": 6,
+            "sha256:e3a06db01f4ca40f07f3e8841f02d87e9642b25450778e924bcd23643c2103e6|PRE_IB": 6
+          }
+        }
+      },
+      "status": "FAIL"
+    },
+    {
+      "code": "NO_POOLED_STAGE_I_RANKING",
+      "detail": {
+        "m4_pooled": false,
+        "paper_views_pooled": false,
+        "selector_pooled": false
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE1_OVERALL_OBJECTIVE_THEN_NORMALIZE",
+      "detail": {
+        "m4": "STAGE_OBJECTIVES_THEN_NORMALIZE",
+        "paper_views": "OBJECTIVES_THEN_NORMALIZE"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION",
+      "detail": {
+        "excluded_count": 0,
+        "flattened_count": 155,
+        "pre_count": 11,
+        "semantics": "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION",
+        "turn_count": 144
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "STAGE2_NODE_RELATIVE_SOBT",
+      "detail": {
+        "canonical_nodes": 1656,
+        "coordinate": "NODE_RELATIVE_SOBT",
+        "implementation_file": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\formal\\v2_phase7\\executor\\recovery_decisions.py",
+        "implementation_sha256": "sha256:4e4c78e56a5dd07601886b4a45a1b71d9586db31f2b35aefef98702a972eb01b",
+        "r_star_nodes": 155
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CURRENT_HISTORICAL_EPOCH_ROOTS_DISTINCT",
+      "detail": {
+        "current_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched",
+        "historical_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "CURRENT_RELEASE_ACCESS_AUDIT_BINDING",
+      "detail": {
+        "access_epoch_id": "sha256:6112553189e9288155f92634588a94954a13597c9fa31ee31e91eacb5e91fd37",
+        "release_fingerprint": "sha256:6112553189e9288155f92634588a94954a13597c9fa31ee31e91eacb5e91fd37",
+        "retry_count": 0,
+        "status": "PHASE7_ACCESS_EPOCH_COMPLETE"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "HISTORICAL_EPOCH_HASH_STABLE_READ_ONLY",
+      "detail": {
+        "access_audit": {
+          "expected_sha256": "sha256:530efb8e7209d5a442c87f84568a6ae62a6a093f9faf987de4a784421d34ab74",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2\\PHASE7_ACCESS_AUDIT.json",
+          "read_only": true,
+          "sha256": "sha256:530efb8e7209d5a442c87f84568a6ae62a6a093f9faf987de4a784421d34ab74",
+          "status": "PASS"
+        },
+        "release": {
+          "expected_sha256": "sha256:abc1fab3f8f8738a141f2c0687e199ca49017db9b9f72fd6a9bca27eed2e242d",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2\\GATE_B_HUMAN_RELEASE.json",
+          "read_only": true,
+          "sha256": "sha256:abc1fab3f8f8738a141f2c0687e199ca49017db9b9f72fd6a9bca27eed2e242d",
+          "status": "PASS"
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "ACTIVE_MODEL_MUTATION",
+      "detail": {
+        "files": {
+          "current_comparator_checkpoint": {
+            "expected_sha256": "sha256:68a349a2d82f1d2c8c344c30e85777c55c644e63605e01a94364afdce7183ee3",
+            "sha256": "sha256:68a349a2d82f1d2c8c344c30e85777c55c644e63605e01a94364afdce7183ee3",
+            "status": "PASS"
+          },
+          "current_comparator_manifest": {
+            "expected_sha256": "sha256:9895214f7aa1a33ea49bc90baef30cae6835b9775c43976e3b7049e4b0d2275f",
+            "sha256": "sha256:9895214f7aa1a33ea49bc90baef30cae6835b9775c43976e3b7049e4b0d2275f",
+            "status": "PASS"
+          },
+          "h16_primary_checkpoint": {
+            "expected_sha256": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+            "sha256": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+            "status": "PASS"
+          },
+          "h16_primary_manifest": {
+            "expected_sha256": "sha256:5e75a16e0db957a8edb7a8007cc15fed84a0e84a2b522fc32ca58a00b701da6a",
+            "sha256": "sha256:5e75a16e0db957a8edb7a8007cc15fed84a0e84a2b522fc32ca58a00b701da6a",
+            "status": "PASS"
+          }
+        },
+        "mutation": "NONE"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "SECTION4_H_CAPACITY_STATUS",
+      "detail": {
+        "epoch_opened": "2026-09-19T16:55:36.974498+00:00",
+        "files": [
+          "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\jatm_section4\\h_capacity\\H_CAPACITY_MODEL_PERFORMANCE.csv",
+          "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\jatm_section4\\h_capacity\\H_CAPACITY_SELECTION.json",
+          "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\jatm_section4\\h_capacity\\H_CAPACITY_SELECTION.md",
+          "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\jatm_section4\\h_capacity\\H_CAPACITY_TARGET_PERFORMANCE.csv"
+        ],
+        "status": "REUSED_NOT_RERUN"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "EXECUTION_FREEZE_REVALIDATION",
+      "detail": {
+        "artifact_hash": "sha256:818ba6dbba84c9096171a7c12302f321521933a3996e2b0aee27e6645c898b79",
+        "authority_scope": "CONTENT_ADDRESSED_RUNTIME_NOT_GIT_HEAD",
+        "cross_worktree_contract": "PASS",
+        "freeze_id": "JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V1",
+        "paper_primary_head": "d29fc769e74d6b46f86d3fdf7db18b3f9936f8b1",
+        "phase7_head": "9692e2f984a4646c10e3637a8ba26fc4b25a2c9b",
+        "runtime_file_count": {
+          "paper_primary": 306,
+          "phase7": 343
+        },
+        "status": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "code": "SECTION5_PRIMARY_OUTPUT_SURFACES",
+      "detail": {
+        "no_total_loss": true,
+        "section_5_2": "PRESENT",
+        "section_5_4": "PRESENT",
+        "section_5_5_status": "DECLARED_SCOPE_ONLY_NO_SENSITIVITY_RESULTS_IN_THIS_RUN"
+      },
+      "status": "PASS"
+    }
+  ],
+  "epoch_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched",
+  "execution_result_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\FINAL_TEST_EXECUTION_RESULT.json",
+  "execution_result_sha256": "sha256:65968e4dfaf51ca78e44343c56adfb3c28860e8a88b9aeca9ca8de2c5252b0bc",
+  "freeze_artifact_hash": "sha256:818ba6dbba84c9096171a7c12302f321521933a3996e2b0aee27e6645c898b79",
+  "guard_fields": {
+    "CANONICALIZATION_BEFORE_SUPPORT": "FAIL",
+    "H_CAPACITY_ACTIVE_MODEL_MUTATION": "NONE",
+    "H_CAPACITY_DOWNSTREAM_EXECUTION": "NONE",
+    "SECTION5_PRIMARY_MODEL": "H16_FROZEN_PRIMARY",
+    "STAGE1_OVERALL_AGGREGATION": "OBJECTIVE_THEN_NORMALIZE",
+    "STAGE2_SOBT_COORDINATE": "NODE_RELATIVE_SOBT"
+  },
+  "non_blocking_findings": [
+    {
+      "code": "POST_EXECUTION_PRE_OPEN_TEST_STATE_COUPLING",
+      "detail": "Two pre-open-only negative tests in tests/phase7/test_execution_freeze.py assume the stage-matched epoch root is unopened and therefore now stop at GATE_B_STAGE_MATCHED_ACCESS_AUDIT_ALREADY_EXISTS after the consumed epoch. This is test-state coupling, not a scientific-contract failure; the epoch-scoped access tests pass 12/12."
+    }
+  ],
+  "raw_final_test_data_read_by_audit": false,
+  "read_only": true,
+  "schema_version": "AIR_SLOT_V2_PHASE7_POST_EXECUTION_AUDIT_V1",
+  "scientific_recomputation_performed": false,
+  "status": "FAIL"
+}

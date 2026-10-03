@@ -1,0 +1,81 @@
+# JATM Canonical Stage-Matched Final-Test Post-Execution Audit
+
+- Status: FAIL
+- Epoch root: D:\Local_Projects\airslot\_v2_phase7_execution\artifacts\experiment\final_test_v2_stage_matched_canonical_v1
+- Epoch ID: sha256:91c1e827b4d080f15e68d7c879929a7c9c5b0cec7c3b315c139c8ec007d95502
+- Execution result SHA256: sha256:3d93444ed19f0df6afa2e0047183dc34d4d2f475f5d1689ef09b096b5d85b89a
+- Access audit SHA256: sha256:212cb6b1a3ea2558ce3f4a328d8f447d7a78e688471449e0feb45c9d08476e8f
+- Freeze artifact hash: sha256:d0e6914562fdf316f4bd0b282ab2ebed58046e2f348a05e9f8f70cd314800a93
+
+## Production Counts
+- MATERIALIZED_ROLLING_NODE_COUNT: 1656
+- ROLLING_NODE_COUNTS_BY_STAGE: {'POST_IB_PRE_OB': 1433, 'POST_OB_PRE_TO': 121, 'PRE_IB': 102}
+- CANONICAL_NODE_COUNTS_BY_STAGE: {'POST_IB_PRE_OB': 127, 'POST_OB_PRE_TO': 82, 'PRE_IB': 29}
+- ELIGIBLE_STAGE1_COUNTS_BY_STAGE: {'PRE_IB': 29, 'POST_IB_PRE_OB': 127}
+- DUPLICATE_EPISODE_STAGE_GROUPS_AFTER_CANONICALIZATION: 0
+- R_STAR_COUNT: 16
+- R_STAR_STAGE_COUNTS: {'PRE_IB': 3, 'POST_IB_PRE_OB': 13}
+
+## Checks
+- CHECKPOINT_HASH_AND_DEPENDENCIES: PASS
+- CANONICALIZATION_BEFORE_SUPPORT: PASS
+- PRE_STAGE1_UNIQUENESS: PASS
+- TURN_STAGE1_UNIQUENESS: PASS
+- CROSS_REPRESENTATION_CANONICAL_IDS: PASS
+- STAGE_I_ACTIONABLE_STAGE_SCOPE: PASS
+- STAGE_I_QUEUE_IDENTITY_AND_K: PASS
+- NO_POOLED_STAGE1_RANKING: PASS
+- STAGE1_OVERALL_OBJECTIVE_THEN_NORMALIZE: PASS
+- R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION: PASS
+- STAGE2_NODE_RELATIVE_SOBT: PASS
+- RECOVERY_DECISION_INVARIANTS: PASS
+- BOOTSTRAP_PLAN: PASS
+- PAIRED_MARGINAL_INCREMENT: FAIL
+- SECTION5_ROBUSTNESS_RESULTS: FAIL
+- SECTION5_NO_TOTAL_LOSS: PASS
+- CURRENT_RELEASE_ACCESS_AUDIT_BINDING: PASS
+- HISTORICAL_EPOCH_HASH_STABLE_READ_ONLY: PASS
+- CURRENT_HISTORICAL_EPOCH_ROOTS_DISTINCT: PASS
+- ACTIVE_MODEL_MUTATION: PASS
+- EXECUTION_FREEZE_REVALIDATION: PASS
+
+## Blocking Failures
+- PAIRED_MARGINAL_INCREMENT_NOT_EXECUTED: {'required_definition': 'replicate-level L_HISTORY_POINT - L_HISTORY_MARGINAL', 'paired_increment_object_present': False, 'per_replicate_values_persisted': False, 'can_be_derived_without_rerun': False, 'reason': 'The persisted BOOTSTRAP checkpoint contains comparator-specific point estimates and percentile CIs only. It does not persist replicate-level Point or Marginal losses, so the required paired difference cannot be reconstructed after epoch sealing.', 'HISTORY_MARGINAL_semantics': 'comparator_vs_HISTORY_JOINT'}
+- SECTION5_ROBUSTNESS_RESULTS_NOT_EXECUTED: {'sensitivity_results_status': 'DECLARED_SCOPE_ONLY_NO_SENSITIVITY_RESULTS_IN_THIS_RUN', 'robustness_rows_present': False}
+
+## Required Guards
+- CANONICALIZATION_BEFORE_SUPPORT: PASS
+- PRE_STAGE1_UNIQUENESS: PASS
+- TURN_STAGE1_UNIQUENESS: PASS
+- NO_POOLED_STAGE1_RANKING: PASS
+- TAXI_COMP_STAGE1_PARTICIPATION: NONE
+- R_STAR_SUPPORT_QUALIFIED_PRE_TURN_UNION: PASS
+- STAGE2_SOBT_COORDINATE: NODE_RELATIVE_SOBT
+- STAGE1_OVERALL_AGGREGATION: OBJECTIVE_THEN_NORMALIZE
+- CHECKPOINT_HASH_AND_DEPENDENCIES: PASS
+- FREEZE_HASH_MATCH: PASS
+- FAILED_EPOCH_HASH_STABILITY: PASS
+- ACCESS_BOUNDARY: PASS
+- H_CAPACITY_DOWNSTREAM_EXECUTION: NONE
+- H_CAPACITY_ACTIVE_MODEL_MUTATION: NONE
+- SECTION5_PRIMARY_MODEL: H16_FROZEN_PRIMARY
+- SECTION5_1_STATUS: PASS
+- SECTION5_2_STATUS: PASS
+- SECTION5_3_STATUS: FAIL
+- SECTION5_4_STATUS: FAIL
+- POST_EXECUTION_AUDIT: FAIL
+- FINAL_TEST_COMPLETE: NO
+- PAPER_RESULTS_FROZEN: NO
+- READY_FOR_FREEZE: NO
+
+## Seal Decision
+- The epoch is consumed and must not be opened or rerun as a second epoch.
+- The executed canonicalization and Stage-I/Stage-II guard fields pass.
+- The epoch is not a complete frozen scientific result because the required paired marginal-increment bootstrap output and Section 5 robustness results are absent from the persisted Final-Test artifacts.
+- FINAL_TEST_COMPLETE=NO
+- PAPER_RESULTS_FROZEN=NO
+- READY_FOR_FREEZE=NO
+
+## Notes
+- This audit read persisted epoch/checkpoint artifacts only; it did not read raw Final-Test source data.
+- No scientific definition was changed and no Final-Test stage was rerun.

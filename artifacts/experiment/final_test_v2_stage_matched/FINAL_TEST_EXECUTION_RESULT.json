@@ -1,0 +1,470 @@
+{
+  "access_epoch": {
+    "access_epoch_id": "sha256:6112553189e9288155f92634588a94954a13597c9fa31ee31e91eacb5e91fd37",
+    "access_epoch_opened": "2026-09-19T16:55:36.974498+00:00",
+    "cohort_change_closes_epoch": true,
+    "current_total": 2,
+    "historical_access_total": 1,
+    "new_final_test_execution": true,
+    "parameter_selection_change_closes_epoch": true,
+    "phase7_increment": 1,
+    "raw_read_completed": false,
+    "raw_read_started": true,
+    "raw_read_started_at": "2026-09-19T16:55:36.983385+00:00",
+    "release": {
+      "cohort_authority_sha256": "sha256:9832b198e221042bff6f40c718f07c82169885514030308b7d50d6172d7e0088",
+      "cohort_manifest_sha256": "sha256:3e10f0e125ed70f6487bda0f0864c9191ddde9ab2d539514a520879b0131d26f",
+      "freeze_tag_object": "2dcca6c159dedde3803e63cb48bd8bfefff574cf",
+      "freeze_tag_target_commit": "3834eed33d4a2ea4bdba111fc29cca3529525a3a",
+      "gate_a_commit": "RESOLVED_AFTER_GATE_A_COMMIT",
+      "human_approval_timestamp": "2026-09-19T16:55:27.274499+00:00",
+      "human_approved": true,
+      "instruction_sha256": "sha256:075da95f7726c10ddbab04a53cbbc5f3889cfbd982d189b53960842692704617"
+    },
+    "release_binding_sha256": "sha256:6112553189e9288155f92634588a94954a13597c9fa31ee31e91eacb5e91fd37",
+    "reporting_choice_change_closes_epoch": true,
+    "retry_count": 0,
+    "retry_within_same_epoch": false,
+    "same_epoch_retry_policy": "BINDING_AND_IO_FIXES_ONLY",
+    "schema_version": "AIR_SLOT_V2_PHASE7_ACCESS_AUDIT_V1",
+    "scientific_definition_change_closes_epoch": true,
+    "status": "PHASE7_ACCESS_EPOCH_OPEN"
+  },
+  "executor_binding": {
+    "access_audit_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\PHASE7_ACCESS_AUDIT.json",
+    "access_audit_present": false,
+    "callback_path": "formal.v2_phase7.gate_b:production_pipeline",
+    "current_epoch_access_audit_present": false,
+    "current_epoch_access_count": 0,
+    "current_epoch_release_present": true,
+    "current_freeze_run_increment": 0,
+    "dag_stages": [
+      "CANONICAL_NODES",
+      "STATE_VARIANTS",
+      "CONSEQUENCE_VARIANTS",
+      "ATTENTION_DECISIONS",
+      "REFERENCE_RECOVERY_COHORT",
+      "RECOVERY_DECISIONS",
+      "M4_COMPARISONS",
+      "BOOTSTRAP",
+      "PAPER_VIEWS"
+    ],
+    "deterministic_tie_break": "SMALLEST_U",
+    "executor_module": "formal.v2_phase7.executor.runner",
+    "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "final_test_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched",
+    "fixed_window_sensitivity_status": "NOT_AVAILABLE_NOT_FROZEN",
+    "gate_a_dry_run_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\GATE_A_DRY_RUN.json",
+    "gate_a_preflight_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\GATE_A_PREFLIGHT.json",
+    "gate_b_authorized": false,
+    "highs_required_for_production_rows": false,
+    "highs_role": "PARITY_BACKEND_ONLY",
+    "historical_epoch_access_audit_present": true,
+    "historical_epoch_present": true,
+    "historical_epoch_release_present": true,
+    "historical_epoch_used_for_scientific_computation": false,
+    "historical_epoch_used_for_selection": false,
+    "historical_final_test_access_total": 1,
+    "human_release_present": true,
+    "parity_backend": "PYOMO_HIGHS",
+    "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+    "pre_open_status": "PRE_OPEN_AUTHORIZATION_READY_ONLY",
+    "production_executor_bound": true,
+    "production_executor_ready": false,
+    "raw_adapter_activation": "HUMAN_RELEASE_PLUS_OPEN_ACCESS_EPOCH",
+    "raw_adapter_binding": "PRODUCTION_RAW_SOURCE_ADAPTER_BOUND",
+    "raw_adapter_id": "PRODUCTION_FINAL_TEST_RAW_SOURCE_ADAPTER_V1",
+    "raw_adapter_local_input_root_env": "AIRSLOT_PHASE7_LOCAL_INPUT_ROOT",
+    "raw_adapter_status": "GUARDED_ONE_SHOT_NOT_ACTIVATED",
+    "release_path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\GATE_B_HUMAN_RELEASE.json",
+    "scientific_output_root": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints",
+    "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+    "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+    "stage2_solver_authority": {
+      "active_contract": {
+        "deterministic_tie_break": "SMALLEST_U",
+        "final_test_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "highs_required_for_production_rows": false,
+        "highs_role": "PARITY_BACKEND_ONLY",
+        "parity_backend": "PYOMO_HIGHS",
+        "parity_scope": "REPRESENTATIVE_PRE_TURN_FIXTURES_ONLY",
+        "solver_status_semantics": "STAGE2_SOLVER_BACKEND_IDENTITY_NOT_TERMINATION_STATE",
+        "stage2_primary_solver": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+        "termination_condition_semantics": "SEPARATE_HIGHS_PARITY_DIAGNOSTIC"
+      },
+      "historical_registry_labels": {
+        "formal_solver": "PYOMO_HIGHS",
+        "semantics": "HISTORICAL_PROVENANCE_ONLY_SUPERSEDED_BY_ACTIVE_CONTRACT",
+        "stage2_solver.formal_path": "PYOMO_HIGHS"
+      },
+      "overlay_artifact_hash": "sha256:4e9adc649928e9140d5d16b33259adc5552a0031a183f3b203e11ae4b70c247e",
+      "overlay_file_sha256": "sha256:8de30a81b6fbea380dbaf9d9cae7945ba0daac8becf20f71ddea8f1d4ce5fff1",
+      "overlay_path": "registries\\v2_stage2_solver_authority_reconciliation.json",
+      "scientific_definition_change": false,
+      "solver_status_contract": {
+        "field_role": "STAGE2_SOLUTION_PROVENANCE_BACKEND_IDENTITY",
+        "member_values": [
+          "PYOMO_HIGHS",
+          "EXACT_ENUMERATION",
+          "NOT_RUN"
+        ],
+        "status": "PASS",
+        "termination_condition_is_separate": true
+      },
+      "status": "PASS"
+    },
+    "status": "PRODUCTION_EXECUTOR_BOUND"
+  },
+  "release_validation": {
+    "freeze_tag_object": "2dcca6c159dedde3803e63cb48bd8bfefff574cf",
+    "freeze_tag_target_commit": "3834eed33d4a2ea4bdba111fc29cca3529525a3a",
+    "human_approved": true,
+    "schema_fields": [
+      "gate_a_commit",
+      "instruction_sha256",
+      "freeze_tag_object",
+      "freeze_tag_target_commit",
+      "cohort_authority_sha256",
+      "cohort_manifest_sha256",
+      "human_approved",
+      "human_approval_timestamp"
+    ],
+    "status": "PASS"
+  },
+  "result": {
+    "dag_stages": [
+      "CANONICAL_NODES",
+      "STATE_VARIANTS",
+      "CONSEQUENCE_VARIANTS",
+      "ATTENTION_DECISIONS",
+      "REFERENCE_RECOVERY_COHORT",
+      "RECOVERY_DECISIONS",
+      "M4_COMPARISONS",
+      "BOOTSTRAP",
+      "PAPER_VIEWS"
+    ],
+    "manifest": {
+      "access_boundary": {
+        "current_freeze_run_increment": 0,
+        "historical_final_test_access_total": 1,
+        "human_release_created": false,
+        "legacy_final_test_result_tree_incidental_repository_audit_reads": 1,
+        "legacy_final_test_result_tree_reads_used_for_scientific_computation": false,
+        "legacy_final_test_result_tree_reads_used_for_selection": false,
+        "legacy_final_test_result_tree_scientific_read_by_fixture": false,
+        "phase7_access_epoch_opened": false,
+        "phase7_scientific_access_increment": 0,
+        "q4_raw_read": false
+      },
+      "atomic_results_before_views": true,
+      "computed_stages": [
+        "CANONICAL_NODES",
+        "STATE_VARIANTS",
+        "CONSEQUENCE_VARIANTS",
+        "ATTENTION_DECISIONS",
+        "REFERENCE_RECOVERY_COHORT",
+        "RECOVERY_DECISIONS",
+        "M4_COMPARISONS",
+        "BOOTSTRAP",
+        "PAPER_VIEWS"
+      ],
+      "dag_stages": [
+        "CANONICAL_NODES",
+        "STATE_VARIANTS",
+        "CONSEQUENCE_VARIANTS",
+        "ATTENTION_DECISIONS",
+        "REFERENCE_RECOVERY_COHORT",
+        "RECOVERY_DECISIONS",
+        "M4_COMPARISONS",
+        "BOOTSTRAP",
+        "PAPER_VIEWS"
+      ],
+      "fixed_window_sensitivity_status": "NOT_AVAILABLE_NOT_FROZEN",
+      "frozen_services_loaded": true,
+      "immutable_checkpoint_consumption": true,
+      "materialization_scope": "FINAL_TEST_SEALED_MATERIALIZATION",
+      "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+      "reused_stages": [],
+      "schema_version": "AIR_SLOT_V2_PHASE7_EXECUTOR_RUN_V1",
+      "stage_dependencies": {
+        "ATTENTION_DECISIONS": [
+          "CONSEQUENCE_VARIANTS"
+        ],
+        "BOOTSTRAP": [
+          "M4_COMPARISONS"
+        ],
+        "CANONICAL_NODES": [],
+        "CONSEQUENCE_VARIANTS": [
+          "CANONICAL_NODES",
+          "STATE_VARIANTS"
+        ],
+        "M4_COMPARISONS": [
+          "CONSEQUENCE_VARIANTS",
+          "ATTENTION_DECISIONS",
+          "REFERENCE_RECOVERY_COHORT",
+          "RECOVERY_DECISIONS"
+        ],
+        "PAPER_VIEWS": [
+          "ATTENTION_DECISIONS",
+          "M4_COMPARISONS",
+          "BOOTSTRAP"
+        ],
+        "RECOVERY_DECISIONS": [
+          "CANONICAL_NODES",
+          "STATE_VARIANTS",
+          "REFERENCE_RECOVERY_COHORT"
+        ],
+        "REFERENCE_RECOVERY_COHORT": [
+          "CANONICAL_NODES",
+          "STATE_VARIANTS",
+          "ATTENTION_DECISIONS"
+        ],
+        "STATE_VARIANTS": [
+          "CANONICAL_NODES"
+        ]
+      },
+      "stage_records": {
+        "ATTENTION_DECISIONS": {
+          "dependencies": {
+            "CONSEQUENCE_VARIANTS": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd"
+          },
+          "file_sha256": "sha256:d68ed4364fdab6b84aea6b78cb16faf9244bc562f2e710b1c645fbde0a345fb0",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\ATTENTION_DECISIONS.json",
+          "payload_hash": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_ATTENTION_DECISIONS_V1",
+          "stage": "ATTENTION_DECISIONS"
+        },
+        "BOOTSTRAP": {
+          "dependencies": {
+            "M4_COMPARISONS": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb"
+          },
+          "file_sha256": "sha256:9d33240e3e88e51f9c7c6d10b95e684bae7291479c0aee3b720fcff906a76483",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\BOOTSTRAP.json",
+          "payload_hash": "sha256:683872c72e7551ec651228e488e1d1345107364e29ae6e3a77c2ff910e1b734b",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_BOOTSTRAP_V1",
+          "stage": "BOOTSTRAP"
+        },
+        "CANONICAL_NODES": {
+          "dependencies": {},
+          "file_sha256": "sha256:49d03c08e5e44073991034229fb39291d773915b43404d4eacc5a499ef57e4b0",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\CANONICAL_NODES.json",
+          "payload_hash": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_CANONICAL_NODES_V1",
+          "stage": "CANONICAL_NODES"
+        },
+        "CONSEQUENCE_VARIANTS": {
+          "dependencies": {
+            "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+            "STATE_VARIANTS": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed"
+          },
+          "file_sha256": "sha256:1262131188da8bee922c4084286f4544b695ee3eb1b1b39c2cb9bdf5b12abbcd",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+          "payload_hash": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_CONSEQUENCE_VARIANTS_V1",
+          "stage": "CONSEQUENCE_VARIANTS"
+        },
+        "M4_COMPARISONS": {
+          "dependencies": {
+            "ATTENTION_DECISIONS": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+            "CONSEQUENCE_VARIANTS": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd",
+            "RECOVERY_DECISIONS": "sha256:f82ca669c3baa67c660910db419438775d9310c7b455d5a5a153081de1d8bbbf",
+            "REFERENCE_RECOVERY_COHORT": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99"
+          },
+          "file_sha256": "sha256:b9e66adacc08083f322d83fe4eddff16f79f3a39f394f34d946cfb8f50ffe463",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\M4_COMPARISONS.json",
+          "payload_hash": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_M4_COMPARISONS_V1",
+          "stage": "M4_COMPARISONS"
+        },
+        "PAPER_VIEWS": {
+          "dependencies": {
+            "ATTENTION_DECISIONS": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+            "BOOTSTRAP": "sha256:683872c72e7551ec651228e488e1d1345107364e29ae6e3a77c2ff910e1b734b",
+            "M4_COMPARISONS": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb"
+          },
+          "file_sha256": "sha256:b62fc3cdeb47099ce42050625828792188faf28a836dc1e50ee13c610b9d2baa",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\PAPER_VIEWS.json",
+          "payload_hash": "sha256:773c8f486afa3eafbb71781862d4c7c2222c215c97f9a4b0599f839787ab1660",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1",
+          "stage": "PAPER_VIEWS"
+        },
+        "RECOVERY_DECISIONS": {
+          "dependencies": {
+            "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+            "REFERENCE_RECOVERY_COHORT": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99",
+            "STATE_VARIANTS": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed"
+          },
+          "file_sha256": "sha256:f457f7e7b566446221c0ae6e9e9c4b3cd685f50d1288532f6670082f637fbb05",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\RECOVERY_DECISIONS.json",
+          "payload_hash": "sha256:f82ca669c3baa67c660910db419438775d9310c7b455d5a5a153081de1d8bbbf",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_RECOVERY_DECISIONS_V1",
+          "stage": "RECOVERY_DECISIONS"
+        },
+        "REFERENCE_RECOVERY_COHORT": {
+          "dependencies": {
+            "ATTENTION_DECISIONS": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+            "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+            "STATE_VARIANTS": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed"
+          },
+          "file_sha256": "sha256:9e350c1672f70159d3357d148c8473ac12f83eed85554743f12727a072756d75",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\REFERENCE_RECOVERY_COHORT.json",
+          "payload_hash": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1",
+          "stage": "REFERENCE_RECOVERY_COHORT"
+        },
+        "STATE_VARIANTS": {
+          "dependencies": {
+            "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926"
+          },
+          "file_sha256": "sha256:f79ecee2f939d1277cd5813cb92301b8d5d14dd6bceb801c49c41b41fe67c549",
+          "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\STATE_VARIANTS.json",
+          "payload_hash": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed",
+          "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+          "reused": false,
+          "schema_version": "AIR_SLOT_V2_PHASE7_STATE_VARIANTS_V1",
+          "stage": "STATE_VARIANTS"
+        }
+      }
+    },
+    "materialization_scope": "FINAL_TEST_SEALED_MATERIALIZATION",
+    "paper_views_status": "PERSISTED_AS_IMMUTABLE_CHECKPOINT",
+    "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+    "schema_version": "AIR_SLOT_V2_PHASE7_SEALED_PIPELINE_V1",
+    "stage_records": {
+      "ATTENTION_DECISIONS": {
+        "dependencies": {
+          "CONSEQUENCE_VARIANTS": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd"
+        },
+        "file_sha256": "sha256:d68ed4364fdab6b84aea6b78cb16faf9244bc562f2e710b1c645fbde0a345fb0",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\ATTENTION_DECISIONS.json",
+        "payload_hash": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_ATTENTION_DECISIONS_V1",
+        "stage": "ATTENTION_DECISIONS"
+      },
+      "BOOTSTRAP": {
+        "dependencies": {
+          "M4_COMPARISONS": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb"
+        },
+        "file_sha256": "sha256:9d33240e3e88e51f9c7c6d10b95e684bae7291479c0aee3b720fcff906a76483",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\BOOTSTRAP.json",
+        "payload_hash": "sha256:683872c72e7551ec651228e488e1d1345107364e29ae6e3a77c2ff910e1b734b",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_BOOTSTRAP_V1",
+        "stage": "BOOTSTRAP"
+      },
+      "CANONICAL_NODES": {
+        "dependencies": {},
+        "file_sha256": "sha256:49d03c08e5e44073991034229fb39291d773915b43404d4eacc5a499ef57e4b0",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\CANONICAL_NODES.json",
+        "payload_hash": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_CANONICAL_NODES_V1",
+        "stage": "CANONICAL_NODES"
+      },
+      "CONSEQUENCE_VARIANTS": {
+        "dependencies": {
+          "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+          "STATE_VARIANTS": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed"
+        },
+        "file_sha256": "sha256:1262131188da8bee922c4084286f4544b695ee3eb1b1b39c2cb9bdf5b12abbcd",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+        "payload_hash": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_CONSEQUENCE_VARIANTS_V1",
+        "stage": "CONSEQUENCE_VARIANTS"
+      },
+      "M4_COMPARISONS": {
+        "dependencies": {
+          "ATTENTION_DECISIONS": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+          "CONSEQUENCE_VARIANTS": "sha256:53c18c185e3709b7ce5a050b785bf3d9ac21d7b967b08467ab5d511f0bab2ebd",
+          "RECOVERY_DECISIONS": "sha256:f82ca669c3baa67c660910db419438775d9310c7b455d5a5a153081de1d8bbbf",
+          "REFERENCE_RECOVERY_COHORT": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99"
+        },
+        "file_sha256": "sha256:b9e66adacc08083f322d83fe4eddff16f79f3a39f394f34d946cfb8f50ffe463",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\M4_COMPARISONS.json",
+        "payload_hash": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_M4_COMPARISONS_V1",
+        "stage": "M4_COMPARISONS"
+      },
+      "PAPER_VIEWS": {
+        "dependencies": {
+          "ATTENTION_DECISIONS": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+          "BOOTSTRAP": "sha256:683872c72e7551ec651228e488e1d1345107364e29ae6e3a77c2ff910e1b734b",
+          "M4_COMPARISONS": "sha256:1c6c98f5d3f57f6a6d36ea9cd469be079eae3d280ff8aa29631bdb0d553e14cb"
+        },
+        "file_sha256": "sha256:b62fc3cdeb47099ce42050625828792188faf28a836dc1e50ee13c610b9d2baa",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\PAPER_VIEWS.json",
+        "payload_hash": "sha256:773c8f486afa3eafbb71781862d4c7c2222c215c97f9a4b0599f839787ab1660",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_PAPER_VIEWS_V1",
+        "stage": "PAPER_VIEWS"
+      },
+      "RECOVERY_DECISIONS": {
+        "dependencies": {
+          "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+          "REFERENCE_RECOVERY_COHORT": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99",
+          "STATE_VARIANTS": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed"
+        },
+        "file_sha256": "sha256:f457f7e7b566446221c0ae6e9e9c4b3cd685f50d1288532f6670082f637fbb05",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\RECOVERY_DECISIONS.json",
+        "payload_hash": "sha256:f82ca669c3baa67c660910db419438775d9310c7b455d5a5a153081de1d8bbbf",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_RECOVERY_DECISIONS_V1",
+        "stage": "RECOVERY_DECISIONS"
+      },
+      "REFERENCE_RECOVERY_COHORT": {
+        "dependencies": {
+          "ATTENTION_DECISIONS": "sha256:bb339f702dfe4a0e045ad502f6381e1ed92c7ca11d9227085e20ba95a0c0687d",
+          "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926",
+          "STATE_VARIANTS": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed"
+        },
+        "file_sha256": "sha256:9e350c1672f70159d3357d148c8473ac12f83eed85554743f12727a072756d75",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\REFERENCE_RECOVERY_COHORT.json",
+        "payload_hash": "sha256:85e497511fece7a720b38cc733e11dd321c213de289fafce095af6c3c71c4d99",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1",
+        "stage": "REFERENCE_RECOVERY_COHORT"
+      },
+      "STATE_VARIANTS": {
+        "dependencies": {
+          "CANONICAL_NODES": "sha256:a741e560c041c0451b2ef7ef45b2af96f907942def8eabfe76064d52a7602926"
+        },
+        "file_sha256": "sha256:f79ecee2f939d1277cd5813cb92301b8d5d14dd6bceb801c49c41b41fe67c549",
+        "path": "D:\\Local_Projects\\airslot\\_v2_phase7_execution\\artifacts\\experiment\\final_test_v2_stage_matched\\checkpoints\\STATE_VARIANTS.json",
+        "payload_hash": "sha256:f080edf5a8f78738a2ceb1aeb2d35d1ffaec67af9ac64027e64a22ea515976ed",
+        "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+        "reused": false,
+        "schema_version": "AIR_SLOT_V2_PHASE7_STATE_VARIANTS_V1",
+        "stage": "STATE_VARIANTS"
+      }
+    },
+    "status": "PASS"
+  },
+  "status": "PASS"
+}
