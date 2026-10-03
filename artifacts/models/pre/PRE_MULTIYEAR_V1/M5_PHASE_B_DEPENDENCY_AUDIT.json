@@ -1,0 +1,52 @@
+{
+  "audit": "M5_PHASE_B_HASH_RANKING_DEPENDENCY_BOUNDARY",
+  "year_checked": 2019,
+  "artifacts_inspected": {
+    "COHORT_PREPARATION_STATE.pt": {
+      "retains": [
+        "reservoirs(sampled 128/64/128 EpisodeRecords)",
+        "pool_sizes(counts)",
+        "previous_rows(carry)",
+        "per_month(counts)",
+        "rng_state"
+      ],
+      "reservoir_sizes": {
+        "train": 128,
+        "calibration": 64,
+        "development": 128,
+        "test": 0
+      },
+      "full_eligible_pool_ids_retained": false
+    },
+    "STAGE_B_SUMMARY.json": {
+      "retains": "aggregate counts/histograms only",
+      "episode_ids": false
+    },
+    "SPLIT_CONTAINMENT_AUDIT.json": {
+      "retains": "aggregate counts/histograms only",
+      "episode_ids": false
+    },
+    "STAGE_R_SUMMARY.json": {
+      "retains": "aggregate counts/histograms only",
+      "episode_ids": false
+    },
+    "PRE_FORMAL_DEVELOPMENT_STATES.jsonl": {
+      "retains": "PRE states for the 1994 sampled dev nodes",
+      "full_eligible_pool_ids_retained": false
+    },
+    "REFERENCE_HISTOGRAMS.json": {
+      "retains": "value histograms",
+      "episode_ids": false
+    }
+  },
+  "conclusion": {
+    "eligible_pool_recoverable_from_existing_artifacts": false,
+    "earliest_dependency_boundary": "lightweight flight projection + episode-chain enumeration over raw ontime months 1-9 (raw->ids pass). This is the minimal pass that reconstructs the eligible episode pool: it does NOT re-execute raw ingestion-to-storage, canonicalization-to-storage, reference fits, stream manifests, or PRE materialization.",
+    "hash_ranking_input_required": "eligible (split, episode_id) pairs; then top-N_max by SHA256(FIXED_M5_SEED || episode_id)",
+    "later_stages_reused_from_existing_artifacts": [
+      "reference fits (stage R/C outputs, cohort-size independent)",
+      "stream counts (stage B, cohort-size independent)",
+      "containment audit (stage 3, cohort-size independent)"
+    ]
+  }
+}

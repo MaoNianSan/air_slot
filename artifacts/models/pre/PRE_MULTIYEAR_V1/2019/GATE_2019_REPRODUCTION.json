@@ -1,0 +1,39 @@
+{
+  "checks": {
+    "development_pool_equals_stream_pre_eligible": true,
+    "no_final_test_access": true,
+    "pool_sizes": true,
+    "state_key": true
+  },
+  "drift_explanation": "frozen V1 stream manifest (commit bfd3d34) predates the BTS signed-delay semantic correction (commit 694f2d4); the frozen cohort pool and state key - both reproduced here exactly - are the authoritative anchors",
+  "failed": [],
+  "frozen_v1_stream_drift": {
+    "candidate_episodes": {
+      "delta": -801,
+      "fresh": 950558,
+      "frozen_v1": 951359
+    },
+    "decision_nodes": {
+      "delta": -154248,
+      "fresh": 13567292,
+      "frozen_v1": 13721540
+    },
+    "pre_eligible_episodes": {
+      "delta": -5175,
+      "fresh": 946184,
+      "frozen_v1": 951359
+    },
+    "pre_eligible_nodes": {
+      "delta": -154248,
+      "fresh": 13567292,
+      "frozen_v1": 13721540
+    },
+    "weather_supported_nodes": {
+      "delta": -51708,
+      "fresh": 5558724,
+      "frozen_v1": 5610432
+    }
+  },
+  "gate": "2019_REPRODUCTION",
+  "status": "PASS"
+}
