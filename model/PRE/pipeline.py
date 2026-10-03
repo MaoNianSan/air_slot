@@ -20,7 +20,16 @@ def _target_support(dataset_instance_id: str, bundle: RegistryBundle):
         for item in bundle.scientific_variables
         if item.scientific_variable == "schedule_reference"
     )
-    schedule_support = schedule.dataset_support[dataset_instance_id]
+    schedule_support = schedule.dataset_support.get(dataset_instance_id)
+    if schedule_support is None:
+        # M4b: the data2_2017_2022 instance shares the data2_2019 source
+        # schema/layout and therefore its declared scientific support. The
+        # fallback never writes into the hashed registries; only the legacy
+        # instance id is looked up in scientific_variables.yaml.
+        if dataset_instance_id == "data2_2017_2022":
+            schedule_support = schedule.dataset_support["data2_2019"]
+        else:
+            raise KeyError(dataset_instance_id)
     r_ob_supported = (
         schedule_support.formal_input_support is not EvidenceClass.UNSUPPORTED
     )

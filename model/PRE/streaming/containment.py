@@ -256,16 +256,22 @@ def _episode_namespace(predecessor: dict, successor: dict):
     )
 
 
-def _fast_split(value: date | datetime | str) -> str:
+def _fast_split(value: date | datetime | str, *, year: int = 2019,
+                split_resolver=None) -> str:
+    """Fast month-window split. The default (year=2019, no resolver)
+    reproduces the legacy data2_2019 boundaries exactly; the multi-year
+    instance passes its resolver (rule @2.0.0)."""
     if isinstance(value, datetime):
         value = value.date()
     elif isinstance(value, str):
         value = date.fromisoformat(value[:10])
-    if value <= date(2019, 6, 30):
+    if split_resolver is not None:
+        return split_resolver(value)
+    if value <= date(year, 6, 30):
         return "train"
-    if value <= date(2019, 7, 31):
+    if value <= date(year, 7, 31):
         return "calibration"
-    if value <= date(2019, 9, 30):
+    if value <= date(year, 9, 30):
         return "development"
     return "test"
 

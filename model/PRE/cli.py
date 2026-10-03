@@ -11,6 +11,7 @@ from model.PRE.adapters.readers import source_files
 from model.PRE.adapters.registry import RawReadRequest, SourceAdapterRegistry
 from model.PRE.canonical.storage import write_canonical_partition
 from model.PRE.episode.builder import build_episode_records
+from model.PRE.instances.contract import get_instance_contract
 
 
 def parser() -> argparse.ArgumentParser:
@@ -61,10 +62,17 @@ def _request(args, output: Path) -> RawReadRequest:
 
 
 def _adapter(dataset: str):
+    """Instance-aware dispatch: dataset instance -> instance contract ->
+    adapter_id -> the single Data2Adapter. No per-instance adapter classes."""
     if dataset == "data1_2019":
         return Data1Adapter()
     if dataset == "data2_2019":
         return Data2Adapter()
+    if dataset == "data2_2017_2022":
+        contract = get_instance_contract(dataset)
+        if contract.adapter_id != "D2" or not contract.raw_ingestion_enabled:
+            raise ContractError("UNKNOWN_DATASET_INSTANCE")
+        return Data2Adapter(dataset_instance_id=dataset)
     raise ContractError("UNKNOWN_DATASET_INSTANCE")
 
 

@@ -137,7 +137,14 @@ class RegistryPREMapper:
         if rule is None:
             raise ContractError(f"UNKNOWN_REGISTRY_RULE:{record.provenance_rule_id}")
         if rule.dataset_id != record.dataset_instance_id:
-            raise ContractError("REGISTRY_DATASET_CONTRADICTION")
+            # M5: the multi-year instance shares the data2_2019 rule set's
+            # schema/layout semantics (same raw family, same registered
+            # globs); its identity is re-bound at the record boundary and
+            # audited by the provenance audit, so a legacy-dataset_id rule
+            # row may map a multi-year record.
+            if not (record.dataset_instance_id == "data2_2017_2022"
+                    and rule.dataset_id == "data2_2019"):
+                raise ContractError("REGISTRY_DATASET_CONTRADICTION")
         if rule.canonical_object != record.canonical_object_type:
             raise ContractError("REGISTRY_CANONICAL_OBJECT_CONTRADICTION")
         if rule.decision_time_role is not record.decision_time_role:
@@ -169,7 +176,10 @@ class RegistryPREMapper:
             raise ContractError("REGISTRY_PRE_FAMILY_CONTRADICTION")
         if not weaker_or_equal(rule.evidence_class, rule.support_ceiling):
             raise ContractError("SUPPORT_UPGRADE_FORBIDDEN")
-        support = definition.dataset_support[record.dataset_instance_id]
+        support = definition.dataset_support.get(record.dataset_instance_id)
+        if support is None and record.dataset_instance_id == "data2_2017_2022":
+            # M4b: shared source schema/layout with the legacy data2 instance.
+            support = definition.dataset_support["data2_2019"]
         if support.formal_input_support is EvidenceClass.UNSUPPORTED:
             raise ContractError("UNSUPPORTED_RECORD_CANNOT_PUBLISH_VALUE")
         value = SupportedValue(
@@ -200,7 +210,10 @@ class RegistryPREMapper:
                 continue
             if definition.scientific_variable in present:
                 continue
-            support = definition.dataset_support[dataset_instance_id]
+            support = definition.dataset_support.get(dataset_instance_id)
+            if support is None and dataset_instance_id == "data2_2017_2022":
+                # M4b: shared source schema/layout with the legacy data2 instance.
+                support = definition.dataset_support["data2_2019"]
             if support.reason_code in {"NOT_REQUIRED_IN_FOUNDATION"}:
                 continue
             reason = support.reason_code or "NO_LEGAL_RECORD_AT_DECISION_TIME"

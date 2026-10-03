@@ -190,6 +190,10 @@ def build_data2_passenger_reference(
     into this row) so the full-Q1 probe can pre-aggregate per route
     without materialising millions of row dicts; default is 1.
     """
+    # M5 year-parameterization (user-approved 2026-09-30): the canonical
+    # period guard is derived from the fit period's year instead of the 2019
+    # legacy constant; for fit_period="2019-H1" the check is bit-identical.
+    fit_year_prefix = str(fit_period).split("-")[0]
     for row in rows:
         for key in _REQUIRED_ROW_KEYS:
             if key not in row or row[key] in (None, ""):
@@ -197,7 +201,7 @@ def build_data2_passenger_reference(
         if not isinstance(row.get("value"), (int, float)):
             raise ContractError("REFERENCE_ROW_MISSING:value")
         period = str(row["reference_period"])
-        if not period.startswith(EXPECTED_REFERENCE_PERIOD_PREFIX):
+        if not period.startswith(fit_year_prefix):
             raise ContractError("REFERENCE_PERIOD_MISMATCH")
     datasets = {row["dataset_instance_id"] for row in rows}
     if datasets != {dataset_instance_id}:

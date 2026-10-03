@@ -62,6 +62,7 @@ def evaluate_episode_containment(
     predecessor_service_date: date | datetime | str,
     successor_service_date: date | datetime | str,
     extra_decision_times: tuple[datetime, ...] = (),
+    split_resolver=None,
 ) -> SplitContainmentResult:
     """Check all scientific episode support against the frozen V5 partition.
 
@@ -69,8 +70,9 @@ def evaluate_episode_containment(
     and every five-minute decision node. ``extra_decision_times`` lets callers
     validate materialized nodes when they have already been constructed.
     """
-    predecessor_split = split_for_date(_as_date(predecessor_service_date))
-    successor_split = split_for_date(_as_date(successor_service_date))
+    resolve_split = split_resolver or split_for_date
+    predecessor_split = resolve_split(_as_date(predecessor_service_date))
+    successor_split = resolve_split(_as_date(successor_service_date))
     # V5 partitions are contiguous date intervals. If both interval endpoints
     # map to one split, every monotone five-minute node between them does too.
     support_times = (
@@ -78,7 +80,7 @@ def evaluate_episode_containment(
         episode.episode_end_time,
         *tuple(extra_decision_times),
     )
-    support_splits = tuple(split_for_date(stamp.date()) for stamp in support_times)
+    support_splits = tuple(resolve_split(stamp.date()) for stamp in support_times)
     sequence = (predecessor_split, *support_splits, successor_split)
     ordered_unique = tuple(name for name in _SPLIT_ORDER if name in set(sequence))
     transitions = tuple(
@@ -99,7 +101,7 @@ def evaluate_episode_containment(
 
 
 def episode_containment_from_rows(
-    episode, rows_by_id: dict[str, dict]
+    episode, rows_by_id: dict[str, dict], *, split_resolver=None
 ) -> SplitContainmentResult:
     predecessor = rows_by_id[episode.predecessor_flight_id]
     successor = rows_by_id[episode.successor_flight_id]
@@ -107,4 +109,5 @@ def episode_containment_from_rows(
         episode,
         predecessor_service_date=predecessor["service_date"],
         successor_service_date=successor["service_date"],
+        split_resolver=split_resolver,
     )

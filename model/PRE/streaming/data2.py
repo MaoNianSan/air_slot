@@ -27,7 +27,7 @@ from model.PRE.canonical.normalization import (
 )
 from model.PRE.canonical.normalization_common import deterministic_id, missing, number
 from model.PRE.canonical.timezone import infer_rollover, local_hhmm_to_utc
-from model.PRE.cohort import split_for_date
+from model.PRE.cohort import split_for_date, split_for_date_multiyear
 from model.PRE.episode.builder import (
     build_data2_episode_records,
 )
@@ -99,6 +99,7 @@ def ontime_paths(
     months: Iterable[int] = range(1, 10),
     *,
     allow_final_test: bool = False,
+    year: int = 2019,
 ) -> tuple[Path, ...]:
     """Return month-bounded BTS paths.
 
@@ -106,6 +107,9 @@ def ontime_paths(
     Final Test guard.  A separately authorized FINAL_TEST materializer passes
     ``allow_final_test=True`` with Q4 month numbers; it never expands the
     source window beyond those requested partitions.
+
+    M4b: ``year`` selects the ontime partition directory. The default 2019
+    reproduces the legacy data2_2019 behavior exactly.
     """
     selected_months = tuple(int(month) for month in months)
     paths: list[Path] = []
@@ -116,7 +120,7 @@ def ontime_paths(
             / "raw"
             / "bts"
             / "ontime"
-            / "2019"
+            / str(year)
             / f"month={month:02d}"
         )
         candidates = tuple(partition.glob("*.csv"))
@@ -130,12 +134,14 @@ def ontime_paths(
     return paths
 
 
-def development_source_paths(root: Path) -> tuple[Path, ...]:
+def development_source_paths(root: Path, *, year: int = 2019) -> tuple[Path, ...]:
     data2_root = root / "data2"
     paths = (
-        ontime_paths(root)
+        ontime_paths(root, year=year)
         + tuple(
-            sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv"))
+            sorted(
+                (data2_root / "raw" / "weather" / "noaa" / str(year)).glob("*.csv")
+            )
         )
         + (
             data2_root / "refs" / "weather_station_map.csv",
@@ -191,6 +197,7 @@ def iter_lightweight_flights(
     heartbeat: Heartbeat | None = None,
     phase: str = "DATA_PREPARATION_ONTIME",
     include_warning_fields: bool = False,
+    dataset_instance_id: str = "data2_2019",
 ):
     started = last_heartbeat = time.perf_counter()
     input_rows = skipped = 0
@@ -285,7 +292,7 @@ def iter_lightweight_flights(
                     "event_end_time": scheduled_arrival,
                     "actual_arrival_utc": actual_arrival,
                     "actual_departure_utc": actual_departure,
-                    "dataset_instance_id": "data2_2019",
+                    "dataset_instance_id": dataset_instance_id,
                     "service_date": day.isoformat(),
                 }
                 if include_warning_fields:
@@ -333,6 +340,7 @@ def lightweight_flights(
     *,
     heartbeat: Heartbeat | None = None,
     include_warning_fields: bool = False,
+    dataset_instance_id: str = "data2_2019",
 ) -> tuple[list[dict], int]:
     rows = []
     generator = iter_lightweight_flights(
@@ -340,6 +348,7 @@ def lightweight_flights(
         zones,
         heartbeat=heartbeat,
         include_warning_fields=include_warning_fields,
+        dataset_instance_id=dataset_instance_id,
     )
     try:
         while True:
@@ -389,6 +398,7 @@ def save_preparation_state(
     per_month: dict,
     skipped_total: int,
     total_episodes: int,
+    year: int = 2019,
 ) -> None:
     payload = {
         "state_key": key,
@@ -408,8 +418,10 @@ def save_preparation_state(
     manifest = {
         "schema_version": "PRE_DATA2_COHORT_PREPARATION_PROGRESS_V2",
         "state_key": key,
-        "completed_months": [f"2019-{month:02d}" for month in range(1, next_month)],
-        "next_month": None if next_month > 9 else f"2019-{next_month:02d}",
+        "completed_months": [
+            f"{year}-{month:02d}" for month in range(1, next_month)
+        ],
+        "next_month": None if next_month > 9 else f"{year}-{next_month:02d}",
         "completion_status": "PASS" if next_month > 9 else "RUNNING",
         "pool_sizes": dict(pool_sizes),
         "sampled_counts": {name: len(values) for name, values in reservoirs.items()},
@@ -438,7 +450,15 @@ def episode_reservoirs(
     include_warning_fields: bool = False,
     flight_observer: Callable[[str, list[dict]], None] | None = None,
     episode_observer: Callable[[str, object, dict[str, dict]], None] | None = None,
+    year: int = 2019,
+    dataset_instance_id: str = "data2_2019",
+    split_resolver: Callable[[date], str] | None = None,
 ):
+    """M4b: ``year`` / ``dataset_instance_id`` / ``split_resolver``
+    parameterize the flow for the data2_2017_2022 instance. The defaults
+    reproduce the legacy data2_2019 behavior exactly (2019 partition, the
+    data2_2019 row identity, and the frozen @1.0.0 split rule)."""
+    resolve_split = split_resolver or split_for_date
     reservoirs = {name: [] for name in cohort_counts}
     pool_sizes = {name: 0 for name in cohort_counts}
     rng = random.Random(cohort_seed)
@@ -473,15 +493,16 @@ def episode_reservoirs(
             zones,
             heartbeat=heartbeat,
             include_warning_fields=include_warning_fields,
+            dataset_instance_id=dataset_instance_id,
         )
         skipped_total += skipped
         per_month[f"{month:02d}"] = len(current_rows)
         if flight_observer is not None:
-            current_split = split_for_date(date(2019, month, 1))
+            current_split = resolve_split(date(year, month, 1))
             flight_observer(current_split, current_rows)
         chunk = list(previous_rows) + current_rows
         by_id = {row["flight_id"]: row for row in chunk}
-        month_key = f"2019-{month:02d}"
+        month_key = f"{year}-{month:02d}"
         month_episodes = 0
         for episode in sorted(
             build_data2_episode_records(chunk), key=lambda item: item.episode_id
@@ -489,10 +510,11 @@ def episode_reservoirs(
             service_date = by_id[episode.successor_flight_id].get("service_date")
             if not service_date or service_date[:7] != month_key:
                 continue
-            split = split_for_date(date.fromisoformat(service_date))
+            split = resolve_split(date.fromisoformat(service_date))
             if episode_observer is not None:
                 episode_observer(split, episode, by_id)
-            containment = episode_containment_from_rows(episode, by_id)
+            containment = episode_containment_from_rows(
+                episode, by_id, split_resolver=resolve_split)
             if not containment.allowed:
                 continue
             if split == "test":
@@ -524,6 +546,7 @@ def episode_reservoirs(
             per_month=per_month,
             skipped_total=skipped_total,
             total_episodes=total_episodes,
+            year=year,
         )
         if heartbeat:
             heartbeat(
@@ -546,6 +569,7 @@ def load_selected_typed_records(
     zones: dict[str, str],
     *,
     heartbeat: Heartbeat | None = None,
+    dataset_instance_id: str = "data2_2019",
 ):
     needed = {
         flight_id
@@ -593,6 +617,23 @@ def load_selected_typed_records(
     missing_ids = needed - set(schedules)
     if missing_ids:
         raise RuntimeError(f"COHORT_FLIGHT_RECORD_MISSING:{sorted(missing_ids)[:5]}")
+    if dataset_instance_id != "data2_2019":
+        # M5: re-bind the top-level identity for the multi-year instance
+        # (correction 3 "re-bind"; provenance-audited downstream). The inner
+        # canonicalizer stamps stay legacy - they are the record's source
+        # format lineage, not this instance's identity.
+        def _rebind(record):
+            provenance = record.provenance.model_copy(
+                update={"dataset_instance_id": dataset_instance_id})
+            return record.model_copy(update={
+                "dataset_instance_id": dataset_instance_id,
+                "provenance": provenance,
+            })
+
+        schedules = {key: _rebind(record)
+                     for key, record in schedules.items()}
+        outcomes = {key: _rebind(record)
+                    for key, record in outcomes.items()}
     return schedules, outcomes
 
 
@@ -603,7 +644,11 @@ def weather_index(
     start_inclusive: date | None = None,
     end_exclusive: date = FINAL_TEST_START,
     heartbeat: Heartbeat | None = None,
+    stamp_year: str = "2019",
 ):
+    """M4a: stamp_year parameterizes the NOAA directory and DATE-prefix filter
+    for the multi-year cohort-profiling chain. The default reproduces the
+    legacy data2_2019 behavior exactly."""
     with (data2_root / "refs" / "weather_station_map.csv").open(
         encoding="utf-8-sig", newline=""
     ) as stream:
@@ -615,7 +660,9 @@ def weather_index(
     accepted = input_rows = 0
     started = last_heartbeat = time.perf_counter()
     paths = tuple(
-        sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv"))
+        sorted(
+            (data2_root / "raw" / "weather" / "noaa" / stamp_year).glob("*.csv")
+        )
     )
     limit = end_exclusive.isoformat()
     start = None if start_inclusive is None else start_inclusive.isoformat()
@@ -626,7 +673,7 @@ def weather_index(
                 stamp = str(row.get("DATE", ""))
                 if stamp >= limit:
                     break
-                if not stamp.startswith("2019-"):
+                if not stamp.startswith(f"{stamp_year}-"):
                     continue
                 if start is not None and stamp < start:
                     continue
@@ -688,6 +735,7 @@ def publish_episode_states(
     publisher: ProductionPREPublisher,
     taxi_reference=None,
     turnaround_reference=None,
+    dataset_instance_id: str = "data2_2019",
 ):
     episode, successor_schedule, predecessor_outcome, successor_outcome = item
     nodes = build_rolling_decision_nodes(
@@ -716,7 +764,7 @@ def publish_episode_states(
                     episode_id=episode.episode_id,
                     predecessor_id=episode.predecessor_flight_id,
                     successor_id=episode.successor_flight_id,
-                    dataset_instance_id="data2_2019",
+                    dataset_instance_id=dataset_instance_id,
                     decision_time=node.decision_time,
                     information_cutoff=node.information_cutoff,
                     records=records,
@@ -806,13 +854,17 @@ def weather_index_and_stats(
     replay_lag_minutes: int,
     *,
     period: str | None,
+    instance_id: str = "data2_2019",
+    year: int = 2019,
 ):
+    """M4a: instance_id/year parameterization for the multi-year
+    cohort-profiling chain. Defaults reproduce the legacy data2_2019 call."""
     request = RawReadRequest(
-        dataset_instance_id="data2_2019",
+        dataset_instance_id=instance_id,
         source_family="noaa_isd",
         raw_root=data2_root,
         output_root=output,
-        year=2019,
+        year=year,
     )
     index, per_airport = defaultdict(list), Counter()
     total = 0
@@ -823,7 +875,7 @@ def weather_index_and_stats(
             continue
         if period and observation.event_time.strftime("%Y-%m") != period:
             continue
-        if not period and observation.event_time.year != 2019:
+        if not period and observation.event_time.year != year:
             continue
         if not observation.airport_id or observation.availability_time is None:
             continue

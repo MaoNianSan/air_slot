@@ -64,11 +64,14 @@ from model.common.native_formulas import (
 )
 
 
-def ontime_paths(root: Path, months: tuple[int, ...]) -> tuple[Path, ...]:
+def ontime_paths(root: Path, months: tuple[int, ...], *,
+                 year: int = 2019) -> tuple[Path, ...]:
+    """M5: ``year`` selects the ontime partition; default 2019 = legacy."""
     paths = []
     for month in months:
         directory = (
-            root / "data2" / "raw" / "bts" / "ontime" / "2019" / f"month={month:02d}"
+            root / "data2" / "raw" / "bts" / "ontime" / str(year)
+            / f"month={month:02d}"
         )
         matches = sorted(directory.glob("*.csv"))
         if len(matches) != 1:
@@ -223,7 +226,9 @@ M2_NATIVE_DEFINITIONS = {
 }
 
 
-def stream_passenger_routes(coupon_paths: tuple[Path, ...]) -> list[dict[str, Any]]:
+def stream_passenger_routes(coupon_paths: tuple[Path, ...], *,
+                            year: int = 2019) -> list[dict[str, Any]]:
+    instance_id = "data2_2019" if year == 2019 else "data2_2017_2022"
     sums: dict[tuple[str, str], float] = defaultdict(float)
     counts: dict[tuple[str, str], int] = defaultdict(int)
     for path in coupon_paths:
@@ -249,12 +254,12 @@ def stream_passenger_routes(coupon_paths: tuple[Path, ...]) -> list[dict[str, An
                 counts[key] += 1
     return [
         {
-            "dataset_instance_id": "data2_2019",
+            "dataset_instance_id": instance_id,
             "canonical_record_id": content_id(
                 {"source": "bts_db1b", "origin": origin, "destination": destination}
             ),
             "join_key": {"origin": origin, "destination": destination},
-            "reference_period": "2019",
+            "reference_period": str(year),
             "value": total,
             "record_count": counts[(origin, destination)],
             "split": "train",
@@ -325,8 +330,10 @@ def stream_t100_rows(
 
 
 class _DB1BStream:
-    def __init__(self, paths: tuple[Path, ...], *, fit_partition: str, allowed_quarters: tuple[int, ...]):
+    def __init__(self, paths: tuple[Path, ...], *, fit_partition: str,
+                 allowed_quarters: tuple[int, ...], year: int = 2019):
         self.paths = paths
+        self.year = year
         self.fit_partition = fit_partition
         self.allowed_quarters = tuple(allowed_quarters)
         self.audit = {
@@ -353,7 +360,9 @@ class _DB1BStream:
                 quarter_field = next((name for name in fieldnames if str(name).strip().upper() in {"QUARTER", "QTR"}), None)
                 inferred = None
                 if quarter_field is None:
-                    match = re.search(r"DB1BCoupon_2019_([1-4])\.csv$", path.name, flags=re.IGNORECASE)
+                    match = re.search(
+                        rf"DB1BCoupon_{self.year}_([1-4])\.csv$", path.name,
+                        flags=re.IGNORECASE)
                     if match:
                         inferred = int(match.group(1))
                     else:
@@ -390,23 +399,37 @@ def stream_db1b_coupon_rows(
     *,
     fit_partition: str = "TRAIN",
     allowed_quarters: tuple[int, ...] = (1, 2),
+    year: int = 2019,
 ):
-    return _DB1BStream(paths, fit_partition=fit_partition, allowed_quarters=allowed_quarters)
+    return _DB1BStream(paths, fit_partition=fit_partition,
+                       allowed_quarters=allowed_quarters, year=year)
 
 
-def fit_passenger_consequence_references(*, root: Path, fit_period: str = "2019-H1") -> dict[str, Any]:
-    """Build T-100 expected load and DB1B continuation references."""
-    t100_path = root / "data2" / "raw" / "bts" / "t100" / "2019" / "T_T100_SEGMENT_ALL_CARRIER.csv"
-    coupon_paths = tuple(sorted((root / "data2" / "raw" / "bts" / "db1b" / "2019" / "coupon").glob("Origin_and_Destination_Survey_DB1BCoupon_2019_[12].csv")))
-    t100_stream = stream_t100_rows(t100_path, fit_partition="TRAIN", allowed_months=(1, 2, 3, 4, 5, 6))
-    coupon_stream = stream_db1b_coupon_rows(coupon_paths, fit_partition="TRAIN", allowed_quarters=(1, 2))
+def fit_passenger_consequence_references(*, root: Path,
+                                         fit_period: str = "2019-H1",
+                                         year: int = 2019) -> dict[str, Any]:
+    """Build T-100 expected load and DB1B continuation references.
+
+    M5 correction 1: the Y-H1 boundary is the ONLY admissible fit window. The
+    T-100 stream is row-filtered to ``MONTH <= 6`` (the annual file is storage
+    granularity, not admissibility granularity); DB1B uses Q1+Q2 only.
+    """
+    t100_path = (root / "data2" / "raw" / "bts" / "t100" / str(year)
+                 / "T_T100_SEGMENT_ALL_CARRIER.csv")
+    coupon_paths = tuple(sorted(
+        (root / "data2" / "raw" / "bts" / "db1b" / str(year) / "coupon").glob(
+            f"Origin_and_Destination_Survey_DB1BCoupon_{year}_[12].csv")))
+    t100_stream = stream_t100_rows(t100_path, fit_partition="TRAIN",
+                                   allowed_months=(1, 2, 3, 4, 5, 6))
+    coupon_stream = stream_db1b_coupon_rows(coupon_paths, fit_partition="TRAIN",
+                                            allowed_quarters=(1, 2))
     pax = build_expected_passengers_reference(t100_stream, fit_partition="TRAIN")
     conn = build_connection_share_reference(coupon_stream, fit_partition="TRAIN")
     return {
         "expected_pax": pax,
         "connection_share": conn,
         "fit_period": fit_period,
-        "fit_year": 2019,
+        "fit_year": year,
         "t100_fit_months": [1, 2, 3, 4, 5, 6],
         "db1b_fit_quarters": [1, 2],
         "t100_audit": t100_stream.audit,
@@ -580,29 +603,35 @@ def fit_train_references(
     *,
     root: Path,
     fit_period: str = "2019-H1",
+    year: int = 2019,
 ) -> dict[str, dict[str, Any]]:
     turnaround = build_data2_turnaround_reference(rows, fit_period=fit_period)
     exposure = build_data2_downstream_exposure(rows, fit_period=fit_period)
     coupon_paths = tuple(
         sorted(
-            (root / "data2" / "raw" / "bts" / "db1b" / "2019" / "coupon").glob(
-                "Origin_and_Destination_Survey_DB1BCoupon_2019_[12].csv"
+            (root / "data2" / "raw" / "bts" / "db1b" / str(year) / "coupon").glob(
+                f"Origin_and_Destination_Survey_DB1BCoupon_{year}_[12].csv"
             )
         )
     )
-    passenger_rows = stream_passenger_routes(coupon_paths)
+    passenger_rows = stream_passenger_routes(coupon_paths, year=year)
+    # M5 year-parameterization (user-approved 2026-09-30): pass the row-stamped
+    # instance id through; 2019 keeps the legacy "data2_2019" identity.
     passenger = build_data2_passenger_reference(
         passenger_rows,
         fit_period=fit_period,
+        dataset_instance_id="data2_2019" if year == 2019 else "data2_2017_2022",
         rule_id=DATA2_PASSENGER_REFERENCE_H1,
     )
-    taxi_path = (
-        root
-        / "artifacts"
-        / "diagnostics"
-        / "v5_development_freeze"
-        / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json"
-    )
+    # M5: the per-year chain uses the year's own train-frozen taxi reference
+    # (produced by the year-replicated PRE flow); the legacy 2019 path keeps
+    # the frozen v5 artifact.
+    if year == 2019:
+        taxi_path = (root / "artifacts" / "diagnostics" / "v5_development_freeze"
+                     / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json")
+    else:
+        taxi_path = (root / "artifacts" / "models" / "pre" / "PRE_MULTIYEAR_V1"
+                     / str(year) / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json")
     taxi_payload = json.loads(taxi_path.read_text(encoding="utf-8"))
     taxi = data2_taxi_reference_from_payload(taxi_payload)
 

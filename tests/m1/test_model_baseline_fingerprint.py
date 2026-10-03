@@ -95,6 +95,17 @@ def test_active_pointer_uses_v1r1_manifest_and_live_hashes():
     # merge kept paper-primary's Section 3/4/5 decision-model implementation
     # (the user-approved authority), or (b) the frozen V1R1 record was already
     # stale on both branches. Any OTHER drift still fails this gate.
+    # M4a deltas (authorized 2026-09-28): instance-aware adapter support for
+    # the data2_2017_2022 cohort-profiling instance - adapter Literals,
+    # identity set, Data2Adapter instance plumbing, and the CLI dispatch now
+    # resolve through model/PRE/instances/contract.py. data2_2019 behavior is
+    # pinned unchanged by tests/contract/test_data2_multiyear_m4a.py.
+    # M4b deltas (authorized 2026-09-28): per-year replication of the 2019
+    # PRE preprocessing flow for data2_2017_2022 - year/instance/resolver
+    # parameters (legacy defaults preserved) across the split rule registry,
+    # cohort, pipeline/mapping support fallback, development materialization,
+    # episode containment, and the two streaming modules. Legacy behavior is
+    # pinned by tests/contract/test_data2_multiyear_m4a.py and m4b.py.
     CONSOLIDATION_DELTA_ENTRIES = {
         "model/M1/development_training.py",
         "model/M2/cu/registry.py",
@@ -107,6 +118,18 @@ def test_active_pointer_uses_v1r1_manifest_and_live_hashes():
         "model/M4/residual_risk.py",
         "model/M4/service.py",
         "model/PRE/streaming/data2.py",
+        "model/PRE/adapters/registry.py",
+        "model/PRE/adapters/base.py",
+        "model/PRE/adapters/data2.py",
+        "model/PRE/cli.py",
+        "model/PRE/cohort.py",
+        "model/PRE/pipeline.py",
+        "model/PRE/mapping.py",
+        "model/PRE/development.py",
+        "model/PRE/episode/containment.py",
+        "model/PRE/streaming/development.py",
+        "model/PRE/streaming/containment.py",
+        "model/PRE/transform/rules.py",
     }
     assert mismatched == CONSOLIDATION_DELTA_ENTRIES
     for entry in manifest["entries"]:
