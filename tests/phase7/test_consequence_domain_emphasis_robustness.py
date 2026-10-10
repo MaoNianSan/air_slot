@@ -394,9 +394,7 @@ def test_manifest_declares_the_robustness_contract(analysis_run) -> None:
     assert manifest["manifest_self_hash_reason"] == "SELF_REFERENTIAL_HASH_NOT_DEFINED"
     assert manifest["tracked_modifications_introduced_by_analysis_run"] == []
     assert manifest["preexisting_unexpected_tracked_modifications"] == []
-    assert manifest["preexisting_implementation_modifications"] == [
-        "model/M2/comparison_support.py"
-    ]
+    assert manifest["preexisting_implementation_modifications"] == []
     assert manifest["weight_profiles"] == list(module.ALL_PROFILE_IDS)
     assert manifest["all_gates_passed"] is True
 
