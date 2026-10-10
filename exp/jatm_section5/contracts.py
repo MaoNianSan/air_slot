@@ -18,24 +18,11 @@ from model.common.decision_contracts import (
     StateScenarioSet,
 )
 from model.common.enums import OperationalStage, SupportState
-
-STAGE1_ACTIONABLE_STAGES: tuple[OperationalStage, ...] = (
-    OperationalStage.PRE_IB,
-    OperationalStage.POST_IB_PRE_OB,
-)
-
-STAGE1_ACTIONABLE_STAGE_CLASSES: tuple[str, ...] = ("PRE", "TURN")
-
-FLATTENED_UNION_SEMANTICS = (
-    "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION"
-)
-
-
-REPRESENTATIONS: tuple[str, ...] = (
-    "HISTORY_JOINT",
-    "CURRENT_JOINT",
-    "HISTORY_POINT",
-    "HISTORY_MARGINAL",
+from model.common.section5_contracts import (
+    FLATTENED_UNION_SEMANTICS,
+    REPRESENTATIONS,
+    STAGE1_ACTIONABLE_STAGE_CLASSES,
+    STAGE1_ACTIONABLE_STAGES,
 )
 
 

@@ -586,7 +586,7 @@ def _paper_primary_cross_contract_snapshot(
 
     probe = """
 import json
-from exp.jatm_section5.contracts import (
+from model.common.section5_contracts import (
     FLATTENED_UNION_SEMANTICS,
     REPRESENTATIONS,
     STAGE1_ACTIONABLE_STAGE_CLASSES,
