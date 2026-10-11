@@ -207,6 +207,18 @@ def _bootstrap(stage_nodes, *, view: str, q: float, factor_by_node: dict[str, tu
 
 
 def _summarize_stage(nodes, *, view: str, q: float, factor_by_node: dict[str, tuple[float, float]]) -> dict:
+    if not nodes:
+        return {
+            "status": "ABSTAIN_NO_CANDIDATES",
+            "selected_view": [],
+            "selected_reference": [],
+            "overlap": None,
+            "replacement": None,
+            "retained_consequence": None,
+            "absolute_consequence_gap": None,
+            "attention_loss": None,
+            "valid_reference_denominator": False,
+        }
     delay = [_typed_signal(node, score=node.delay_scores["HISTORY_JOINT"], signal_type=SignalKind.DELAY) for node in nodes]
     consequence = [_typed_signal(node, score=node.consequence_scores["HISTORY_JOINT"], signal_type=SignalKind.CONSEQUENCE) for node in nodes]
     if view == "CONSEQUENCE":
@@ -296,8 +308,16 @@ def run(*, output_root: Path, node_limit: int | None = None, bootstrap_replicate
             for view in VIEWS:
                 row = by_key[(stage.value, float(q), view)]
                 row["paired_increment_vs_delay"] = {
-                    "overlap": row["overlap"] - baseline["overlap"],
-                    "replacement": row["replacement"] - baseline["replacement"],
+                    "overlap": (
+                        None
+                        if row["overlap"] is None or baseline["overlap"] is None
+                        else row["overlap"] - baseline["overlap"]
+                    ),
+                    "replacement": (
+                        None
+                        if row["replacement"] is None or baseline["replacement"] is None
+                        else row["replacement"] - baseline["replacement"]
+                    ),
                     "retained_consequence": (
                         None
                         if row["retained_consequence"] is None or baseline["retained_consequence"] is None
