@@ -67,13 +67,35 @@ def run(*, repo: Path, output_root: Path, bundle_root: Path, years: tuple[int, .
     for year in years:
         year_out = output_root / f"YEAR_{year}"
         state_path = year_out / "E4_YEAR_STATE.json"
-        state = {"schema_version": "JATM_S34_E4_YEAR_STATE_V1", "year": year, "status": "RUNNING", "updated_at": _now(), "bundle_root": str(bundle_root)}
         state_path.parent.mkdir(parents=True, exist_ok=True)
+        previous = {}
+        if state_path.is_file():
+            try:
+                previous = json.loads(state_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                previous = {}
+        resumable = (
+            previous.get("bundle_root") == str(bundle_root)
+            and tuple(previous.get("n_grid", ())) == n_grid
+            and previous.get("status") != "DEVELOPMENT_COMPLETE"
+        )
+        completed = [phase for phase in (previous.get("completed_phases") or []) if phase in {"headroom", "fit", "ladder", "eval"}] if resumable else []
+        state = {
+            "schema_version": "JATM_S34_E4_YEAR_STATE_V1",
+            "year": year,
+            "status": "RUNNING",
+            "updated_at": _now(),
+            "bundle_root": str(bundle_root),
+            "n_grid": list(n_grid),
+            "resumed_from_checkpoint": bool(completed),
+            "completed_phases": completed,
+        }
         state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         phases = ["headroom", "fit", "ladder", "eval"]
-        completed = []
         try:
             for phase in phases:
+                if phase in completed:
+                    continue
                 _run_phase(repo=repo, phase=phase, year=year, output_root=output_root, bundle_root=bundle_root, n_grid=n_grid)
                 completed.append(phase)
                 state.update({"completed_phases": completed, "updated_at": _now()})
