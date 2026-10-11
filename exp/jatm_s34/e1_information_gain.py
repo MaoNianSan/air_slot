@@ -218,6 +218,8 @@ def _summarize_stage(nodes, *, view: str, q: float, factor_by_node: dict[str, tu
             "absolute_consequence_gap": None,
             "attention_loss": None,
             "valid_reference_denominator": False,
+            "view": view,
+            "q": float(q),
         }
     delay = [_typed_signal(node, score=node.delay_scores["HISTORY_JOINT"], signal_type=SignalKind.DELAY) for node in nodes]
     consequence = [_typed_signal(node, score=node.consequence_scores["HISTORY_JOINT"], signal_type=SignalKind.CONSEQUENCE) for node in nodes]
