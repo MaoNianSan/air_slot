@@ -229,12 +229,22 @@ def _summarize_stage(nodes, *, view: str, q: float, factor_by_node: dict[str, tu
     return _select(comparator, consequence, q=q) | {"view": view, "q": float(q)}
 
 
-def run(*, output_root: Path, node_limit: int | None = None, bootstrap_replicates: int = 2000) -> dict:
-    authorities = load_authorities()
-    bridge = load_development_bridge()
-    tails = load_tail_continuations()
+def run(*, output_root: Path, node_limit: int | None = None, bootstrap_replicates: int = 2000, annual_context=None) -> dict:
+    if annual_context is None:
+        authorities = load_authorities()
+        bridge = load_development_bridge()
+        tails = load_tail_continuations()
+        model_kwargs = {}
+    else:
+        authorities = annual_context["authorities"]
+        bridge = annual_context["bridge"]
+        tails = annual_context["tails"]
+        model_kwargs = {
+            "history_checkpoint": annual_context["history_checkpoint"],
+            "current_checkpoint": annual_context["current_checkpoint"],
+        }
     layer = build_consequence_service(authorities=authorities, bridge=bridge, output_dir=output_root / "materialization")
-    nodes = list(_build_nodes(authorities=authorities, bridge=bridge, tails=tails, layer=layer))
+    nodes = list(_build_nodes(authorities=authorities, bridge=bridge, tails=tails, layer=layer, **model_kwargs))
     if node_limit is not None:
         nodes = nodes[: int(node_limit)]
     canonical = _canonicalize(nodes, stages=STAGES)

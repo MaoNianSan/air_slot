@@ -291,14 +291,24 @@ def _mechanism_rows(nodes: tuple[RepresentationNode, ...], service, headroom):
     return rows
 
 
-def run(*, output_root: Path, node_limit: int | None = None) -> dict[str, Any]:
+def run(*, output_root: Path, node_limit: int | None = None, annual_context=None) -> dict[str, Any]:
     output_root = Path(output_root).resolve()
     output_root.mkdir(parents=True, exist_ok=True)
-    authorities = load_authorities()
-    bridge = load_development_bridge()
-    tails = load_tail_continuations()
+    if annual_context is None:
+        authorities = load_authorities()
+        bridge = load_development_bridge()
+        tails = load_tail_continuations()
+        model_kwargs = {}
+    else:
+        authorities = annual_context["authorities"]
+        bridge = annual_context["bridge"]
+        tails = annual_context["tails"]
+        model_kwargs = {
+            "history_checkpoint": annual_context["history_checkpoint"],
+            "current_checkpoint": annual_context["current_checkpoint"],
+        }
     layer = build_consequence_service(authorities=authorities, bridge=bridge, output_dir=output_root / "materialization")
-    base_nodes = _build_nodes(authorities=authorities, bridge=bridge, tails=tails, layer=layer)
+    base_nodes = _build_nodes(authorities=authorities, bridge=bridge, tails=tails, layer=layer, **model_kwargs)
     if node_limit is not None:
         base_nodes = base_nodes[: int(node_limit)]
     projected, audits, exact_payloads = _project_nodes(base_nodes, layer.service)

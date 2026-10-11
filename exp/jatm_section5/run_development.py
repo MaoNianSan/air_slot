@@ -181,9 +181,19 @@ def _representation_specs() -> dict[str, StateRepresentationSpec]:
     }
 
 
-def _build_nodes(*, authorities, bridge, tails, layer) -> tuple[RepresentationNode, ...]:
-    history_pipeline = M1Pipeline.load(H16_CHECKPOINT)
-    current_pipeline = M1Pipeline.load(CURRENT_CHECKPOINT)
+def _build_nodes(
+    *, authorities, bridge, tails, layer,
+    history_checkpoint: Path | None = None,
+    current_checkpoint: Path | None = None,
+) -> tuple[RepresentationNode, ...]:
+    """Build nodes from explicit model inputs.
+
+    The defaults remain the frozen Section-5 artifacts.  Annual Development
+    adapters may provide versioned year-local checkpoints without changing the
+    sealed executor or the underlying scientific service.
+    """
+    history_pipeline = M1Pipeline.load(history_checkpoint or H16_CHECKPOINT)
+    current_pipeline = M1Pipeline.load(current_checkpoint or CURRENT_CHECKPOINT)
     history_pipeline.tail_continuations = dict(tails)
     current_pipeline.tail_continuations = dict(tails)
     current_rows = {
