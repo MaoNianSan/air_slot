@@ -100,7 +100,22 @@ def run(*, repo: Path, output_root: Path, bundle_root: Path, years: tuple[int, .
                 completed.append(phase)
                 state.update({"completed_phases": completed, "updated_at": _now()})
                 state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-            state.update({"status": "DEVELOPMENT_COMPLETE", "updated_at": _now()})
+            eval_summary_path = output_root / "EVAL_SUMMARY.json"
+            eval_decision = None
+            if eval_summary_path.is_file():
+                try:
+                    eval_decision = (json.loads(eval_summary_path.read_text(encoding="utf-8")).get("decision") or {}).get("status")
+                except (OSError, json.JSONDecodeError):
+                    eval_decision = "UNREADABLE_EVAL_SUMMARY"
+            if eval_decision == "M5B_PILOT_COMPLETE_HARD_STOP":
+                state.update({
+                    "status": "ENGINEERING_INCOMPLETE",
+                    "completion_class": "PILOT_COMPLETE_HARD_STOP",
+                    "eval_decision": eval_decision,
+                    "updated_at": _now(),
+                })
+            else:
+                state.update({"status": "DEVELOPMENT_COMPLETE", "eval_decision": eval_decision, "updated_at": _now()})
         except Exception as error:  # keep yearly checkpoint and continue next year
             state.update({"status": "ENGINEERING_INCOMPLETE", "error": f"{type(error).__name__}: {error}", "updated_at": _now()})
         state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
