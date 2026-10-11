@@ -116,6 +116,21 @@ def run(*, repo: Path, output_root: Path, bundle_root: Path, years: tuple[int, .
                 })
             else:
                 state.update({"status": "DEVELOPMENT_COMPLETE", "eval_decision": eval_decision, "updated_at": _now()})
+            if eval_summary_path.is_file():
+                try:
+                    summary_payload = json.loads(eval_summary_path.read_text(encoding="utf-8"))
+                    year_summary = (summary_payload.get("years") or {}).get(str(year), {})
+                    observed = sorted(int(value) for value in (year_summary.get("eval") or {}).keys())
+                    state["n_grid_coverage"] = {
+                        "requested": list(n_grid),
+                        "observed_eval": observed,
+                        "evaluation_E": year_summary.get("evaluation_E"),
+                        "full_default_grid_observed": observed == list(N_GRID),
+                        "interpretation": "N128_PILOT_ONLY" if observed == [128] else "PARTIAL_OR_FULL_GRID",
+                    }
+                    state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+                except (OSError, json.JSONDecodeError):
+                    state["n_grid_coverage"] = {"status": "UNREADABLE_EVAL_SUMMARY"}
         except Exception as error:  # keep yearly checkpoint and continue next year
             state.update({"status": "ENGINEERING_INCOMPLETE", "error": f"{type(error).__name__}: {error}", "updated_at": _now()})
         state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
