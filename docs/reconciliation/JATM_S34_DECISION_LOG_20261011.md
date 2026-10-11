@@ -10,6 +10,7 @@ formal executor.
 | --- | --- | --- | --- |
 | D1 | Use an exact discrete product coupling that preserves each primitive weighted marginal. | Use `model/M1/marginal_distribution.py` for new sensitivity work. Keep `build_marginal_representation` and sealed formal outputs unchanged. | `ACCEPTED_ENGINEERING_READY` |
 | D2 | Retain the current `r_ib` semantics for `F_continuity`; document the meaning. | Keep `F_continuity = max(0, r_ib_minutes - turnaround_reference)` and record `R_IB = max(0, T_IB_A00 - decision_time)` as an internal remaining-time coordinate. | `ACCEPTED_DOCUMENTATION_ONLY` |
+| D3 | Freeze two separate Delay+Exposure views: passenger-time primary and downstream-exposure companion. | Use `exp/jatm_s34/delay_exposure.py`; compute `P^D * expected_passengers_per_flight` and `P^D * expected_downstream_exposure` separately. Do not use the three-way product. | `ACCEPTED_ENGINEERING_READY` |
 
 ## Awaiting exact specification
 
@@ -18,11 +19,12 @@ needs one concrete formula and one named source artifact.
 
 | ID | Required specification | Current status |
 | --- | --- | --- |
-| D3 | Select the exact `DELAY_EXPOSURE` formula from the bounded options in the execution report. | `BLOCKED_UNTIL_FORMULA_NAMED` |
-| D4 | Name the audited `FIXED_COMMON` reference artifact and hash. | `BLOCKED_UNTIL_SOURCE_NAMED` |
+| D4 | Name the audited `FIXED_COMMON` reference artifact and hash. | `BLOCKED_SOURCE_NOT_FOUND_2017_H1` |
 
-Until D3 and D4 are named, the corresponding experiment branches remain typed
-blocked. No proxy formula or cross-year scale is inferred from existing files.
+The D3 branch is now engineering-ready, subject to the existing Test and
+common-support gates. D4 remains typed blocked because the requested 2017 H1
+seven-component scale artifact is not present in the repository. No proxy
+formula or replacement cross-year scale is inferred from existing files.
 
 ## Validation boundary
 
