@@ -45,7 +45,7 @@ def _annual_bundle(year: int):
     return load_data2_reference_bundle(payloads)
 
 
-def load_annual_bridge(*, year: int, n: int = 4096) -> dict:
+def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = None) -> dict:
     """Build a bridge with annual Train/Calibration normalization and Dev nodes."""
     year = int(year)
     selected = load_hash_cohort(year)
@@ -99,6 +99,8 @@ def load_annual_bridge(*, year: int, n: int = 4096) -> dict:
         for example, (episode, prefix, _labels)
         in zip(examples_by_split["development"], rows["development"])
     )
+    if node_limit is not None:
+        dev_rows = dev_rows[: int(node_limit)]
     return {
         "authorities": replace(authorities, cache=cache, reference_bundle=bundle, taxi_reference=taxi),
         "bridge": {"cache": cache, "rows": dev_rows, "mapping": None, "taxi_reference": taxi,

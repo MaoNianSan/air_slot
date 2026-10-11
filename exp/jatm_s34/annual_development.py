@@ -35,7 +35,7 @@ def run_year(*, year: int, output_root: Path, node_limit: int | None = None, boo
             json.dumps(result, indent=2, sort_keys=True, default=str), encoding="utf-8"
         )
         return result
-    context = load_annual_bridge(year=int(year), n=4096)
+    context = load_annual_bridge(year=int(year), n=4096, node_limit=node_limit)
     out = Path(output_root).resolve()
     out.mkdir(parents=True, exist_ok=True)
     result["e1"] = run_e1(
