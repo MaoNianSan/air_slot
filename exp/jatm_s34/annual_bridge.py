@@ -20,6 +20,7 @@ from data2.scripts.consequence_stability_battery import (
 from model.M1.cache import M1DevelopmentBaseCache
 from model.M1.data import FEATURE_NAMES_V2
 from model.M1.static_features import STATIC_FEATURE_NAMES
+from model.M1.pipeline import M1Pipeline
 from model.M2.context import load_data2_reference_bundle
 from model.PRE.cohort import split_for_date_multiyear
 from model.PRE.development import materialize_preselected_cohorts
@@ -50,6 +51,8 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
     year = int(year)
     selected = load_hash_cohort(year)
     partitions = prefix_partitions(selected, n)
+    if node_limit is not None:
+        partitions = {"train": (), "calibration": (), "development": partitions["development"][: int(node_limit)]}
     scientific = load_config_layers(PROJECT_ROOT / "configs").scientific
     taxi, turnaround = year_references(year)
     cohorts = materialize_preselected_cohorts(
@@ -65,10 +68,21 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
     rows = {}
     for split in ("train", "calibration", "development"):
         rows[split], _ = active_rows(getattr(cohorts, split), taxi_reference=taxi)
-    normalization = fit_train_normalization(
-        normalization_rows([prefix for _ep, prefix, _labels in rows["train"]]), split="train"
-    )
-    static_normalization = fit_static_normalization_from_rows(rows["train"])
+    prepared_by_id = {
+        prepared.episode.episode_id: prepared
+        for split in ("train", "calibration", "development")
+        for prepared in getattr(cohorts, split)
+    }
+    if node_limit is None:
+        normalization = fit_train_normalization(
+            normalization_rows([prefix for _ep, prefix, _labels in rows["train"]]), split="train"
+        )
+        static_normalization = fit_static_normalization_from_rows(rows["train"])
+    else:
+        checkpoint = PROJECT_ROOT / "artifacts" / "models" / "m1" / f"YEAR_{year}" / "M1_HISTORY_PRIMARY.pt"
+        pipeline = M1Pipeline.load(checkpoint)
+        normalization = pipeline.normalization
+        static_normalization = pipeline.static_normalization
     examples_by_split = {
         split: build_training_examples(
             rows[split], normalization, None, static_normalization=static_normalization
@@ -95,7 +109,7 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
         final_test_start=date(year, 10, 1),
     )
     dev_rows = tuple(
-        (example, episode, prefix)
+        (example, prepared_by_id[episode.episode_id], prefix)
         for example, (episode, prefix, _labels)
         in zip(examples_by_split["development"], rows["development"])
     )
