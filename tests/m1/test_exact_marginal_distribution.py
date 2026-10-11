@@ -10,6 +10,7 @@ from model.common.decision_contracts import (
     UncertaintyKind,
 )
 from model.common.enums import OperationalStage
+from model.common.enums import SupportState
 
 
 def _source() -> StateScenarioSet:
@@ -76,3 +77,19 @@ def test_exact_adapter_aggregates_duplicate_atoms():
     assert tuple((a.value, a.mass) for a in adapter.weighted_atoms("t_ib_minutes")) == (
         (10.0, 1.0),
     )
+
+
+def test_exact_adapter_propagates_degraded_common_support():
+    source = _source().model_copy(
+        update={
+            "scenarios": tuple(
+                item.model_copy(update={"support": SupportState.DEGRADED})
+                for item in _source().scenarios
+            )
+        }
+    )
+    adapter = ExactWeightedMarginalDistribution.from_source(source)
+    assert adapter.support is SupportState.DEGRADED
+    assert {item.support for item in adapter.materialize().scenarios} == {
+        SupportState.DEGRADED
+    }

@@ -8,15 +8,16 @@ action-specific percentage reductions.
 
 Native formulas follow the manuscript section 4 definitions:
 
-``F_continuity = max(0, T_IB - turnaround_reference)``, ``F_execution = D_OB``,
+``F_continuity = max(0, R_IB - turnaround_reference)``, ``F_execution = D_OB``,
 ``F_propagation = D_TO * expected_downstream_exposure``,
 ``P_time = N_pax * D_TO``, ``P_itinerary = N_pax * s_conn * 1(D_TO > 45)``,
 ``P_service = N_pax * 1(D_TO >= 180)``, ``R_operating = D_TX``.
 
 CU mapping is ``C_k^CU = q_k / c_k^CU`` with the train-frozen scales from the
 active CU registry (V5: five principal positive Train medians plus two
-assumption-grounded event normalizations). Monetary mapping is deliberately not
-part of this service.
+assumption-grounded event normalizations). Here ``R_IB`` is the internal
+remaining-time coordinate ``max(0, T_IB_A00 - decision_time)`` and is measured
+in minutes. Monetary mapping is deliberately not part of this service.
 """
 
 from __future__ import annotations

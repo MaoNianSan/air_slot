@@ -19,12 +19,16 @@ needs one concrete formula and one named source artifact.
 
 | ID | Required specification | Current status |
 | --- | --- | --- |
-| D4 | Name the audited `FIXED_COMMON` reference artifact and hash. | `BLOCKED_SOURCE_NOT_FOUND_2017_H1` |
+| D4 | Name the audited `FIXED_COMMON` reference artifact and hash. | `PASS_FIXED_COMMON_REBUILT` |
 
-The D3 branch is now engineering-ready, subject to the existing Test and
-common-support gates. D4 remains typed blocked because the requested 2017 H1
-seven-component scale artifact is not present in the repository. No proxy
-formula or replacement cross-year scale is inferred from existing files.
+The D3 branch is engineering-ready, subject to the existing Test and
+common-support gates. D4 was rebuilt from legal 2017 H1 Train rows into the
+versioned bundle `artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES`.
+The audited bundle is reported at
+`D:\\Local_Projects\\airslot\\reports\\jatm_s34_20261010\\g0\\D4_FIXED_COMMON_AUDIT_R2.json`.
+It binds all payloads to `data2_2017_2022`, uses T100 H1 and DB1B Q1+Q2, and
+passes seven-component positive-support, unit, payload-hash, and manifest-hash
+checks. No 2019 or Test scale is substituted.
 
 ## Validation boundary
 

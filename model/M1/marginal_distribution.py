@@ -69,6 +69,7 @@ class ExactWeightedMarginalDistribution:
     stage: OperationalStage
     representation: StateRepresentationSpec
     atoms: tuple[tuple[WeightedAtom, ...], ...]
+    support: SupportState = SupportState.SUPPORTED
     identity_note: str = EXACT_PRODUCT_IDENTITY_NOTE
 
     def __post_init__(self) -> None:
@@ -104,6 +105,11 @@ class ExactWeightedMarginalDistribution:
             history_capacity=source.representation.history_capacity,
             history_scope=source.representation.history_scope,
         )
+        source_support = SupportState.SUPPORTED
+        if any(item.support is SupportState.ABSTAIN for item in source.scenarios):
+            source_support = SupportState.ABSTAIN
+        elif any(item.support is SupportState.DEGRADED for item in source.scenarios):
+            source_support = SupportState.DEGRADED
         return cls(
             episode_id=source.episode_id,
             chain_id=source.chain_id,
@@ -111,6 +117,7 @@ class ExactWeightedMarginalDistribution:
             stage=source.stage,
             representation=spec,
             atoms=tuple(_aggregate(values) for values in coordinate_values),
+            support=source_support,
         )
 
     @property
@@ -134,7 +141,7 @@ class ExactWeightedMarginalDistribution:
     def iter_scenarios(self) -> Iterator[StateScenario]:
         """Lazily enumerate product states with exact product weights."""
 
-        support = SupportState.SUPPORTED
+        support = self.support
         for index, values in enumerate(product(*self.atoms)):
             t_ib, d_ob, d_tx = (atom.value for atom in values)
             weight = 1.0

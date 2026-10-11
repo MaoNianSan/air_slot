@@ -161,7 +161,11 @@ def build_year(year: int, output_root: Path | None = None) -> dict:
     paths = ontime_paths(REPO, (1, 2, 3, 4, 5, 6), year=year)
     rows = []
     for path in paths:
-        rows.extend(iter_train_rows((path,), zones))
+        rows.extend(
+            iter_train_rows(
+                (path,), zones, dataset_instance_id=INSTANCE_ID
+            )
+        )
     # Reference-legality gate: the reference builders hard-require these keys
     # non-empty; a row missing one could never enter any reference, so it is
     # dropped explicitly (and counted) instead of failing mid-fit.  2019 H1

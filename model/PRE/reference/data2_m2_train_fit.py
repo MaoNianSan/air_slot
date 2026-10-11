@@ -45,6 +45,7 @@ from model.PRE.reference.passenger_data2 import (
 )
 from model.PRE.reference.taxi_data2 import (
     Data2TaxiReference,
+    build_data2_taxi_reference,
     data2_taxi_reference_from_payload,
 )
 from model.PRE.reference.turnaround_data2 import (
@@ -80,7 +81,12 @@ def ontime_paths(root: Path, months: tuple[int, ...], *,
     return tuple(paths)
 
 
-def iter_train_rows(paths: tuple[Path, ...], timezones: dict[str, str]):
+def iter_train_rows(
+    paths: tuple[Path, ...],
+    timezones: dict[str, str],
+    *,
+    dataset_instance_id: str = "data2_2019",
+):
     """Stream compact canonical train row dicts (schedule + outcome fields)."""
     for path in paths:
         with path.open(encoding="utf-8-sig", newline="", errors="replace") as handle:
@@ -99,7 +105,11 @@ def iter_train_rows(paths: tuple[Path, ...], timezones: dict[str, str]):
                 ):
                     continue
                 yield {
-                    "dataset_instance_id": schedule.dataset_instance_id,
+                    # The canonicalizer retains its historical default for
+                    # compatibility. Year-replicated reference builders pass
+                    # the explicit dataset instance so lineage cannot silently
+                    # bind 2017+ rows to the legacy 2019 identity.
+                    "dataset_instance_id": dataset_instance_id,
                     "aircraft_id_namespace": schedule.aircraft_id_namespace,
                     "aircraft_id": schedule.aircraft_id,
                     "flight_id": schedule.flight_id,
@@ -605,8 +615,15 @@ def fit_train_references(
     fit_period: str = "2019-H1",
     year: int = 2019,
 ) -> dict[str, dict[str, Any]]:
-    turnaround = build_data2_turnaround_reference(rows, fit_period=fit_period)
-    exposure = build_data2_downstream_exposure(rows, fit_period=fit_period)
+    # Year-replicated PRE rows carry the shared six-year dataset identity;
+    # retain the legacy 2019 identity only for the frozen 2019 reference path.
+    reference_dataset_id = "data2_2019" if year == 2019 else "data2_2017_2022"
+    turnaround = build_data2_turnaround_reference(
+        rows, fit_period=fit_period, dataset_instance_id=reference_dataset_id
+    )
+    exposure = build_data2_downstream_exposure(
+        rows, fit_period=fit_period, dataset_instance_id=reference_dataset_id
+    )
     coupon_paths = tuple(
         sorted(
             (root / "data2" / "raw" / "bts" / "db1b" / str(year) / "coupon").glob(
@@ -629,10 +646,18 @@ def fit_train_references(
     if year == 2019:
         taxi_path = (root / "artifacts" / "diagnostics" / "v5_development_freeze"
                      / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json")
+        taxi_payload = json.loads(taxi_path.read_text(encoding="utf-8"))
     else:
-        taxi_path = (root / "artifacts" / "models" / "pre" / "PRE_MULTIYEAR_V1"
-                     / str(year) / "DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json")
-    taxi_payload = json.loads(taxi_path.read_text(encoding="utf-8"))
+        # Year-replicated references are fitted from the same H1 Train rows as
+        # the other M2 objects. This avoids inheriting stale dataset identity
+        # or accepted-row metadata from a legacy PRE artifact.
+        taxi = build_data2_taxi_reference(
+            rows,
+            fit_period=fit_period,
+            dataset_instance_id="data2_2017_2022",
+        )
+        taxi_payload = reference_to_payload(taxi)
+        taxi_payload["artifact_hash"] = _artifact_hash(taxi_payload)
     taxi = data2_taxi_reference_from_payload(taxi_payload)
 
     def payload_for(reference, extra: dict | None = None) -> dict:
