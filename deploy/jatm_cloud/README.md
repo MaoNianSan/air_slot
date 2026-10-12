@@ -1,22 +1,55 @@
 # AIR SLOT Development deployment candidate
 
-**INDEPENDENT_REVIEW_PENDING / SIX_YEAR_EXECUTION_BLOCKED**
+**P0_INDEPENDENT_REVIEW_PASSED / SIX_YEAR_EXECUTION_BLOCKED**
 
-Human independent review is required before uploading, connecting to a server,
-benchmarking or launching an annual experiment. The commands below are future
-execution drafts. No LLM is required. See artifacts/experiment/jatm_s34/cloud_handoff_review/.
-Linux, Docker, systemd and CUDA execution are NOT YET VERIFIED.
+P0 was independently accepted at scientific code baseline
+`e278ac55871dd3208bbd9a55e24b0d7a94314c96`. The 2026-10-12 cleanup approval
+authorizes documentation and design only. It does not authorize uploading,
+connecting to a server, benchmarking, training or launching an annual experiment.
+The commands below remain future execution drafts. No LLM is required.
+See [current status and retained limitations](CLEANUP_DOC_ONLY_STATUS.md).
+The original handoff/review packages remain historical evidence, including their
+then-current pending statuses. Linux, Docker, systemd, CUDA and container
+throughput benchmarks remain **NOT_RUN**.
 Direct dependencies are pinned; requirements.runtime.txt is not a resolved,
 hash-locked Linux wheel set. Save pip freeze and wheel/platform details on Linux.
 
-Python 3.11.6; deploy/jatm_cloud/requirements.runtime.txt records the packages actually
-used for the local golden comparison (including torch 2.11.0). The older repository
-requirements.txt differs and is not this run's environment authority.
+The existing candidate targets Python 3.11.6. requirements.runtime.txt records
+the directly pinned non-torch packages; bootstrap_cpu.sh and Dockerfile.cpu
+separately request torch==2.11.0+cpu. These files are not a verified Linux lock.
+The older repository requirements.txt is not this candidate's environment authority.
 Create a dedicated environment, install the runtime requirements, and save `python -m pip freeze`
 as ENVIRONMENT_LOCK.txt in each deployment. Preserve the Git commit and source hashes.
 
-The production entry is `python -m exp.jatm_s34.shared_run`. The old annual_development
-entry remains a legacy interface and must not be used for cloud production.
+## Current and historical entry points
+
+The prepared multi-year orchestration entry is
+`python -m exp.jatm_s34.cloud_schedule --config deploy/jatm_cloud/run.yml`.
+Its source call chain is:
+
+```text
+cloud_schedule -> cloud_worker -> cloud_inputs.check_year -> shared_run
+    -> shared_science (annual PRE/M1/M2, compact scores and restorable states)
+    -> E1 + E1_FIXED_COMMON + shared E2/E3 evaluation
+    -> validated annual receipts/results
+cloud_schedule -> e4_shared_aggregate (only after all six annual checks pass)
+```
+
+`shared_run` is the per-year computational entry invoked by the worker; calling
+it directly is not a substitute for the worker's complete annual input gate.
+E4 consumes annual results and does not rerun PRE/M1/M2/M3. A zero worker exit
+code or an exhausted queue alone does not establish six-year completion.
+
+| Entry | Current role |
+| --- | --- |
+| cloud_schedule / cloud_worker / shared_run | Prepared shared Development chain; execution remains blocked and unauthorized |
+| annual_development | Historical separate E1 and E2/E3 orchestration, not the cloud production route |
+| e4_scheduler -> e4_run -> consequence_stability_battery | Historical M5-b cohort-size execution, not current JATM E4 decision-value replication |
+| e4_development / readiness | Historical input/preflight reporting, not full-chain scientific acceptance |
+| e1_information_gain / e2_e3_exact / annual_shared | Mixed legacy drivers and actively reused helpers/readers; do not delete these modules |
+
+Historical Python entry points remain unchanged; no CLI is redirected or removed.
+The N=128 M5-b engineering evidence does not establish E4 scientific completion.
 
 ## Inputs
 
@@ -100,8 +133,9 @@ markers after the processes have exited. Check lock PID/host ownership before an
 stale-lock intervention. Never reset a live writer's lock. Scientific identity
 changes require new versioned output roots.
 
-Read P0_REVIEW_NOTES.md and the second-review package before use. C1/C2,
-ratio-of-sums and completion gates were corrected for resubmission;
+Read P0_REVIEW_NOTES.md and the second-review package as historical contract
+and reproduction records. Their pending-review text predates the user's P0
+acceptance at e278ac5. C1/C2, ratio-of-sums and completion gates passed that review;
 exposure-specific Coverage@K, sensitivity grids and complete rolling uncertainty
 outputs remain unresolved or incomplete. Successful process execution is not full
 scientific acceptance. No cloud benchmark has been run.
