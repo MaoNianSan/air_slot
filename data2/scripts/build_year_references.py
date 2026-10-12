@@ -32,6 +32,7 @@ if str(_REPO_ROOT) not in sys.path:
 from model.PRE.cohort import split_for_date_multiyear
 from model.PRE.reference.data2_m2_train_fit import (
     compute_train_scales,
+    compute_train_scales_continuity_b,
     fit_passenger_consequence_references,
     fit_train_references,
 )
@@ -149,7 +150,8 @@ def _connection_share_payload(reference) -> dict:
     }
 
 
-def build_year(year: int, output_root: Path | None = None) -> dict:
+def build_year(year: int, output_root: Path | None = None,
+               continuity_contract: str = "LEGACY_A_V1") -> dict:
     base = Path(output_root) if output_root else PRE_ROOT
     out = base / str(year) / "M2_REFERENCES"
     out.mkdir(parents=True, exist_ok=True)
@@ -223,7 +225,12 @@ def build_year(year: int, output_root: Path | None = None) -> dict:
     # ---- 4) seven train scales (Y-H1 rows, cohort-size independent)
     pax_ref = consequence["expected_pax"]
     conn_ref = consequence["connection_share"]
-    scales = compute_train_scales(
+    scale_builder = (compute_train_scales_continuity_b
+                     if continuity_contract == "JATM_F_CONTINUITY_B_V1"
+                     else compute_train_scales)
+    if continuity_contract not in {"LEGACY_A_V1", "JATM_F_CONTINUITY_B_V1"}:
+        raise ValueError("UNKNOWN_CONTINUITY_CONTRACT")
+    scales = scale_builder(
         rows,
         references,
         turnaround_ref=data2_turnaround_reference_from_payload(
@@ -257,12 +264,13 @@ def build_year(year: int, output_root: Path | None = None) -> dict:
             encoding="utf-8")
 
     scale_payload = {
-        "schema_version": "M2_DATA2_TRAIN_SCALES_V1",
+        "schema_version": "M2_DATA2_TRAIN_SCALES_B_V1" if continuity_contract == "JATM_F_CONTINUITY_B_V1" else "M2_DATA2_TRAIN_SCALES_V1",
         "experiment_year": year,
         "fit_period": f"{year}-H1",
         "dataset_instance_id": INSTANCE_ID,
         "reference_contract_id": REFERENCE_CONTRACT_ID,
         "scales": scales,
+        "continuity_contract": continuity_contract,
     }
     scale_payload["bundle_hash"] = sha256_json(scale_payload)
     (out / "M2_SEVEN_COMPONENT_TRAIN_SCALES.json").write_text(
@@ -283,6 +291,7 @@ def build_year(year: int, output_root: Path | None = None) -> dict:
         "scale_median_preview": {k: v.get("median") for k, v in scales.items()},
         "non_physical_rotation_flights_excluded": len(dropped_flights),
         "created_at_utc": now_iso(),
+        "continuity_contract": continuity_contract,
     }
     (out / "M2_REFERENCE_BUNDLE_MANIFEST.json").write_text(
         json.dumps(bundle_manifest, indent=2, sort_keys=True, default=str) + "\n",
@@ -297,9 +306,12 @@ def main() -> int:
     parser.add_argument("--output-root", default=None,
                         help="write the M2 reference bundle under this root "
                              "(default: PRE_MULTIYEAR_V1)")
+    parser.add_argument("--continuity-contract", default="LEGACY_A_V1",
+                        choices=["LEGACY_A_V1", "JATM_F_CONTINUITY_B_V1"])
     args = parser.parse_args()
     for year in args.years:
-        manifest = build_year(year, output_root=args.output_root)
+        manifest = build_year(year, output_root=args.output_root,
+                              continuity_contract=args.continuity_contract)
         log(f"{year} done: payloads={len(manifest['payload_hashes'])}")
     return 0
 
