@@ -187,6 +187,7 @@ def _build_nodes(
     current_checkpoint: Path | None = None,
     history_pipeline=None,
     current_pipeline=None,
+    node_ids: set[str] | None = None,
 ) -> tuple[RepresentationNode, ...]:
     """Build nodes from explicit model inputs.
 
@@ -210,6 +211,8 @@ def _build_nodes(
         state = prefix[-1]
         decision_node = state.decision_node
         node_id = decision_node.decision_node_id
+        if node_ids is not None and node_id not in node_ids:
+            continue
         current_source = current_rows.get(example.decision_node_id)
         if current_source is None:
             raise RuntimeError(

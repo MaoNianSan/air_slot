@@ -449,9 +449,15 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
         built = _build_nodes(authorities=context["authorities"], bridge=context["bridge"], tails=context["tails"],
                              layer=layer, history_checkpoint=context["history_checkpoint"], current_checkpoint=context["current_checkpoint"],
                              history_pipeline=context.get("history_pipeline"), current_pipeline=context.get("current_pipeline"))
+        canonical_chunk = {}
         for node in built:
             if node.stage not in STAGES:
                 continue
+            key = (node.episode_id, node.stage)
+            previous = canonical_chunk.get(key)
+            if previous is None or (node.decision_time, node.node_id) < (previous.decision_time, previous.node_id):
+                canonical_chunk[key] = node
+        for node in canonical_chunk.values():
             light, audit = _project_light_node(node, layer.service); audits.append(audit)
             key = (light.episode_id, light.stage)
             previous = light_by_key.get(key)
@@ -478,7 +484,8 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                 selected_bindings[node_id] = binding
         built = _build_nodes(authorities=context["authorities"], bridge=context["bridge"], tails=context["tails"], layer=layer,
                              history_checkpoint=context["history_checkpoint"], current_checkpoint=context["current_checkpoint"],
-                             history_pipeline=context.get("history_pipeline"), current_pipeline=context.get("current_pipeline"))
+                             history_pipeline=context.get("history_pipeline"), current_pipeline=context.get("current_pipeline"),
+                             node_ids=selected_ids)
         for node in built:
             if node.node_id not in selected_ids:
                 continue
