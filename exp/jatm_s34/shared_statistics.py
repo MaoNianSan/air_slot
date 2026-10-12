@@ -35,7 +35,39 @@ def clustered_summary(rows,metrics,*,replicates=2000,seed=20261011):
         node_n=len(rows),replicates=replicates,seed=seed,metrics=result)
 
 
-def summarize_actions(records,populations,node_metadata,*,replicates=2000):
+def recovery_loss_summary(rows, *, numerator='reference_regret', denominator='V',
+                          replicates=2000, seed=20261011):
+    """Paper L_rec: ratio of paired sums, recomputed on every episode draw."""
+    episodes=sorted({r['episode_id'] for r in rows})
+    indices={ep:i for i,ep in enumerate(episodes)}
+    losses=np.zeros(len(episodes));values=np.zeros(len(episodes))
+    valid=[]
+    for row in rows:
+        loss,value=row.get(numerator),row.get(denominator)
+        if loss is None or value is None or not np.isfinite(loss) or not np.isfinite(value):continue
+        if value<0:raise ValueError('NEGATIVE_REFERENCE_RECOVERABLE_VALUE')
+        valid.append(row)
+        index=indices[row['episode_id']];losses[index]+=loss;values[index]+=value
+    rng=np.random.default_rng(seed);samples=[]
+    if episodes:
+        for _ in range(replicates):
+            draw=rng.integers(0,len(episodes),size=len(episodes))
+            ref=values[draw].sum()
+            if ref>0:samples.append(float(losses[draw].sum()/ref))
+    loss_sum=float(losses.sum());value_sum=float(values.sum())
+    return dict(estimand='RATIO_OF_SUMS_DELTA_REC_OVER_REFERENCE_V',
+        L_rec=None if value_sum<=0 else loss_sum/value_sum,
+        delta_rec_sum=loss_sum,V_ref_sum=value_sum,
+        candidate_n=len(rows),paired_n=len(valid),excluded_n=len(rows)-len(valid),
+        zero_reference_value_n=sum(r[denominator]==0 for r in valid),
+        episode_n=len(episodes),paired_episode_n=len({r['episode_id'] for r in valid}),
+        replicates=replicates,valid_replicates=len(samples),seed=seed,
+        ci_low=None if not samples else float(np.quantile(samples,.025)),
+        ci_high=None if not samples else float(np.quantile(samples,.975)),
+        status='DEFINED' if value_sum>0 else 'UNDEFINED_ZERO_REFERENCE_DENOMINATOR')
+
+
+def summarize_actions(records,populations,node_metadata,*,replicates=2000,population_metadata=None):
     atomic=[]
     for record in records:
         if record['status']!='ACTION_TABLE_COMPLETE':continue
@@ -54,25 +86,40 @@ def summarize_actions(records,populations,node_metadata,*,replicates=2000):
                 stage=node.stage.value,decision_time=node.decision_time.isoformat(),representation=representation,
                 u_joint=ref['u_star'],u_comparator=recovery['action'],J_zero=curves[0.0],V=denominator,
                 activation_joint=float(ref['u_star']>0),target_agreement=agreement,
-                reference_regret=loss,normalized_regret=relative,exclusion=recovery['fallback'],
+                reference_regret=loss,normalized_regret=relative,
+                node_normalized_regret_diagnostic=relative,exclusion=recovery['fallback'],
                 **record.get('mechanism_context',{})))
     summaries=[]
     for population,ids in populations.items():
         allowed=set(ids)
+        contract=(population_metadata or {}).get(population)
         for stage in sorted({r['stage'] for r in atomic}):
             for rep in ('CURRENT_JOINT','HISTORY_POINT','HISTORY_MARGINAL'):
+                exact_rep='HISTORY_MARGINAL_EXACT' if rep=='HISTORY_MARGINAL' else rep
+                if contract and (contract['stage']!=stage or contract['comparator']!=exact_rep):continue
                 rows=[r for r in atomic if r['node_id'] in allowed and r['stage']==stage and r['representation']==rep]
                 summaries.append(dict(population=population,stage=stage,representation=rep,
-                    **clustered_summary(rows,('activation_joint','target_agreement','reference_regret','normalized_regret','V'),replicates=replicates)))
+                    contrast_contract=contract,
+                    recovery_loss=recovery_loss_summary(rows,replicates=replicates),
+                    **clustered_summary(rows,('activation_joint','target_agreement','reference_regret',
+                        'node_normalized_regret_diagnostic','V'),replicates=replicates)))
     return atomic,summaries
 
 
 def objective_summary(rows,*,replicates=2000):
+    joint={(r['profile'],r['node_id']):r for r in rows if r['representation']=='HISTORY_JOINT'}
     groups=defaultdict(list)
     for row in rows:
-        if row['representation']=='HISTORY_MARGINAL_EXACT':groups[row['profile'],row['stage']].append(row)
-    return [dict(profile=profile,stage=stage,**clustered_summary(values,
-        ('joint_reference_loss_at_marginal_action','relative_reference_loss_at_marginal_action',
+        if row['representation']=='HISTORY_MARGINAL_EXACT':
+            reference=joint.get((row['profile'],row['node_id']))
+            if reference is None:raise ValueError('E3_JOINT_REFERENCE_ROW_MISSING')
+            value=reference['J_zero']-reference['J_star']
+            groups[row['profile'],row['stage']].append(dict(row,reference_V=value,
+                node_relative_reference_loss_diagnostic=row.get('relative_reference_loss_at_marginal_action')))
+    return [dict(profile=profile,stage=stage,population='CANONICAL_C1_HJ_HM_COMMON_SUPPORT',
+        recovery_loss=recovery_loss_summary(values,numerator='joint_reference_loss_at_marginal_action',
+            denominator='reference_V',replicates=replicates),**clustered_summary(values,
+        ('joint_reference_loss_at_marginal_action','node_relative_reference_loss_diagnostic',
          'choice_agreement','decision_margin','relative_objective_perturbation'),replicates=replicates))
         for (profile,stage),values in sorted(groups.items())]
 
@@ -117,7 +164,8 @@ def recovery_coverage(records, nodes, canonical_ids, *, replicates=2000, seed=20
         pair=common_candidates(canonical,comparator=rep,require_complete=False)
         for stage in ACTIONABLE:
             candidates=[r for r in pair if r.stage is stage]
-            eligible={nid:v for nid,v in values.items() if by_id[nid].stage is stage}
+            eligible={nid:v for nid,v in values.items() if nid in canonical_ids
+                      and by_id[nid].stage is stage and by_id[nid].support_full.get('HISTORY_JOINT',False)}
             episodes=sorted({r.episode_id for r in candidates}|{by_id[n].episode_id for n in eligible})
             groups=defaultdict(list);denominator_by_episode=defaultdict(float)
             for row in candidates:groups[row.episode_id].append(row)
@@ -149,5 +197,5 @@ def recovery_coverage(records, nodes, canonical_ids, *, replicates=2000, seed=20
                 ci_low=None if not samples else float(np.quantile(samples,.025)),
                 ci_high=None if not samples else float(np.quantile(samples,.975)),
                 inference='EPISODE_CLUSTER_RECONSTRUCT_CANDIDATES_K_AND_RANK',
-                denominator='FULL_HJ_SUPPORTED_STAGE_II_ELIGIBLE_EPOCHS'))
+                denominator='FULL_CANONICAL_HJ_SUPPORTED_STAGE_II_CASES'))
     return descriptors

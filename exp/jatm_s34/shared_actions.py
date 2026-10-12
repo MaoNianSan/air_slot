@@ -21,7 +21,7 @@ from .e2_e3_exact import (_source_shortlists,_stage1_rows,_headroom,_exact_proje
                          _replace_with_exact,_mechanism_rows,PROFILES)
 from .shared_science import load_scores, unpack_node
 from .shared_store import SharedStore, atomic_json, digest, file_hash, code_hash
-from .shared_populations import population_views,ACTIONABLE
+from .shared_populations import population_views,c2_recovery_populations,ACTIONABLE,POPULATION_CONTRACT
 
 
 class CachedConsequenceService:
@@ -125,10 +125,9 @@ def run_actions(shared_root, output_root, *, replicates=2000):
     light=tuple(unpack_node(row) for row in records)
     canonical_ids={row['node_id'] for row in records if row.get('is_canonical',True)}
     exposure_by_node={row['node_id']:tuple(row['exposure']) for row in records if row.get('exposure') is not None}
-    populations=population_views(light,canonical_ids,q=.10,exposure_by_node=exposure_by_node)
+    populations=population_views(light,canonical_ids,year=year,q=.10,exposure_by_node=exposure_by_node)
     shortlists=populations['shortlists']['HISTORY_JOINT']
     c1_ids={node.node_id for node in populations['C1']}
-    c2_ids={node.node_id for node in populations['C2']}
     e3_ids={node.node_id for node in populations['e3']}
     rolling_ids={node.node_id for node in populations['C3']}
     selected=[node for node in light if node.node_id in c1_ids|rolling_ids]
@@ -222,17 +221,25 @@ def run_actions(shared_root, output_root, *, replicates=2000):
     info,diagnostics,bootstrap=information_value_main(information,q=.10,reference_cohort=cohort,service=None,
         headroom=headroom,seed=20261011,replicates=replicates,precomputed_recovery=results)
     from .shared_statistics import summarize_actions,objective_summary,stage1_pairwise_statistics,recovery_coverage
-    ids_by_population=dict(C1=c1_ids,C2=c2_ids,C3=rolling_ids,
+    c2_ids,c2_metadata=c2_recovery_populations(populations['C2'])
+    ids_by_population=dict(C1=c1_ids,C3=rolling_ids,
         ANNUAL_HJ_SHORTLIST={nid for ids in shortlists.values() for nid in ids})
-    recovery_atomic,recovery_summary=summarize_actions(compact,ids_by_population,by_id,replicates=replicates)
+    ids_by_population.update(c2_ids)
+    recovery_atomic,recovery_summary=summarize_actions(compact,ids_by_population,by_id,replicates=replicates,
+        population_metadata=c2_metadata)
     from .shared_revaluation import revalue_nodes
     fixed_light=revalue_nodes(light,load_annual_cu(year),load_annual_cu(year,track='FIXED_COMMON'))
-    fixed_populations=population_views(fixed_light,canonical_ids,q=.10,exposure_by_node=exposure_by_node)
-    fixed_ids={key:{n.node_id for n in fixed_populations[key]} for key in ('C1','C2','C3')}
+    fixed_populations=population_views(fixed_light,canonical_ids,year=year,q=.10,
+        exposure_by_node=exposure_by_node,cu_track='FIXED_COMMON')
+    fixed_ids={key:{n.node_id for n in fixed_populations[key]} for key in ('C1','C3')}
+    fixed_c2_ids,fixed_c2_metadata=c2_recovery_populations(fixed_populations['C2'])
+    fixed_ids.update(fixed_c2_ids)
     fixed_ids['ANNUAL_HJ_SHORTLIST']={nid for ids in fixed_populations['shortlists']['HISTORY_JOINT'].values() for nid in ids}
-    fixed_atomic,fixed_summary=summarize_actions(fixed_records,fixed_ids,{n.node_id:n for n in fixed_light},replicates=replicates)
+    fixed_atomic,fixed_summary=summarize_actions(fixed_records,fixed_ids,{n.node_id:n for n in fixed_light},
+        replicates=replicates,population_metadata=fixed_c2_metadata)
     e3_rows=[row for record in compact if record['node_id'] in e3_ids for row in record['rows']]
-    payload=dict(schema_version='JATM_SHARED_E2_E3_V1',status='DEVELOPMENT_COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE',
+    payload=dict(schema_version='JATM_SHARED_E2_E3_V2',status='DEVELOPMENT_COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE',
+        population_contract=POPULATION_CONTRACT,recovery_loss_estimand='RATIO_OF_SUMS_DELTA_REC_OVER_REFERENCE_V',
         year=year,scope='PILOT' if identity.get('episode_limit') is not None else 'FULL_DEVELOPMENT',
         bootstrap_replicates=replicates,stage1_rows=_stage1_rows(populations['canonical'],.10),information=info,diagnostics=diagnostics,bootstrap=bootstrap,
         e3_rows=e3_rows,e3_summary=objective_summary(e3_rows,replicates=replicates),
@@ -241,6 +248,7 @@ def run_actions(shared_root, output_root, *, replicates=2000):
         fixed_common_recovery_opportunity_coverage=recovery_coverage(fixed_records,fixed_light,canonical_ids,replicates=replicates),
         fixed_common_stage1_pairwise=stage1_pairwise_statistics(fixed_populations['canonical'],replicates=replicates),
         fixed_common_population_ids={key:sorted(value) for key,value in fixed_ids.items()},
+        fixed_common_C2_groups=fixed_populations['C2'],
         information_scope='ALL_REPRESENTATION_INTERSECTION_SCREENING_AND_ANNUAL_HJ_SHORTLIST_DIAGNOSTIC',
         recovery_atomic=recovery_atomic,recovery_summary=recovery_summary,
         fixed_common_recovery_atomic=fixed_atomic,fixed_common_recovery_summary=fixed_summary,
@@ -248,10 +256,14 @@ def run_actions(shared_root, output_root, *, replicates=2000):
         fixed_common_e3_summary=objective_summary([row for row in fixed_rows if row['node_id'] in e3_ids],replicates=replicates),
         mechanisms=[row for record in compact for row in record.get('mechanisms',[])],
         support_denominator=len(light),reference_cohort_count=len(annual_items),full_recovery_valid_count=len(items),information_candidate_count=len(information),
+        population_counts_by_stage={stage.value:dict(
+            canonical_stage1=sum(n.stage is stage for n in populations['canonical']),
+            C1_canonical_stage2=sum(n.stage is stage for n in populations['C1']),
+            C3_rolling_epochs=sum(n.stage is stage for n in populations['C3'])) for stage in ACTIONABLE},
         shared_identity_hash=digest(identity),action_identity=action_identity,final_test_access_count=0,
         representation_aliases={'HISTORY_MARGINAL':'HISTORY_MARGINAL_EXACT'},legacy_permutation_used=False,
         populations={'C0':{'status':'HISTORICAL_SEALED_NOT_ACCESSED'},
-            'C1':sorted(c1_ids),'C2':sorted(c2_ids),'C3':sorted(rolling_ids),'E3_COMMON':sorted(e3_ids),
+            'C1':sorted(c1_ids),'C2':populations['C2'],'C3':sorted(rolling_ids),'E3_COMMON':sorted(e3_ids),
             'C1_CANONICAL':[n.node_id for n in populations['C1_CANONICAL']],
             'PAIRWISE_STAGE_I':populations['pairwise_stage1'],'E1_SCREENING':populations['e1_shortlists'],
             'rolling_cluster_key':'episode_id',

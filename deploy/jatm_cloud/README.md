@@ -100,7 +100,8 @@ markers after the processes have exited. Check lock PID/host ownership before an
 stale-lock intervention. Never reset a live writer's lock. Scientific identity
 changes require new versioned output roots.
 
-Read the review package OPEN_ISSUES.md before use: C1 population alignment,
+Read P0_REVIEW_NOTES.md and the second-review package before use. C1/C2,
+ratio-of-sums and completion gates were corrected for resubmission;
 exposure-specific Coverage@K, sensitivity grids and complete rolling uncertainty
 outputs remain unresolved or incomplete. Successful process execution is not full
 scientific acceptance. No cloud benchmark has been run.

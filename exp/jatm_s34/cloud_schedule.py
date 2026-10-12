@@ -98,12 +98,32 @@ def _schedule(args):
                 (root/str(year)/'shared').mkdir(exist_ok=True)
                 (root/str(year)/'shared/STOP_REQUESTED').touch()
         if active:time.sleep(5)
-    if not (root/'STOP_REQUESTED').exists() and getattr(args,'phase',None)=='all' and args.episode_limit is None:
-        from .e4_shared_aggregate import aggregate
-        status['e4']=aggregate(root,root/'E4')
-        status['status']='WAITING_HUMAN_CONFIRMATION'
+    latest={row['year']:row for row in finished}
+    status['six_year_complete']=False
+    status['annual_outcomes']={str(year):latest.get(year,dict(year=year,status='NOT_REQUESTED_OR_NOT_RUN'))
+                              for year in range(2017,2023)}
+    if (root/'STOP_REQUESTED').exists():
+        status['status']='PAUSED_AT_CHECKPOINT'
+    elif getattr(args,'phase',None)=='all' and args.episode_limit is None:
+        all_workers_ok=(set(args.years)==set(range(2017,2023)) and all(
+            year in latest and latest[year]['exit_code']==0
+            and (latest[year]['run_manifest'] or {}).get('year')==year
+            and (latest[year]['run_manifest'] or {}).get('scope')=='FULL_DEVELOPMENT'
+            and (latest[year]['run_manifest'] or {}).get('status')=='COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE'
+            for year in range(2017,2023)))
+        status['status']='SIX_YEAR_EXECUTION_BLOCKED'
+        if all_workers_ok:
+            from .e4_shared_aggregate import aggregate,inspect_annual_result
+            checked=[inspect_annual_result(root,year)[0] for year in range(2017,2023)]
+            status['annual_output_validation']=checked
+            if all(row['status']=='COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE' for row in checked):
+                status['e4']=aggregate(root,root/'E4')
+                status['six_year_complete']=status['e4']['six_year_complete']
+                if status['six_year_complete']:status['status']='WAITING_HUMAN_CONFIRMATION'
         status['scientific_acceptance']='PENDING_RESULT_REVIEW_NOT_IMPLIED_BY_PROCESS_EXIT'
-        atomic_json(root/'SCHEDULER_PROGRESS.json',status)
+    else:
+        status['status']='REQUESTED_PHASE_FINISHED' if all(r['exit_code']==0 for r in latest.values()) else 'PARTIAL_DEVELOPMENT'
+    atomic_json(root/'SCHEDULER_PROGRESS.json',status)
     return status
 
 
@@ -149,4 +169,5 @@ if __name__=='__main__':
     if args.config:args=from_config(args.config)
     if not args.years or args.output_root is None:parser.error('config or years/output-root required')
     if len(args.years)!=len(set(args.years)):parser.error('years must be unique')
-    schedule(args)
+    result=schedule(args)
+    raise SystemExit(2 if result['status'] in ('SIX_YEAR_EXECUTION_BLOCKED','PARTIAL_DEVELOPMENT') else 0)

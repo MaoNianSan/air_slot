@@ -145,11 +145,11 @@ def test_population_views_keep_full_eligible_and_pairwise_support():
             domain_scores={rep:{'F':1.,'P':1.,'R':1.} if flags[rep] else None for rep in flags})
     nodes=[node('a0','a',supported=False),node('a1','a',current=False),node('a2','a',current=False),
            node('b0','b'),node('c0','c',current=False)]
-    view=population_views(nodes,{'a0','b0','c0'})
-    assert {n.node_id for n in view['C1']}=={'a1','a2','b0','c0'}
+    view=population_views(nodes,{'a0','b0','c0'},year=2017)
+    assert {n.node_id for n in view['C1']}=={'b0','c0'}
     assert {n.node_id for n in view['C1_CANONICAL']}=={'b0','c0'}
     assert {n.node_id for n in view['C3']}=={'a1','a2'}
-    assert {n.node_id for n in view['e3']}=={'a1','a2','b0','c0'}
+    assert {n.node_id for n in view['e3']}=={'b0','c0'}
     assert view['pairwise_stage1']['CURRENT_JOINT'][ACTIONABLE[0].value]['candidate_ids']==['b0']
     assert view['pairwise_stage1']['HISTORY_POINT'][ACTIONABLE[0].value]['candidate_ids']==['b0','c0']
 
