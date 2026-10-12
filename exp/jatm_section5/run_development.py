@@ -246,6 +246,7 @@ def _iter_nodes(
             node_id=node_id,
             stage=decision_node.operational_stage,
             representation=specs["HISTORY_JOINT"],
+            sobt_relative_minutes=_schedule_sobt_minutes(state),
         )
         current_joint = state_set_from_m1_scenarios(
             current_scenarios,
@@ -254,6 +255,7 @@ def _iter_nodes(
             node_id=node_id,
             stage=decision_node.operational_stage,
             representation=specs["CURRENT_JOINT"],
+            sobt_relative_minutes=_schedule_sobt_minutes(state),
         )
         state_sets = {
             "HISTORY_JOINT": build_joint_representation(history_joint),

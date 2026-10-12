@@ -97,12 +97,13 @@ def _headroom(year: int | None = None) -> HeadroomSummary:
     return HeadroomSummary.model_validate(payload["factual_headroom"]["headroom_summary"])
 
 
-def _exact_projection(node: RepresentationNode, service, *, preserve_metadata: bool = False, streaming: bool = False) -> tuple[dict[str, Any], StateScenarioSet, Any, Any, dict[str, Any]]:
+def _exact_projection(node: RepresentationNode, service, *, preserve_metadata: bool = False, streaming: bool = False,
+                      time_coordinate_contract: str = "R_IB_LEGACY_V1") -> tuple[dict[str, Any], StateScenarioSet, Any, Any, dict[str, Any]]:
     if streaming:
         from .exact_stream import project
-        return project(node,service)
+        return project(node,service,time_coordinate_contract=time_coordinate_contract)
     source = node.state("HISTORY_JOINT")
-    adapter = ExactWeightedMarginalDistribution.from_source(source)
+    adapter = ExactWeightedMarginalDistribution.from_source(source, time_coordinate_contract=time_coordinate_contract)
     if adapter.scenario_count > MAX_EXACT_SCENARIOS:
         raise RuntimeError(
             f"E2_EXACT_MARGINAL_SCENARIO_LIMIT:{node.node_id}:{adapter.scenario_count}"

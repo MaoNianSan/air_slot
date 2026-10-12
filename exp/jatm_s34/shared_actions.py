@@ -74,7 +74,8 @@ def calculate_node(node,service,headroom,shortlists,*,cu_track='YEAR_LOCAL',incl
         value = comparator_recovery(cohort,representation=rep,service=cached,headroom=headroom)
         recoveries[rep] = dict(action=value.actions[node.node_id],fallback=value.typed_fallbacks.get(node.node_id),
             decision=None if node.node_id not in value.decisions else value.decisions[node.node_id].model_dump(mode='json'))
-    context = transition_context(node,headroom)
+    context = transition_context(node,headroom,
+        time_coordinate_contract='JATM_STAGE2_SIGNED_T_IB_V1')
     from model.M3.transition import scenario_headroom
     distribution=node.state('HISTORY_JOINT').scenarios
     mechanism_context=dict(expected_headroom_minutes=sum(s.scenario_weight*scenario_headroom(s,context) for s in distribution),
@@ -164,15 +165,16 @@ def run_actions(shared_root, output_root, *, replicates=2000):
             if saved is None:
                 source=states.read(key)
                 binding=ConsequenceReferenceBinding.model_validate(source['binding']) if source['binding'] is not None else None
-                service=M2ConsequenceService(load_annual_cu(year),{} if binding is None else {node.node_id:binding})
+                service=M2ConsequenceService(load_annual_cu(year, continuity_contract='JATM_F_CONTINUITY_B_V1'),{} if binding is None else {node.node_id:binding})
                 original=unpack_node(source['node'],{k:StateScenarioSet.model_validate(v) for k,v in source['states'].items()})
-                values,state,consequence,support,audit=_exact_projection(original,service,preserve_metadata=True,streaming=True)
+                values,state,consequence,support,audit=_exact_projection(original,service,preserve_metadata=True,streaming=True,
+                    time_coordinate_contract='JATM_STAGE2_SIGNED_T_IB_V1')
                 full=_replace_with_exact(original,(state,consequence,support,values))
                 native_cache=CachedConsequenceService(service)
                 saved=calculate_node(full,native_cache,headroom,full_eligible_lists,
                                      include_sensitivity=node.node_id in e3_ids)
                 if saved['status']=='ACTION_TABLE_COMPLETE':
-                    fixed_service=M2ConsequenceService(load_annual_cu(year,track='FIXED_COMMON'),service.references)
+                    fixed_service=M2ConsequenceService(load_annual_cu(year,track='FIXED_COMMON',continuity_contract='JATM_F_CONTINUITY_B_V1'),service.references)
                     saved['fixed_common']=calculate_node(full,RevaluedConsequenceService(fixed_service,native_cache),headroom,full_eligible_lists,
                         cu_track='FIXED_COMMON',include_sensitivity=node.node_id in e3_ids)
                     # Native outcomes are identical; store them only on the main track.
@@ -184,7 +186,8 @@ def run_actions(shared_root, output_root, *, replicates=2000):
                         ledger_path=out/'actions'/(key+'.native.jsonl.gz')
                         temporary=ledger_path.with_suffix('.tmp')
                         with gzip.open(temporary,'wt',encoding='utf-8') as stream:
-                            saved['mechanisms']=compare(full,transition_context(full,headroom),service,headroom,
+                            saved['mechanisms']=compare(full,transition_context(full,headroom,
+                                time_coordinate_contract='JATM_STAGE2_SIGNED_T_IB_V1'),service,headroom,
                                 ledger=lambda row:stream.write(json.dumps(row)+'\n'))
                         temporary.replace(ledger_path)
                         saved['native_response_ledger']=dict(path=ledger_path.name,sha256=file_hash(ledger_path))

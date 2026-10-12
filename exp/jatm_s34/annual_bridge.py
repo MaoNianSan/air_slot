@@ -47,7 +47,7 @@ def _annual_bundle(year: int):
     return load_data2_reference_bundle(payloads)
 
 
-def load_annual_authorities(year: int):
+def load_annual_authorities(year: int, *, continuity_contract: str = 'LEGACY_A_V1'):
     """Reuse the authority contract without loading the legacy 2019 cache.
 
     Annual training records predate an explicit seed field; the seed is the
@@ -61,7 +61,7 @@ def load_annual_authorities(year: int):
     return Authorities(cache=None, cohort={},
         h16_manifest=dict(bindings['M1_HISTORY_PRIMARY'], training_seed=TRAIN_SEED),
         current_manifest=dict(bindings['M1_CURRENT_COMPARATOR'], training_seed=TRAIN_SEED),
-        registry=load_annual_cu(year), reference_bundle=_annual_bundle(year), taxi_reference=taxi,
+        registry=load_annual_cu(year, continuity_contract=continuity_contract), reference_bundle=_annual_bundle(year), taxi_reference=taxi,
         audit=dict(year=year, seed_source='exp.jatm_s34.annual_models.TRAIN_SEED',
                    legacy_phase5_cache_loaded=False, final_test_access_count=0))
 
@@ -150,7 +150,8 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
 def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
                         node_limit: int | None = None, start_chunk: int = 0,
                         episode_ids: set[str] | None = None,
-                        shared: bool = False, device: str = 'cpu'):
+                        shared: bool = False, device: str = 'cpu',
+                        continuity_contract: str = 'LEGACY_A_V1'):
     """Yield bounded Development bridges for one annual cohort.
 
     Train and Calibration define the frozen annual normalization already
@@ -182,7 +183,7 @@ def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
     pipeline.tail_continuations = dict(load_annual_tail(year))
     current_pipeline.tail_continuations = dict(pipeline.tail_continuations)
     normalization, static_normalization = pipeline.normalization, pipeline.static_normalization
-    authorities = load_annual_authorities(year)
+    authorities = load_annual_authorities(year, continuity_contract=continuity_contract)
     bundle = _annual_bundle(year)
     if shared:
         from .annual_cu import load_annual_cu

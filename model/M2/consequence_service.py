@@ -62,6 +62,8 @@ class ConsequenceReferenceBinding(FrozenModel):
     downstream_exposure: float = Field(ge=0.0)
     itinerary_threshold_minutes: float = Field(default=45.0, gt=0.0)
     service_threshold_minutes: float = Field(default=180.0, gt=0.0)
+    continuity_contract: str = "LEGACY_A_V1"
+    sobt_relative_minutes: float | None = None
 
 
 def _required(value: float | None, name: str, node_id: str) -> float:
@@ -84,8 +86,19 @@ def native_consequence_vector(
         carried = float(state.d_to_minutes)
         if abs(carried - d_to) > 1e-6:
             raise ContractError(f"M2_CONSEQUENCE_D_TO_IDENTITY_VIOLATION:{node_id}")
+    if binding.continuity_contract == "JATM_F_CONTINUITY_B_V1":
+        signed_t_ib = _required(state.t_ib_signed_minutes, "T_IB_SIGNED", node_id)
+        sobt_relative = binding.sobt_relative_minutes
+        if sobt_relative is None:
+            sobt_relative = state.sobt_relative_minutes
+        sobt_relative = _required(sobt_relative, "SOBT_RELATIVE", node_id)
+        continuity = max(0.0, signed_t_ib + binding.turnaround_reference_minutes - sobt_relative)
+    elif binding.continuity_contract == "LEGACY_A_V1":
+        continuity = max(0.0, t_ib - binding.turnaround_reference_minutes)
+    else:
+        raise ContractError("M2_CONTINUITY_CONTRACT_UNKNOWN:" + binding.continuity_contract)
     return {
-        "F_continuity": max(0.0, t_ib - binding.turnaround_reference_minutes),
+        "F_continuity": continuity,
         "F_execution": d_ob,
         "F_propagation": d_to * binding.downstream_exposure,
         "P_time": p_time_native(binding.expected_pax, d_to),

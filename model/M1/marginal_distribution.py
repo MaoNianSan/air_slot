@@ -70,6 +70,9 @@ class ExactWeightedMarginalDistribution:
     representation: StateRepresentationSpec
     atoms: tuple[tuple[WeightedAtom, ...], ...]
     support: SupportState = SupportState.SUPPORTED
+    time_coordinate_contract: str = "R_IB_LEGACY_V1"
+    signed_t_ib_atoms: tuple[WeightedAtom, ...] | None = None
+    sobt_relative_minutes: float | None = None
     identity_note: str = EXACT_PRODUCT_IDENTITY_NOTE
 
     def __post_init__(self) -> None:
@@ -83,7 +86,12 @@ class ExactWeightedMarginalDistribution:
             raise ContractError("M1_MARGINAL_EMPTY_COORDINATE_SUPPORT")
 
     @classmethod
-    def from_source(cls, source: StateScenarioSet) -> "ExactWeightedMarginalDistribution":
+    def from_source(
+        cls,
+        source: StateScenarioSet,
+        *,
+        time_coordinate_contract: str = "R_IB_LEGACY_V1",
+    ) -> "ExactWeightedMarginalDistribution":
         if source.representation.temporal is not TemporalKind.HISTORY:
             raise ContractError("M1_REPRESENTATION_SOURCE_NOT_HISTORY")
         if source.representation.uncertainty is not UncertaintyKind.JOINT:
@@ -110,6 +118,22 @@ class ExactWeightedMarginalDistribution:
             source_support = SupportState.ABSTAIN
         elif any(item.support is SupportState.DEGRADED for item in source.scenarios):
             source_support = SupportState.DEGRADED
+        signed_atoms = None
+        sobt_relative = None
+        if time_coordinate_contract == "JATM_STAGE2_SIGNED_T_IB_V1":
+            signed_values = []
+            sobt_values = set()
+            for scenario in source.scenarios:
+                if scenario.t_ib_signed_minutes is None or scenario.sobt_relative_minutes is None:
+                    raise ContractError("M1_SIGNED_TIME_COORDINATE_MISSING")
+                signed_values.append((float(scenario.t_ib_signed_minutes), scenario.scenario_weight))
+                sobt_values.add(float(scenario.sobt_relative_minutes))
+            if len(sobt_values) != 1:
+                raise ContractError("M1_SOBT_RELATIVE_NOT_NODE_CONSTANT")
+            signed_atoms = _aggregate(signed_values)
+            sobt_relative = next(iter(sobt_values))
+        elif time_coordinate_contract != "R_IB_LEGACY_V1":
+            raise ContractError("M1_TIME_COORDINATE_CONTRACT_UNKNOWN")
         return cls(
             episode_id=source.episode_id,
             chain_id=source.chain_id,
@@ -118,6 +142,9 @@ class ExactWeightedMarginalDistribution:
             representation=spec,
             atoms=tuple(_aggregate(values) for values in coordinate_values),
             support=source_support,
+            time_coordinate_contract=time_coordinate_contract,
+            signed_t_ib_atoms=signed_atoms,
+            sobt_relative_minutes=sobt_relative,
         )
 
     @property
@@ -125,7 +152,8 @@ class ExactWeightedMarginalDistribution:
         """Number of product states without materializing them."""
 
         count = 1
-        for marginal in self.atoms:
+        marginals = (self.signed_t_ib_atoms, self.atoms[1], self.atoms[2]) if self.time_coordinate_contract == "JATM_STAGE2_SIGNED_T_IB_V1" else self.atoms
+        for marginal in marginals:
             count *= len(marginal)
         return count
 
@@ -142,7 +170,8 @@ class ExactWeightedMarginalDistribution:
         """Lazily enumerate product states with exact product weights."""
 
         support = self.support
-        for index, values in enumerate(product(*self.atoms)):
+        signed_atoms = self.signed_t_ib_atoms or self.atoms[0]
+        for index, values in enumerate(product(signed_atoms, self.atoms[1], self.atoms[2])):
             t_ib, d_ob, d_tx = (atom.value for atom in values)
             weight = 1.0
             for atom in values:
@@ -151,7 +180,9 @@ class ExactWeightedMarginalDistribution:
                 scenario_id=index,
                 scenario_weight=weight,
                 stage=self.stage,
-                t_ib_minutes=t_ib,
+                t_ib_minutes=(t_ib if self.time_coordinate_contract == "R_IB_LEGACY_V1" else None),
+                t_ib_signed_minutes=(t_ib if self.time_coordinate_contract == "JATM_STAGE2_SIGNED_T_IB_V1" else None),
+                sobt_relative_minutes=self.sobt_relative_minutes,
                 d_ob_minutes=d_ob,
                 d_tx_minutes=d_tx,
                 d_to_minutes=d_ob + d_tx,

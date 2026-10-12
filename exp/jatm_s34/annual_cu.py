@@ -11,6 +11,7 @@ from .shared_store import digest, file_hash, code_hash
 ROOT = Path(__file__).resolve().parents[2]
 EVENTS = ('P_itinerary', 'P_service')
 PRINCIPAL = tuple(k for k in CONSEQUENCE_COMPONENTS if k not in EVENTS)
+B_CONTINUITY_CONTRACT = 'JATM_F_CONTINUITY_B_V1'
 
 
 @dataclass(frozen=True)
@@ -25,12 +26,17 @@ class AnnualV5CUAdapter:
         return self.scales[component]
 
 
-def load_annual_cu(year, *, track='YEAR_LOCAL'):
+def load_annual_cu(year, *, track='YEAR_LOCAL', continuity_contract='LEGACY_A_V1'):
     year = int(year)
     if year not in range(2017, 2023) or track not in ('YEAR_LOCAL', 'FIXED_COMMON'):
         raise ValueError('ANNUAL_CU_YEAR_OR_TRACK_INVALID')
     reference_year = year if track == 'YEAR_LOCAL' else 2017
-    version = 'PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1' if track == 'YEAR_LOCAL' else 'PRE_MULTIYEAR_V1_D4_2017H1_R2'
+    if continuity_contract == B_CONTINUITY_CONTRACT:
+        version = 'PRE_MULTIYEAR_V1_E4_YEARLOCAL_B_V1' if track == 'YEAR_LOCAL' else 'PRE_MULTIYEAR_V1_D4_2017H1_B_V1'
+    elif continuity_contract == 'LEGACY_A_V1':
+        version = 'PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1' if track == 'YEAR_LOCAL' else 'PRE_MULTIYEAR_V1_D4_2017H1_R2'
+    else:
+        raise ValueError('ANNUAL_CU_CONTINUITY_CONTRACT_UNKNOWN')
     root = ROOT/'artifacts/models/pre'/version/str(reference_year)/'M2_REFERENCES'
     manifest_path = root/'M2_REFERENCE_BUNDLE_MANIFEST.json'
     scales_path = root/'M2_SEVEN_COMPONENT_TRAIN_SCALES.json'
@@ -73,6 +79,7 @@ def load_annual_cu(year, *, track='YEAR_LOCAL'):
         reference_sha256=refs, event_scale_rule='ONE_NATIVE_EVENT_UNIT',
         principal_rule='MEDIAN_H1_TRAIN_POSITIVE',
         continuity_definition=source['scales']['F_continuity']['definition'],
+        continuity_contract=continuity_contract,
         continuity_reference_evidence='build_year_references.compute_train_scales receives the same turnaround payload written to this bundle',
         generator_sha256=code_hash(ROOT/'data2/scripts/build_year_references.py'),
         original_turnaround_sha256=file_hash(original_turn_path),

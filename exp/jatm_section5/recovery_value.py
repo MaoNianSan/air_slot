@@ -35,12 +35,18 @@ from .contracts import (
 NUMERICAL_TOLERANCE = 1e-9
 
 
-def transition_context(node: RepresentationNode, headroom: HeadroomSummary) -> TransitionContext:
+def transition_context(
+    node: RepresentationNode,
+    headroom: HeadroomSummary,
+    *,
+    time_coordinate_contract: str = "R_IB_LEGACY_V1",
+) -> TransitionContext:
     """Use the node-specific schedule-relative SOBT coordinate."""
 
     return TransitionContext(
         sobt_minutes=float(node.sobt_minutes),
         turnaround_lower_bound_minutes=float(headroom.turnaround_lower_bound_q),
+        time_coordinate_contract=time_coordinate_contract,
     )
 
 

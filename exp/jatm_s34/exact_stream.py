@@ -31,10 +31,10 @@ class Replay:
     def __len__(self):return self.count
 
 
-def project(node,service):
+def project(node,service, *, time_coordinate_contract: str = "R_IB_LEGACY_V1"):
     source=node.state('HISTORY_JOINT')
     try:
-        adapter=ExactWeightedMarginalDistribution.from_source(source)
+        adapter=ExactWeightedMarginalDistribution.from_source(source, time_coordinate_contract=time_coordinate_contract)
     except ContractError as error:
         if str(error).startswith('M1_SCENARIO_COORDINATE_MISSING:'):
             return unavailable(node,service,str(error))

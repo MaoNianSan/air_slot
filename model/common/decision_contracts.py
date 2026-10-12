@@ -292,6 +292,11 @@ class StateScenario(FrozenModel):
     scenario_weight: float = Field(gt=0.0)
     stage: OperationalStage
     t_ib_minutes: float | None = None
+    # Versioned signed event coordinate T_IB - decision_time.  Keep this
+    # separate from the legacy nonnegative R_IB coordinate above.
+    t_ib_signed_minutes: float | None = None
+    # SOBT - decision_time, sharing the origin of t_ib_signed_minutes.
+    sobt_relative_minutes: float | None = None
     d_ob_minutes: float | None = None
     d_tx_minutes: float | None = None
     d_to_minutes: float | None = None
@@ -319,6 +324,10 @@ class StateScenario(FrozenModel):
     @property
     def T_IB(self) -> float | None:  # noqa: N802 - scientific name
         return self.t_ib_minutes
+
+    @property
+    def T_IB_SIGNED(self) -> float | None:  # noqa: N802 - scientific name
+        return self.t_ib_signed_minutes
 
     @property
     def D_OB(self) -> float | None:  # noqa: N802 - scientific name

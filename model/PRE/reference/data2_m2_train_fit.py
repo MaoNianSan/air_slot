@@ -480,6 +480,58 @@ def compute_passenger_consequence_train_scales(rows: list[dict[str, Any]], *, ex
     return output
 
 
+def compute_train_scales_continuity_b(
+    rows: list[dict[str, Any]],
+    references: Mapping[str, Any],
+    *,
+    turnaround_ref,
+    **kwargs,
+) -> dict[str, dict[str, Any]]:
+    """Build the versioned B continuity scale without changing V5 output.
+
+    The five other train scales are delegated to the frozen implementation;
+    only F_continuity is replaced by the planned connection gap
+    ``[T_IB + tau - SOBT]+``.  The caller writes this result to a new bundle
+    and must never overwrite the legacy registry.
+    """
+    from model.PRE.episode.builder import build_data2_episode_records
+
+    output = compute_train_scales(rows, references, turnaround_ref=turnaround_ref, **kwargs)
+    turnaround_index = {cell.airport_id: cell for cell in turnaround_ref.cells}
+    by_flight = {row["flight_id"]: row for row in rows}
+    values: list[float] = []
+    rows_seen = 0
+    for episode in build_data2_episode_records(rows, max_gap_minutes=360):
+        predecessor = by_flight[episode.predecessor_flight_id]
+        successor = by_flight[episode.successor_flight_id]
+        reference = _turnaround_taxi_value(
+            turnaround_index, episode.connection_airport_id, turnaround_ref
+        )
+        if reference is None:
+            continue
+        rows_seen += 1
+        quantity = max(
+            0.0,
+            (predecessor["actual_arrival_utc"] - successor["scheduled_departure_utc"]).total_seconds() / 60.0
+            + float(reference),
+        )
+        if quantity > 0.0:
+            values.append(quantity)
+    if not values:
+        raise ContractError("M2_B_CONTINUITY_NO_POSITIVE_TRAIN_SUPPORT")
+    output["F_continuity"] = {
+        "quantity": "Z_turn_B",
+        "definition": "max(0, T_IB + turnaround_reference - SOBT)",
+        "unit": "minutes",
+        "driver": "planned_connection_time_gap",
+        "median": median(values),
+        "population_rows": rows_seen,
+        "positive_n": len(values),
+        "continuity_contract": "JATM_F_CONTINUITY_B_V1",
+    }
+    return output
+
+
 def _artifact_hash(payload: dict) -> str:
     return content_id(payload)
 
