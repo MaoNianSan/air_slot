@@ -36,7 +36,8 @@ def evaluation_is_current(output_root, identity):
                    'E1/E1_PAIRED_SUMMARY.json','E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json','E2_E3/E2_E3_SUMMARY.json'}
 
 
-def run(year,output_root,*,device='cpu',threads=1,chunk_size=32,episode_limit=None,phase='all'):
+def run(year,output_root,*,device='cpu',threads=1,chunk_size=32,episode_limit=None,phase='all',
+        continuity_contract='JATM_F_CONTINUITY_B_V1'):
     if threads<1 or chunk_size<1 or (episode_limit is not None and episode_limit<1):
         raise ValueError('POSITIVE_RESOURCE_AND_EPISODE_COUNTS_REQUIRED')
     with SharedStore(output_root,{'year':year}).writer():
@@ -47,12 +48,12 @@ def run(year,output_root,*,device='cpu',threads=1,chunk_size=32,episode_limit=No
         previous={sig:signal.signal(sig,request_stop) for sig in (signal.SIGINT,signal.SIGTERM)}
         try:
             return _run(year,output_root,device=device,threads=threads,chunk_size=chunk_size,
-                        episode_limit=episode_limit,phase=phase)
+                        episode_limit=episode_limit,phase=phase,continuity_contract=continuity_contract)
         finally:
             for sig,handler in previous.items():signal.signal(sig,handler)
 
 
-def _run(year,output_root,*,device,threads,chunk_size,episode_limit,phase):
+def _run(year,output_root,*,device,threads,chunk_size,episode_limit,phase,continuity_contract):
     import torch
     import psutil
     torch.set_num_threads(threads)
@@ -66,6 +67,7 @@ def _run(year,output_root,*,device,threads,chunk_size,episode_limit,phase):
         requested_device=requested_device,device_selection_reason=device_reason,
         threads=threads,chunk_size=chunk_size,episode_limit=episode_limit,
         scope='PILOT' if episode_limit is not None else 'FULL_DEVELOPMENT',
+        continuity_contract=continuity_contract,
         git_head=__import__('exp.jatm_s34.runtime_provenance',fromlist=['code_revision']).code_revision(),
         created_at=datetime.now(timezone.utc).isoformat(),final_test_access_count=0,
         python=sys.version,torch=torch.__version__,cuda=torch.version.cuda,model_retrained=False)
@@ -77,12 +79,14 @@ def _run(year,output_root,*,device,threads,chunk_size,episode_limit,phase):
         if (out/'shared/STOP_REQUESTED').exists():
             raise InterruptedError('EXPLICIT_STOP_MARKER_PRESENT')
         if phase in ('all','stage1'):
-            materialize(year,out/'shared',chunk_size=chunk_size,node_limit=episode_limit,device=device)
+            materialize(year,out/'shared',chunk_size=chunk_size,node_limit=episode_limit,device=device,
+                        continuity_contract=continuity_contract)
         if not (out/'shared/CACHE_MANIFEST.json').is_file():
             manifest['status']='PAUSED_AT_CHECKPOINT'
         else:
             cached=json.loads((out/'shared/CACHE_MANIFEST.json').read_text())
-            expected=execution_identity(year,4096,chunk_size,episode_limit,device)
+            expected=execution_identity(year,4096,chunk_size,episode_limit,device,
+                                        continuity_contract=continuity_contract)
             if cached['identity_hash']!=digest(expected):
                 raise ValueError('EVALUATION_SHARED_INPUT_OR_ALGORITHM_MISMATCH')
             if phase in ('all','evaluate'):
@@ -94,7 +98,7 @@ def _run(year,output_root,*,device,threads,chunk_size,episode_limit,phase):
                     from .shared_science import export_e1_table
                     export_e1_table(out/'shared',track='FIXED_COMMON')
                     e1(out/'shared/fixed_common',out/'E1_FIXED_COMMON')
-                    run_actions(out/'shared',out/'E2_E3')
+                    run_actions(out/'shared',out/'E2_E3',continuity_contract=continuity_contract)
                     atomic_json(out/'EVALUATION_COMPLETE.json',dict(identity=identity,outputs={
                         name:file_hash(out/name) for name in ('E1/E1_PAIRED_SUMMARY.json','E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json','E2_E3/E2_E3_SUMMARY.json')}))
             manifest['status']=('STAGE_I_COMPLETE' if phase=='stage1' else
@@ -119,6 +123,8 @@ if __name__=='__main__':
     parser.add_argument('--chunk-size',type=int,default=32)
     parser.add_argument('--episode-limit',type=int)
     parser.add_argument('--phase',choices=('all','stage1','evaluate'),default='all')
+    parser.add_argument('--continuity-contract', choices=('LEGACY_A_V1','JATM_F_CONTINUITY_B_V1'),
+                        default='JATM_F_CONTINUITY_B_V1')
     args=parser.parse_args()
     run(args.year,args.output_root,device=args.device,threads=args.threads,chunk_size=args.chunk_size,
-        episode_limit=args.episode_limit,phase=args.phase)
+        episode_limit=args.episode_limit,phase=args.phase,continuity_contract=args.continuity_contract)

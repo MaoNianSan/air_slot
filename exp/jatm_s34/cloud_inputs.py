@@ -34,7 +34,8 @@ def model_bindings(year, *, root=ROOT):
     return bindings
 
 
-def check_year(year, *, require_tail=True, root=ROOT):
+def check_year(year, *, require_tail=True, root=ROOT,
+               continuity_contract='LEGACY_A_V1'):
     result = dict(year=year, status='INPUTS_VALIDATED', final_test_access_count=0,
                   scope='TRAIN_CALIBRATION_DEVELOPMENT_ONLY')
     try:
@@ -68,8 +69,10 @@ def check_year(year, *, require_tail=True, root=ROOT):
         from .annual_cu import load_annual_cu
         from .annual_tail import annual_tail_path, load_annual_tail, tail_manifest_summary
         from .scientific_tracks import nominal_headroom
-        result['cu'] = {track:load_annual_cu(year, track=track).provenance
+        result['cu'] = {track:load_annual_cu(year, track=track,
+                                             continuity_contract=continuity_contract).provenance
                         for track in ('YEAR_LOCAL', 'FIXED_COMMON')}
+        result['continuity_contract'] = continuity_contract
         result['nominal_policy'] = nominal_headroom(year).model_dump(mode='json')
         if annual_tail_path(year).exists():
             load_annual_tail(year)

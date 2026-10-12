@@ -81,19 +81,20 @@ def execution_identity(year, n, chunk_size, node_limit, device,
         scientific_config_hashes={str(p.relative_to(ROOT)).replace('\\','/'):file_hash(p)
             for p in (ROOT/'configs').rglob('*') if p.is_file()},
         algorithm_hash=digest({str(p.relative_to(ROOT)).replace('\\','/'):code_hash(p) for p in code}),
-        cu_contract=load_annual_cu(year).provenance,
+        cu_contract=load_annual_cu(year, continuity_contract=continuity_contract).provenance,
         seeds={'history':authority.h16_manifest['training_seed'], 'current':authority.current_manifest['training_seed']},
         scenario_count=64, backend=device, dtype='float32', torch_version=torch.__version__,
         final_test_access_count=0, model_retrained=False)
 
 
-def materialize(year, output_root, *, n=4096, chunk_size=32, node_limit=None, device='cpu'):
+def materialize(year, output_root, *, n=4096, chunk_size=32, node_limit=None, device='cpu',
+                continuity_contract='JATM_F_CONTINUITY_B_V1'):
     """Commit one compact chunk and one small restorable payload per canonical node."""
     import psutil
     root = Path(output_root)
     identity = execution_identity(year,n,chunk_size,node_limit,device,
-        continuity_contract='JATM_F_CONTINUITY_B_V1')
-    identity['continuity_contract'] = 'JATM_F_CONTINUITY_B_V1'
+        continuity_contract=continuity_contract)
+    identity['continuity_contract'] = continuity_contract
     identity['stage2_time_coordinate_contract'] = 'JATM_STAGE2_SIGNED_T_IB_V1'
     store = SharedStore(root/'stage1', identity)
     states = SharedStore(root/'states', identity)
@@ -122,7 +123,7 @@ def materialize(year, output_root, *, n=4096, chunk_size=32, node_limit=None, de
                 return identity
             for context in iter_annual_bridges(year=year,n=n,chunk_size=chunk_size,
                     node_limit=node_limit,start_chunk=completed,shared=True,device=device,
-                    continuity_contract='JATM_F_CONTINUITY_B_V1'):
+                    continuity_contract=continuity_contract):
                 tick = time.perf_counter()
                 canonical_ids=set(canonical_preselection(context['bridge']['rows']))
                 # C1 uses every eligible canonical case; C3 needs all admissible
@@ -133,7 +134,7 @@ def materialize(year, output_root, *, n=4096, chunk_size=32, node_limit=None, de
                         (OperationalStage.PRE_IB,OperationalStage.POST_IB_PRE_OB)))
                 layer = build_consequence_service(authorities=context['authorities'],bridge=bridge,
                     output_dir=root/'bindings'/f'chunk_{completed:04d}',
-                    continuity_contract='JATM_F_CONTINUITY_B_V1')
+                    continuity_contract=continuity_contract)
                 rows = []
                 for node in _iter_nodes(authorities=context['authorities'],bridge=bridge,
                         tails=context['tails'],layer=layer,history_pipeline=context['history_pipeline'],

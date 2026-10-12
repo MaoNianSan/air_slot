@@ -57,6 +57,7 @@ def _schedule(args):
             command=[sys.executable,'-u','-m','exp.jatm_s34.cloud_worker','--year',str(year),
                 '--output-root',str(out),'--threads',str(args.threads),'--chunk-size',str(args.chunk_size),
                 '--device',args.device,'--phase',args.phase]
+            command += ['--continuity-contract', str(getattr(args, 'continuity_contract', 'JATM_F_CONTINUITY_B_V1'))]
             if args.episode_limit is not None:command+=['--episode-limit',str(args.episode_limit)]
             if getattr(args,'tail_decision',None):command+=['--tail-decision',str(args.tail_decision)]
             log=(out/'worker.log').open('a',encoding='utf-8')
@@ -132,7 +133,8 @@ def from_config(path):
     source=json.loads(Path(path).read_text()) if Path(path).suffix=='.json' else yaml.safe_load(Path(path).read_text())
     if source.get('stop_before_test') is not True:raise ValueError('DEVELOPMENT_ONLY_CONFIGURATION_REQUIRED')
     defaults=dict(workers=1,threads=8,cpu_budget=32,memory_per_worker_gib=24,reserve_gib=12,
-        chunk_size=32,device='cpu',episode_limit=None,phase='all',max_retries=1,tail_decision=None)
+        chunk_size=32,device='cpu',episode_limit=None,phase='all',max_retries=1,tail_decision=None,
+        continuity_contract='JATM_F_CONTINUITY_B_V1')
     mapping={'max_year_workers':'workers','cpu_threads_per_worker':'threads'}
     for key,value in source.items():
         if key=='stop_before_test':continue
@@ -164,6 +166,8 @@ if __name__=='__main__':
     parser.add_argument('--episode-limit',type=int)
     parser.add_argument('--phase',choices=('all','stage1','evaluate'),default='all')
     parser.add_argument('--tail-decision',type=Path)
+    parser.add_argument('--continuity-contract', choices=('LEGACY_A_V1','JATM_F_CONTINUITY_B_V1'),
+                        default='JATM_F_CONTINUITY_B_V1')
     parser.add_argument('--max-retries',type=int,choices=(0,1,2),default=1)
     args=parser.parse_args()
     if args.config:args=from_config(args.config)

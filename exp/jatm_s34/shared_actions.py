@@ -60,7 +60,8 @@ class RevaluedConsequenceService:
         return native.model_copy(update={'cu_components':self.service.to_cu(native.native_components)})
 
 
-def calculate_node(node,service,headroom,shortlists,*,cu_track='YEAR_LOCAL',include_sensitivity=False):
+def calculate_node(node,service,headroom,shortlists,*,cu_track='YEAR_LOCAL',include_sensitivity=False,
+                   time_coordinate_contract='JATM_STAGE2_SIGNED_T_IB_V1'):
     cached = service if isinstance(service,CachedConsequenceService) else CachedConsequenceService(service)
     cohort = prepare_reference_recovery((node,),source_shortlists=shortlists,service=cached,headroom=headroom)
     if not cohort.nodes:
@@ -75,7 +76,7 @@ def calculate_node(node,service,headroom,shortlists,*,cu_track='YEAR_LOCAL',incl
         recoveries[rep] = dict(action=value.actions[node.node_id],fallback=value.typed_fallbacks.get(node.node_id),
             decision=None if node.node_id not in value.decisions else value.decisions[node.node_id].model_dump(mode='json'))
     context = transition_context(node,headroom,
-        time_coordinate_contract='JATM_STAGE2_SIGNED_T_IB_V1')
+        time_coordinate_contract=time_coordinate_contract)
     from model.M3.transition import scenario_headroom
     distribution=node.state('HISTORY_JOINT').scenarios
     mechanism_context=dict(expected_headroom_minutes=sum(s.scenario_weight*scenario_headroom(s,context) for s in distribution),
@@ -124,7 +125,8 @@ def calculate_node(node,service,headroom,shortlists,*,cu_track='YEAR_LOCAL',incl
         consequence_requests=cached.calls,consequence_computations=cached.calls-cached.hits,cache_hits=cached.hits)
 
 
-def run_actions(shared_root, output_root, *, replicates=2000):
+def run_actions(shared_root, output_root, *, replicates=2000,
+                continuity_contract='JATM_F_CONTINUITY_B_V1'):
     root,out = Path(shared_root),Path(output_root)
     manifest=json.loads((root/'CACHE_MANIFEST.json').read_text())
     identity=manifest['identity'];year=identity['year']
@@ -155,7 +157,7 @@ def run_actions(shared_root, output_root, *, replicates=2000):
         nominal_policy=nominal_policy_metadata(),shortlists={k.value:list(v) for k,v in shortlists.items()},
         year_adaptive_sensitivity_source_hash=file_hash(source_root/'data2/reports/paper_formal'/str(year)/str(year)/'M2_TRAIN_HEADROOM_SUMMARY.json'),
         action_algorithm_hash=digest({p.relative_to(source_root).as_posix():code_hash(p) for p in action_sources}),
-        fixed_common_contract=load_annual_cu(year,track='FIXED_COMMON').provenance)
+        fixed_common_contract=load_annual_cu(year,track='FIXED_COMMON',continuity_contract=continuity_contract).provenance)
     store=SharedStore(out/'actions',action_identity)
     compact=[]; fixed_records=[]; fixed_rows=[]
     with store.writer():
@@ -165,18 +167,20 @@ def run_actions(shared_root, output_root, *, replicates=2000):
             if saved is None:
                 source=states.read(key)
                 binding=ConsequenceReferenceBinding.model_validate(source['binding']) if source['binding'] is not None else None
-                service=M2ConsequenceService(load_annual_cu(year, continuity_contract='JATM_F_CONTINUITY_B_V1'),{} if binding is None else {node.node_id:binding})
+                service=M2ConsequenceService(load_annual_cu(year, continuity_contract=continuity_contract),{} if binding is None else {node.node_id:binding})
                 original=unpack_node(source['node'],{k:StateScenarioSet.model_validate(v) for k,v in source['states'].items()})
                 values,state,consequence,support,audit=_exact_projection(original,service,preserve_metadata=True,streaming=True,
-                    time_coordinate_contract='JATM_STAGE2_SIGNED_T_IB_V1')
+                    time_coordinate_contract=('JATM_STAGE2_SIGNED_T_IB_V1' if continuity_contract == 'JATM_F_CONTINUITY_B_V1' else 'R_IB_LEGACY_V1'))
                 full=_replace_with_exact(original,(state,consequence,support,values))
                 native_cache=CachedConsequenceService(service)
                 saved=calculate_node(full,native_cache,headroom,full_eligible_lists,
-                                     include_sensitivity=node.node_id in e3_ids)
+                                     include_sensitivity=node.node_id in e3_ids,
+                                     time_coordinate_contract=('JATM_STAGE2_SIGNED_T_IB_V1' if continuity_contract == 'JATM_F_CONTINUITY_B_V1' else 'R_IB_LEGACY_V1'))
                 if saved['status']=='ACTION_TABLE_COMPLETE':
-                    fixed_service=M2ConsequenceService(load_annual_cu(year,track='FIXED_COMMON',continuity_contract='JATM_F_CONTINUITY_B_V1'),service.references)
+                    fixed_service=M2ConsequenceService(load_annual_cu(year,track='FIXED_COMMON',continuity_contract=continuity_contract),service.references)
                     saved['fixed_common']=calculate_node(full,RevaluedConsequenceService(fixed_service,native_cache),headroom,full_eligible_lists,
-                        cu_track='FIXED_COMMON',include_sensitivity=node.node_id in e3_ids)
+                        cu_track='FIXED_COMMON',include_sensitivity=node.node_id in e3_ids,
+                        time_coordinate_contract=('JATM_STAGE2_SIGNED_T_IB_V1' if continuity_contract == 'JATM_F_CONTINUITY_B_V1' else 'R_IB_LEGACY_V1'))
                     # Native outcomes are identical; store them only on the main track.
                     saved['fixed_common'].pop('scenario_outcomes',None)
                     saved['native_computations_both_tracks']=native_cache.calls-native_cache.hits
@@ -187,7 +191,7 @@ def run_actions(shared_root, output_root, *, replicates=2000):
                         temporary=ledger_path.with_suffix('.tmp')
                         with gzip.open(temporary,'wt',encoding='utf-8') as stream:
                             saved['mechanisms']=compare(full,transition_context(full,headroom,
-                                time_coordinate_contract='JATM_STAGE2_SIGNED_T_IB_V1'),service,headroom,
+                                time_coordinate_contract=('JATM_STAGE2_SIGNED_T_IB_V1' if continuity_contract == 'JATM_F_CONTINUITY_B_V1' else 'R_IB_LEGACY_V1')),service,headroom,
                                 ledger=lambda row:stream.write(json.dumps(row)+'\n'))
                         temporary.replace(ledger_path)
                         saved['native_response_ledger']=dict(path=ledger_path.name,sha256=file_hash(ledger_path))

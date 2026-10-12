@@ -8,7 +8,8 @@ from .shared_store import atomic_json
 
 def run(args):
     out = args.output_root
-    gate = check_year(args.year, require_tail=args.tail_decision is None)
+    gate = check_year(args.year, require_tail=args.tail_decision is None,
+                      continuity_contract=args.continuity_contract)
     atomic_json(out/'INPUT_GATE.json', gate)
     if gate['status'] != 'INPUTS_VALIDATED':
         atomic_json(out/'RUN_MANIFEST.json', gate)
@@ -22,14 +23,15 @@ def run(args):
                 status='SCIENTIFIC_BLOCKED' if not isinstance(error, OSError) else 'IO_FAILED',
                 reason=str(error), final_test_access_count=0))
             return 2
-        gate = check_year(args.year)
+        gate = check_year(args.year, continuity_contract=args.continuity_contract)
         atomic_json(out/'INPUT_GATE.json', gate)
         if gate['status'] != 'INPUTS_VALIDATED':
             atomic_json(out/'RUN_MANIFEST.json', gate)
             return 2
     from .shared_run import run as execute
     result = execute(args.year, out, device=args.device, threads=args.threads,
-        chunk_size=args.chunk_size, episode_limit=args.episode_limit, phase=args.phase)
+        chunk_size=args.chunk_size, episode_limit=args.episode_limit, phase=args.phase,
+        continuity_contract=args.continuity_contract)
     return 0 if result['status'] not in ('FAILED', 'PAUSED_AT_CHECKPOINT') else 3
 
 
@@ -43,4 +45,6 @@ if __name__ == '__main__':
     p.add_argument('--chunk-size', type=int, default=32)
     p.add_argument('--episode-limit', type=int)
     p.add_argument('--phase', choices=('all','stage1','evaluate'), default='all')
+    p.add_argument('--continuity-contract', choices=('LEGACY_A_V1','JATM_F_CONTINUITY_B_V1'),
+                   default='JATM_F_CONTINUITY_B_V1')
     raise SystemExit(run(p.parse_args()))
