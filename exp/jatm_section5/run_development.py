@@ -185,6 +185,8 @@ def _build_nodes(
     *, authorities, bridge, tails, layer,
     history_checkpoint: Path | None = None,
     current_checkpoint: Path | None = None,
+    history_pipeline=None,
+    current_pipeline=None,
 ) -> tuple[RepresentationNode, ...]:
     """Build nodes from explicit model inputs.
 
@@ -192,8 +194,8 @@ def _build_nodes(
     adapters may provide versioned year-local checkpoints without changing the
     sealed executor or the underlying scientific service.
     """
-    history_pipeline = M1Pipeline.load(history_checkpoint or H16_CHECKPOINT)
-    current_pipeline = M1Pipeline.load(current_checkpoint or CURRENT_CHECKPOINT)
+    history_pipeline = history_pipeline or M1Pipeline.load(history_checkpoint or H16_CHECKPOINT)
+    current_pipeline = current_pipeline or M1Pipeline.load(current_checkpoint or CURRENT_CHECKPOINT)
     history_pipeline.tail_continuations = dict(tails)
     current_pipeline.tail_continuations = dict(tails)
     current_rows = {

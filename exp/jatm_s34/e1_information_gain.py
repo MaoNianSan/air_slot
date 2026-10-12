@@ -13,7 +13,7 @@ import copy
 import hashlib
 import json
 from collections import Counter
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Iterable
 
@@ -38,10 +38,36 @@ from validation.v2_phase5.common import (
     load_tail_continuations,
 )
 from validation.v2_phase5.families import build_consequence_service
+from .annual_bridge import iter_annual_bridges
 
 Q_GRID = (0.05, 0.10, 0.20, 0.30)
 VIEWS = ("DELAY", "DELAY_PASSENGER", "DELAY_DOWNSTREAM", "CONSEQUENCE")
 STAGES = (OperationalStage.PRE_IB, OperationalStage.POST_IB_PRE_OB)
+
+
+@dataclass(frozen=True)
+class _CompactSupport:
+    included: bool
+    supported_mass: float
+    threshold: float
+    status: TypedStatus
+
+
+@dataclass(frozen=True)
+class _CompactNode:
+    """Stage-I-only node record used after a chunk has been released."""
+    episode_id: str
+    chain_id: str
+    node_id: str
+    stage: OperationalStage
+    decision_time: object
+    delay_scores: dict
+    consequence_scores: dict
+    domain_scores: dict
+    _support: _CompactSupport
+
+    def support(self, _representation):
+        return self._support
 
 
 def _sha256(path: Path) -> str:
@@ -374,6 +400,140 @@ def run(*, output_root: Path, node_limit: int | None = None, bootstrap_replicate
         for row in summaries
     ]
     (output_root / "E1_CHART_DATA.json").write_text(json.dumps(chart_rows, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return payload
+
+
+def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
+                       chunk_size: int = 128, node_limit: int | None = None,
+                       bootstrap_replicates: int = 2000) -> dict:
+    """Run E1 with bounded PRE/M1/RepresentationNode lifetime.
+
+    Every Development chunk is scored with the same Section-5 builder and
+    model-owned selector.  Only compact Stage-I records survive between
+    chunks, so the complete cohort remains available for K/N and bootstrap
+    calculations without retaining state/consequence scenario tensors.
+    """
+    out = Path(output_root).resolve(); out.mkdir(parents=True, exist_ok=True)
+    nodes: list[_CompactNode] = []
+    built_node_count = 0
+    factor_by_node: dict[str, tuple[float, float]] = {}
+    factor_audit: dict[str, dict] = {}
+    exclusions: Counter[str] = Counter()
+    chunk_count = 0
+    for context in iter_annual_bridges(year=year, n=n, chunk_size=chunk_size, node_limit=node_limit):
+        chunk_count += 1
+        layer = build_consequence_service(
+            authorities=context["authorities"], bridge=context["bridge"],
+            output_dir=out / "materialization" / f"chunk_{chunk_count:04d}"
+        )
+        built = _build_nodes(
+            authorities=context["authorities"], bridge=context["bridge"],
+            tails=context["tails"], layer=layer,
+            history_checkpoint=context["history_checkpoint"],
+            current_checkpoint=context["current_checkpoint"],
+            history_pipeline=context.get("history_pipeline"),
+            current_pipeline=context.get("current_pipeline"),
+        )
+        for node in built:
+            if node.stage not in STAGES:
+                continue
+            built_node_count += 1
+            support = node.support("HISTORY_JOINT")
+            if _reference_eligible(node):
+                binding = layer.bindings.get(node.node_id)
+                factors, audit = _exposure_factors(node, binding)
+                factor_audit[node.node_id] = {"status": audit.get("status"),
+                                              "reason": audit.get("reason"),
+                                              "max_pax_abs_error": audit.get("max_pax_abs_error"),
+                                              "max_downstream_abs_error": audit.get("max_downstream_abs_error")}
+                if factors is not None:
+                    factor_by_node[node.node_id] = factors
+            nodes.append(_CompactNode(
+                episode_id=node.episode_id, chain_id=node.chain_id, node_id=node.node_id,
+                stage=node.stage, decision_time=node.decision_time,
+                delay_scores={"HISTORY_JOINT": node.delay_scores.get("HISTORY_JOINT")},
+                consequence_scores={"HISTORY_JOINT": node.consequence_scores.get("HISTORY_JOINT")},
+                domain_scores={"HISTORY_JOINT": node.domain_scores.get("HISTORY_JOINT")},
+                _support=_CompactSupport(bool(support.included), float(support.supported_mass),
+                                         float(support.threshold), support.status),
+            ))
+        (out / "E1_CHUNK_CHECKPOINT.json").write_text(
+            json.dumps({"schema_version": "JATM_S34_E1_BOUNDED_CHECKPOINT_V1",
+                        "year": int(year), "completed_chunks": chunk_count,
+                        "processed_node_records": len(nodes), "final_test_access_count": 0},
+                       indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        del built, layer, context
+    # Match the frozen canonical cohort rule: one earliest node per
+    # episode x operational stage, then apply support/reference eligibility.
+    canonical_by_key = {}
+    for node in nodes:
+        key = (node.episode_id, node.stage)
+        previous = canonical_by_key.get(key)
+        if previous is None or (node.decision_time, node.node_id) < (previous.decision_time, previous.node_id):
+            canonical_by_key[key] = node
+    canonical_nodes = tuple(canonical_by_key.values())
+    candidate_nodes = []
+    for node in canonical_nodes:
+        if not _reference_eligible(node) or node.node_id not in factor_by_node:
+            exclusions["BASE_COMMON_SUPPORT_OR_SCORE"] += 1
+            continue
+        candidate_nodes.append(node)
+    nodes = candidate_nodes
+    summaries = []
+    selected_rows = []
+    by_key = {}
+    for stage in STAGES:
+        cohort = tuple(node for node in nodes if node.stage is stage)
+        for q in Q_GRID:
+            for view in VIEWS:
+                result = _summarize_stage(cohort, view=view, q=q, factor_by_node=factor_by_node)
+                result["stage"] = stage.value; result["candidate_total"] = len(cohort)
+                result["support_denominator"] = len(cohort)
+                result["bootstrap_ci"] = _bootstrap(
+                    cohort, view=view, q=q, factor_by_node=factor_by_node,
+                    seed=20261011 + int(q * 100) + list(STAGES).index(stage) * 1000 + list(VIEWS).index(view),
+                    replicates=bootstrap_replicates,
+                )
+                summaries.append(result)
+                by_key[(stage.value, float(q), view)] = result
+                selected_rows.extend({"stage": stage.value, "q": q, "view": view,
+                                      "node_id": node_id, "selected": True}
+                                     for node_id in result.get("selected_view", ()))
+    for stage in STAGES:
+        for q in Q_GRID:
+            baseline = by_key[(stage.value, float(q), "DELAY")]
+            for view in VIEWS:
+                row = by_key[(stage.value, float(q), view)]
+                row["paired_increment_vs_delay"] = {
+                    key: (None if row.get(key) is None or baseline.get(key) is None
+                          else row[key] - baseline[key])
+                    for key in ("overlap", "replacement", "retained_consequence", "attention_loss")
+                }
+    payload = {
+        "schema_version": "JATM_S34_E1_DEVELOPMENT_BOUNDED_V1",
+        "status": "DEVELOPMENT_COMPLETE",
+        "year": int(year), "n": int(n), "chunk_size": int(chunk_size),
+        "chunk_count": chunk_count, "node_count": built_node_count,
+        "research_question": "Does adding approved passenger or downstream exposure to P^D change Stage-I screening while holding cohort, q and M3 tie-break fixed?",
+        "estimand": "stage-local shortlist overlap, replacement and retained consequence against P^C",
+        "views": {"DELAY": "P^D", "DELAY_PASSENGER": "P^D * expected_passengers_per_flight",
+                  "DELAY_DOWNSTREAM": "P^D * expected_downstream_exposure", "CONSEQUENCE": "P^C"},
+        "common_candidate_counts": {stage.value: sum(node.stage is stage for node in nodes) for stage in STAGES},
+        "candidate_exclusions": dict(exclusions),
+        "exposure_reference_audit_count": len(factor_audit),
+        "bootstrap": {"replicates": int(bootstrap_replicates), "cluster": "episode",
+                       "with_replacement": True, "seed_base": 20261011},
+        "summary_rows": summaries, "selected_rows": selected_rows,
+        "final_test_access_count": 0, "bounded_memory": True,
+    }
+    payload["artifact_hash"] = content_id(payload)
+    (out / "E1_SUMMARY.json").write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")
+    (out / "E1_SELECTED_ROWS.json").write_text(json.dumps(selected_rows, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (out / "E1_CHART_DATA.json").write_text(json.dumps([
+        {key: row.get(key) for key in ("stage", "q", "view", "candidate_total", "support_denominator",
+                                        "n", "k", "abstain", "overlap", "replacement", "retained_consequence",
+                                        "absolute_consequence_gap", "attention_loss")}
+        for row in summaries], indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return payload
 
 
