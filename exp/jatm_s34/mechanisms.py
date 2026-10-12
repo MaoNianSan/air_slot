@@ -53,10 +53,14 @@ def compare(node,context,service,headroom,*,ledger=None):
         threshold,coupling,profile=key
         j=dict(table);m=dict(marginal[key]);uj=min(j,key=lambda u:(j[u],u));um=min(m,key=lambda u:(m[u],u))
         diff={u:m[u]-j[u] for u in j};relative=max((abs(diff[u]-diff[uj]) for u in j if u!=uj),default=0.)
+        paper_difference={u:-value for u,value in diff.items()}
         denom=j[0.]-j[uj]
         rows.append(dict(node_id=node.node_id,episode_id=node.episode_id,stage=node.stage.value,
             mechanism_version=MECHANISM_VERSION,threshold_on=threshold,headroom_on=coupling,profile=profile,
             joint_curve=table,marginal_curve=marginal[key],fixed_target_difference=diff,
+            fixed_target_difference_convention='LEGACY_MARGINAL_MINUS_JOINT',
+            e_joint_minus_marginal=paper_difference,
+            e_convention='J_JOINT_MINUS_J_MARGINAL_PER_MANUSCRIPT_EQ_DEPENDENCE_OBJECTIVE_DIFFERENCE',
             max_fixed_target_difference=max(map(abs,diff.values())),action_relative_difference=relative,
             u_joint=uj,u_marginal=um,choice_agreement=uj==um,reference_regret=j[um]-j[uj],
             normalized_reference_regret=None if denom<=0 else (j[um]-j[uj])/denom,

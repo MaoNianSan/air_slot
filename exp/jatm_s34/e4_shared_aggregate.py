@@ -25,10 +25,15 @@ def rolling_analysis(rows, allowed_ids, *, replicates=2000):
             first_stage=first['stage'],last_stage=last['stage'],
             delta_u_joint=difference('u_joint'),delta_u_comparator=difference('u_comparator'),
             delta_normalized_regret=difference('normalized_regret'),
-            delta_recoverable_value=difference('V')))
+            delta_recoverable_value=difference('V'),
+            delta_expected_headroom_minutes=difference('expected_headroom_minutes'),
+            delta_itinerary_threshold_probability=difference('itinerary_threshold_probability'),
+            delta_service_threshold_probability=difference('service_threshold_probability')))
         trajectories.extend(ordered)
     summaries=[dict(representation=rep,**clustered_summary([r for r in changes if r['representation']==rep],
-        ('delta_u_joint','delta_u_comparator','delta_normalized_regret','delta_recoverable_value'),replicates=replicates))
+        ('delta_u_joint','delta_u_comparator','delta_normalized_regret','delta_recoverable_value',
+         'delta_expected_headroom_minutes','delta_itinerary_threshold_probability',
+         'delta_service_threshold_probability'),replicates=replicates))
         for rep in sorted({r['representation'] for r in changes})]
     return dict(estimand='LAST_MINUS_FIRST_ADMISSIBLE_EPOCH_WITHIN_EPISODE',cluster_key='episode_id',
         interpretation='JOINT_EVOLUTION_OF_INFORMATION_AND_FEASIBILITY_NOT_CAUSAL_INFORMATION_EFFECT',
@@ -62,9 +67,16 @@ def inspect_annual_result(annual_root, year):
             or data['e1_fixed'].get('replicates')!=2000 or e.get('bootstrap_replicates')!=2000
             or e.get('scope')!='FULL_DEVELOPMENT' or e.get('year')!=year
             or e.get('status')!='DEVELOPMENT_COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE'
-            or e.get('schema_version')!='JATM_SHARED_E2_E3_V2'
+            or e.get('schema_version')!='JATM_SHARED_E2_E3_V3_P1'
             or e.get('population_contract')!=POPULATION_CONTRACT
-            or e.get('recovery_loss_estimand')!='RATIO_OF_SUMS_DELTA_REC_OVER_REFERENCE_V'):
+            or e.get('recovery_loss_estimand')!='RATIO_OF_SUMS_DELTA_REC_OVER_REFERENCE_V'
+            or len(e.get('e1_recovery_opportunity_coverage',[]))!=128
+            or len(e.get('fixed_common_e1_recovery_opportunity_coverage',[]))!=128
+            or not e.get('policy_sensitivity_settings')
+            or 'policy_sensitivity_rows' not in e
+            or 'fixed_common_policy_sensitivity_rows' not in e
+            or e.get('policy_sensitivity_missing_nodes')
+            or e.get('fixed_common_policy_sensitivity_missing_nodes')):
             return dict(year=year,status='STATISTICS_OR_REFERENCE_INCOMPLETE'),None,paths
         if (cu['track']!='YEAR_LOCAL' or cu['reference_year']!=year
             or data['cache']['identity']['year']!=year
@@ -89,15 +101,44 @@ def aggregate(annual_root, output_root):
         status,data,paths=inspect_annual_result(root,year)
         years.append(status)
         if data is None:continue
+        provenance=status['input_hashes'];regime=status['regime']
         for row in data['e1']['rows']:
-            chart.append(dict(year=year,track='YEAR_LOCAL',experiment='E1',**row))
+            chart.append(dict(year=year,regime=regime,track='YEAR_LOCAL',experiment='E1',
+                source_file='E1/E1_PAIRED_SUMMARY.json',source_sha256=provenance['e1'],**row))
         for row in data['e1_fixed']['rows']:
-            chart.append(dict(year=year,track='FIXED_COMMON',experiment='E1',**row))
+            chart.append(dict(year=year,regime=regime,track='FIXED_COMMON',experiment='E1',
+                source_file='E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json',source_sha256=provenance['e1_fixed'],**row))
         for row in data['e2e3']['e3_summary']:
-            chart.append(dict(year=year,track='YEAR_LOCAL',experiment='E3',**row))
-        fixed=data['e2e3']['action_identity']['fixed_common_contract']
+            chart.append(dict(year=year,regime=regime,track='YEAR_LOCAL',experiment='E3',
+                source_file='E2_E3/E2_E3_SUMMARY.json',source_sha256=provenance['e2e3'],**row))
+        for row in data['e2e3'].get('e3_rows',[]):
+            chart.append(dict(year=year,regime=regime,track='YEAR_LOCAL',experiment='E3_TARGET_CURVE',
+                source_file='E2_E3/E2_E3_SUMMARY.json',source_sha256=provenance['e2e3'],**row))
         for row in data['e2e3'].get('fixed_common_e3_summary',[]):
-            chart.append(dict(year=year,track='FIXED_COMMON',experiment='E3',**row))
+            chart.append(dict(year=year,regime=regime,track='FIXED_COMMON',experiment='E3',
+                source_file='E2_E3/E2_E3_SUMMARY.json',source_sha256=provenance['e2e3'],**row))
+        for track,key in (('YEAR_LOCAL','e1_recovery_opportunity_coverage'),
+                          ('FIXED_COMMON','fixed_common_e1_recovery_opportunity_coverage')):
+            for row in data['e2e3'][key]:
+                chart.append(dict(year=year,regime=regime,track=track,
+                    experiment='E1_RECOVERY_OPPORTUNITY',source_file='E2_E3/E2_E3_SUMMARY.json',
+                    source_sha256=provenance['e2e3'],**row))
+        for track,key in (('YEAR_LOCAL','recovery_opportunity_coverage'),
+                          ('FIXED_COMMON','fixed_common_recovery_opportunity_coverage')):
+            for row in data['e2e3'].get(key,[]):
+                chart.append(dict(year=year,regime=regime,track=track,
+                    experiment='E2_RECOVERY_OPPORTUNITY',source_file='E2_E3/E2_E3_SUMMARY.json',
+                    source_sha256=provenance['e2e3'],**row))
+        for row in data['e2e3'].get('mechanisms',[]):
+            chart.append(dict(year=year,regime=regime,track='YEAR_LOCAL',
+                experiment='E3_MECHANISM',source_file='E2_E3/E2_E3_SUMMARY.json',
+                source_sha256=provenance['e2e3'],**row))
+        for track,key in (('YEAR_LOCAL','policy_sensitivity_rows'),
+                          ('FIXED_COMMON','fixed_common_policy_sensitivity_rows')):
+            for row in data['e2e3'][key]:
+                chart.append(dict(year=year,regime=regime,track=track,
+                    experiment='E3_POLICY_SENSITIVITY',source_file='E2_E3/E2_E3_SUMMARY.json',
+                    source_sha256=provenance['e2e3'],**row))
         ids=set(data['e2e3']['populations']['C3'])
         for track,key,summary_key in (
                 ('YEAR_LOCAL','recovery_atomic','recovery_summary'),
@@ -105,14 +146,18 @@ def aggregate(annual_root, output_root):
             atomic=data['e2e3'].get(key,[])
             result=rolling_analysis(atomic,ids,replicates=2000)
             atomic_json(out/f'ROLLING_{year}_{track}.json',result)
-            rolling.append(dict(year=year,track=track,episode_n=len({r['episode_id'] for r in result['changes']}),
-                                path=f'ROLLING_{year}_{track}.json',summaries=result['summaries']))
+            rolling.append(dict(year=year,regime=regime,track=track,
+                episode_n=len({r['episode_id'] for r in result['changes']}),
+                path=f'ROLLING_{year}_{track}.json',source_sha256=provenance['e2e3'],
+                summaries=result['summaries']))
             for row in data['e2e3'].get(summary_key,[]):
-                chart.append(dict(year=year,track=track,experiment='E2',**row))
-            heterogeneity.extend(dict(year=year,track=track,**row) for row in atomic)
+                chart.append(dict(year=year,regime=regime,track=track,experiment='E2',
+                    source_file='E2_E3/E2_E3_SUMMARY.json',source_sha256=provenance['e2e3'],**row))
+            heterogeneity.extend(dict(year=year,regime=regime,track=track,
+                source_sha256=provenance['e2e3'],**row) for row in atomic)
     completed=[r['year'] for r in years if r['status']=='COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE']
     complete=completed==list(range(2017,2023))
-    payload=dict(schema_version='JATM_E4_SHARED_AGGREGATE_V2',
+    payload=dict(schema_version='JATM_E4_SHARED_AGGREGATE_V3_P1',
         status='COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE' if complete else
             'PARTIAL_DEVELOPMENT' if completed else 'SIX_YEAR_EXECUTION_BLOCKED',
         six_year_complete=complete,completed_years=completed,
@@ -120,6 +165,11 @@ def aggregate(annual_root, output_root):
         scientific_acceptance='PENDING_NOT_IMPLIED_BY_COMPUTATION',years=years,rolling=rolling,
         cross_year_pooling='NOT_PERFORMED_WITHOUT_EXPLICIT_WEIGHTING_CONTRACT',
         year_local_absolute_values_poolable=False,fixed_common_status='REVALUED_SCREENING_AND_ACTION_COMPARISON',
+        chart_source_schema='JATM_SECTION5_CHART_ROWS_V3_P1',
+        chart_source_experiments=sorted({row['experiment'] for row in chart}),
+        unsupported_heterogeneity=dict(weather='BLOCKED_NO_APPROVED_GROUP_DEFINITION',
+            airport='BLOCKED_NO_APPROVED_GROUP_DEFINITION',
+            within_chain_uncertainty='BLOCKED_NO_COMPACT_UNCERTAINTY_FIELD'),
         final_test_access_count=0)
     atomic_json(out/'E4_YEAR_MATRIX.json',payload);atomic_json(out/'SECTION5_CHART_SOURCE.json',chart)
     atomic_json(out/'STAGE_HEADROOM_THRESHOLD_SOURCE.json',heterogeneity)

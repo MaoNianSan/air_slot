@@ -19,7 +19,8 @@ def evaluation_identity(shared_root, *, replicates=2000, seed=20261011):
     paths.extend(Path(__file__).with_name(name) for name in
                  ('shared_actions.py','e1_shared_evaluation.py','e2_e3_exact.py','annual_cu.py',
                   'shared_statistics.py','scientific_tracks.py','mechanisms.py','exact_stream.py',
-                  'shared_populations.py','shared_store.py','shared_science.py','e1_information_gain.py','shared_revaluation.py'))
+                  'shared_populations.py','shared_store.py','shared_science.py','e1_information_gain.py',
+                  'shared_revaluation.py','policy_sensitivity.py'))
     return dict(cache_manifest=file_hash(root/'CACHE_MANIFEST.json'),
         score_manifest=file_hash(root/'SHARED_ANNUAL_MANIFEST.json'),
         replicates=replicates,seed=seed,algorithm_hash=digest({p.relative_to(source).as_posix():code_hash(p) for p in paths}))

@@ -162,13 +162,18 @@ def valid_annual(root,year):
     e1=dict(replicates=2000,rows=[])
     atomic_json(directory/'E1/E1_PAIRED_SUMMARY.json',dict(e1,cu_reference_label='YEAR_LOCAL_V5'))
     atomic_json(directory/'E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json',dict(e1,cu_reference_label='FIXED_COMMON_2017_H1_V5'))
-    payload=dict(year=year,scope='FULL_DEVELOPMENT',schema_version='JATM_SHARED_E2_E3_V2',
+    payload=dict(year=year,scope='FULL_DEVELOPMENT',schema_version='JATM_SHARED_E2_E3_V3_P1',
         status='DEVELOPMENT_COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE',
         bootstrap_replicates=2000,population_contract=POPULATION_CONTRACT,
         recovery_loss_estimand='RATIO_OF_SUMS_DELTA_REC_OVER_REFERENCE_V',
         action_identity=dict(fixed_common_contract=dict(track='FIXED_COMMON',reference_year=2017)),
         support_denominator=1,reference_cohort_count=1,population_counts_by_stage={},
-        information=[],e3_summary=[],populations={'C3':[]})
+        information=[],e3_summary=[],populations={'C3':[]},
+        e1_recovery_opportunity_coverage=[{} for _ in range(128)],
+        fixed_common_e1_recovery_opportunity_coverage=[{} for _ in range(128)],
+        policy_sensitivity_settings=[{'policy_id':'NOMINAL'}],
+        policy_sensitivity_rows=[],fixed_common_policy_sensitivity_rows=[],
+        policy_sensitivity_missing_nodes=[],fixed_common_policy_sensitivity_missing_nodes=[])
     atomic_json(directory/'E2_E3/E2_E3_SUMMARY.json',payload)
     identity={'fixture':'expected-current-code-and-inputs'}
     names=('E1/E1_PAIRED_SUMMARY.json','E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json','E2_E3/E2_E3_SUMMARY.json')

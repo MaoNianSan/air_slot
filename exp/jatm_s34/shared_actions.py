@@ -60,7 +60,7 @@ class RevaluedConsequenceService:
         return native.model_copy(update={'cu_components':self.service.to_cu(native.native_components)})
 
 
-def calculate_node(node,service,headroom,shortlists):
+def calculate_node(node,service,headroom,shortlists,*,cu_track='YEAR_LOCAL',include_sensitivity=False):
     cached = service if isinstance(service,CachedConsequenceService) else CachedConsequenceService(service)
     cohort = prepare_reference_recovery((node,),source_shortlists=shortlists,service=cached,headroom=headroom)
     if not cohort.nodes:
@@ -107,13 +107,19 @@ def calculate_node(node,service,headroom,shortlists):
             reference_u=min(joint,key=lambda u:(joint[u],u))
             difference={u:j-joint[u] for u,j in curves[profile]['HISTORY_MARGINAL_EXACT']}
             row['fixed_target_perturbations']=difference
+            row['fixed_target_perturbations_convention']='LEGACY_MARGINAL_MINUS_JOINT'
+            row['e_joint_minus_marginal']={u:-value for u,value in difference.items()}
+            row['e_convention']='J_JOINT_MINUS_J_MARGINAL_PER_MANUSCRIPT_EQ_DEPENDENCE_OBJECTIVE_DIFFERENCE'
             row['relative_objective_perturbation']=max((abs(v-difference[reference_u]) for u,v in difference.items() if u!=reference_u),default=0.0)
             row['choice_agreement']=marginal[0]==reference_u
+    from .policy_sensitivity import evaluate_policy_sensitivity
+    policy_sensitivity=(evaluate_policy_sensitivity(node,cached,curves,cu_track=cu_track)
+                        if include_sensitivity else [])
     return dict(node_id=node.node_id,status='ACTION_TABLE_COMPLETE',
         reference_decision=reference.reference_decision.model_dump(mode='json'),
         mechanism_context=mechanism_context,
         reference_objectives=[[u,v] for (_,u),v in reference.reference_objectives.items()],
-        recoveries=recoveries,rows=rows,mechanisms=[],
+        recoveries=recoveries,rows=rows,mechanisms=[],policy_sensitivity=policy_sensitivity,
         consequence_requests=cached.calls,consequence_computations=cached.calls-cached.hits,cache_hits=cached.hits)
 
 
@@ -134,17 +140,19 @@ def run_actions(shared_root, output_root, *, replicates=2000):
     full_eligible_lists={stage:tuple(node.node_id for node in selected if node.stage is stage) for stage in ACTIONABLE}
     del records
     states=SharedStore(root/'states',identity)
-    from .scientific_tracks import nominal_headroom
+    from .scientific_tracks import nominal_headroom,nominal_policy_metadata
     headroom=nominal_headroom(year)
     source_root=Path(__file__).resolve().parents[2]
     action_sources=[p for folder in ('model/M3','model/M4','exp/jatm_section5')
                     for p in (source_root/folder).rglob('*.py')]
     action_sources.extend(Path(__file__).with_name(name) for name in
         ('shared_actions.py','shared_populations.py','scientific_tracks.py','mechanisms.py',
-         'exact_stream.py','e2_e3_exact.py','annual_cu.py','shared_store.py','shared_statistics.py'))
+         'exact_stream.py','e2_e3_exact.py','annual_cu.py','shared_store.py','shared_statistics.py',
+         'policy_sensitivity.py'))
     action_sources.append(Path(__file__).with_name('shared_revaluation.py'))
-    action_identity=dict(identity,headroom=headroom.model_dump(mode='json'),shortlists={k.value:list(v) for k,v in shortlists.items()},
-        headroom_source_hash=file_hash(source_root/'data2/reports/paper_formal'/str(year)/str(year)/'M2_TRAIN_HEADROOM_SUMMARY.json'),
+    action_identity=dict(identity,headroom=headroom.model_dump(mode='json'),
+        nominal_policy=nominal_policy_metadata(),shortlists={k.value:list(v) for k,v in shortlists.items()},
+        year_adaptive_sensitivity_source_hash=file_hash(source_root/'data2/reports/paper_formal'/str(year)/str(year)/'M2_TRAIN_HEADROOM_SUMMARY.json'),
         action_algorithm_hash=digest({p.relative_to(source_root).as_posix():code_hash(p) for p in action_sources}),
         fixed_common_contract=load_annual_cu(year,track='FIXED_COMMON').provenance)
     store=SharedStore(out/'actions',action_identity)
@@ -161,10 +169,12 @@ def run_actions(shared_root, output_root, *, replicates=2000):
                 values,state,consequence,support,audit=_exact_projection(original,service,preserve_metadata=True,streaming=True)
                 full=_replace_with_exact(original,(state,consequence,support,values))
                 native_cache=CachedConsequenceService(service)
-                saved=calculate_node(full,native_cache,headroom,full_eligible_lists)
+                saved=calculate_node(full,native_cache,headroom,full_eligible_lists,
+                                     include_sensitivity=node.node_id in e3_ids)
                 if saved['status']=='ACTION_TABLE_COMPLETE':
                     fixed_service=M2ConsequenceService(load_annual_cu(year,track='FIXED_COMMON'),service.references)
-                    saved['fixed_common']=calculate_node(full,RevaluedConsequenceService(fixed_service,native_cache),headroom,full_eligible_lists)
+                    saved['fixed_common']=calculate_node(full,RevaluedConsequenceService(fixed_service,native_cache),headroom,full_eligible_lists,
+                        cu_track='FIXED_COMMON',include_sensitivity=node.node_id in e3_ids)
                     # Native outcomes are identical; store them only on the main track.
                     saved['fixed_common'].pop('scenario_outcomes',None)
                     saved['native_computations_both_tracks']=native_cache.calls-native_cache.hits
@@ -220,7 +230,8 @@ def run_actions(shared_root, output_root, *, replicates=2000):
                         for rep in ('HISTORY_JOINT','CURRENT_JOINT','HISTORY_POINT','HISTORY_MARGINAL_EXACT')))
     info,diagnostics,bootstrap=information_value_main(information,q=.10,reference_cohort=cohort,service=None,
         headroom=headroom,seed=20261011,replicates=replicates,precomputed_recovery=results)
-    from .shared_statistics import summarize_actions,objective_summary,stage1_pairwise_statistics,recovery_coverage
+    from .shared_statistics import (summarize_actions,objective_summary,stage1_pairwise_statistics,
+        recovery_coverage,e1_recovery_coverage,policy_sensitivity_summary)
     c2_ids,c2_metadata=c2_recovery_populations(populations['C2'])
     ids_by_population=dict(C1=c1_ids,C3=rolling_ids,
         ANNUAL_HJ_SHORTLIST={nid for ids in shortlists.values() for nid in ids})
@@ -238,14 +249,32 @@ def run_actions(shared_root, output_root, *, replicates=2000):
     fixed_atomic,fixed_summary=summarize_actions(fixed_records,fixed_ids,{n.node_id:n for n in fixed_light},
         replicates=replicates,population_metadata=fixed_c2_metadata)
     e3_rows=[row for record in compact if record['node_id'] in e3_ids for row in record['rows']]
-    payload=dict(schema_version='JATM_SHARED_E2_E3_V2',status='DEVELOPMENT_COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE',
+    policy_rows=[row for record in compact if record['node_id'] in e3_ids
+                 for row in record.get('policy_sensitivity',[])]
+    fixed_policy_rows=[row for record in fixed_records if record['node_id'] in e3_ids
+                       for row in record.get('policy_sensitivity',[])]
+    from .policy_sensitivity import policy_settings,POLICY_SENSITIVITY_VERSION
+    payload=dict(schema_version='JATM_SHARED_E2_E3_V3_P1',status='DEVELOPMENT_COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE',
         population_contract=POPULATION_CONTRACT,recovery_loss_estimand='RATIO_OF_SUMS_DELTA_REC_OVER_REFERENCE_V',
         year=year,scope='PILOT' if identity.get('episode_limit') is not None else 'FULL_DEVELOPMENT',
         bootstrap_replicates=replicates,stage1_rows=_stage1_rows(populations['canonical'],.10),information=info,diagnostics=diagnostics,bootstrap=bootstrap,
         e3_rows=e3_rows,e3_summary=objective_summary(e3_rows,replicates=replicates),
+        policy_sensitivity_version=POLICY_SENSITIVITY_VERSION,
+        policy_sensitivity_settings=policy_settings(),
+        policy_sensitivity_rows=policy_rows,
+        policy_sensitivity_summary=policy_sensitivity_summary(policy_rows,replicates=replicates),
+        fixed_common_policy_sensitivity_rows=fixed_policy_rows,
+        fixed_common_policy_sensitivity_summary=policy_sensitivity_summary(fixed_policy_rows,replicates=replicates),
+        policy_sensitivity_missing_nodes=sorted(e3_ids-{row['node_id'] for row in policy_rows}),
+        fixed_common_policy_sensitivity_missing_nodes=sorted(e3_ids-{row['node_id'] for row in fixed_policy_rows}),
         stage1_pairwise=stage1_pairwise_statistics(populations['canonical'],replicates=replicates),
         recovery_opportunity_coverage=recovery_coverage(compact,light,canonical_ids,replicates=replicates),
         fixed_common_recovery_opportunity_coverage=recovery_coverage(fixed_records,fixed_light,canonical_ids,replicates=replicates),
+        e1_recovery_opportunity_coverage=e1_recovery_coverage(compact,light,canonical_ids,exposure_by_node,
+            c1_ids=c1_ids,replicates=replicates,cu_track='YEAR_LOCAL'),
+        fixed_common_e1_recovery_opportunity_coverage=e1_recovery_coverage(fixed_records,fixed_light,
+            canonical_ids,exposure_by_node,c1_ids=fixed_ids['C1'],replicates=replicates,
+            cu_track='FIXED_COMMON'),
         fixed_common_stage1_pairwise=stage1_pairwise_statistics(fixed_populations['canonical'],replicates=replicates),
         fixed_common_population_ids={key:sorted(value) for key,value in fixed_ids.items()},
         fixed_common_C2_groups=fixed_populations['C2'],
@@ -255,6 +284,7 @@ def run_actions(shared_root, output_root, *, replicates=2000):
         fixed_common_e3_rows=[row for row in fixed_rows if row['node_id'] in e3_ids],
         fixed_common_e3_summary=objective_summary([row for row in fixed_rows if row['node_id'] in e3_ids],replicates=replicates),
         mechanisms=[row for record in compact for row in record.get('mechanisms',[])],
+        mechanism_export_convention='e_joint_minus_marginal=J_JOINT-J_MARGINAL;fixed_target_difference=LEGACY_J_MARGINAL-J_JOINT',
         support_denominator=len(light),reference_cohort_count=len(annual_items),full_recovery_valid_count=len(items),information_candidate_count=len(information),
         population_counts_by_stage={stage.value:dict(
             canonical_stage1=sum(n.stage is stage for n in populations['canonical']),
