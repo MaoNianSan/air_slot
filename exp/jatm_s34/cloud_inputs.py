@@ -92,5 +92,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--years', type=int, nargs='+', default=list(range(2017,2023)))
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--continuity-contract', choices=('LEGACY_A_V1','JATM_F_CONTINUITY_B_V1'),
+                        default='JATM_F_CONTINUITY_B_V1')
     args = parser.parse_args()
-    atomic_json(args.output, [check_year(year) for year in args.years])
+    atomic_json(args.output, [check_year(year, continuity_contract=args.continuity_contract)
+                              for year in args.years])
