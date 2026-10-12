@@ -18,6 +18,8 @@ from .shared_actions import run_actions
 
 def direct_ratio_check(rows, observed, *, replicates=2000, seed=20261011,
                        numerator='reference_regret', denominator='V'):
+    rows=[r for r in rows if r.get(numerator) is not None and r.get(denominator) is not None
+          and np.isfinite(r[numerator]) and np.isfinite(r[denominator])]
     episodes=sorted({r['episode_id'] for r in rows})
     def ratio(sample):
         valid=[r for r in sample if r.get(numerator) is not None and r.get(denominator) is not None

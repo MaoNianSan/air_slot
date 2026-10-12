@@ -38,15 +38,17 @@ def clustered_summary(rows,metrics,*,replicates=2000,seed=20261011):
 def recovery_loss_summary(rows, *, numerator='reference_regret', denominator='V',
                           replicates=2000, seed=20261011):
     """Paper L_rec: ratio of paired sums, recomputed on every episode draw."""
-    episodes=sorted({r['episode_id'] for r in rows})
-    indices={ep:i for i,ep in enumerate(episodes)}
-    losses=np.zeros(len(episodes));values=np.zeros(len(episodes))
     valid=[]
     for row in rows:
         loss,value=row.get(numerator),row.get(denominator)
         if loss is None or value is None or not np.isfinite(loss) or not np.isfinite(value):continue
         if value<0:raise ValueError('NEGATIVE_REFERENCE_RECOVERABLE_VALUE')
         valid.append(row)
+    episodes=sorted({r['episode_id'] for r in valid})
+    indices={ep:i for i,ep in enumerate(episodes)}
+    losses=np.zeros(len(episodes));values=np.zeros(len(episodes))
+    for row in valid:
+        loss,value=row[numerator],row[denominator]
         index=indices[row['episode_id']];losses[index]+=loss;values[index]+=value
     rng=np.random.default_rng(seed);samples=[]
     if episodes:
@@ -60,7 +62,8 @@ def recovery_loss_summary(rows, *, numerator='reference_regret', denominator='V'
         delta_rec_sum=loss_sum,V_ref_sum=value_sum,
         candidate_n=len(rows),paired_n=len(valid),excluded_n=len(rows)-len(valid),
         zero_reference_value_n=sum(r[denominator]==0 for r in valid),
-        episode_n=len(episodes),paired_episode_n=len({r['episode_id'] for r in valid}),
+        candidate_episode_n=len({r['episode_id'] for r in rows}),
+        episode_n=len(episodes),paired_episode_n=len(episodes),
         replicates=replicates,valid_replicates=len(samples),seed=seed,
         ci_low=None if not samples else float(np.quantile(samples,.025)),
         ci_high=None if not samples else float(np.quantile(samples,.975)),

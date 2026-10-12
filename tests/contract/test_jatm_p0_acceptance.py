@@ -110,7 +110,11 @@ def test_ratio_zero_denominator_missing_and_duplicate_episode_multiplicity():
     assert result['L_rec']==pytest.approx(1/9)
     assert result['paired_n']==2 and result['excluded_n']==1
     assert result['zero_reference_value_n']==1
-    assert 0<result['valid_replicates']<80
+    assert result['valid_replicates']==80
+    assert result['candidate_episode_n']==2 and result['episode_n']==1
+    mixed=recovery_loss_summary([dict(episode_id='a',reference_regret=1.,V=0.),
+                                  dict(episode_id='b',reference_regret=0.,V=9.)],replicates=80,seed=3)
+    assert 0<mixed['valid_replicates']<80
     zero=recovery_loss_summary([dict(episode_id='a',reference_regret=1.,V=0.)],replicates=25)
     assert zero['L_rec'] is None and zero['ci_low'] is None and zero['valid_replicates']==0
     assert recovery_loss_summary([],replicates=25)['L_rec'] is None
