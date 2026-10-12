@@ -1,0 +1,59 @@
+{
+  "bundle_hash": "sha256:6feb7c44f077c76cfb19d2b518aff39832ed8ef85c24eba81e4819c81b0225f5",
+  "dataset_instance_id": "data2_2017_2022",
+  "experiment_year": 2020,
+  "fit_period": "2020-H1",
+  "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+  "scales": {
+    "F_continuity": {
+      "definition": "max(0, R_IB - turnaround_reference(connection_airport))",
+      "median": 41.25,
+      "population_rows": 1638261,
+      "positive_n": 53570,
+      "unit": "minutes"
+    },
+    "F_execution": {
+      "definition": "D_OB",
+      "median": 14.0,
+      "population_rows": 2249894,
+      "positive_n": 491947,
+      "unit": "minutes"
+    },
+    "F_propagation": {
+      "definition": "D_TO * expected_downstream_exposure(origin)",
+      "median": 7.0,
+      "population_rows": 2249894,
+      "positive_n": 1249330,
+      "unit": "exposure_minutes"
+    },
+    "P_itinerary": {
+      "definition": "expected_passengers_per_flight * connection_share * I[D_TO > 45 minutes]",
+      "median": 8.230148060278546,
+      "population_rows": 2249894,
+      "positive_n": 123359,
+      "unit": "expected_disrupted_connecting_passenger_exposure"
+    },
+    "P_service": {
+      "definition": "expected_passengers_per_flight * I[D_TO >= 180 minutes]",
+      "median": 62.26086956521739,
+      "population_rows": 2249894,
+      "positive_n": 15677,
+      "unit": "expected_long_delay_passenger_service_exposure"
+    },
+    "P_time": {
+      "definition": "expected_passengers_per_flight * D_TO",
+      "median": 509.55652173913046,
+      "population_rows": 2249894,
+      "positive_n": 1258423,
+      "unit": "passenger_minutes"
+    },
+    "R_operating": {
+      "definition": "D_TX",
+      "median": 5.0,
+      "population_rows": 2249894,
+      "positive_n": 1013865,
+      "unit": "excess_taxi_minutes"
+    }
+  },
+  "schema_version": "M2_DATA2_TRAIN_SCALES_V1"
+}

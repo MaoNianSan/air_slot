@@ -24,12 +24,27 @@ differences stop at PRE. Model code must not create caches, indexes, temporary
 files, or documentation inside either data root.
 
 The old Exp1-Exp4 implementation and old Section 5 paper-result pipeline are
-retired. There is no active `exp/` package, and the future experiment suite has
-not yet been redesigned. No model import or execution path may depend on an old
-experiment output.
+retired as primary authorities; they remain under `exp/exp1..exp4` and
+`artifacts/experiment/final_test/` as historical development evidence only.
+
+Current experiment and reporting layers:
+
+- `exp/jatm_section4/` — M1 history-encoder capacity selection (H8/H16/H32;
+  H16 is the frozen primary).
+- `exp/jatm_section5/` — hash-locked Section-5 development layer
+  (attention/recovery/information/robustness).
+- `formal/v2_phase7/` — the sealed, audited Final-Test runner and read-only
+  paper-facing projections (epoch evidence under
+  `artifacts/experiment/final_test_v2_stage_matched_canonical_v2/`).
+- `artifacts/paper_results_v2_final_test_rmb/stage_q_sensitivity/` — the
+  Stage x screening-capacity (q) supplementary analysis.
+
+Stage-II solver authority: exact enumeration is the production path;
+Pyomo+HiGHS is parity-only (see `REPOSITORY_AUTHORITY.md`).
 
 Authoritative current documentation:
 
+- [Repository authority](REPOSITORY_AUTHORITY.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Data and evidence boundary](docs/DATA_AND_EVIDENCE_BOUNDARY.md)
 - [Action and decision contract](docs/ACTION_DECISION_CONTRACT.md)

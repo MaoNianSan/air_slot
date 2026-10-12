@@ -1,39 +1,38 @@
-# M4 V2 boundary
+# M4 Priority and Screening
 
-M4 V2 consumes only `M4ActionEnvelopeInput`, the validated serialization of
-M3 `ActionEvaluationEnvelope`. Operational state, raw delays, weather, PRE/M1
-features, M2 native quantities and action-response generation are outside M4.
+## CURRENT PUBLIC CONTRACT
 
-M2 owns the fixed seven-component ontology `K`. M4 requires a frozen explicit
-`ConsequenceComparisonScope` defining `K_cmp subset K`, support requirements,
-measurement registry ID, version, and provenance. No seven- or five-component
-comparison default exists: absent or unfrozen scope returns
-`chi_num=UNDEFINED` with `COMPARISON_SCOPE_NOT_FROZEN`.
+M4 owns the two Section 3.5 priority representations:
 
-`model.M4.residual_risk` maps immutable `C_k^{a,CU}(s)` through a versioned
-`MonetaryMappingRegistry` to `L_k^{a,m}(s)`, then preserves scenario weights
-when calculating expected loss, variance, upper-loss VaR and weighted CVaR.
-Every result retains the M2 reference-lineage hashes and M3 response
-provenance. `chi_num` is defined only by complete finite consequence, mapping,
-and risk inputs. A response-support label, factual state, or opportunity state
-does not by itself change `chi_num`; those states remain metadata on the same
-evaluation. Complete but not fully supported inputs are labelled
-`CONDITIONAL_INPUTS`; incomplete numerical inputs are `NOT_COMPARABLE`.
+- `DELAY`: common-support conditional successor take-off delay.
+- `CONSEQUENCE`: the seven-component CU consequence aggregate
+  `S_C = mean(S_F, S_P, S_R)`.
 
-M4 also preserves M3 factual eligibility and opportunity state without
-collapsing either into numerical evaluability. A missing execution opportunity
-is not defaulted open. The output collections are numerical comparisons, not
-operational recommendations, and A00 is an identity comparator only. The
-current six-state qualification boundary is in `docs/ACTION_DECISION_CONTRACT.md`.
+The public service performs node summarization, population construction,
+stable ordering, fixed-capacity screening, and paired priority alignment.
+The seven components are preserved in native, CU, domain, and aggregate
+layers. CU is a frozen constructed comparison unit, not money.
 
-The active model-owned mapping is `M4_RMB_BASE_MAPPING_V2`: all seven
-components use the constructed measurement convention `1 CU = 1 RMB`.
-`P_itinerary` and `P_service` are included in RMB BASE after the passenger
-reference refactor. V1 remains immutable superseded provenance. This convention is not a currency conversion,
-accounting cost, or empirical airline-loss estimate. A comparison still
-requires an explicitly frozen `ConsequenceComparisonScope`; the monetary
-registry does not create a default `K_cmp`.
+`ScreeningCapacity` means attention or assessment capacity only.
+`ScreeningShortlist` is not an action set and does not imply that a selected
+object receives an intervention.
 
-The old `contracts.py`, `post_action.py`, `risk.py`, and `ranking.py` modules
-remain compatibility-only pre-V2 code and are excluded from the package's
-public V2 API.
+## LEGACY / APPENDIX-ONLY IMPLEMENTATION
+
+The former monetary residual-risk evaluator and action-envelope comparison
+remain available through explicit modules such as
+`model.M4.legacy_service`, `model.M4.residual_risk`, and
+`model.M4.m3_action_interface`. They are not imported by the package-level
+current service.
+
+## NOT PART OF CURRENT EMPIRICAL MAINLINE
+
+M4 does not calculate monetary residual risk, use VaR/CVaR to select actions,
+rank candidate actions, or emit `recommended_action`, `best_action`, or
+`optimal_action`. Priority changes the relative recovery-attention ordering
+only. The current empirical path is PRE -> M1 -> M2 -> M4; a later extension
+may pass a shortlist node to the M3 downstream interface.
+
+For retrospective populations, the caller must provide the complete candidate
+rolling records for the declared cohort. M4 cannot prove that an omitted
+earlier node did not exist.

@@ -1,0 +1,138 @@
+{
+  "checkpoint_schema_version": "AIR_SLOT_V2_PHASE7_CHECKPOINT_V1",
+  "dependencies": {
+    "ATTENTION_DECISIONS": "sha256:23841da03e74af349988c14a581429a16da00bf73e096ecf430dc311426bf0df",
+    "CANONICAL_NODES": "sha256:c133ac44a8183ac9a5f5273568204fa145b073f54af33675dc1959b2abd9019f",
+    "STATE_VARIANTS": "sha256:4b7fd677eb4c701a5de5e22dcb4a4fa330768a3e324e84d747b2568dccd3be18"
+  },
+  "payload": {
+    "alternative_representations_use_fixed_r_star": true,
+    "cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+    "flattened_union_semantics": "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION",
+    "no_pooled_stage1_decision": true,
+    "nominal_q": 0.1,
+    "reference_authority": "H_CSTAR_EQUALS_H_HISTORY_JOINT",
+    "reference_representation_id": "HISTORY_H16:JOINT",
+    "reference_variant": "HISTORY_JOINT",
+    "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1",
+    "shortlist_authority": "P^C = Phi_C(C^CU)",
+    "shortlist_node_ids": [
+      "sha256:920eb826c911d065249d12aa5a3cbaafcf23a4f1628a7f5b34d73f7c3bd02daf",
+      "sha256:5ba2f6018a54b5999919819f222242c1624654526cc6069abe95f61933c047dd",
+      "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7",
+      "sha256:51b9e494c1e3b460008f839eafc78c6255e58070f2afdd404f32adb591114bcf",
+      "sha256:9d871dfc97c21a5f54fce2c168050ec5815ec1fe8d9698007e985548fad5c825",
+      "sha256:ed6a610d7ab80e348f8a64d76ed2c1fe9ca1822a041ddcd13c8a1d8e7a3e7253",
+      "sha256:531992bf2614589c565da4b81a7bbe6eb446c93bcedae35b247a3cfc5d75e0f9",
+      "sha256:ae75b237150415f7c476c0c614fb8459cf48a11072db98eff1b9c392e509c525",
+      "sha256:6d97b8ffa8d13b3474692d47c8c687e4949ca336b411a512fcc0022b66eb80c7",
+      "sha256:c07b6b59719db2b4f95d73ced5ad734f33eaf8fd737d4073ad5a0ab27fc330df",
+      "sha256:2e116d4f3dff0bc188c99ceb1c03b7da5fb4ed23dd029fb72b6eb71441bbe1a2",
+      "sha256:fb4a9be23572b446d6eb314f39df7cc3a1053995e82bc8d5f212caa237175c93",
+      "sha256:bc69a00f8823adb9f44ca0a56dd395399c4c829094e3ac115f1b48903beed75a",
+      "sha256:55d3f3e108cd2fee4102428c8cf43aa679569f0f8ed2d38329db0bd05d737f96",
+      "sha256:0f4769e7490d4474bbcbeb366cab4f787b801a86caadf7a6bdbdfdae80d96c2c",
+      "sha256:934d57620330f6839b56d2ba7cf2cd3ecc1cdef612a1b2848ad00fbc41402ad3"
+    ],
+    "shortlist_node_ids_by_stage": {
+      "POST_IB_PRE_OB": [
+        "sha256:51b9e494c1e3b460008f839eafc78c6255e58070f2afdd404f32adb591114bcf",
+        "sha256:9d871dfc97c21a5f54fce2c168050ec5815ec1fe8d9698007e985548fad5c825",
+        "sha256:ed6a610d7ab80e348f8a64d76ed2c1fe9ca1822a041ddcd13c8a1d8e7a3e7253",
+        "sha256:531992bf2614589c565da4b81a7bbe6eb446c93bcedae35b247a3cfc5d75e0f9",
+        "sha256:ae75b237150415f7c476c0c614fb8459cf48a11072db98eff1b9c392e509c525",
+        "sha256:6d97b8ffa8d13b3474692d47c8c687e4949ca336b411a512fcc0022b66eb80c7",
+        "sha256:c07b6b59719db2b4f95d73ced5ad734f33eaf8fd737d4073ad5a0ab27fc330df",
+        "sha256:2e116d4f3dff0bc188c99ceb1c03b7da5fb4ed23dd029fb72b6eb71441bbe1a2",
+        "sha256:fb4a9be23572b446d6eb314f39df7cc3a1053995e82bc8d5f212caa237175c93",
+        "sha256:bc69a00f8823adb9f44ca0a56dd395399c4c829094e3ac115f1b48903beed75a",
+        "sha256:55d3f3e108cd2fee4102428c8cf43aa679569f0f8ed2d38329db0bd05d737f96",
+        "sha256:0f4769e7490d4474bbcbeb366cab4f787b801a86caadf7a6bdbdfdae80d96c2c",
+        "sha256:934d57620330f6839b56d2ba7cf2cd3ecc1cdef612a1b2848ad00fbc41402ad3"
+      ],
+      "PRE_IB": [
+        "sha256:920eb826c911d065249d12aa5a3cbaafcf23a4f1628a7f5b34d73f7c3bd02daf",
+        "sha256:5ba2f6018a54b5999919819f222242c1624654526cc6069abe95f61933c047dd",
+        "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7"
+      ]
+    },
+    "shortlist_rule": "STAGE_LOCAL_CONSEQUENCE_TOP_K_SHARED_SELECTOR",
+    "shortlist_size": 16,
+    "shortlist_stage_counts": {
+      "POST_IB_PRE_OB": 13,
+      "PRE_IB": 3
+    },
+    "stage": "REFERENCE_RECOVERY_COHORT",
+    "stage1_actionable_stages": [
+      "PRE_IB",
+      "POST_IB_PRE_OB"
+    ],
+    "stage2_actionable_node_ids": [
+      "sha256:920eb826c911d065249d12aa5a3cbaafcf23a4f1628a7f5b34d73f7c3bd02daf",
+      "sha256:5ba2f6018a54b5999919819f222242c1624654526cc6069abe95f61933c047dd",
+      "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7",
+      "sha256:51b9e494c1e3b460008f839eafc78c6255e58070f2afdd404f32adb591114bcf",
+      "sha256:9d871dfc97c21a5f54fce2c168050ec5815ec1fe8d9698007e985548fad5c825",
+      "sha256:ed6a610d7ab80e348f8a64d76ed2c1fe9ca1822a041ddcd13c8a1d8e7a3e7253",
+      "sha256:531992bf2614589c565da4b81a7bbe6eb446c93bcedae35b247a3cfc5d75e0f9",
+      "sha256:ae75b237150415f7c476c0c614fb8459cf48a11072db98eff1b9c392e509c525",
+      "sha256:6d97b8ffa8d13b3474692d47c8c687e4949ca336b411a512fcc0022b66eb80c7",
+      "sha256:c07b6b59719db2b4f95d73ced5ad734f33eaf8fd737d4073ad5a0ab27fc330df",
+      "sha256:2e116d4f3dff0bc188c99ceb1c03b7da5fb4ed23dd029fb72b6eb71441bbe1a2",
+      "sha256:fb4a9be23572b446d6eb314f39df7cc3a1053995e82bc8d5f212caa237175c93",
+      "sha256:bc69a00f8823adb9f44ca0a56dd395399c4c829094e3ac115f1b48903beed75a",
+      "sha256:55d3f3e108cd2fee4102428c8cf43aa679569f0f8ed2d38329db0bd05d737f96",
+      "sha256:0f4769e7490d4474bbcbeb366cab4f787b801a86caadf7a6bdbdfdae80d96c2c",
+      "sha256:934d57620330f6839b56d2ba7cf2cd3ecc1cdef612a1b2848ad00fbc41402ad3"
+    ],
+    "stage2_actionable_node_ids_by_stage": {
+      "POST_IB_PRE_OB": [
+        "sha256:51b9e494c1e3b460008f839eafc78c6255e58070f2afdd404f32adb591114bcf",
+        "sha256:9d871dfc97c21a5f54fce2c168050ec5815ec1fe8d9698007e985548fad5c825",
+        "sha256:ed6a610d7ab80e348f8a64d76ed2c1fe9ca1822a041ddcd13c8a1d8e7a3e7253",
+        "sha256:531992bf2614589c565da4b81a7bbe6eb446c93bcedae35b247a3cfc5d75e0f9",
+        "sha256:ae75b237150415f7c476c0c614fb8459cf48a11072db98eff1b9c392e509c525",
+        "sha256:6d97b8ffa8d13b3474692d47c8c687e4949ca336b411a512fcc0022b66eb80c7",
+        "sha256:c07b6b59719db2b4f95d73ced5ad734f33eaf8fd737d4073ad5a0ab27fc330df",
+        "sha256:2e116d4f3dff0bc188c99ceb1c03b7da5fb4ed23dd029fb72b6eb71441bbe1a2",
+        "sha256:fb4a9be23572b446d6eb314f39df7cc3a1053995e82bc8d5f212caa237175c93",
+        "sha256:bc69a00f8823adb9f44ca0a56dd395399c4c829094e3ac115f1b48903beed75a",
+        "sha256:55d3f3e108cd2fee4102428c8cf43aa679569f0f8ed2d38329db0bd05d737f96",
+        "sha256:0f4769e7490d4474bbcbeb366cab4f787b801a86caadf7a6bdbdfdae80d96c2c",
+        "sha256:934d57620330f6839b56d2ba7cf2cd3ecc1cdef612a1b2848ad00fbc41402ad3"
+      ],
+      "PRE_IB": [
+        "sha256:920eb826c911d065249d12aa5a3cbaafcf23a4f1628a7f5b34d73f7c3bd02daf",
+        "sha256:5ba2f6018a54b5999919819f222242c1624654526cc6069abe95f61933c047dd",
+        "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7"
+      ]
+    },
+    "stage2_actionable_node_ids_flattened": [
+      "sha256:920eb826c911d065249d12aa5a3cbaafcf23a4f1628a7f5b34d73f7c3bd02daf",
+      "sha256:5ba2f6018a54b5999919819f222242c1624654526cc6069abe95f61933c047dd",
+      "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7",
+      "sha256:51b9e494c1e3b460008f839eafc78c6255e58070f2afdd404f32adb591114bcf",
+      "sha256:9d871dfc97c21a5f54fce2c168050ec5815ec1fe8d9698007e985548fad5c825",
+      "sha256:ed6a610d7ab80e348f8a64d76ed2c1fe9ca1822a041ddcd13c8a1d8e7a3e7253",
+      "sha256:531992bf2614589c565da4b81a7bbe6eb446c93bcedae35b247a3cfc5d75e0f9",
+      "sha256:ae75b237150415f7c476c0c614fb8459cf48a11072db98eff1b9c392e509c525",
+      "sha256:6d97b8ffa8d13b3474692d47c8c687e4949ca336b411a512fcc0022b66eb80c7",
+      "sha256:c07b6b59719db2b4f95d73ced5ad734f33eaf8fd737d4073ad5a0ab27fc330df",
+      "sha256:2e116d4f3dff0bc188c99ceb1c03b7da5fb4ed23dd029fb72b6eb71441bbe1a2",
+      "sha256:fb4a9be23572b446d6eb314f39df7cc3a1053995e82bc8d5f212caa237175c93",
+      "sha256:bc69a00f8823adb9f44ca0a56dd395399c4c829094e3ac115f1b48903beed75a",
+      "sha256:55d3f3e108cd2fee4102428c8cf43aa679569f0f8ed2d38329db0bd05d737f96",
+      "sha256:0f4769e7490d4474bbcbeb366cab4f787b801a86caadf7a6bdbdfdae80d96c2c",
+      "sha256:934d57620330f6839b56d2ba7cf2cd3ecc1cdef612a1b2848ad00fbc41402ad3"
+    ],
+    "stage2_cohort_size": 16,
+    "stage2_excluded": [],
+    "stage2_excluded_count": 0,
+    "stage2_support_rule": "ACTIONABLE_STAGE_AND_REFERENCE_STATE_FULLY_SUPPORTED",
+    "typed_states": []
+  },
+  "payload_hash": "sha256:b70e4e154c066fb3acaf7690e09b192adb6913bc71a8a06a9e9cf008c0d053ae",
+  "produced_by": "PHASE7_GATE_B_SEALED_RUN",
+  "schema_version": "AIR_SLOT_V2_PHASE7_REFERENCE_RECOVERY_COHORT_V1",
+  "stage": "REFERENCE_RECOVERY_COHORT"
+}

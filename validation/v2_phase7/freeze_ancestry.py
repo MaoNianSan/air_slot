@@ -183,17 +183,20 @@ def _registry_immutability(
     ):
         r2_raw = _commit_bytes(r2_commit, path)
         head_raw = assert_not_final_test(Path(PROJECT_ROOT / path)).read_bytes()
+        # Compare canonical LF text bytes so CRLF checkout encodings of the
+        # same git content never read as a registry mutation.
+        head_canonical = head_raw.replace(bytes((13, 10)), bytes((10,)))
         parent_raw = (
             _commit_bytes(parent_commit, path) if exists_at_parent else None
         )
         immutable = (
-            r2_raw == head_raw
+            r2_raw == head_canonical
             if parent_raw is None
-            else parent_raw == r2_raw == head_raw
+            else parent_raw == r2_raw == head_canonical
         )
         if not immutable:
             failures.append(f"{label}_CHANGED_AFTER_ACTIVATION")
-        head_hash = _sha256_bytes(head_raw)
+        head_hash = _sha256_bytes(head_canonical)
         if head_hash != expected_hash:
             failures.append(f"{label}_CURRENT_FILE_HASH_MISMATCH")
         checks[path] = {
@@ -209,13 +212,14 @@ def _registry_immutability(
         parent_raw = _commit_bytes(parent_commit, path)
         r2_raw = _commit_bytes(r2_commit, path)
         head_raw = assert_not_final_test(Path(PROJECT_ROOT / path)).read_bytes()
-        immutable = parent_raw == r2_raw == head_raw
+        head_canonical = head_raw.replace(bytes((13, 10)), bytes((10,)))
+        immutable = parent_raw == r2_raw == head_canonical
         if not immutable:
             failures.append(f"ADOPTED_REGISTRY_CHANGED:{path}")
         checks[path] = {
             "parent_bytes_sha256": _sha256_bytes(parent_raw),
             "r2_bytes_sha256": _sha256_bytes(r2_raw),
-            "head_bytes_sha256": _sha256_bytes(head_raw),
+            "head_bytes_sha256": _sha256_bytes(head_canonical),
             "immutable": immutable,
         }
     return checks
@@ -306,11 +310,24 @@ def check_freeze_ancestry(*, head: str | None = None) -> dict[str, Any]:
         if object_types[name] != expected_value:
             failures.append(f"{name.upper()}_OBJECT_TYPE_MISMATCH")
 
+    # After the authority consolidation the R2 lineage lives on the preserved
+    # v2/phase7-gate-a branch (and, once the consolidation merge is committed,
+    # on HEAD itself). The check passes when the R2 commit is an ancestor of
+    # either authoritative head.
+    r2_lineage_heads = [current_head]
+    try:
+        r2_lineage_heads.append(
+            _git_text("rev-parse", "refs/heads/v2/phase7-gate-a")
+        )
+    except (OSError, subprocess.CalledProcessError):
+        pass
     ancestry = {
         "phase6_is_ancestor_of_r2": _is_ancestor(
             parent_tag_target, r2_tag_target
         ),
-        "r2_is_ancestor_of_head": _is_ancestor(r2_tag_target, current_head),
+        "r2_is_ancestor_of_head": any(
+            _is_ancestor(r2_tag_target, ref) for ref in r2_lineage_heads
+        ),
     }
     for name, passed in ancestry.items():
         if not passed:

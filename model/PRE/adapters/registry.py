@@ -7,11 +7,20 @@ from model.common.errors import ContractError
 from model.common.value_objects import FrozenModel
 from model.PRE.feature_registry.models import ColumnRole
 
+# M4a (authorized 2026-09-28): the Data2 multi-year instance joins the closed
+# instance-id set. data2_2019 semantics are untouched; the new instance is
+# cohort-profiling-only (see model/PRE/instances/contract.py) and is subject
+# to the explicit-year gate below.
+MULTIYEAR_INSTANCE_ID = "data2_2017_2022"
+MULTIYEAR_ALLOWED_YEARS = (2017, 2018, 2019, 2020, 2021, 2022)
+
 
 class SourceAdapterDefinition(FrozenModel):
     adapter_id: str
     version: str
-    dataset_instance_id: Literal["data1_2019", "data2_2019"]
+    dataset_instance_id: Literal[
+        "data1_2019", "data2_2019", "data2_2017_2022"
+    ]
     source_family: str
     relative_globs: tuple[str, ...]
     format: Literal["csv", "csv_gzip", "csv_tar", "json_stat", "parquet"]
@@ -63,7 +72,9 @@ class SourceAdapterRegistry(FrozenModel):
 
 
 class RawReadRequest(FrozenModel):
-    dataset_instance_id: Literal["data1_2019", "data2_2019"]
+    dataset_instance_id: Literal[
+        "data1_2019", "data2_2019", "data2_2017_2022"
+    ]
     source_family: str
     raw_root: Path
     output_root: Path
@@ -73,6 +84,19 @@ class RawReadRequest(FrozenModel):
     max_rows: int | None = Field(default=None, gt=0)
     max_files: int | None = Field(default=None, gt=0)
     chunksize: int = Field(default=50_000, gt=0)
+
+    @model_validator(mode="after")
+    def multiyear_explicit_year_gate(self):
+        """Fail-closed: the multi-year instance must name one allowed year per
+        read. There is no implicit wildcard pooling. The legacy data2_2019
+        behavior (year optional, wildcard fallback in readers) is unchanged."""
+        if self.dataset_instance_id == MULTIYEAR_INSTANCE_ID:
+            if self.year is None:
+                raise ValueError("MULTIYEAR_YEAR_REQUIRED")
+            if self.year not in MULTIYEAR_ALLOWED_YEARS:
+                raise ValueError(
+                    f"MULTIYEAR_YEAR_NOT_ALLOWED:{self.year}")
+        return self
 
     @model_validator(mode="after")
     def separate_roots(self):

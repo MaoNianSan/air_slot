@@ -270,6 +270,9 @@ def test_gate_b_production_rejects_legacy_epoch_root(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(
+        C, "STAGE_MATCHED_FINAL_TEST_ROOT", tmp_path / "stage_matched_epoch"
+    )
     artifact_hash = "sha256:" + "a" * 64
     report_path = tmp_path / "pre_open.json"
     freeze_path = tmp_path / "freeze.json"
@@ -311,6 +314,9 @@ def test_gate_b_production_rejects_release_outside_frozen_epoch(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(
+        C, "STAGE_MATCHED_FINAL_TEST_ROOT", tmp_path / "stage_matched_epoch"
+    )
     artifact_hash = "sha256:" + "a" * 64
     report_path = tmp_path / "pre_open.json"
     freeze_path = tmp_path / "freeze.json"
@@ -352,6 +358,9 @@ def test_gate_b_reads_persisted_freeze_manifest_for_epoch_root(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(
+        C, "STAGE_MATCHED_FINAL_TEST_ROOT", tmp_path / "stage_matched_epoch"
+    )
     artifact_hash = "sha256:" + "a" * 64
     freeze_path = tmp_path / "freeze.json"
     report_path = tmp_path / "pre_open.json"

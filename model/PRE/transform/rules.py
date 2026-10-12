@@ -763,5 +763,44 @@ def current_transformation_registry() -> TransformationRegistry:
             support_ceiling=EvidenceClass.DERIVED,
             status=TransformationStatus.FROZEN,
         ),
+        # M4b (authorized 2026-09-28): within-year replication of the 2019
+        # month window for the data2_2017_2022 instance. The partition is
+        # decided from the successor service_date's OWN calendar year, so the
+        # JATM Table 8 structure (months 1-6 / 7 / 8-9 / 10-12) repeats per
+        # year exactly as it did for 2019. Version 1.0.0 above remains the
+        # byte-frozen legacy rule used by data2_2019.
+        TransformationRule(
+            transformation_rule_id="DATA2_TEMPORAL_SPLIT",
+            version="2.0.0",
+            construction_type=ConstructionType.DETERMINISTIC_DERIVATION,
+            input_object_types=("EpisodeRecord", "FlightRecord"),
+            input_fields=("successor.service_date",),
+            relation_keys=(),
+            group_by_keys=(),
+            order_by_keys=(),
+            join_on_keys=(),
+            window_rule=None,
+            adjacency_rule=None,
+            tie_break_rule=None,
+            duplicate_rule="ONE_SPLIT_PER_EPISODE",
+            missing_key_rule="MISSING_SERVICE_DATE_ABSTAIN",
+            temporal_rule="TRAIN_PARTITION_ONLY",
+            formula_or_algorithm=(
+                "within-year temporal split by successor service_date: "
+                "let Y = year(service_date); "
+                "train<=Y-06-30; calibration Y-07-01..Y-07-31; "
+                "development Y-08-01..Y-09-30; test>=Y-10-01; "
+                "cohort sampled per split; no cross-split leakage"
+            ),
+            output_variable="dataset_partition",
+            output_unit="partition",
+            evidence_rule="SUCCESSOR_SERVICE_DATE_WINDOW",
+            support_rule="EXPLICIT_DATE_ABSTAIN",
+            consumer_roles=(DecisionTimeRole.EPISODE_CONSTRUCTION,),
+            availability_basis=AvailabilityBasis.POSTHOC_ONLY,
+            evidence_class=EvidenceClass.DERIVED,
+            support_ceiling=EvidenceClass.DERIVED,
+            status=TransformationStatus.FROZEN,
+        ),
     )
     return TransformationRegistry(registry_version="1.0.0", rules=rules)

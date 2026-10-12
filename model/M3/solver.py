@@ -1,9 +1,11 @@
-"""M3 Stage-II formal Pyomo + HiGHS solver and exact parity oracle.
+"""M3 Stage-II Pyomo + HiGHS parity backend.
 
-Freeze R2 fixes the formal Stage-II decision authority as the M3 one-hot model
-solved by HiGHS. Complete enumeration over the same finite five-minute action
-grid is the independent deterministic oracle used to prove decision
-equivalence; it does not participate in the formal decision path.
+The Stage-II production authority is exact enumeration of the finite
+five-minute action grid (post-R2 ruling
+``HUMAN_GATE_B0A_SOLVER_AUTHORITY_RULING_20260919``). This module retains the
+Pyomo one-hot model solved by HiGHS strictly as an independent parity /
+regression backend and for historical-artifact compatibility; it must never
+produce a canonical Stage-II decision.
 
 The model is mathematically identical to enumeration:
 
@@ -61,7 +63,14 @@ HIGH_SPARITY_TOLERANCE = M3_NUMERICAL_COMPARISON_TOLERANCE
 
 @dataclass(frozen=True)
 class HighsParityResult:
-    """One formal-HiGHS versus exact-enumeration comparison record."""
+    """One HiGHS-parity versus exact-enumeration comparison record.
+
+    Field names are SEALED COMPATIBILITY LABELS: ``formal_*`` denotes the
+    Pyomo+HiGHS parity backend and ``oracle_*`` the exact-enumeration
+    production authority, historically labelled. The parity checks here are
+    diagnostics only and never change the authority of the enumeration
+    decision.
+    """
 
     node_id: str
     stage: str
@@ -265,52 +274,60 @@ def solve_with_highs(
     headroom_summary: HeadroomSummary,
     policy: RecoveryPolicy | None = None,
 ) -> HighsParityResult:
-    """Compare the formal HiGHS path with the exact enumeration oracle."""
+    """Compare the HiGHS parity backend with the exact enumeration authority."""
 
-    formal = solve_stage2_with_highs(
+    highs_decision = solve_stage2_with_highs(
         state_set,
         context=context,
         service=service,
         headroom_summary=headroom_summary,
         policy=policy,
     )
-    oracle = enumerate_recovery_decision(
+    enumeration_decision = enumerate_recovery_decision(
         state_set,
         context=context,
         service=service,
         headroom_summary=headroom_summary,
         policy=policy,
     )
-    if formal.j_star is None or formal.recoverable_value is None:
-        raise ContractError("M3_HIGHS_FORMAL_OUTPUT_MISSING")
-    if oracle.j_star is None or oracle.recoverable_value is None:
-        raise ContractError("M3_ORACLE_OUTPUT_MISSING")
-    objective_error = abs(float(formal.j_star) - float(oracle.j_star))
+    if highs_decision.j_star is None or highs_decision.recoverable_value is None:
+        raise ContractError("M3_HIGHS_PARITY_OUTPUT_MISSING")
+    if (
+        enumeration_decision.j_star is None
+        or enumeration_decision.recoverable_value is None
+    ):
+        raise ContractError("M3_ENUMERATION_OUTPUT_MISSING")
+    objective_error = abs(
+        float(highs_decision.j_star) - float(enumeration_decision.j_star)
+    )
     recoverable_error = abs(
-        float(formal.recoverable_value) - float(oracle.recoverable_value)
+        float(highs_decision.recoverable_value)
+        - float(enumeration_decision.recoverable_value)
     )
     return HighsParityResult(
         node_id=state_set.node_id,
         stage=state_set.stage.value,
         representation_id=state_set.representation.representation_id,
-        action_count=len(formal.action_grid),
+        action_count=len(highs_decision.action_grid),
         formal_solver=SolverStatus.PYOMO_HIGHS.value,
         parity_oracle=SolverStatus.EXACT_ENUMERATION.value,
         termination_condition="optimal",
-        u_star_formal=float(formal.u_star),
-        u_star_oracle=float(oracle.u_star),
-        j_zero=float(formal.j_zero),
-        j_star_formal=float(formal.j_star),
-        j_star_oracle=float(oracle.j_star),
-        recoverable_value_formal=float(formal.recoverable_value),
-        recoverable_value_oracle=float(oracle.recoverable_value),
+        u_star_formal=float(highs_decision.u_star),
+        u_star_oracle=float(enumeration_decision.u_star),
+        j_zero=float(enumeration_decision.j_zero),
+        j_star_formal=float(highs_decision.j_star),
+        j_star_oracle=float(enumeration_decision.j_star),
+        recoverable_value_formal=float(highs_decision.recoverable_value),
+        recoverable_value_oracle=float(enumeration_decision.recoverable_value),
         objective_absolute_error=objective_error,
         recoverable_value_absolute_error=recoverable_error,
-        u_star_parity=formal.u_star == oracle.u_star,
+        u_star_parity=highs_decision.u_star == enumeration_decision.u_star,
         objective_parity=objective_error <= M3_NUMERICAL_COMPARISON_TOLERANCE,
         recoverable_value_parity=(
             recoverable_error <= M3_NUMERICAL_COMPARISON_TOLERANCE
         ),
-        tie_break_applied=bool(formal.tie_break_applied),
-        near_tie_candidate_count=int(formal.near_tie_candidate_count or 0),
+        tie_break_applied=bool(enumeration_decision.tie_break_applied),
+        near_tie_candidate_count=int(
+            enumeration_decision.near_tie_candidate_count or 0
+        ),
     )

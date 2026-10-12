@@ -18,7 +18,7 @@ def test_gate_a_refactor_evidence_equivalence(
     audit_path = C.ROOT / "tmp" / f"NO_AUDIT_{tmp_path.name}.json"
     monkeypatch.setattr(C, "GATE_B_RELEASE_PATH", release_path)
     monkeypatch.setattr(C, "PHASE7_ACCESS_AUDIT_PATH", audit_path)
-    evidence_root = Path("artifacts") / "experiment" / "final_test_v2"
+    evidence_root = C.ROOT / "artifacts" / "experiment" / "final_test_v2"
     committed_dry_run = evidence_root / "GATE_A_DRY_RUN.json"
     committed_preflight = evidence_root / "GATE_A_PREFLIGHT.json"
 
@@ -39,6 +39,8 @@ def test_gate_a_refactor_evidence_equivalence(
         r"[0-9a-f]{40}", observed_commit
     )
     generated_preflight.pop("gate_a_commit")
+    observed_preflight["authority"]["instruction"].pop("repo_path", None)
+    generated_preflight["authority"]["instruction"].pop("repo_path", None)
     for key, value in observed_preflight.items():
         if key in {"access_boundary", "release_schema"}:
             for legacy_key, legacy_value in value.items():

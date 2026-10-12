@@ -60,6 +60,10 @@ MODEL_IMPLEMENTATION_NAMES = {
 # PRE construction semantics.
 READ_ONLY_PRE_AUDIT_CONSUMERS = {
     "validation/m1_v2_target_support_c0a_source.py",
+    # Phase-5 train-support materialization builds the frozen development
+    # cohort through the official PRE construction entry points; it owns no
+    # PRE semantics and never touches Final-Test data.
+    "validation/v2_phase5/train_support.py",
 }
 
 

@@ -143,17 +143,22 @@ class SplitName(str, Enum):
 class SolverStatus(str, Enum):
     """Stage-II solution provenance.
 
-    The formal Stage-II authority is the frozen Pyomo one-hot model solved by
-    HiGHS. Exact enumeration over the same finite action grid is retained only
-    as the independent deterministic parity oracle.
+    The Stage-II production authority is exact enumeration over the finite
+    five-minute action grid (post-R2 ruling
+    ``HUMAN_GATE_B0A_SOLVER_AUTHORITY_RULING_20260919``; see
+    ``registries/v2_stage2_solver_authority_reconciliation.json``). The
+    Pyomo+HiGHS backend is retained strictly for parity checks, regression
+    validation, and historical-artifact compatibility; it must never produce a
+    canonical Stage-II decision.
     """
 
     PYOMO_HIGHS = "PYOMO_HIGHS"
     EXACT_ENUMERATION = "EXACT_ENUMERATION"
     NOT_RUN = "NOT_RUN"
 
-    #: Backward-compatible alias for code written before Freeze R2. It resolves
-    #: to the formal solver and therefore does not denote a separate backend.
+    #: Backward-compatible alias kept so sealed checkpoints and pre-ruling
+    #: diagnostics remain deserializable. It denotes the HiGHS parity backend
+    #: only, not a formal authority.
     HIGHS_PARITY = PYOMO_HIGHS
 
 

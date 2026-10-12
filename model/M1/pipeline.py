@@ -479,8 +479,12 @@ class M1Pipeline:
                 "taxi_reference_support_state": published_payload.get("support_state"),
             }
         if taxi_reference is not None:
+            # M5: the multi-year instance binds its own per-year references;
+            # the legacy instance keeps the data2_2019 contract.
+            allowed_instances = {"data2_2019", "data2_2017_2022"}
             if (
-                getattr(taxi_reference, "dataset_instance_id", None) != "data2_2019"
+                getattr(taxi_reference, "dataset_instance_id", None)
+                not in allowed_instances
                 or getattr(taxi_reference, "rule_id", None) != "DATA2_TAXI_REFERENCE"
             ):
                 raise ValueError("M1_REQUIRES_TRAIN_FROZEN_DATA2_TAXI_REFERENCE")

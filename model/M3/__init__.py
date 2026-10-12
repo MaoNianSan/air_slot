@@ -1,82 +1,40 @@
-"""M3 action-template instantiation."""
+"""Current Section 3.6 downstream action-space interface.
 
-from .contracts import (
-    ActionInstantiationRecord,
-    ActionMaterialCoverageContract,
-    CandidateAction,
-    FootprintRole,
-    InstantiationState,
-    ResponseParameterStatus,
-    ResponseProvenance,
-)
-from .action_response import (
-    ActionEligibility,
-    ActionEvaluationEnvelope,
-    ActionResponseRule,
-    ActionResponseType,
-    EligibilityState,
-    ResponseParameter,
-    ResponseSourceType,
-    ResponseSupportClass,
-    build_a00_identity_envelope,
-    build_conditional_scenario_envelope,
-)
-from .instantiation_layer.builder import (
-    ActionInstantiationEvaluation,
-    evaluate_action_instantiation,
-    instantiate_action_records,
-    instantiate_candidates,
-)
-from .m2_action_interface import (
-    ActionConditionedCUQuantity,
-    M3ActionConditionedConsequence,
-    M3BaselineConsequenceInput,
-    M3BaselineCUQuantity,
-)
-from .registry_layer.actions import ActionRegistry
-from .readiness import (
-    ActionNumericalReadiness,
-    NumericalParameterState,
-    build_action_numerical_readiness,
-    readiness_for_template,
-    readiness_for_action,
+The historical 23-action implementation remains available only through
+explicit submodule imports such as ``model.M3.legacy_service``.
+"""
+
+from .action_interface import M2PostActionConsequenceAdapter, a00_baseline_action
+from .interface_contracts import (
+    ActionInterfaceRequest,
+    CandidateActionProvider,
+    CandidateActionRef,
+    CandidateActionSet,
+    CandidateActionSetState,
+    MaterializationState,
+    PostActionConsequence,
+    PostActionConsequenceProvider,
+    PostActionState,
+    ResourceContext,
+    ResourceContextState,
+    StateTransitionProvider,
 )
 from .service import M3Service
 
-ActionEnvelope = ActionEvaluationEnvelope
-
 __all__ = [
-    "ActionMaterialCoverageContract",
-    "ActionInstantiationRecord",
-    "ActionInstantiationEvaluation",
-    "ActionEligibility",
-    "ActionEvaluationEnvelope",
-    "ActionEnvelope",
-    "ActionResponseRule",
-    "ActionResponseType",
-    "ActionConditionedCUQuantity",
-    "ActionRegistry",
-    "ActionNumericalReadiness",
-    "CandidateAction",
-    "FootprintRole",
-    "InstantiationState",
-    "NumericalParameterState",
-    "EligibilityState",
-    "M3ActionConditionedConsequence",
-    "M3BaselineConsequenceInput",
-    "M3BaselineCUQuantity",
+    "ActionInterfaceRequest",
+    "CandidateActionProvider",
+    "CandidateActionRef",
+    "CandidateActionSet",
+    "CandidateActionSetState",
+    "M2PostActionConsequenceAdapter",
     "M3Service",
-    "ResponseParameter",
-    "ResponseParameterStatus",
-    "ResponseProvenance",
-    "ResponseSourceType",
-    "ResponseSupportClass",
-    "build_a00_identity_envelope",
-    "build_conditional_scenario_envelope",
-    "evaluate_action_instantiation",
-    "instantiate_action_records",
-    "instantiate_candidates",
-    "build_action_numerical_readiness",
-    "readiness_for_action",
-    "readiness_for_template",
+    "MaterializationState",
+    "PostActionConsequence",
+    "PostActionConsequenceProvider",
+    "PostActionState",
+    "ResourceContext",
+    "ResourceContextState",
+    "StateTransitionProvider",
+    "a00_baseline_action",
 ]

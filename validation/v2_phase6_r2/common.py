@@ -54,6 +54,13 @@ def file_hash(path: Path) -> str:
     return f"sha256:{sha256(Path(path).read_bytes()).hexdigest()}"
 
 
+def canonical_text_file_hash(path: Path) -> str:
+    """Hash canonical LF text bytes independent of checkout line endings."""
+
+    data = Path(path).read_bytes().replace(b"\r\n", b"\n")
+    return f"sha256:{sha256(data).hexdigest()}"
+
+
 def payload_hash(payload: Mapping[str, Any]) -> str:
     body = {key: value for key, value in payload.items() if key != "artifact_hash"}
     return content_id(body)

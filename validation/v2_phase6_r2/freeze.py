@@ -28,6 +28,7 @@ from validation.v2_phase6_r2.common import (  # noqa: E402
     R2Error,
     RECONCILIATION_PATH,
     REPORT_PATH,
+    canonical_text_file_hash,
     file_hash,
     payload_hash,
     read_json,
@@ -100,9 +101,9 @@ def _write_text(path: Path, text: str) -> None:
 def _assert_base_identity() -> dict[str, Any]:
     base = read_json(BASE_REGISTRY_PATH)
     _require(
-        file_hash(BASE_REGISTRY_PATH) == BASE_REGISTRY_FILE_SHA256,
+        canonical_text_file_hash(BASE_REGISTRY_PATH) == BASE_REGISTRY_FILE_SHA256,
         "R2_BASE_REGISTRY_FILE_HASH_MISMATCH",
-        file_hash(BASE_REGISTRY_PATH),
+        canonical_text_file_hash(BASE_REGISTRY_PATH),
     )
     _require(
         payload_hash(base) == BASE_REGISTRY_ARTIFACT_HASH,

@@ -1,31 +1,41 @@
-"""M4 V2 monetary interpretation and residual-risk aggregation."""
+"""Current Section 3.5 priority and screening interface.
 
-from .m3_action_interface import ConsequenceComparisonScope, M4ActionEnvelopeInput
-from .residual_risk import (
-    ResidualRiskPolicy,
-    RiskEvaluationEnvelope,
-    RiskRankingEnvelope,
-    NumericalEvaluationState,
-    SelectionState,
-    evaluate_residual_risk,
-    load_active_risk_policy,
-    rank_risk_evaluations,
+Monetary residual-risk code remains available only through explicit legacy
+modules and is not part of the current empirical mainline.
+"""
+
+from .alignment import compare_priority_representations
+from .contracts import (
+    CommonSupportPolicy,
+    ComponentSummary,
+    DomainScoreSummary,
+    ExcludedNode,
+    PopulationScope,
+    PriorityAlignmentRecord,
+    PriorityOrdering,
+    PriorityPopulation,
+    PriorityRepresentation,
+    PriorityScoreRecord,
+    RankDisplacement,
+    ScreeningCapacity,
+    ScreeningShortlist,
 )
 from .service import M4Service
 
-RiskEvaluation = RiskEvaluationEnvelope
-
 __all__ = [
-    "M4ActionEnvelopeInput",
-    "ConsequenceComparisonScope",
-    "ResidualRiskPolicy",
-    "RiskEvaluationEnvelope",
-    "RiskEvaluation",
-    "RiskRankingEnvelope",
-    "NumericalEvaluationState",
-    "SelectionState",
-    "evaluate_residual_risk",
-    "load_active_risk_policy",
-    "rank_risk_evaluations",
+    "CommonSupportPolicy",
+    "ComponentSummary",
+    "DomainScoreSummary",
+    "ExcludedNode",
     "M4Service",
+    "PopulationScope",
+    "PriorityAlignmentRecord",
+    "PriorityOrdering",
+    "PriorityPopulation",
+    "PriorityRepresentation",
+    "PriorityScoreRecord",
+    "RankDisplacement",
+    "ScreeningCapacity",
+    "ScreeningShortlist",
+    "compare_priority_representations",
 ]

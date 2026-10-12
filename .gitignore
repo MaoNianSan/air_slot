@@ -121,5 +121,22 @@ Rolling_Airline_Recovery (7).pdf
 # their stage order, dependencies and hashes.
 artifacts/experiment/final_test_v2/checkpoints/
 
+# ===== Over-100MB stage-matched Final-Test payloads (GitHub hard limit) =====
+# These two per-file JSON payloads exceed GitHub's 100MB hard limit and are
+# distributed as GitHub Release assets instead of git objects; see
+# artifacts/experiment/final_test_v2_stage_matched/LARGE_ARTIFACT_MANIFEST.json
+# for the release tag and sha256 hashes.  Smaller checkpoint files in the same
+# directory stay versioned.
+artifacts/experiment/final_test_v2_stage_matched/checkpoints/CONSEQUENCE_VARIANTS.json
+artifacts/experiment/final_test_v2_stage_matched/checkpoints/STATE_VARIANTS.json
+
+# ===== Over-100MB expected-passenger reference payloads (GitHub hard limit) =====
+# The 2019-H1/2020-H1 T100 expected-passenger reference JSONs exceed GitHub's
+# 100MB hard limit; regenerable via the passenger-reference freeze pipeline and
+# distributed as GitHub Release assets (hashes recorded in
+# artifacts/models/pre/PRE_MULTIYEAR_V1/LARGE_ARTIFACT_MANIFEST.json).
+artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2019-H1.json
+artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2020-H1.json
+
 # ===== Local scratch scripts, probes and run logs (kept local) =====
 tmp/

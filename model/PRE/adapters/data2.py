@@ -16,6 +16,12 @@ from .registry import RawReadRequest, SourceAdapterRegistry
 
 
 class Data2Adapter:
+    # M4a (authorized 2026-09-28): one adapter serves both Data2 instances.
+    # The legacy default keeps data2_2019 behavior byte-identical; the
+    # multi-year instance is cohort-profiling-only and its identity always
+    # comes from the request (never from this default).
+    _DEFAULT_INSTANCE_ID = "data2_2019"
+    _MULTIYEAR_INSTANCE_ID = "data2_2017_2022"
     _families = (
         "bts_ontime",
         "bts_db1b",
@@ -25,9 +31,13 @@ class Data2Adapter:
         "noaa_isd",
     )
 
+    def __init__(self, dataset_instance_id: str = _DEFAULT_INSTANCE_ID):
+        self._dataset_instance_id = dataset_instance_id
+
     def describe(self) -> AdapterDescription:
         return AdapterDescription(
-            dataset_instance_id="data2_2019", source_families=self._families
+            dataset_instance_id=self._dataset_instance_id,
+            source_families=self._families,
         )
 
     def capabilities(self) -> dict[str, str]:
@@ -44,7 +54,7 @@ class Data2Adapter:
     ) -> SourceValidationReport:
         supported = request.source_family in self._families
         return SourceValidationReport(
-            dataset_instance_id="data2_2019",
+            dataset_instance_id=self._dataset_instance_id,
             source_family=request.source_family,
             status="DECLARED" if supported else "UNSUPPORTED",
             reason_code=None if supported else "SOURCE_FAMILY_NOT_DECLARED",
@@ -59,9 +69,27 @@ class Data2Adapter:
     ):
         if not isinstance(request, RawReadRequest):
             raise ContractError("RAW_READ_REQUEST_REQUIRED")
-        definition = SourceAdapterRegistry.load(
+        registry = SourceAdapterRegistry.load(
             project_path("registries", "source_adapter_registry.yaml")
-        ).get(request.dataset_instance_id, request.source_family)
+        )
+        try:
+            definition = registry.get(
+                request.dataset_instance_id, request.source_family
+            )
+        except ContractError:
+            if request.dataset_instance_id == self._MULTIYEAR_INSTANCE_ID:
+                # Schema/layout-only fallback: the multi-year instance shares
+                # the registered source family, relative globs, format, and
+                # column contract of the data2_2019 rows. Legacy identity or
+                # provenance fields are NOT inherited - the canonicalizers
+                # below re-bind dataset_instance_id from the request, and the
+                # MULTIYEAR_CANONICAL_PROVENANCE_AUDIT verifies this
+                # fail-closed on produced records.
+                definition = registry.get(
+                    self._DEFAULT_INSTANCE_ID, request.source_family
+                )
+            else:
+                raise
         if request.source_family == "bts_ontime":
             reference = (
                 timezone_reference
@@ -77,14 +105,14 @@ class Data2Adapter:
         elif request.source_family == "airport_reference":
             converter = lambda row: canonicalize_airport_row(
                 row,
-                dataset_instance_id="data2_2019",
+                dataset_instance_id=request.dataset_instance_id,
                 rule_id="D2-AIRPORT-REFERENCE",
                 logical_source="airport_reference",
             )
         elif request.source_family in {"bts_db1b", "bts_t100"}:
             converter = lambda row: canonicalize_aggregate_row(
                 row,
-                dataset_instance_id="data2_2019",
+                dataset_instance_id=request.dataset_instance_id,
                 source_family=request.source_family,
             )
         elif request.source_family == "noaa_isd":

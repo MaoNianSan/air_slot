@@ -29,6 +29,9 @@ from exp.shared.resampling import bootstrap_plan, episode_ids
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHORITY = "860befd20e968ba702b1aad99e618830a3a6acfe"
+# FINAL/OUTPUT stay relative by design: every use joins them onto the ``root``
+# argument (default ROOT, derived from __file__), so callers can materialize
+# into a scratch root without ever touching the published tree.
 FINAL = Path("artifacts/experiment/final_test")
 OUTPUT = FINAL / "section5_secondary"
 EXP2 = FINAL / "exp2"
