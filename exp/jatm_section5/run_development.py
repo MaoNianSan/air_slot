@@ -181,13 +181,14 @@ def _representation_specs() -> dict[str, StateRepresentationSpec]:
     }
 
 
-def _build_nodes(
+def _iter_nodes(
     *, authorities, bridge, tails, layer,
     history_checkpoint: Path | None = None,
     current_checkpoint: Path | None = None,
     history_pipeline=None,
     current_pipeline=None,
     node_ids: set[str] | None = None,
+    include_legacy_marginal: bool = True,
 ) -> tuple[RepresentationNode, ...]:
     """Build nodes from explicit model inputs.
 
@@ -206,7 +207,6 @@ def _build_nodes(
         )
     }
     specs = _representation_specs()
-    nodes: list[RepresentationNode] = []
     for example, episode, prefix in bridge["rows"]:
         state = prefix[-1]
         decision_node = state.decision_node
@@ -259,8 +259,9 @@ def _build_nodes(
             "HISTORY_JOINT": build_joint_representation(history_joint),
             "CURRENT_JOINT": current_joint,
             "HISTORY_POINT": build_point_representation(history_joint),
-            "HISTORY_MARGINAL": build_marginal_representation(history_joint),
         }
+        if include_legacy_marginal:
+            state_sets["HISTORY_MARGINAL"] = build_marginal_representation(history_joint)
         consequence_sets = {}
         supports = {}
         support_full = {}
@@ -298,7 +299,7 @@ def _build_nodes(
                 consequence_scores[representation] = None
                 domain_scores[representation] = None
                 component_scores[representation] = None
-        nodes.append(
+        yield (
             RepresentationNode(
                 episode_id=decision_node.episode_id,
                 chain_id=chain_id_for_episode(episode.episode),
@@ -316,7 +317,11 @@ def _build_nodes(
                 component_scores=component_scores,
             )
         )
-    return tuple(nodes)
+
+
+def _build_nodes(**kwargs) -> tuple[RepresentationNode, ...]:
+    """Compatibility materializer; annual shared execution consumes the iterator."""
+    return tuple(_iter_nodes(**kwargs))
 
 
 def _reference_eligible(node: RepresentationNode) -> bool:

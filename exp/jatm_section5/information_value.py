@@ -294,6 +294,7 @@ def information_value_main(
     headroom,
     seed: int,
     replicates: int,
+    precomputed_recovery: Mapping[str, ComparatorRecoveryResult] | None = None,
 ) -> tuple[list[dict[str, object]], list[dict[str, object]], list[dict[str, object]]]:
     rows: list[dict[str, object]] = []
     diagnostics: list[dict[str, object]] = []
@@ -326,12 +327,9 @@ def information_value_main(
         )
         component_losses[component] = loss
         component_reassign[component] = (reassigned, shortlist)
-        recovery = comparator_recovery(
-            reference_cohort,
-            representation=comparator,
-            service=service,
-            headroom=headroom,
-        )
+        recovery = (precomputed_recovery[comparator] if precomputed_recovery is not None
+                    else comparator_recovery(reference_cohort, representation=comparator,
+                                             service=service, headroom=headroom))
         recovery_results[component] = recovery
 
     episodes = sorted({node.episode_id for node in nodes})

@@ -97,7 +97,10 @@ def _headroom(year: int | None = None) -> HeadroomSummary:
     return HeadroomSummary.model_validate(payload["factual_headroom"]["headroom_summary"])
 
 
-def _exact_projection(node: RepresentationNode, service) -> tuple[dict[str, Any], StateScenarioSet, Any, Any, dict[str, Any]]:
+def _exact_projection(node: RepresentationNode, service, *, preserve_metadata: bool = False, streaming: bool = False) -> tuple[dict[str, Any], StateScenarioSet, Any, Any, dict[str, Any]]:
+    if streaming:
+        from .exact_stream import project
+        return project(node,service)
     source = node.state("HISTORY_JOINT")
     adapter = ExactWeightedMarginalDistribution.from_source(source)
     if adapter.scenario_count > MAX_EXACT_SCENARIOS:
@@ -105,6 +108,15 @@ def _exact_projection(node: RepresentationNode, service) -> tuple[dict[str, Any]
             f"E2_EXACT_MARGINAL_SCENARIO_LIMIT:{node.node_id}:{adapter.scenario_count}"
         )
     exact_state = adapter.materialize(max_scenarios=MAX_EXACT_SCENARIOS)
+    if preserve_metadata:
+        inherited = {}
+        for field in ('ib_observed', 'ob_observed', 'tx_observed', 'tx_reference_minutes'):
+            values = {getattr(scenario, field) for scenario in source.scenarios}
+            if len(values) != 1:
+                raise RuntimeError(f'EXACT_MARGINAL_CONTEXT_NOT_NODE_CONSTANT:{node.node_id}:{field}')
+            inherited[field] = next(iter(values))
+        exact_state = exact_state.model_copy(update={
+            'scenarios': tuple(s.model_copy(update=inherited) for s in exact_state.scenarios)})
     if node.node_id in service.references:
         exact_consequence = consequence_set(service, exact_state)
     else:
@@ -196,14 +208,14 @@ def _project_nodes(base_nodes, service, *, keep_exact_ids: set[str] | None = Non
     return tuple(score_nodes), audits, retained_exact
 
 
-def _project_light_node(node: RepresentationNode, service):
+def _project_light_node(node: RepresentationNode, service, *, preserve_metadata: bool = False, streaming: bool = False):
     """Project one node and retain only score/support metadata for E2 Stage-I.
 
     Exact state/consequence scenario sets are intentionally released here;
     full objects are rebuilt only for the Stage-II shortlist in the second
     pass.  This is numerically the same `_exact_projection` operation.
     """
-    values, _state, _consequence, support, audit = _exact_projection(node, service)
+    values, _state, _consequence, support, audit = _exact_projection(node, service, preserve_metadata=preserve_metadata,streaming=streaming)
     state_sets = dict(node.state_sets); consequence_sets = dict(node.consequence_sets)
     supports = dict(node.supports); support_full = dict(node.support_full)
     delay_scores = dict(node.delay_scores); consequence_scores = dict(node.consequence_scores)

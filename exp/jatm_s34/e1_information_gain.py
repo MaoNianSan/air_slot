@@ -112,7 +112,7 @@ def _typed_signal(node, *, score: float | None, signal_type: SignalKind) -> Prio
     )
 
 
-def _exposure_factors(node, binding) -> tuple[tuple[float, float] | None, dict]:
+def _exposure_factors(node, binding, *, direct_reference_zero_valid=False) -> tuple[tuple[float, float] | None, dict]:
     """Resolve direct M2 references and verify the native algebraic identity."""
 
     if binding is None:
@@ -139,6 +139,12 @@ def _exposure_factors(node, binding) -> tuple[tuple[float, float] | None, dict]:
                 "downstream_abs_error": abs(downstream_ratio - expected_downstream),
             }
         )
+    if not checks and direct_reference_zero_valid:
+        if not all(np.isfinite(v) and v >= 0 for v in (expected_pax,expected_downstream)):
+            raise ContractError('E1_EXPOSURE_REFERENCE_INVALID:'+node.node_id)
+        return (expected_pax,expected_downstream), {
+            'status':'PASS_DIRECT_REFERENCE_ZERO_DELAY_NO_RATIO',
+            'expected_pax':expected_pax,'expected_downstream':expected_downstream,'checks':[]}
     if not checks:
         return None, {"status": "ABSTAIN", "reason": "NO_POSITIVE_D_TO_SCENARIO", "checks": []}
     max_pax_error = max(item["pax_abs_error"] for item in checks)
@@ -238,6 +244,8 @@ def _summarize_stage(nodes, *, view: str, q: float, factor_by_node: dict[str, tu
     if not nodes:
         return {
             "status": "ABSTAIN_NO_CANDIDATES",
+            "n": 0, "k": 0, "abstain": 0, "abstain_reasons": {},
+            "reference_consequence_sum": 0.0, "retained_consequence_sum": 0.0,
             "selected_view": [],
             "selected_reference": [],
             "overlap": None,

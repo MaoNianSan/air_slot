@@ -26,7 +26,8 @@ from model.PRE.cohort import split_for_date_multiyear
 from model.PRE.development import materialize_preselected_cohorts
 from model.common.config import load_config_layers
 from model.common.paths import PROJECT_ROOT
-from validation.v2_phase5.common import load_authorities, load_tail_continuations
+from validation.v2_phase5.common import Authorities
+from .annual_tail import load_annual_tail
 
 
 M2_ROOT = PROJECT_ROOT / "artifacts" / "models" / "pre" / "PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1"
@@ -44,6 +45,25 @@ def _annual_bundle(year: int):
     }
     payloads = {key: json.loads((root / name).read_text(encoding="utf-8")) for key, name in names.items()}
     return load_data2_reference_bundle(payloads)
+
+
+def load_annual_authorities(year: int):
+    """Reuse the authority contract without loading the legacy 2019 cache.
+
+    Annual training records predate an explicit seed field; the seed is the
+    fixed constant in their approved generator, not inferred from a later year.
+    """
+    from .annual_cu import load_annual_cu
+    from .annual_models import TRAIN_SEED
+    from .cloud_inputs import model_bindings
+    bindings = model_bindings(year)
+    taxi, _ = year_references(year)
+    return Authorities(cache=None, cohort={},
+        h16_manifest=dict(bindings['M1_HISTORY_PRIMARY'], training_seed=TRAIN_SEED),
+        current_manifest=dict(bindings['M1_CURRENT_COMPARATOR'], training_seed=TRAIN_SEED),
+        registry=load_annual_cu(year), reference_bundle=_annual_bundle(year), taxi_reference=taxi,
+        audit=dict(year=year, seed_source='exp.jatm_s34.annual_models.TRAIN_SEED',
+                   legacy_phase5_cache_loaded=False, final_test_access_count=0))
 
 
 def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = None) -> dict:
@@ -90,7 +110,7 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
         for split in rows
     }
     partitions_examples = {split: tuple(examples_by_split[split]) for split in examples_by_split}
-    authorities = load_authorities()
+    authorities = load_annual_authorities(year)
     bundle = _annual_bundle(year)
     cache = M1DevelopmentBaseCache.from_partitions(
         partitions=partitions_examples,
@@ -119,7 +139,7 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
         "authorities": replace(authorities, cache=cache, reference_bundle=bundle, taxi_reference=taxi),
         "bridge": {"cache": cache, "rows": dev_rows, "mapping": None, "taxi_reference": taxi,
                    "manifest": {"year": year, "n": n}},
-        "tails": load_tail_continuations(),
+        "tails": load_annual_tail(year),
         "year": year,
         "n": n,
         "history_checkpoint": PROJECT_ROOT / "artifacts" / "models" / "m1" / f"YEAR_{year}" / "M1_HISTORY_PRIMARY.pt",
@@ -128,7 +148,9 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
 
 
 def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
-                        node_limit: int | None = None, start_chunk: int = 0):
+                        node_limit: int | None = None, start_chunk: int = 0,
+                        episode_ids: set[str] | None = None,
+                        shared: bool = False, device: str = 'cpu'):
     """Yield bounded Development bridges for one annual cohort.
 
     Train and Calibration define the frozen annual normalization already
@@ -153,11 +175,18 @@ def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
     current_pipeline = M1Pipeline.load(
         PROJECT_ROOT / "artifacts" / "models" / "m1" / f"YEAR_{year}" / "M1_CURRENT_COMPARATOR.pt"
     )
-    pipeline.tail_continuations = dict(load_tail_continuations())
+    if device != 'cpu':
+        pipeline.to_device(device)
+        current_pipeline.to_device(device)
+    from .annual_tail import load_annual_tail
+    pipeline.tail_continuations = dict(load_annual_tail(year))
     current_pipeline.tail_continuations = dict(pipeline.tail_continuations)
     normalization, static_normalization = pipeline.normalization, pipeline.static_normalization
-    authorities = load_authorities()
+    authorities = load_annual_authorities(year)
     bundle = _annual_bundle(year)
+    if shared:
+        from .annual_cu import load_annual_cu
+        authorities = replace(authorities, registry=load_annual_cu(year))
     tails = dict(pipeline.tail_continuations)
     dev_items = selected["development"]
     if node_limit is not None:
@@ -165,6 +194,10 @@ def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
     first_offset = int(start_chunk) * int(chunk_size)
     for offset in range(first_offset, len(dev_items), int(chunk_size)):
         chunk = tuple(episode for _rank, episode in dev_items[offset:offset + int(chunk_size)])
+        if episode_ids is not None:
+            chunk = tuple(ep for ep in chunk if ep.episode_id in episode_ids)
+            if not chunk:
+                continue
         partitions = {"train": (), "calibration": (), "development": chunk}
         cohorts = materialize_preselected_cohorts(
             scientific, root=PROJECT_ROOT, partitions=partitions, year=year,

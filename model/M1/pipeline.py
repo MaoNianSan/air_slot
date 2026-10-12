@@ -341,6 +341,21 @@ class M1Pipeline:
             history_mode=history_mode,
         )
 
+    def to_device(self, device='cpu'):
+        """Move one worker's inference model once; safe CPU loading is unchanged."""
+        if device not in ('cpu', 'cuda', 'auto'):
+            raise ValueError('M1_DEVICE_INVALID')
+        resolved = 'cuda' if device == 'auto' and torch.cuda.is_available() else device
+        if resolved == 'auto':
+            resolved = 'cpu'
+        if resolved == 'cuda' and not torch.cuda.is_available():
+            raise RuntimeError('M1_CUDA_UNAVAILABLE')
+        if resolved == 'cuda':
+            torch.backends.cuda.matmul.allow_tf32 = False
+            torch.backends.cudnn.allow_tf32 = False
+        self.model.to(resolved)
+        return self
+
     def _information_state(
         self, values, lengths, fast_features=None, static_features=None, pre_state=None
     ):
@@ -355,6 +370,9 @@ class M1Pipeline:
         back to a zero fast block.  Static features are derived from the PRE
         state when available (only PRE-published MODEL_FEATURE fields).
         """
+        device = next(self.model.parameters()).device
+        values = values.to(device)
+        lengths = lengths.to(device)
         if fast_features is None:
             fast_features = fast_features_from_sequence(values, lengths)
         if (
@@ -377,6 +395,8 @@ class M1Pipeline:
             static_features, _ = static_reference_features_from_pre(
                 pre_state, context, self.static_normalization
             )
+        fast_features = None if fast_features is None else fast_features.to(device)
+        static_features = None if static_features is None else static_features.to(device)
         history = self.model.encode_history(values, lengths)
         state = self.model.state_representation(history, fast_features, static_features)
         return history, fast_features, static_features, state
