@@ -12,8 +12,10 @@ import argparse
 import copy
 import hashlib
 import json
+import subprocess
 from collections import Counter
 from dataclasses import dataclass, replace
+from datetime import datetime
 from pathlib import Path
 from typing import Iterable
 
@@ -405,7 +407,7 @@ def run(*, output_root: Path, node_limit: int | None = None, bootstrap_replicate
 
 def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                        chunk_size: int = 128, node_limit: int | None = None,
-                       bootstrap_replicates: int = 2000) -> dict:
+                       bootstrap_replicates: int = 2000, resume: bool = True) -> dict:
     """Run E1 with bounded PRE/M1/RepresentationNode lifetime.
 
     Every Development chunk is scored with the same Section-5 builder and
@@ -420,8 +422,48 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
     factor_audit: dict[str, dict] = {}
     exclusions: Counter[str] = Counter()
     chunk_count = 0
-    for context in iter_annual_bridges(year=year, n=n, chunk_size=chunk_size, node_limit=node_limit):
+    current_head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    root = Path(__file__).resolve().parents[2]
+    input_paths = {
+        "history_checkpoint": root / "artifacts" / "models" / "m1" / f"YEAR_{int(year)}" / "M1_HISTORY_PRIMARY.pt",
+        "current_checkpoint": root / "artifacts" / "models" / "m1" / f"YEAR_{int(year)}" / "M1_CURRENT_COMPARATOR.pt",
+        "m2_manifest": root / "artifacts" / "models" / "pre" / "PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1" / str(int(year)) / "M2_REFERENCES" / "M2_REFERENCE_BUNDLE_MANIFEST.json",
+    }
+    input_hashes = {name: (_sha256(path) if path.is_file() else None) for name, path in input_paths.items()}
+    chunk_dir = out / "chunks"; chunk_dir.mkdir(parents=True, exist_ok=True)
+
+    def atomic_write(path: Path, payload: dict) -> None:
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        temporary.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")
+        temporary.replace(path)
+
+    completed = 0
+    if resume:
+        while True:
+            chunk_path = chunk_dir / f"chunk_{completed:04d}.json"
+            if not chunk_path.is_file():
+                break
+            saved = json.loads(chunk_path.read_text(encoding="utf-8"))
+            if saved.get("complete") is not True or saved.get("git_head") != current_head or saved.get("input_hashes") != input_hashes:
+                break
+            for item in saved.get("nodes", []):
+                support = item["support"]
+                nodes.append(_CompactNode(
+                    episode_id=item["episode_id"], chain_id=item["chain_id"], node_id=item["node_id"],
+                    stage=OperationalStage(item["stage"]), decision_time=datetime.fromisoformat(item["decision_time"]),
+                    delay_scores=item["delay_scores"], consequence_scores=item["consequence_scores"],
+                    domain_scores=item["domain_scores"],
+                    _support=_CompactSupport(bool(support["included"]), float(support["supported_mass"]),
+                                             float(support["threshold"]), TypedStatus(support["status"])),
+                ))
+                built_node_count += 1
+            factor_by_node.update({str(key): (float(value[0]), float(value[1])) for key, value in saved.get("factors", {}).items()})
+            completed += 1
+        chunk_count = completed
+    for context in iter_annual_bridges(year=year, n=n, chunk_size=chunk_size,
+                                       node_limit=node_limit, start_chunk=completed):
         chunk_count += 1
+        chunk_start = len(nodes)
         layer = build_consequence_service(
             authorities=context["authorities"], bridge=context["bridge"],
             output_dir=out / "materialization" / f"chunk_{chunk_count:04d}"
@@ -434,6 +476,7 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
             history_pipeline=context.get("history_pipeline"),
             current_pipeline=context.get("current_pipeline"),
         )
+        chunk_nodes: list[_CompactNode] = []
         for node in built:
             if node.stage not in STAGES:
                 continue
@@ -448,7 +491,7 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                                               "max_downstream_abs_error": audit.get("max_downstream_abs_error")}
                 if factors is not None:
                     factor_by_node[node.node_id] = factors
-            nodes.append(_CompactNode(
+            compact = _CompactNode(
                 episode_id=node.episode_id, chain_id=node.chain_id, node_id=node.node_id,
                 stage=node.stage, decision_time=node.decision_time,
                 delay_scores={"HISTORY_JOINT": node.delay_scores.get("HISTORY_JOINT")},
@@ -456,12 +499,30 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                 domain_scores={"HISTORY_JOINT": node.domain_scores.get("HISTORY_JOINT")},
                 _support=_CompactSupport(bool(support.included), float(support.supported_mass),
                                          float(support.threshold), support.status),
-            ))
-        (out / "E1_CHUNK_CHECKPOINT.json").write_text(
-            json.dumps({"schema_version": "JATM_S34_E1_BOUNDED_CHECKPOINT_V1",
-                        "year": int(year), "completed_chunks": chunk_count,
-                        "processed_node_records": len(nodes), "final_test_access_count": 0},
-                       indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            )
+            nodes.append(compact)
+            chunk_nodes.append(compact)
+        chunk_index = int(context["bridge"]["manifest"]["chunk_index"])
+        chunk_ids = {item.node_id for item in chunk_nodes}
+        atomic_write(chunk_dir / f"chunk_{chunk_index:04d}.json", {
+            "schema_version": "JATM_S34_E1_BOUNDED_CHUNK_V1", "year": int(year),
+            "chunk_index": chunk_index, "complete": True, "git_head": current_head,
+            "input_hashes": input_hashes,
+            "nodes": [{"episode_id": item.episode_id, "chain_id": item.chain_id, "node_id": item.node_id,
+                       "stage": item.stage.value, "decision_time": item.decision_time.isoformat(),
+                       "delay_scores": item.delay_scores, "consequence_scores": item.consequence_scores,
+                       "domain_scores": item.domain_scores,
+                       "support": {"included": item._support.included, "supported_mass": item._support.supported_mass,
+                                   "threshold": item._support.threshold, "status": item._support.status.value}}
+                      for item in chunk_nodes],
+            "factors": {key: list(value) for key, value in factor_by_node.items() if key in chunk_ids},
+        })
+        atomic_write(out / "E1_CHUNK_CHECKPOINT.json", {
+            "schema_version": "JATM_S34_E1_BOUNDED_CHECKPOINT_V2", "year": int(year),
+            "completed_chunks": chunk_index + 1, "processed_node_records": len(nodes),
+            "chunk_artifacts": [path.name for path in sorted(chunk_dir.glob("chunk_*.json"))],
+            "git_head": current_head, "input_hashes": input_hashes, "final_test_access_count": 0,
+        })
         del built, layer, context
     # Match the frozen canonical cohort rule: one earliest node per
     # episode x operational stage, then apply support/reference eligibility.

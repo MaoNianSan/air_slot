@@ -78,12 +78,22 @@ def _sha256(path: Path) -> str:
     return "sha256:" + digest.hexdigest()
 
 
-def _headroom() -> HeadroomSummary:
-    payload = json.loads(
-        (PHASE_DIR / "TRAIN_TURNAROUND_HEADROOM_SUMMARY.json").read_text(
-            encoding="utf-8"
-        )
-    )
+def _headroom(year: int | None = None) -> HeadroomSummary:
+    """Load the Train-only headroom for the requested annual contract."""
+    if year is None:
+        path = PHASE_DIR / "TRAIN_TURNAROUND_HEADROOM_SUMMARY.json"
+    else:
+        path = ROOT / "data2" / "reports" / "paper_formal" / str(int(year)) / str(int(year)) / "M2_TRAIN_HEADROOM_SUMMARY.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"JATM_ANNUAL_HEADROOM_MISSING:{path}")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if year is not None:
+        if int(payload.get("year", -1)) != int(year):
+            raise RuntimeError("JATM_ANNUAL_HEADROOM_YEAR_MISMATCH")
+        if payload.get("train_partition", {}).get("fit_period") != f"{int(year)}-H1":
+            raise RuntimeError("JATM_ANNUAL_HEADROOM_TRAIN_PERIOD_MISMATCH")
+        if int(payload.get("final_test_access_count", 0)) != 0:
+            raise RuntimeError("JATM_ANNUAL_HEADROOM_FINAL_TEST_ACCESS")
     return HeadroomSummary.model_validate(payload["factual_headroom"]["headroom_summary"])
 
 
@@ -499,7 +509,7 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
         del built, layer, context
     service = M2ConsequenceService(last_authorities.registry, selected_bindings)
     selected_nodes = tuple(full_by_id[node_id] for node_id in sorted(selected_ids) if node_id in full_by_id)
-    headroom = _headroom()
+    headroom = _headroom(int(year))
     reference_cohort = prepare_reference_recovery(selected_nodes, source_shortlists=source_shortlists, service=service, headroom=headroom)
     information_nodes = tuple(node for node in projected if node.stage in STAGES and all(
         node.support(rep).included and node.consequence_scores.get(rep) is not None
@@ -533,7 +543,8 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
         "e3": {"profiles": list(PROFILES), "rows": e3, "mechanism_diagnostics": mechanisms, "joint_marginal_pair_count": len(e3)},
         "input_contract": {"git_head": subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip(),
                             "final_test_access_count": 0, "scientific_recomputation": True, "sealed_executor_called": False,
-                            "bounded_memory": True, "two_pass": "score_only_then_shortlist_stage_II"},
+                            "bounded_memory": True, "two_pass": "score_only_then_shortlist_stage_II",
+                            "headroom_source": str(ROOT / "data2" / "reports" / "paper_formal" / str(int(year)) / str(int(year)) / "M2_TRAIN_HEADROOM_SUMMARY.json")},
     }
     payload["artifact_hash"] = content_id(payload)
     (output_root / "E2_E3_SUMMARY.json").write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")

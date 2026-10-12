@@ -128,7 +128,7 @@ def load_annual_bridge(*, year: int, n: int = 4096, node_limit: int | None = Non
 
 
 def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
-                        node_limit: int | None = None):
+                        node_limit: int | None = None, start_chunk: int = 0):
     """Yield bounded Development bridges for one annual cohort.
 
     Train and Calibration define the frozen annual normalization already
@@ -142,6 +142,8 @@ def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
     year = int(year)
     if int(chunk_size) <= 0:
         raise ValueError("JATM_ANNUAL_CHUNK_SIZE_INVALID")
+    if int(start_chunk) < 0:
+        raise ValueError("JATM_ANNUAL_START_CHUNK_INVALID")
     selected = load_hash_cohort(year)
     n = int(n)
     scientific = load_config_layers(PROJECT_ROOT / "configs").scientific
@@ -160,7 +162,8 @@ def iter_annual_bridges(*, year: int, n: int = 4096, chunk_size: int = 128,
     dev_items = selected["development"]
     if node_limit is not None:
         dev_items = dev_items[:int(node_limit)]
-    for offset in range(0, len(dev_items), int(chunk_size)):
+    first_offset = int(start_chunk) * int(chunk_size)
+    for offset in range(first_offset, len(dev_items), int(chunk_size)):
         chunk = tuple(episode for _rank, episode in dev_items[offset:offset + int(chunk_size)])
         partitions = {"train": (), "calibration": (), "development": chunk}
         cohorts = materialize_preselected_cohorts(
