@@ -61,7 +61,7 @@ def run_year(*, year: int, output_root: Path, node_limit: int | None = None, boo
 
 def run_year_bounded(*, year: int, output_root: Path, n: int = 4096,
                      chunk_size: int = 64, node_limit: int | None = None,
-                     bootstrap_replicates: int = 2000) -> dict:
+                     bootstrap_replicates: int = 2000, resume: bool = True) -> dict:
     """Run annual E1--E3 with bounded bridge and two-pass E2/E3 execution."""
     contract = validate_year(year)
     out = Path(output_root).resolve(); out.mkdir(parents=True, exist_ok=True)
@@ -74,7 +74,7 @@ def run_year_bounded(*, year: int, output_root: Path, n: int = 4096,
     else:
         result["e1"] = run_e1_bounded(output_root=out / "E1", year=year, n=n,
                                       chunk_size=chunk_size, node_limit=node_limit,
-                                      bootstrap_replicates=bootstrap_replicates)
+                                      bootstrap_replicates=bootstrap_replicates, resume=resume)
         result["e2_e3"] = run_e2_e3_bounded(output_root=out / "E2_E3", year=year, n=n,
                                             chunk_size=chunk_size, node_limit=node_limit,
                                             bootstrap_replicates=bootstrap_replicates)
