@@ -512,7 +512,9 @@ def compute_train_scales_continuity_b(
         rows_seen += 1
         quantity = max(
             0.0,
-            (predecessor["actual_arrival_utc"] - successor["scheduled_departure_utc"]).total_seconds() / 60.0
+            # Train rows carry the scheduled departure as event_start_time
+            # (FlightRecord aliases it with schedule_dep; no flat scheduled_* key).
+            (predecessor["actual_arrival_utc"] - successor["event_start_time"]).total_seconds() / 60.0
             + float(reference),
         )
         if quantity > 0.0:
