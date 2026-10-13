@@ -237,8 +237,11 @@ M2_NATIVE_DEFINITIONS = {
 
 
 def stream_passenger_routes(coupon_paths: tuple[Path, ...], *,
-                            year: int = 2019) -> list[dict[str, Any]]:
-    instance_id = "data2_2019" if year == 2019 else "data2_2017_2022"
+                            year: int = 2019,
+                            dataset_instance_id: str | None = None) -> list[dict[str, Any]]:
+    instance_id = dataset_instance_id or (
+        "data2_2019" if year == 2019 else "data2_2017_2022"
+    )
     sums: dict[tuple[str, str], float] = defaultdict(float)
     counts: dict[tuple[str, str], int] = defaultdict(int)
     for path in coupon_paths:
@@ -668,10 +671,15 @@ def fit_train_references(
     root: Path,
     fit_period: str = "2019-H1",
     year: int = 2019,
+    dataset_instance_id: str | None = None,
 ) -> dict[str, dict[str, Any]]:
-    # Year-replicated PRE rows carry the shared six-year dataset identity;
-    # retain the legacy 2019 identity only for the frozen 2019 reference path.
-    reference_dataset_id = "data2_2019" if year == 2019 else "data2_2017_2022"
+    # Explicit construction context: the year-replicated builder passes the
+    # shared six-year identity that also stamps its rows; the default keeps
+    # the legacy convention for the frozen 2019 registry path (2019 ->
+    # "data2_2019").
+    reference_dataset_id = dataset_instance_id or (
+        "data2_2019" if year == 2019 else "data2_2017_2022"
+    )
     turnaround = build_data2_turnaround_reference(
         rows, fit_period=fit_period, dataset_instance_id=reference_dataset_id
     )
@@ -685,13 +693,15 @@ def fit_train_references(
             )
         )
     )
-    passenger_rows = stream_passenger_routes(coupon_paths, year=year)
-    # M5 year-parameterization (user-approved 2026-09-30): pass the row-stamped
-    # instance id through; 2019 keeps the legacy "data2_2019" identity.
+    passenger_rows = stream_passenger_routes(
+        coupon_paths, year=year, dataset_instance_id=dataset_instance_id
+    )
+    # The passenger reference follows the same construction context as the row
+    # references (legacy default keeps the year-keyed identity).
     passenger = build_data2_passenger_reference(
         passenger_rows,
         fit_period=fit_period,
-        dataset_instance_id="data2_2019" if year == 2019 else "data2_2017_2022",
+        dataset_instance_id=reference_dataset_id,
         rule_id=DATA2_PASSENGER_REFERENCE_H1,
     )
     # M5: the per-year chain uses the year's own train-frozen taxi reference

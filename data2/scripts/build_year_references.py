@@ -214,8 +214,11 @@ def build_year(year: int, output_root: Path | None = None,
 
     # ---- 2) fit_train_references: turnaround + exposure + passenger (Y-H1)
     log(f"{year}: fit_train_references (turnaround/exposure/passenger)")
+    # Pass the construction context explicitly; the same identity stamps the
+    # rows above, so year 2019 no longer collides with the legacy default.
     references = fit_train_references(rows, root=REPO,
-                                      fit_period=f"{year}-H1", year=year)
+                                      fit_period=f"{year}-H1", year=year,
+                                      dataset_instance_id=INSTANCE_ID)
 
     # ---- 3) fit_passenger_consequence_references: T-100 + connection share
     log(f"{year}: fit_passenger_consequence_references (T100 MONTH<=6, DB1B Q1+Q2)")
