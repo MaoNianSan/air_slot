@@ -1,10 +1,10 @@
 # Cloud multi-year execution readiness
 
-**Status date:** 2026-10-13 (Asia/Hong_Kong)  
-**Branch:** `v2/paper-primary`  
-**P0 scientific baseline:** `e278ac55871dd3208bbd9a55e24b0d7a94314c96`  
-**Implementation commit:** `18110df735fd9785492114e3850f14c6d7046212`  
-**Scientific contracts:** `JATM_F_CONTINUITY_B_V1`; `JATM_STAGE2_SIGNED_T_IB_V1`  
+**Status date:** 2026-10-13 (Asia/Hong_Kong)
+**Branch:** `v2/paper-primary`
+**P0 scientific baseline:** `e278ac55871dd3208bbd9a55e24b0d7a94314c96`
+**Implementation commit:** `18110df735fd9785492114e3850f14c6d7046212`
+**Scientific contracts:** `JATM_F_CONTINUITY_B_V1`; `JATM_STAGE2_SIGNED_T_IB_V1`
 **Final-Test access count:** `0`
 
 ## Readiness gates
