@@ -3,10 +3,10 @@
 **P0_INDEPENDENT_REVIEW_PASSED / SIX_YEAR_EXECUTION_BLOCKED**
 
 P0 was independently accepted at scientific code baseline
-`e278ac55871dd3208bbd9a55e24b0d7a94314c96`. The 2026-10-12 cleanup approval
-authorizes documentation and design only. It does not authorize uploading,
-connecting to a server, benchmarking, training or launching an annual experiment.
-The commands below remain future execution drafts. No LLM is required.
+`e278ac55871dd3208bbd9a55e24b0d7a94314c96`. A source-only upload package has
+been built and checksum-verified; it does not include the 14.73 GiB annual input
+closure. No cloud connection, transfer, Linux validation, benchmark, training or
+formal annual experiment has been performed in this preparation stage. No LLM is required.
 See [current status and retained limitations](CLEANUP_DOC_ONLY_STATUS.md).
 The original handoff/review packages remain historical evidence, including their
 then-current pending statuses. Linux, Docker, systemd, CUDA and container
@@ -37,6 +37,10 @@ cloud_schedule -> e4_shared_aggregate (only after all six annual checks pass)
 
 `shared_run` is the per-year computational entry invoked by the worker; calling
 it directly is not a substitute for the worker's complete annual input gate.
+Evaluation completion uses separate content-validated stage receipts for
+Year-local E1, FIXED_COMMON E1, and E2/E3; completed valid stages are skipped
+when the same source identity is resumed. The final year record is published
+only when every required stage receipt is valid.
 E4 consumes annual results and does not rerun PRE/M1/M2/M3. A zero worker exit
 code or an exhausted queue alone does not establish six-year completion.
 
@@ -58,8 +62,8 @@ cloud storage. Preserve repository-relative paths. Required annual roots are:
 
 - artifacts/models/m1/YEAR_Y: both N=4096 checkpoints, manifests and annual TAIL_REFERENCE_V1/MANIFEST.json;
 - artifacts/models/pre/PRE_MULTIYEAR_V1/Y: PRE manifests, H1 taxi/turnaround references;
-- artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/Y/M2_REFERENCES;
-- artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES;
+- artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_B_V1/Y/M2_REFERENCES;
+- artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_B_V1/2017/M2_REFERENCES;
 - data2/reports/cohort_size_stability/Y/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl;
 - data2/reports/paper_formal/Y/Y/M2_TRAIN_HEADROOM_SUMMARY.json;
 - existing configuration; annual authorities do not load the legacy Phase-5 base cache;
@@ -108,15 +112,29 @@ CI, mechanism, fixed-common and provenance outputs are checked. No Test command 
 
 ## Current inputs and no-LLM configuration
 
-The local transfer manifest records 439 files, 14.73 GiB and 21 missing required
-paths. 2018 lacks its annual tail. 2019--2022 lack both annual models, manifests
-and tails. The worker cannot train missing models. Six-year execution is blocked.
+The local transfer manifest records 439 files (15,815,908,998 bytes; 14.73 GiB)
+and 21 missing required paths. Current disk checks confirm: 2017/2018 each have
+both annual N=4096 M1 models and manifests; only 2017 has its approved Train tail.
+2019--2022 have no annual M1 checkpoints/manifests and no tails. Legacy A
+Year-local bundles exist for all six years and the legacy 2017 Fixed Common
+bundle exists, but all six B Year-local bundles and the B Fixed Common bundle
+are missing. The worker never trains M1. Six-year execution is blocked.
+`cloud_train_models` provides a separate M1 training command that requires a
+year-specific `USER_APPROVED` record and refuses to overwrite an existing model;
+the scheduler and worker do not call it. The transfer manifest predates the B
+reference outputs and must be regenerated after those Train references exist.
+Its companion TRANSFER_PROGRESS currently reports 429 files / 15,621,529,373
+bytes, which differs from the 439-entry manifest and must be reconciled before
+data transfer. Neither value records a completed network transfer.
 Use repository.files.txt plus overlay.files.txt, placing legal-date weather overlay
 files at their manifest destination paths. Do not replace them with full-year files.
 
 After human review and a separate migration authorization, the prepared commands are:
 
 ```bash
+# For the source-only archive (no .git directory), bind the reviewed package
+# commit before running; use the exact values in PACKAGE_MANIFEST.json.
+python deploy/jatm_cloud/prepare_source_snapshot.py --root . --git-head <40-hex-head> --source-archive-sha256 sha256:<64-hex-sha256>
 bash deploy/jatm_cloud/bootstrap_cpu.sh
 bash deploy/jatm_cloud/verify_inputs.sh /path/to/DATA_TRANSFER_MANIFEST.json
 # Inspect every annual gate status; the report-writing CLI is not a PASS exit gate.

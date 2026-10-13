@@ -14,6 +14,18 @@ import psutil
 from .shared_store import SharedStore, atomic_json, digest
 
 
+def process_usage(process):
+    """Return portable RSS/private-memory and cumulative CPU observations."""
+    memory=process.memory_info()
+    try:full=process.memory_full_info()
+    except (AttributeError,psutil.Error):full=memory
+    private=getattr(memory,'private',None)
+    if private is None:private=getattr(full,'uss',0)
+    cpu=process.cpu_times()
+    return dict(rss_bytes=int(memory.rss),private_bytes=int(private or 0),
+                cpu_seconds=float(cpu.user+cpu.system))
+
+
 def schedule(args):
     with SharedStore(args.output_root, {'kind':'ANNUAL_SCHEDULER'}).writer():
         return _schedule(args)
@@ -63,20 +75,23 @@ def _schedule(args):
             log=(out/'worker.log').open('a',encoding='utf-8')
             process=subprocess.Popen(command,env=env,stdout=log,stderr=subprocess.STDOUT,cwd=Path(__file__).resolve().parents[2],
                 creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
-            active[year]=dict(process=process,log=log,started=time.monotonic(),peak_rss=0,peak_private=0,command=command)
+            active[year]=dict(process=process,log=log,started=time.monotonic(),peak_rss=0,
+                peak_private=0,cpu_seconds=0,command=command)
             attempts[year]+=1
             free-=args.memory_per_worker_gib
         for year,item in list(active.items()):
             process=item['process']
             try:
-                memory=psutil.Process(process.pid).memory_info()
-                item['peak_rss']=max(item['peak_rss'],memory.rss)
-                item['peak_private']=max(item['peak_private'],getattr(memory,'private',0))
-            except psutil.NoSuchProcess:pass
+                usage=process_usage(psutil.Process(process.pid))
+                item['peak_rss']=max(item['peak_rss'],usage['rss_bytes'])
+                item['peak_private']=max(item['peak_private'],usage['private_bytes'])
+                item['cpu_seconds']=max(item['cpu_seconds'],usage['cpu_seconds'])
+            except (psutil.NoSuchProcess,psutil.AccessDenied):pass
             if process.poll() is not None:
                 item['log'].close()
                 outcome=dict(year=year,exit_code=process.returncode,wall_seconds=time.monotonic()-item['started'],
                     peak_rss_bytes=item['peak_rss'],peak_private_bytes=item['peak_private'],command=item['command'],
+                    cpu_seconds=item['cpu_seconds'],
                     run_manifest=None if not (root/str(year)/'RUN_MANIFEST.json').is_file() else
                         json.loads((root/str(year)/'RUN_MANIFEST.json').read_text()),attempt=attempts[year])
                 finished.append(outcome)
@@ -86,7 +101,7 @@ def _schedule(args):
                     queue.append(year)
                 del active[year]
         status=dict(active={str(y):dict(pid=i['process'].pid,peak_rss_bytes=i['peak_rss'],peak_private_bytes=i['peak_private'],
-            elapsed_seconds=time.monotonic()-i['started']) for y,i in active.items()},
+            cpu_seconds=i['cpu_seconds'],elapsed_seconds=time.monotonic()-i['started']) for y,i in active.items()},
             pending=list(queue),finished=finished,available_gib=psutil.virtual_memory().available/(1024**3),
             elapsed_seconds=time.monotonic()-start,final_test_access_count=0,
             status='RUNNING' if active or queue else 'BENCHMARK_OR_DEVELOPMENT_EXECUTION_FINISHED')

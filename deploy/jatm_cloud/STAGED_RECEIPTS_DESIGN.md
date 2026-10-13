@@ -1,11 +1,12 @@
-# C07 independent implementation and acceptance proposal
+# C07 staged receipt design and implementation record
 
-**DESIGN_ONLY / IMPLEMENTATION_NOT_AUTHORIZED**, 2026-10-12.
+Design recorded 2026-10-12; bounded implementation added 2026-10-13.
 Scientific baseline: `e278ac55871dd3208bbd9a55e24b0d7a94314c96`.
 **P0_INDEPENDENT_REVIEW_PASSED / SIX_YEAR_EXECUTION_BLOCKED**.
-This document defines a future bounded reliability task. It changes no Python,
-receipt, cache, scientific output or statistical estimand. See
-[current authority and limits](CLEANUP_DOC_ONLY_STATUS.md).
+The proposal below is retained as design history. The implementation scope and
+acceptance evidence are summarized in `CLOUD_MULTIYEAR_EXECUTION_READINESS.md`.
+No scientific output or statistical estimand changed. See [current authority
+and limits](CLEANUP_DOC_ONLY_STATUS.md).
 
 ## 1. Problem and scope
 
@@ -240,20 +241,23 @@ Record exact input hashes, code version, evaluator call counts, recomputed stage
 reused stages and checks. Any approximation or scientific-contract change requires
 a separate decision, not a modified tolerance to pass acceptance.
 
-## 9. Separate future implementation/review gates
+## 9. Original implementation/review plan (historical)
 
-1. Obtain explicit C07 implementation authorization for the final schema, output
-   allowlists, dependency identity and legacy strategy. This document is the
-   approval candidate, not that authorization.
-2. Implement in an isolated, narrowly scoped commit while preserving baseline
-   source/receipts and active-job safety. Do not run authorized old jobs with
-   hot-replaced modules. Update source-identity coverage for any new helper.
-3. Run only affected contract/recovery cases plus one representative real-data
-   comparison; capture logs, scientific-field comparisons, immutable source and
-   input hashes, and evidence of zero repeated completed-stage evaluator calls.
-4. Submit code, exact commit/diff, outputs and limitations for independent review.
-   Rollback selects the retained baseline code/output namespace; do not rewrite
-   old caches. No files are deleted or moved to implement rollback.
-5. Linux behavior/performance, annual input completion, P1 science and formal
-   Development execution remain separately authorized stages. The present
-   documentation phase stops at CLEANUP_DOC_ONLY_COMPLETE_REVIEW_PENDING.
+The following implementation was completed within the user's later C07
+authorization on 2026-10-13:
+
+- `exp/jatm_s34/shared_run.py` stores immutable attempt receipts and atomically
+  selected current pointers for `E1_YEAR_LOCAL`, `E1_FIXED_COMMON`, and `E2_E3`.
+- Each stage binds the current full evaluation identity, stage dependencies,
+  output file paths, sizes and SHA-256 hashes, summary JSON and zero protected
+  Test access. Fixed-common receipts additionally bind the fixed-common cache
+  and score manifests.
+- Resume skips a valid completed stage. A missing, corrupt, mismatched or
+  incomplete receipt causes only that stage to be recalculated. The final
+  `EVALUATION_COMPLETE.json` is published after all three receipts validate.
+- The prior combined receipt without stage receipts is not treated as proof of
+  the new stage-completion contract. Existing historical outputs remain intact.
+- `shared_run.py` participates in the algorithm identity so receipt-orchestration
+  changes invalidate current receipts conservatively.
+- Focused synthetic interruption and output-corruption tests pass. Full-year
+  and Linux acceptance have not been run.

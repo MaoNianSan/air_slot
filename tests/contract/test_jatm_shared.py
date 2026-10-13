@@ -32,7 +32,7 @@ def test_commits_reject_corruption_and_identity_drift(tmp_path):
     with pytest.raises(ValueError,match='CORRUPT'):store.read('c')
 
 
-def test_evaluation_resume_requires_identity_and_output_hashes(tmp_path):
+def test_legacy_combined_receipt_alone_does_not_complete_staged_evaluation(tmp_path):
     from exp.jatm_s34.shared_run import evaluation_is_current
     from exp.jatm_s34.shared_store import atomic_json,file_hash
     names=('E1/E1_PAIRED_SUMMARY.json','E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json','E2_E3/E2_E3_SUMMARY.json')
@@ -40,7 +40,7 @@ def test_evaluation_resume_requires_identity_and_output_hashes(tmp_path):
     identity={'replicates':2000,'algorithm':'a'}
     atomic_json(tmp_path/'EVALUATION_COMPLETE.json',dict(identity=identity,
         outputs={name:file_hash(tmp_path/name) for name in names}))
-    assert evaluation_is_current(tmp_path,identity)
+    assert not evaluation_is_current(tmp_path,identity)
     assert not evaluation_is_current(tmp_path,dict(identity,replicates=25))
     atomic_json(tmp_path/names[0],{'complete':False})
     assert not evaluation_is_current(tmp_path,identity)
