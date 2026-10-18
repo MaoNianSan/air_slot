@@ -1,0 +1,1316 @@
+{
+  "schema_version": "M5B_EVAL_PASS_V1",
+  "status": "PASS",
+  "pass_id": "2020_fitN256",
+  "year": 2020,
+  "checkpoint": "/data/airslot/worktree/artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N256/M1_N.pt",
+  "checkpoint_hash": "sha256:5abbe7cc39d731b6961a6dba2e3e365a5a16aa980a47a972866e3c499b822e9f",
+  "case_count": 4096,
+  "node_count": 65715,
+  "bound_node_count": 65715,
+  "evaluation_E": 4096,
+  "shards": [
+    {
+      "shard": "shard_00000.npz",
+      "nodes": 256,
+      "hash": "sha256:9853d9f5ed08bdab4aff6eb515938de02e89651474e329de08ae20d68487b489"
+    },
+    {
+      "shard": "shard_00001.npz",
+      "nodes": 256,
+      "hash": "sha256:e3c4e83bc5c8439b02efa8b93e6eccbb148106c78b6abb17a5c20979ab4e65bf"
+    },
+    {
+      "shard": "shard_00002.npz",
+      "nodes": 256,
+      "hash": "sha256:d1674f76fbce98df8d53a9a9e1b7d7da17aa233dbc223840d33334157fbf8afc"
+    },
+    {
+      "shard": "shard_00003.npz",
+      "nodes": 256,
+      "hash": "sha256:90f99e01b64d33f64ea318cc8e12a73f13a4a3e35e30f5a1f07e01070b55b0a7"
+    },
+    {
+      "shard": "shard_00004.npz",
+      "nodes": 256,
+      "hash": "sha256:d3ad4d7690eb777a2153971ccdbf207ca3d5b0b23a6b3125b3bdb076394b5558"
+    },
+    {
+      "shard": "shard_00005.npz",
+      "nodes": 256,
+      "hash": "sha256:07fa7364ae95c4021d03c912709cf0e142a54dc41020d4e2d8e9c46fb84d457e"
+    },
+    {
+      "shard": "shard_00006.npz",
+      "nodes": 256,
+      "hash": "sha256:2a97147c0269d12adc2852560978dbd8651d7b8a19df074d161774a9908c92bf"
+    },
+    {
+      "shard": "shard_00007.npz",
+      "nodes": 256,
+      "hash": "sha256:6ba36d7884038a949f7c933a19007aeb9bad7eb9da308f942a193c0abdc23261"
+    },
+    {
+      "shard": "shard_00008.npz",
+      "nodes": 256,
+      "hash": "sha256:8ab84617b7f7be018f8f218aa2b8c211108f12de1381fdd4109fba134d9c4955"
+    },
+    {
+      "shard": "shard_00009.npz",
+      "nodes": 256,
+      "hash": "sha256:a6543c08cd9130976932347ffc18a3f77ff94849d7589cd0e2203ac156f48e11"
+    },
+    {
+      "shard": "shard_00010.npz",
+      "nodes": 256,
+      "hash": "sha256:548da03b9ea5d84965262a4b02fe89958bf2bb5746606fe858c2c1c75d1e36c4"
+    },
+    {
+      "shard": "shard_00011.npz",
+      "nodes": 256,
+      "hash": "sha256:942ae7a2ea9c3cacdeb893195f9c4c276dbd62a9d3cf5f9444fb7fb9d1850404"
+    },
+    {
+      "shard": "shard_00012.npz",
+      "nodes": 256,
+      "hash": "sha256:47ca6d863de53ed4f588735416c9a3a7c983d6523c72b8b0975775e296797b9d"
+    },
+    {
+      "shard": "shard_00013.npz",
+      "nodes": 256,
+      "hash": "sha256:af628ecbc38bb899e2d2165c3f546c20f3fcbdc0ab490b042ccb880250dfffe9"
+    },
+    {
+      "shard": "shard_00014.npz",
+      "nodes": 256,
+      "hash": "sha256:f385822f079b9d7ccdba1f06b05aeb86566cbca61c5be97e0edfc35b809cbfe0"
+    },
+    {
+      "shard": "shard_00015.npz",
+      "nodes": 256,
+      "hash": "sha256:72bf6f46961bdfd3a67ff238bc360c236db404320312aed985df8cfb698c1961"
+    },
+    {
+      "shard": "shard_00016.npz",
+      "nodes": 256,
+      "hash": "sha256:f2121d8e0aac29d9f67054f93b1db13d6cff3260e0842a95f7deab4613cc5507"
+    },
+    {
+      "shard": "shard_00017.npz",
+      "nodes": 256,
+      "hash": "sha256:5f9cffd936f47c7460f2339858db85bef0b4ca7c528c34ce076ca8f9d31afe7a"
+    },
+    {
+      "shard": "shard_00018.npz",
+      "nodes": 256,
+      "hash": "sha256:5cd5778e2b6cb0c3e1af4fd689ab03ad53140c97b682d170b2e76a36629d4004"
+    },
+    {
+      "shard": "shard_00019.npz",
+      "nodes": 256,
+      "hash": "sha256:fe8e00c02a7aa3f26e5c2db2dcd3c69fd92d258e141d1cac184efa95be92e828"
+    },
+    {
+      "shard": "shard_00020.npz",
+      "nodes": 256,
+      "hash": "sha256:9a92ec87d91acdb9939f7ef7680b9815482a60e4baf45fcd6e328d3d4aafbd3a"
+    },
+    {
+      "shard": "shard_00021.npz",
+      "nodes": 256,
+      "hash": "sha256:a84e981781afaed7c0cbc0175db50cd936b287618c03976983c590f1126f31ff"
+    },
+    {
+      "shard": "shard_00022.npz",
+      "nodes": 256,
+      "hash": "sha256:01151ca3fea4ce63998c3acaa069909874475137479ce165d6a37d72ef03c871"
+    },
+    {
+      "shard": "shard_00023.npz",
+      "nodes": 256,
+      "hash": "sha256:8f69f0b587f6b4cfd17e772de65779ef9d827e79197a80855493d617ba6db3da"
+    },
+    {
+      "shard": "shard_00024.npz",
+      "nodes": 256,
+      "hash": "sha256:2f2d7e8cdfde498262db05a1c700c80e1a7c6cb3c341d6cc925473ecb09edf6d"
+    },
+    {
+      "shard": "shard_00025.npz",
+      "nodes": 256,
+      "hash": "sha256:160ad48807a6f8e0f4f70a7f0ce0d992a2c2b79cebc5d0ba8c962af8afc11cd1"
+    },
+    {
+      "shard": "shard_00026.npz",
+      "nodes": 256,
+      "hash": "sha256:d33960a937906c6cf574a7f31c8016924ffaa342ea1ef31c4fd9b74a01c97d9c"
+    },
+    {
+      "shard": "shard_00027.npz",
+      "nodes": 256,
+      "hash": "sha256:fe0f97cb3dbb19b4eaae85a84d7b15a4ef679db49a9d721659a74a8f9f7c4f03"
+    },
+    {
+      "shard": "shard_00028.npz",
+      "nodes": 256,
+      "hash": "sha256:88aaff69f00d9b705cb925582d8257a82222746d454229c4e5871320356daba6"
+    },
+    {
+      "shard": "shard_00029.npz",
+      "nodes": 256,
+      "hash": "sha256:a7001dd84942ce00215ab524dc3f250c2a3ff1c5408de91d43d4e787376735c1"
+    },
+    {
+      "shard": "shard_00030.npz",
+      "nodes": 256,
+      "hash": "sha256:af19a0a298e0e852d24c973b292b67f07edcc87fa4539d38a90df2044799f731"
+    },
+    {
+      "shard": "shard_00031.npz",
+      "nodes": 256,
+      "hash": "sha256:aaf6106e7ef54c5db4264c59b7bf519a358861fcfc422a159f29a87ea6a52371"
+    },
+    {
+      "shard": "shard_00032.npz",
+      "nodes": 256,
+      "hash": "sha256:c350efd7ca141039c96a707f2d719ccc9c6d6cb851d8004264cf00d949814202"
+    },
+    {
+      "shard": "shard_00033.npz",
+      "nodes": 256,
+      "hash": "sha256:b7182b6a8118f7f1c48d0854cb974dc5a6a1c041dee7e414d66c0ad3d834beda"
+    },
+    {
+      "shard": "shard_00034.npz",
+      "nodes": 256,
+      "hash": "sha256:a3e92109e583990f5c868e497b9fd4ef2853e2294b80ee023e01b57ff6dabc69"
+    },
+    {
+      "shard": "shard_00035.npz",
+      "nodes": 256,
+      "hash": "sha256:e7c0b6c744c40550e40276875541bf9a51e07d3a401ac5ce89e200c2851b4145"
+    },
+    {
+      "shard": "shard_00036.npz",
+      "nodes": 256,
+      "hash": "sha256:68ddc268a411425862c2cdbe0e7af4e4eccdc39c831d53c849f1d072f2583f64"
+    },
+    {
+      "shard": "shard_00037.npz",
+      "nodes": 256,
+      "hash": "sha256:0ce982be26218a77dc5562ae0cc00c609caf1b3463a55a8191de254c17746452"
+    },
+    {
+      "shard": "shard_00038.npz",
+      "nodes": 256,
+      "hash": "sha256:58e6b52f194499a5a00e4523c7275453417f9b3dc18152a23fcd9734d570ad62"
+    },
+    {
+      "shard": "shard_00039.npz",
+      "nodes": 256,
+      "hash": "sha256:0092f2d489576dc9856ba9e73acb6fc627b1da2a238944823c2a91916777002e"
+    },
+    {
+      "shard": "shard_00040.npz",
+      "nodes": 256,
+      "hash": "sha256:242c46a4e021c9175f7e776828d25993aeafc5ac795cb097289fbb68019d0cf1"
+    },
+    {
+      "shard": "shard_00041.npz",
+      "nodes": 256,
+      "hash": "sha256:a9ad71cf19058fb1682c6cf750ff2c8b7f212586605541e6c0c8d89335bfa0fb"
+    },
+    {
+      "shard": "shard_00042.npz",
+      "nodes": 256,
+      "hash": "sha256:8b6d9eaa236943ba77dbe58d4fb071b6e50f13032b640c50ac03a4af96a86d67"
+    },
+    {
+      "shard": "shard_00043.npz",
+      "nodes": 256,
+      "hash": "sha256:16d3a023314871c064df0d45a6dcf1a24be51b2b94202178dce628e6073b2c8d"
+    },
+    {
+      "shard": "shard_00044.npz",
+      "nodes": 256,
+      "hash": "sha256:8fa82c152cb64ec7ccf345541365196306f02d87ca01582e9e8b4d96664d6fb5"
+    },
+    {
+      "shard": "shard_00045.npz",
+      "nodes": 256,
+      "hash": "sha256:5e07bf991f1780361c6c7332006b77df86341f50dc79a098eb5bfe223fbcea9e"
+    },
+    {
+      "shard": "shard_00046.npz",
+      "nodes": 256,
+      "hash": "sha256:5de03e867bdc9374d1ed62bda9b2a0d7e90b89ae6cdb6ec0d3ca06151161641b"
+    },
+    {
+      "shard": "shard_00047.npz",
+      "nodes": 256,
+      "hash": "sha256:daa2116cba82655c9f458389736c6f4ca3b0deda9cae885828cdf3e88ad1b448"
+    },
+    {
+      "shard": "shard_00048.npz",
+      "nodes": 256,
+      "hash": "sha256:5e8ee0e5b8f5c2f2d53b3ea183cf6239ac5eddae0979f75dae410a204597de7d"
+    },
+    {
+      "shard": "shard_00049.npz",
+      "nodes": 256,
+      "hash": "sha256:29ef4c903e549a0b4eac5d5e76e705fb6829c1fbfd8b883d70f89ad7e8c880c3"
+    },
+    {
+      "shard": "shard_00050.npz",
+      "nodes": 256,
+      "hash": "sha256:a25be311b8dcb8aeb51f5439aa1a388dafbd8d1dea4e2491f4477f0b1ceae1d7"
+    },
+    {
+      "shard": "shard_00051.npz",
+      "nodes": 256,
+      "hash": "sha256:b6b6e476c2096562eb30dc3e9dd885c0c57fce7a9ab1a956fa73d3bafb2900a7"
+    },
+    {
+      "shard": "shard_00052.npz",
+      "nodes": 256,
+      "hash": "sha256:96378338a22cbf5c13f977fe3f2a08e37a77deddc596a0dcb6cd31473e91c081"
+    },
+    {
+      "shard": "shard_00053.npz",
+      "nodes": 256,
+      "hash": "sha256:2eaad9cf3ebc3c61856012ec795132dc430f3b2ca526f542a00a05f517822825"
+    },
+    {
+      "shard": "shard_00054.npz",
+      "nodes": 256,
+      "hash": "sha256:f54a357571652703cefd0870e971e8ccd0171b14bff7d3abfd1fe7adafe34f1e"
+    },
+    {
+      "shard": "shard_00055.npz",
+      "nodes": 256,
+      "hash": "sha256:04d2754dc0950cd8ec86c932588e84d5ede18e1d7665f2f3b93f50736adf33bd"
+    },
+    {
+      "shard": "shard_00056.npz",
+      "nodes": 256,
+      "hash": "sha256:0ad02231b6e918dc6e3e55c967d6b3c75771ea864443519a214a4773aa95002a"
+    },
+    {
+      "shard": "shard_00057.npz",
+      "nodes": 256,
+      "hash": "sha256:af56e5eee2a7838528c394102e160235eeee088ee0b64aab7f8ec86493a5c883"
+    },
+    {
+      "shard": "shard_00058.npz",
+      "nodes": 256,
+      "hash": "sha256:a2fcaed1c4131004393d17bd4f1faac2835a6837cea3025c77624b1218c67b9c"
+    },
+    {
+      "shard": "shard_00059.npz",
+      "nodes": 256,
+      "hash": "sha256:87414331773c0688e2b672291aa052d5ffee5b3259d0209d54ed23f4cd4fede8"
+    },
+    {
+      "shard": "shard_00060.npz",
+      "nodes": 256,
+      "hash": "sha256:00846ee43923e26e2ffaaaa6c7dd61dfe6291717a95cc229b56d480b0a2ed1dd"
+    },
+    {
+      "shard": "shard_00061.npz",
+      "nodes": 256,
+      "hash": "sha256:0c47be68f8cbe14272c754af705ec35b620810ad80379774b000ad16792dbd27"
+    },
+    {
+      "shard": "shard_00062.npz",
+      "nodes": 256,
+      "hash": "sha256:0917426734732f714fef91770a7996d37eb0125c5337f70a619c6152f7583bea"
+    },
+    {
+      "shard": "shard_00063.npz",
+      "nodes": 256,
+      "hash": "sha256:e4883a7209d8a4af9d389144aaa7a671422ded92030e3f17141c46ad29fbcf64"
+    },
+    {
+      "shard": "shard_00064.npz",
+      "nodes": 256,
+      "hash": "sha256:3e70c349c55ef88d2e4a8edcdb37329cd6d2bf8f794901a3802fe7303acdd6b7"
+    },
+    {
+      "shard": "shard_00065.npz",
+      "nodes": 256,
+      "hash": "sha256:d8e5b3ba2908f5df7d62b1e090c16f8fc98fb01c59d9af6059f7eeab70590bff"
+    },
+    {
+      "shard": "shard_00066.npz",
+      "nodes": 256,
+      "hash": "sha256:888d6217d6cb584be4bc01bb376013e6b486c61731a5e2e2469ded3fc563c519"
+    },
+    {
+      "shard": "shard_00067.npz",
+      "nodes": 256,
+      "hash": "sha256:e43aadb733f72a496fc770616a165ca5ff5867f11af685961af9f5395400cf26"
+    },
+    {
+      "shard": "shard_00068.npz",
+      "nodes": 256,
+      "hash": "sha256:556dd0260e2d017d7875df786b3ba616575a84fe8b88417f82d66f06d293503b"
+    },
+    {
+      "shard": "shard_00069.npz",
+      "nodes": 256,
+      "hash": "sha256:d93ba9bcf7b8ef3a8877b96e5568eee8dd5d4d33017871e0379d19474906c521"
+    },
+    {
+      "shard": "shard_00070.npz",
+      "nodes": 256,
+      "hash": "sha256:327447708812bef6f7562b10f0e311c768a5db8d90f76cdf8aa30b9ccbdbfe18"
+    },
+    {
+      "shard": "shard_00071.npz",
+      "nodes": 256,
+      "hash": "sha256:c9a72015daf4404ca1b6622a013de63791f787f6276f6eefdf3cb9fdd472211f"
+    },
+    {
+      "shard": "shard_00072.npz",
+      "nodes": 256,
+      "hash": "sha256:3bab51716661de4705218d7b2d37bd31320ea7fb5bb616c3bb8b8228e89cc976"
+    },
+    {
+      "shard": "shard_00073.npz",
+      "nodes": 256,
+      "hash": "sha256:49634500b8e938a58351b545a99ca966e6006eb6a691057772b84b343ef43f6a"
+    },
+    {
+      "shard": "shard_00074.npz",
+      "nodes": 256,
+      "hash": "sha256:d8bea6aff2e852ac95ea98330d5681d375f61e81823eab40a34532290f7ca029"
+    },
+    {
+      "shard": "shard_00075.npz",
+      "nodes": 256,
+      "hash": "sha256:c40a5bbd494cb80704a89cdc275f7408b7f6fb10e211e81dcbcbd304abdc5588"
+    },
+    {
+      "shard": "shard_00076.npz",
+      "nodes": 256,
+      "hash": "sha256:2e02d00774c7d374fa1fc692a8e8a4aefa3d431477c4d410cc712e79bbaf2141"
+    },
+    {
+      "shard": "shard_00077.npz",
+      "nodes": 256,
+      "hash": "sha256:4d3bc9131d71d8118ab92bd4f04b32a56e5aeb7538486e228cf41cab225be90e"
+    },
+    {
+      "shard": "shard_00078.npz",
+      "nodes": 256,
+      "hash": "sha256:679f7ddb3f00d67aeec68532e9f3c1a096ded18f8c5acd8051eb7ea8a220b886"
+    },
+    {
+      "shard": "shard_00079.npz",
+      "nodes": 256,
+      "hash": "sha256:ff92d8b49534c39396806a60c4b8a6a3386ca73c30b85ff143905af1a8f4d19b"
+    },
+    {
+      "shard": "shard_00080.npz",
+      "nodes": 256,
+      "hash": "sha256:e2f19ce6dca393eeba189e18ef689dec46ad9842bfd3bfcc6cd73cc0a6e896d4"
+    },
+    {
+      "shard": "shard_00081.npz",
+      "nodes": 256,
+      "hash": "sha256:228763ac0d2a8db7a967984e65766aba6cdc0b7035ea22dc6be8c43fce928cd9"
+    },
+    {
+      "shard": "shard_00082.npz",
+      "nodes": 256,
+      "hash": "sha256:841d2e4b67c9f1e853d75c0d4890d17c84be30477c0baa98cc176e4d034b2b7c"
+    },
+    {
+      "shard": "shard_00083.npz",
+      "nodes": 256,
+      "hash": "sha256:d6c4ed0c1c7dc7045ee894fdd0ee17a30d6a9eb151c8ddbf08efae8369cd4dce"
+    },
+    {
+      "shard": "shard_00084.npz",
+      "nodes": 256,
+      "hash": "sha256:948b0f99cacf38218ca1a870d26532616aa3985020d47fbcebe68c8788f8d26b"
+    },
+    {
+      "shard": "shard_00085.npz",
+      "nodes": 256,
+      "hash": "sha256:228e51e0ff715616efb23f798c31cb22f829126f1b240884bf252fe7f75f5183"
+    },
+    {
+      "shard": "shard_00086.npz",
+      "nodes": 256,
+      "hash": "sha256:e5c9801426f72f1e3a5e41089da2e45de19e1b41f7e8c4df2960cb7dc2fbd8c7"
+    },
+    {
+      "shard": "shard_00087.npz",
+      "nodes": 256,
+      "hash": "sha256:e7132e1f95aff2c624615698606ac1e905febe6ae4f5059e419a3213a539b741"
+    },
+    {
+      "shard": "shard_00088.npz",
+      "nodes": 256,
+      "hash": "sha256:2ef1e592ec86fbbf3b33929d8d087396b001db9fcb4b885d68150a518a13bcb1"
+    },
+    {
+      "shard": "shard_00089.npz",
+      "nodes": 256,
+      "hash": "sha256:328f50359bc19de4b0627ad55090dbb6950c828cac27b6e03ac1aced70d6e59f"
+    },
+    {
+      "shard": "shard_00090.npz",
+      "nodes": 256,
+      "hash": "sha256:62c6cef01699a8a9f57dfecfc64ba0b8a88b71ee87ab8c50083f637479b24a6a"
+    },
+    {
+      "shard": "shard_00091.npz",
+      "nodes": 256,
+      "hash": "sha256:09f2ba7d08447807417253d4be66082e58b0b2a722fc7f7154b9a8d4cb7b9ca6"
+    },
+    {
+      "shard": "shard_00092.npz",
+      "nodes": 256,
+      "hash": "sha256:5144c8ec5b46a55322a80045b3028fc0bcb9b5f4ef3ed9adac48b87eacb6286a"
+    },
+    {
+      "shard": "shard_00093.npz",
+      "nodes": 256,
+      "hash": "sha256:92785b0fec6d6789a4e79a67e040329a58977624c6daf2e6b5128724f1ad5d5d"
+    },
+    {
+      "shard": "shard_00094.npz",
+      "nodes": 256,
+      "hash": "sha256:bf44e881b6d3ce8635a7341a0ad64a3595ce29ccfb289875c2c02eeba482c7a4"
+    },
+    {
+      "shard": "shard_00095.npz",
+      "nodes": 256,
+      "hash": "sha256:04b5883b96d6b01656b441f36108519153b0df48f7fcc34975306cdcc0c21039"
+    },
+    {
+      "shard": "shard_00096.npz",
+      "nodes": 256,
+      "hash": "sha256:f047b337d1d8e582b89c641f457bfe96bce08b99d3559b7e1318596d2ca572ab"
+    },
+    {
+      "shard": "shard_00097.npz",
+      "nodes": 256,
+      "hash": "sha256:f2c257c73997b5bd0a448963fad9085fdc9fdb1909aa4e83ae3b259613677f5b"
+    },
+    {
+      "shard": "shard_00098.npz",
+      "nodes": 256,
+      "hash": "sha256:047e6b50f6fe47e7e5258d1cf8630681694ec2b5480bc3be3866a6d0c9845e6b"
+    },
+    {
+      "shard": "shard_00099.npz",
+      "nodes": 256,
+      "hash": "sha256:317f8e04d4b842d86d601817731a5292498222c54a6d0f8710cbf51ae25e2abc"
+    },
+    {
+      "shard": "shard_00100.npz",
+      "nodes": 256,
+      "hash": "sha256:55c56ae1edb2bbf285a20193d028d2cd2c7e309aee0a8af04838c24b8e4bbb37"
+    },
+    {
+      "shard": "shard_00101.npz",
+      "nodes": 256,
+      "hash": "sha256:a569b531a163e2669811ca5968ccb37846e1c7771f9e5483f21d9656be211c3c"
+    },
+    {
+      "shard": "shard_00102.npz",
+      "nodes": 256,
+      "hash": "sha256:09e1036e5a5ad6b8226c105ec93c2751917abc937cc96fe2459ecd402a18b22d"
+    },
+    {
+      "shard": "shard_00103.npz",
+      "nodes": 256,
+      "hash": "sha256:0d7ddc769d45a4fb75d0b66cd51fc3cae189425bfa4440a5bb3354caa9e94523"
+    },
+    {
+      "shard": "shard_00104.npz",
+      "nodes": 256,
+      "hash": "sha256:e4105392b466017a48216a414b67e42e0d0a7e5a7202d14b715874d27016dad1"
+    },
+    {
+      "shard": "shard_00105.npz",
+      "nodes": 256,
+      "hash": "sha256:210dc1252dd4ec18afa1ec60a9260318894565210e7b934793be352143eac23f"
+    },
+    {
+      "shard": "shard_00106.npz",
+      "nodes": 256,
+      "hash": "sha256:ab73997c57d1565a32c2ca5f9f3187e6e2471ed7a73f6ea720c740189eef0125"
+    },
+    {
+      "shard": "shard_00107.npz",
+      "nodes": 256,
+      "hash": "sha256:ab270c7f6815938781bac0a7555aa805c2a092fb81dd37537af1ec1ae279f2a1"
+    },
+    {
+      "shard": "shard_00108.npz",
+      "nodes": 256,
+      "hash": "sha256:439e50aa93a99764ea434b7f46dfb3934bbd40244acbf7c540c29778a32cc7c9"
+    },
+    {
+      "shard": "shard_00109.npz",
+      "nodes": 256,
+      "hash": "sha256:f830b2737ae7880a5abe61d56bec783836b2fb4b93ff296a36e784dd88ac6023"
+    },
+    {
+      "shard": "shard_00110.npz",
+      "nodes": 256,
+      "hash": "sha256:1d40272a28157c3ff09fa5f9536a991556f73b8a8fc70c533a8fbde57f37f69b"
+    },
+    {
+      "shard": "shard_00111.npz",
+      "nodes": 256,
+      "hash": "sha256:3e178e90c6cd8850c7894de28c96cb4987f23e582e1af91ac2cff01da01a2127"
+    },
+    {
+      "shard": "shard_00112.npz",
+      "nodes": 256,
+      "hash": "sha256:49a6d4e5b2190ff4c3c6a0c80a9de91d5977f9cbcc8b72ea4a1e304f061b8215"
+    },
+    {
+      "shard": "shard_00113.npz",
+      "nodes": 256,
+      "hash": "sha256:2046ec57680477a986458ebc990b1e79729dbf687ce2c41e164ffa37ee204863"
+    },
+    {
+      "shard": "shard_00114.npz",
+      "nodes": 256,
+      "hash": "sha256:ebaf57444da6e6c4cf2a49caefd798a0f351e38b36f23875f538ddca96188560"
+    },
+    {
+      "shard": "shard_00115.npz",
+      "nodes": 256,
+      "hash": "sha256:17a835d40e65ff3d7193b19b38e817e39334d6f426ce423fbb50cf139a069d65"
+    },
+    {
+      "shard": "shard_00116.npz",
+      "nodes": 256,
+      "hash": "sha256:79252bb81d465a64ff340354a2608e09f99c33f776dffdf39365e3b8e59e8255"
+    },
+    {
+      "shard": "shard_00117.npz",
+      "nodes": 256,
+      "hash": "sha256:9b46f018c94728316a311bbe02e02618cab14650e37e91363a1b777168d6fa50"
+    },
+    {
+      "shard": "shard_00118.npz",
+      "nodes": 256,
+      "hash": "sha256:e608c12016a1b3d2bc54bfb615a8d4b493ff92b6aef28f81cedbbe8baa21f6f3"
+    },
+    {
+      "shard": "shard_00119.npz",
+      "nodes": 256,
+      "hash": "sha256:550d084a2a4d32a3b37448159f899efa3741bfcdd51e4af43ff39d9cfd729d58"
+    },
+    {
+      "shard": "shard_00120.npz",
+      "nodes": 256,
+      "hash": "sha256:59e77a1f10e5f09fd8598e5fcfe5fb2dd8eb1aa7ea411c18afa1a2fe069b9726"
+    },
+    {
+      "shard": "shard_00121.npz",
+      "nodes": 256,
+      "hash": "sha256:4f93468d20b9e67259fd0ab358bf1f2500f462a0fb839a7ebe13426742d303d3"
+    },
+    {
+      "shard": "shard_00122.npz",
+      "nodes": 256,
+      "hash": "sha256:965d478ed8248f611c7b6b999d02c1a44cca1163b5c6bd647575711420d2bda6"
+    },
+    {
+      "shard": "shard_00123.npz",
+      "nodes": 256,
+      "hash": "sha256:ab4e27eec8992476612f65f319b1fc0c98c1d34334887b0ece9a8879df6fcdad"
+    },
+    {
+      "shard": "shard_00124.npz",
+      "nodes": 256,
+      "hash": "sha256:430b2b75cac56182893b125e5038eb9befdff599c727e8e6b99857cdf5abac82"
+    },
+    {
+      "shard": "shard_00125.npz",
+      "nodes": 256,
+      "hash": "sha256:a36753eda704fcfdd07bd42c7d78bf07979b636235141a76dd6c3bb9d4b25bad"
+    },
+    {
+      "shard": "shard_00126.npz",
+      "nodes": 256,
+      "hash": "sha256:e384eafa13a51d18faa77a2765c3d16211388dbacfa613c58ae39cdcd8f6570e"
+    },
+    {
+      "shard": "shard_00127.npz",
+      "nodes": 256,
+      "hash": "sha256:b1f5ab8435aa04dae0768b7d69526aa930d95d2f5560b29e52253e3c214f43e4"
+    },
+    {
+      "shard": "shard_00128.npz",
+      "nodes": 256,
+      "hash": "sha256:fd40a10a83c4682ee0a1ad6d1836d650413aa957aa3bbe3ca50ab1cbbfffb68f"
+    },
+    {
+      "shard": "shard_00129.npz",
+      "nodes": 256,
+      "hash": "sha256:70dd77b0939046bf764f2bd3b73d016c36119508eebe0a7185b8843519036c73"
+    },
+    {
+      "shard": "shard_00130.npz",
+      "nodes": 256,
+      "hash": "sha256:1849e05c058b12ce3bea3411e07f51c99919536c199a0d8a379099c7b5cd5caa"
+    },
+    {
+      "shard": "shard_00131.npz",
+      "nodes": 256,
+      "hash": "sha256:aabffdd608bd0b527db1be6f93229121e6d11aebbfb311f46c0d843a4aafcc91"
+    },
+    {
+      "shard": "shard_00132.npz",
+      "nodes": 256,
+      "hash": "sha256:1e272036c15a46dbe6dc3b8e2d28ebe29601f7319f70a509c9cc160b21b7cb1e"
+    },
+    {
+      "shard": "shard_00133.npz",
+      "nodes": 256,
+      "hash": "sha256:c2287cc22cc8ab58e8c38051e54b89eca8509a2be39bf7d8509bc31e2aea24e6"
+    },
+    {
+      "shard": "shard_00134.npz",
+      "nodes": 256,
+      "hash": "sha256:fe24ca7240768de4995e86f9c033086a45f6c466e04cf1e828869693d5d8b58b"
+    },
+    {
+      "shard": "shard_00135.npz",
+      "nodes": 256,
+      "hash": "sha256:732475223766609d858afcbd61acb54f8aef4d9ecb1efc5741a5665bb7590840"
+    },
+    {
+      "shard": "shard_00136.npz",
+      "nodes": 256,
+      "hash": "sha256:3a9a2de02d111db5d6f68389ad54fc4fb8981f39fade1bcb70f2fa3323d698cb"
+    },
+    {
+      "shard": "shard_00137.npz",
+      "nodes": 256,
+      "hash": "sha256:50077d0f3a8b482eb02febdd924ac3cdb5ad58f129ff320231f7e5d3aca2e70b"
+    },
+    {
+      "shard": "shard_00138.npz",
+      "nodes": 256,
+      "hash": "sha256:65e79003527e69c1cfd470aad7c26bc24433ed0a3ec62acce06d1548ec9389f5"
+    },
+    {
+      "shard": "shard_00139.npz",
+      "nodes": 256,
+      "hash": "sha256:2f65fe3932fec40aa851444b73d47cf470b484ee7f977ac672430c3f51f73924"
+    },
+    {
+      "shard": "shard_00140.npz",
+      "nodes": 256,
+      "hash": "sha256:2aad225d51594c9ba8c2e0335b4fd7e08730c66c33d2689db7d3e9068599ccdc"
+    },
+    {
+      "shard": "shard_00141.npz",
+      "nodes": 256,
+      "hash": "sha256:176ba15a1bb69b671c1c82ee1e298acebd8b4d592e2efd825722a743769b3dc3"
+    },
+    {
+      "shard": "shard_00142.npz",
+      "nodes": 256,
+      "hash": "sha256:f50887643e78f8340354c3bdecf5ea69b3c00c417a695d56c980bb508a299121"
+    },
+    {
+      "shard": "shard_00143.npz",
+      "nodes": 256,
+      "hash": "sha256:2d7c52a2eccef6bb9a10d81e5adc2f89443b7427295e5f247acf1f1d5fc11d6d"
+    },
+    {
+      "shard": "shard_00144.npz",
+      "nodes": 256,
+      "hash": "sha256:e1f2a01d37d993f24eb3cefcc72032be7e09087df18291ef02758a4dded39377"
+    },
+    {
+      "shard": "shard_00145.npz",
+      "nodes": 256,
+      "hash": "sha256:e4e81dbc6a475f1114ed964d30909619dcabefcdcf9e0fc2b8a19563d0147cca"
+    },
+    {
+      "shard": "shard_00146.npz",
+      "nodes": 256,
+      "hash": "sha256:ab4eee4b58ee96580745957630390295baeeb5a8be977e8cabc7f7e87da9ef5d"
+    },
+    {
+      "shard": "shard_00147.npz",
+      "nodes": 256,
+      "hash": "sha256:9a740ed53cf4496fb0e99a5d115ab3ce9d28eb4d0183d1a606bb5d897bf11717"
+    },
+    {
+      "shard": "shard_00148.npz",
+      "nodes": 256,
+      "hash": "sha256:16f04effae4bcce5cab1c879a7be69c9a1ddcc41df037145ea40d8ee8d8d7b79"
+    },
+    {
+      "shard": "shard_00149.npz",
+      "nodes": 256,
+      "hash": "sha256:f613fd62dedba144db59234ea649739fc47a30a13caee99f3d363d40a9865207"
+    },
+    {
+      "shard": "shard_00150.npz",
+      "nodes": 256,
+      "hash": "sha256:3842b5f75ef9bf0dc7584aa54f0257d6d54f9fb1959413f057c32f19663c7382"
+    },
+    {
+      "shard": "shard_00151.npz",
+      "nodes": 256,
+      "hash": "sha256:b3e80bd3b8ac9674fba280a078bbf1edff0ab311e89df3015f6075ebd72bf35b"
+    },
+    {
+      "shard": "shard_00152.npz",
+      "nodes": 256,
+      "hash": "sha256:5758896c46acc72ea80cf3ae5de724e26178950a748e2598cab31317b855d8d7"
+    },
+    {
+      "shard": "shard_00153.npz",
+      "nodes": 256,
+      "hash": "sha256:0dda365b518ab62baeaab769c5f635164274ef7f01c7dd40a6bac4a320c42ea1"
+    },
+    {
+      "shard": "shard_00154.npz",
+      "nodes": 256,
+      "hash": "sha256:b10d63423da222869a4c12861bbeec04f9e7afad0698f7246e4b7e3ed7ec01e5"
+    },
+    {
+      "shard": "shard_00155.npz",
+      "nodes": 256,
+      "hash": "sha256:6f7f21bb87239053bfd77a1fe21ec524aa5b46eddb9d4aefd61040c862d5f108"
+    },
+    {
+      "shard": "shard_00156.npz",
+      "nodes": 256,
+      "hash": "sha256:ede403f9fc127699b3334ed2bda7779d10ff92de36af08b6425da3c5938ffb99"
+    },
+    {
+      "shard": "shard_00157.npz",
+      "nodes": 256,
+      "hash": "sha256:db667cbdbc59a5efcde182745c92fdc7a6d2babcbee7df56c05f19542dd8eccf"
+    },
+    {
+      "shard": "shard_00158.npz",
+      "nodes": 256,
+      "hash": "sha256:18633f97bbd785dd249f31cf9324d9abab5dcdb1d467c163530dd948f37ddc18"
+    },
+    {
+      "shard": "shard_00159.npz",
+      "nodes": 256,
+      "hash": "sha256:fcc21136b4547158ae6b8fecacb1a6432841c0cd0f3233432148b820a72384a7"
+    },
+    {
+      "shard": "shard_00160.npz",
+      "nodes": 256,
+      "hash": "sha256:33c5aab1151547677b9deea40a12fdd74a73b295b2be7628e6a096dfbc9242da"
+    },
+    {
+      "shard": "shard_00161.npz",
+      "nodes": 256,
+      "hash": "sha256:270cba8e9e5d7c7a83eeb7ae694224f6b1c33da40bcfda1e7c0cf4d329ffcd8a"
+    },
+    {
+      "shard": "shard_00162.npz",
+      "nodes": 256,
+      "hash": "sha256:7654f9eaa46dfe25f605c8135b409233b8171f68103d7b39133a2bdc10e08445"
+    },
+    {
+      "shard": "shard_00163.npz",
+      "nodes": 256,
+      "hash": "sha256:a16dcd354b9e007aabf86a670fc23045a2a564f44880268b0b615c229587c58b"
+    },
+    {
+      "shard": "shard_00164.npz",
+      "nodes": 256,
+      "hash": "sha256:e549150e5d2acb1efc37e366b87b577efa6ac8e39d7726f4ef322371b8d07464"
+    },
+    {
+      "shard": "shard_00165.npz",
+      "nodes": 256,
+      "hash": "sha256:2bf0830c6f973dddc24839084bac98e85b5fd1e1097e7108d33051cf66af20ad"
+    },
+    {
+      "shard": "shard_00166.npz",
+      "nodes": 256,
+      "hash": "sha256:c3fcda8c3344756264919fd75a8f3e850de5d168060de1069c1e0e3b29a24f66"
+    },
+    {
+      "shard": "shard_00167.npz",
+      "nodes": 256,
+      "hash": "sha256:4da30b86b6f4fd7ea1592109fcab2eb2d0c2ef1d7fc91ada1756de1a20036af5"
+    },
+    {
+      "shard": "shard_00168.npz",
+      "nodes": 256,
+      "hash": "sha256:8dab39784bd91dc30b458ae5face1ead9ee3d06a848fc4c85ffdf98877fffa42"
+    },
+    {
+      "shard": "shard_00169.npz",
+      "nodes": 256,
+      "hash": "sha256:c7c5a72e619df7ee751f10e8215e2cb9f4f47e65b0f9ef6034e4b191edf412a9"
+    },
+    {
+      "shard": "shard_00170.npz",
+      "nodes": 256,
+      "hash": "sha256:09197b86a8dbd1761f6e67fd40bab41c558b78d745591107d41342bfa0232dbf"
+    },
+    {
+      "shard": "shard_00171.npz",
+      "nodes": 256,
+      "hash": "sha256:2426a39c85ad64a6ab67f86763e98217875ef784a873b1fbd9af66b4298bca8e"
+    },
+    {
+      "shard": "shard_00172.npz",
+      "nodes": 256,
+      "hash": "sha256:b4da2ec8774d2a48671cc958170af42494a65225b9ccaaad911263e3eb7447e6"
+    },
+    {
+      "shard": "shard_00173.npz",
+      "nodes": 256,
+      "hash": "sha256:76c4e911894eca7700389ff1aeafb2498bc458d34412a1f3fca16018ae507b2f"
+    },
+    {
+      "shard": "shard_00174.npz",
+      "nodes": 256,
+      "hash": "sha256:d15349104b685a570a0b0c0bd031b8cd0781f276a772b0b4e6c7a8a7b219d119"
+    },
+    {
+      "shard": "shard_00175.npz",
+      "nodes": 256,
+      "hash": "sha256:58137f3c072efc25b9da1afbbd05d55b40ca3bc32063b8efe7ac712a47c4d96d"
+    },
+    {
+      "shard": "shard_00176.npz",
+      "nodes": 256,
+      "hash": "sha256:d63c4a5a70142b807d4f0b3df19b9ad729cb5ca5d4f450c8a3f45d7d8a0d328d"
+    },
+    {
+      "shard": "shard_00177.npz",
+      "nodes": 256,
+      "hash": "sha256:40497ef525b9272898aa73d503e714c791bbe74a3fe6950dc0ebb3a484936ca2"
+    },
+    {
+      "shard": "shard_00178.npz",
+      "nodes": 256,
+      "hash": "sha256:a15265ed8e95e673f8d3777c1272dc6d144ea3baef0f463c62923975a3053e43"
+    },
+    {
+      "shard": "shard_00179.npz",
+      "nodes": 256,
+      "hash": "sha256:1e6e1b33b46970a7ae69588e4c0ae8a19c63b6aa4ddf8a68fb7f93e9729c0a8c"
+    },
+    {
+      "shard": "shard_00180.npz",
+      "nodes": 256,
+      "hash": "sha256:c680de91034053a80ec93aa113e1eb5299d99bd6932cb89dae50005473b188ac"
+    },
+    {
+      "shard": "shard_00181.npz",
+      "nodes": 256,
+      "hash": "sha256:5c4957f13ef8bb6c0ccbc9b5ab40ed24c015a3c66cb53435751183f9931d8327"
+    },
+    {
+      "shard": "shard_00182.npz",
+      "nodes": 256,
+      "hash": "sha256:681a3014936a8cb6cecaa62ebe21fe0a3c2d9ea31e3b293c66772653e17b4178"
+    },
+    {
+      "shard": "shard_00183.npz",
+      "nodes": 256,
+      "hash": "sha256:b6b2af33da7bb3a12d192820057effda7b5dab478a6e1ad6904e67e2c9344ed5"
+    },
+    {
+      "shard": "shard_00184.npz",
+      "nodes": 256,
+      "hash": "sha256:c7aa3316b5528ba9b41ca7f5fbd61e0e46bf7fbed4d4c8c98cda65bfd788e139"
+    },
+    {
+      "shard": "shard_00185.npz",
+      "nodes": 256,
+      "hash": "sha256:3084e2a764fc5f66169dcabcf9080329d229a2dba5dbc3fb6ecf79673823e0cd"
+    },
+    {
+      "shard": "shard_00186.npz",
+      "nodes": 256,
+      "hash": "sha256:65c062fc607073b64fe40e20eac086932fe80c0b3d191eb217e2f4bf692e541d"
+    },
+    {
+      "shard": "shard_00187.npz",
+      "nodes": 256,
+      "hash": "sha256:c1a125ed7a3a2645f25d4c4f756d584a11b70e2c62da6ca8c0d9f57fd56a2628"
+    },
+    {
+      "shard": "shard_00188.npz",
+      "nodes": 256,
+      "hash": "sha256:d4d0cdcdafe4cf2aa75a54c9e679eb10448ae8b224d5db2eaa9fe6440fca566e"
+    },
+    {
+      "shard": "shard_00189.npz",
+      "nodes": 256,
+      "hash": "sha256:cea6d2cd7ae880db2bd72bbcfb077d106e6888b53525f38f006036c80ddb633b"
+    },
+    {
+      "shard": "shard_00190.npz",
+      "nodes": 256,
+      "hash": "sha256:ee96316798ab33b55ee6646c231346e9854248e626c99f11a81f4fdd22ecf7db"
+    },
+    {
+      "shard": "shard_00191.npz",
+      "nodes": 256,
+      "hash": "sha256:b8aa4d4100482340afc98ef10f699c50aec35983146879436a6756e4e045c2a1"
+    },
+    {
+      "shard": "shard_00192.npz",
+      "nodes": 256,
+      "hash": "sha256:64560b81f95c411c32817f6709d34c45f1b48ac39552282f66087def550416c0"
+    },
+    {
+      "shard": "shard_00193.npz",
+      "nodes": 256,
+      "hash": "sha256:5915aea35482b65ef86a4cde86507bde878eace4f6e9ea03d4be9159072f7abb"
+    },
+    {
+      "shard": "shard_00194.npz",
+      "nodes": 256,
+      "hash": "sha256:6d2781ad4ecaab76bd7c7aa72902c7eb14fdf40360a686ace1ec2364c095e5a1"
+    },
+    {
+      "shard": "shard_00195.npz",
+      "nodes": 256,
+      "hash": "sha256:4368770bc62c102c3ad423ce55db7c6542bc3f23bbe5870ba8ee788d0c814c36"
+    },
+    {
+      "shard": "shard_00196.npz",
+      "nodes": 256,
+      "hash": "sha256:0529e7752a8f9b90c5afaf039a14a7752dd91249becbcf6c6614c8f3e65c6c79"
+    },
+    {
+      "shard": "shard_00197.npz",
+      "nodes": 256,
+      "hash": "sha256:6e49b4b9e924c65593ca44ad5274e81a25e63c304973719c5fccf7243de58b2e"
+    },
+    {
+      "shard": "shard_00198.npz",
+      "nodes": 256,
+      "hash": "sha256:379d43749693b2bf7e62171e2dbfa21a071b1d7c61db6d000964afc5f2ed01b6"
+    },
+    {
+      "shard": "shard_00199.npz",
+      "nodes": 256,
+      "hash": "sha256:ee37180aa2861216d3d69714ea9b8c6e0dc7aae2f09a484d48084973752e44ae"
+    },
+    {
+      "shard": "shard_00200.npz",
+      "nodes": 256,
+      "hash": "sha256:78051fd7534b8ba80328610b370b7f739e2f8e07e23ad51cdc7a99083ef3bb3e"
+    },
+    {
+      "shard": "shard_00201.npz",
+      "nodes": 256,
+      "hash": "sha256:9cbff2f706801dda2f3940f19c7c3f90be18b3229429debea49e732b244dab52"
+    },
+    {
+      "shard": "shard_00202.npz",
+      "nodes": 256,
+      "hash": "sha256:0c69f70b989bed2008bd64104168c892c610583968d1ddbafc55482d57a43e00"
+    },
+    {
+      "shard": "shard_00203.npz",
+      "nodes": 256,
+      "hash": "sha256:7a4ff57a4d2dc897ea5e474fec0704eec56f2ca3d39fdef5d1ec36a99fc2537d"
+    },
+    {
+      "shard": "shard_00204.npz",
+      "nodes": 256,
+      "hash": "sha256:b730d3ed98447b4a946d922a39a94d1c43e1a45ff526dae7400ebfe8677ebee3"
+    },
+    {
+      "shard": "shard_00205.npz",
+      "nodes": 256,
+      "hash": "sha256:f2d533b812bbeeef915dc1e3274aca652dec7d1ed47b86734c7bff772f76d26f"
+    },
+    {
+      "shard": "shard_00206.npz",
+      "nodes": 256,
+      "hash": "sha256:467021944c2654f4009916e652a2d8bd36a99ef0939786e45856c8345fe092ff"
+    },
+    {
+      "shard": "shard_00207.npz",
+      "nodes": 256,
+      "hash": "sha256:bcfa71d0d990220c2c9a5044b8d889a2d8e46b95e152a2af003a1c5480949c48"
+    },
+    {
+      "shard": "shard_00208.npz",
+      "nodes": 256,
+      "hash": "sha256:4f7ad403433cf702927234f54a67755fd960d091d18f3d91a15d74e82f54811b"
+    },
+    {
+      "shard": "shard_00209.npz",
+      "nodes": 256,
+      "hash": "sha256:c04085960128ee15da5bc67f5e7a0bfffe7086baae8930af262d03a4f993004a"
+    },
+    {
+      "shard": "shard_00210.npz",
+      "nodes": 256,
+      "hash": "sha256:8377b1cb796d86eb94d887904c6970d862fd0371a695fc6b331e73be69df6e56"
+    },
+    {
+      "shard": "shard_00211.npz",
+      "nodes": 256,
+      "hash": "sha256:776d2e972c0ad6c8839f26601a1dbd01c66e19638df0539ba379dba806e811ea"
+    },
+    {
+      "shard": "shard_00212.npz",
+      "nodes": 256,
+      "hash": "sha256:c5dff315dbef9214359a7bc338d3c48c214df9f29cd9d08e9409103ee5318da7"
+    },
+    {
+      "shard": "shard_00213.npz",
+      "nodes": 256,
+      "hash": "sha256:3bacb37043efd4ba33a2f53f12f20b742e857a1a7c2f839d7850545e0c732523"
+    },
+    {
+      "shard": "shard_00214.npz",
+      "nodes": 256,
+      "hash": "sha256:cf9cce8781fba0aac668802f8f1135ccbb06a9d56e7e09ed5de92af4b31604fe"
+    },
+    {
+      "shard": "shard_00215.npz",
+      "nodes": 256,
+      "hash": "sha256:8b2a78c116d8d2a4e34fbfb890a1f1a42aa1f3a396979b5fc3f7c7fa1f0643a2"
+    },
+    {
+      "shard": "shard_00216.npz",
+      "nodes": 256,
+      "hash": "sha256:e46787fc0eb5faf9ebfe75e6e482a136477d459c52b5ad691d0f5a7f73413428"
+    },
+    {
+      "shard": "shard_00217.npz",
+      "nodes": 256,
+      "hash": "sha256:705073368bdc03a165e7c6768a63fbc1121c677197db5cff8639ca6c215f7cba"
+    },
+    {
+      "shard": "shard_00218.npz",
+      "nodes": 256,
+      "hash": "sha256:3d92433aa96ccc5748ed5b77b5f4cedc8d6795192343b04a754a88e96c1d6d3b"
+    },
+    {
+      "shard": "shard_00219.npz",
+      "nodes": 256,
+      "hash": "sha256:3524a0b8c540b6a0ba4c57831aea404cb514da14bb428781cc30860ce513f5cb"
+    },
+    {
+      "shard": "shard_00220.npz",
+      "nodes": 256,
+      "hash": "sha256:eb41798b8040e16ff15e71d7164b46ef31ef734fc7eec0e74f7b770ebb152fd3"
+    },
+    {
+      "shard": "shard_00221.npz",
+      "nodes": 256,
+      "hash": "sha256:05d921cb9e2992e81590652a75a7b890748d93f9bd22e012112ce908ccd0fe90"
+    },
+    {
+      "shard": "shard_00222.npz",
+      "nodes": 256,
+      "hash": "sha256:67f7891e0264e7fa90bdce4a182b65e3355852326f00fd50b4fcd3492a8ae8a0"
+    },
+    {
+      "shard": "shard_00223.npz",
+      "nodes": 256,
+      "hash": "sha256:2382cad3d3cfe9b5467048cadb8b7a475d8ddc33ece416739b0b6ebe0c93e198"
+    },
+    {
+      "shard": "shard_00224.npz",
+      "nodes": 256,
+      "hash": "sha256:0681ce2bd7c4f611c0b0fa9d3f818c7bbe062d57e25f31f470dd6aeec9942dde"
+    },
+    {
+      "shard": "shard_00225.npz",
+      "nodes": 256,
+      "hash": "sha256:2bbe52eaccbee77b2dce0fe81546f1ab4fbab2bb97dad13a56ae62762742c8d3"
+    },
+    {
+      "shard": "shard_00226.npz",
+      "nodes": 256,
+      "hash": "sha256:a68e786ed1c26a87740d6104f0670d073e0a1f7d1fee134f106bea87957da5ba"
+    },
+    {
+      "shard": "shard_00227.npz",
+      "nodes": 256,
+      "hash": "sha256:1c306f055ec0990194f2dc43935d8a658165914df8f66211110e979f39e6924f"
+    },
+    {
+      "shard": "shard_00228.npz",
+      "nodes": 256,
+      "hash": "sha256:904c122a60e41e8cbe2348786ec124ea1fd434ce9004de3e397bd9f026246644"
+    },
+    {
+      "shard": "shard_00229.npz",
+      "nodes": 256,
+      "hash": "sha256:d99b9a5c9cef4f4fe8b43070c3e0a24e7168aee2147eb74c8be371209c3ae932"
+    },
+    {
+      "shard": "shard_00230.npz",
+      "nodes": 256,
+      "hash": "sha256:e5352f854b0cb3a196b42dadbc595faafdf7bddf00b9bc8bfeb1b516a03a926f"
+    },
+    {
+      "shard": "shard_00231.npz",
+      "nodes": 256,
+      "hash": "sha256:c44b38e5ce6b3756257e043619221a49164aeb35fb028a23e4ab2eb9a5cd982f"
+    },
+    {
+      "shard": "shard_00232.npz",
+      "nodes": 256,
+      "hash": "sha256:3a07b0d2048ff821a47954ab1f815a9c8a4404ac97afcd4bc6169f20600f5ba6"
+    },
+    {
+      "shard": "shard_00233.npz",
+      "nodes": 256,
+      "hash": "sha256:f53d7293d22b6763cb550dec9acf3160478ff8f91888d5e9f1bac4f3c7b73de5"
+    },
+    {
+      "shard": "shard_00234.npz",
+      "nodes": 256,
+      "hash": "sha256:a7c00f71ed33c8a9e4aa399033acf481d7c18917826fdd313c2e54b8d652f903"
+    },
+    {
+      "shard": "shard_00235.npz",
+      "nodes": 256,
+      "hash": "sha256:f0dfdab1009d804801c964d555791b658145fad50b2a6d308951cf411d875335"
+    },
+    {
+      "shard": "shard_00236.npz",
+      "nodes": 256,
+      "hash": "sha256:a0a356b4c0d5905099f3f56bba2f5ed74ffb81d7b59e8848cbda2ef5eb5e9f79"
+    },
+    {
+      "shard": "shard_00237.npz",
+      "nodes": 256,
+      "hash": "sha256:39d8e37b65898e5e5db3c6ac5942303208115c507efbde0c091821731a074a0e"
+    },
+    {
+      "shard": "shard_00238.npz",
+      "nodes": 256,
+      "hash": "sha256:dba178dc66df1b4860f258049d5c8025ad329692fb193ec7db08bda01b2e700b"
+    },
+    {
+      "shard": "shard_00239.npz",
+      "nodes": 256,
+      "hash": "sha256:dd46fd409b0cfb8bd716244e56669c32c8e1b7b60ef9f92aa16856ebfc1d8910"
+    },
+    {
+      "shard": "shard_00240.npz",
+      "nodes": 256,
+      "hash": "sha256:0d0aacabcbc5205b19de9687bcd688edbec33f5ea31931a6a772df6e55c7712b"
+    },
+    {
+      "shard": "shard_00241.npz",
+      "nodes": 256,
+      "hash": "sha256:7e9f6f68ac6cfa79ed3c2bdbca8dd3d3de593b6df7527cbe80c03067ba402c23"
+    },
+    {
+      "shard": "shard_00242.npz",
+      "nodes": 256,
+      "hash": "sha256:1486cd1f1860b3aa47000c57e75b1b124f1e6719286ab6db97423fb280953dc7"
+    },
+    {
+      "shard": "shard_00243.npz",
+      "nodes": 256,
+      "hash": "sha256:fa3bd1ce7faa532512138d3ffec2f70ddc2edb4121a9eaaa6bba8bbaa2261129"
+    },
+    {
+      "shard": "shard_00244.npz",
+      "nodes": 256,
+      "hash": "sha256:4a2ca06d8152c17a30917a9177732e252cd14a096a9238a1ffe22906b148adee"
+    },
+    {
+      "shard": "shard_00245.npz",
+      "nodes": 256,
+      "hash": "sha256:f5f1784ccfee47dbdd06097447fefe49ba1593859c8eee95f47251a813bb5512"
+    },
+    {
+      "shard": "shard_00246.npz",
+      "nodes": 256,
+      "hash": "sha256:ceed3f14b1266fb9434e80d7a031bd8ba2eca48ca42cccce09a8c96086c181c1"
+    },
+    {
+      "shard": "shard_00247.npz",
+      "nodes": 256,
+      "hash": "sha256:6aadd8455f6f7bc89e1fa61192a483c54dcb4dca819294c0332a52ca394ffb8b"
+    },
+    {
+      "shard": "shard_00248.npz",
+      "nodes": 256,
+      "hash": "sha256:ddb57cf7e3784daf8ec785add94bf0464d9b430aaa5ae9a553f3c340aa6e04a9"
+    },
+    {
+      "shard": "shard_00249.npz",
+      "nodes": 256,
+      "hash": "sha256:33cda180d44cecffd300b2c081c2c90347c61adf1d321cf07a8aef163339809c"
+    },
+    {
+      "shard": "shard_00250.npz",
+      "nodes": 256,
+      "hash": "sha256:f744a745c6d4c7ec06abafc3f668ee60796b2c20e1a3cd6c8748f3ac75030ff3"
+    },
+    {
+      "shard": "shard_00251.npz",
+      "nodes": 256,
+      "hash": "sha256:e8820a52963c2930974c64eeea7754c91cb99ea27831ac5760704183aba41c35"
+    },
+    {
+      "shard": "shard_00252.npz",
+      "nodes": 256,
+      "hash": "sha256:8e40e8572d6b69e3c8c709587275c003340a5579802a6805b740e109846f93f6"
+    },
+    {
+      "shard": "shard_00253.npz",
+      "nodes": 256,
+      "hash": "sha256:837fa44ed9125c4ed7576d37aaff0f488941db37b423040ab00f596f46cced47"
+    },
+    {
+      "shard": "shard_00254.npz",
+      "nodes": 256,
+      "hash": "sha256:4a304b8e8bf83a10f3e0abea2409d533e5cf2daa84ec7335759aaf4dc6660d9e"
+    },
+    {
+      "shard": "shard_00255.npz",
+      "nodes": 256,
+      "hash": "sha256:f552b5f049666a6ec8420e9cb5e957233d41c19356f93e0a0dc719f862531980"
+    },
+    {
+      "shard": "shard_00256.npz",
+      "nodes": 179,
+      "hash": "sha256:6f9ec75d835442cf4465d4bcb752aff957ebd239fb3a43f1cfa23bb2df5e0c01"
+    }
+  ],
+  "scenario_count": 64,
+  "sampling_seed": 20260821,
+  "representation": "HISTORY_JOINT",
+  "registry_id": "M2_DATA2_FORMAL_CU_2020",
+  "registry_hash": "sha256:c544d46b9b0c5c7f92fe1b922b048d463c84dd958c8a95e990ffd316d39b3669",
+  "bundle_hash": "sha256:ee807a3346db7fb42c7e5ff06c87970559131a59af6043115677eac9741d6a6a",
+  "headroom_summary_hash": "sha256:7c951aca58bb26a1eff7888992a0a9a75b92ee097611246ceb27148973616965",
+  "analysis_layer": "CONSEQUENCE_FRAMES_ONLY",
+  "final_test_access_count": 0,
+  "seconds": 960.6,
+  "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+  "git_branch": "main",
+  "source_script_hashes": {
+    "consequence_stability_battery.py": "sha256:13ea186ddb839acd6108252c837d38074778de7632de22a599d51a786e5b8c33",
+    "consequence_stability_metrics.py": "sha256:01fe8143fe4a3d84e1446b4f4bf43d4aee26d83191cbb9ad64802d5f3c9a1c6a"
+  },
+  "artifact_hash": "sha256:43fab18bc6d88a9c1e3a2d7f01d46aa5f63aaa912c3a8897b02c73270ba883a8"
+}
