@@ -1,0 +1,1448 @@
+{
+  "2017": {
+    "artifact_hash": "sha256:6b322f95014b014364a6e954da37cd64862a9df4cc53d50a3fe86c2d88a09a9e",
+    "bootstrap": [
+      {
+        "ci_high": 0.039227959925384796,
+        "ci_low": 0.025462597333703384,
+        "estimate": 0.032031356826341124,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.7382313391678051,
+        "ci_low": 0.6027590795521399,
+        "estimate": 0.6676476597753161,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.5240567523970567,
+        "ci_low": 0.4707845507739317,
+        "estimate": 0.4986036502781082,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.9446959302798009,
+        "ci_low": 0.878036006002115,
+        "estimate": 0.9144881007903569,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.0018255618675951995,
+        "ci_low": 0.00040512279886266076,
+        "estimate": 0.0009766849271893808,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.14162751540967244,
+        "ci_low": 0.08179888494738667,
+        "estimate": 0.10953518367569899,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.49708410854417273,
+        "ci_low": 0.4958846218137815,
+        "estimate": 0.49647905999591285,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_att_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.8050442214029108,
+        "ci_low": 0.8030040767712088,
+        "estimate": 0.8040054005051075,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_rec_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      }
+    ],
+    "chunk_count": 64,
+    "chunk_size": 64,
+    "e2": {
+      "diagnostics": {
+        "CROSS_STATE_DEPENDENCE": {
+          "comparator": "HISTORY_MARGINAL",
+          "exact_action_agreement": 0.692898,
+          "false_activation": 14,
+          "mean_absolute_action_difference": 3.003839,
+          "missed_activation": 17,
+          "over_recovery": 96,
+          "typed_fallback_count": 0,
+          "under_recovery": 33,
+          "within_5min_agreement": 0.896353
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "comparator": "HISTORY_POINT",
+          "exact_action_agreement": 0.226488,
+          "false_activation": 0,
+          "mean_absolute_action_difference": 12.159309,
+          "missed_activation": 366,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 37,
+          "within_5min_agreement": 0.560461
+        },
+        "ROLLING_HISTORY": {
+          "comparator": "CURRENT_JOINT",
+          "exact_action_agreement": 0.341651,
+          "false_activation": 21,
+          "mean_absolute_action_difference": 7.975048,
+          "missed_activation": 103,
+          "over_recovery": 60,
+          "typed_fallback_count": 0,
+          "under_recovery": 159,
+          "within_5min_agreement": 0.591171
+        }
+      },
+      "estimand": "CURRENT_JOINT_HISTORY_JOINT_HISTORY_POINT_HISTORY_MARGINAL_EXACT",
+      "information_candidate_count": 7645,
+      "information_value": {
+        "CROSS_STATE_DEPENDENCE": {
+          "A0": 0.692898,
+          "A5": 0.896353,
+          "L_att": 0.000977,
+          "L_att_ci_high": 0.001826,
+          "L_att_ci_low": 0.000405,
+          "L_rec": 0.109535,
+          "L_rec_ci_high": 0.141628,
+          "L_rec_ci_low": 0.081799,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "delta_J": 4.422366,
+          "false_activation": 14,
+          "missed_activation": 17,
+          "over_recovery": 96,
+          "reference_V": 40.37393,
+          "stage1_reassigned_share": 0.019194,
+          "under_recovery": 33
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "A0": 0.226488,
+          "A5": 0.560461,
+          "L_att": 0.498604,
+          "L_att_ci_high": 0.524057,
+          "L_att_ci_low": 0.470785,
+          "L_rec": 0.914488,
+          "L_rec_ci_high": 0.944696,
+          "L_rec_ci_low": 0.878036,
+          "comparator": "HISTORY_POINT",
+          "delta_J": 36.921479,
+          "false_activation": 0,
+          "missed_activation": 366,
+          "over_recovery": 0,
+          "reference_V": 40.37393,
+          "stage1_reassigned_share": 0.857965,
+          "under_recovery": 37
+        },
+        "MARGINAL_UNCERTAINTY": {
+          "A0": null,
+          "A5": null,
+          "L_att": 0.496479,
+          "L_att_ci_high": 0.497084,
+          "L_att_ci_low": 0.495885,
+          "L_rec": 0.804005,
+          "L_rec_ci_high": 0.805044,
+          "L_rec_ci_low": 0.803004,
+          "comparator": "POINT_MINUS_MARGINAL",
+          "delta_J": 32.499113,
+          "false_activation": null,
+          "missed_activation": null,
+          "over_recovery": null,
+          "reference_V": null,
+          "stage1_reassigned_share": null,
+          "under_recovery": null
+        },
+        "ROLLING_HISTORY": {
+          "A0": 0.341651,
+          "A5": 0.591171,
+          "L_att": 0.032031,
+          "L_att_ci_high": 0.039228,
+          "L_att_ci_low": 0.025463,
+          "L_rec": 0.667648,
+          "L_rec_ci_high": 0.738231,
+          "L_rec_ci_low": 0.602759,
+          "comparator": "CURRENT_JOINT",
+          "delta_J": 26.95556,
+          "false_activation": 21,
+          "missed_activation": 103,
+          "over_recovery": 60,
+          "reference_V": 40.37393,
+          "stage1_reassigned_share": 0.236084,
+          "under_recovery": 159
+        }
+      },
+      "recovery_rows": {
+        "CURRENT_JOINT": {
+          "L_rec": 0.667648,
+          "delta_recovery_objective": 26.95556,
+          "reference_recoverable_value": 40.37393,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_MARGINAL_EXACT": {
+          "L_rec": 0.109535,
+          "delta_recovery_objective": 4.422366,
+          "reference_recoverable_value": 40.37393,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_POINT": {
+          "L_rec": 0.914488,
+          "delta_recovery_objective": 36.921479,
+          "reference_recoverable_value": 40.37393,
+          "typed_fallbacks": {}
+        }
+      },
+      "reference_cohort_size": 521,
+      "stage1_rows_HM_vs_HJ": [
+        {
+          "K": 131,
+          "L_att": 0.105393,
+          "N": 1310,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 49,
+          "overlap": 82,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "PRE"
+        },
+        {
+          "K": 390,
+          "L_att": 0.115866,
+          "N": 3899,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 166,
+          "overlap": 224,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "TURN"
+        }
+      ]
+    },
+    "exact_marginal": {
+      "audit_count": 7645,
+      "exact_result_label": "HISTORY_MARGINAL_EXACT",
+      "legacy_result_label": "HISTORY_MARGINAL_LEGACY",
+      "max_product_scenarios": 18018,
+      "physical_feasibility": "NOT_ASSERTED_PRODUCT_COUPLING",
+      "support_abstain_count": 0,
+      "support_included_count": 7645
+    },
+    "node_count": 7645,
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2017
+  },
+  "2018": {
+    "artifact_hash": "sha256:44b954707c4ee289c8832e25482fd7511a7bed5b951a045101475d3c4b0253ea",
+    "bootstrap": [
+      {
+        "ci_high": 0.029242863261868545,
+        "ci_low": 0.018007523477101578,
+        "estimate": 0.023293966935957,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.6833041439398729,
+        "ci_low": 0.5621843010122568,
+        "estimate": 0.6193816304167736,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.5309350611080651,
+        "ci_low": 0.47828634153721067,
+        "estimate": 0.5050267249205113,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.9892254578257984,
+        "ci_low": 0.9717810106151458,
+        "estimate": 0.9814005434853891,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.00201869417751133,
+        "ci_low": 0.00010916236472612563,
+        "estimate": 0.0011315886422802125,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.11776853665964371,
+        "ci_low": 0.07181127936321881,
+        "estimate": 0.09352968003379929,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.5044480737141692,
+        "ci_low": 0.5032840576963266,
+        "estimate": 0.5038526159096783,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_att_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.8884212170595243,
+        "ci_low": 0.8873076409821414,
+        "estimate": 0.8878637669427419,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_rec_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      }
+    ],
+    "chunk_count": 64,
+    "chunk_size": 64,
+    "e2": {
+      "diagnostics": {
+        "CROSS_STATE_DEPENDENCE": {
+          "comparator": "HISTORY_MARGINAL",
+          "exact_action_agreement": 0.585086,
+          "false_activation": 11,
+          "mean_absolute_action_difference": 3.250478,
+          "missed_activation": 8,
+          "over_recovery": 166,
+          "typed_fallback_count": 0,
+          "under_recovery": 32,
+          "within_5min_agreement": 0.921606
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "comparator": "HISTORY_POINT",
+          "exact_action_agreement": 0.130019,
+          "false_activation": 0,
+          "mean_absolute_action_difference": 16.070746,
+          "missed_activation": 428,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 27,
+          "within_5min_agreement": 0.307839
+        },
+        "ROLLING_HISTORY": {
+          "comparator": "CURRENT_JOINT",
+          "exact_action_agreement": 0.239006,
+          "false_activation": 18,
+          "mean_absolute_action_difference": 9.646272,
+          "missed_activation": 107,
+          "over_recovery": 87,
+          "typed_fallback_count": 0,
+          "under_recovery": 186,
+          "within_5min_agreement": 0.456979
+        }
+      },
+      "estimand": "CURRENT_JOINT_HISTORY_JOINT_HISTORY_POINT_HISTORY_MARGINAL_EXACT",
+      "information_candidate_count": 7605,
+      "information_value": {
+        "CROSS_STATE_DEPENDENCE": {
+          "A0": 0.585086,
+          "A5": 0.921606,
+          "L_att": 0.001132,
+          "L_att_ci_high": 0.002019,
+          "L_att_ci_low": 0.000109,
+          "L_rec": 0.09353,
+          "L_rec_ci_high": 0.117769,
+          "L_rec_ci_low": 0.071811,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "delta_J": 7.96255,
+          "false_activation": 11,
+          "missed_activation": 8,
+          "over_recovery": 166,
+          "reference_V": 85.133935,
+          "stage1_reassigned_share": 0.01912,
+          "under_recovery": 32
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "A0": 0.130019,
+          "A5": 0.307839,
+          "L_att": 0.505027,
+          "L_att_ci_high": 0.530935,
+          "L_att_ci_low": 0.478286,
+          "L_rec": 0.981401,
+          "L_rec_ci_high": 0.989225,
+          "L_rec_ci_low": 0.971781,
+          "comparator": "HISTORY_POINT",
+          "delta_J": 83.550491,
+          "false_activation": 0,
+          "missed_activation": 428,
+          "over_recovery": 0,
+          "reference_V": 85.133935,
+          "stage1_reassigned_share": 0.875717,
+          "under_recovery": 27
+        },
+        "MARGINAL_UNCERTAINTY": {
+          "A0": null,
+          "A5": null,
+          "L_att": 0.503853,
+          "L_att_ci_high": 0.504448,
+          "L_att_ci_low": 0.503284,
+          "L_rec": 0.887864,
+          "L_rec_ci_high": 0.888421,
+          "L_rec_ci_low": 0.887308,
+          "comparator": "POINT_MINUS_MARGINAL",
+          "delta_J": 75.587941,
+          "false_activation": null,
+          "missed_activation": null,
+          "over_recovery": null,
+          "reference_V": null,
+          "stage1_reassigned_share": null,
+          "under_recovery": null
+        },
+        "ROLLING_HISTORY": {
+          "A0": 0.239006,
+          "A5": 0.456979,
+          "L_att": 0.023294,
+          "L_att_ci_high": 0.029243,
+          "L_att_ci_low": 0.018008,
+          "L_rec": 0.619382,
+          "L_rec_ci_high": 0.683304,
+          "L_rec_ci_low": 0.562184,
+          "comparator": "CURRENT_JOINT",
+          "delta_J": 52.730396,
+          "false_activation": 18,
+          "missed_activation": 107,
+          "over_recovery": 87,
+          "reference_V": 85.133935,
+          "stage1_reassigned_share": 0.16826,
+          "under_recovery": 186
+        }
+      },
+      "recovery_rows": {
+        "CURRENT_JOINT": {
+          "L_rec": 0.619382,
+          "delta_recovery_objective": 52.730396,
+          "reference_recoverable_value": 85.133935,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_MARGINAL_EXACT": {
+          "L_rec": 0.09353,
+          "delta_recovery_objective": 7.96255,
+          "reference_recoverable_value": 85.133935,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_POINT": {
+          "L_rec": 0.981401,
+          "delta_recovery_objective": 83.550491,
+          "reference_recoverable_value": 85.133935,
+          "typed_fallbacks": {}
+        }
+      },
+      "reference_cohort_size": 523,
+      "stage1_rows_HM_vs_HJ": [
+        {
+          "K": 135,
+          "L_att": 0.160669,
+          "N": 1345,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 62,
+          "overlap": 73,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "PRE"
+        },
+        {
+          "K": 388,
+          "L_att": 0.147611,
+          "N": 3873,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 173,
+          "overlap": 215,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "TURN"
+        }
+      ]
+    },
+    "exact_marginal": {
+      "audit_count": 7605,
+      "exact_result_label": "HISTORY_MARGINAL_EXACT",
+      "legacy_result_label": "HISTORY_MARGINAL_LEGACY",
+      "max_product_scenarios": 8325,
+      "physical_feasibility": "NOT_ASSERTED_PRODUCT_COUPLING",
+      "support_abstain_count": 0,
+      "support_included_count": 7605
+    },
+    "node_count": 7605,
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2018
+  },
+  "2019": {
+    "artifact_hash": "sha256:981106efe1d60cb4e6c2eead8827f5408c99ddfbe8d796adfc1610cfad237384",
+    "bootstrap": [
+      {
+        "ci_high": 0.032986831380372894,
+        "ci_low": 0.021399001125239563,
+        "estimate": 0.025349246578338508,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.7612082234482629,
+        "ci_low": 0.6359169731821844,
+        "estimate": 0.6957233860966433,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.5543276649565511,
+        "ci_low": 0.5051644544661447,
+        "estimate": 0.5291478927458682,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.9615984526332898,
+        "ci_low": 0.8975400270061401,
+        "estimate": 0.9321481004029797,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.0015121937732123813,
+        "ci_low": 0.0003563135266794729,
+        "estimate": 0.0008712286680864236,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.11285748557422266,
+        "ci_low": 0.06234929073845726,
+        "estimate": 0.08531710290633965,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.5296717382479177,
+        "ci_low": 0.5285879345283364,
+        "estimate": 0.5291098730583543,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_att_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.8475014185914987,
+        "ci_low": 0.8456531408466931,
+        "estimate": 0.846573037248319,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_rec_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      }
+    ],
+    "chunk_count": 64,
+    "chunk_size": 64,
+    "e2": {
+      "diagnostics": {
+        "CROSS_STATE_DEPENDENCE": {
+          "comparator": "HISTORY_MARGINAL",
+          "exact_action_agreement": 0.730097,
+          "false_activation": 9,
+          "mean_absolute_action_difference": 1.883495,
+          "missed_activation": 8,
+          "over_recovery": 94,
+          "typed_fallback_count": 0,
+          "under_recovery": 28,
+          "within_5min_agreement": 0.959223
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "comparator": "HISTORY_POINT",
+          "exact_action_agreement": 0.240777,
+          "false_activation": 0,
+          "mean_absolute_action_difference": 9.203883,
+          "missed_activation": 369,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 22,
+          "within_5min_agreement": 0.654369
+        },
+        "ROLLING_HISTORY": {
+          "comparator": "CURRENT_JOINT",
+          "exact_action_agreement": 0.353398,
+          "false_activation": 23,
+          "mean_absolute_action_difference": 7.796117,
+          "missed_activation": 168,
+          "over_recovery": 61,
+          "typed_fallback_count": 0,
+          "under_recovery": 81,
+          "within_5min_agreement": 0.666019
+        }
+      },
+      "estimand": "CURRENT_JOINT_HISTORY_JOINT_HISTORY_POINT_HISTORY_MARGINAL_EXACT",
+      "information_candidate_count": 7538,
+      "information_value": {
+        "CROSS_STATE_DEPENDENCE": {
+          "A0": 0.730097,
+          "A5": 0.959223,
+          "L_att": 0.000871,
+          "L_att_ci_high": 0.001512,
+          "L_att_ci_low": 0.000356,
+          "L_rec": 0.085317,
+          "L_rec_ci_high": 0.112857,
+          "L_rec_ci_low": 0.062349,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "delta_J": 3.595075,
+          "false_activation": 9,
+          "missed_activation": 8,
+          "over_recovery": 94,
+          "reference_V": 42.137794,
+          "stage1_reassigned_share": 0.019417,
+          "under_recovery": 28
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "A0": 0.240777,
+          "A5": 0.654369,
+          "L_att": 0.529148,
+          "L_att_ci_high": 0.554328,
+          "L_att_ci_low": 0.505164,
+          "L_rec": 0.932148,
+          "L_rec_ci_high": 0.961598,
+          "L_rec_ci_low": 0.89754,
+          "comparator": "HISTORY_POINT",
+          "delta_J": 39.278665,
+          "false_activation": 0,
+          "missed_activation": 369,
+          "over_recovery": 0,
+          "reference_V": 42.137794,
+          "stage1_reassigned_share": 0.885437,
+          "under_recovery": 22
+        },
+        "MARGINAL_UNCERTAINTY": {
+          "A0": null,
+          "A5": null,
+          "L_att": 0.52911,
+          "L_att_ci_high": 0.529672,
+          "L_att_ci_low": 0.528588,
+          "L_rec": 0.846573,
+          "L_rec_ci_high": 0.847501,
+          "L_rec_ci_low": 0.845653,
+          "comparator": "POINT_MINUS_MARGINAL",
+          "delta_J": 35.68359,
+          "false_activation": null,
+          "missed_activation": null,
+          "over_recovery": null,
+          "reference_V": null,
+          "stage1_reassigned_share": null,
+          "under_recovery": null
+        },
+        "ROLLING_HISTORY": {
+          "A0": 0.353398,
+          "A5": 0.666019,
+          "L_att": 0.025349,
+          "L_att_ci_high": 0.032987,
+          "L_att_ci_low": 0.021399,
+          "L_rec": 0.695723,
+          "L_rec_ci_high": 0.761208,
+          "L_rec_ci_low": 0.635917,
+          "comparator": "CURRENT_JOINT",
+          "delta_J": 29.316249,
+          "false_activation": 23,
+          "missed_activation": 168,
+          "over_recovery": 61,
+          "reference_V": 42.137794,
+          "stage1_reassigned_share": 0.180583,
+          "under_recovery": 81
+        }
+      },
+      "recovery_rows": {
+        "CURRENT_JOINT": {
+          "L_rec": 0.695723,
+          "delta_recovery_objective": 29.316249,
+          "reference_recoverable_value": 42.137794,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_MARGINAL_EXACT": {
+          "L_rec": 0.085317,
+          "delta_recovery_objective": 3.595075,
+          "reference_recoverable_value": 42.137794,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_POINT": {
+          "L_rec": 0.932148,
+          "delta_recovery_objective": 39.278665,
+          "reference_recoverable_value": 42.137794,
+          "typed_fallbacks": {}
+        }
+      },
+      "reference_cohort_size": 515,
+      "stage1_rows_HM_vs_HJ": [
+        {
+          "K": 126,
+          "L_att": 0.133594,
+          "N": 1252,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 51,
+          "overlap": 75,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "PRE"
+        },
+        {
+          "K": 389,
+          "L_att": 0.123342,
+          "N": 3888,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 154,
+          "overlap": 235,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "TURN"
+        }
+      ]
+    },
+    "exact_marginal": {
+      "audit_count": 7538,
+      "exact_result_label": "HISTORY_MARGINAL_EXACT",
+      "legacy_result_label": "HISTORY_MARGINAL_LEGACY",
+      "max_product_scenarios": 16170,
+      "physical_feasibility": "NOT_ASSERTED_PRODUCT_COUPLING",
+      "support_abstain_count": 0,
+      "support_included_count": 7538
+    },
+    "node_count": 7538,
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2019
+  },
+  "2020": {
+    "artifact_hash": "sha256:d036537fd9b73f0fac4afd67dcfbbb155758b112b62c6081e1494a6a79dd810c",
+    "bootstrap": [
+      {
+        "ci_high": 0.5285064412060562,
+        "ci_low": 0.4819884425974337,
+        "estimate": 0.5060492041752003,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 1.000620663201389,
+        "ci_low": 0.9943646996826347,
+        "estimate": 0.9977362800064239,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.45628037641208163,
+        "ci_low": 0.40713920892278793,
+        "estimate": 0.4313141854315794,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.919164622405583,
+        "ci_low": 0.872065032594572,
+        "estimate": 0.8962778191478977,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.0012482868986596468,
+        "ci_low": 4.020090965750201e-05,
+        "estimate": 0.0006495269329582931,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.11309623276992252,
+        "ci_low": 0.07271312904251238,
+        "estimate": 0.090584764748484,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.43196924630105693,
+        "ci_low": 0.4307880677248337,
+        "estimate": 0.431385086947324,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_att_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.806411995167676,
+        "ci_low": 0.8051133506200812,
+        "estimate": 0.8057722681182352,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_rec_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      }
+    ],
+    "chunk_count": 64,
+    "chunk_size": 64,
+    "e2": {
+      "diagnostics": {
+        "CROSS_STATE_DEPENDENCE": {
+          "comparator": "HISTORY_MARGINAL",
+          "exact_action_agreement": 0.630802,
+          "false_activation": 4,
+          "mean_absolute_action_difference": 3.343882,
+          "missed_activation": 7,
+          "over_recovery": 140,
+          "typed_fallback_count": 0,
+          "under_recovery": 24,
+          "within_5min_agreement": 0.932489
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "comparator": "HISTORY_POINT",
+          "exact_action_agreement": 0.170886,
+          "false_activation": 0,
+          "mean_absolute_action_difference": 18.175105,
+          "missed_activation": 328,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 65,
+          "within_5min_agreement": 0.421941
+        },
+        "ROLLING_HISTORY": {
+          "comparator": "CURRENT_JOINT",
+          "exact_action_agreement": 0.086498,
+          "false_activation": 0,
+          "mean_absolute_action_difference": 19.124473,
+          "missed_activation": 425,
+          "over_recovery": 1,
+          "typed_fallback_count": 0,
+          "under_recovery": 7,
+          "within_5min_agreement": 0.424051
+        }
+      },
+      "estimand": "CURRENT_JOINT_HISTORY_JOINT_HISTORY_POINT_HISTORY_MARGINAL_EXACT",
+      "information_candidate_count": 8003,
+      "information_value": {
+        "CROSS_STATE_DEPENDENCE": {
+          "A0": 0.630802,
+          "A5": 0.932489,
+          "L_att": 0.00065,
+          "L_att_ci_high": 0.001248,
+          "L_att_ci_low": 4e-05,
+          "L_rec": 0.090585,
+          "L_rec_ci_high": 0.113096,
+          "L_rec_ci_low": 0.072713,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "delta_J": 3.746199,
+          "false_activation": 4,
+          "missed_activation": 7,
+          "over_recovery": 140,
+          "reference_V": 41.355734,
+          "stage1_reassigned_share": 0.012658,
+          "under_recovery": 24
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "A0": 0.170886,
+          "A5": 0.421941,
+          "L_att": 0.431314,
+          "L_att_ci_high": 0.45628,
+          "L_att_ci_low": 0.407139,
+          "L_rec": 0.896278,
+          "L_rec_ci_high": 0.919165,
+          "L_rec_ci_low": 0.872065,
+          "comparator": "HISTORY_POINT",
+          "delta_J": 37.066227,
+          "false_activation": 0,
+          "missed_activation": 328,
+          "over_recovery": 0,
+          "reference_V": 41.355734,
+          "stage1_reassigned_share": 0.841772,
+          "under_recovery": 65
+        },
+        "MARGINAL_UNCERTAINTY": {
+          "A0": null,
+          "A5": null,
+          "L_att": 0.431385,
+          "L_att_ci_high": 0.431969,
+          "L_att_ci_low": 0.430788,
+          "L_rec": 0.805772,
+          "L_rec_ci_high": 0.806412,
+          "L_rec_ci_low": 0.805113,
+          "comparator": "POINT_MINUS_MARGINAL",
+          "delta_J": 33.320028,
+          "false_activation": null,
+          "missed_activation": null,
+          "over_recovery": null,
+          "reference_V": null,
+          "stage1_reassigned_share": null,
+          "under_recovery": null
+        },
+        "ROLLING_HISTORY": {
+          "A0": 0.086498,
+          "A5": 0.424051,
+          "L_att": 0.506049,
+          "L_att_ci_high": 0.528506,
+          "L_att_ci_low": 0.481988,
+          "L_rec": 0.997736,
+          "L_rec_ci_high": 1.000621,
+          "L_rec_ci_low": 0.994365,
+          "comparator": "CURRENT_JOINT",
+          "delta_J": 41.262117,
+          "false_activation": 0,
+          "missed_activation": 425,
+          "over_recovery": 1,
+          "reference_V": 41.355734,
+          "stage1_reassigned_share": 0.898734,
+          "under_recovery": 7
+        }
+      },
+      "recovery_rows": {
+        "CURRENT_JOINT": {
+          "L_rec": 0.997736,
+          "delta_recovery_objective": 41.262117,
+          "reference_recoverable_value": 41.355734,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_MARGINAL_EXACT": {
+          "L_rec": 0.090585,
+          "delta_recovery_objective": 3.746199,
+          "reference_recoverable_value": 41.355734,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_POINT": {
+          "L_rec": 0.896278,
+          "delta_recovery_objective": 37.066227,
+          "reference_recoverable_value": 41.355734,
+          "typed_fallbacks": {}
+        }
+      },
+      "reference_cohort_size": 474,
+      "stage1_rows_HM_vs_HJ": [
+        {
+          "K": 68,
+          "L_att": 0.100643,
+          "N": 675,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 27,
+          "overlap": 41,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "PRE"
+        },
+        {
+          "K": 406,
+          "L_att": 0.106784,
+          "N": 4053,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 170,
+          "overlap": 236,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "TURN"
+        }
+      ]
+    },
+    "exact_marginal": {
+      "audit_count": 8003,
+      "exact_result_label": "HISTORY_MARGINAL_EXACT",
+      "legacy_result_label": "HISTORY_MARGINAL_LEGACY",
+      "max_product_scenarios": 7600,
+      "physical_feasibility": "NOT_ASSERTED_PRODUCT_COUPLING",
+      "support_abstain_count": 0,
+      "support_included_count": 8003
+    },
+    "node_count": 8003,
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2020
+  },
+  "2021": {
+    "artifact_hash": "sha256:fa4059202b27395dadd80d0d10cac211d38dbe0e8d6711d624586bc2be45e184",
+    "bootstrap": [
+      {
+        "ci_high": 0.013385866487509572,
+        "ci_low": 0.007453846186295397,
+        "estimate": 0.010113194064038432,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.36622015472142455,
+        "ci_low": 0.26159695374936676,
+        "estimate": 0.31020237534087014,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.4366561429590252,
+        "ci_low": 0.3864563864914506,
+        "estimate": 0.4134320412917418,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.9680227134670524,
+        "ci_low": 0.9365429946996006,
+        "estimate": 0.953464549376101,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.004881153696410633,
+        "ci_low": 0.0009442556916862954,
+        "estimate": 0.0026143108492167823,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.1328608326206089,
+        "ci_low": 0.08093640321175082,
+        "estimate": 0.10505689897568808,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.41006815275996417,
+        "ci_low": 0.4089562628197263,
+        "estimate": 0.40951106480915017,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_att_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.8489085304176293,
+        "ci_low": 0.8474397247703714,
+        "estimate": 0.8481804994835257,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_rec_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      }
+    ],
+    "chunk_count": 64,
+    "chunk_size": 64,
+    "e2": {
+      "diagnostics": {
+        "CROSS_STATE_DEPENDENCE": {
+          "comparator": "HISTORY_MARGINAL",
+          "exact_action_agreement": 0.617591,
+          "false_activation": 9,
+          "mean_absolute_action_difference": 3.556405,
+          "missed_activation": 3,
+          "over_recovery": 152,
+          "typed_fallback_count": 0,
+          "under_recovery": 36,
+          "within_5min_agreement": 0.898662
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "comparator": "HISTORY_POINT",
+          "exact_action_agreement": 0.152964,
+          "false_activation": 0,
+          "mean_absolute_action_difference": 14.799235,
+          "missed_activation": 396,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 47,
+          "within_5min_agreement": 0.359465
+        },
+        "ROLLING_HISTORY": {
+          "comparator": "CURRENT_JOINT",
+          "exact_action_agreement": 0.49522,
+          "false_activation": 17,
+          "mean_absolute_action_difference": 6.214149,
+          "missed_activation": 21,
+          "over_recovery": 84,
+          "typed_fallback_count": 0,
+          "under_recovery": 142,
+          "within_5min_agreement": 0.6826
+        }
+      },
+      "estimand": "CURRENT_JOINT_HISTORY_JOINT_HISTORY_POINT_HISTORY_MARGINAL_EXACT",
+      "information_candidate_count": 7493,
+      "information_value": {
+        "CROSS_STATE_DEPENDENCE": {
+          "A0": 0.617591,
+          "A5": 0.898662,
+          "L_att": 0.002614,
+          "L_att_ci_high": 0.004881,
+          "L_att_ci_low": 0.000944,
+          "L_rec": 0.105057,
+          "L_rec_ci_high": 0.132861,
+          "L_rec_ci_low": 0.080936,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "delta_J": 6.871641,
+          "false_activation": 9,
+          "missed_activation": 3,
+          "over_recovery": 152,
+          "reference_V": 65.408759,
+          "stage1_reassigned_share": 0.024857,
+          "under_recovery": 36
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "A0": 0.152964,
+          "A5": 0.359465,
+          "L_att": 0.413432,
+          "L_att_ci_high": 0.436656,
+          "L_att_ci_low": 0.386456,
+          "L_rec": 0.953465,
+          "L_rec_ci_high": 0.968023,
+          "L_rec_ci_low": 0.936543,
+          "comparator": "HISTORY_POINT",
+          "delta_J": 62.364933,
+          "false_activation": 0,
+          "missed_activation": 396,
+          "over_recovery": 0,
+          "reference_V": 65.408759,
+          "stage1_reassigned_share": 0.85086,
+          "under_recovery": 47
+        },
+        "MARGINAL_UNCERTAINTY": {
+          "A0": null,
+          "A5": null,
+          "L_att": 0.409511,
+          "L_att_ci_high": 0.410068,
+          "L_att_ci_low": 0.408956,
+          "L_rec": 0.84818,
+          "L_rec_ci_high": 0.848909,
+          "L_rec_ci_low": 0.84744,
+          "comparator": "POINT_MINUS_MARGINAL",
+          "delta_J": 55.493292,
+          "false_activation": null,
+          "missed_activation": null,
+          "over_recovery": null,
+          "reference_V": null,
+          "stage1_reassigned_share": null,
+          "under_recovery": null
+        },
+        "ROLLING_HISTORY": {
+          "A0": 0.49522,
+          "A5": 0.6826,
+          "L_att": 0.010113,
+          "L_att_ci_high": 0.013386,
+          "L_att_ci_low": 0.007454,
+          "L_rec": 0.310202,
+          "L_rec_ci_high": 0.36622,
+          "L_rec_ci_low": 0.261597,
+          "comparator": "CURRENT_JOINT",
+          "delta_J": 20.289953,
+          "false_activation": 17,
+          "missed_activation": 21,
+          "over_recovery": 84,
+          "reference_V": 65.408759,
+          "stage1_reassigned_share": 0.122371,
+          "under_recovery": 142
+        }
+      },
+      "recovery_rows": {
+        "CURRENT_JOINT": {
+          "L_rec": 0.310202,
+          "delta_recovery_objective": 20.289953,
+          "reference_recoverable_value": 65.408759,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_MARGINAL_EXACT": {
+          "L_rec": 0.105057,
+          "delta_recovery_objective": 6.871641,
+          "reference_recoverable_value": 65.408759,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_POINT": {
+          "L_rec": 0.953465,
+          "delta_recovery_objective": 62.364933,
+          "reference_recoverable_value": 65.408759,
+          "typed_fallbacks": {}
+        }
+      },
+      "reference_cohort_size": 523,
+      "stage1_rows_HM_vs_HJ": [
+        {
+          "K": 130,
+          "L_att": 0.153788,
+          "N": 1297,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 67,
+          "overlap": 63,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "PRE"
+        },
+        {
+          "K": 393,
+          "L_att": 0.15623,
+          "N": 3930,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 207,
+          "overlap": 186,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "TURN"
+        }
+      ]
+    },
+    "exact_marginal": {
+      "audit_count": 7493,
+      "exact_result_label": "HISTORY_MARGINAL_EXACT",
+      "legacy_result_label": "HISTORY_MARGINAL_LEGACY",
+      "max_product_scenarios": 8514,
+      "physical_feasibility": "NOT_ASSERTED_PRODUCT_COUPLING",
+      "support_abstain_count": 0,
+      "support_included_count": 7493
+    },
+    "node_count": 7493,
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2021
+  },
+  "2022": {
+    "artifact_hash": "sha256:05af145a97395c10e7a19a3d8666759e2161011d1c5c80bf91865937c6448c89",
+    "bootstrap": [
+      {
+        "ci_high": 0.029869580783689585,
+        "ci_low": 0.018007559633333912,
+        "estimate": 0.02435271967407949,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.6576394708156433,
+        "ci_low": 0.5376501225330269,
+        "estimate": 0.594720297703284,
+        "information_component": "ROLLING_HISTORY",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.5246478691398371,
+        "ci_low": 0.4767560706459679,
+        "estimate": 0.4994498619630016,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.9740756783374775,
+        "ci_low": 0.9388096145814055,
+        "estimate": 0.9574548982263938,
+        "information_component": "DISTRIBUTIONAL_INFORMATION",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.0048131330523640175,
+        "ci_low": 0.00125434348552011,
+        "estimate": 0.0026204757991907996,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_att",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.15696554328665802,
+        "ci_low": 0.09658449242181555,
+        "estimate": 0.12465902450171112,
+        "information_component": "CROSS_STATE_DEPENDENCE",
+        "metric": "L_rec",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.4984449005862858,
+        "ci_low": 0.4973310960423362,
+        "estimate": 0.49787250360470137,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_att_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      },
+      {
+        "ci_high": 0.8337847713275998,
+        "ci_low": 0.8321994844985251,
+        "estimate": 0.8329984512468889,
+        "information_component": "MARGINAL_UNCERTAINTY",
+        "metric": "L_rec_POINT_MINUS_MARGINAL",
+        "replicate_count": 2000
+      }
+    ],
+    "chunk_count": 64,
+    "chunk_size": 64,
+    "e2": {
+      "diagnostics": {
+        "CROSS_STATE_DEPENDENCE": {
+          "comparator": "HISTORY_MARGINAL",
+          "exact_action_agreement": 0.580827,
+          "false_activation": 5,
+          "mean_absolute_action_difference": 4.699248,
+          "missed_activation": 13,
+          "over_recovery": 158,
+          "typed_fallback_count": 0,
+          "under_recovery": 47,
+          "within_5min_agreement": 0.87594
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "comparator": "HISTORY_POINT",
+          "exact_action_agreement": 0.129699,
+          "false_activation": 0,
+          "mean_absolute_action_difference": 18.909774,
+          "missed_activation": 419,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 44,
+          "within_5min_agreement": 0.328947
+        },
+        "ROLLING_HISTORY": {
+          "comparator": "CURRENT_JOINT",
+          "exact_action_agreement": 0.298872,
+          "false_activation": 10,
+          "mean_absolute_action_difference": 9.548872,
+          "missed_activation": 69,
+          "over_recovery": 78,
+          "typed_fallback_count": 0,
+          "under_recovery": 216,
+          "within_5min_agreement": 0.488722
+        }
+      },
+      "estimand": "CURRENT_JOINT_HISTORY_JOINT_HISTORY_POINT_HISTORY_MARGINAL_EXACT",
+      "information_candidate_count": 7504,
+      "information_value": {
+        "CROSS_STATE_DEPENDENCE": {
+          "A0": 0.580827,
+          "A5": 0.87594,
+          "L_att": 0.00262,
+          "L_att_ci_high": 0.004813,
+          "L_att_ci_low": 0.001254,
+          "L_rec": 0.124659,
+          "L_rec_ci_high": 0.156966,
+          "L_rec_ci_low": 0.096584,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "delta_J": 9.763483,
+          "false_activation": 5,
+          "missed_activation": 13,
+          "over_recovery": 158,
+          "reference_V": 78.321511,
+          "stage1_reassigned_share": 0.037594,
+          "under_recovery": 47
+        },
+        "DISTRIBUTIONAL_INFORMATION": {
+          "A0": 0.129699,
+          "A5": 0.328947,
+          "L_att": 0.49945,
+          "L_att_ci_high": 0.524648,
+          "L_att_ci_low": 0.476756,
+          "L_rec": 0.957455,
+          "L_rec_ci_high": 0.974076,
+          "L_rec_ci_low": 0.93881,
+          "comparator": "HISTORY_POINT",
+          "delta_J": 74.989315,
+          "false_activation": 0,
+          "missed_activation": 419,
+          "over_recovery": 0,
+          "reference_V": 78.321511,
+          "stage1_reassigned_share": 0.887218,
+          "under_recovery": 44
+        },
+        "MARGINAL_UNCERTAINTY": {
+          "A0": null,
+          "A5": null,
+          "L_att": 0.497873,
+          "L_att_ci_high": 0.498445,
+          "L_att_ci_low": 0.497331,
+          "L_rec": 0.832998,
+          "L_rec_ci_high": 0.833785,
+          "L_rec_ci_low": 0.832199,
+          "comparator": "POINT_MINUS_MARGINAL",
+          "delta_J": 65.225831,
+          "false_activation": null,
+          "missed_activation": null,
+          "over_recovery": null,
+          "reference_V": null,
+          "stage1_reassigned_share": null,
+          "under_recovery": null
+        },
+        "ROLLING_HISTORY": {
+          "A0": 0.298872,
+          "A5": 0.488722,
+          "L_att": 0.024353,
+          "L_att_ci_high": 0.02987,
+          "L_att_ci_low": 0.018008,
+          "L_rec": 0.59472,
+          "L_rec_ci_high": 0.657639,
+          "L_rec_ci_low": 0.53765,
+          "comparator": "CURRENT_JOINT",
+          "delta_J": 46.579393,
+          "false_activation": 10,
+          "missed_activation": 69,
+          "over_recovery": 78,
+          "reference_V": 78.321511,
+          "stage1_reassigned_share": 0.178571,
+          "under_recovery": 216
+        }
+      },
+      "recovery_rows": {
+        "CURRENT_JOINT": {
+          "L_rec": 0.59472,
+          "delta_recovery_objective": 46.579393,
+          "reference_recoverable_value": 78.321511,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_MARGINAL_EXACT": {
+          "L_rec": 0.124659,
+          "delta_recovery_objective": 9.763483,
+          "reference_recoverable_value": 78.321511,
+          "typed_fallbacks": {}
+        },
+        "HISTORY_POINT": {
+          "L_rec": 0.957455,
+          "delta_recovery_objective": 74.989315,
+          "reference_recoverable_value": 78.321511,
+          "typed_fallbacks": {}
+        }
+      },
+      "reference_cohort_size": 532,
+      "stage1_rows_HM_vs_HJ": [
+        {
+          "K": 143,
+          "L_att": 0.184002,
+          "N": 1422,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 76,
+          "overlap": 67,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "PRE"
+        },
+        {
+          "K": 389,
+          "L_att": 0.181064,
+          "N": 3884,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "displaced": 215,
+          "overlap": 174,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "stage": "TURN"
+        }
+      ]
+    },
+    "exact_marginal": {
+      "audit_count": 7504,
+      "exact_result_label": "HISTORY_MARGINAL_EXACT",
+      "legacy_result_label": "HISTORY_MARGINAL_LEGACY",
+      "max_product_scenarios": 18040,
+      "physical_feasibility": "NOT_ASSERTED_PRODUCT_COUPLING",
+      "support_abstain_count": 0,
+      "support_included_count": 7504
+    },
+    "node_count": 7504,
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2022
+  }
+}

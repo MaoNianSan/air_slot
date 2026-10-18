@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180mm" height="92mm" viewBox="0 0 1800 920">
+<defs>
+ <marker id="arrow" markerWidth="12" markerHeight="9" refX="10" refY="4.5" orient="auto"><path d="M0,0 L12,4.5 L0,9 Z" fill="#4B5563"/></marker>
+ <style>
+ .sans{font-family:"Times New Roman",Times,serif;fill:#1F2937}.title{font-size:32px;font-weight:700}
+ .head{font-size:28px;font-weight:700}.body{font-size:25px}.small{font-size:21px}.tiny{font-size:18px}.muted{fill:#6B7280}
+ .line{stroke:#4B5563;stroke-width:3;fill:none}.rule{stroke:#CBD5E1;stroke-width:2}
+ </style>
+</defs>
+<rect width="1800" height="920" fill="#FFFFFF"/>
+<text class="sans title" x="52" y="52">An AOCC recovery decision unfolds in sequence</text>
+<text class="sans small muted" x="52" y="84">Illustrative scenario: two disrupted aircraft-linked chains have similar delay, but different operational exposure.</text>
+<line x1="52" y1="106" x2="1748" y2="106" class="rule"/>
+<!-- scene -->
+<rect x="52" y="132" width="1030" height="310" rx="8" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="2"/>
+<text class="sans head" x="78" y="170">1. AOCC sees the disruption at one decision epoch</text>
+<text class="sans tiny muted" x="78" y="198">predecessor progress and successor conditions are only partly resolved</text>
+<text class="sans small" x="90" y="238">PRE</text><text class="sans small" x="320" y="238">TURN</text><text class="sans small" x="555" y="238">TAXI</text>
+<line x1="98" y1="252" x2="690" y2="252" class="line"/><circle cx="125" cy="252" r="8" fill="#6B7280"/><circle cx="350" cy="252" r="8" fill="#415A77"/><circle cx="585" cy="252" r="8" fill="#C97920"/>
+<text class="sans tiny muted" x="80" y="278">predecessor</text><text class="sans tiny muted" x="285" y="278">turnaround</text><text class="sans tiny muted" x="535" y="278">successor</text>
+<rect x="80" y="300" width="960" height="52" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+<text class="sans body" x="102" y="334" font-weight="700">Chain A</text><line x1="230" y1="326" x2="470" y2="326" stroke="#6B7280" stroke-width="7"/><text class="sans small" x="498" y="333">similar predicted delay</text><text class="sans small" x="790" y="333" fill="#415A77">tight turnaround</text>
+<rect x="80" y="366" width="960" height="52" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+<text class="sans body" x="102" y="400" font-weight="700">Chain B</text><line x1="230" y1="392" x2="470" y2="392" stroke="#6B7280" stroke-width="7"/><text class="sans small" x="498" y="399">similar predicted delay</text><text class="sans small" x="790" y="399" fill="#C97920">passenger / downstream</text>
+<!-- screening -->
+<line x1="1082" y1="286" x2="1130" y2="286" class="line" marker-end="url(#arrow)"/>
+<rect x="1138" y="132" width="610" height="310" rx="8" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans head" x="1166" y="170">2. Stage I: screening</text>
+<text class="sans body" x="1166" y="208">Limited review capacity</text>
+<text class="sans small muted" x="1166" y="236">Which disrupted chains enter detailed review?</text>
+<line x1="1168" y1="266" x2="1710" y2="266" class="rule"/>
+<text class="sans small" x="1168" y="300">candidate chains</text><text class="sans small" x="1480" y="300">priority comparison</text>
+<rect x="1168" y="320" width="250" height="44" rx="5" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/><text class="sans small" x="1188" y="349">Chain A</text><text class="sans tiny muted" x="1280" y="349">review candidate</text>
+<rect x="1168" y="378" width="250" height="44" rx="5" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/><text class="sans small" x="1188" y="407">Chain B</text><text class="sans tiny muted" x="1280" y="407">review candidate</text>
+<line x1="1440" y1="342" x2="1690" y2="342" stroke="#415A77" stroke-width="5"/><circle cx="1480" cy="342" r="8" fill="#415A77"/><circle cx="1540" cy="342" r="8" fill="#CBD5E1"/><circle cx="1600" cy="342" r="8" fill="#CBD5E1"/><text class="sans tiny muted" x="1440" y="370">top-K boundary</text>
+<line x1="1440" y1="400" x2="1690" y2="400" stroke="#415A77" stroke-width="5"/><circle cx="1480" cy="400" r="8" fill="#415A77"/><circle cx="1540" cy="400" r="8" fill="#415A77"/><circle cx="1600" cy="400" r="8" fill="#CBD5E1"/><text class="sans tiny muted" x="1440" y="428">priority may reorder the shortlist</text>
+<!-- local recovery -->
+<line x1="1443" y1="442" x2="1443" y2="486" class="line" marker-end="url(#arrow)"/>
+<rect x="52" y="486" width="1696" height="336" rx="8" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="2"/>
+<text class="sans head" x="80" y="526">3. Stage II: local recovery for a shortlisted chain</text>
+<text class="sans small muted" x="80" y="555">Priority earns detailed review; it does not guarantee that a positive intervention is worthwhile.</text>
+<rect x="80" y="584" width="720" height="176" rx="7" fill="#FFFFFF" stroke="#C97920" stroke-width="2"/>
+<text class="sans body" x="108" y="624" font-weight="700" fill="#C97920">Within one selected chain</text>
+<text class="sans small" x="108" y="660">compare feasible local-recovery targets</text>
+<text class="sans small muted" x="108" y="700">turnaround feasibility + recovery effort</text>
+<line x1="108" y1="730" x2="700" y2="730" stroke="#C97920" stroke-width="5"/><circle cx="150" cy="730" r="9" fill="#CBD5E1"/><circle cx="350" cy="730" r="9" fill="#C97920"/><circle cx="550" cy="730" r="9" fill="#C97920"/>
+<text class="sans tiny muted" x="108" y="752">no recovery</text><text class="sans tiny muted" x="314" y="752">positive target</text><text class="sans tiny muted" x="514" y="752">larger target</text>
+<rect x="878" y="584" width="812" height="176" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="906" y="624" font-weight="700" fill="#415A77">What the paper evaluates</text>
+<text class="sans small" x="906" y="662">Whether retaining operating distinctions changes</text>
+<text class="sans small" x="906" y="692">the shortlist or the local-recovery target.</text>
+<text class="sans small muted" x="906" y="730">Information value is decision-specific.</text>
+</svg>

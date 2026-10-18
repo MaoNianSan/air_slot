@@ -1,0 +1,38 @@
+{
+  "gate": "M5_PHASE_A_2019_LEGACY_PATH_EQUIVALENCE",
+  "definition": "legacy sampler + legacy 128/64/128 + legacy 2019 path; proves the M4a/M4b parameterization did not break legacy",
+  "checks": {
+    "A1_pool_counts_exact": {
+      "status": "PASS",
+      "evidence": "PRE_MULTIYEAR_V1/2019/GATE_2019_REPRODUCTION.json",
+      "values": {
+        "development_pool_equals_stream_pre_eligible": true,
+        "no_final_test_access": true,
+        "pool_sizes": true,
+        "state_key": true
+      }
+    },
+    "A2_state_key_exact": {
+      "status": "PASS",
+      "value": "sha256:c4f2af99f145e0daf6ac3d6e7ec5312b12695c2c0dad99cb9c23a3a58f7c2800"
+    },
+    "A3_scientific_values_exact": {
+      "status": "PASS",
+      "taxi_vs_legacy_a2_diagnostic": {
+        "cells": 349,
+        "identical": true
+      },
+      "turnaround_vs_current_semantics_a2": {
+        "cells": 349,
+        "identical": true,
+        "note": "current-semantics lineage exact; legacy-vs-current turnaround delta (336 airports) was adjudicated by the approved signed-delay semantic correction gate (A2), not by M5"
+      },
+      "global_values": {
+        "taxi_minutes": 15.0,
+        "turnaround_minutes": 57.0
+      }
+    }
+  },
+  "status": "PASS",
+  "conclusion": "LEGACY_PATH_EQUIVALENCE established: the year/instance/resolver parameterization reproduces the legacy 2019 path exactly under the legacy sampler and legacy cohort counts."
+}

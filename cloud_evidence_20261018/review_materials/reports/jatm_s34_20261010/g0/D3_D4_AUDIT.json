@@ -1,0 +1,28 @@
+{
+  "schema_version": "JATM_S34_D3_D4_AUDIT_V1",
+  "source_git_head": "2ea652e",
+  "d3": {
+    "status": "PASS_FORMULA_FROZEN",
+    "primary_formula": "P^D * expected_passengers_per_flight",
+    "primary_interpretation": "expected passenger-time exposure proxy",
+    "companion_formula": "P^D * expected_downstream_exposure",
+    "companion_interpretation": "downstream exposure proxy",
+    "excluded_formula": "P^D * expected_passengers_per_flight * expected_downstream_exposure",
+    "availability_rule": "train-frozen references only; no held-out Test adjustment",
+    "common_support_rule": "P^D common-support attestation and reference support required",
+    "implementation": "exp/jatm_s34/delay_exposure.py"
+  },
+  "d4": {
+    "requested_source": "2017 H1 Train frozen seven-component CU scale",
+    "status": "BLOCKED_SOURCE_NOT_FOUND_2017_H1",
+    "candidate_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2017\\M2_REFERENCES\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+    "candidate_exists": false,
+    "2017_h1_turnaround_reference_exists": true,
+    "2017_h1_taxi_reference_exists": true,
+    "nearby_2019_h1_scale": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2019\\M2_REFERENCES\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+    "nearby_2019_h1_scale_hash": "sha256:322d9805a9e28aa121d30555dd5cf720c4c75e95075297b6122d9d952eb76ef1",
+    "diagnostic_2019_h1_scale": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\passenger_reference_freeze_v4\\M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+    "diagnostic_2019_h1_scale_hash": "sha256:f8058c97614d1761ba835578cdc8728f297fb0fe22d9da41ec5f02d5522e7711",
+    "decision": "do not substitute 2019 H1 or construct a new common scale"
+  }
+}

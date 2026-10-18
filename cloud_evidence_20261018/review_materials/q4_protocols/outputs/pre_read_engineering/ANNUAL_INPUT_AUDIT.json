@@ -1,0 +1,1084 @@
+{
+  "created_at_utc": "2026-10-15T01:08:46.308425+00:00",
+  "final_test_access_count": 0,
+  "schema_version": "JATM_ANNUAL_INPUT_CONTRACT_V1",
+  "status": "READY_TO_RUN",
+  "years": [
+    {
+      "audit": {
+        "annual_m1_current_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2017\\M1_CURRENT_COMPARATOR.pt",
+        "annual_m1_history_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2017\\M1_HISTORY_PRIMARY.pt",
+        "annual_m1_main_model_available": true,
+        "cohort_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "final_test_access_count": 0,
+        "input_hashes": {
+          "cohort_state": "sha256:780308449c52572f3af2ce567223df54e2a181281ae3764c0971296127cddafe",
+          "m2_manifest": "sha256:70d62c2b2a21209bac0a7758b65bb3cee763ed847b9e07b6f6b101af3530b307",
+          "pre_manifest": "sha256:53f0403b7c42ee25e412cfb218c190a604c6f87f3e62326347bd3a3319699fd5",
+          "split_audit": "sha256:afe0c7f2ed1dee074e84387fa1e64aeb8e234e311cbc62f7af792e4a2f753824",
+          "states": "sha256:def84c7b8362953d4dc39ebefe8698160a50bea27fb67d321246194ddf84d942"
+        },
+        "m2_scale_keys": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_itinerary",
+          "P_service",
+          "P_time",
+          "R_operating"
+        ],
+        "m2_scale_positive": true,
+        "pilot_n128_is_scientific_model": false,
+        "reasons": [],
+        "required_paths": {
+          "cohort_state": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2017\\COHORT_PREPARATION_STATE.pt",
+          "m2_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2017\\M2_REFERENCES\\M2_REFERENCE_BUNDLE_MANIFEST.json",
+          "pre_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2017\\PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+          "split_audit": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2017\\SPLIT_CONTAINMENT_AUDIT.json",
+          "states": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2017\\PRE_FORMAL_DEVELOPMENT_STATES.jsonl"
+        }
+      },
+      "final_test_access_count": 0,
+      "m2_manifest": {
+        "created_at_utc": "2026-10-11T07:09:10+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "db1b_admissibility": "Q1 + Q2 of Y",
+        "fit_window": {
+          "end": "2017-06-30",
+          "start": "2017-01-01"
+        },
+        "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+        "non_physical_rotation_flights_excluded": 2,
+        "payload_hashes": {
+          "connection_share": "sha256:7a91df22705362a2465dbb020d483dea5b1ac088dc117d4edcaceff16b543723",
+          "downstream_exposure": "sha256:bde6d8923137228613db69f7d203ba86038d1330483e6852de20e5c0a8191c00",
+          "expected_passengers": "sha256:42b994c9c14085e18731a973e24d9b7eef618624788c13cb233edb2b19d18388",
+          "passenger": "sha256:20d9442ba149cb6f05bf764d33108ef69b58862ecd3570931c4beb0e6b6febdb",
+          "taxi": "sha256:083211b3145fddf8737da867d02a6a762022f9e5033210f4744b648a6c894c4f",
+          "turnaround": "sha256:728635291b03fcff650df3382bd9fa95dd9040d27af9e42adcc06766bd441597"
+        },
+        "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+        "scale_median_preview": {
+          "F_continuity": 40.0,
+          "F_execution": 17.0,
+          "F_propagation": 10.0,
+          "P_itinerary": 11.45907189802828,
+          "P_service": 115.52173913043478,
+          "P_time": 1022.3710247349823,
+          "R_operating": 5.0
+        },
+        "schema_version": "M2_REFERENCE_BUNDLE_V1",
+        "t100_admissibility": "YEAR == Y and MONTH <= 6",
+        "year": 2017
+      },
+      "m2_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2017\\M2_REFERENCES",
+      "manifest": {
+        "cohort_audit": {
+          "additional_development_episode_count": 0,
+          "cohort_counts": {
+            "calibration": 64,
+            "development": 128,
+            "test": 0,
+            "train": 128
+          },
+          "cohort_seed": 20260813,
+          "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+          "final_test_access_count": 0,
+          "ontime_rows_by_month": {
+            "01": 432795,
+            "02": 397361,
+            "03": 472291,
+            "04": 453313,
+            "05": 475153,
+            "06": 480448,
+            "07": 494065,
+            "08": 491643,
+            "09": 439943
+          },
+          "ontime_rows_skipped": 139445,
+          "pool_sizes": {
+            "calibration": 378604,
+            "development": 711892,
+            "test": 0,
+            "train": 2052860
+          },
+          "pre_decision_nodes": {
+            "calibration": 922,
+            "development": 1773,
+            "train": 1810
+          },
+          "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+          "sampled_episodes": {
+            "calibration": 64,
+            "development": 128,
+            "train": 128
+          },
+          "stage_counts": {
+            "calibration": {
+              "COMPLETED": 2,
+              "POST_IB_PRE_OB": 750,
+              "POST_OB_PRE_TO": 54,
+              "PRE_IB": 116
+            },
+            "development": {
+              "COMPLETED": 4,
+              "POST_IB_PRE_OB": 1431,
+              "POST_OB_PRE_TO": 106,
+              "PRE_IB": 232
+            },
+            "train": {
+              "COMPLETED": 3,
+              "POST_IB_PRE_OB": 1360,
+              "POST_OB_PRE_TO": 76,
+              "PRE_IB": 371
+            }
+          },
+          "total_episode_pool": 3143356,
+          "weather": {
+            "accepted_train_calibration_development_observations": 473697,
+            "airports": 48,
+            "final_test_access_count": 0
+          }
+        },
+        "created_at_utc": "2026-09-28T19:45:02+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "development_episode_count": 128,
+        "development_node_count": 1773,
+        "final_test_access_count": 0,
+        "pool_sizes": {
+          "calibration": 378604,
+          "development": 711892,
+          "test": 0,
+          "train": 2052860
+        },
+        "prestate_count": 1773,
+        "sampled_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+        "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+        "taxi_reference": {
+          "cells_count": 306,
+          "fit_period": "2017-H1",
+          "global_sample_count": 2711361,
+          "reference_id": "sha256:cf6b2e288c70605ccc51a186d4502cef036546c8a2535450f2cd9a8d03dacae7"
+        },
+        "turnaround_reference": {
+          "cells_count": 306,
+          "fit_period": "2017-H1",
+          "global_sample_count": 2055809,
+          "reference_id": "sha256:903a04743e30e405601f33802c7adc2b7e9305873d9a9647949952a0a56c6ac4"
+        },
+        "year": 2017
+      },
+      "pre_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2017",
+      "scientific_status": "READY_TO_RUN",
+      "status": "READY_TO_RUN",
+      "year": 2017
+    },
+    {
+      "audit": {
+        "annual_m1_current_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2018\\M1_CURRENT_COMPARATOR.pt",
+        "annual_m1_history_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2018\\M1_HISTORY_PRIMARY.pt",
+        "annual_m1_main_model_available": true,
+        "cohort_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "final_test_access_count": 0,
+        "input_hashes": {
+          "cohort_state": "sha256:598b22452f0ea70bde486f7c18c5f22e5ad3df2789b0d29d636fa6a36077559e",
+          "m2_manifest": "sha256:3f1bd3c89a8aebc60e38b968271c81a75551db2f371499ef0a04ebbd23434693",
+          "pre_manifest": "sha256:0081ec2cc32579fca5729f47bcd1485a4dc0dcfa08792d7b3d28f7dae58e2391",
+          "split_audit": "sha256:932ad08b412bafb032545ae1f02d33538023d70cb74b3f4dba7bd931a1056692",
+          "states": "sha256:acdae3c53f1263910416659c044395662f018bec0408347405a7914636a246ae"
+        },
+        "m2_scale_keys": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_itinerary",
+          "P_service",
+          "P_time",
+          "R_operating"
+        ],
+        "m2_scale_positive": true,
+        "pilot_n128_is_scientific_model": false,
+        "reasons": [],
+        "required_paths": {
+          "cohort_state": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2018\\COHORT_PREPARATION_STATE.pt",
+          "m2_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2018\\M2_REFERENCES\\M2_REFERENCE_BUNDLE_MANIFEST.json",
+          "pre_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2018\\PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+          "split_audit": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2018\\SPLIT_CONTAINMENT_AUDIT.json",
+          "states": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2018\\PRE_FORMAL_DEVELOPMENT_STATES.jsonl"
+        }
+      },
+      "final_test_access_count": 0,
+      "m2_manifest": {
+        "created_at_utc": "2026-10-11T10:50:30+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "db1b_admissibility": "Q1 + Q2 of Y",
+        "fit_window": {
+          "end": "2018-06-30",
+          "start": "2018-01-01"
+        },
+        "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+        "non_physical_rotation_flights_excluded": 0,
+        "payload_hashes": {
+          "connection_share": "sha256:b3687560a638c40411259ee716add0996787789e40f2251944ce225e95b45fa4",
+          "downstream_exposure": "sha256:e45d4dc691a3671a3868ec310bf48fe334d3fe1ed32de0d64987f3e6b2b4a9af",
+          "expected_passengers": "sha256:e516a54068be06767a0139418750bb6512b4c09f914bf69356e35a0bfeede6b6",
+          "passenger": "sha256:e696c27e70c62867de66c7c485ec16bf78acd193a42da260d9b3b3108eeb92d6",
+          "taxi": "sha256:6186517f0da1392d46dcc28f2b2a2d7f641b770556c977919d0b8eb8c204abe3",
+          "turnaround": "sha256:fccbcd90328908f4e45afffc3dfc1524404b85650b0640a7a5cc4a5db10a43ba"
+        },
+        "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+        "scale_median_preview": {
+          "F_continuity": 41.0,
+          "F_execution": 16.0,
+          "F_propagation": 10.0,
+          "P_itinerary": 10.095328130152797,
+          "P_service": 106.74166666666666,
+          "P_time": 918.3999999999999,
+          "R_operating": 5.0
+        },
+        "schema_version": "M2_REFERENCE_BUNDLE_V1",
+        "t100_admissibility": "YEAR == Y and MONTH <= 6",
+        "year": 2018
+      },
+      "m2_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2018\\M2_REFERENCES",
+      "manifest": {
+        "cohort_audit": {
+          "additional_development_episode_count": 0,
+          "cohort_counts": {
+            "calibration": 64,
+            "development": 128,
+            "test": 0,
+            "train": 128
+          },
+          "cohort_seed": 20260813,
+          "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+          "final_test_access_count": 0,
+          "ontime_rows_by_month": {
+            "01": 546560,
+            "02": 505604,
+            "03": 588049,
+            "04": 582625,
+            "05": 601533,
+            "06": 606416,
+            "07": 624630,
+            "08": 616226,
+            "09": 571222
+          },
+          "ontime_rows_skipped": 167129,
+          "pool_sizes": {
+            "calibration": 481415,
+            "development": 910427,
+            "test": 0,
+            "train": 2628470
+          },
+          "pre_decision_nodes": {
+            "calibration": 785,
+            "development": 1859,
+            "train": 1715
+          },
+          "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+          "sampled_episodes": {
+            "calibration": 64,
+            "development": 128,
+            "train": 128
+          },
+          "stage_counts": {
+            "calibration": {
+              "COMPLETED": 2,
+              "POST_IB_PRE_OB": 606,
+              "POST_OB_PRE_TO": 57,
+              "PRE_IB": 120
+            },
+            "development": {
+              "COMPLETED": 7,
+              "POST_IB_PRE_OB": 1369,
+              "POST_OB_PRE_TO": 126,
+              "PRE_IB": 357
+            },
+            "train": {
+              "COMPLETED": 7,
+              "POST_IB_PRE_OB": 1360,
+              "POST_OB_PRE_TO": 105,
+              "PRE_IB": 243
+            }
+          },
+          "total_episode_pool": 4020312,
+          "weather": {
+            "accepted_train_calibration_development_observations": 480258,
+            "airports": 48,
+            "final_test_access_count": 0
+          }
+        },
+        "created_at_utc": "2026-09-28T21:53:09+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "development_episode_count": 128,
+        "development_node_count": 1859,
+        "final_test_access_count": 0,
+        "pool_sizes": {
+          "calibration": 481415,
+          "development": 910427,
+          "test": 0,
+          "train": 2628470
+        },
+        "prestate_count": 1859,
+        "sampled_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+        "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+        "taxi_reference": {
+          "cells_count": 343,
+          "fit_period": "2018-H1",
+          "global_sample_count": 3430787,
+          "reference_id": "sha256:cd0b65d220cf33c75acf801b3503b54352304967d98fd22dd53d190838d7ae02"
+        },
+        "turnaround_reference": {
+          "cells_count": 343,
+          "fit_period": "2018-H1",
+          "global_sample_count": 2631097,
+          "reference_id": "sha256:01637fa5e83597e56271352c89f11578f0b66d3382160b925127dc349a8efa82"
+        },
+        "year": 2018
+      },
+      "pre_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2018",
+      "scientific_status": "READY_TO_RUN",
+      "status": "READY_TO_RUN",
+      "year": 2018
+    },
+    {
+      "audit": {
+        "annual_m1_current_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2019\\M1_CURRENT_COMPARATOR.pt",
+        "annual_m1_history_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2019\\M1_HISTORY_PRIMARY.pt",
+        "annual_m1_main_model_available": true,
+        "cohort_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "final_test_access_count": 0,
+        "input_hashes": {
+          "cohort_state": "sha256:7e3e6cf767c0c5ca2225d551c07d10fb11ca68b22766ef7f2b0afa2866f85759",
+          "m2_manifest": "sha256:de5839f63bc7aa597effc670d31a400b45a5ffa2124b3dcc51d68b11bf04ff39",
+          "pre_manifest": "sha256:b7e7a8869e1525a494ff622a454850f854d518af7c464d4812b1c55eee0841f2",
+          "split_audit": "sha256:17d1d48a44f79fce1bcee306396039732d04b73e24ad35e2f7a7d95951196622",
+          "states": "sha256:965386b8f40ed7698e58f913599db424ce67853efa2c0943f458b5291bf8ddd5"
+        },
+        "m2_scale_keys": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_itinerary",
+          "P_service",
+          "P_time",
+          "R_operating"
+        ],
+        "m2_scale_positive": true,
+        "pilot_n128_is_scientific_model": false,
+        "reasons": [],
+        "required_paths": {
+          "cohort_state": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2019\\COHORT_PREPARATION_STATE.pt",
+          "m2_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2019\\M2_REFERENCES\\M2_REFERENCE_BUNDLE_MANIFEST.json",
+          "pre_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2019\\PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+          "split_audit": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2019\\SPLIT_CONTAINMENT_AUDIT.json",
+          "states": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2019\\PRE_FORMAL_DEVELOPMENT_STATES.jsonl"
+        }
+      },
+      "final_test_access_count": 0,
+      "m2_manifest": {
+        "created_at_utc": "2026-09-30T05:57:45+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "db1b_admissibility": "Q1 + Q2 of Y",
+        "fit_window": {
+          "end": "2019-06-30",
+          "start": "2019-01-01"
+        },
+        "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+        "payload_hashes": {
+          "connection_share": "sha256:a7454f0ca6a826e65459d04c453e81d0abb1b93cbafcc477f76bbee09b571fba",
+          "downstream_exposure": "sha256:a8865f48b2426876c432bfe4fa7f73ac42b3868056ffbc3d4cd6bad7cedcbb13",
+          "expected_passengers": "sha256:7839181ba7fcab2c9dac5864c58319f6f2093b07826018f1ee4136a524e10e5b",
+          "passenger": "sha256:fe552ba4218b5debfb53c72863bd5b3d5805d10aef4e3a0935d71a44efd07f62",
+          "taxi": "sha256:cbf021bf5211b9bb3218956bb8fa048e2020e042e6ae0b1ea392404c3b98a698",
+          "turnaround": "sha256:5b31a13665679cbedaf99b8b10e8ef6f2c0e428a042b78ca85444d822004c10e"
+        },
+        "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+        "scale_median_preview": {
+          "F_continuity": 44.0,
+          "F_execution": 17.0,
+          "F_propagation": 10.0,
+          "P_itinerary": 9.882948210182091,
+          "P_service": 104.88473684210527,
+          "P_time": 990.3555555555556,
+          "R_operating": 5.0
+        },
+        "schema_version": "M2_REFERENCE_BUNDLE_V1",
+        "t100_admissibility": "YEAR == Y and MONTH <= 6",
+        "year": 2019
+      },
+      "m2_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2019\\M2_REFERENCES",
+      "manifest": {
+        "cohort_audit": {
+          "additional_development_episode_count": 0,
+          "cohort_counts": {
+            "calibration": 64,
+            "development": 128,
+            "test": 0,
+            "train": 128
+          },
+          "cohort_seed": 20260813,
+          "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+          "final_test_access_count": 0,
+          "ontime_rows_by_month": {
+            "01": 559098,
+            "02": 510259,
+            "03": 611338,
+            "04": 589233,
+            "05": 614364,
+            "06": 613368,
+            "07": 635790,
+            "08": 638146,
+            "09": 589317
+          },
+          "ontime_rows_skipped": 196894,
+          "pool_sizes": {
+            "calibration": 490886,
+            "development": 946184,
+            "test": 0,
+            "train": 2665240
+          },
+          "pre_decision_nodes": {
+            "calibration": 1103,
+            "development": 1994,
+            "train": 1672
+          },
+          "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+          "sampled_episodes": {
+            "calibration": 64,
+            "development": 128,
+            "train": 128
+          },
+          "stage_counts": {
+            "calibration": {
+              "COMPLETED": 4,
+              "POST_IB_PRE_OB": 876,
+              "POST_OB_PRE_TO": 52,
+              "PRE_IB": 171
+            },
+            "development": {
+              "COMPLETED": 4,
+              "POST_IB_PRE_OB": 1573,
+              "POST_OB_PRE_TO": 103,
+              "PRE_IB": 314
+            },
+            "train": {
+              "COMPLETED": 5,
+              "POST_IB_PRE_OB": 1400,
+              "POST_OB_PRE_TO": 110,
+              "PRE_IB": 157
+            }
+          },
+          "total_episode_pool": 4102310,
+          "weather": {
+            "accepted_train_calibration_development_observations": 473979,
+            "airports": 48,
+            "final_test_access_count": 0
+          }
+        },
+        "created_at_utc": "2026-09-28T17:55:15+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "development_episode_count": 128,
+        "development_node_count": 1994,
+        "final_test_access_count": 0,
+        "pool_sizes": {
+          "calibration": 490886,
+          "development": 946184,
+          "test": 0,
+          "train": 2665240
+        },
+        "prestate_count": 1994,
+        "sampled_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+        "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+        "taxi_reference": {
+          "cells_count": 349,
+          "fit_period": "2019-H1",
+          "global_sample_count": 3497660,
+          "reference_id": "sha256:be1a68b0c51c77da35f0ec631c2f846a79dd073d8b29ca49ee42b2d1de4e5c66"
+        },
+        "turnaround_reference": {
+          "cells_count": 349,
+          "fit_period": "2019-H1",
+          "global_sample_count": 2668529,
+          "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57"
+        },
+        "year": 2019
+      },
+      "pre_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2019",
+      "scientific_status": "READY_TO_RUN",
+      "status": "READY_TO_RUN",
+      "year": 2019
+    },
+    {
+      "audit": {
+        "annual_m1_current_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2020\\M1_CURRENT_COMPARATOR.pt",
+        "annual_m1_history_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2020\\M1_HISTORY_PRIMARY.pt",
+        "annual_m1_main_model_available": true,
+        "cohort_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "final_test_access_count": 0,
+        "input_hashes": {
+          "cohort_state": "sha256:514cbb6f87b79a4ca4d8fa1a349e69f0c8aed942d973a2a71c4165ceb0ba5a32",
+          "m2_manifest": "sha256:3bf96788de774072dd94f7eb315fb531855ce45bf35883b948e7e238e560c0c1",
+          "pre_manifest": "sha256:aba37e64c91282b3a2e0f9c087e3ac1d5d32766f2176619d9cccbfb673d7b7e1",
+          "split_audit": "sha256:cfee63e6560e9d76a0f20cf55cff818947eecb75235f0f6d08c8a967231ee314",
+          "states": "sha256:f55e9e4c134da1e5d99aad769cbd972a5c564702bf43be5e49f7b5a3619fc73a"
+        },
+        "m2_scale_keys": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_itinerary",
+          "P_service",
+          "P_time",
+          "R_operating"
+        ],
+        "m2_scale_positive": true,
+        "pilot_n128_is_scientific_model": false,
+        "reasons": [],
+        "required_paths": {
+          "cohort_state": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2020\\COHORT_PREPARATION_STATE.pt",
+          "m2_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2020\\M2_REFERENCES\\M2_REFERENCE_BUNDLE_MANIFEST.json",
+          "pre_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2020\\PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+          "split_audit": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2020\\SPLIT_CONTAINMENT_AUDIT.json",
+          "states": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2020\\PRE_FORMAL_DEVELOPMENT_STATES.jsonl"
+        }
+      },
+      "final_test_access_count": 0,
+      "m2_manifest": {
+        "created_at_utc": "2026-09-30T06:51:11+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "db1b_admissibility": "Q1 + Q2 of Y",
+        "fit_window": {
+          "end": "2020-06-30",
+          "start": "2020-01-01"
+        },
+        "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+        "payload_hashes": {
+          "connection_share": "sha256:68cba096c5b1579219cc4dea6b6a3a2ef222178796de9ab6180570cb17fb1176",
+          "downstream_exposure": "sha256:beb950a0d872d1a5dc2a73eb7d0156b86b5f7d4f7dd5929faa7954dfdcb81d17",
+          "expected_passengers": "sha256:5146850df03b13eb10e8ca695efe242300d00942a3717b7579b4718480e1b691",
+          "passenger": "sha256:4208c9661815bc64fee34c55b97d00316277fc6b226ec1fd8f632412b7faa6f9",
+          "taxi": "sha256:ac346761c5ab021d361403a616ac59a11b4e3245bcc138ab09839c32bbe54c10",
+          "turnaround": "sha256:d23ac9d2c29ef3ce411c4e526eb19ff61b106e89ae163046beb8f31069c860f7"
+        },
+        "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+        "scale_median_preview": {
+          "F_continuity": 41.25,
+          "F_execution": 14.0,
+          "F_propagation": 7.0,
+          "P_itinerary": 8.230148060278546,
+          "P_service": 62.26086956521739,
+          "P_time": 509.55652173913046,
+          "R_operating": 5.0
+        },
+        "schema_version": "M2_REFERENCE_BUNDLE_V1",
+        "t100_admissibility": "YEAR == Y and MONTH <= 6",
+        "year": 2020
+      },
+      "m2_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2020\\M2_REFERENCES",
+      "manifest": {
+        "cohort_audit": {
+          "additional_development_episode_count": 0,
+          "cohort_counts": {
+            "calibration": 64,
+            "development": 128,
+            "test": 0,
+            "train": 128
+          },
+          "cohort_seed": 20260813,
+          "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+          "final_test_access_count": 0,
+          "ontime_rows_by_month": {
+            "01": 591372,
+            "02": 560960,
+            "03": 530264,
+            "04": 180992,
+            "05": 166935,
+            "06": 219372,
+            "07": 343277,
+            "08": 366366,
+            "09": 316979
+          },
+          "ontime_rows_skipped": 324007,
+          "pool_sizes": {
+            "calibration": 239916,
+            "development": 477873,
+            "test": 0,
+            "train": 1637411
+          },
+          "pre_decision_nodes": {
+            "calibration": 1113,
+            "development": 1954,
+            "train": 2077
+          },
+          "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+          "sampled_episodes": {
+            "calibration": 64,
+            "development": 128,
+            "train": 128
+          },
+          "stage_counts": {
+            "calibration": {
+              "COMPLETED": 8,
+              "POST_IB_PRE_OB": 985,
+              "POST_OB_PRE_TO": 76,
+              "PRE_IB": 44
+            },
+            "development": {
+              "COMPLETED": 8,
+              "POST_IB_PRE_OB": 1679,
+              "POST_OB_PRE_TO": 145,
+              "PRE_IB": 122
+            },
+            "train": {
+              "COMPLETED": 14,
+              "POST_IB_PRE_OB": 1784,
+              "POST_OB_PRE_TO": 157,
+              "PRE_IB": 122
+            }
+          },
+          "total_episode_pool": 2355200,
+          "weather": {
+            "accepted_train_calibration_development_observations": 475111,
+            "airports": 48,
+            "final_test_access_count": 0
+          }
+        },
+        "created_at_utc": "2026-09-28T23:06:35+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "development_episode_count": 128,
+        "development_node_count": 1954,
+        "final_test_access_count": 0,
+        "pool_sizes": {
+          "calibration": 239916,
+          "development": 477873,
+          "test": 0,
+          "train": 1637411
+        },
+        "prestate_count": 1954,
+        "sampled_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+        "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+        "taxi_reference": {
+          "cells_count": 353,
+          "fit_period": "2020-H1",
+          "global_sample_count": 2249895,
+          "reference_id": "sha256:0263777bbf6575312712693ae48dbad1ceb2a6df8848e85cfd0d2c3c924118de"
+        },
+        "turnaround_reference": {
+          "cells_count": 352,
+          "fit_period": "2020-H1",
+          "global_sample_count": 1638260,
+          "reference_id": "sha256:7cfc47e439d0b9035ad147b0867387ea11135483e079d1f689f4b9efc18bbfa2"
+        },
+        "year": 2020
+      },
+      "pre_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2020",
+      "scientific_status": "READY_TO_RUN",
+      "status": "READY_TO_RUN",
+      "year": 2020
+    },
+    {
+      "audit": {
+        "annual_m1_current_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2021\\M1_CURRENT_COMPARATOR.pt",
+        "annual_m1_history_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2021\\M1_HISTORY_PRIMARY.pt",
+        "annual_m1_main_model_available": true,
+        "cohort_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "final_test_access_count": 0,
+        "input_hashes": {
+          "cohort_state": "sha256:6822fe8c3a5c9004c025f7674c70c79fd28a2fe770b78d0e17596e6e36215b7a",
+          "m2_manifest": "sha256:b672d4f03cf814637d02b64161af3e89148e77ce38bd0ff1d409c8e15c233528",
+          "pre_manifest": "sha256:4ed668e2b7c894d5f45da455ac239fe41ec08dc954e1a0b4831e14347bb09b7c",
+          "split_audit": "sha256:274ff4267254fa8b532276ac4a594183834dd952f119066778c8334768dbcd23",
+          "states": "sha256:fbee53560b42c77412e64555133327cf94fd2df8977902aa8cbd6859ea71cf28"
+        },
+        "m2_scale_keys": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_itinerary",
+          "P_service",
+          "P_time",
+          "R_operating"
+        ],
+        "m2_scale_positive": true,
+        "pilot_n128_is_scientific_model": false,
+        "reasons": [],
+        "required_paths": {
+          "cohort_state": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2021\\COHORT_PREPARATION_STATE.pt",
+          "m2_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2021\\M2_REFERENCES\\M2_REFERENCE_BUNDLE_MANIFEST.json",
+          "pre_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2021\\PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+          "split_audit": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2021\\SPLIT_CONTAINMENT_AUDIT.json",
+          "states": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2021\\PRE_FORMAL_DEVELOPMENT_STATES.jsonl"
+        }
+      },
+      "final_test_access_count": 0,
+      "m2_manifest": {
+        "created_at_utc": "2026-10-11T11:15:27+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "db1b_admissibility": "Q1 + Q2 of Y",
+        "fit_window": {
+          "end": "2021-06-30",
+          "start": "2021-01-01"
+        },
+        "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+        "non_physical_rotation_flights_excluded": 0,
+        "payload_hashes": {
+          "connection_share": "sha256:b36abb41724d101dd1feb923b1ac4255903d5073c86cc29f2e623f3814fd5172",
+          "downstream_exposure": "sha256:ec5f81eb7de983a225d500081f9e358e0882254140c9d3bd76900dd30f23067c",
+          "expected_passengers": "sha256:3154e203e06d75fa9759f58a5b90a2e9bbccfa049cfdcdd1b961883d7bbc4f57",
+          "passenger": "sha256:c060fd60f274003f58c976a2ff62272c0dbef478fcd41857bb6b163e36914fc1",
+          "taxi": "sha256:5ebd43761371b3d5af35cd3853654625b97176643c5072328a0e2df99ac48731",
+          "turnaround": "sha256:25ba3b1852358ee3b0c745777220f0252690f79d2bb8550b0ab81687fff4b87f"
+        },
+        "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+        "scale_median_preview": {
+          "F_continuity": 45.0,
+          "F_execution": 14.0,
+          "F_propagation": 8.0,
+          "P_itinerary": 10.169669534040217,
+          "P_service": 89.45604395604396,
+          "P_time": 624.6050847457627,
+          "R_operating": 4.0
+        },
+        "schema_version": "M2_REFERENCE_BUNDLE_V1",
+        "t100_admissibility": "YEAR == Y and MONTH <= 6",
+        "year": 2021
+      },
+      "m2_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2021\\M2_REFERENCES",
+      "manifest": {
+        "cohort_audit": {
+          "additional_development_episode_count": 0,
+          "cohort_counts": {
+            "calibration": 64,
+            "development": 128,
+            "test": 0,
+            "train": 128
+          },
+          "cohort_seed": 20260813,
+          "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+          "final_test_access_count": 0,
+          "ontime_rows_by_month": {
+            "01": 351195,
+            "02": 308096,
+            "03": 430017,
+            "04": 439002,
+            "05": 482214,
+            "06": 525409,
+            "07": 561382,
+            "08": 550475,
+            "09": 523307
+          },
+          "ontime_rows_skipped": 160068,
+          "pool_sizes": {
+            "calibration": 419705,
+            "development": 799702,
+            "test": 0,
+            "train": 1809799
+          },
+          "pre_decision_nodes": {
+            "calibration": 909,
+            "development": 1992,
+            "train": 1985
+          },
+          "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+          "sampled_episodes": {
+            "calibration": 64,
+            "development": 128,
+            "train": 128
+          },
+          "stage_counts": {
+            "calibration": {
+              "COMPLETED": 1,
+              "POST_IB_PRE_OB": 791,
+              "POST_OB_PRE_TO": 37,
+              "PRE_IB": 80
+            },
+            "development": {
+              "POST_IB_PRE_OB": 1609,
+              "POST_OB_PRE_TO": 87,
+              "PRE_IB": 296
+            },
+            "train": {
+              "COMPLETED": 4,
+              "POST_IB_PRE_OB": 1722,
+              "POST_OB_PRE_TO": 132,
+              "PRE_IB": 127
+            }
+          },
+          "total_episode_pool": 3029206,
+          "weather": {
+            "accepted_train_calibration_development_observations": 469316,
+            "airports": 48,
+            "final_test_access_count": 0
+          }
+        },
+        "created_at_utc": "2026-09-29T01:11:07+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "development_episode_count": 128,
+        "development_node_count": 1992,
+        "final_test_access_count": 0,
+        "pool_sizes": {
+          "calibration": 419705,
+          "development": 799702,
+          "test": 0,
+          "train": 1809799
+        },
+        "prestate_count": 1992,
+        "sampled_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+        "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+        "taxi_reference": {
+          "cells_count": 359,
+          "fit_period": "2021-H1",
+          "global_sample_count": 2535933,
+          "reference_id": "sha256:594c9d6225a902f8191ea3878eb6114dea007f7c1d704d5f4dd32381e9160487"
+        },
+        "turnaround_reference": {
+          "cells_count": 358,
+          "fit_period": "2021-H1",
+          "global_sample_count": 1812461,
+          "reference_id": "sha256:aefa3fe8cf43b219595c15826aae2e5c70c00705340f790e0fb75e735d782e09"
+        },
+        "year": 2021
+      },
+      "pre_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2021",
+      "scientific_status": "READY_TO_RUN",
+      "status": "READY_TO_RUN",
+      "year": 2021
+    },
+    {
+      "audit": {
+        "annual_m1_current_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2022\\M1_CURRENT_COMPARATOR.pt",
+        "annual_m1_history_path": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\m1\\YEAR_2022\\M1_HISTORY_PRIMARY.pt",
+        "annual_m1_main_model_available": true,
+        "cohort_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "final_test_access_count": 0,
+        "input_hashes": {
+          "cohort_state": "sha256:3edeb3c81e062d8f2a2b75aa32d528ab7c3df47802da203616c42c75b3ac5307",
+          "m2_manifest": "sha256:cba54e081dbc2427ae5d70b52674d30f4ea0ee8fcbd79993ec03d762f82aa0ae",
+          "pre_manifest": "sha256:31d80b85bc2726e0322ff0f8092513f23da9ccbcbe5cb7d002a35bc29646dc7a",
+          "split_audit": "sha256:1de995aa7bca86418f6378ffd582be2013937216e44e73c13b29a53735b02077",
+          "states": "sha256:0b6c7d64cbfcff3df0a15217b26714dd3bc3f1f727c77a5b7c6d30a9c2af7347"
+        },
+        "m2_scale_keys": [
+          "F_continuity",
+          "F_execution",
+          "F_propagation",
+          "P_itinerary",
+          "P_service",
+          "P_time",
+          "R_operating"
+        ],
+        "m2_scale_positive": true,
+        "pilot_n128_is_scientific_model": false,
+        "reasons": [],
+        "required_paths": {
+          "cohort_state": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2022\\COHORT_PREPARATION_STATE.pt",
+          "m2_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2022\\M2_REFERENCES\\M2_REFERENCE_BUNDLE_MANIFEST.json",
+          "pre_manifest": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2022\\PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+          "split_audit": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2022\\SPLIT_CONTAINMENT_AUDIT.json",
+          "states": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2022\\PRE_FORMAL_DEVELOPMENT_STATES.jsonl"
+        }
+      },
+      "final_test_access_count": 0,
+      "m2_manifest": {
+        "created_at_utc": "2026-10-11T11:47:49+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "db1b_admissibility": "Q1 + Q2 of Y",
+        "fit_window": {
+          "end": "2022-06-30",
+          "start": "2022-01-01"
+        },
+        "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+        "non_physical_rotation_flights_excluded": 0,
+        "payload_hashes": {
+          "connection_share": "sha256:860fcada39b9ecff258c1d25ec3316e23bd19dff8ef80902c1f6108c952ad4e1",
+          "downstream_exposure": "sha256:7c29f399258321acf392aaf11a7bf162564f7449a0070f47d5af390bad9d2f4b",
+          "expected_passengers": "sha256:5ca63123524ec6f0132e88285fd71f96834f01b8ec3b49f25eb06ebae0278234",
+          "passenger": "sha256:498255fc07fa97ed1ee932af21af76bd05ae3631dde938d44b7758d244d912cd",
+          "taxi": "sha256:f82c9871bd4a8a27cf4d48c384d8afccbd3d840abaff2bf141a3a981fea2dc73",
+          "turnaround": "sha256:86fa1cdd32a94f9065b5fb125088f35e7f34c91a985b81e69de47d5bc2bd7984"
+        },
+        "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+        "scale_median_preview": {
+          "F_continuity": 42.0,
+          "F_execution": 17.0,
+          "F_propagation": 10.0,
+          "P_itinerary": 10.574100308814986,
+          "P_service": 113.89918733361355,
+          "P_time": 1039.3777777777777,
+          "R_operating": 5.0
+        },
+        "schema_version": "M2_REFERENCE_BUNDLE_V1",
+        "t100_admissibility": "YEAR == Y and MONTH <= 6",
+        "year": 2022
+      },
+      "m2_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1\\2022\\M2_REFERENCES",
+      "manifest": {
+        "cohort_audit": {
+          "additional_development_episode_count": 0,
+          "cohort_counts": {
+            "calibration": 64,
+            "development": 128,
+            "test": 0,
+            "train": 128
+          },
+          "cohort_seed": 20260813,
+          "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+          "final_test_access_count": 0,
+          "ontime_rows_by_month": {
+            "01": 496223,
+            "02": 466574,
+            "03": 546684,
+            "04": 534265,
+            "05": 557481,
+            "06": 549688,
+            "07": 574074,
+            "08": 565634,
+            "09": 542044
+          },
+          "ontime_rows_skipped": 220666,
+          "pool_sizes": {
+            "calibration": 434494,
+            "development": 838441,
+            "test": 0,
+            "train": 2352702
+          },
+          "pre_decision_nodes": {
+            "calibration": 930,
+            "development": 1895,
+            "train": 1827
+          },
+          "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+          "sampled_episodes": {
+            "calibration": 64,
+            "development": 128,
+            "train": 128
+          },
+          "stage_counts": {
+            "calibration": {
+              "POST_IB_PRE_OB": 742,
+              "POST_OB_PRE_TO": 42,
+              "PRE_IB": 146
+            },
+            "development": {
+              "COMPLETED": 8,
+              "POST_IB_PRE_OB": 1485,
+              "POST_OB_PRE_TO": 95,
+              "PRE_IB": 307
+            },
+            "train": {
+              "COMPLETED": 4,
+              "POST_IB_PRE_OB": 1496,
+              "POST_OB_PRE_TO": 93,
+              "PRE_IB": 234
+            }
+          },
+          "total_episode_pool": 3625637,
+          "weather": {
+            "accepted_train_calibration_development_observations": 467388,
+            "airports": 48,
+            "final_test_access_count": 0
+          }
+        },
+        "created_at_utc": "2026-09-29T03:52:35+00:00",
+        "dataset_instance_id": "data2_2017_2022",
+        "development_episode_count": 128,
+        "development_node_count": 1895,
+        "final_test_access_count": 0,
+        "pool_sizes": {
+          "calibration": 434494,
+          "development": 838441,
+          "test": 0,
+          "train": 2352702
+        },
+        "prestate_count": 1895,
+        "sampled_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+        "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+        "taxi_reference": {
+          "cells_count": 361,
+          "fit_period": "2022-H1",
+          "global_sample_count": 3150915,
+          "reference_id": "sha256:d49866cd3cd7c2a3d8a6369b4e4c483c7647801b53a8055aaf5ba869e270e3d5"
+        },
+        "turnaround_reference": {
+          "cells_count": 361,
+          "fit_period": "2022-H1",
+          "global_sample_count": 2355997,
+          "reference_id": "sha256:86c6b38806a8cd161a5395a4485dc244b5edaeac42f4692027558e679f207d55"
+        },
+        "year": 2022
+      },
+      "pre_root": "D:\\Local_Projects\\airslot\\review_v64_20261014\\q4_extension\\code\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1\\2022",
+      "scientific_status": "READY_TO_RUN",
+      "status": "READY_TO_RUN",
+      "year": 2022
+    }
+  ]
+}

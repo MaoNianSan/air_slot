@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180mm" height="78mm" viewBox="0 0 1800 780">
+<defs>
+ <marker id="arrow" markerWidth="12" markerHeight="9" refX="10" refY="4.5" orient="auto"><path d="M0,0 L12,4.5 L0,9 Z" fill="#4B5563"/></marker>
+ <style>
+ .sans{font-family:"Times New Roman",Times,serif;fill:#1F2937}
+ .title{font-size:32px;font-weight:700}.head{font-size:28px;font-weight:700}
+ .body{font-size:25px}.small{font-size:21px}.tiny{font-size:18px}.muted{fill:#6B7280}
+ .rule{stroke:#CBD5E1;stroke-width:2}.line{stroke:#4B5563;stroke-width:3;fill:none}
+ </style>
+</defs>
+<rect width="1800" height="780" fill="#FFFFFF"/>
+<text class="sans title" x="52" y="52">How operational information changes a recovery decision</text>
+<text class="sans small muted" x="52" y="84">An AOCC example: similar delay can carry different recovery implications.</text>
+<line x1="52" y1="105" x2="1748" y2="105" class="rule"/>
+<line x1="600" y1="128" x2="600" y2="730" class="rule"/><line x1="1200" y1="128" x2="1200" y2="730" class="rule"/>
+<!-- Column 1: scenario -->
+<text class="sans head" x="72" y="148">1. At the AOCC</text>
+<text class="sans small muted" x="72" y="178">Two disrupted chains await recovery review.</text>
+<text class="sans tiny muted" x="72" y="218">decision epoch:  PRE  -  TURN  -  TAXI</text>
+<rect x="72" y="246" width="500" height="116" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="98" y="282" font-weight="700" fill="#415A77">Chain A</text>
+<text class="sans small" x="98" y="314">same delay baseline</text>
+<line x1="98" y1="337" x2="308" y2="337" stroke="#6B7280" stroke-width="7"/>
+<text class="sans small" x="336" y="344" fill="#415A77">Flight / continuity</text>
+<rect x="72" y="392" width="500" height="116" rx="7" fill="#FFFFFF" stroke="#C97920" stroke-width="2"/>
+<text class="sans body" x="98" y="428" font-weight="700" fill="#C97920">Chain B</text>
+<text class="sans small" x="98" y="460">same delay baseline</text>
+<line x1="98" y1="483" x2="308" y2="483" stroke="#6B7280" stroke-width="7"/>
+<text class="sans small" x="336" y="490" fill="#C97920">Passenger / downstream</text>
+<text class="sans small muted" x="72" y="564">Same delay signal.</text>
+<text class="sans small muted" x="72" y="596">Different operating context.</text>
+<line x1="572" y1="388" x2="628" y2="388" class="line" marker-end="url(#arrow)"/>
+<!-- Column 2: visible difference -->
+<text class="sans head" x="632" y="148">2. What the view retains</text>
+<text class="sans small muted" x="632" y="178">The difference is in the consequence composition.</text>
+<rect x="632" y="218" width="500" height="118" rx="7" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+<text class="sans body" x="658" y="255" font-weight="700">Delay alone</text>
+<text class="sans small" x="658" y="287">A and B appear close in priority</text>
+<line x1="658" y1="312" x2="1045" y2="312" stroke="#6B7280" stroke-width="7"/>
+<line x1="882" y1="346" x2="882" y2="382" class="line" marker-end="url(#arrow)"/>
+<text class="sans tiny muted" x="900" y="370">retain operating context</text>
+<rect x="632" y="394" width="500" height="150" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="658" y="431" font-weight="700">State-informed consequences</text>
+<text class="sans tiny muted" x="658" y="462">schematic composition, not a measured scale</text>
+<text class="sans small" x="658" y="494">Chain A</text>
+<rect x="770" y="478" width="90" height="18" fill="#415A77"/><rect x="860" y="478" width="55" height="18" fill="#9FB2C7"/><rect x="915" y="478" width="40" height="18" fill="#D9E0E7"/>
+<text class="sans small" x="658" y="530">Chain B</text>
+<rect x="770" y="514" width="40" height="18" fill="#D9E0E7"/><rect x="810" y="514" width="95" height="18" fill="#C97920"/><rect x="905" y="514" width="50" height="18" fill="#E7B77C"/>
+<text class="sans small" x="632" y="594" fill="#415A77">Composition differs; the active ordering may change.</text>
+<line x1="1132" y1="388" x2="1188" y2="388" class="line" marker-end="url(#arrow)"/>
+<!-- Column 3: decision comparison -->
+<text class="sans head" x="1232" y="148">3. What the AOCC compares</text>
+<text class="sans small muted" x="1232" y="178">Same information, different decision layers.</text>
+<rect x="1232" y="218" width="500" height="150" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="1258" y="255" font-weight="700" fill="#415A77">Screening</text>
+<text class="sans small" x="1258" y="288">across chains: A versus B</text>
+<text class="sans small muted" x="1258" y="322">limited review capacity</text>
+<line x1="1258" y1="346" x2="1680" y2="346" stroke="#415A77" stroke-width="4"/><circle cx="1300" cy="346" r="8" fill="#415A77"/><circle cx="1360" cy="346" r="8" fill="#CBD5E1"/><circle cx="1420" cy="346" r="8" fill="#CBD5E1"/>
+<rect x="1232" y="414" width="500" height="150" rx="7" fill="#FFFFFF" stroke="#C97920" stroke-width="2"/>
+<text class="sans body" x="1258" y="451" font-weight="700" fill="#C97920">Local recovery</text>
+<text class="sans small" x="1258" y="484">within one chain: no recovery versus positive target</text>
+<text class="sans small muted" x="1258" y="518">effort and feasibility</text>
+<line x1="1258" y1="542" x2="1680" y2="542" stroke="#C97920" stroke-width="4"/><circle cx="1300" cy="542" r="8" fill="#CBD5E1"/><circle cx="1360" cy="542" r="8" fill="#C97920"/><circle cx="1420" cy="542" r="8" fill="#C97920"/>
+<text class="sans small" x="1232" y="620">Information value is decision-specific.</text>
+<text class="sans small muted" x="1232" y="652">Priority and recoverability are related, but not identical.</text>
+</svg>

@@ -1,0 +1,39 @@
+{
+  "status": "EXPERIMENT_PREPARATION_COMPLETE",
+  "authority_checkout": "D:\\research\\air_slot\\code\\explore",
+  "branch": "v2/paper-primary",
+  "experiments": [
+    {
+      "experiment": "STAGE_Q_SCREENING_SENSITIVITY",
+      "research_purpose": "Test whether delay-based attention sufficiency varies by operating stage and screening capacity q.",
+      "existing_implementation": "formal/v2_phase7/stage_q_screening_sensitivity.py",
+      "missing_component": "No implementation gap found; only formal execution remains.",
+      "required_change": "None in this preparation pass.",
+      "status": "READY_TO_RUN",
+      "depends_on_unresolved_science": false,
+      "input_split": "sealed canonical-v2 epoch; no raw Final-Test access",
+      "output_schema": ["STAGE_Q_SCREENING_SUMMARY.csv", "STAGE_Q_SCREENING_RECORDS.parquet", "STAGE_Q_SCREENING_MANIFEST.json", "STAGE_Q_SCREENING_TABLE.tex", "STAGE_Q_SCREENING_FIGURE_DATA.csv"],
+      "validation": "45 targeted tests passed overall; stage-q module py_compile and --help passed"
+    },
+    {
+      "experiment": "CONSEQUENCE_DOMAIN_EMPHASIS_ROBUSTNESS",
+      "research_purpose": "Stress-test descriptive conclusions under three predefined consequence-domain emphasis profiles while retaining the balanced primary profile.",
+      "existing_implementation": "formal/v2_phase7/consequence_domain_emphasis_robustness.py",
+      "missing_component": "Manifest test assumed an obsolete uncommitted comparison-support edit.",
+      "required_change": "Updated test baseline to the current clean branch state; scientific implementation unchanged.",
+      "status": "READY_TO_RUN",
+      "depends_on_unresolved_science": false,
+      "input_split": "sealed canonical-v2 Final-Test epoch projection; no new Final-Test execution",
+      "output_schema": ["DOMAIN_EMPHASIS_STAGE1_PROFILE_SHORTLIST_SUMMARY.csv", "DOMAIN_EMPHASIS_STAGE1_DELAY_SUMMARY.csv", "DOMAIN_EMPHASIS_STAGE1_INFORMATION_SUMMARY.csv", "DOMAIN_EMPHASIS_STAGE2_HJ_ACTION_SUMMARY.csv", "DOMAIN_EMPHASIS_STAGE2_INFORMATION_SUMMARY.csv", "DOMAIN_EMPHASIS_ROBUSTNESS_MANIFEST.json", "DOMAIN_EMPHASIS_ROBUSTNESS_REPORT.md"],
+      "validation": "45 targeted tests passed overall; robustness module py_compile and --help passed"
+    }
+  ],
+  "blocked_or_deferred": [
+    {"item": "Marginal-coupling repair or reinterpretation", "status": "SCIENTIFIC_BLOCKED", "reason": "Not required by either prepared experiment; deliberately untouched."},
+    {"item": "Formal executor, Final-Test, full experiment, held-out tuning, full-data recomputation", "status": "DEFERRED", "reason": "Explicitly outside this preparation pass."}
+  ],
+  "commits": [
+    "cb9f7baa3b4e41ad39868fa25105c6c470e7201d refactor: centralize section5 contract constants",
+    "717517dd92369a29df96199094bc7d7157c80dd8 test: align robustness manifest with clean baseline"
+  ]
+}

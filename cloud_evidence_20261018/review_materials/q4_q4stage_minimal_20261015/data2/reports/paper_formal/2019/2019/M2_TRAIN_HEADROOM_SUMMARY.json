@@ -1,0 +1,83 @@
+{
+  "schema_version": "M5B_TRAIN_HEADROOM_SUMMARY_V1",
+  "status": "PASS",
+  "year": 2019,
+  "artifact_scope": "M5B_PILOT_STAGE2_SUPPORT_ONLY",
+  "derivation": "same computational definition as validation/v2_phase5/train_support.py (T_lb = Q20(T^turn | Train H1); U_max = floor5(Q90(H+ | Train H1))); year-parameterized inputs; no cross-year reuse",
+  "train_partition": {
+    "start": "2019-01-01",
+    "end": "2019-06-30",
+    "months": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "fit_period": "2019-H1"
+  },
+  "source_paths": [
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=01\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=02\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=03\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=04\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=05\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv",
+    "D:\\research\\air_slot\\code\\explore\\data2\\raw\\bts\\ontime\\2019\\month=06\\On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv"
+  ],
+  "source_hashes": [
+    "sha256:d1af02fd2a5367cb429eb74c52087a68ccec623275ff55320bbc1fd989b02cef",
+    "sha256:6bb9dd77b40469552939bb42f1ae2654bb4de623322bd9ac3892397bfbaed3d3",
+    "sha256:eb1b298509e76482698faca3c4fad0fcf9032a1cfc551392a1d6b00d5a111022",
+    "sha256:7d9ca42f6d0c15b275fee83704115c88268ab846df142d2a85fb9e314d2a891b",
+    "sha256:17d4bfaf8963b4278c938b3b93c0950952135c4d39507367683b25eaf2ac0eed",
+    "sha256:377b33a3d390334de55871e17ad093645c7cbc5f6976edde810af11619292cc6"
+  ],
+  "episode_count": 2668531,
+  "excluded_rotations": 0,
+  "rotation_count": 2668531,
+  "rows_streamed": 3497660,
+  "rows_dropped_by_reference_legality_gate": 0,
+  "turnaround_median_minutes": 57.0,
+  "turnaround_quantile_minutes": {
+    "q10": 34.0,
+    "q20": 41.0,
+    "q30": 47.0
+  },
+  "factual_headroom": {
+    "definition": "max(actual_departure - max(scheduled_departure, actual_arrival + turnaround_q20), 0)",
+    "positive_count": 752638,
+    "headroom_summary": {
+      "u_max": 45.0,
+      "turnaround_lower_bound_q": 41.0,
+      "turnaround_quantile": 0.2,
+      "headroom_quantile": 0.9,
+      "headroom_positive_n": 752638,
+      "source_id": "TRAIN_DATA2_2019_H1:On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_1.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_2.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_3.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_4.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_5.csv,On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_6.csv:n=2668531",
+      "floor_to_minutes": 5.0
+    }
+  },
+  "u_max_nominal_minutes": 45.0,
+  "action_grid": {
+    "step_minutes": 5.0,
+    "nominal": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0,
+      25.0,
+      30.0,
+      35.0,
+      40.0,
+      45.0
+    ]
+  },
+  "final_test_access_count": 0,
+  "frozen_2019_reproduction": {
+    "frozen_artifact": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SUMMARY.json",
+    "frozen_hash": "sha256:27df8b4ea406b48ca7b494e48759edfeaf490a501ce2b6293638bbd7a2cce4c2",
+    "reproduced": true
+  },
+  "artifact_hash": "sha256:9029e5320e7c1890d0a987e60ac4c9ac34e2a900f80c6ce39e7ae30222d1db7f"
+}

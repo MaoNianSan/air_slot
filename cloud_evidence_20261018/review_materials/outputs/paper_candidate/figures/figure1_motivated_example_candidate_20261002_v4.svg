@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180mm" height="80mm" viewBox="0 0 1800 800">
+<defs>
+ <marker id="arrow" markerWidth="12" markerHeight="9" refX="10" refY="4.5" orient="auto"><path d="M0,0 L12,4.5 L0,9 Z" fill="#4B5563"/></marker>
+ <style>
+ .sans{font-family:"Times New Roman",Times,serif;fill:#1F2937}
+ .title{font-size:32px;font-weight:700}.head{font-size:28px;font-weight:700}
+ .body{font-size:25px}.small{font-size:21px}.tiny{font-size:18px}.muted{fill:#6B7280}
+ .rule{stroke:#CBD5E1;stroke-width:2}.line{stroke:#4B5563;stroke-width:3;fill:none}
+ </style>
+</defs>
+<rect width="1800" height="800" fill="#FFFFFF"/>
+<text class="sans title" x="52" y="54">At the AOCC, delay is a baseline - not the decision</text>
+<text class="sans small muted" x="52" y="87">One decision-time view of two disrupted aircraft-linked chains.</text>
+<line x1="52" y1="108" x2="1748" y2="108" class="rule"/>
+<!-- column separators -->
+<line x1="600" y1="132" x2="600" y2="744" class="rule"/>
+<line x1="1200" y1="132" x2="1200" y2="744" class="rule"/>
+<!-- Column 1 -->
+<text class="sans head" x="72" y="150">1. Operating situation</text>
+<text class="sans small muted" x="72" y="180">Two chains compete for recovery attention.</text>
+<line x1="108" y1="230" x2="500" y2="230" class="line"/>
+<circle cx="150" cy="230" r="9" fill="#6B7280"/><circle cx="302" cy="230" r="9" fill="#415A77"/><circle cx="450" cy="230" r="9" fill="#C97920"/>
+<text class="sans small" x="128" y="214">PRE</text><text class="sans small" x="278" y="214">TURN</text><text class="sans small" x="426" y="214">TAXI</text>
+<text class="sans tiny muted" x="92" y="258">predecessor</text><text class="sans tiny muted" x="273" y="258">turnaround</text><text class="sans tiny muted" x="421" y="258">successor</text>
+<rect x="72" y="292" width="500" height="92" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="96" y="327" font-weight="700" fill="#415A77">Chain A</text><text class="sans small" x="96" y="358">delay: similar</text><text class="sans small" x="285" y="358">aircraft continuity</text>
+<rect x="72" y="404" width="500" height="92" rx="7" fill="#FFFFFF" stroke="#C97920" stroke-width="2"/>
+<text class="sans body" x="96" y="439" font-weight="700" fill="#C97920">Chain B</text><text class="sans small" x="96" y="470">delay: similar</text><text class="sans small" x="285" y="470">passenger / downstream exposure</text>
+<text class="sans small muted" x="72" y="554">The baseline signal sees similar delay.</text>
+<text class="sans small muted" x="72" y="586">The operating context need not be similar.</text>
+<!-- Arrow col1 to col2 -->
+<line x1="572" y1="350" x2="628" y2="350" class="line" marker-end="url(#arrow)"/>
+<!-- Column 2 -->
+<text class="sans head" x="632" y="150">2. Information retained</text>
+<text class="sans small muted" x="632" y="180">What the decision-time representation preserves.</text>
+<rect x="632" y="218" width="500" height="118" rx="7" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+<text class="sans body" x="658" y="255" font-weight="700">Delay baseline</text>
+<text class="sans small" x="658" y="288">scalar severity</text>
+<text class="sans small muted" x="658" y="316">A and B appear close in priority</text>
+<line x1="882" y1="346" x2="882" y2="382" class="line" marker-end="url(#arrow)"/>
+<text class="sans tiny muted" x="900" y="369">retain state distinctions</text>
+<rect x="632" y="394" width="500" height="142" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="658" y="431" font-weight="700">State-informed view</text>
+<text class="sans small" x="658" y="464">Flight   |   Passenger   |   Resource</text>
+<text class="sans small muted" x="658" y="500">A and B need not rank alike</text>
+<text class="sans tiny muted" x="658" y="524">decision-relevant consequence distinctions</text>
+<text class="sans small" x="632" y="594" fill="#415A77">Information has value only when it changes the active comparison.</text>
+<!-- Arrow col2 to col3 -->
+<line x1="1132" y1="350" x2="1188" y2="350" class="line" marker-end="url(#arrow)"/>
+<!-- Column 3 -->
+<text class="sans head" x="1232" y="150">3. AOCC decision</text>
+<text class="sans small muted" x="1232" y="180">The same retained information supports two tasks.</text>
+<rect x="1232" y="218" width="500" height="150" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="1258" y="257" font-weight="700" fill="#415A77">Stage I: screening</text>
+<text class="sans small" x="1258" y="291">compare priority across chains</text>
+<text class="sans small muted" x="1258" y="325">limited review capacity - choose top-K</text>
+<line x1="1290" y1="344" x2="1680" y2="344" stroke="#415A77" stroke-width="4"/>
+<circle cx="1320" cy="344" r="8" fill="#415A77"/><circle cx="1370" cy="344" r="8" fill="#415A77"/><circle cx="1420" cy="344" r="8" fill="#CBD5E1"/><circle cx="1470" cy="344" r="8" fill="#CBD5E1"/>
+<text class="sans tiny muted" x="1495" y="350">review slots</text>
+<rect x="1232" y="408" width="500" height="150" rx="7" fill="#FFFFFF" stroke="#C97920" stroke-width="2"/>
+<text class="sans body" x="1258" y="447" font-weight="700" fill="#C97920">Stage II: local recovery</text>
+<text class="sans small" x="1258" y="481">compare targets within one chain</text>
+<text class="sans small muted" x="1258" y="515">effort and feasibility - activate or target</text>
+<line x1="1290" y1="534" x2="1680" y2="534" stroke="#C97920" stroke-width="4"/>
+<circle cx="1320" cy="534" r="8" fill="#CBD5E1"/><circle cx="1370" cy="534" r="8" fill="#C97920"/><circle cx="1420" cy="534" r="8" fill="#C97920"/><circle cx="1470" cy="534" r="8" fill="#CBD5E1"/>
+<text class="sans tiny muted" x="1495" y="540">candidate targets</text>
+<text class="sans small" x="1232" y="620">Recovery priority does not imply recoverability.</text>
+<text class="sans small muted" x="1232" y="651">The supported decision determines the value of the information.</text>
+</svg>

@@ -1,0 +1,33 @@
+{
+  "schema_version": "AIR_SLOT_CANDIDATE_PATCH_VALIDATION_V1",
+  "checks": [
+    {
+      "check": "py_compile",
+      "returncode": 0,
+      "status": "PASS",
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "check": "contract_import",
+      "returncode": 0,
+      "status": "PASS",
+      "stdout": "pass\n",
+      "stderr": ""
+    },
+    {
+      "check": "diff_check",
+      "returncode": 0,
+      "status": "PASS",
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "check": "candidate_reverse_dependency_removed",
+      "status": "PASS",
+      "matches": ""
+    }
+  ],
+  "formal_executor_run": false,
+  "final_test_run": false
+}

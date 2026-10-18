@@ -1,0 +1,1328 @@
+{
+  "2017": {
+    "cohort_size": 521,
+    "joint_marginal_pair_count": 4168,
+    "mechanism_summary": {
+      "N": 521,
+      "full_support_mass_median": 1.0,
+      "full_support_mass_min": 1.0,
+      "headroom_boundary_change_share": 0.0,
+      "headroom_positive_share": 1.0,
+      "headroom_u_max_values": [
+        45.0
+      ],
+      "nominal_support_mass_median": 1.0,
+      "nominal_support_mass_min": 1.0,
+      "threshold_ablation_CHANGED": 0,
+      "threshold_ablation_UNCHANGED": 521
+    },
+    "profile_summary": {
+      "BALANCED": {
+        "N": 521,
+        "N_marginal_rows": 521,
+        "activation_share_joint": 0.84261,
+        "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+        "dependence_sensitive_share": 0.307102,
+        "exact_target_agreement_share": 0.692898,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.077493,
+        "mean_abs_target_change_min": 3.003839,
+        "median_V_joint": 0.017979,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.013596,
+        "p90_V_joint": 0.23552,
+        "per_stage": {
+          "PRE": {
+            "N": 131,
+            "activation_share_joint": 0.770992,
+            "agreement_joint_vs_marginal": 0.664122,
+            "median_V_joint": 0.016394,
+            "zero_recoverable_value_share_joint": 0.229008
+          },
+          "TURN": {
+            "N": 390,
+            "activation_share_joint": 0.866667,
+            "agreement_joint_vs_marginal": 0.702564,
+            "median_V_joint": 0.018536,
+            "zero_recoverable_value_share_joint": 0.133333
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.84261,
+        "zero_recoverable_value_share_joint": 0.15739
+      },
+      "FLIGHT": {
+        "N": 521,
+        "N_marginal_rows": 521,
+        "activation_share_joint": 0.838772,
+        "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+        "dependence_sensitive_share": 0.261036,
+        "exact_target_agreement_share": 0.738964,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.061437,
+        "mean_abs_target_change_min": 2.31286,
+        "median_V_joint": 0.021858,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.013114,
+        "p90_V_joint": 0.1719,
+        "per_stage": {
+          "PRE": {
+            "N": 131,
+            "activation_share_joint": 0.748092,
+            "agreement_joint_vs_marginal": 0.70229,
+            "median_V_joint": 0.018419,
+            "zero_recoverable_value_share_joint": 0.251908
+          },
+          "TURN": {
+            "N": 390,
+            "activation_share_joint": 0.869231,
+            "agreement_joint_vs_marginal": 0.751282,
+            "median_V_joint": 0.022633,
+            "zero_recoverable_value_share_joint": 0.130769
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.838772,
+        "zero_recoverable_value_share_joint": 0.161228
+      },
+      "PASSENGER": {
+        "N": 521,
+        "N_marginal_rows": 521,
+        "activation_share_joint": 0.880998,
+        "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+        "dependence_sensitive_share": 0.364683,
+        "exact_target_agreement_share": 0.635317,
+        "max_abs_target_change_min": 45.0,
+        "mean_V_joint": 0.133295,
+        "mean_abs_target_change_min": 3.474088,
+        "median_V_joint": 0.031015,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.014843,
+        "p90_V_joint": 0.386836,
+        "per_stage": {
+          "PRE": {
+            "N": 131,
+            "activation_share_joint": 0.824427,
+            "agreement_joint_vs_marginal": 0.572519,
+            "median_V_joint": 0.031015,
+            "zero_recoverable_value_share_joint": 0.175573
+          },
+          "TURN": {
+            "N": 390,
+            "activation_share_joint": 0.9,
+            "agreement_joint_vs_marginal": 0.65641,
+            "median_V_joint": 0.031235,
+            "zero_recoverable_value_share_joint": 0.1
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.880998,
+        "zero_recoverable_value_share_joint": 0.119002
+      },
+      "RESOURCE": {
+        "N": 521,
+        "N_marginal_rows": 521,
+        "activation_share_joint": 0.631478,
+        "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+        "dependence_sensitive_share": 0.228407,
+        "exact_target_agreement_share": 0.771593,
+        "max_abs_target_change_min": 35.0,
+        "mean_V_joint": 0.043248,
+        "mean_abs_target_change_min": 1.986564,
+        "median_V_joint": 0.003904,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.009801,
+        "p90_V_joint": 0.136368,
+        "per_stage": {
+          "PRE": {
+            "N": 131,
+            "activation_share_joint": 0.534351,
+            "agreement_joint_vs_marginal": 0.748092,
+            "median_V_joint": 0.001437,
+            "zero_recoverable_value_share_joint": 0.465649
+          },
+          "TURN": {
+            "N": 390,
+            "activation_share_joint": 0.664103,
+            "agreement_joint_vs_marginal": 0.779487,
+            "median_V_joint": 0.004254,
+            "zero_recoverable_value_share_joint": 0.335897
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.631478,
+        "zero_recoverable_value_share_joint": 0.368522
+      }
+    },
+    "profiles": [
+      "BALANCED",
+      "FLIGHT",
+      "PASSENGER",
+      "RESOURCE"
+    ],
+    "representations": [
+      "HISTORY_JOINT",
+      "HISTORY_MARGINAL_EXACT"
+    ],
+    "u_star_distribution": {
+      "BALANCED|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 12.859885,
+        "median": 5.0,
+        "positive_share": 0.84261,
+        "zero_share": 0.15739
+      },
+      "BALANCED|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 12.831094,
+        "median": 5.0,
+        "positive_share": 0.836852,
+        "zero_share": 0.163148
+      },
+      "FLIGHT|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 11.353167,
+        "median": 5.0,
+        "positive_share": 0.838772,
+        "zero_share": 0.161228
+      },
+      "FLIGHT|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 11.727447,
+        "median": 5.0,
+        "positive_share": 0.840691,
+        "zero_share": 0.159309
+      },
+      "PASSENGER|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 15.364683,
+        "median": 10.0,
+        "positive_share": 0.880998,
+        "zero_share": 0.119002
+      },
+      "PASSENGER|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 15.690979,
+        "median": 5.0,
+        "positive_share": 0.879079,
+        "zero_share": 0.120921
+      },
+      "RESOURCE|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 8.560461,
+        "median": 5.0,
+        "positive_share": 0.631478,
+        "zero_share": 0.368522
+      },
+      "RESOURCE|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 8.761996,
+        "median": 5.0,
+        "positive_share": 0.658349,
+        "zero_share": 0.341651
+      }
+    },
+    "year": 2017
+  },
+  "2018": {
+    "cohort_size": 523,
+    "joint_marginal_pair_count": 4184,
+    "mechanism_summary": {
+      "N": 523,
+      "full_support_mass_median": 1.0,
+      "full_support_mass_min": 1.0,
+      "headroom_boundary_change_share": 0.0,
+      "headroom_positive_share": 1.0,
+      "headroom_u_max_values": [
+        40.0
+      ],
+      "nominal_support_mass_median": 1.0,
+      "nominal_support_mass_min": 1.0,
+      "threshold_ablation_CHANGED": 0,
+      "threshold_ablation_UNCHANGED": 523
+    },
+    "profile_summary": {
+      "BALANCED": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.90631,
+        "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+        "dependence_sensitive_share": 0.414914,
+        "exact_target_agreement_share": 0.585086,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.16278,
+        "mean_abs_target_change_min": 3.250478,
+        "median_V_joint": 0.136122,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.019952,
+        "p90_V_joint": 0.359688,
+        "per_stage": {
+          "PRE": {
+            "N": 135,
+            "activation_share_joint": 0.881481,
+            "agreement_joint_vs_marginal": 0.592593,
+            "median_V_joint": 0.137548,
+            "zero_recoverable_value_share_joint": 0.118519
+          },
+          "TURN": {
+            "N": 388,
+            "activation_share_joint": 0.914948,
+            "agreement_joint_vs_marginal": 0.582474,
+            "median_V_joint": 0.134045,
+            "zero_recoverable_value_share_joint": 0.085052
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.90631,
+        "zero_recoverable_value_share_joint": 0.09369
+      },
+      "FLIGHT": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.908222,
+        "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+        "dependence_sensitive_share": 0.407266,
+        "exact_target_agreement_share": 0.592734,
+        "max_abs_target_change_min": 35.0,
+        "mean_V_joint": 0.119719,
+        "mean_abs_target_change_min": 3.221797,
+        "median_V_joint": 0.096003,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.01805,
+        "p90_V_joint": 0.267524,
+        "per_stage": {
+          "PRE": {
+            "N": 135,
+            "activation_share_joint": 0.903704,
+            "agreement_joint_vs_marginal": 0.577778,
+            "median_V_joint": 0.091462,
+            "zero_recoverable_value_share_joint": 0.096296
+          },
+          "TURN": {
+            "N": 388,
+            "activation_share_joint": 0.909794,
+            "agreement_joint_vs_marginal": 0.597938,
+            "median_V_joint": 0.100139,
+            "zero_recoverable_value_share_joint": 0.090206
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.908222,
+        "zero_recoverable_value_share_joint": 0.091778
+      },
+      "PASSENGER": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.936902,
+        "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+        "dependence_sensitive_share": 0.435946,
+        "exact_target_agreement_share": 0.564054,
+        "max_abs_target_change_min": 30.0,
+        "mean_V_joint": 0.275249,
+        "mean_abs_target_change_min": 3.021033,
+        "median_V_joint": 0.255822,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.019791,
+        "p90_V_joint": 0.574626,
+        "per_stage": {
+          "PRE": {
+            "N": 135,
+            "activation_share_joint": 0.925926,
+            "agreement_joint_vs_marginal": 0.585185,
+            "median_V_joint": 0.258125,
+            "zero_recoverable_value_share_joint": 0.074074
+          },
+          "TURN": {
+            "N": 388,
+            "activation_share_joint": 0.940722,
+            "agreement_joint_vs_marginal": 0.556701,
+            "median_V_joint": 0.25459,
+            "zero_recoverable_value_share_joint": 0.059278
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.936902,
+        "zero_recoverable_value_share_joint": 0.063098
+      },
+      "RESOURCE": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.795411,
+        "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+        "dependence_sensitive_share": 0.391969,
+        "exact_target_agreement_share": 0.608031,
+        "max_abs_target_change_min": 35.0,
+        "mean_V_joint": 0.098663,
+        "mean_abs_target_change_min": 2.638623,
+        "median_V_joint": 0.075058,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.021428,
+        "p90_V_joint": 0.242352,
+        "per_stage": {
+          "PRE": {
+            "N": 135,
+            "activation_share_joint": 0.8,
+            "agreement_joint_vs_marginal": 0.585185,
+            "median_V_joint": 0.075973,
+            "zero_recoverable_value_share_joint": 0.2
+          },
+          "TURN": {
+            "N": 388,
+            "activation_share_joint": 0.793814,
+            "agreement_joint_vs_marginal": 0.615979,
+            "median_V_joint": 0.074356,
+            "zero_recoverable_value_share_joint": 0.206186
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.795411,
+        "zero_recoverable_value_share_joint": 0.204589
+      }
+    },
+    "profiles": [
+      "BALANCED",
+      "FLIGHT",
+      "PASSENGER",
+      "RESOURCE"
+    ],
+    "representations": [
+      "HISTORY_JOINT",
+      "HISTORY_MARGINAL_EXACT"
+    ],
+    "u_star_distribution": {
+      "BALANCED|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 16.510516,
+        "median": 15.0,
+        "positive_share": 0.90631,
+        "zero_share": 0.09369
+      },
+      "BALANCED|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 17.772467,
+        "median": 15.0,
+        "positive_share": 0.912046,
+        "zero_share": 0.087954
+      },
+      "FLIGHT|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 15.516252,
+        "median": 10.0,
+        "positive_share": 0.908222,
+        "zero_share": 0.091778
+      },
+      "FLIGHT|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 16.67304,
+        "median": 15.0,
+        "positive_share": 0.908222,
+        "zero_share": 0.091778
+      },
+      "PASSENGER|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 18.518164,
+        "median": 20.0,
+        "positive_share": 0.936902,
+        "zero_share": 0.063098
+      },
+      "PASSENGER|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 20.258126,
+        "median": 25.0,
+        "positive_share": 0.944551,
+        "zero_share": 0.055449
+      },
+      "RESOURCE|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 13.518164,
+        "median": 10.0,
+        "positive_share": 0.795411,
+        "zero_share": 0.204589
+      },
+      "RESOURCE|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 14.321224,
+        "median": 15.0,
+        "positive_share": 0.795411,
+        "zero_share": 0.204589
+      }
+    },
+    "year": 2018
+  },
+  "2019": {
+    "cohort_size": 515,
+    "joint_marginal_pair_count": 4120,
+    "mechanism_summary": {
+      "N": 515,
+      "full_support_mass_median": 1.0,
+      "full_support_mass_min": 1.0,
+      "headroom_boundary_change_share": 0.0,
+      "headroom_positive_share": 1.0,
+      "headroom_u_max_values": [
+        45.0
+      ],
+      "nominal_support_mass_median": 1.0,
+      "nominal_support_mass_min": 1.0,
+      "threshold_ablation_CHANGED": 0,
+      "threshold_ablation_UNCHANGED": 515
+    },
+    "profile_summary": {
+      "BALANCED": {
+        "N": 515,
+        "N_marginal_rows": 515,
+        "activation_share_joint": 0.823301,
+        "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+        "dependence_sensitive_share": 0.269903,
+        "exact_target_agreement_share": 0.730097,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.081821,
+        "mean_abs_target_change_min": 1.883495,
+        "median_V_joint": 0.023103,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.014063,
+        "p90_V_joint": 0.242147,
+        "per_stage": {
+          "PRE": {
+            "N": 126,
+            "activation_share_joint": 0.81746,
+            "agreement_joint_vs_marginal": 0.674603,
+            "median_V_joint": 0.024349,
+            "zero_recoverable_value_share_joint": 0.18254
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.825193,
+            "agreement_joint_vs_marginal": 0.748072,
+            "median_V_joint": 0.022532,
+            "zero_recoverable_value_share_joint": 0.174807
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.823301,
+        "zero_recoverable_value_share_joint": 0.176699
+      },
+      "FLIGHT": {
+        "N": 515,
+        "N_marginal_rows": 515,
+        "activation_share_joint": 0.848544,
+        "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+        "dependence_sensitive_share": 0.264078,
+        "exact_target_agreement_share": 0.735922,
+        "max_abs_target_change_min": 35.0,
+        "mean_V_joint": 0.065656,
+        "mean_abs_target_change_min": 1.84466,
+        "median_V_joint": 0.027725,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.013327,
+        "p90_V_joint": 0.187041,
+        "per_stage": {
+          "PRE": {
+            "N": 126,
+            "activation_share_joint": 0.84127,
+            "agreement_joint_vs_marginal": 0.722222,
+            "median_V_joint": 0.028247,
+            "zero_recoverable_value_share_joint": 0.15873
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.8509,
+            "agreement_joint_vs_marginal": 0.74036,
+            "median_V_joint": 0.02729,
+            "zero_recoverable_value_share_joint": 0.1491
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.848544,
+        "zero_recoverable_value_share_joint": 0.151456
+      },
+      "PASSENGER": {
+        "N": 515,
+        "N_marginal_rows": 515,
+        "activation_share_joint": 0.842718,
+        "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+        "dependence_sensitive_share": 0.335922,
+        "exact_target_agreement_share": 0.664078,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.133476,
+        "mean_abs_target_change_min": 2.475728,
+        "median_V_joint": 0.0399,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.01462,
+        "p90_V_joint": 0.385421,
+        "per_stage": {
+          "PRE": {
+            "N": 126,
+            "activation_share_joint": 0.833333,
+            "agreement_joint_vs_marginal": 0.611111,
+            "median_V_joint": 0.048666,
+            "zero_recoverable_value_share_joint": 0.166667
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.845758,
+            "agreement_joint_vs_marginal": 0.681234,
+            "median_V_joint": 0.038681,
+            "zero_recoverable_value_share_joint": 0.154242
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.842718,
+        "zero_recoverable_value_share_joint": 0.157282
+      },
+      "RESOURCE": {
+        "N": 515,
+        "N_marginal_rows": 515,
+        "activation_share_joint": 0.671845,
+        "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+        "dependence_sensitive_share": 0.246602,
+        "exact_target_agreement_share": 0.753398,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.049611,
+        "mean_abs_target_change_min": 1.902913,
+        "median_V_joint": 0.006938,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.014845,
+        "p90_V_joint": 0.16705,
+        "per_stage": {
+          "PRE": {
+            "N": 126,
+            "activation_share_joint": 0.650794,
+            "agreement_joint_vs_marginal": 0.761905,
+            "median_V_joint": 0.008957,
+            "zero_recoverable_value_share_joint": 0.349206
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.678663,
+            "agreement_joint_vs_marginal": 0.750643,
+            "median_V_joint": 0.006374,
+            "zero_recoverable_value_share_joint": 0.321337
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.671845,
+        "zero_recoverable_value_share_joint": 0.328155
+      }
+    },
+    "profiles": [
+      "BALANCED",
+      "FLIGHT",
+      "PASSENGER",
+      "RESOURCE"
+    ],
+    "representations": [
+      "HISTORY_JOINT",
+      "HISTORY_MARGINAL_EXACT"
+    ],
+    "u_star_distribution": {
+      "BALANCED|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 9.737864,
+        "median": 5.0,
+        "positive_share": 0.823301,
+        "zero_share": 0.176699
+      },
+      "BALANCED|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 10.359223,
+        "median": 5.0,
+        "positive_share": 0.825243,
+        "zero_share": 0.174757
+      },
+      "FLIGHT|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 9.320388,
+        "median": 5.0,
+        "positive_share": 0.848544,
+        "zero_share": 0.151456
+      },
+      "FLIGHT|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 10.116505,
+        "median": 5.0,
+        "positive_share": 0.848544,
+        "zero_share": 0.151456
+      },
+      "PASSENGER|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 11.242718,
+        "median": 5.0,
+        "positive_share": 0.842718,
+        "zero_share": 0.157282
+      },
+      "PASSENGER|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 12.631068,
+        "median": 5.0,
+        "positive_share": 0.852427,
+        "zero_share": 0.147573
+      },
+      "RESOURCE|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 7.330097,
+        "median": 5.0,
+        "positive_share": 0.671845,
+        "zero_share": 0.328155
+      },
+      "RESOURCE|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 7.796117,
+        "median": 5.0,
+        "positive_share": 0.695146,
+        "zero_share": 0.304854
+      }
+    },
+    "year": 2019
+  },
+  "2020": {
+    "cohort_size": 474,
+    "joint_marginal_pair_count": 3792,
+    "mechanism_summary": {
+      "N": 474,
+      "full_support_mass_median": 1.0,
+      "full_support_mass_min": 1.0,
+      "headroom_boundary_change_share": 0.0,
+      "headroom_positive_share": 1.0,
+      "headroom_u_max_values": [
+        40.0
+      ],
+      "nominal_support_mass_median": 1.0,
+      "nominal_support_mass_min": 1.0,
+      "threshold_ablation_CHANGED": 0,
+      "threshold_ablation_UNCHANGED": 474
+    },
+    "profile_summary": {
+      "BALANCED": {
+        "N": 474,
+        "N_marginal_rows": 474,
+        "activation_share_joint": 0.915612,
+        "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+        "dependence_sensitive_share": 0.369198,
+        "exact_target_agreement_share": 0.630802,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.087248,
+        "mean_abs_target_change_min": 3.343882,
+        "median_V_joint": 0.054992,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.016284,
+        "p90_V_joint": 0.200669,
+        "per_stage": {
+          "PRE": {
+            "N": 68,
+            "activation_share_joint": 0.852941,
+            "agreement_joint_vs_marginal": 0.661765,
+            "median_V_joint": 0.040681,
+            "zero_recoverable_value_share_joint": 0.147059
+          },
+          "TURN": {
+            "N": 406,
+            "activation_share_joint": 0.926108,
+            "agreement_joint_vs_marginal": 0.625616,
+            "median_V_joint": 0.057866,
+            "zero_recoverable_value_share_joint": 0.073892
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.915612,
+        "zero_recoverable_value_share_joint": 0.084388
+      },
+      "FLIGHT": {
+        "N": 474,
+        "N_marginal_rows": 474,
+        "activation_share_joint": 0.902954,
+        "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+        "dependence_sensitive_share": 0.339662,
+        "exact_target_agreement_share": 0.660338,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.072799,
+        "mean_abs_target_change_min": 3.375527,
+        "median_V_joint": 0.048923,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.014226,
+        "p90_V_joint": 0.164826,
+        "per_stage": {
+          "PRE": {
+            "N": 68,
+            "activation_share_joint": 0.852941,
+            "agreement_joint_vs_marginal": 0.705882,
+            "median_V_joint": 0.036821,
+            "zero_recoverable_value_share_joint": 0.147059
+          },
+          "TURN": {
+            "N": 406,
+            "activation_share_joint": 0.91133,
+            "agreement_joint_vs_marginal": 0.652709,
+            "median_V_joint": 0.050386,
+            "zero_recoverable_value_share_joint": 0.08867
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.902954,
+        "zero_recoverable_value_share_joint": 0.097046
+      },
+      "PASSENGER": {
+        "N": 474,
+        "N_marginal_rows": 474,
+        "activation_share_joint": 0.92827,
+        "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+        "dependence_sensitive_share": 0.436709,
+        "exact_target_agreement_share": 0.563291,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.156207,
+        "mean_abs_target_change_min": 2.921941,
+        "median_V_joint": 0.120626,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.016864,
+        "p90_V_joint": 0.341987,
+        "per_stage": {
+          "PRE": {
+            "N": 68,
+            "activation_share_joint": 0.882353,
+            "agreement_joint_vs_marginal": 0.617647,
+            "median_V_joint": 0.104494,
+            "zero_recoverable_value_share_joint": 0.117647
+          },
+          "TURN": {
+            "N": 406,
+            "activation_share_joint": 0.935961,
+            "agreement_joint_vs_marginal": 0.554187,
+            "median_V_joint": 0.124378,
+            "zero_recoverable_value_share_joint": 0.064039
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.92827,
+        "zero_recoverable_value_share_joint": 0.07173
+      },
+      "RESOURCE": {
+        "N": 474,
+        "N_marginal_rows": 474,
+        "activation_share_joint": 0.835443,
+        "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+        "dependence_sensitive_share": 0.276371,
+        "exact_target_agreement_share": 0.723629,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.039757,
+        "mean_abs_target_change_min": 3.523207,
+        "median_V_joint": 0.014812,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.014621,
+        "p90_V_joint": 0.111798,
+        "per_stage": {
+          "PRE": {
+            "N": 68,
+            "activation_share_joint": 0.75,
+            "agreement_joint_vs_marginal": 0.735294,
+            "median_V_joint": 0.012573,
+            "zero_recoverable_value_share_joint": 0.25
+          },
+          "TURN": {
+            "N": 406,
+            "activation_share_joint": 0.849754,
+            "agreement_joint_vs_marginal": 0.721675,
+            "median_V_joint": 0.014984,
+            "zero_recoverable_value_share_joint": 0.150246
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.835443,
+        "zero_recoverable_value_share_joint": 0.164557
+      }
+    },
+    "profiles": [
+      "BALANCED",
+      "FLIGHT",
+      "PASSENGER",
+      "RESOURCE"
+    ],
+    "representations": [
+      "HISTORY_JOINT",
+      "HISTORY_MARGINAL_EXACT"
+    ],
+    "u_star_distribution": {
+      "BALANCED|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 19.293249,
+        "median": 15.0,
+        "positive_share": 0.915612,
+        "zero_share": 0.084388
+      },
+      "BALANCED|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 19.535865,
+        "median": 15.0,
+        "positive_share": 0.909283,
+        "zero_share": 0.090717
+      },
+      "FLIGHT|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 17.689873,
+        "median": 15.0,
+        "positive_share": 0.902954,
+        "zero_share": 0.097046
+      },
+      "FLIGHT|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 17.5,
+        "median": 7.5,
+        "positive_share": 0.900844,
+        "zero_share": 0.099156
+      },
+      "PASSENGER|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 20.991561,
+        "median": 25.0,
+        "positive_share": 0.92827,
+        "zero_share": 0.07173
+      },
+      "PASSENGER|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 22.795359,
+        "median": 30.0,
+        "positive_share": 0.92827,
+        "zero_share": 0.07173
+      },
+      "RESOURCE|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 13.2173,
+        "median": 5.0,
+        "positive_share": 0.835443,
+        "zero_share": 0.164557
+      },
+      "RESOURCE|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 12.310127,
+        "median": 5.0,
+        "positive_share": 0.827004,
+        "zero_share": 0.172996
+      }
+    },
+    "year": 2020
+  },
+  "2021": {
+    "cohort_size": 523,
+    "joint_marginal_pair_count": 4184,
+    "mechanism_summary": {
+      "N": 523,
+      "full_support_mass_median": 1.0,
+      "full_support_mass_min": 1.0,
+      "headroom_boundary_change_share": 0.0,
+      "headroom_positive_share": 1.0,
+      "headroom_u_max_values": [
+        40.0
+      ],
+      "nominal_support_mass_median": 1.0,
+      "nominal_support_mass_min": 1.0,
+      "threshold_ablation_CHANGED": 0,
+      "threshold_ablation_UNCHANGED": 523
+    },
+    "profile_summary": {
+      "BALANCED": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.885277,
+        "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+        "dependence_sensitive_share": 0.382409,
+        "exact_target_agreement_share": 0.617591,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.125065,
+        "mean_abs_target_change_min": 3.556405,
+        "median_V_joint": 0.110893,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.018181,
+        "p90_V_joint": 0.249297,
+        "per_stage": {
+          "PRE": {
+            "N": 130,
+            "activation_share_joint": 0.884615,
+            "agreement_joint_vs_marginal": 0.576923,
+            "median_V_joint": 0.125947,
+            "zero_recoverable_value_share_joint": 0.115385
+          },
+          "TURN": {
+            "N": 393,
+            "activation_share_joint": 0.885496,
+            "agreement_joint_vs_marginal": 0.631043,
+            "median_V_joint": 0.107802,
+            "zero_recoverable_value_share_joint": 0.114504
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.885277,
+        "zero_recoverable_value_share_joint": 0.114723
+      },
+      "FLIGHT": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.883365,
+        "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+        "dependence_sensitive_share": 0.349904,
+        "exact_target_agreement_share": 0.650096,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.095414,
+        "mean_abs_target_change_min": 3.32696,
+        "median_V_joint": 0.084945,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.016654,
+        "p90_V_joint": 0.19291,
+        "per_stage": {
+          "PRE": {
+            "N": 130,
+            "activation_share_joint": 0.892308,
+            "agreement_joint_vs_marginal": 0.623077,
+            "median_V_joint": 0.089511,
+            "zero_recoverable_value_share_joint": 0.107692
+          },
+          "TURN": {
+            "N": 393,
+            "activation_share_joint": 0.880407,
+            "agreement_joint_vs_marginal": 0.659033,
+            "median_V_joint": 0.080522,
+            "zero_recoverable_value_share_joint": 0.119593
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.883365,
+        "zero_recoverable_value_share_joint": 0.116635
+      },
+      "PASSENGER": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.92543,
+        "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+        "dependence_sensitive_share": 0.453155,
+        "exact_target_agreement_share": 0.546845,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.214695,
+        "mean_abs_target_change_min": 4.302103,
+        "median_V_joint": 0.206355,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.018856,
+        "p90_V_joint": 0.420866,
+        "per_stage": {
+          "PRE": {
+            "N": 130,
+            "activation_share_joint": 0.938462,
+            "agreement_joint_vs_marginal": 0.530769,
+            "median_V_joint": 0.220862,
+            "zero_recoverable_value_share_joint": 0.061538
+          },
+          "TURN": {
+            "N": 393,
+            "activation_share_joint": 0.92112,
+            "agreement_joint_vs_marginal": 0.552163,
+            "median_V_joint": 0.196167,
+            "zero_recoverable_value_share_joint": 0.07888
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.92543,
+        "zero_recoverable_value_share_joint": 0.07457
+      },
+      "RESOURCE": {
+        "N": 523,
+        "N_marginal_rows": 523,
+        "activation_share_joint": 0.833652,
+        "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+        "dependence_sensitive_share": 0.294455,
+        "exact_target_agreement_share": 0.705545,
+        "max_abs_target_change_min": 40.0,
+        "mean_V_joint": 0.072241,
+        "mean_abs_target_change_min": 2.982792,
+        "median_V_joint": 0.051631,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.019786,
+        "p90_V_joint": 0.163241,
+        "per_stage": {
+          "PRE": {
+            "N": 130,
+            "activation_share_joint": 0.838462,
+            "agreement_joint_vs_marginal": 0.692308,
+            "median_V_joint": 0.057967,
+            "zero_recoverable_value_share_joint": 0.161538
+          },
+          "TURN": {
+            "N": 393,
+            "activation_share_joint": 0.832061,
+            "agreement_joint_vs_marginal": 0.709924,
+            "median_V_joint": 0.049698,
+            "zero_recoverable_value_share_joint": 0.167939
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.833652,
+        "zero_recoverable_value_share_joint": 0.166348
+      }
+    },
+    "profiles": [
+      "BALANCED",
+      "FLIGHT",
+      "PASSENGER",
+      "RESOURCE"
+    ],
+    "representations": [
+      "HISTORY_JOINT",
+      "HISTORY_MARGINAL_EXACT"
+    ],
+    "u_star_distribution": {
+      "BALANCED|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 15.439771,
+        "median": 15.0,
+        "positive_share": 0.885277,
+        "zero_share": 0.114723
+      },
+      "BALANCED|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 17.026769,
+        "median": 15.0,
+        "positive_share": 0.89675,
+        "zero_share": 0.10325
+      },
+      "FLIGHT|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 14.57935,
+        "median": 15.0,
+        "positive_share": 0.883365,
+        "zero_share": 0.116635
+      },
+      "FLIGHT|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 14.847036,
+        "median": 15.0,
+        "positive_share": 0.881453,
+        "zero_share": 0.118547
+      },
+      "PASSENGER|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 19.330784,
+        "median": 15.0,
+        "positive_share": 0.92543,
+        "zero_share": 0.07457
+      },
+      "PASSENGER|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 21.701721,
+        "median": 20.0,
+        "positive_share": 0.929254,
+        "zero_share": 0.070746
+      },
+      "RESOURCE|HISTORY_JOINT": {
+        "max": 40.0,
+        "mean": 12.256214,
+        "median": 10.0,
+        "positive_share": 0.833652,
+        "zero_share": 0.166348
+      },
+      "RESOURCE|HISTORY_MARGINAL_EXACT": {
+        "max": 40.0,
+        "mean": 11.873805,
+        "median": 10.0,
+        "positive_share": 0.82218,
+        "zero_share": 0.17782
+      }
+    },
+    "year": 2021
+  },
+  "2022": {
+    "cohort_size": 532,
+    "joint_marginal_pair_count": 4256,
+    "mechanism_summary": {
+      "N": 532,
+      "full_support_mass_median": 1.0,
+      "full_support_mass_min": 1.0,
+      "headroom_boundary_change_share": 0.0,
+      "headroom_positive_share": 1.0,
+      "headroom_u_max_values": [
+        45.0
+      ],
+      "nominal_support_mass_median": 1.0,
+      "nominal_support_mass_min": 1.0,
+      "threshold_ablation_CHANGED": 0,
+      "threshold_ablation_UNCHANGED": 532
+    },
+    "profile_summary": {
+      "BALANCED": {
+        "N": 532,
+        "N_marginal_rows": 532,
+        "activation_share_joint": 0.902256,
+        "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+        "dependence_sensitive_share": 0.419173,
+        "exact_target_agreement_share": 0.580827,
+        "max_abs_target_change_min": 45.0,
+        "mean_V_joint": 0.147221,
+        "mean_abs_target_change_min": 4.699248,
+        "median_V_joint": 0.123689,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.017923,
+        "p90_V_joint": 0.333264,
+        "per_stage": {
+          "PRE": {
+            "N": 143,
+            "activation_share_joint": 0.881119,
+            "agreement_joint_vs_marginal": 0.58042,
+            "median_V_joint": 0.128502,
+            "zero_recoverable_value_share_joint": 0.118881
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.910026,
+            "agreement_joint_vs_marginal": 0.580977,
+            "median_V_joint": 0.121583,
+            "zero_recoverable_value_share_joint": 0.089974
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.902256,
+        "zero_recoverable_value_share_joint": 0.097744
+      },
+      "FLIGHT": {
+        "N": 532,
+        "N_marginal_rows": 532,
+        "activation_share_joint": 0.885338,
+        "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+        "dependence_sensitive_share": 0.387218,
+        "exact_target_agreement_share": 0.612782,
+        "max_abs_target_change_min": 45.0,
+        "mean_V_joint": 0.108804,
+        "mean_abs_target_change_min": 4.379699,
+        "median_V_joint": 0.087472,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.015942,
+        "p90_V_joint": 0.247051,
+        "per_stage": {
+          "PRE": {
+            "N": 143,
+            "activation_share_joint": 0.86014,
+            "agreement_joint_vs_marginal": 0.608392,
+            "median_V_joint": 0.087512,
+            "zero_recoverable_value_share_joint": 0.13986
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.894602,
+            "agreement_joint_vs_marginal": 0.614396,
+            "median_V_joint": 0.087432,
+            "zero_recoverable_value_share_joint": 0.105398
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.885338,
+        "zero_recoverable_value_share_joint": 0.114662
+      },
+      "PASSENGER": {
+        "N": 532,
+        "N_marginal_rows": 532,
+        "activation_share_joint": 0.913534,
+        "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+        "dependence_sensitive_share": 0.43609,
+        "exact_target_agreement_share": 0.56391,
+        "max_abs_target_change_min": 45.0,
+        "mean_V_joint": 0.25207,
+        "mean_abs_target_change_min": 4.172932,
+        "median_V_joint": 0.234675,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.018081,
+        "p90_V_joint": 0.550694,
+        "per_stage": {
+          "PRE": {
+            "N": 143,
+            "activation_share_joint": 0.888112,
+            "agreement_joint_vs_marginal": 0.552448,
+            "median_V_joint": 0.239333,
+            "zero_recoverable_value_share_joint": 0.111888
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.922879,
+            "agreement_joint_vs_marginal": 0.568123,
+            "median_V_joint": 0.234112,
+            "zero_recoverable_value_share_joint": 0.077121
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.913534,
+        "zero_recoverable_value_share_joint": 0.086466
+      },
+      "RESOURCE": {
+        "N": 532,
+        "N_marginal_rows": 532,
+        "activation_share_joint": 0.785714,
+        "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+        "dependence_sensitive_share": 0.387218,
+        "exact_target_agreement_share": 0.612782,
+        "max_abs_target_change_min": 45.0,
+        "mean_V_joint": 0.086448,
+        "mean_abs_target_change_min": 4.370301,
+        "median_V_joint": 0.054525,
+        "median_abs_target_change_min": 0.0,
+        "median_decision_margin_joint": 0.018981,
+        "p90_V_joint": 0.211517,
+        "per_stage": {
+          "PRE": {
+            "N": 143,
+            "activation_share_joint": 0.769231,
+            "agreement_joint_vs_marginal": 0.629371,
+            "median_V_joint": 0.055146,
+            "zero_recoverable_value_share_joint": 0.230769
+          },
+          "TURN": {
+            "N": 389,
+            "activation_share_joint": 0.791774,
+            "agreement_joint_vs_marginal": 0.606684,
+            "median_V_joint": 0.053221,
+            "zero_recoverable_value_share_joint": 0.208226
+          }
+        },
+        "positive_recoverable_value_share_joint": 0.785714,
+        "zero_recoverable_value_share_joint": 0.214286
+      }
+    },
+    "profiles": [
+      "BALANCED",
+      "FLIGHT",
+      "PASSENGER",
+      "RESOURCE"
+    ],
+    "representations": [
+      "HISTORY_JOINT",
+      "HISTORY_MARGINAL_EXACT"
+    ],
+    "u_star_distribution": {
+      "BALANCED|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 19.483083,
+        "median": 15.0,
+        "positive_share": 0.902256,
+        "zero_share": 0.097744
+      },
+      "BALANCED|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 19.539474,
+        "median": 20.0,
+        "positive_share": 0.887218,
+        "zero_share": 0.112782
+      },
+      "FLIGHT|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 17.781955,
+        "median": 15.0,
+        "positive_share": 0.885338,
+        "zero_share": 0.114662
+      },
+      "FLIGHT|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 17.5,
+        "median": 15.0,
+        "positive_share": 0.87782,
+        "zero_share": 0.12218
+      },
+      "PASSENGER|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 21.682331,
+        "median": 20.0,
+        "positive_share": 0.913534,
+        "zero_share": 0.086466
+      },
+      "PASSENGER|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 23.336466,
+        "median": 20.0,
+        "positive_share": 0.930451,
+        "zero_share": 0.069549
+      },
+      "RESOURCE|HISTORY_JOINT": {
+        "max": 45.0,
+        "mean": 14.953008,
+        "median": 10.0,
+        "positive_share": 0.785714,
+        "zero_share": 0.214286
+      },
+      "RESOURCE|HISTORY_MARGINAL_EXACT": {
+        "max": 45.0,
+        "mean": 14.379699,
+        "median": 10.0,
+        "positive_share": 0.781955,
+        "zero_share": 0.218045
+      }
+    },
+    "year": 2022
+  }
+}

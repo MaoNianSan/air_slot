@@ -1,0 +1,6 @@
+run_id,year,track,experiment,stage,status,source_artifact,reason
+JATM_S34_20261011_R1,2019,YEAR_LOCAL,E1,PRE/TURN,DEVELOPMENT_COMPLETE,artifacts/experiment/jatm_s34/e1_development_v1/E1_SUMMARY.json,1769 real Development nodes; q grid and 2000 episode bootstrap complete
+JATM_S34_20261011_R1,2019,YEAR_LOCAL,E2,PRE/TURN,DEVELOPMENT_COMPLETE_LEGACY_MARGINAL_BLOCKED,artifacts/experiment/jatm_section5/development/report/JATM_SECTION5_MANIFEST.json,Section 5 Development complete; existing HISTORY_MARGINAL remains permutation semantics and is not promoted as exact weighted E2
+JATM_S34_20261011_R1,2019,YEAR_LOCAL,E3,PRE/TURN,PILOT_COMPLETE_FULL_OBJECTIVE_BLOCKED,reports/jatm_s34_20261010/runs/e3_exact_marginal_pilot_r1.json,11 real checkpoint nodes pass exact weighted marginal audit; objective x distribution integration remains
+JATM_S34_20261011_R1,2017-2022,YEAR_LOCAL,E4,PRE/TURN,PRE_DEVELOPMENT_READY_TEST_BLOCKED,reports/jatm_s34_20261010/runs/year_readiness_r1/YEAR_READINESS.json,all six PRE manifests have Train/Calibration/Development; Test count zero and access count zero
+JATM_S34_20261011_R1,2017,FIXED_COMMON,E4,PRE/TURN,REFERENCE_REBUILT_DEV_READY,artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json,2017 H1 Train seven-scale bundle passes D4 audit; annual runner binding remains

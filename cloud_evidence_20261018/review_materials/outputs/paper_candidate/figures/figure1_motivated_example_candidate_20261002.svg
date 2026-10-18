@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180mm" height="86mm" viewBox="0 0 1800 860">
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#4B5563"/></marker>
+  <marker id="arrowBlue" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#415A77"/></marker>
+  <style>
+    .sans{font-family:"Times New Roman",Times,serif;fill:#1F2937}
+    .panel{fill:#FFFFFF;stroke:#CBD5E1;stroke-width:2}
+    .small{font-size:26px}
+    .body{font-size:28px}
+    .label{font-size:30px;font-weight:700}
+    .tiny{font-size:22px}
+    .muted{fill:#6B7280}
+  </style>
+</defs>
+<!-- background -->
+<rect width="1800" height="860" fill="#FFFFFF"/>
+<!-- panels -->
+<rect class="panel" x="24" y="24" width="1000" height="812" rx="10"/>
+<rect class="panel" x="1050" y="24" width="726" height="812" rx="10"/>
+<!-- Panel A -->
+<text class="sans label" x="52" y="68">(a) AOCC decision epoch: similar delay, different needs</text>
+<text class="sans small muted" x="52" y="102">Two disrupted aircraft-linked chains await recovery review.</text>
+<!-- timeline -->
+<line x1="92" y1="170" x2="910" y2="170" stroke="#4B5563" stroke-width="3" marker-end="url(#arrow)"/>
+<circle cx="170" cy="170" r="10" fill="#6B7280"/>
+<circle cx="490" cy="170" r="10" fill="#415A77"/>
+<circle cx="790" cy="170" r="10" fill="#D17A22"/>
+<text class="sans body" x="105" y="145">PRE</text>
+<text class="sans body" x="432" y="145">TURN</text>
+<text class="sans body" x="733" y="145">TAXI</text>
+<text class="sans tiny muted" x="107" y="205">predecessor unresolved</text>
+<text class="sans tiny muted" x="393" y="205">predecessor factual</text>
+<text class="sans tiny muted" x="707" y="205">successor off-block factual</text>
+<!-- chain rows -->
+<text class="sans body" x="58" y="276" font-weight="700">Chain A</text>
+<line x1="175" y1="265" x2="455" y2="265" stroke="#415A77" stroke-width="8"/>
+<line x1="455" y1="265" x2="760" y2="265" stroke="#415A77" stroke-width="8" stroke-dasharray="10 8"/>
+<rect x="780" y="239" width="172" height="52" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans small" x="796" y="272">delay: similar</text>
+<text class="sans body" x="58" y="368" font-weight="700">Chain B</text>
+<line x1="175" y1="357" x2="455" y2="357" stroke="#D17A22" stroke-width="8"/>
+<line x1="455" y1="357" x2="760" y2="357" stroke="#D17A22" stroke-width="8" stroke-dasharray="10 8"/>
+<rect x="780" y="331" width="172" height="52" rx="7" fill="#FFFFFF" stroke="#D17A22" stroke-width="2"/>
+<text class="sans small" x="796" y="364">delay: similar</text>
+<!-- consequence table -->
+<line x1="58" y1="426" x2="968" y2="426" stroke="#E5E7EB" stroke-width="2"/>
+<text class="sans small muted" x="58" y="462">Consequence domain</text>
+<text class="sans small muted" x="555" y="462">Chain A</text>
+<text class="sans small muted" x="770" y="462">Chain B</text>
+<text class="sans body" x="58" y="510">Flight</text>
+<text class="sans small" x="555" y="510" fill="#415A77">continuity</text>
+<text class="sans small" x="770" y="510" fill="#D17A22">propagation</text>
+<text class="sans body" x="58" y="563">Passenger</text>
+<text class="sans small" x="555" y="563" fill="#415A77">time exposure</text>
+<text class="sans small" x="770" y="563" fill="#D17A22">itinerary</text>
+<text class="sans body" x="58" y="616">Resource</text>
+<text class="sans small" x="555" y="616" fill="#415A77">lower burden</text>
+<text class="sans small" x="770" y="616" fill="#D17A22">higher burden</text>
+<line x1="58" y1="657" x2="968" y2="657" stroke="#E5E7EB" stroke-width="2"/>
+<text class="sans label" x="58" y="710" fill="#B64B4B">Similar delay does not imply identical recovery consequence.</text>
+<text class="sans tiny muted" x="58" y="748">Illustrative profile labels; no empirical values are shown.</text>
+<!-- Panel B -->
+<text class="sans label" x="1078" y="68">(b) The AOCC uses the evidence in two decisions</text>
+<text class="sans small muted" x="1078" y="102">The same state representation supports both decisions.</text>
+<!-- input box -->
+<rect x="1090" y="142" width="646" height="100" rx="10" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+<text class="sans body" x="1120" y="180" font-weight="700">AOCC decision-time evidence</text>
+<text class="sans small" x="1120" y="214">state + Flight / Passenger / Resource consequences</text>
+<!-- split arrows -->
+<line x1="1413" y1="242" x2="1413" y2="284" stroke="#4B5563" stroke-width="3"/>
+<line x1="1413" y1="284" x2="1195" y2="284" stroke="#4B5563" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="1413" y1="284" x2="1630" y2="284" stroke="#4B5563" stroke-width="3" marker-end="url(#arrow)"/>
+<!-- decision boxes -->
+<rect x="1080" y="315" width="300" height="292" rx="10" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans label" x="1105" y="355" fill="#415A77">Stage I</text>
+<text class="sans body" x="1105" y="392" font-weight="700">Recovery screening</text>
+<line x1="1105" y1="420" x2="1350" y2="420" stroke="#94A3B8" stroke-width="2"/>
+<text class="sans small" x="1105" y="458">Compare priority</text>
+<text class="sans small" x="1105" y="490">across chains</text>
+<text class="sans small" x="1105" y="540" fill="#B64B4B">limited review capacity</text>
+<text class="sans tiny muted" x="1105" y="574">Which chains enter detailed review?</text>
+<rect x="1438" y="315" width="300" height="292" rx="10" fill="#FFFFFF" stroke="#D17A22" stroke-width="2"/>
+<text class="sans label" x="1463" y="355" fill="#D17A22">Stage II</text>
+<text class="sans body" x="1463" y="392" font-weight="700">Local recovery</text>
+<line x1="1463" y1="420" x2="1708" y2="420" stroke="#C8A27A" stroke-width="2"/>
+<text class="sans small" x="1463" y="458">Compare targets</text>
+<text class="sans small" x="1463" y="490">within one chain</text>
+<text class="sans small" x="1463" y="540" fill="#B64B4B">recovery-effort boundary</text>
+<text class="sans tiny muted" x="1463" y="558">Activate local recovery or</text><text class="sans tiny muted" x="1463" y="584">choose the target?</text>
+<!-- footer -->
+<line x1="1090" y1="667" x2="1728" y2="667" stroke="#E5E7EB" stroke-width="2"/>
+<text class="sans body" x="1090" y="720" fill="#1F2937">Information creates value when it changes</text>
+<text class="sans body" x="1090" y="756" fill="#1F2937">the comparison that determines the active decision.</text>
+</svg>

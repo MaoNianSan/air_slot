@@ -1,0 +1,108 @@
+{
+  "schema_version": "JATM_S34_IMPLEMENTATION_INVENTORY_V1",
+  "source_git_head": "2ea652e546d912d661fb34147cda54b4ff686094",
+  "source_branch": "v2/paper-primary",
+  "rows": [
+    {
+      "requirement_id": "stage1_selector",
+      "scientific_definition": "REUSABLE",
+      "existing_file_or_artifact": "model/M3/stage1.py",
+      "existing_status": "REUSABLE",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\model\\M3\\stage1.py",
+      "sha256": "sha256:eca2d669e74538b27dba0e415069f148b7703efaf817a872a4e9f612bcb8ee6c",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "stage2_exact_enum",
+      "scientific_definition": "REUSABLE",
+      "existing_file_or_artifact": "model/M3/stage2.py",
+      "existing_status": "REUSABLE",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\model\\M3\\stage2.py",
+      "sha256": "sha256:f0d4e1220b84d072ddf34f449e8d7cf5794da1df7680d2075a09223c435381c6",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "marginal_representation",
+      "scientific_definition": "CONFLICT",
+      "existing_file_or_artifact": "model/M1/state_representation.py",
+      "existing_status": "CONFLICT",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\model\\M1\\state_representation.py",
+      "sha256": "sha256:daf8ac3e96bdb0a71b36c39d2b6a827cf35e0286b61152f0fca44bd12cf6a8a3",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "m2_consequence_engine",
+      "scientific_definition": "PARTIAL",
+      "existing_file_or_artifact": "model/M2/consequences/engine.py",
+      "existing_status": "PARTIAL",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\model\\M2\\consequences\\engine.py",
+      "sha256": "sha256:d1243713e3faf1937e2738568da2a5b41ca86920caeb323d2988d97b5692e2de",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "m4_evaluation",
+      "scientific_definition": "REUSABLE",
+      "existing_file_or_artifact": "model/M4/evaluation.py",
+      "existing_status": "REUSABLE",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\model\\M4\\evaluation.py",
+      "sha256": "sha256:e492ac0c1a94cf1515ed408f5cbc3034a4bbc6e65942da341992836c0b898b60",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "e1_stage_q",
+      "scientific_definition": "REUSABLE",
+      "existing_file_or_artifact": "formal/v2_phase7/stage_q_screening_sensitivity.py",
+      "existing_status": "REUSABLE",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\formal\\v2_phase7\\stage_q_screening_sensitivity.py",
+      "sha256": "sha256:185848b4ec5481c6b3d3c9a8f60c91723eb8e22772bf47b1621922118abce9bb",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "e3_domain_emphasis",
+      "scientific_definition": "PARTIAL",
+      "existing_file_or_artifact": "formal/v2_phase7/consequence_domain_emphasis_robustness.py",
+      "existing_status": "PARTIAL",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\formal\\v2_phase7\\consequence_domain_emphasis_robustness.py",
+      "sha256": "sha256:8da6f8edb51f55ccb6f32f89bcd83171ca8904211b318b370ea798ed59607bd1",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "e2_information_value",
+      "scientific_definition": "PARTIAL",
+      "existing_file_or_artifact": "exp/jatm_section5/information_value.py",
+      "existing_status": "PARTIAL",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\exp\\jatm_section5\\information_value.py",
+      "sha256": "sha256:dc9191ca3d50775870190584cfb734626ed9ba933f83527fac94fe4af14b9d3c",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "e2_recovery_value",
+      "scientific_definition": "PARTIAL",
+      "existing_file_or_artifact": "exp/jatm_section5/recovery_value.py",
+      "existing_status": "PARTIAL",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\exp\\jatm_section5\\recovery_value.py",
+      "sha256": "sha256:7a3a59bf4f1b537fc4e62a7a2ed62eb07674cf79559b9febe94b8131bb8f9a4e",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    },
+    {
+      "requirement_id": "e4_pre_multiyear",
+      "scientific_definition": "PARTIAL",
+      "existing_file_or_artifact": "artifacts/models/pre/PRE_MULTIYEAR_V1",
+      "existing_status": "PARTIAL",
+      "artifact_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\pre\\PRE_MULTIYEAR_V1",
+      "sha256": "DIRECTORY_PRESENT",
+      "requires_final_test_access": false,
+      "proposed_change": "reuse or bounded preparation; no frozen artifact modification"
+    }
+  ],
+  "status": "W0_DONE"
+}

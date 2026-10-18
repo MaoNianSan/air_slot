@@ -1,0 +1,176 @@
+\section{Empirical Results}
+\label{sec:results}
+
+The results address three linked empirical questions. First, under a fixed review budget, how closely does a delay-based priority reproduce a shortlist ranked by the study's reference consequences, and how does adding exposure information change that comparison? Second, do information representations that yield similar cross-chain screening choices also yield similar within-chain recovery targets? Third, how do prespecified management objectives relate to target agreement and recovery activation? We evaluate six annual windows from 2017 to 2022. Year-specific estimates are reported rather than pooling candidate cases across years. Table~\ref{tab:results_scope} summarizes the populations and decision capacities underlying the comparisons.
+
+Unless stated otherwise, cross-year means are equal-weight averages of the six annual estimates, and ranges are annual minima and maxima rather than confidence intervals. Error bars are shown only for estimates with intervals in the archived outputs.
+
+\subsection{Screening priorities under a fixed review budget}
+\label{subsec:results_screening}
+
+Table~\ref{tab:screening_nominal} reports the screening comparison at the nominal review share $q_0=0.10$. Delay-only replaces 44.7\% of PRE reference-shortlist positions (annual range, 37.4--53.1\%) and 46.1\% of TURN positions (39.6--55.3\%). The corresponding mean normalized reference-consequence losses, $L^{\mathrm{att}}$, are 0.1397 and 0.1385. The point estimate is positive in both stages in all six years, so delay ranking does not fully reproduce the consequence-based shortlist.
+
+Adding passenger exposure reduces both shortlist replacement and $L^{\mathrm{att}}$. The six-year equal-weight mean loss falls from 0.1397 to 0.0985 in PRE and from 0.1385 to 0.0975 in TURN; the point-estimate direction is the same in all twelve year-by-stage cells. Averaging the annual percentage reduction relative to Delay-only gives 30.9\% in PRE (annual range, 6.5--45.4\%) and 30.7\% in TURN (20.2--38.3\%). By contrast, adding downstream exposure leaves the result close to Delay-only: the absolute loss difference is no greater than 0.003 in any of the twelve comparisons. Under the consequence definition used here, passenger exposure adds screening distinction, whereas the incremental difference associated with downstream exposure is small. These relative reductions describe changes in the normalized reference loss, not realized operating benefits.
+
+Figure~\ref{fig:q_boundary_new} places this comparison in the context of review capacity. We define
+$\Delta L^{\mathrm{att}}=L^{\mathrm{att}}_{\mathrm{Delay}}-
+L^{\mathrm{att}}_{\mathrm{Delay+Passenger}}$, so a positive value indicates lower reference loss after passenger exposure is added. The six-year equal-weight means for PRE at $q=0.05,0.10,0.20,$ and $0.30$ are 0.0563, 0.0412, 0.0095, and $-0.0051$; the corresponding TURN means are 0.0526, 0.0410, 0.0128, and $-0.0037$. Both stages have positive point estimates in every year at $q=0.05$ and $q=0.10$. The mean increment approaches zero as the review share increases; at $q=0.30$ it is slightly negative, while the annual range spans zero. The evidence therefore supports a larger passenger-exposure distinction under tighter review capacity, not a robust loss from passenger prioritization at higher capacity. The upper-panel intervals are priority-specific, not paired intervals for their differences; agreement in point-estimate direction is not a substitute for an inferential test.
+
+For management, the value of an additional screening signal depends on the available review capacity: passenger exposure is more discriminating when review slots are scarce, and ranking differences narrow as capacity expands. The measure $L^{\mathrm{att}}$ is a normalized loss under the study's reference consequences, not observed operating loss or AOCC savings.
+
+\begin{table}[pos=t]
+\centering
+\caption{Evaluation populations and decision capacities across the six annual windows.}
+\label{tab:results_scope}
+\small
+\begin{tabular}{rrrrrrr}
+\toprule
+Year & \shortstack{PRE candidates\\$N$} & \shortstack{TURN candidates\\$N$} &
+\shortstack{PRE review\\slots $K$} & \shortstack{TURN review\\slots $K$} &
+\shortstack{Stage-II eligible\\common-support cases} & \shortstack{HJ reference\\cohort $N$} \\
+\midrule
+2017 & 1,310 & 3,899 & 131 & 390 & 5,209 & 521 \\
+2018 & 1,345 & 3,873 & 135 & 388 & 5,218 & 523 \\
+2019 & 1,252 & 3,888 & 126 & 389 & 5,140 & 515 \\
+2020 & 675 & 4,053 & 68 & 406 & 4,728 & 474 \\
+2021 & 1,297 & 3,930 & 130 & 393 & 5,227 & 523 \\
+2022 & 1,422 & 3,884 & 143 & 389 & 5,306 & 532 \\
+\bottomrule
+\end{tabular}
+\par\vspace{3pt}
+\begin{minipage}{0.98\linewidth}
+\footnotesize
+$K=\lceil 0.10N\rceil$, computed separately for PRE and TURN. Stage-II eligible cases satisfy the full common-support condition for local-recovery evaluation. The annual HJ reference cohort is the intersection of the nominal $q_0=0.10$ HJ shortlist and valid local-recovery support; it is not interchangeable with the full Stage-II eligible population. Annual E1--E3 estimates use their respective defined support populations.
+\end{minipage}
+\end{table}
+
+\begin{table}[pos=t]
+\centering
+\caption{Screening results at the nominal review share $q_0=0.10$.}
+\label{tab:screening_nominal}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcc}
+\toprule
+Stage & Priority & \shortstack{Shortlist positions replaced:\\mean (annual range)} &
+\shortstack{$L^{\mathrm{att}}$:\\mean (annual range)} \\
+\midrule
+PRE & Delay-only & 44.7\% (37.4--53.1\%) & 0.1397 (0.1006--0.1840) \\
+PRE & Delay + Passenger & 37.1\% (30.5--47.7\%) & 0.0985 (0.0626--0.1721) \\
+PRE & Delay + Downstream & 44.6\% (37.4--52.4\%) & 0.1389 (0.0988--0.1813) \\
+TURN & Delay-only & 46.1\% (39.6--55.3\%) & 0.1385 (0.1068--0.1811) \\
+TURN & Delay + Passenger & 36.5\% (32.0--44.0\%) & 0.0975 (0.0674--0.1446) \\
+TURN & Delay + Downstream & 46.0\% (39.6--55.3\%) & 0.1380 (0.1058--0.1809) \\
+\bottomrule
+\end{tabular}
+\par\vspace{3pt}
+\begin{minipage}{0.98\linewidth}
+\footnotesize
+Replacement share is calculated within each year as the fraction of the $K$ reference positions replaced, then averaged equally across years. Parentheses give annual minima and maxima, not confidence intervals. Figure~\ref{fig:q_boundary_new}(a)--(b) reports annual $L^{\mathrm{att}}$ point estimates and episode-cluster percentile-bootstrap 95\% intervals, based on 2,000 resamples. The six annual outputs were analyzed separately; candidate pools were not merged.
+\end{minipage}
+\end{table}
+
+\begin{figure}[pos=t]
+\centering
+\includegraphics[width=0.99\linewidth]{../../reports/section5_candidate_20261017_v5/figures/figure_5_1_capacity_and_screening.pdf}
+\caption{Screening results across review capacities. Panels~(a)--(b) show annual $L^{\mathrm{att}}$ estimates for PRE and TURN at $q_0=0.10$, with episode-cluster percentile-bootstrap 95\% intervals for each priority. Panels~(c)--(d) show the six-year equal-weight mean of $\Delta L^{\mathrm{att}}$ over the review-share grid; shaded bands show the annual minimum-to-maximum range, not confidence intervals. Positive $\Delta L^{\mathrm{att}}$ indicates lower reference loss after adding passenger exposure.}
+\label{fig:q_boundary_new}
+\end{figure}
+
+\subsection{Do information representations affect screening and local recovery in the same way?}
+\label{subsec:results_information}
+
+Table~\ref{tab:information_annual_new} compares History+Marginal (HM) and History+Point (HP) with History+Joint (HJ) by year. At Stage I, the comparison uses a common candidate set and review share. At Stage II, it uses the intersection of the annual HJ reference shortlist and valid local-recovery support. As shown in Table~\ref{tab:results_scope}, the annual Stage-II HJ reference cohort contains 474--532 cases; it is not the full Stage-II eligible population. Stage-II results should therefore not be interpreted as recovery-opportunity coverage over all eligible cases.
+
+Relative to HJ, HM replaces 1.3--3.8\% of Stage-I shortlist positions, with $L^{\mathrm{att}}=0.0006$--$0.0026$. Its screening shortlist is therefore close to HJ. At Stage II, however, exact recovery-target agreement, $A_0$, is 0.581--0.730, and $L^{\mathrm{rec}}$ is 0.0853--0.1247. Allowing a one-grid-step tolerance of five minutes raises HM--HJ agreement, $A_5$, to 0.876--0.959 (six-year mean, 0.914). Across years, $A_5-A_0$ is 20.3--33.7 percentage points (mean, 27.4 points), corresponding to cases whose targets differ by exactly one five-minute step; these cases account for 66--85\% of the non-exact HM--HJ matches. Differences exceeding five minutes account for 4.1--12.4\%. Thus, low exact agreement does not mean that most HM--HJ target differences are large. The one-step tolerance is a descriptive summary of the target grid, not an operator-validated tolerance.
+
+HP differs more from HJ at both decision layers. Its Stage-I replacement rate is 84.2--88.7\%, with $L^{\mathrm{att}}=0.4134$--$0.5291$. At Stage II, $A_0$ is 0.130--0.241, $A_5$ averages 0.439 (annual range, 0.308--0.654), and $L^{\mathrm{rec}}$ is 0.8963--0.9814. The point estimates indicate that HP--HJ target differences remain substantial even with a one-step tolerance. Table~\ref{tab:information_annual_new} reports the annual loss estimates and their 95\% bootstrap intervals; $A_0$ and $A_5$ are annual point estimates without intervals. The paired HP--HM loss increment is estimated on its own paired support and is reported separately in the Supplementary Material; it is not calculated by subtracting the HP--HJ and HM--HJ contrasts.
+
+HM preserves the weighted primitive marginals and serves as a mathematical comparator for separating marginal retention from changes in joint dependence. The coupling audit confirms marginal preservation but does not assert that the product coupling is a physically feasible joint operating state. The HM--HJ contrast describes decision differences under the defined comparison; it is neither a directly deployable operating policy nor a causal effect. $L^{\mathrm{rec}}$ is a normalized measure relative to the study's reference recovery objective and CU scale, not observed monetary savings or realized recovery benefits.
+
+\begin{table}[pos=t]
+\centering
+\caption{Annual direct contrasts in screening and local-recovery decisions.}
+\label{tab:information_annual_new}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{cccccc}
+\toprule
+Year & Contrast & \shortstack{Stage-I shortlist\\replacement rate} &
+\shortstack{Stage-I $L^{\mathrm{att}}$\\(95\% CI)} &
+\shortstack{Stage-II $A_0/A_5$} &
+\shortstack{Stage-II $L^{\mathrm{rec}}$\\(95\% CI)} \\
+\midrule
+2017 & HM--HJ & 1.9\% & 0.0010 (0.0004, 0.0018) & 0.693 / 0.896 & 0.1095 (0.0818, 0.1416) \\
+2017 & HP--HJ & 85.8\% & 0.4986 (0.4708, 0.5241) & 0.226 / 0.560 & 0.9145 (0.8780, 0.9447) \\
+2018 & HM--HJ & 1.9\% & 0.0011 (0.0001, 0.0020) & 0.585 / 0.922 & 0.0935 (0.0718, 0.1178) \\
+2018 & HP--HJ & 87.6\% & 0.5050 (0.4783, 0.5309) & 0.130 / 0.308 & 0.9814 (0.9718, 0.9892) \\
+2019 & HM--HJ & 1.9\% & 0.0009 (0.0004, 0.0015) & 0.730 / 0.959 & 0.0853 (0.0623, 0.1129) \\
+2019 & HP--HJ & 88.5\% & 0.5291 (0.5052, 0.5543) & 0.241 / 0.654 & 0.9321 (0.8975, 0.9616) \\
+2020 & HM--HJ & 1.3\% & 0.0006 (0.0000, 0.0012) & 0.631 / 0.932 & 0.0906 (0.0727, 0.1131) \\
+2020 & HP--HJ & 84.2\% & 0.4313 (0.4071, 0.4563) & 0.171 / 0.422 & 0.8963 (0.8721, 0.9192) \\
+2021 & HM--HJ & 2.5\% & 0.0026 (0.0009, 0.0049) & 0.618 / 0.899 & 0.1051 (0.0809, 0.1329) \\
+2021 & HP--HJ & 85.1\% & 0.4134 (0.3865, 0.4367) & 0.153 / 0.359 & 0.9535 (0.9365, 0.9680) \\
+2022 & HM--HJ & 3.8\% & 0.0026 (0.0013, 0.0048) & 0.581 / 0.876 & 0.1247 (0.0966, 0.1570) \\
+2022 & HP--HJ & 88.7\% & 0.4995 (0.4768, 0.5246) & 0.130 / 0.329 & 0.9575 (0.9388, 0.9741) \\
+\bottomrule
+\end{tabular}}
+\par\vspace{3pt}
+\begin{minipage}{0.98\linewidth}
+\footnotesize
+Each year reports HM--HJ and HP--HJ direct comparisons with HJ. Stage-I replacement is the fraction of reference-shortlist positions replaced. Parentheses for $L^{\mathrm{att}}$ and $L^{\mathrm{rec}}$ are episode-cluster percentile-bootstrap 95\% intervals (2,000 resamples). $A_0$ is exact target agreement and $A_5$ is agreement within five minutes; both are point estimates with the annual HJ reference cohort as denominator. Because targets lie on a five-minute grid, $A_5-A_0$ is the share differing by exactly one grid step. HP--HM paired loss increments use a separate paired support population and are reported in the Supplementary Material.
+\end{minipage}
+\end{table}
+
+\subsection{How do prespecified management objectives relate to recovery decisions?}
+\label{subsec:results_objectives}
+
+Table~\ref{tab:objective_summary_new} summarizes the six-year equal-weight results for the four prespecified objectives; Figure~\ref{fig:objective_effects_new} retains the year-by-objective pattern. Under Passenger weighting, exact HM--HJ target agreement is the lowest of the four objectives in every year, with a six-year mean of 0.590 and an annual range of 0.547--0.664. HJ activation is highest under Passenger weighting (mean, 0.905) and lowest under Resource weighting (mean, 0.759); the latter has a zero-recovery-value share of 0.241 (annual range, 0.165--0.369). Thus, objective weights are associated with both representation agreement and the frequency of nonzero recovery choices, which are distinct outcomes.
+
+The table also reports the annual HJ cohort's mean optimal target as a share of its year-specific upper bound, $\overline{u^*/U_{\max}}$, including cases with $u^*=0$. This share is highest under Passenger weighting (mean, 42.4\%) and lowest under Resource weighting (27.7\%). Comparing HM and HJ on the same annual cohort, the HJ mean target share is 3.7 percentage points lower under Passenger weighting, with negative annual differences in all six years (range, $-5.9$ to $-0.7$ points). Under Balanced, Flight, and Resource weighting, the mean HJ--HM differences are $-1.5$, $-0.8$, and $+0.2$ points, respectively, and each annual range spans zero. The annual comparisons therefore do not support a common direction of change across the other three objectives.
+
+From a management perspective, objective weights relate both to whether recovery is activated and to the mean target share across the full reference cohort, including zero targets. Passenger weighting combines the lowest exact HM--HJ agreement with the highest HJ mean target share across objectives, yet HJ's mean target share remains below HM's in the within-objective comparison. Activation and the full-cohort mean answer different questions; the HM--HJ direction is not conveyed by absolute target changes alone. These are descriptive six-year summaries without confidence intervals; directional consistency is not a substitute for an inferential test.
+
+\begin{table}[pos=t]
+\centering
+\caption{Local-recovery decision summaries under the prespecified objectives.}
+\label{tab:objective_summary_new}
+\small
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{p{0.15\linewidth}p{0.20\linewidth}p{0.18\linewidth}p{0.23\linewidth}p{0.19\linewidth}}
+\toprule
+Objective & \shortstack{HM--HJ exact\\agreement: mean\\(annual range)} &
+\shortstack{HJ activation:\\mean\\(annual range)} &
+\shortstack{HJ mean target share\\$\overline{u^*/U_{\max}}$:\\mean (annual range)} &
+\shortstack{HJ--HM target-share\\difference (pp):\\mean (annual range)} \\
+\midrule
+Balanced & 0.640 (0.581--0.730) & 0.879 (0.823--0.916) & 36.9\% (21.6--48.2\%) & $-1.5$ ($-4.0$--$+0.1$) \\
+Flight & 0.665 (0.593--0.739) & 0.878 (0.839--0.908) & 34.2\% (20.7--44.2\%) & $-0.8$ ($-2.9$--$+0.6$) \\
+Passenger & 0.590 (0.547--0.664) & 0.905 (0.843--0.937) & 42.4\% (25.0--52.5\%) & $-3.7$ ($-5.9$--$-0.7$) \\
+Resource & 0.696 (0.608--0.772) & 0.759 (0.631--0.835) & 27.7\% (16.3--33.8\%) & $+0.2$ ($-2.0$--$+2.3$) \\
+\bottomrule
+\end{tabular}
+\par\vspace{3pt}
+\begin{minipage}{0.98\linewidth}
+\footnotesize
+Means are equal-weight averages of six annual estimates; parentheses give annual minima and maxima, not confidence intervals. The HJ target-share measure is calculated within each annual HJ reference cohort, includes zero targets, and is normalized by that year's $U_{\max}$. The final column is the within-year HJ minus HM difference on the same cohort, averaged equally across years; negative values indicate a lower HJ mean target share.
+\end{minipage}
+\end{table}
+
+\FloatBarrier
+\begin{figure}[pos=t]
+\centering
+\includegraphics[width=0.99\linewidth]{../../reports/section5_candidate_20261017_v5/figures/figure_5_2_objectives.pdf}
+\caption{Annual target agreement and mean target-share differences under the prespecified objectives. Panel~(a) shows exact HM--HJ recovery-target agreement. Panel~(b) shows the within-year HJ--HM difference in the full-cohort mean $u^*/U_{\max}$, in percentage points and including zero targets. Blue cells indicate a lower HJ mean target share than HM; red cells indicate a higher HJ mean. Each cell is a year--objective combination. No confidence intervals are shown, and color does not indicate statistical significance.}
+\label{fig:objective_effects_new}
+\end{figure}
+\FloatBarrier
+
+\subsection{Boundary of the cohort-size stability check}
+\label{subsec:sample_stability}
+
+The independent M5-b cohort-size check covers the prespecified grid $N\in\{128,256,512,1024,2048,4096\}$ in all six years. At the grid upper bound of $N=4096$, no year identifies a stability boundary. The check therefore neither establishes that $N=4096$ is sufficient nor identifies the minimum sample size required for stability. The output status is \texttt{NOT\_IDENTIFIABLE\_AT\_THIS\_N}. The findings in this section should be read as empirical results for the evaluated cohorts and support ranges. Year-specific statuses, failed criteria, and protocol details are reported in the Supplementary Material.
+
+Taken together, the comparisons show that the relationship between information representation and decision outcome varies by decision layer, review capacity, and management objective. Passenger exposure adds screening distinction under tighter review capacity; HM remains close to HJ in shortlist composition but not in exact local-recovery targets; and HP differs more from HJ at both stages. Objective weights are associated with distinct agreement and activation patterns, while the cohort-size check does not establish a stability boundary. These results are limited to the stated reference consequences, supported populations, and objective settings. They do not establish algorithmic superiority or realized airline operating gains.
+

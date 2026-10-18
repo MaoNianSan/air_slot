@@ -1,0 +1,114 @@
+{
+  "schema_version": "AIR_SLOT_G0_AUDIT_MANIFEST_V1",
+  "revision_id": "JATM_20261010",
+  "generated_from": "D:\\research\\air_slot\\code\\explore",
+  "git_head": "08712933fe05c49ec77d9fc8a6286f408e17a2f9",
+  "status": "G0_PARTIAL_BLOCKED",
+  "scientific_recomputation": false,
+  "final_test_access_count": 0,
+  "checks": [
+    {
+      "id": "stage1_capacity",
+      "path": "model/M3/stage1.py",
+      "exists": true,
+      "sha256": "eca2d669e74538b27dba0e415069f148b7703efaf817a872a4e9f612bcb8ee6c"
+    },
+    {
+      "id": "stage2_enumeration",
+      "path": "model/M3/stage2.py",
+      "exists": true,
+      "sha256": "f0d4e1220b84d072ddf34f449e8d7cf5794da1df7680d2075a09223c435381c6"
+    },
+    {
+      "id": "marginal_representation",
+      "path": "model/M1/state_representation.py",
+      "exists": true,
+      "sha256": "daf8ac3e96bdb0a71b36c39d2b6a827cf35e0286b61152f0fca44bd12cf6a8a3"
+    },
+    {
+      "id": "consequence_service",
+      "path": "model/M2/consequence_service.py",
+      "exists": true,
+      "sha256": "5f9f2e3c97b94ffc91eb1ff1f0ece0afd5129ca686e88a14adf233980687e15e"
+    },
+    {
+      "id": "phase7_dag",
+      "path": "formal/v2_phase7/executor/stages.py",
+      "exists": true,
+      "sha256": "f90613b94424c5c0691e3d65fd6e5222e7b079f9d87c3f86626aa1d77b03b032"
+    },
+    {
+      "id": "phase7_runner",
+      "path": "formal/v2_phase7/executor/runner.py",
+      "exists": true,
+      "sha256": "c1ba4fe91feba2734bcc77bad163adda7bc062dbb6edacdcc51fe964a542af96"
+    },
+    {
+      "id": "final_cohort",
+      "path": "formal/FINAL_TEST_COHORT_AUTHORITY_V1.json",
+      "exists": true,
+      "sha256": "9832b198e221042bff6f40c718f07c82169885514030308b7d50d6172d7e0088"
+    },
+    {
+      "id": "paper_projection",
+      "path": "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/PAPER_FACING_SECTION5_RESULTS.json",
+      "exists": true,
+      "sha256": "4284d15328226665b47b7c7f38bf3f7b84d84602b0fce7fbd7e9123fef9257f7"
+    },
+    {
+      "id": "stage1_retrospective_capacity",
+      "status": "PASS",
+      "evidence": "model/M3/stage1.py"
+    },
+    {
+      "id": "stage2_exact_enum",
+      "status": "PASS",
+      "evidence": "model/M3/stage2.py"
+    },
+    {
+      "id": "marginal_weight_audit_required",
+      "status": "UNKNOWN",
+      "evidence": "model/M1/state_representation.py:build_marginal_representation",
+      "finding": "implementation preserves slot weights and coordinate multisets, but repository-level weighted measure equality has not yet been proven for all unequal-weight inputs"
+    },
+    {
+      "id": "final_test_read_guard",
+      "status": "PASS",
+      "evidence": "formal/FINAL_TEST_COHORT_AUTHORITY_V1.json"
+    },
+    {
+      "id": "g0_readonly_marginal_audit",
+      "status": "PASS_MARGINAL_PRESERVATION",
+      "evidence": "reports/refactor_20261010/G0_MARGINAL_AUDIT.json",
+      "nodes_audited": 238
+    },
+    {
+      "id": "g0_readonly_unit_time_audit",
+      "status": "UNKNOWN_INSUFFICIENT_PAYLOAD",
+      "evidence": "reports/refactor_20261010/G0_UNIT_TRACE.json",
+      "finding": "Frozen checkpoint links PRE/TURN state -> native consequence -> CU -> priority -> u; deterministic identities pass for 45,934 scenario rows. TAXI has no actionable u row and raw-field semantic closure remains incomplete."
+    },
+    {
+      "id": "g0_readonly_lineage_audit",
+      "status": "FROZEN_BUT_LINEAGE_PARTIAL",
+      "evidence": "reports/refactor_20261010/G0_LINEAGE_AUDIT.json"
+    }
+  ],
+  "summary": {
+    "G0-1": "PASS_CONTRACT_ONLY_RETROSPECTIVE_BENCHMARK",
+    "G0-2": "PASS_MARGINAL_PRESERVATION",
+    "G0-3": "UNKNOWN_BLOCKED_UNTIL_COMPLETE_UNIT_TRACE",
+    "G0-4": "PASS_SOURCE_CONTRACT_AUDIT_PENDING_CASE_TRACE",
+    "G0-5": "FROZEN_BUT_LINEAGE_PARTIAL",
+    "G0-6": "PASS_WORDING_BOUNDARIES_DOCUMENTED"
+  },
+  "blocking_items": [
+    "G0-3 complete same-node raw-to-primitive-to-consequence-to-CU-to-priority-to-u trace is not available",
+    "G0-5 split-level lineage for primary 2019 paper surfaces remains partial"
+  ],
+  "next_actions": [
+    "close raw-field to primitive mapping for representative PRE/TURN/TAXI traces; preserve TAXI u as NOT_APPLICABLE",
+    "complete claim-level 2019 split/artifact/generator table for all primary paper numbers",
+    "keep candidate patch uncommitted and do not run formal executor or Final-Test"
+  ]
+}

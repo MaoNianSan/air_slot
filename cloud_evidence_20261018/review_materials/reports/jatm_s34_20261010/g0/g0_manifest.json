@@ -1,0 +1,116 @@
+{
+  "schema_version": "JATM_S34_G0_MANIFEST_V1",
+  "source_git_head": "35ff68e",
+  "source_branch": "v2/paper-primary",
+  "status": "G0_PARTIAL_BLOCKED",
+  "scientific_recomputation": false,
+  "final_test_access_count": 0,
+  "checks": [
+    {
+      "id": "G0-1",
+      "status": "PASS",
+      "evidence": "D:\\Local_Projects\\airslot\\reports\\refactor_20261010\\G0_SCIENTIFIC_AUDIT.json; model/M3/stage1.py",
+      "affected_cases": "2019 PRE/TURN contract and frozen q=0.10 capacity",
+      "blocks": [
+        "none for existing retrospective Stage-I"
+      ]
+    },
+    {
+      "id": "G0-2",
+      "status": "PASS_MARGINAL_PRESERVATION",
+      "evidence": "D:\\Local_Projects\\airslot\\reports\\jatm_s34_20261010\\g0\\G0_MARGINAL_AUDIT.json; D:\\Local_Projects\\airslot\\reports\\jatm_s34_20261010\\runs\\e3_exact_marginal_pilot_r1.json; exp/jatm_s34/e3_marginal.py",
+      "affected_cases": 238,
+      "blocks": [
+        "full E2/E3 Stage-II integration and mechanism-level result until objective runner is wired"
+      ]
+    },
+    {
+      "id": "G0-3",
+      "status": "PASS_STATIC_TRACE_TYPED_TAXI_LIMIT",
+      "evidence": "D:\\Local_Projects\\airslot\\reports\\jatm_s34_20261010\\g0\\G0_UNIT_TRACE_V2.json; validation/g0_unit_trace.py; model/M2/consequence_service.py",
+      "affected_cases": "3 real supported checkpoint traces (PRE, TURN, TAXI)",
+      "blocks": [
+        "exact raw-to-primitive closure for all production fields",
+        "TAXI actionable u trace remains typed unavailable for selected checkpoint"
+      ]
+    },
+    {
+      "id": "G0-4",
+      "status": "PASS_SOURCE_CONTRACT_AUDIT_PENDING_CASE_TRACE",
+      "evidence": "D:\\Local_Projects\\airslot\\reports\\refactor_20261010\\G0_UNIT_TRACE.json; model/M3/transition.py",
+      "affected_cases": 45934,
+      "blocks": [
+        "new corrected response claims until complete case trace"
+      ]
+    },
+    {
+      "id": "G0-5",
+      "status": "FROZEN_BUT_LINEAGE_PARTIAL",
+      "evidence": "D:\\Local_Projects\\airslot\\reports\\jatm_s34_20261010\\g0\\D4_FIXED_COMMON_AUDIT_R2.json; model/PRE/reference/data2_m2_train_fit.py; data2/scripts/build_year_references.py; D:\\Local_Projects\\airslot\\reports\\refactor_20261010\\G0_LINEAGE_AUDIT.json",
+      "affected_cases": "2017 H1 FIXED_COMMON bundle passes machine lineage checks; paper claim-level reconciliation remains partial",
+      "blocks": [
+        "paper-facing release of unmatched historical claims",
+        "six-year Test results"
+      ]
+    },
+    {
+      "id": "G0-6",
+      "status": "PASS_WORDING_BOUNDARIES_DOCUMENTED",
+      "evidence": "D:\\Local_Projects\\airslot\\reports\\refactor_20261010\\G0_SCIENTIFIC_AUDIT.md; REPOSITORY_AUTHORITY.md",
+      "affected_cases": "contract wording and solver authority",
+      "blocks": [
+        "none"
+      ]
+    }
+  ],
+  "decision_items": [
+    {
+      "id": "D1",
+      "topic": "Marginal coupling for nonuniform weights",
+      "status": "ACCEPTED_ENGINEERING_READY",
+      "decision": "A: exact discrete product coupling preserving each primitive weighted marginal",
+      "evidence": "model/M1/marginal_distribution.py; docs/reconciliation/JATM_S34_DECISION_LOG_20261011.md",
+      "affected": "E3 HM/HJ mechanism results remain blocked until integration contract is frozen"
+    },
+    {
+      "id": "D2",
+      "topic": "F_continuity time-base reconciliation",
+      "status": "ACCEPTED_DOCUMENTATION_ONLY",
+      "decision": "A: retain current r_ib-based implementation and document semantics",
+      "evidence": "model/M2/engine.py; model/M1/semantics.py; docs/reconciliation/JATM_S34_DECISION_LOG_20261011.md",
+      "affected": "No numeric code change; G0-3 raw closure remains blocked"
+    },
+    {
+      "id": "D3",
+      "topic": "DELAY_EXPOSURE score",
+      "status": "PASS_FORMULA_FROZEN",
+      "decision": "A primary: P^D * expected_passengers_per_flight; companion: P^D * expected_downstream_exposure; exclude three-way product",
+      "evidence": "exp/jatm_s34/delay_exposure.py; D3_D4_AUDIT.md",
+      "affected": "E1 remains subject to existing Test and common-support gates"
+    },
+    {
+      "id": "D4",
+      "topic": "FIXED_COMMON scale source",
+      "status": "PASS_FIXED_COMMON_REBUILT",
+      "decision": "A: 2017 H1 Train rebuilt as a versioned FIXED_COMMON candidate with data2_2017_2022 identity; all seven scales positive and unit-checked",
+      "evidence": "D:\\Local_Projects\\airslot\\reports\\jatm_s34_20261010\\g0\\D4_FIXED_COMMON_AUDIT_R2.json; artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES",
+      "affected": "E4 FIXED_COMMON Development track may proceed after runner binding; Test remains gated"
+    }
+  ],
+  "allowed_progress": [
+    "prepare year-isolated runner contracts",
+    "reuse existing E1 stage-q and E3 domain-emphasis code",
+    "run non-scientific contract tests",
+    "use the D1 exact weighted marginal adapter only after integration contract freeze",
+    "use the D3 primary and companion formulas with train-frozen references after access gates",
+    "do not access sealed Final-Test raw data without separate gate",
+    "run 2017 H1 FIXED_COMMON Development preparation from audited R2 bundle",
+    "run independent exact weighted Marginal E3 Development pilot"
+  ],
+  "blocked_progress": [
+    "new pure-dependence HM/HJ mechanism result until D1 adapter integration contract is frozen",
+    "six-year Test evaluation until Test access is opened",
+    "FIXED_COMMON cross-year result until the 2017 H1 scale artifact is supplied and audited",
+    "paper-facing result release"
+  ]
+}

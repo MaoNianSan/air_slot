@@ -1,0 +1,542 @@
+% Air Slot JATM -- independent, single-file supplementary manuscript.
+% Working technical migration from sections/appendix.tex (2019 original),
+% reconciled to the six-year Sections 3--4. Pending six-year experiments are
+% intentionally not reported as completed. Replace audit notes/results
+% before submission. Do not \input this full-document file inside main.tex.
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.45cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,longtable,graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\emergencystretch=2em
+\newcommand{\ind}{\mathbb I}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\numberwithin{equation}{section}
+\renewcommand{\thetable}{S\arabic{table}}
+\author{}
+\title{Supplementary Material\\[4pt]\large Operational Information and Decision Value in Rolling Airline Recovery}
+\date{}
+\begin{document}
+\maketitle
+\noindent This document records the data, information-representation, consequence, decision, and inference specifications underlying the main manuscript. The 2019 nominal cohort is retained as a traceable source evaluation; six-year experiment output fields are populated only following their scientific and statistical validation.
+\tableofcontents
+
+\section{Notation and Evaluation Populations}
+\label{sup:notation}
+The basic observational unit is an aircraft-linked predecessor--successor flight chain $i$. Rolling epochs $t$ occur on a five-minute replay grid; canonical stage $g$ takes values PRE, TURN, TAXI, or COMP. Screening and effective local-recovery analyses focus on PRE and TURN. Weighted scenarios $s$ encode unresolved operating states; they are not independent flight observations. Candidate local-recovery targets $u$ are alternatives within one decision problem, not statistical replicates.
+
+\begin{table}[htbp]\centering\small
+\caption{Main decision and evaluation objects (six-year protocol).}\label{tab:sup_notation}
+\begin{tabular}{p{0.24\linewidth}p{0.65\linewidth}}\toprule
+Symbol & Definition \\\midrule
+$y,g,i,t,s$ & Year, operating stage, chain, decision epoch, and weighted state scenario.\\
+$P^D, P^C$ & Delay-based and consequence-based screening priorities.\\
+$\mathcal H^{HJ}_{y,g}(q)$ & Year- and stage-specific reference screening shortlist at review share $q$.\\
+$\mathcal C_0$ & Archived 2019 fixed HJ shortlist (16 chain--stage cases), retained for provenance.\\
+$\mathcal C_{1,y,g}$ & All Stage-II-supported eligible cases, independently of screening priority.\\
+$\mathcal C_{2,y,g}$ & Union of selected shortlists under a fixed year, stage, budget, and reference objective.\\
+$\mathcal C_{3}$ & Repeated admissible epochs within the same flight chains for rolling analysis.\\
+$\mathcal C^{HJ}_{y,g}$ & Annual HJ-reference cohort after intersecting HJ shortlist with Stage-II eligibility.\\
+$L^{att},L^{rec}$ & Reference-objective screening and local-recovery decision losses.\\
+CU & Dimensionless, normatively weighted consequence unit; not a monetary unit.\\
+\bottomrule\end{tabular}
+\end{table}
+
+The source Appendix A used $\mathcal R^*$ to denote a \emph{fixed 2019} reference cohort. For the six-year study this object must not be interpreted as a fixed number of cases across years. The mapping between legacy $\mathcal R^*$ and $\mathcal C_0$, and between each year's eligible and reference cohort, will be reported without changing the underlying unit of analysis.
+
+\subsection{Operating-state and decision-value notation}
+The expected take-off-delay screening baseline is
+$P^D_{i,g}=\mathbb E[D^{OB}_{i,g}+D^{TX}_{i,g}\mid\mathcal E_{i,\leq t_g}]$, where the expectation is conditional on information legally available at the canonical decision epoch. This is a \emph{predicted expected delay}, not a measurement of an unrealized take-off event. The composite consequence priority is $P^C_{i,g,\boldsymbol\omega}$, calculated from the same admissible state information and frozen exposure references. The historical symbol $\mathcal R^*$ refers only to the frozen 2019 History+Joint (HJ) cohort. Across all six years the reference cohort is indexed by year $y$, stage $g$, and decision criterion; a fixed 16-case count must not be imposed across years.
+
+
+\section{Data Provenance, Time Design, and Eligibility}
+\label{sup:data}
+\subsection{Decision-time source contracts}
+BTS On-Time Performance records supply flight schedules, operating milestones, taxi measurements, and aircraft-linked continuity. NOAA Integrated Surface Database observations supply airport weather evidence. BTS DB1B and T-100 provide historical passenger-market, connection, and route/operating exposure references. Decision-time operating-state records and training-frozen exposure references serve separate analytical roles. An eventual record's availability must not be inferred solely from its flight or reference-period date.
+
+\begin{table}[htbp]\centering\footnotesize
+\caption{Observed and historical sources and their roles.}\label{tab:sup_sources}
+\begin{tabular}{p{0.21\linewidth}p{0.37\linewidth}p{0.31\linewidth}}\toprule
+Source & Inputs and constructed variables & Information role \\\midrule
+BTS On-Time & Schedules, tail continuity, actual block milestones, taxi times; chain states $T^{IB}$, $D^{OB}$, $D^{TX}$ & Decision-visible milestones; future realizations only for model training and held-out validation \\
+NOAA ISD & Historical airport weather observations and time-matched covariates & Decision-time environmental evidence subject to actual availability \\
+BTS DB1B & Itinerary / market reference; connection-sensitive share $s^{conn}$ & Historical, frozen exposure proxy rather than actual same-flight passenger manifest \\
+BTS T-100 & Segment traffic, passengers, seats and aircraft-route aggregates; $N^{pax}$ and traffic references & Historical, frozen passenger and network exposure \\
+Same-aircraft schedule history & Admissible downstream schedule connections / frozen fallback; $E^{down}$ & Decision-visible or training-frozen propagation reference \\\bottomrule
+\end{tabular}\end{table}
+
+The chain-building protocol links adjacent flights only when aircraft continuity, station consistency, and required time-quality conditions are satisfied. A five-minute rolling replay generates state nodes, which are mapped to prespecified canonical operating stages. Screening candidates and Stage-II-supported cases are derived from those canonical cases under separate eligibility rules; recorded exclusion reasons distinguish missing data, invalid state timing, and unsupported probabilistic evaluation.
+
+\subsection{Six independent chronological evaluation years}
+\begin{table}[htbp]\centering\small
+\caption{Chronological roles applied independently within each year, 2017--2022.}\label{tab:sup_temporal}
+\begin{tabular}{ll}\toprule
+Months & Role\\\midrule
+January--June & Annual model estimation and eligible historical reference formation\\
+July & Probabilistic calibration\\
+August--September & Development checks, specification, and freezing\\
+October--December & Annual held-out Stage-I and Stage-II evaluation\\
+\bottomrule\end{tabular}\end{table}
+Within-chain rolling observations remain in the same partition. Models and calibration are fitted within each year; this protocol is not a direct transfer test of a model trained solely in 2019. The six-year result matrices must retain each year's valid $N_{y,g}$, shortlist capacity $K_{y,g}$, Stage-II support, and paired support. The original 2019 data and analyses remain separately traceable.
+
+\subsection{Common support and statistical units}
+Paired information comparisons require a common supported decision problem. The prior 2019 protocol refers to a minimum supported probability mass of 0.90; for alternative weighted scenario carriers, the supported-mass calculation and support map must be explicitly verified instead of assuming indexwise alignment of 64 joint scenarios. Valid zero consequences, zero actions, and zero regret remain observations; absence of required support is not zero.
+
+One aircraft-linked chain is the primary resampling cluster. Stage-I resampling of a top-$K$ \emph{set decision} must rebuild the sampled candidate set, capacity, ranking, tie handling, and reference coverage. Repeated rolling epochs remain within the cluster. Additional calendar-day or airport-day block sensitivity is conditional on effective support. All six years require denominators and support counts before pooled inference.
+
+\subsection{Canonical-node provenance and replay diagnostics}
+For each year and stage, the implementation ledger should record the number of raw flights, valid aircraft-linked episodes, five-minute replay nodes, canonical decision nodes, screening-eligible cases, and Stage-II supported cases. The node is selected by the stage rule \emph{before}
+checking the probability interface; selecting whichever node has a valid forecast would change the decision-time information set. Preserve the original event identifiers and partition assignment so that repeated PRE/TURN observations from one episode are not treated as independent.
+
+The main five-minute replay grid and the supplementary lead-time grid \(\{0,30,60,120,180,240,300,360,420,480\}\;\text{minutes}\) have different purposes and are not interchangeable. Training, calibration, development, and test boundaries are established for each year independently.
+
+\subsection{Decision-time admissibility and reference leakage checks}
+The availability of a historical aggregate is determined by its actual release / as-of date and applicable lag, not merely the ending date of its underlying source period. References derived from DB1B or T-100 must be traceable to a release available at the corresponding replay epoch, or be fixed using legitimate pretest information. Weather covariates must likewise respect the observation and system-availability timestamps. Realized final outcomes are retained exclusively for validation and do not become features of an earlier decision node. The full timestamp field map, issue dates, missingness rates, and frozen-exposure snapshots are completion items to be supplied from the code audit.
+
+
+\section{Conditional Operating States and Information Representations}
+\label{sup:states}
+\subsection{Primitive state factorization}
+When predecessor in-block time $T^{IB}$, successor off-block delay $D^{OB}$, and extra taxi-out delay $D^{TX}$ are all unresolved, the conditional model follows the aircraft operating sequence:
+\begin{equation}
+\begin{aligned}
+p(T^{IB},D^{OB},D^{TX}\mid\mathcal E_{\le t})
+&=p(T^{IB}\mid\mathcal E_{\le t})\\
+&\quad\cdot p(D^{OB}\mid T^{IB},\mathcal E_{\le t})\\
+&\quad\cdot p(D^{TX}\mid T^{IB},D^{OB},\mathcal E_{\le t}).
+\end{aligned}\label{eq:sup_state_factorization}
+\end{equation}
+Previously realized milestones are fixed observations, not re-sampled uncertain variables. The predecessor-in-block component uses a discrete-hazard form; off-block and extra taxi-out delay use hurdle-type distributions. The established Joint construction contains 64 calibrated, nonnegative weighted scenarios, with weights summing to one.
+
+\subsection{Temporal representations}
+Current conditions on the current admissible state and frozen references. History additionally encodes the admissible prior trajectory with the frozen single-layer, unidirectional GRU (nominal hidden dimension 16). CJ--HJ is initially a contrast between implemented model configurations, not automatically a causal estimate of the unique information content of historical trajectories. Matched-capacity controls are required for the more restrictive attribution.
+
+\subsection{Point, Marginal, and Joint}
+Point selects the weighted joint medoid from the aligned Joint state cloud. Joint retains scenario alignment and original weights. Marginal is a replacement coupling required to retain \emph{each weighted primitive marginal} while changing cross-state alignment. For every unresolved primitive $S_j$ and measurable set $B$,
+\begin{equation}
+\Prob_M(S_j\in B)=\Prob_J(S_j\in B).
+\label{eq:sup_weighted_marginals}
+\end{equation}
+A permutation of coordinate values with unequal fixed scenario weights generally does \emph{not} satisfy this condition. Consequently, the original Appendix C.4 construction description is preserved only in the unedited legacy archive, not adopted as the validated marginal-preserving method. The accepted algorithm, its probability carrier, marginal discrepancy diagnostics, operational-support checks, and any numerical approximation must be recorded here before interpreting HM--HJ as a dependence-only contrast.
+
+\subsection{Mathematical construction of the valid weighted-Marginal comparator}
+Let the valid Joint carrier be $P_J=\sum_{s=1}^{S}w_s
+\delta_{\mathbf x_s}$, with $w_s\geq0$ and $\sum_s w_s=1$.
+A coupling $P_M$ can be interpreted as a \emph{marginal-preserving} comparator only if, for every primitive coordinate $j$ and every measurable support subset $B$,
+\begin{equation}
+P_M(X_j\in B)=P_J(X_j\in B),\quad j\in\{IB,OB,TX\}
+\text{ while unresolved}.
+\label{eq:sup_weighted_marginal}
+\end{equation}
+For discrete support it is enough to verify exact probability mass at each distinct coordinate value, accounting for repeated values and floating-point tolerance. Merely permuting coordinate values among unequally weighted scenario slots will in general violate this equality; retaining a common vector of slot weights is insufficient. Valid construction may use a different coupling carrier and scenario count, provided its nonnegative joint weights and all one-dimensional probability measures satisfy the contract.
+
+\emph{Statistical validity} and \emph{operational admissibility} are separate checks. A coupling with exact marginals can still assign mass to combinations that violate a prespecified event-ordering restriction. Report both the marginal discrepancies and the proportion of mass on invalid operational states before interpreting the HM--HJ contrast. If the comparator is only a mathematical dependence ablation, its scope must be stated explicitly. \textbf{The final coupling algorithm, weights, tolerances, and support treatment remain pending audit.}
+
+\subsection{Representation contrasts and controlled interpretation}
+History+Point (HP) is the weighted joint medoid, which preserves a coherent realized support vector but discards distributional spread. History+Joint (HJ) retains the full weighted state representation. Current+Joint (CJ) uses a distinct temporal input configuration; the CJ--HJ contrast is not a pure history-information experiment until capacity-matched controls are evaluated. HP--HJ compares point and probabilistic representations. HM--HJ is interpretable as a dependence contrast only after Eq.~\eqref{eq:sup_weighted_marginal} and the shared-support criterion have been validated. The comparator label alone does not establish the scientific estimand.
+
+
+\section{Consequence Components and Evaluation Scales}
+\label{sup:consequence}
+\subsection{Native measurements and empirical proxies}
+The empirical consequence vector has three Flight, three Passenger, and one Resource component. Let $D^{TO}=D^{OB}+D^{TX}$, historical passenger exposure $N^{pax}$, connection-sensitive share $s^{conn}$, and downstream exposure $E^{down}$. The predefined itinerary and service event thresholds are $\tau_I=45$ and $\tau_S=180$ minutes.
+
+\begin{table}[htbp]\centering\footnotesize
+\caption{Native consequence definitions inherited from the source appendix, with outstanding verification explicitly identified.}\label{tab:sup_consequences}
+\begin{tabular}{p{0.24\linewidth}p{0.50\linewidth}p{0.16\linewidth}}\toprule
+Component & Native construction & Unit\\\midrule
+$F_{\mathrm{continuity}}$ & Predecessor-in-block/turnaround reference pressure; \textbf{time-origin formula requires validation} & min\\
+$F_{\mathrm{execution}}$ & $D^{OB}$ & min\\
+$F_{\mathrm{propagation}}$ & $D^{TO} E^{down}$ & exposure--min\\
+$P_{\mathrm{time}}$ & $N^{pax} D^{TO}$ & passenger--min\\
+$P_{\mathrm{itinerary}}$ & $N^{pax}s^{conn}\ind\{D^{TO}>45\}$ & event exposure\\
+$P_{\mathrm{service}}$ & $N^{pax}\ind\{D^{TO}\ge 180\}$ & event exposure\\
+$R_{\mathrm{operating}}$ & $D^{TX}$ & min\\
+\bottomrule\end{tabular}\end{table}
+The source Appendix D.1 wrote $[T^{IB}-T_{\mathrm{turn,ref}}]_+$ for Flight continuity. This expression requires explicit checking of its time origin and units before the formula can be carried into the final submission. The frozen historical reference $T_{\mathrm{turn,ref}}$ also must not be conflated with the separate Stage-II turnaround feasibility reference $T_{\mathrm{turn,lb}}=41$ min. Itinerary and service components are exposure proxies rather than observed missed connections or compensation expenditures.
+
+\subsection{Normalization, weights, and cross-year objectives}
+For positive-support continuous component $k$, the source specification uses $\xi_k=\mathrm{Median}_{Train}(q_k\mid q_k>0)$ and $Z_k=q_k/\xi_k$; event components use separately frozen event-exposure scales. Stage-I and Stage-II share hierarchical aggregation. Each Flight or Passenger component has a within-domain share of $1/3$; the Resource component has share $1$. Balanced uses equal domain weights. The Flight-, Passenger-, and Resource-emphasis settings use, respectively, $\boldsymbol\omega_F=(0.50,0.25,0.25)$, $\boldsymbol\omega_P=(0.25,0.50,0.25)$, and $\boldsymbol\omega_R=(0.25,0.25,0.50)$.
+
+Annual year-local evaluation uses year-specific legitimate Train references. Fixed-common evaluation uses one reference vector frozen in advance of held-out comparisons. Both normalization tracks must explicitly align the Stage-II effort penalty with their respective CU scales. The exact source year/window, reference values, event scales, and effort conventions are \textbf{pending audit}; no reference values are inferred in this draft.
+
+\subsection{Action-response diagnostics}
+The source-defined local target adjusts successor off-block timing subject to headroom. Under a fixed scenario, $D^{OB}$ and derived $D^{TO}$ can respond, whereas an unadjusted $D^{TX}$ does not respond directly. Threshold components respond when the relevant event changes truth value. The complete seven-component action-response matrix must be computed and archived for each evaluation track, rather than inferred solely from the nominal functional form.
+
+\subsection{Hierarchical aggregation and validity of measurement scales}
+Let $q_k$ be a native component and $Z_k$ its valid normalized form. The domain index is $D_d=\sum_{k\in\mathcal K_d} \alpha_{d,k}Z_k$, and the decision criterion is
+\begin{equation}
+\Phi^C(\mathbf C;\boldsymbol\omega)
+=\sum_{d\in\{F,P,R\}}\omega_dD_d,
+\qquad\sum_d\omega_d=1.
+\label{eq:sup_domain_criterion}
+\end{equation}
+Flight and Passenger have three equal within-domain shares $1/3$; Resource has one share of $1$. Equal \emph{domain} weights do not make all seven native components equally important. CU is dimensionless; standardization cannot be interpreted as calibrated airline currency, revealed preference, or realized welfare loss.
+
+For continuous positive-support components the prespecified reference is $\xi_k=\mathrm{Median}_{\mathrm{Train}}(q_k\mid q_k>0)$, followed by $Z_k=q_k/\xi_k$ when $\xi_k>0$. Itinerary and service exposure require separately specified event scales. Valid zero consequences remain zero; absent references, missing measurements, or undefined scales cannot be silently set to zero.
+
+For fixed-common CU, the exact shared reference window must be frozen before held-out outcome review. Changing a component reference changes its effective weight in the composite objective; if Stage-II effort is $c^A(u)=\lambda u/U_{\max}$, the treatment of $\lambda$ must be consistent with the corresponding consequence track. Neither the common reference year/window nor alternative effort conventions are supplied by the original 2019 Appendix and require provenance before cross-year absolute-CU comparisons are reported.
+
+\subsection{Component-wise local-action response ledger}
+In the local-target model, realized recovery is applied to successor $AOBT$, leaving predecessor in-block and the taxi-out primitive unchanged within the same scenario. Thus $D^{OB}$ and $D^{TO}$ can respond to a positive effective advance; the itinerary/service event indicators change only if their respective thresholds are crossed. A baseline component determined solely by predecessor state, or the taxi-out resource component when $D^{TX}$ is held fixed, cannot itself improve under this local action. These are implications of the \emph{specified functional mechanism}, not substitutes for implementation checks. Archive $C_{k,s}(u)-C_{k,s}(0)$ for all seven components, supported scenarios, tested objective weights, and evaluation tracks. In particular, Resource emphasis can change choices through the relative weight of responsive domains and recovery effort even when the Resource component is invariant to the action.
+
+
+\section{Decision Execution, Objective Comparisons, and Inference}
+\label{sup:decisions}
+\subsection{Fixed-budget screening and local recovery}
+Within year $y$ and stage $g$, the fixed-budget Stage-I decision selects the highest-scoring $K_{y,g}(q)=\lceil qN_{y,g}\rceil$ eligible chain--stage cases, under a deterministic tie rule. The nominal review share is $q_0=0.10$; capacity sensitivity covers $0.05,0.20,0.30$. Delay and consequence screening must be evaluated over identical eligible candidate populations. The quarterly stage-specific pool is a retrospective benchmark, not proven simultaneous real-world AOCC queueing.
+
+The nominal Stage-II grid is $\mathcal U=\{0,5,\ldots,45\}$ minutes, with turnaround feasibility reference $T_{\mathrm{turn,lb}}=41$ minutes. Under scenario $s$,
+\begin{equation}
+\begin{aligned}
+LB^{OB}_s&=\max\{SOBT^+,T^{IB}_s+T_{\mathrm{turn,lb}}\},\\
+H_s&=[AOBT_s(0)-LB^{OB}_s]_+,\\
+r_s(u)&=\min\{u,H_s\},\\
+J(u)&=\sum_s w_s\Phi^C(\mathbf C_s(u))+\lambda u/U_{\max},
+\end{aligned}\label{eq:sup_stage2_core}
+\end{equation}
+with nominal $\lambda=0.25$, $U_{\max}=45$ min. The smallest minimizing target is selected. Here $u=0$ means no additional modeled local-recovery target, not the absence of historical operational intervention. The 41-minute quantity is an empirical feasibility reference, not a verified minimum for every flight.
+
+\subsection{Reference cohorts and paired decision evaluation}
+The 2019 original frozen HJ cohort contains three PRE and 13 TURN cases (16 in total); it remains archived as $\mathcal C_0$. Each year independently forms an HJ reference shortlist under the same screening rule and an annual supported Stage-II cohort $\mathcal C^{HJ}_{y,g}$. Full eligibility $\mathcal C_{1,y,g}$ is determined without selecting cases by a particular screening method. The shortlist union $\mathcal C_2$ and rolling cohort $\mathcal C_3$ answer distinct questions. None can replace another denominator without declaration.
+
+Reference regret uses the same decision target grid and the specified Joint evaluator for all compared representations. A zero reference recoverable-value denominator does not justify reporting zero normalized regret; absolute CU loss remains reportable. The reference optimum is model-relative, not demonstrated real-world optimum.
+
+\subsection{Stability and sensitivity protocols}
+For same-scale screening score perturbations, a sufficient top-$K$ certificate compares the active shortlist margin $m_g$ with the priority perturbation span $\Delta^I_g$. For local recovery, a sufficient certificate compares the optimum-to-alternative objective gap $\gamma_{i,g}$ with the action-differential perturbation span $\Delta^{II}_{i,g}$. Conditions $\Delta^I_g<m_g$ and $\Delta^{II}_{i,g}<\gamma_{i,g}$ are sufficient, not necessary; their failure is not evidence of a changed decision. The full derivation and tie cases require insertion following reconciliation with the main methodology.
+
+Sensitivity varies turnaround bounds ($34$, $41$, $47$ min), effort weights ($0.10$, $0.25$, $0.50$, $1.00$), and the maximum recovery range ($25$, $45$, $75$ min). Changing $U_{\max}$ in $\lambda u/U_{\max}$ changes both the range and the effort slope; a decoupled experiment must hold $\lambda/U_{\max}$ fixed when isolating range effects. Objective-by-distribution and threshold-by-headroom controls must use explicit common reference criteria and supported samples.
+
+\subsection{Screening value and recovery opportunity accounting}
+For a common supported stage-$g$ candidate population, denote the reference consequence shortlist by $\mathcal H_g^r$, an alternative shortlist by $\mathcal H_g^a$, and the reference priority by
+$P^r_{i,g}$. Then
+\begin{equation}
+A_g^r=\sum_{i\in\mathcal H_g^r}P^r_{i,g},\qquad
+A_g^a=\sum_{i\in\mathcal H_g^a}P^r_{i,g},\qquad
+L_g^{att}=1-\frac{A_g^a}{A_g^r},
+\label{eq:sup_stage1_loss}
+\end{equation}
+when $A_g^r>0$. Under identical feasible candidates and review capacity, the reference top-$K$ maximizes the reference sum and hence the loss is nonnegative. Shortlist replacement counts and reference-value loss measure different aspects of the screening decision. They are not realized airline cost savings.
+
+For the reference target $u^r$ and comparator target $u^a$, each assessed under the same $J^r$ and supported scenario problem, define
+\begin{equation}
+\Delta^{rec}_{i,g}=J^r_{i,g}(u^a_{i,g})-J^r_{i,g}(u^r_{i,g}),\qquad
+V^r_{i,g}=J^r_{i,g}(0)-J^r_{i,g}(u^r_{i,g}).
+\label{eq:sup_regret_value}
+\end{equation}
+The paired-cohort normalized recovery loss is
+\begin{equation}
+L^{rec}(\mathcal C)=
+\frac{\sum_{(i,g)\in\mathcal C}\Delta^{rec}_{i,g}}
+{\sum_{(i,g)\in\mathcal C}V^r_{i,g}},
+\label{eq:sup_recovery_loss}
+\end{equation}
+reported only if the denominator is positive. It is not intrinsically bounded by one; zero denominators imply an undefined \emph{ratio},
+not a zero loss. Every objective specification has its own reference optimum, reference recoverable value, and denominator. Reference optimality is within this local model and should not be called verified real-world recovery optimality.
+
+For a supported full-eligible cohort $\mathcal C_{1,y,g}$ and a
+stage-specific screening shortlist $\mathcal H_{y,g}$, reference
+recovery-opportunity coverage is
+\begin{equation}
+\mathrm{Coverage@K}_{y,g}
+=\frac{\sum_{i\in\mathcal H_{y,g}\cap\mathcal C_{1,y,g}}V^r_{i,g}}
+{\sum_{i\in\mathcal C_{1,y,g}}V^r_{i,g}},
+\label{eq:sup_recovery_coverage}
+\end{equation}
+when its denominator is positive. This quantity answers how much
+\emph{modeled} recovery opportunity a particular screening allocation covers, not what savings the carrier realized. The shortlist criterion and reference recovery evaluator must be reported together.
+
+\subsection{Derivation of the sufficient decision-stability certificates}
+For the reference top-$K$ set $\mathcal H_g^r$, let
+$m_g=\min_{i\in\mathcal H_g^r,j\notin\mathcal H_g^r}
+(P^r_{i,g}-P^r_{j,g})$ and write
+$P^a_{i,g}=P^r_{i,g}+\delta^I_{i,g}$ on the same score scale.
+With $\Delta_g^I=\max_{i\in\mathcal H_g^r,j\notin\mathcal H_g^r}
+|\delta^I_{i,g}-\delta^I_{j,g}|$, any selected--unselected pair
+satisfies
+\begin{equation}
+P^a_{i,g}-P^a_{j,g}
+\ge m_g-\Delta_g^I.
+\label{eq:sup_stability_stage1}
+\end{equation}
+Thus $\Delta_g^I<m_g$ is sufficient for identical top-$K$ selection.
+
+For Stage II, write $J^a(u)=J^r(u)+\delta^{II}(u)$,
+$u^r=\arg\min_uJ^r(u)$, and let
+$\gamma=\min_{u\neq u^r}[J^r(u)-J^r(u^r)]$. Put
+$\Delta^{II}=\max_{u\neq u^r}
+|\delta^{II}(u)-\delta^{II}(u^r)|$.
+Then every alternative satisfies
+\begin{equation}
+J^a(u)-J^a(u^r)\ge\gamma-\Delta^{II}.
+\label{eq:sup_stability_stage2}
+\end{equation}
+If $\Delta^{II}<\gamma$ the reference action remains optimal, subject to the common tie rule. Both certificates are sufficient, not necessary. Their failure implies neither a shortlist change nor an action change. Tied or singleton feasible sets are handled by the specified deterministic rule. Same-scale score requirements prohibit applying Stage-I perturbation formulas directly to raw delay versus CU.
+
+\subsection{Dependence-specific objective perturbations}
+For a valid Marginal coupling $P_M$ and Joint reference $P_J$ sharing the same weighted primitive marginals and a common target set, put $e_{\omega}(u)=J_{\omega}(u;P_J)-J_{\omega}(u;P_M)$. For any comparator $v$ against the Joint optimum $u_J^*$,
+\begin{equation}
+\begin{aligned}
+J_{\omega}(v;P_M)-J_{\omega}(u_J^*;P_M)
+={}&[J_{\omega}(v;P_J)-J_{\omega}(u_J^*;P_J)]\\
+&-[e_{\omega}(v)-e_{\omega}(u_J^*)].
+\end{aligned}
+\label{eq:sup_dep_boundary}
+\end{equation}
+Dependence changes the selected target only if it sufficiently changes \emph{relative} evaluations of feasible targets. An additive shift of all target values does not change their ordering. If the entire fixed-target consequence criterion is separable across unresolved primitive states, all one-dimensional weighted marginals match, and the target set and effort terms are distribution independent, then $J_{\omega}(u;P_M)=J_{\omega}(u;P_J)$ for every feasible $u$. This is a sufficient rather than necessary condition for marginal sufficiency.
+
+\subsection{Paired resampling and operating-regime design}
+The unit of resampling is the aircraft-linked episode; its canonical stages and all admissible rolling epochs move together into each bootstrap replicate. The original paired comparisons use 2,000 percentile bootstrap replicates. Stage-I Top-$K$ requires recomputing candidate selection, $K=\lceil qN\rceil$, fixed tie-breaking, and reference coverage within each replicate; applying a bootstrap to an already selected shortlist would not reproduce the sampling variation of the screening rule. A calendar-day or airport--date block check can probe shared operating shocks where the number of independent blocks permits it. Annual estimates are reported separately; any pooled summary must declare year-equal versus episode-weighted aggregation. Repeated operating nodes, 64 scenarios per episode, and trial targets are not independent units for confidence intervals.
+
+
+\section{Supplementary Experimental Evidence and Audit Records}
+\label{sup:additional_results}
+\subsection{Annual support and evaluation ledger (2017--2022)}
+The six independent held-out years require a consistent table of total chain episodes, canonical PRE and TURN screening candidates, review budgets, reference shortlists, Stage-II eligible cases, HJ annual reference cohorts, paired information support, and objective-by-distribution support. Values are taken from versioned and audited experiment outputs; they are \emph{not} inferred from the archived 2019 case counts. The audited values are reported in Tables~\ref{tab:sup_sixyear_support} and~\ref{tab:sup_e1_screening}; the per-node exclusion ledger (missing data, invalid state timing, unsupported probabilistic evaluation) remains a completion item.
+
+\subsection{E1: screening comparisons and exposure controls}
+Supporting results contain the six-year Delay/Delay+Exposure/Consequence shortlist comparisons, retained reference consequences, screening shares $q$, and episode-cluster bootstrap diagnostics (Tables~\ref{tab:sup_e1_screening} and~\ref{tab:sup_e1_q}). The Delay+Exposure construction is a multiplicative delay-by-exposure score using frozen historical passenger or downstream references, fixed before held-out outcome review. Tie handling follows the deterministic selector rule; shortlist capacities are recomputed within each bootstrap replicate.
+
+\subsection{E2: temporal, probabilistic, and recoverability comparisons}
+Supporting results contain paired CJ--HJ, HP--HJ, and HM--HJ Stage-I displacement and normalized loss, Stage-II exact and $\pm5$-minute target agreement, activation events, absolute reference losses, and reference denominators (Tables~\ref{tab:sup_e2_support} and~\ref{tab:sup_e2_support_detail}). The weighted-marginal-coupling audit is summarized in Section~\ref{sup:marginal_audit}. Recovery-opportunity Coverage@K on the full eligible population remains pending because the audited outputs provide recoverable values only for the annual reference cohorts (Section~\ref{sup:pending}).
+
+\subsection{E3: objective-by-distribution and structural controls}
+Supporting results contain the shared reference cohort for the four prespecified managerial objectives, exact Marginal/Joint target agreement, dependence-sensitive shares, activation, and recoverable-value summaries (Table~\ref{tab:sup_e3}). The threshold $\times$ headroom ablation and the component-level action-response ledger remain pending: the audited mechanism diagnostic is degenerate on the fully supported reference cohort (Section~\ref{sup:pending}). Results are not pooled across objectives or CU scales.
+
+\subsection{E4: operating period, stage, and rolling heterogeneity}
+Supporting results will report the three operating periods (2017--2019, 2020, 2021--2022), PRE and TURN contrasts, threshold/headroom subgroups, year-specific coverage, and within-chain rolling trajectories. Correlations across years or epochs are descriptive without additional causal identification.
+
+\subsection{Archived 2019-only evidence}
+The complete original Appendix F and its numerical tables remain preserved verbatim under \texttt{legacy/F\_2019\_additional\_results\_ORIGINAL.tex}. They document the provenance of the original 2019 nominal analysis, not independently audited six-year conclusions. Old HM--HJ dependence interpretations require reconciliation with the weighted-marginal construction before being presented as valid dependence-specific evidence. Archive inclusion here does not constitute final evidentiary acceptance.
+
+\subsection{Year-specific experimental support matrix}
+The core six-year support ledger is populated below from the audited annual experiment outputs. No entry is inferred from the archived 2019 counts.
+\begin{table}[htbp]\centering\footnotesize
+\caption{Six-year support ledger at the nominal review share $q_0=0.10$.}\label{tab:sup_sixyear_support}
+\begin{tabular}{lrrrrrrr}\toprule
+Year & \shortstack{PRE\\$N$} & \shortstack{TURN\\$N$} & PRE $K$ & TURN $K$ & \shortstack{Stage-II\\eligible} & \shortstack{Annual HJ\\supported} & \shortstack{E3 paired\\rows} \\ \midrule
+2017 & 1\,310 & 3\,899 & 131 & 390 & 5\,209 & 521 & 4\,168 \\
+2018 & 1\,345 & 3\,873 & 135 & 388 & 5\,218 & 523 & 4\,184 \\
+2019 & 1\,252 & 3\,888 & 126 & 389 & 5\,140 & 515 & 4\,120 \\
+2020 & 675 & 4\,053 & 68 & 406 & 4\,728 & 474 & 3\,792 \\
+2021 & 1\,297 & 3\,930 & 130 & 393 & 5\,227 & 523 & 4\,184 \\
+2022 & 1\,422 & 3\,884 & 143 & 389 & 5\,306 & 532 & 4\,256 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}\parbox{.93\linewidth}{\scriptsize $N$ counts canonical stage-specific screening candidates. $K=\lceil q_0N\rceil$. Stage-II eligible counts canonical candidates satisfying the full common-support condition used for local-recovery evaluation. Annual HJ supported is the annual History+Joint reference cohort. The E3 paired-row count is $4$ objectives $\times$ $2$ representations $\times$ cohort size. The original 2019 nominal Stage-I counts of 29 PRE and 127 TURN cases are retained only as provenance for the archived 2019 evaluation.}
+\end{table}
+
+\subsection{E1: annual screening detail and review-budget sensitivity}
+Table~\ref{tab:sup_e1_screening} reports the audited annual PRE and TURN screening comparisons at the nominal review budget, including the number of displaced shortlist positions, the retained reference consequence, and the normalized screening loss with its episode-cluster percentile bootstrap interval. Table~\ref{tab:sup_e1_q} reports the review-budget sensitivity of $L^{att}$ across the prespecified grid for the 2019 held-out window as an illustrative annual profile; the full annual grid is available in the archived run outputs.
+\begin{table}[htbp]\centering\scriptsize
+\caption{Annual stage-specific screening comparison at $q_0=0.10$ (Delay, Delay+Passenger, Delay+Downstream versus the Consequence reference).}\label{tab:sup_e1_screening}
+\begin{tabular}{lllrrrrrr}\toprule
+Year & Stage & Priority & $N$ & $K$ & Overlap & Replaced & \shortstack{Retained\\consequence} & \shortstack{$L^{att}$ [95\% CI]} \\ \midrule
+2017 & PRE & Delay & 1\,310 & 131 & 82 & 49 & 0.8946 & 0.1054 [0.0827, 0.1360] \\
+2017 & PRE & Delay+Passenger & 1\,310 & 131 & 91 & 40 & 0.9374 & 0.0626 [0.0466, 0.0854] \\
+2017 & PRE & Delay+Downstream & 1\,310 & 131 & 82 & 49 & 0.8946 & 0.1054 [0.0818, 0.1360] \\
+2017 & TURN & Delay & 3\,899 & 390 & 224 & 166 & 0.8841 & 0.1159 [0.0991, 0.1298] \\
+2017 & TURN & Delay+Passenger & 3\,899 & 390 & 264 & 126 & 0.9285 & 0.0715 [0.0594, 0.0834] \\
+2017 & TURN & Delay+Downstream & 3\,899 & 390 & 224 & 166 & 0.8841 & 0.1159 [0.1001, 0.1296] \\
+2018 & PRE & Delay & 1\,345 & 135 & 73 & 62 & 0.8393 & 0.1607 [0.1233, 0.1951] \\
+2018 & PRE & Delay+Passenger & 1\,345 & 135 & 90 & 45 & 0.9123 & 0.0877 [0.0636, 0.1112] \\
+2018 & PRE & Delay+Downstream & 1\,345 & 135 & 73 & 62 & 0.8397 & 0.1603 [0.1245, 0.1931] \\
+2018 & TURN & Delay & 3\,873 & 388 & 215 & 173 & 0.8524 & 0.1476 [0.1280, 0.1665] \\
+2018 & TURN & Delay+Passenger & 3\,873 & 388 & 250 & 138 & 0.8947 & 0.1053 [0.0894, 0.1219] \\
+2018 & TURN & Delay+Downstream & 3\,873 & 388 & 215 & 173 & 0.8532 & 0.1468 [0.1284, 0.1667] \\
+2019 & PRE & Delay & 1\,252 & 126 & 75 & 51 & 0.8664 & 0.1336 [0.0997, 0.1636] \\
+2019 & PRE & Delay+Passenger & 1\,252 & 126 & 82 & 44 & 0.9158 & 0.0842 [0.0575, 0.1091] \\
+2019 & PRE & Delay+Downstream & 1\,252 & 126 & 75 & 51 & 0.8664 & 0.1336 [0.1008, 0.1623] \\
+2019 & TURN & Delay & 3\,888 & 389 & 235 & 154 & 0.8767 & 0.1233 [0.1051, 0.1408] \\
+2019 & TURN & Delay+Passenger & 3\,888 & 389 & 262 & 127 & 0.9164 & 0.0836 [0.0675, 0.0980] \\
+2019 & TURN & Delay+Downstream & 3\,888 & 389 & 235 & 154 & 0.8766 & 0.1234 [0.1057, 0.1401] \\
+2020 & PRE & Delay & 675 & 68 & 41 & 27 & 0.8994 & 0.1006 [0.0712, 0.1461] \\
+2020 & PRE & Delay+Passenger & 675 & 68 & 47 & 21 & 0.9300 & 0.0700 [0.0375, 0.0975] \\
+2020 & PRE & Delay+Downstream & 675 & 68 & 41 & 27 & 0.9012 & 0.0988 [0.0695, 0.1403] \\
+2020 & TURN & Delay & 4\,053 & 406 & 236 & 170 & 0.8932 & 0.1068 [0.0931, 0.1216] \\
+2020 & TURN & Delay+Passenger & 4\,053 & 406 & 276 & 130 & 0.9326 & 0.0674 [0.0574, 0.0774] \\
+2020 & TURN & Delay+Downstream & 4\,053 & 406 & 236 & 170 & 0.8942 & 0.1058 [0.0914, 0.1187] \\
+2021 & PRE & Delay & 1\,297 & 130 & 63 & 67 & 0.8462 & 0.1538 [0.1262, 0.1861] \\
+2021 & PRE & Delay+Passenger & 1\,297 & 130 & 68 & 62 & 0.8857 & 0.1143 [0.0925, 0.1429] \\
+2021 & PRE & Delay+Downstream & 1\,297 & 130 & 63 & 67 & 0.8462 & 0.1538 [0.1255, 0.1864] \\
+2021 & TURN & Delay & 3\,930 & 393 & 186 & 207 & 0.8438 & 0.1562 [0.1382, 0.1718] \\
+2021 & TURN & Delay+Passenger & 3\,930 & 393 & 225 & 168 & 0.8873 & 0.1127 [0.0995, 0.1291] \\
+2021 & TURN & Delay+Downstream & 3\,930 & 393 & 187 & 206 & 0.8447 & 0.1553 [0.1381, 0.1721] \\
+2022 & PRE & Delay & 1\,422 & 143 & 67 & 76 & 0.8160 & 0.1840 [0.1506, 0.2163] \\
+2022 & PRE & Delay+Passenger & 1\,422 & 143 & 78 & 65 & 0.8279 & 0.1721 [0.1371, 0.2002] \\
+2022 & PRE & Delay+Downstream & 1\,422 & 143 & 68 & 75 & 0.8187 & 0.1813 [0.1502, 0.2141] \\
+2022 & TURN & Delay & 3\,884 & 389 & 174 & 215 & 0.8189 & 0.1811 [0.1618, 0.1996] \\
+2022 & TURN & Delay+Passenger & 3\,884 & 389 & 218 & 171 & 0.8554 & 0.1446 [0.1263, 0.1617] \\
+2022 & TURN & Delay+Downstream & 3\,884 & 389 & 174 & 215 & 0.8191 & 0.1809 [0.1609, 0.1983] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering\footnotesize
+\caption{Review-budget sensitivity of $L^{att}$, 2019 held-out window.}\label{tab:sup_e1_q}
+\begin{tabular}{llrrrr}\toprule
+Priority & Stage & $q=0.05$ & $q=0.10$ & $q=0.20$ & $q=0.30$ \\ \midrule
+Delay & PRE & 0.1621 & 0.1336 & 0.0776 & 0.0691 \\
+Delay & TURN & 0.1342 & 0.1233 & 0.0807 & 0.0607 \\
+Delay+Passenger & PRE & 0.0957 & 0.0842 & 0.0857 & 0.0877 \\
+Delay+Passenger & TURN & 0.0904 & 0.0836 & 0.0706 & 0.0705 \\
+Delay+Downstream & PRE & 0.1621 & 0.1336 & 0.0776 & 0.0692 \\
+Delay+Downstream & TURN & 0.1331 & 0.1234 & 0.0801 & 0.0596 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{E2: paired Stage-II support and activation events}
+Table~\ref{tab:sup_e2_support} reports the absolute reference quantities behind the normalized Stage-II losses: the common paired cohort, the reference recoverable value $\sum_i V^{HJ}_i$, the total reference-objective increment $\Delta J$, and the activation events of the comparator decision relative to the History+Joint reference. Table~\ref{tab:sup_e2_support_detail} reports the paired Stage-I/Stage-II quantities per contrast and year.
+\begin{table}[htbp]\centering\scriptsize
+\caption{Stage-II paired support and activation events (reference cohort fixed per year).}\label{tab:sup_e2_support}
+\begin{tabular}{llrrrrrrr}\toprule
+Year & Contrast & Cohort & $\sum_i V^{HJ}_i$ (CU) & $\Delta J$ (CU) & Missed act. & False act. & Under & Over \\ \midrule
+2017 & CJ--HJ & 521 & 40.37 & 26.96 & 103 & 21 & 159 & 60 \\
+2017 & HP--HJ & 521 & 40.37 & 36.92 & 366 & 0 & 37 & 0 \\
+2017 & HM--HJ & 521 & 40.37 & 4.42 & 17 & 14 & 33 & 96 \\
+2018 & CJ--HJ & 523 & 85.13 & 52.73 & 107 & 18 & 186 & 87 \\
+2018 & HP--HJ & 523 & 85.13 & 83.55 & 428 & 0 & 27 & 0 \\
+2018 & HM--HJ & 523 & 85.13 & 7.96 & 8 & 11 & 32 & 166 \\
+2019 & CJ--HJ & 515 & 42.14 & 29.32 & 168 & 23 & 81 & 61 \\
+2019 & HP--HJ & 515 & 42.14 & 39.28 & 369 & 0 & 22 & 0 \\
+2019 & HM--HJ & 515 & 42.14 & 3.60 & 8 & 9 & 28 & 94 \\
+2020 & CJ--HJ & 474 & 41.36 & 41.26 & 425 & 0 & 7 & 1 \\
+2020 & HP--HJ & 474 & 41.36 & 37.07 & 328 & 0 & 65 & 0 \\
+2020 & HM--HJ & 474 & 41.36 & 3.75 & 7 & 4 & 24 & 140 \\
+2021 & CJ--HJ & 523 & 65.41 & 20.29 & 21 & 17 & 142 & 84 \\
+2021 & HP--HJ & 523 & 65.41 & 62.36 & 396 & 0 & 47 & 0 \\
+2021 & HM--HJ & 523 & 65.41 & 6.87 & 3 & 9 & 36 & 152 \\
+2022 & CJ--HJ & 532 & 78.32 & 46.58 & 69 & 10 & 216 & 78 \\
+2022 & HP--HJ & 532 & 78.32 & 74.99 & 419 & 0 & 44 & 0 \\
+2022 & HM--HJ & 532 & 78.32 & 9.76 & 13 & 5 & 47 & 158 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering\scriptsize
+\caption{Paired contrast detail: Stage-I displaced share and $L^{att}$; Stage-II exact agreement and $L^{rec}$.}\label{tab:sup_e2_support_detail}
+\begin{tabular}{llrrrr}\toprule
+Year & Contrast & \shortstack{Stage-I displaced\\share} & \shortstack{$L^{att}$ [95\% CI]} & \shortstack{Stage-II exact\\agreement} & \shortstack{$L^{rec}$ [95\% CI]} \\ \midrule
+2017 & CJ--HJ & 0.2361 & 0.0320 [0.0255, 0.0392] & 0.342 & 0.6676 [0.6028, 0.7382] \\
+ & HP--HJ & 0.8580 & 0.4986 [0.4708, 0.5241] & 0.226 & 0.9145 [0.8780, 0.9447] \\
+ & HM--HJ & 0.0192 & 0.0010 [0.0004, 0.0018] & 0.693 & 0.1095 [0.0818, 0.1416] \\
+2018 & CJ--HJ & 0.1683 & 0.0233 [0.0180, 0.0292] & 0.239 & 0.6194 [0.5622, 0.6833] \\
+ & HP--HJ & 0.8757 & 0.5050 [0.4783, 0.5309] & 0.130 & 0.9814 [0.9718, 0.9892] \\
+ & HM--HJ & 0.0191 & 0.0011 [0.0001, 0.0020] & 0.585 & 0.0935 [0.0718, 0.1178] \\
+2019 & CJ--HJ & 0.1806 & 0.0253 [0.0214, 0.0330] & 0.353 & 0.6957 [0.6359, 0.7612] \\
+ & HP--HJ & 0.8854 & 0.5291 [0.5052, 0.5543] & 0.241 & 0.9321 [0.8975, 0.9616] \\
+ & HM--HJ & 0.0194 & 0.0009 [0.0004, 0.0015] & 0.730 & 0.0853 [0.0623, 0.1129] \\
+2020 & CJ--HJ & 0.8987 & 0.5060 [0.4820, 0.5285] & 0.086 & 0.9977 [0.9944, 1.0006] \\
+ & HP--HJ & 0.8418 & 0.4313 [0.4071, 0.4563] & 0.171 & 0.8963 [0.8721, 0.9192] \\
+ & HM--HJ & 0.0127 & 0.0006 [0.0000, 0.0012] & 0.631 & 0.0906 [0.0727, 0.1131] \\
+2021 & CJ--HJ & 0.1224 & 0.0101 [0.0075, 0.0134] & 0.495 & 0.3102 [0.2616, 0.3662] \\
+ & HP--HJ & 0.8509 & 0.4134 [0.3865, 0.4367] & 0.153 & 0.9535 [0.9365, 0.9680] \\
+ & HM--HJ & 0.0249 & 0.0026 [0.0009, 0.0049] & 0.618 & 0.1051 [0.0809, 0.1329] \\
+2022 & CJ--HJ & 0.1786 & 0.0244 [0.0180, 0.0299] & 0.299 & 0.5947 [0.5376, 0.6576] \\
+ & HP--HJ & 0.8872 & 0.4995 [0.4768, 0.5246] & 0.130 & 0.9575 [0.9388, 0.9741] \\
+ & HM--HJ & 0.0376 & 0.0026 [0.0013, 0.0048] & 0.581 & 0.1247 [0.0966, 0.1570] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Exact weighted-marginal coupling audit}
+\label{sup:marginal_audit}
+The History+Marginal comparator used in the six-year runs is the exact discrete product coupling of the calibrated joint scenarios. For every audited candidate in every year, the coupling reports status \texttt{PASS\_EXACT\_MARGINAL} and preserves each weighted primitive marginal exactly by construction; its identity note states that it preserves the weighted primitive marginals but not physical independence, and its physical feasibility is explicitly \texttt{NOT\_ASSERTED}. It is therefore used as a dependence ablation, not as a deployable operating-state forecast.
+
+The component audit is consistent with that construction. Comparing each candidate's domain scores under the joint representation with those under the exact coupling: the Flight and Resource domains are numerically identical in all six years (maximum absolute difference below $10^{-13}$ CU), because those components are linear in the unresolved primitives, whereas the Passenger domain differs for 39--66\% of candidates through the threshold-event components. Dependence therefore reaches the screening and recovery decisions only through the threshold-type consequences in this consequence system.
+
+\subsection{E3: objective-by-distribution support}
+\begin{table}[htbp]\centering\footnotesize
+\caption{Objective-by-distribution decision summary on the shared annual reference cohorts.}\label{tab:sup_e3}
+\begin{tabular}{llrrrrrr}\toprule
+Year & Objective & \shortstack{Exact target\\agreement} & \shortstack{Dependence-\\sensitive share} & \shortstack{Mean $|\Delta u^*|$\\(min)} & \shortstack{Activation\\share} & \shortstack{Zero-value\\share} & \shortstack{Median $V^{HJ}$\\(CU)} \\ \midrule
+2017 & Balanced & 0.693 & 0.307 & 3.00 & 0.843 & 0.157 & 0.0180 \\
+2017 & Flight & 0.739 & 0.261 & 2.31 & 0.839 & 0.161 & 0.0219 \\
+2017 & Passenger & 0.635 & 0.365 & 3.47 & 0.881 & 0.119 & 0.0310 \\
+2017 & Resource & 0.772 & 0.228 & 1.99 & 0.631 & 0.369 & 0.0039 \\
+2018 & Balanced & 0.585 & 0.415 & 3.25 & 0.906 & 0.094 & 0.1361 \\
+2018 & Flight & 0.593 & 0.407 & 3.22 & 0.908 & 0.092 & 0.0960 \\
+2018 & Passenger & 0.564 & 0.436 & 3.02 & 0.937 & 0.063 & 0.2558 \\
+2018 & Resource & 0.608 & 0.392 & 2.64 & 0.795 & 0.205 & 0.0751 \\
+2019 & Balanced & 0.730 & 0.270 & 1.88 & 0.823 & 0.177 & 0.0231 \\
+2019 & Flight & 0.736 & 0.264 & 1.84 & 0.849 & 0.151 & 0.0277 \\
+2019 & Passenger & 0.664 & 0.336 & 2.48 & 0.843 & 0.157 & 0.0399 \\
+2019 & Resource & 0.753 & 0.247 & 1.90 & 0.672 & 0.328 & 0.0069 \\
+2020 & Balanced & 0.631 & 0.369 & 3.34 & 0.916 & 0.084 & 0.0550 \\
+2020 & Flight & 0.660 & 0.340 & 3.38 & 0.903 & 0.097 & 0.0489 \\
+2020 & Passenger & 0.563 & 0.437 & 2.92 & 0.928 & 0.072 & 0.1206 \\
+2020 & Resource & 0.724 & 0.276 & 3.52 & 0.835 & 0.165 & 0.0148 \\
+2021 & Balanced & 0.618 & 0.382 & 3.56 & 0.885 & 0.115 & 0.1109 \\
+2021 & Flight & 0.650 & 0.350 & 3.33 & 0.883 & 0.117 & 0.0849 \\
+2021 & Passenger & 0.547 & 0.453 & 4.30 & 0.925 & 0.075 & 0.2064 \\
+2021 & Resource & 0.706 & 0.294 & 2.98 & 0.834 & 0.166 & 0.0516 \\
+2022 & Balanced & 0.581 & 0.419 & 4.70 & 0.902 & 0.098 & 0.1237 \\
+2022 & Flight & 0.613 & 0.387 & 4.38 & 0.885 & 0.115 & 0.0875 \\
+2022 & Passenger & 0.564 & 0.436 & 4.17 & 0.914 & 0.086 & 0.2347 \\
+2022 & Resource & 0.613 & 0.387 & 4.37 & 0.786 & 0.214 & 0.0545 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}\parbox{.93\linewidth}{\scriptsize Agreement and dependence-sensitive shares use the same paired common-support cohort under each objective's own joint reference. The mean absolute target change is reported in minutes; the median change is zero in all twenty-four year-objective settings. Activation and zero-value shares describe the History+Joint reference decision.}
+\end{table}
+
+\subsection{Recovery-headroom parameters and cohort-size stability}
+The year-local recovery parameters follow the prespecified Train-only derivation (turnaround lower bound $T_{\mathrm{turn,lb}}$ as the 20th percentile of realized turnarounds; $U_{\max}$ as the floored 90th percentile of positive headroom): $T_{\mathrm{turn,lb}}$ takes values $40,41,41,43,49,46$ minutes and $U_{\max}$ takes values $45,40,45,40,40,45$ minutes for 2017--2022 respectively. The nominal 41-minute reference and the 45-minute target grid therefore describe the 2019 setting specifically, and the six-year evaluations apply the year-local parameters.
+
+Table~\ref{tab:sup_ladder} records the annual cohort-size stability battery for the M1 operating-state cohort (M5-b). All six annual batteries terminate at the grid upper bound with the decision \texttt{N\_GRID\_UPPER\_BOUND\_REACHED}: the decision-level stability boundary is not reached within the evaluated grid ($N=128$--$2\,048$ evaluated against the full-grid evaluation reference of $4\,096$), so no claim is made that the evaluated cohort size is sufficient. The failure lists record the same eleven evaluation statistics in five of the six years, with 2020 additionally failing nine fit-side statistics.
+\begin{table}[htbp]\centering\footnotesize
+\caption{Annual cohort-size stability battery (M5-b). Evaluation reference $E=4\,096$.}\label{tab:sup_ladder}
+\begin{tabular}{llrlll}\toprule
+Year & Evaluated grid & \shortstack{Evaluation\\reference} & Decision & \shortstack{Failed\\evaluation\\statistics} & \shortstack{Failed\\fit\\statistics} \\ \midrule
+2017 & 128--2048 & 4\,096 & N\_GRID\_UPPER\_BOUND\_REACHED & 11 & 0 \\
+2018 & 128--2048 & 4\,096 & N\_GRID\_UPPER\_BOUND\_REACHED & 11 & 0 \\
+2019 & 128--2048 & 4\,096 & N\_GRID\_UPPER\_BOUND\_REACHED & 11 & 0 \\
+2020 & 128--2048 & 4\,096 & N\_GRID\_UPPER\_BOUND\_REACHED & 11 & 9 \\
+2021 & 128--2048 & 4\,096 & N\_GRID\_UPPER\_BOUND\_REACHED & 12 & 0 \\
+2022 & 128--2048 & 4\,096 & N\_GRID\_UPPER\_BOUND\_REACHED & 11 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Pending completion items}
+\label{sup:pending}
+Four audited-output gaps remain before submission and are marked in the main text where they belong: (i) recovery-opportunity Coverage@K and the priority--recoverability association on the full eligible population $\mathcal C_{1}$, which require reference recoverable values outside the annual shortlists; (ii) the threshold $\times$ headroom mechanism ablation on a cohort that includes partially supported states, together with the component-level action-response ledger; (iii) the matched-capacity temporal attribution, which the current run supports only as an implemented same-capacity configuration contrast; and (iv) within-chain rolling-epoch trajectories over the $\mathcal C_3$ episodic cohorts. Unfilled quantities in this document are pending audited output, not observed zeros.
+
+
+\subsection{Reporting fields for the four empirical modules}
+\begin{table}[htbp]\centering\footnotesize
+\caption{Supplementary-result contract; each field requires a year, stage, sample, reference objective, scale and run identifier.}
+\label{tab:sup_result_contract}
+\begin{tabular}{p{0.10\linewidth}p{0.77\linewidth}}\toprule
+Module & Required supplementary evidence \\\midrule
+E1 & Delay, Delay+Exposure, Consequence shortlists; Kendall $\tau_b$, replacement counts, $L^{att}$, retained exposure and screening-budget boundary curves \\
+E2 & CJ/HJ, HP/HJ, valid HM/HJ paired support; exact target, activation, $\pm5$-min agreement, absolute and normalized reference regret; $V^r$ and Coverage@K on full eligibility \\
+E3 & Four objective weights on the \emph{same} eligible cohort; Marginal/Joint per-target values, action margins, component responses; threshold $\times$ headroom controls and comparator validity \\
+E4 & Annual and regime-level heterogeneity, PRE/TURN contrasts, remaining headroom, threshold-adjacent cases, and within-chain rolling trajectories \\\bottomrule\end{tabular}\end{table}
+
+\subsection{Prespecified sensitivity parameters}
+\begin{table}[htbp]\centering\footnotesize
+\caption{Nominal decision settings and planned sensitivity values.}
+\label{tab:sup_parameters}
+\begin{tabular}{p{0.36\linewidth}p{0.21\linewidth}p{0.31\linewidth}}\toprule
+Object & Nominal & Sensitivity or contract \\\midrule
+Review share $q$ & 0.10 & $0.05,0.20,0.30$ \\
+History GRU hidden dimension & 16 & Fixed unless matched-capacity comparator tested \\
+Joint scenario count & 64 & Weighted and normalized \\
+Paired supported probability mass & 0.90 & Carrier-aware common-support computation \\
+Stage-II turnaround reference & 41 min & $34,47$ min \\
+Recovery maximum $U_{\max}$ & 45 min & $25,75$ min; decouple range and effort slope \\
+Effort coefficient $\lambda$ & 0.25 & $0.10,0.50,1.00$ \\
+Itinerary and service thresholds & 45 / 180 min & Operator toggle only under explicit ablation \\
+Domain-balanced shares & $1/3$ each & Flight / Passenger / Resource emphasis \\\bottomrule
+\end{tabular}\end{table}
+
+\subsection{Reconciliation status and historical-result provenance}
+The original Appendix F contains numerical results exclusively for the frozen 2019 protocol. It remains preserved in the source manuscript, but its tables are not promoted to six-year results here. Before final submission, supply the six-year E1--E4 tables, annual confidence intervals, eligibility ledgers, objective-specific denominator checks, weighted-coupling tests, and origin/commit identifiers. In particular, legacy interpretations of HM--HJ as a dependence-only comparison are conditional on the revised weighted-marginal validation. Unfilled results in this draft must not be treated as observed zeros.
+
+\end{document}

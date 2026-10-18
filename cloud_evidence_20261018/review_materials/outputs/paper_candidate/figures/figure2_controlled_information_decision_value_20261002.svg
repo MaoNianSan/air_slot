@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="680" viewBox="0 0 1360 680">
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#536273"/></marker>
+  <style>
+    .title{font-family:Georgia,'Times New Roman',serif;font-weight:700;fill:#12345b}
+    .body{font-family:Georgia,'Times New Roman',serif;fill:#12345b}
+    .muted{font-family:Georgia,'Times New Roman',serif;fill:#6f88a5}
+    .panel{fill:#fff;stroke:#8ea1b4;stroke-width:1.6}
+    .card{fill:#f2f6f9;stroke:#b5c7d8;stroke-width:1}
+    .rule{stroke:#c4d2df;stroke-width:1.2}
+    .flow{stroke:#536273;stroke-width:2;fill:none;marker-end:url(#arrow)}
+  </style>
+</defs>
+<rect width="1360" height="680" fill="#fff"/>
+<text x="30" y="42" class="title" font-size="29">Controlled information contrasts and decision value</text>
+<text x="30" y="70" class="muted" font-size="17">How retained decision-time information changes supported recovery decisions</text>
+<line x1="30" y1="91" x2="1330" y2="91" class="rule"/>
+
+<!-- Part 1 -->
+<rect x="30" y="110" width="530" height="535" rx="7" class="panel"/>
+<text x="50" y="145" class="title" font-size="22">Part 1. Information contrasts</text>
+<text x="50" y="170" class="muted" font-size="15">What distinction is retained under matched conditions?</text>
+<line x1="50" y1="192" x2="540" y2="192" class="rule"/>
+<text x="50" y="223" class="title" font-size="16">Screening signal</text>
+<rect x="50" y="239" width="490" height="58" rx="5" class="card"/>
+<text x="68" y="264" class="body" font-size="15">Predicted delay priority  <tspan font-style="italic">P</tspan><tspan baseline-shift="super" font-size="10">D</tspan></text>
+<text x="310" y="264" class="body" font-size="15">vs  consequence priority  <tspan font-style="italic">P</tspan><tspan baseline-shift="super" font-size="10">C</tspan></text>
+<text x="68" y="284" class="muted" font-size="12">same candidates, capacity, and screening rule</text>
+<text x="50" y="329" class="title" font-size="16">Temporal information</text>
+<rect x="50" y="345" width="490" height="58" rx="5" class="card"/>
+<text x="68" y="370" class="body" font-size="15">Current state</text><text x="253" y="370" class="body" font-size="15">to</text><text x="285" y="370" class="body" font-size="15">History + same current state</text>
+<text x="68" y="390" class="muted" font-size="12">adds admissible operating trajectory</text>
+<text x="50" y="435" class="title" font-size="16">Uncertainty representation</text>
+<rect x="50" y="451" width="490" height="110" rx="5" class="card"/>
+<line x1="95" y1="493" x2="493" y2="493" stroke="#536273" stroke-width="2"/>
+<circle cx="115" cy="493" r="9" fill="#8fa8bd"/><circle cx="293" cy="493" r="9" fill="#6f8c9f"/><circle cx="471" cy="493" r="9" fill="#536f83"/>
+<text x="84" y="521" class="body" font-size="14">Point</text><text x="255" y="521" class="body" font-size="14">Marginal</text><text x="442" y="521" class="body" font-size="14">Joint</text>
+<text x="68" y="544" class="muted" font-size="12">representative state</text><text x="237" y="544" class="muted" font-size="12">marginal uncertainty</text><text x="416" y="544" class="muted" font-size="12">+ aligned dependence</text>
+<text x="50" y="604" class="muted" font-size="13">All contrasts retain the same supported state, consequence mapping, and decision boundary.</text>
+
+<!-- Part 2 -->
+<rect x="595" y="110" width="335" height="535" rx="7" class="panel"/>
+<text x="615" y="145" class="title" font-size="21">Part 2. Recovery decisions</text>
+<text x="615" y="170" class="muted" font-size="15">Where can the information difference act?</text>
+<line x1="615" y1="192" x2="910" y2="192" class="rule"/>
+<rect x="615" y="209" width="295" height="38" rx="5" class="card"/>
+<text x="630" y="234" class="body" font-size="14">Common consequence mapping</text>
+<text x="630" y="257" class="muted" font-size="12">Flight · Passenger · Resource</text>
+<text x="615" y="299" class="title" font-size="18">Stage I screening</text>
+<text x="615" y="323" class="body" font-size="13">same candidate set + fixed capacity</text>
+<rect x="650" y="341" width="225" height="43" rx="5" class="card"/>
+<text x="719" y="369" class="title" font-size="17">Top-K shortlist</text>
+<line x1="762" y1="385" x2="762" y2="415" class="flow"/>
+<text x="615" y="447" class="title" font-size="18">Stage II local recovery</text>
+<text x="615" y="471" class="body" font-size="13">fixed HJ reference cohort <tspan font-style="italic">R</tspan><tspan baseline-shift="super" font-size="9">*</tspan></text>
+<rect x="650" y="489" width="225" height="43" rx="5" class="card"/>
+<text x="684" y="517" class="title" font-size="17">Activation + target u*</text>
+<text x="615" y="568" class="muted" font-size="12">same downstream cases across information conditions</text>
+<text x="615" y="608" class="muted" font-size="12">decision object: shortlist to local target</text>
+
+<!-- Part 3 -->
+<rect x="965" y="110" width="365" height="535" rx="7" class="panel"/>
+<text x="985" y="145" class="title" font-size="21">Part 3. Decision-value evaluation</text>
+<text x="985" y="170" class="muted" font-size="15">What changes under the common reference criterion?</text>
+<line x1="985" y1="192" x2="1310" y2="192" class="rule"/>
+<text x="985" y="225" class="title" font-size="18">Screening effect</text>
+<line x1="985" y1="239" x2="1310" y2="239" class="rule"/>
+<text x="1000" y="267" class="body" font-size="14">• Shortlist replacement</text>
+<text x="1000" y="293" class="body" font-size="14">• Retained consequence value</text>
+<text x="1000" y="319" class="body" font-size="14">• Normalized screening loss  <tspan font-style="italic">L</tspan><tspan baseline-shift="super" font-size="9">att</tspan></text>
+<text x="985" y="359" class="title" font-size="18">Local-recovery effect</text>
+<line x1="985" y1="373" x2="1310" y2="373" class="rule"/>
+<text x="1000" y="401" class="body" font-size="14">• Recovery activation</text>
+<text x="1000" y="427" class="body" font-size="14">• Effective target change</text>
+<text x="1000" y="453" class="body" font-size="14">• Normalized recovery loss  <tspan font-style="italic">L</tspan><tspan baseline-shift="super" font-size="9">rec</tspan></text>
+<rect x="985" y="492" width="325" height="88" rx="5" class="card"/>
+<text x="1003" y="520" class="body" font-size="14">Decision changes and losses are</text>
+<text x="1003" y="544" class="body" font-size="14">evaluated under a common</text>
+<text x="1003" y="568" class="body" font-size="14">reference criterion.</text>
+
+<!-- inter-panel flow -->
+<line x1="560" y1="365" x2="590" y2="365" class="flow"/>
+<line x1="930" y1="365" x2="960" y2="365" class="flow"/>
+</svg>

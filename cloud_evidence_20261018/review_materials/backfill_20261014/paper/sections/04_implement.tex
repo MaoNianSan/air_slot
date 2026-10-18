@@ -1,0 +1,223 @@
+\section{Empirical Implementation}
+\label{sec:implementation}
+
+This section describes the data, temporal partitioning, operating-state reconstruction, consequence construction, implementation of the two decision stages, and the controlled comparisons and inference reported in this study. The analysis covers six operating years, 2017--2022; model and probability-calibration parameters are estimated separately for each year. The current results use prespecified canonical decision epochs and focus on the PRE and TURN stages. They do not report within-chain trajectories across successive rolling epochs. The original 2019 evaluation is retained as a traceable benchmark and does not replace the annual samples in the six-year evaluation.
+
+\subsection{Operational Data and Temporal Evaluation Design}
+\label{subsec:data_design}
+
+\subsubsection{Decision-time data and aircraft-linked episodes}
+
+The primary unit of analysis is a predecessor--successor flight chain operated by the same aircraft. U.S. Bureau of Transportation Statistics (BTS) On-Time Performance records provide scheduled and realized flight milestones, aircraft-continuity identifiers, and taxi-related observations. Airport weather information is drawn from the National Oceanic and Atmospheric Administration (NOAA) Integrated Surface Database. BTS DB1B and T-100 records provide historical references for passenger markets, itinerary connections, segment traffic, and capacity, which support the construction of exposure-based consequences.
+
+These sources have distinct roles. Operating records describe the state of a particular aircraft-linked episode, whereas historical passenger and route data characterize the exposure associated with that episode. The latter are not live passenger itineraries, observed resource assignments, or realized recovery expenditures. Feature availability is established at each decision epoch: an operating milestone enters the information set only after it has occurred and become available; unresolved milestones are represented probabilistically; and historical statistical references follow their applicable publication and freezing rules. Realized outcomes are retained for ex post evaluation but do not substitute for information unavailable when a decision is assessed.
+
+Eligible predecessor--successor episodes are replayed on a five-minute grid. Each node records admissible evidence and the operating stage---PRE, TURN, TAXI, or COMP---determined by the realization of predecessor in-block, successor off-block, and subsequent milestones. Prespecified canonical-epoch rules extract comparable flight-chain--stage cases from this rolling sequence. Screening and local-target decisions are evaluated primarily at PRE and TURN; other stages contribute to state reconstruction but are not included in the reported within-chain rolling-trajectory analyses.
+
+The data hierarchy comprises source flights, aircraft-linked episodes, rolling nodes, canonical chain--stage cases, Stage-I screening candidates, and Stage-II supported cases. Multiple rolling nodes from one chain are not treated as independent operating episodes, and screening eligibility does not automatically imply valid local-recovery support. Counts, support conditions, and denominators are defined separately at each level.
+
+\subsubsection{Chronological evaluation design and multi-year coverage}
+\label{subsubsec:temporal_design}
+
+State estimation and held-out decision evaluation are conducted independently for each of the six years, 2017--2022. Each year follows the same chronological partition: January--June for model estimation and historical-reference construction, July for probability calibration, August--September for model development and specification of evaluation rules, and October--December for held-out testing. Rolling observations from the same aircraft-linked chain remain within a single data partition, and decision features respect their corresponding information cutoffs. The previously established 2019 evaluation and its frozen outputs retain a traceable relationship to the six-year protocol.
+
+Table~\ref{tab:annual_evaluation_support} reports the canonical PRE and TURN screening populations, nominal review capacities, and Stage-II support for each held-out year. Full Stage-II eligibility is defined independently of shortlist membership; paired support is defined by the annual HJ reference cohort.
+
+\begin{table}[pos=t]
+\centering
+\caption{Annual held-out screening populations and local-recovery evaluation support, 2017--2022.}
+\label{tab:annual_evaluation_support}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+Year & \shortstack{PRE\\$N$} & \shortstack{TURN\\$N$} & \shortstack{PRE\\$K$} & \shortstack{TURN\\$K$} & \shortstack{Full Stage-II\\eligible} & \shortstack{Paired Stage-II\\supported} \\
+\midrule
+2017 & 1\,310 & 3\,899 & 131 & 390 & 5\,209 & 521 \\
+2018 & 1\,345 & 3\,873 & 135 & 388 & 5\,218 & 523 \\
+2019 & 1\,252 & 3\,888 & 126 & 389 & 5\,140 & 515 \\
+2020 & 675 & 4\,053 & 68 & 406 & 4\,728 & 474 \\
+2021 & 1\,297 & 3\,930 & 130 & 393 & 5\,227 & 523 \\
+2022 & 1\,422 & 3\,884 & 143 & 389 & 5\,306 & 532 \\
+\bottomrule
+\end{tabular}
+\par\vspace{3pt}
+\begin{minipage}{0.98\linewidth}
+\footnotesize
+$N$ is the number of canonical stage-specific screening candidates, and $K=\lceil q_0N\rceil$ is the nominal review capacity, with $q_0=0.10$ computed separately by stage. In these six-year support data, every canonical PRE/TURN candidate satisfies the full common-support condition for Stage-II evaluation; therefore, this column equals the sum of the two screening populations. The paired Stage-II column is the annual HJ consequence shortlist intersected with local-recovery support. All selected cases retained valid recovery support in every year, so the paired cohorts equal the annual PRE and TURN HJ selections combined. The original 2019 benchmark contains 29 PRE and 127 TURN candidates, yielding shortlists of 3 and 13 cases; it is retained as a separate provenance reference and does not replace the six-year annual counts.
+\end{minipage}
+\end{table}
+
+The six years span distinct annual operating environments. Year labels provide descriptive context for annual comparisons and do not identify the causal effect of any external event. The stage-specific support counts are reported in Table~\ref{tab:annual_evaluation_support}.
+
+Aircraft-linking rules, canonical decision epochs, primitive-state definitions, consequence components, and the two recovery decision tasks follow a common protocol across years. Prediction and probability-calibration parameters are estimated separately from each year's admissible training and calibration observations. The resulting evaluations assess the same decision framework under different annual operating conditions, rather than cross-year transfer by a predictor fitted once and deployed unchanged. E1--E3 are implemented within each year where the required decision support is available; E4 summarizes the resulting annual and operating-stage heterogeneity.
+
+Cross-year consequence comparisons use two complementary measurement tracks. The \emph{year-local} track normalizes consequences using each year's training references and supports within-year comparisons under that year's evaluation scale. A separately frozen \emph{fixed-common} track applies a shared reference scale across all six years to support comparisons of absolute consequence evaluations in common units. Eligible populations and local-recovery support are established separately for each year and operating stage. Consequence scales and associated recovery-effort terms remain internally consistent within each track, as described in Section~\ref{subsec:consequence_construction}.
+
+\subsection{Reconstructing Decision-Time Operating States}
+\label{subsec:state_reconstruction}
+
+\subsubsection{Stage-conditioned state reconstruction}
+
+As operating milestones become realized, the conditional state is reconstructed from the information available at the decision epoch. Only unresolved primitives are predicted: predecessor in-block timing is modeled using a discrete-hazard representation, while successor off-block delay and additional taxi-out delay use hurdle-type distributions that accommodate both zero and positive delay outcomes. The primitives are conditioned in their operating sequence so that new observations reduce the remaining uncertainty without resampling quantities already realized.
+
+At PRE, all three primitive states may remain unresolved. At TURN, predecessor in-block timing is factual and enters the subsequent conditional evaluation as observed evidence. At TAXI, successor off-block timing is also realized, leaving the remaining taxi-out uncertainty to be represented. This stage-conditioned treatment preserves the operating information available at the corresponding decision time.
+
+For supported conditional states, the Joint interface consists of 64 calibrated weighted scenarios. Each scenario contains a coherent set of primitive state values and a nonnegative probability weight; the weights sum to one. The model-specific compound successor take-off delay is formed from successor off-block delay and additional taxi-out delay. This constructed quantity follows the state convention in Section~\ref{subsec:state_representation}, rather than being identified with every administrative definition of observed departure delay.
+
+Held-out prediction accuracy, probabilistic calibration, and state-support checks provide evidence on the reliability of these conditional reconstructions. Nodes with unavailable required state information or unsupported probability distributions are recorded explicitly rather than assigned zero consequences. Conditional distributions, sampling and calibration procedures, temporal origins, and support tests are documented in the Supplementary Material. State definitions and validation rules are common across years, while model parameters and calibrations are fitted independently within each annual partition.
+
+\subsubsection{Current and History representations}
+
+Two temporal-information representations are constructed at the same decision epoch. \emph{Current} uses the contemporaneously admissible operating state and frozen historical references. \emph{History} additionally encodes the legally available trajectory of preceding operating observations. The established History model uses a single-layer unidirectional gated recurrent unit (GRU) with hidden dimension 16. Both representations predict the same unresolved primitives and feed the same consequence and decision interfaces; neither may access subsequent realized milestones.
+
+The original Current+Joint (CJ) versus History+Joint (HJ) comparison measures decision differences between these implemented predictor configurations. Because adding a history encoder can also change model architecture and parameter capacity, this comparison does not isolate the effect of historical information. The current results do not support a matched-capacity attribution to temporal representation, and CJ--HJ is therefore interpreted only as a configuration contrast.
+
+The six-year evaluation retains common architecture-selection and interface rules while estimating prediction and calibration parameters within each year's admissible data partitions. Trajectory construction, GRU specifications, and implementation diagnostics are documented in the Supplementary Material.
+
+\subsubsection{Point, Marginal, and Joint representations}
+
+Three uncertainty representations are constructed from the same admissible conditional state. \emph{Point} selects an internally coherent representative scenario using the frozen weighted joint-medoid rule. \emph{Joint} retains the original weighted joint scenarios and their cross-state dependence. \emph{Marginal} preserves the weighted marginal distribution of each unresolved primitive while modifying the coupling among primitives. These alternatives differ in the probabilistic structure retained; they do not represent successive arrivals of new operating observations.
+
+The Marginal--Joint comparison requires equality of the weighted one-dimensional probability distributions, not merely equality of possible values or approximate equality of moments. Each marginal reconstruction is therefore subject to probability-mass, normalization, and numerical-accuracy checks. Permuting coordinates against unchanged unequal scenario weights does not in general preserve the weighted marginals. Although the original Joint interface uses 64 scenarios, a valid Marginal coupling need not retain the same scenario indices or discrete carrier.
+
+Statistical validity and operational feasibility are examined separately. Modifying dependence may produce state combinations inconsistent with the required operating order or other support constraints. Such constructions are interpreted as diagnostic probability couplings where appropriate, not as necessarily deployable operating-state forecasts. All representations retain realized milestones and enter paired comparisons on a common, valid decision-support population. A dependence-specific interpretation is conditional on the weighted-marginal diagnostics and operating-support checks documented in the Supplementary Material.
+
+\subsection{Consequence Construction}
+\label{subsec:consequence_construction}
+
+\subsubsection{Operational consequence components}
+
+Conditional operating states are converted into seven consequence components grouped under Flight, Passenger, and Resource. Each component combines decision-time admissible operating states, legally available or frozen historical exposure references, and prespecified consequence rules. Operating states describe realized or unresolved milestones within the flight chain; exposure references distinguish passenger and downstream operating implications of otherwise similar delays. The seven measures are model-defined proxies for operational consequences, rather than independently observed accounts of monetary losses, passenger misconnections, or recovery expenditures. Table~\ref{tab:consequence_native_sec4} summarizes their native constructions and interpretation.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\caption{Native consequence components and their empirical interpretation.}
+\label{tab:consequence_native_sec4}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{p{3.0cm} p{4.2cm} p{2.0cm} p{5.1cm}}
+\hline
+Component & Native construction & Unit & Operating interpretation \\
+\hline
+$F_{\mathrm{continuity}}$ & Predecessor in-block and turnaround-continuity proxy; formula and time origin pending validation & min (provisional) & Aircraft turnaround and continuity pressure \\
+$F_{\mathrm{execution}}$ & $D^{OB}$ & min & Successor off-block execution delay \\
+$F_{\mathrm{propagation}}$ & $D^{TO}E^{down}$ & exposure-min & Downstream operating-delay exposure \\
+$P_{\mathrm{time}}$ & $N^{pax}D^{TO}$ & passenger-min & Passenger-weighted time exposure \\
+$P_{\mathrm{itinerary}}$ & $N^{pax}s^{conn}\mathbf1\{D^{TO}>45\}$ & event exposure & Connection-sensitive itinerary exposure \\
+$P_{\mathrm{service}}$ & $N^{pax}\mathbf1\{D^{TO}\geq180\}$ & event exposure & Prolonged-disruption service exposure \\
+$R_{\mathrm{operating}}$ & $D^{TX}$ & min & Additional taxi-out operating burden \\
+\hline
+\end{tabular}
+\end{table*}
+
+Flight consequences represent aircraft turnaround continuity, successor execution delay, and downstream delay propagation. Passenger consequences comprise time exposure, connection-sensitive itinerary exposure, and service exposure associated with prolonged disruption. The Resource measure captures additional taxi-out delay as a local operating burden. The downstream factor $E^{down}$, historical passenger reference $N^{pax}$, and connection-exposure proportion $s^{conn}$ are distinguished from realized passenger-level or downstream disruption outcomes. The itinerary indicator uses a strict threshold above 45 minutes, while the prolonged-disruption indicator includes delays of 180 minutes or more; these are prespecified measurement conventions.
+
+The exact native formula, time origin, and unit of $F_{\mathrm{continuity}}$ remain subject to reconciliation with the implemented reference. The current manuscript does not infer that definition from numerical agreement or from a legacy formula. Other consequence rules are interpreted as model definitions and exposure proxies, not as independent evidence of incurred losses.
+
+A component's role in baseline screening also differs from its response to a local recovery target. Some consequences vary continuously with a modeled reduction in successor off-block delay, threshold components respond only when the relevant event boundary is crossed, and components unaffected by the adjusted state may remain constant. Substantial baseline exposure in a domain therefore does not imply that local recovery can directly reduce all consequences in that domain. The componentwise action-response audit is described in Section~\ref{subsec:decision_implementation} and the Supplementary Material.
+
+\subsubsection{Reference consequence criterion for recovery decisions}
+
+Because the native components have different measurement units, they are standardized before aggregation into a common dimensionless consequence scale. For continuous components with valid positive support, the normalization reference is the median of positive observations in the permissible training period:
+\[
+\xi_k=\operatorname{Median}_{\mathrm{Train}}(q_k\mid q_k>0),
+\qquad Z_k=q_k/\xi_k,\quad \xi_k>0.
+\]
+The event-exposure components use their separately specified frozen event scales. Valid zero consequences are distinguished from absent observations and unsupported reference scales. Standardized components enter the hierarchical criterion defined in Eq.~\eqref{eq:consequence_criterion_sec3}.
+
+The primary \emph{Balanced} criterion assigns equal weight to the three domains, Flight, Passenger, and Resource, while the three Flight and three Passenger components receive equal shares within their respective domains. Balanced therefore denotes equal \emph{domain} weights, not equal weights across all seven components. Normalization determines the measurement scales, while domain weights specify normative trade-offs between operating objectives. The resulting consequence unit (CU) is dimensionless; neither CU nor the criterion weights should be interpreted as observed monetary loss or estimated airline utility. Alternative Flight-, Passenger-, and Resource-emphasis criteria are evaluated as changes to the management objective, without changing the operating evidence.
+
+For multi-year analyses, \emph{year-local} normalization uses training-period reference scales estimated within each year. The supplementary \emph{fixed-common} track uses one reference vector, frozen before assessment of held-out outcomes, across all six years. Because scaling alters the effective contributions of consequence components to the decision objective, the consequence scales and Stage-II effort cost are specified as internally consistent evaluation systems within each track. Year-local comparisons characterize decision sufficiency under each year's criterion; fixed-common comparisons support interpretation of absolute CU differences across years. Detailed scales, their provenance, and the associated cost conventions are provided in the Supplementary Material.
+
+\subsection{Decision Implementation}
+\label{subsec:decision_implementation}
+
+\subsubsection{Recovery screening}
+
+At Stage I, separate PRE and TURN candidate populations are ranked by expected compound successor take-off delay, by baseline multidimensional consequence priority, or by the two intermediate priorities Delay+Passenger and Delay+Downstream. The intermediate scores and any fitted coefficients are specified using permitted development data rather than held-out recovery outcomes. Each information contrast is evaluated on the same candidate population using the same fixed review capacity and deterministic tie-breaking rule. Resulting shortlists are assessed under a common reference consequence criterion, so observed shortlist differences reflect priority signals rather than changes in candidate scope, review capacity, or outcome evaluation.
+
+The nominal detailed-review capacity is set to 10\% of valid candidates in each operating stage, rounded up:
+\[
+K_g(q)=\lceil qN_g\rceil,\qquad q_0=0.10.
+\]
+Candidate populations and shortlist capacities are calculated separately for each year and stage; the number selected therefore varies with annual eligibility. The review fraction represents an analytical allocation of limited diagnostic attention, not an estimate of AOCC staffing or a verified contemporaneous queue capacity.
+
+The Stage-I optimum is defined by baseline consequence exposure under the specified candidate set and budget, not by the maximum improvement available from a subsequent local intervention. Recovery-opportunity coverage is a separate evaluation question, defined over the full locally eligible population rather than only the selected shortlist.
+
+\subsubsection{Effective local-recovery targeting}
+
+For shortlisted flight-chain--stage cases with valid local-recovery support, Stage II selects from the discrete nominal target set $\mathcal U=\{0,5,10,\ldots,45\}$ minutes. An empirical turnaround reference $T_{\mathrm{turn,lb}}=41$ minutes is derived from the lower 20th percentile of historical realized turnaround times. Together with scheduled successor off-block time and scenario-specific predecessor in-block timing, it defines the earliest modeled successor off-block time and the available local recovery headroom:
+\[
+\begin{aligned}
+LB^{OB}_{i,g,s}&=\max\{SOBT_i^+,\,T^{IB}_{i,g,s}+T_{\mathrm{turn,lb}}\},\\
+H_{i,g,s}&=[AOBT_{i,g,s}(0)-LB^{OB}_{i,g,s}]_+,\\
+r_{i,g,s}(u)&=\min\{u,H_{i,g,s}\}.
+\end{aligned}
+\]
+The empirical turnaround bound constrains modeled timing adjustments; it is not a universal aircraft, airport, crew, or safety minimum. Zero headroom produced by positive-part truncation does not by itself establish feasibility of the underlying baseline state. Inconsistent timing or unsupported scenarios are subject to separate diagnostics.
+
+For each candidate target, the model computes the effective reduction in successor off-block time for each conditional operating scenario, updates the corresponding state, and re-evaluates the same seven consequences. The response depends on which states the target changes: delay-related components may improve, event-exposure measures may change when thresholds are crossed, and unaffected components may remain constant. A nominal recovery-effort penalty is then added, with $\lambda_0=0.25$ and $U_{\max}=45$ minutes under the reference specification. The penalty is proportional to the \emph{selected} target rather than the realized scenario-specific advance, providing a model-defined trade-off between expected consequences and additional effort.
+
+Each information representation selects the target minimizing its own expected consequence-plus-effort objective on the common feasible target grid; ties are resolved in favor of the smaller target. Selecting $u=0$ means no additional modeled local recovery, not that historical operations involved no other interventions. All target evaluations require valid operating-state and temporal support. Implementation diagnostics and detailed effort-cost sensitivity are provided in the Supplementary Material.
+
+The Stage-II reference cohort is constructed separately for each year from the HJ consequence-based shortlist, subject to valid local-recovery support. Its size follows the year-specific candidate population, review budget, and eligibility conditions. The original 2019 reference contains 16 shortlisted cases (3 PRE and 13 TURN) and remains separately identifiable for comparison with frozen results. The full local-recovery-eligible population is the intended denominator for evaluating opportunities outside the selected shortlist, but recoverable values are available in the current held-out outputs only for annual HJ reference cohorts.
+
+\subsection{Controlled Evaluation of Information Value}
+\label{subsec:evaluation_design}
+
+\subsubsection{Information comparisons}
+
+E1--E3 are the main decision comparisons and are evaluated independently for each supported year in 2017--2022. E4 summarizes heterogeneity across years and operating stages. All comparisons identify the information or decision condition that changes while maintaining an appropriate candidate population, feasible choice set, and reference evaluator. Table~\ref{tab:information_contrasts} summarizes the comparisons and their outcomes.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\caption{Controlled information comparisons and corresponding management questions.}
+\label{tab:information_contrasts}
+\renewcommand{\arraystretch}{1.13}
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabular}{p{0.85cm}p{3.95cm}p{5.0cm}p{4.95cm}}
+\hline
+Module & Primary contrast & Management decision question & Main reported outcomes \\
+\hline
+E1 & Delay, Delay+Passenger, Delay+Downstream vs. Consequence & How much consequence-based screening is retained by simpler priorities? & Shortlist replacement, $L^{\mathrm{att}}$, review-budget sensitivity \\
+E2 & HM--HJ, HP--HJ; CJ--HJ as a secondary configuration contrast & Does information representation change review priorities or local-recovery targets? & Stage-I replacement and loss; Stage-II activation, $A_0$, and $L^{\mathrm{rec}}$ \\
+E3 & Marginal--Joint under four objective-weight settings & How does the management objective shape decisions under different information representations? & Target agreement, activation and zero-value shares, target-change distribution \\
+E4 & Annual and PRE/TURN comparisons at canonical epochs & How do the principal decision relationships vary across years and operating stages? & Annual and stage-specific estimates \\
+\hline
+\end{tabular}
+\end{table*}
+
+E1 retains the expected-Delay versus Consequence screening benchmark and separately evaluates Delay+Passenger and Delay+Downstream. Intermediate priorities and any fitted coefficients are specified using permitted development data rather than held-out recovery outcomes. All priorities face the same candidates and review budgets.
+
+E2 takes HJ as the principal reference and compares it with HM and HP at both decision stages. CJ--HJ is included as a secondary contrast between implemented predictor configurations, not as an isolated effect of historical information. Stage-I outcomes assess shortlist replacement and loss under the common consequence reference. Stage-II outcomes include recovery activation, exact target agreement, absolute reference loss, and normalized reference loss. The paired HP--HM loss increment is estimated on its own common-support population and is not obtained by subtracting the HP--HJ and HM--HJ estimates.
+
+E3 evaluates Marginal and Joint recovery decisions under four prespecified domain-weight vectors: Balanced, Flight emphasis, Passenger emphasis, and Resource emphasis. For each objective, both decisions are recomputed and assessed against that objective's Joint reference. Annual target agreement, activation, zero-value shares, and target changes are reported separately. The current evaluation does not report structural threshold or headroom ablations.
+
+E4 summarizes variation across the six annual evaluations and PRE/TURN stages at canonical decision epochs. It does not include within-chain rolling trajectories, threshold-by-headroom subgroups, or other unreported heterogeneity analyses.
+
+\subsubsection{Held-out evaluation and inference}
+
+All comparisons use chronologically held-out cases under matching decision epochs, operating stages, and admissible information. For each year and stage, an HJ consequence-based reference shortlist is formed under the shared budget rule, and Stage-II comparisons use cases with valid local-recovery support. The original 2019 cohort contains 16 HJ-shortlisted cases (3 PRE and 13 TURN) and remains a separately traceable benchmark, rather than defining the sample size or membership of the six-year evaluation.
+
+The full population with valid local-recovery support, denoted $\mathcal C_{1,y,g}$, is defined independently of screening selection. The annual HJ reference cohort is the HJ shortlist intersected with valid local-recovery support. Each paired representation contrast is evaluated on its valid common-support intersection. These populations answer different questions; Stage-I screening eligibility does not automatically define the full Stage-II eligible population.
+
+Recovery-opportunity coverage is defined as the share of reference model-recoverable value captured by a screening shortlist relative to the full supported eligible population in the same year, stage, objective, and CU scale. For shortlist $\mathcal H_K$, the measure is
+\[
+\mathrm{Coverage@K}_{y,g,\boldsymbol\omega}
+=\frac{\displaystyle\sum_{i\in\mathcal H_K\cap\mathcal C_{1,y,g}}V_{i,g,\boldsymbol\omega}^{HJ}}
+{\displaystyle\sum_{i\in\mathcal C_{1,y,g}}V_{i,g,\boldsymbol\omega}^{HJ}},
+\]
+when the denominator is positive. It captures modeled recovery opportunity available for subsequent review, not realized savings. In the current held-out outputs, recoverable values are available for annual HJ reference cohorts but not for the full $\mathcal C_1$ populations; Coverage@K is therefore defined but not estimated in Section~\ref{sec:results}.
+
+The primary outcomes include shortlist agreement, recovery activation, exact target agreement, reference consequence coverage, and absolute and normalized decision loss. Where defined, the original supported-mass criterion $m^{CS}\geq0.90$ is retained, with a representation-aware calculation when alternative couplings have different probability carriers. Valid zero-target and zero-loss observations are retained; undefined normalized ratios are reported separately from zero losses.
+
+Statistical inference uses the aircraft-linked flight chain as the primary resampling unit, keeping repeated observations from one chain together. The established paired analyses use $B=2000$ percentile-bootstrap replicates. For set-valued Stage-I Top-$K$ outcomes, bootstrap replicates reconstruct the candidate population, review capacity, ranking, tie-breaking, and reference consequence coverage to reflect uncertainty in the screening procedure as a whole. Prediction scenarios, target alternatives, and rolling nodes are not treated as independent flight chains.
+
+Annual estimates, eligible denominators, and uncertainty intervals are reported separately before any explicitly weighted multi-year summaries. Year-local and fixed-common CU comparisons remain within their internally consistent measurement and effort-cost systems. Original frozen outputs and newly executed controlled comparisons retain distinct result provenance, allowing changes due to scientific reconciliation to be traced.
+
+\subsubsection{Review-budget sensitivity}
+\label{subsubsec:sensitivity}
+
+Stage-I review-budget sensitivity is evaluated at review fractions $q\in\{0.05,0.10,0.20,0.30\}$, with $q_0=0.10$ as the main specification. Under a common stage-specific candidate population, shortlist replacement, retained reference consequences, and screening loss are compared across budgets. This analysis describes how the screening differences change as review capacity varies; it does not establish an optimal operational review budget.

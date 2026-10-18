@@ -1,0 +1,349 @@
+{
+  "blocking_state": "BLOCKED_UNIT_CONTRACT",
+  "finding": "Frozen checkpoints link supported PRE/TURN scenario primitives through native consequences, CU components, priority scores, and u*. Deterministic identities D_TO=D_OB+D_TX, F_execution=D_OB, R_operating=D_TX, and F_propagation=D_TO are satisfied across the linked rows. TAXI rows terminate at priority because no actionable Stage-II recovery row exists; raw source-field mapping and a TAXI u trace remain unresolved.",
+  "fixture_traces": [
+    {
+      "paper_result": false,
+      "path": "D:\\Local_Projects\\airslot\\validation\\scientific_smoke.py",
+      "scope": "BOUNDED_SCIENTIFIC_SMOKE",
+      "status": "FIXTURE_ONLY_NOT_REAL_CASE"
+    }
+  ],
+  "formula_checks": {
+    "D_TO_equals_D_OB_plus_D_TX": 45934,
+    "F_execution_equals_D_OB": 45934,
+    "R_operating_equals_D_TX": 45934
+  },
+  "formula_ratio_summary": {
+    "F_propagation_over_D_TO": {
+      "count": 21549,
+      "distinct_rounded_1e-8": 1,
+      "max": 1.0,
+      "min": 1.0
+    },
+    "P_time_over_D_TO": {
+      "count": 21549,
+      "distinct_rounded_1e-8": 120,
+      "max": 171.2066666666667,
+      "min": 27.296786389413985
+    }
+  },
+  "real_supported_traces": [
+    {
+      "code_locations": [
+        "D:\\research\\air_slot\\code\\explore\\model\\M2\\drivers.py",
+        "D:\\research\\air_slot\\code\\explore\\model\\M2\\comparison_support.py",
+        "D:\\research\\air_slot\\code\\explore\\model\\M3\\stage2.py"
+      ],
+      "cu_components": {
+        "F_continuity": 0.0,
+        "F_execution": 0.0,
+        "F_propagation": 0.3735581159591675,
+        "P_itinerary": 0.0,
+        "P_service": 0.0,
+        "P_time": 0.4519141554282335,
+        "R_operating": 0.747116231918335
+      },
+      "cu_semantics": "constructed normalized consequence representation; no currency conversion in this chain",
+      "decision_time": "2019-12-12T00:15:00+00:00",
+      "example_id": "sha256:0f4769e7490d4474bbcbeb366cab4f787b801a86caadf7a6bdbdfdae80d96c2c",
+      "native_consequence": {
+        "F_continuity": 0.0,
+        "F_execution": 0.0,
+        "F_propagation": 3.735581159591675,
+        "P_itinerary": 0.0,
+        "P_service": 0.0,
+        "P_time": 447.5556944625479,
+        "R_operating": 3.735581159591675
+      },
+      "native_units_from_registry": {
+        "F_continuity": "minutes",
+        "F_execution": "minutes",
+        "F_propagation": "exposure_minutes",
+        "P_itinerary": "expected_disrupted_connecting_passenger_exposure",
+        "P_service": "expected_long_delay_passenger_service_exposure",
+        "P_time": "passenger_minutes",
+        "R_operating": "excess_taxi_minutes"
+      },
+      "primitive_state_scenario": {
+        "d_ob_minutes": 0.0,
+        "d_to_minutes": 3.735581159591675,
+        "d_tx_minutes": 3.735581159591675,
+        "scenario_weight": 0.015625,
+        "support": "SUPPORTED",
+        "t_ib_minutes": 0.0
+      },
+      "priority": {
+        "meaning": "P^C = Phi_C(C^CU)",
+        "score": 0.8765193172319078
+      },
+      "raw_observation": {
+        "T_IB_A00": "2019-12-12T00:11:00+00:00"
+      },
+      "recovery": {
+        "grid": [
+          0.0,
+          5.0,
+          10.0,
+          15.0,
+          20.0,
+          25.0,
+          30.0,
+          35.0,
+          40.0,
+          45.0
+        ],
+        "interpretation": "modeled recovery-intensity decision variable; not an identified real-world action",
+        "u_max": 45.0,
+        "u_star": 0.0,
+        "units": "minutes per frozen Stage-II contract"
+      },
+      "representation_id": "CURRENT:JOINT",
+      "sobt_minutes": 40.0,
+      "source_artifacts": {
+        "canonical": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CANONICAL_NODES.json",
+        "consequence": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+        "recovery": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\RECOVERY_DECISIONS.json",
+        "state": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\STATE_VARIANTS.json"
+      },
+      "stage": "POST_IB_PRE_OB",
+      "status": "TRACE_LINKED_IN_FROZEN_CHECKPOINTS_INPUT_RAW_MAPPING_REVIEW_REMAINS"
+    },
+    {
+      "code_locations": [
+        "D:\\research\\air_slot\\code\\explore\\model\\M2\\drivers.py",
+        "D:\\research\\air_slot\\code\\explore\\model\\M2\\comparison_support.py",
+        "D:\\research\\air_slot\\code\\explore\\model\\M3\\stage2.py"
+      ],
+      "cu_components": {
+        "F_continuity": 0.0,
+        "F_execution": 0.2119908613317153,
+        "F_propagation": 0.7294864416122436,
+        "P_itinerary": 0.0,
+        "P_service": 0.0,
+        "P_time": 0.7187808354733808,
+        "R_operating": 0.7382039546966552
+      },
+      "cu_semantics": "constructed normalized consequence representation; no currency conversion in this chain",
+      "decision_time": "2019-12-28T21:56:00+00:00",
+      "example_id": "sha256:1bbb40bee6efbe47ec06e8db0adfeea625844adb143f632594eaddd7f0adbbe7",
+      "native_consequence": {
+        "F_continuity": 0.0,
+        "F_execution": 3.60384464263916,
+        "F_propagation": 7.2948644161224365,
+        "P_itinerary": 0.0,
+        "P_service": 0.0,
+        "P_time": 711.8485936379265,
+        "R_operating": 3.6910197734832764
+      },
+      "native_units_from_registry": {
+        "F_continuity": "minutes",
+        "F_execution": "minutes",
+        "F_propagation": "exposure_minutes",
+        "P_itinerary": "expected_disrupted_connecting_passenger_exposure",
+        "P_service": "expected_long_delay_passenger_service_exposure",
+        "P_time": "passenger_minutes",
+        "R_operating": "excess_taxi_minutes"
+      },
+      "primitive_state_scenario": {
+        "d_ob_minutes": 3.60384464263916,
+        "d_to_minutes": 7.2948644161224365,
+        "d_tx_minutes": 3.6910197734832764,
+        "scenario_weight": 0.015625,
+        "support": "SUPPORTED",
+        "t_ib_minutes": 2.5
+      },
+      "priority": {
+        "meaning": "P^C = Phi_C(C^CU)",
+        "score": 0.8948539417622011
+      },
+      "raw_observation": {},
+      "recovery": {
+        "grid": [
+          0.0,
+          5.0,
+          10.0,
+          15.0,
+          20.0,
+          25.0,
+          30.0,
+          35.0,
+          40.0,
+          45.0
+        ],
+        "interpretation": "modeled recovery-intensity decision variable; not an identified real-world action",
+        "u_max": 45.0,
+        "u_star": 5.0,
+        "units": "minutes per frozen Stage-II contract"
+      },
+      "representation_id": "CURRENT:JOINT",
+      "sobt_minutes": 198.0,
+      "source_artifacts": {
+        "canonical": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CANONICAL_NODES.json",
+        "consequence": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+        "recovery": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\RECOVERY_DECISIONS.json",
+        "state": "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\STATE_VARIANTS.json"
+      },
+      "stage": "PRE_IB",
+      "status": "TRACE_LINKED_IN_FROZEN_CHECKPOINTS_INPUT_RAW_MAPPING_REVIEW_REMAINS"
+    },
+    {
+      "cu_components": {
+        "F_continuity": 0.0,
+        "F_execution": 0.0,
+        "F_propagation": 0.0,
+        "P_itinerary": 0.0,
+        "P_service": 0.0,
+        "P_time": 0.0,
+        "R_operating": 0.0
+      },
+      "example_id": "sha256:af2e38088e799e299331fd98f309748ce9f15ebd127bcac435cd71bb322b2a09",
+      "native_consequence": {
+        "F_continuity": 0.0,
+        "F_execution": 0.0,
+        "F_propagation": 0.0,
+        "P_itinerary": 0.0,
+        "P_service": 0.0,
+        "P_time": 0.0,
+        "R_operating": 0.0
+      },
+      "primitive_state_scenario": {
+        "d_ob_minutes": 0.0,
+        "d_to_minutes": 0.0,
+        "d_tx_minutes": 0.0,
+        "scenario_weight": 0.015625,
+        "support": "SUPPORTED",
+        "t_ib_minutes": 0.0
+      },
+      "priority": {
+        "meaning": "P^C = Phi_C(C^CU)",
+        "score": 0.0
+      },
+      "recovery": {
+        "status": "NOT_AVAILABLE_FOR_TAXI_STAGE",
+        "u_star": null,
+        "units": "NOT_APPLICABLE"
+      },
+      "representation_id": "HISTORY_H16:JOINT",
+      "stage": "POST_OB_PRE_TO",
+      "status": "TRACE_TO_PRIORITY_ONLY_NO_TAXI_RECOVERY_DECISION"
+    },
+    {
+      "decision_time": "2019-08-12T22:00:00Z",
+      "information_cutoff": "2019-08-12T22:00:00Z",
+      "node_id": "sha256:138df03150e4bfbb552248aaed567e91dd1aab3fb7ba9eef5263d6036d742200",
+      "stage": "PRE_IB",
+      "target_support": [
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "R_IB_V1",
+          "target_name": "R_IB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DIRECT",
+          "formal_input_support": "DIRECT",
+          "realized_outcome_support": "DIRECT",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "DELTA_OB_V1",
+          "target_name": "DELTA_OB"
+        },
+        {
+          "abstention_reason": null,
+          "active": true,
+          "dataset_ceiling": "DERIVED",
+          "formal_input_support": "DERIVED",
+          "realized_outcome_support": "DERIVED",
+          "support_state": "SUPPORTED",
+          "target_definition_id": "T_TX_V1",
+          "target_name": "T_TX"
+        }
+      ],
+      "time_ok": true,
+      "variable_lineage_count": 1
+    }
+  ],
+  "recovery_decision_stage_counts": {
+    "POST_IB_PRE_OB": 52,
+    "PRE_IB": 12
+  },
+  "required_trace_fields": [
+    "source field",
+    "raw value",
+    "raw unit",
+    "transform",
+    "intermediate value",
+    "intermediate unit",
+    "final consequence",
+    "CU meaning",
+    "priority contribution",
+    "u meaning",
+    "code location",
+    "artifact/example id"
+  ],
+  "schema_version": "AIR_SLOT_G0_UNIT_TIME_AUDIT_V1",
+  "scientific_recomputation": false,
+  "source_evidence": [
+    {
+      "action_tokens": 0,
+      "cu_tokens": 0,
+      "minutes_tokens": 6,
+      "path": "D:\\Local_Projects\\airslot\\model\\M1\\scenarios.py",
+      "sha256": "2f7214d0366c4a2330074d6bb2e24448d2cde2bae8c296a1c37720ff9e5297b8"
+    },
+    {
+      "action_tokens": 0,
+      "cu_tokens": 0,
+      "minutes_tokens": 14,
+      "path": "D:\\Local_Projects\\airslot\\model\\M2\\drivers.py",
+      "sha256": "8ff81b589a3317e4d94dfdfc174ec5211457d3ddc6ecc6d301494a6caa4115ce"
+    },
+    {
+      "action_tokens": 0,
+      "cu_tokens": 4,
+      "minutes_tokens": 0,
+      "path": "D:\\Local_Projects\\airslot\\model\\M2\\valuation.py",
+      "sha256": "07d01c925f71e588fa338d07668f9bdc4feded61ce39980722503dce2dd60ca5"
+    },
+    {
+      "action_tokens": 56,
+      "cu_tokens": 11,
+      "minutes_tokens": 4,
+      "path": "D:\\Local_Projects\\airslot\\model\\M4\\decision.py",
+      "sha256": "a75dba653c3046bb548819ca59266d04025108cbf9f1d46e1a6445a3f31f9273"
+    },
+    {
+      "action_tokens": 23,
+      "cu_tokens": 0,
+      "minutes_tokens": 0,
+      "path": "D:\\Local_Projects\\airslot\\model\\M4\\response.py",
+      "sha256": "aa6ccf4d8a345fa3804b754e4686da772c9876726cc328ee074985e0e5ba90d1"
+    }
+  ],
+  "state_consequence_linked_counts_by_representation": {
+    "POST_IB_PRE_OB": 508,
+    "POST_OB_PRE_TO": 328,
+    "PRE_IB": 116
+  },
+  "state_stage_counts_by_representation": {
+    "POST_IB_PRE_OB": 508,
+    "POST_OB_PRE_TO": 328,
+    "PRE_IB": 116
+  },
+  "status": "UNKNOWN_INSUFFICIENT_PAYLOAD",
+  "trace_source_hashes": {
+    "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CANONICAL_NODES.json": "33ef4199b571af07604493c9054c6828a9d29c489c28f72d70d977befac8c439",
+    "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CONSEQUENCE_VARIANTS.json": "2b65d255111d99a31d3fe1720ab986cc209f4f3b647ebb0f6169bc402a684d59",
+    "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\RECOVERY_DECISIONS.json": "4561d385ae16d211d9489019b6a7f5b05b92e96654f8409970324f5cd6ce0161",
+    "D:\\research\\air_slot\\code\\explore\\artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\STATE_VARIANTS.json": "3134bf6d495a8fb8fdb121705f54fa2fd4335cc51b0ac139b3835074db050044",
+    "D:\\research\\air_slot\\code\\explore\\model\\M2\\comparison_support.py": "f7fac1e71774d3334310ba43dc2257ad42907927d0990902fd54bed604d2fb3a",
+    "D:\\research\\air_slot\\code\\explore\\model\\M3\\stage2.py": "f0d4e1220b84d072ddf34f449e8d7cf5794da1df7680d2075a09223c435381c6",
+    "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json": "03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1"
+  }
+}

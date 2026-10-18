@@ -1,0 +1,92 @@
+diff --git a/exp/jatm_section5/contracts.py b/exp/jatm_section5/contracts.py
+index 31c436c..dbcfca1 100644
+--- a/exp/jatm_section5/contracts.py
++++ b/exp/jatm_section5/contracts.py
+@@ -18,24 +18,11 @@ from model.common.decision_contracts import (
+     StateScenarioSet,
+ )
+ from model.common.enums import OperationalStage, SupportState
+-
+-STAGE1_ACTIONABLE_STAGES: tuple[OperationalStage, ...] = (
+-    OperationalStage.PRE_IB,
+-    OperationalStage.POST_IB_PRE_OB,
+-)
+-
+-STAGE1_ACTIONABLE_STAGE_CLASSES: tuple[str, ...] = ("PRE", "TURN")
+-
+-FLATTENED_UNION_SEMANTICS = (
+-    "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION"
+-)
+-
+-
+-REPRESENTATIONS: tuple[str, ...] = (
+-    "HISTORY_JOINT",
+-    "CURRENT_JOINT",
+-    "HISTORY_POINT",
+-    "HISTORY_MARGINAL",
++from model.common.section5_contracts import (
++    FLATTENED_UNION_SEMANTICS,
++    REPRESENTATIONS,
++    STAGE1_ACTIONABLE_STAGE_CLASSES,
++    STAGE1_ACTIONABLE_STAGES,
+ )
+ 
+ 
+diff --git a/formal/v2_phase7/execution_freeze.py b/formal/v2_phase7/execution_freeze.py
+index d2e732f..c8b745e 100644
+--- a/formal/v2_phase7/execution_freeze.py
++++ b/formal/v2_phase7/execution_freeze.py
+@@ -586,7 +586,7 @@ def _paper_primary_cross_contract_snapshot(
+ 
+     probe = """
+ import json
+-from exp.jatm_section5.contracts import (
++from model.common.section5_contracts import (
+     FLATTENED_UNION_SEMANTICS,
+     REPRESENTATIONS,
+     STAGE1_ACTIONABLE_STAGE_CLASSES,
+
+diff --git a/model/common/section5_contracts.py b/model/common/section5_contracts.py
+new file mode 100644
+index 0000000..29e010c
+--- /dev/null
++++ b/model/common/section5_contracts.py
+@@ -0,0 +1,38 @@
++"""Shared Section 5 contract constants.
++
++These values describe the fixed comparison surface used by the formal
++executor and the Section 5 development layer.  Keeping them in ``model.common``
++prevents the formal layer from depending on the historical ``exp`` package.
++The module contains identifiers only; it does not implement an estimand.
++"""
++
++from __future__ import annotations
++
++from model.common.enums import OperationalStage
++
++
++STAGE1_ACTIONABLE_STAGES: tuple[OperationalStage, ...] = (
++    OperationalStage.PRE_IB,
++    OperationalStage.POST_IB_PRE_OB,
++)
++
++STAGE1_ACTIONABLE_STAGE_CLASSES: tuple[str, ...] = ("PRE", "TURN")
++
++FLATTENED_UNION_SEMANTICS = (
++    "COMPATIBILITY_FLATTENED_UNION_NOT_A_POOLED_STAGE1_DECISION"
++)
++
++REPRESENTATIONS: tuple[str, ...] = (
++    "HISTORY_JOINT",
++    "CURRENT_JOINT",
++    "HISTORY_POINT",
++    "HISTORY_MARGINAL",
++)
++
++
++__all__ = [
++    "FLATTENED_UNION_SEMANTICS",
++    "REPRESENTATIONS",
++    "STAGE1_ACTIONABLE_STAGE_CLASSES",
++    "STAGE1_ACTIONABLE_STAGES",
++]

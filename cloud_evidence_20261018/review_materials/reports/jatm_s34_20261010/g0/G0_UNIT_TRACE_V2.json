@@ -1,0 +1,430 @@
+{
+  "schema_version": "AIR_SLOT_G0_UNIT_TIME_TRACE_V2",
+  "scientific_recomputation": false,
+  "source_artifact_hashes": {
+    "CANONICAL_NODES.json": "sha256:c5d3d556bff2d2d9487e2fb175fe7379af1b6f4cc6ae3ba4c8a81420bfef7a3c",
+    "CONSEQUENCE_VARIANTS.json": "sha256:9aa79134c39d3c7e51db117ff26f79e78d3f13d800c8dbbfff71a0a13c38fe97",
+    "RECOVERY_DECISIONS.json": "sha256:e1fca1ea9cf67621f877bd4394bacbbc3b6c54b110cc112c1787d2aaa787fe05",
+    "STATE_VARIANTS.json": "sha256:f77dcf3c03a053bf4ac607749beaa018516d2d1b79d14ad8f25715dd80a2442a"
+  },
+  "source_epoch": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag",
+  "status": "PASS_STATIC_UNIT_CHAIN_WITH_TYPED_TAXI_LIMIT",
+  "traces": [
+    {
+      "decision_time": "2019-08-07T21:50:00+00:00",
+      "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+      "information_cutoff": "2019-08-07T21:50:00Z",
+      "information_cutoff_ok": true,
+      "m1_state": {
+        "d_to_identity_ok": true,
+        "representation_id": "HISTORY_H16:JOINT",
+        "scenario_id": 0,
+        "scenario_weight": 0.015625,
+        "units": {
+          "M1.D_OB": "minutes",
+          "M1.D_TO": "minutes",
+          "M1.D_TX": "minutes",
+          "M1.R_IB": "minutes"
+        },
+        "values": {
+          "D_OB": 4.844989776611328,
+          "D_TO": 4.844989776611328,
+          "D_TX": 0.0,
+          "T_IB_or_remaining": 2.5
+        }
+      },
+      "m2": {
+        "cu": {
+          "F_continuity": 0.0,
+          "F_execution": 0.28499939862419577,
+          "F_propagation": 0.5813987731933594,
+          "P_itinerary": 0.0,
+          "P_service": 0.0,
+          "P_time": 0.7338258087359526,
+          "R_operating": 0.0
+        },
+        "cu_semantics": "normalized consequence units (CU), dimensionless",
+        "native_consequence": {
+          "F_continuity": 0.0,
+          "F_execution": 4.844989776611328,
+          "F_propagation": 5.813987731933594,
+          "P_itinerary": 0.0,
+          "P_service": 0.0,
+          "P_time": 726.7484664916992,
+          "R_operating": 0.0
+        },
+        "native_units": {
+          "F_continuity": "minutes",
+          "F_execution": "minutes",
+          "F_propagation": "exposure_minutes",
+          "P_itinerary": "expected_disrupted_connecting_passenger_exposure",
+          "P_service": "expected_long_delay_passenger_service_exposure",
+          "P_time": "passenger_minutes",
+          "R_operating": "excess_taxi_minutes"
+        },
+        "priority": {
+          "chain_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "comparison_support_mass": 1.0,
+          "comparison_support_threshold": 0.9,
+          "episode_id": "sha256:02b711e90d440bcac9e7f163616a5b76929dfbad5f6bb2c0335c5bf85959ad65",
+          "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+          "reason_codes": [],
+          "representation_id": "HISTORY_H16:JOINT",
+          "score": 0.4685716486656794,
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED",
+          "support": "SUPPORTED"
+        },
+        "reference_binding": {
+          "connection_share": 0.35,
+          "downstream_exposure": 1.2,
+          "expected_pax": 150.0,
+          "taxi_reference_minutes": 0.0,
+          "turnaround_reference_minutes": 75.0
+        }
+      },
+      "m3": {
+        "actionable": true,
+        "status": "SUPPORTED",
+        "u_star": 5.0,
+        "unit": "minutes per frozen Stage-II contract"
+      },
+      "node_id": "sha256:8d29df62529233fa930810bd1f639221a97f10f62cee78fee5bb050145042cf6",
+      "raw": {
+        "scheduled_departure_utc": {
+          "source_record_id": "flight:6fb899fff7a6a600678e91a26b83d011a28139ba39f5db47c413c09be2eebea7",
+          "unit": "UTC timestamp",
+          "value": "2019-08-07T23:05:00Z"
+        }
+      },
+      "raw_availability": {
+        "scheduled_departure_utc": {
+          "availability_time": null,
+          "available_by_decision": null,
+          "decision_time": "2019-08-07T21:50:00+00:00"
+        }
+      },
+      "raw_posthoc_derivations": {},
+      "source_artifacts": {
+        "CANONICAL_NODES.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\CANONICAL_NODES.json",
+          "sha256": "sha256:c5d3d556bff2d2d9487e2fb175fe7379af1b6f4cc6ae3ba4c8a81420bfef7a3c"
+        },
+        "CONSEQUENCE_VARIANTS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\CONSEQUENCE_VARIANTS.json",
+          "sha256": "sha256:9aa79134c39d3c7e51db117ff26f79e78d3f13d800c8dbbfff71a0a13c38fe97"
+        },
+        "RECOVERY_DECISIONS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\RECOVERY_DECISIONS.json",
+          "sha256": "sha256:e1fca1ea9cf67621f877bd4394bacbbc3b6c54b110cc112c1787d2aaa787fe05"
+        },
+        "STATE_VARIANTS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\STATE_VARIANTS.json",
+          "sha256": "sha256:f77dcf3c03a053bf4ac607749beaa018516d2d1b79d14ad8f25715dd80a2442a"
+        }
+      },
+      "stage": "PRE_IB",
+      "status": "TRACE_COMPLETE_TO_U"
+    },
+    {
+      "decision_time": "2019-08-27T16:45:00+00:00",
+      "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+      "information_cutoff": "2019-08-27T16:45:00Z",
+      "information_cutoff_ok": true,
+      "m1_state": {
+        "d_to_identity_ok": true,
+        "representation_id": "HISTORY_H16:JOINT",
+        "scenario_id": 0,
+        "scenario_weight": 0.015625,
+        "units": {
+          "M1.D_OB": "minutes",
+          "M1.D_TO": "minutes",
+          "M1.D_TX": "minutes",
+          "M1.R_IB": "minutes"
+        },
+        "values": {
+          "D_OB": 102.4477653503418,
+          "D_TO": 102.4477653503418,
+          "D_TX": 0.0,
+          "T_IB_or_remaining": 0.0
+        }
+      },
+      "m2": {
+        "cu": {
+          "F_continuity": 0.0,
+          "F_execution": 6.0263391382554,
+          "F_propagation": 12.293731842041016,
+          "P_itinerary": 52.5,
+          "P_service": 0.0,
+          "P_time": 15.516815871175494,
+          "R_operating": 0.0
+        },
+        "cu_semantics": "normalized consequence units (CU), dimensionless",
+        "native_consequence": {
+          "F_continuity": 0.0,
+          "F_execution": 102.4477653503418,
+          "F_propagation": 122.93731842041015,
+          "P_itinerary": 52.5,
+          "P_service": 0.0,
+          "P_time": 15367.16480255127,
+          "R_operating": 0.0
+        },
+        "native_units": {
+          "F_continuity": "minutes",
+          "F_execution": "minutes",
+          "F_propagation": "exposure_minutes",
+          "P_itinerary": "expected_disrupted_connecting_passenger_exposure",
+          "P_service": "expected_long_delay_passenger_service_exposure",
+          "P_time": "passenger_minutes",
+          "R_operating": "excess_taxi_minutes"
+        },
+        "priority": {
+          "chain_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "comparison_support_mass": 1.0,
+          "comparison_support_threshold": 0.9,
+          "episode_id": "sha256:06eebf6187fae5c4b5cb17b45cf57576dc2853d3944de85276bd6fbecc169ab9",
+          "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+          "reason_codes": [],
+          "representation_id": "HISTORY_H16:JOINT",
+          "score": 1.124013107340162,
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED",
+          "support": "SUPPORTED"
+        },
+        "reference_binding": {
+          "connection_share": 0.35,
+          "downstream_exposure": 1.2,
+          "expected_pax": 150.0,
+          "taxi_reference_minutes": 0.0,
+          "turnaround_reference_minutes": 65.0
+        }
+      },
+      "m3": {
+        "actionable": true,
+        "status": "SUPPORTED",
+        "u_star": 5.0,
+        "unit": "minutes per frozen Stage-II contract"
+      },
+      "node_id": "sha256:36d6710dfa07ceadf062d32773a1e520a733f28bbc4521214f96a642d5241f39",
+      "raw": {
+        "predecessor_actual_arrival_utc": {
+          "availability_time": "2019-08-27T16:39:00Z",
+          "source_record_id": "canonical-event:cee0a796e186bc8de4e08c6a563d76f71b23c73b6cb374f902b652dd61f69c8d",
+          "unit": "UTC timestamp",
+          "value": "2019-08-27T16:39:00Z"
+        },
+        "scheduled_departure_utc": {
+          "source_record_id": "flight:5178b9a4bf9c753bd4c3f732ce0eaeb04bc9054581ff680c046b3d6e07bddd08",
+          "unit": "UTC timestamp",
+          "value": "2019-08-27T17:40:00Z"
+        }
+      },
+      "raw_availability": {
+        "predecessor_actual_arrival_utc": {
+          "availability_time": "2019-08-27T16:39:00Z",
+          "available_by_decision": true,
+          "decision_time": "2019-08-27T16:45:00+00:00"
+        },
+        "scheduled_departure_utc": {
+          "availability_time": null,
+          "available_by_decision": null,
+          "decision_time": "2019-08-27T16:45:00+00:00"
+        }
+      },
+      "raw_posthoc_derivations": {},
+      "source_artifacts": {
+        "CANONICAL_NODES.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\CANONICAL_NODES.json",
+          "sha256": "sha256:c5d3d556bff2d2d9487e2fb175fe7379af1b6f4cc6ae3ba4c8a81420bfef7a3c"
+        },
+        "CONSEQUENCE_VARIANTS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\CONSEQUENCE_VARIANTS.json",
+          "sha256": "sha256:9aa79134c39d3c7e51db117ff26f79e78d3f13d800c8dbbfff71a0a13c38fe97"
+        },
+        "RECOVERY_DECISIONS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\RECOVERY_DECISIONS.json",
+          "sha256": "sha256:e1fca1ea9cf67621f877bd4394bacbbc3b6c54b110cc112c1787d2aaa787fe05"
+        },
+        "STATE_VARIANTS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\STATE_VARIANTS.json",
+          "sha256": "sha256:f77dcf3c03a053bf4ac607749beaa018516d2d1b79d14ad8f25715dd80a2442a"
+        }
+      },
+      "stage": "POST_IB_PRE_OB",
+      "status": "TRACE_COMPLETE_TO_U"
+    },
+    {
+      "decision_time": "2019-08-16T21:19:00+00:00",
+      "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+      "information_cutoff": "2019-08-16T21:19:00Z",
+      "information_cutoff_ok": true,
+      "m1_state": {
+        "d_to_identity_ok": true,
+        "representation_id": "HISTORY_H16:JOINT",
+        "scenario_id": 0,
+        "scenario_weight": 0.015625,
+        "units": {
+          "M1.D_OB": "minutes",
+          "M1.D_TO": "minutes",
+          "M1.D_TX": "minutes",
+          "M1.R_IB": "minutes"
+        },
+        "values": {
+          "D_OB": 0.0,
+          "D_TO": 0.0,
+          "D_TX": 0.0,
+          "T_IB_or_remaining": 0.0
+        }
+      },
+      "m2": {
+        "cu": {
+          "F_continuity": 0.0,
+          "F_execution": 0.0,
+          "F_propagation": 0.0,
+          "P_itinerary": 0.0,
+          "P_service": 0.0,
+          "P_time": 0.0,
+          "R_operating": 0.0
+        },
+        "cu_semantics": "normalized consequence units (CU), dimensionless",
+        "native_consequence": {
+          "F_continuity": 0.0,
+          "F_execution": 0.0,
+          "F_propagation": 0.0,
+          "P_itinerary": 0.0,
+          "P_service": 0.0,
+          "P_time": 0.0,
+          "R_operating": 0.0
+        },
+        "native_units": {
+          "F_continuity": "minutes",
+          "F_execution": "minutes",
+          "F_propagation": "exposure_minutes",
+          "P_itinerary": "expected_disrupted_connecting_passenger_exposure",
+          "P_service": "expected_long_delay_passenger_service_exposure",
+          "P_time": "passenger_minutes",
+          "R_operating": "excess_taxi_minutes"
+        },
+        "priority": {
+          "chain_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+          "comparison_support_mass": 1.0,
+          "comparison_support_threshold": 0.9,
+          "episode_id": "sha256:00b05b273658f3332865de1e9796d851ca6a2919bb7e4b04ee3e58f06dfe56c6",
+          "node_id": "sha256:661563de4234c25c1cfed4de6165196ca46e7bd3239002ad08aab33b32102a57",
+          "reason_codes": [],
+          "representation_id": "HISTORY_H16:JOINT",
+          "score": 0.008983187674071755,
+          "signal_type": "CONSEQUENCE",
+          "status": "SUPPORTED",
+          "support": "SUPPORTED"
+        },
+        "reference_binding": {
+          "connection_share": 0.35,
+          "downstream_exposure": 1.2,
+          "expected_pax": 150.0,
+          "taxi_reference_minutes": 0.0,
+          "turnaround_reference_minutes": 42.0
+        }
+      },
+      "m3": {
+        "actionable": false,
+        "status": "NOT_AVAILABLE_FOR_STAGE",
+        "u_star": null,
+        "unit": "NOT_APPLICABLE"
+      },
+      "node_id": "sha256:661563de4234c25c1cfed4de6165196ca46e7bd3239002ad08aab33b32102a57",
+      "raw": {
+        "predecessor_actual_arrival_utc": {
+          "availability_time": "2019-08-16T20:31:00Z",
+          "source_record_id": "canonical-event:f9fc4e30c984e15c4004342b629d98252dcd0d974a4bc189cc5e9a12bb083cc8",
+          "unit": "UTC timestamp",
+          "value": "2019-08-16T20:31:00Z"
+        },
+        "scheduled_departure_utc": {
+          "source_record_id": "flight:4383997c7c76f463c6b4fbb79b8e085bcae804abdc88f95f16ba8f8ea2d57bf9",
+          "unit": "UTC timestamp",
+          "value": "2019-08-16T21:19:00Z"
+        },
+        "successor_actual_departure_utc": {
+          "availability_time": "2019-08-16T21:16:00Z",
+          "source_record_id": "canonical-event:15b1f7e9122a34c2c90c9fc08106ac78b218566ca81ef05de762f94c1f835c53",
+          "unit": "UTC timestamp",
+          "value": "2019-08-16T21:16:00Z"
+        },
+        "successor_taxi_out_minutes": {
+          "availability_time": "2019-08-16T21:16:00Z",
+          "source_record_id": "canonical-event:15b1f7e9122a34c2c90c9fc08106ac78b218566ca81ef05de762f94c1f835c53",
+          "unit": "minutes",
+          "value": 13.0
+        }
+      },
+      "raw_availability": {
+        "predecessor_actual_arrival_utc": {
+          "availability_time": "2019-08-16T20:31:00Z",
+          "available_by_decision": true,
+          "decision_time": "2019-08-16T21:19:00+00:00"
+        },
+        "scheduled_departure_utc": {
+          "availability_time": null,
+          "available_by_decision": null,
+          "decision_time": "2019-08-16T21:19:00+00:00"
+        },
+        "successor_actual_departure_utc": {
+          "availability_time": "2019-08-16T21:16:00Z",
+          "available_by_decision": true,
+          "decision_time": "2019-08-16T21:19:00+00:00"
+        },
+        "successor_taxi_out_minutes": {
+          "availability_time": "2019-08-16T21:16:00Z",
+          "available_by_decision": true,
+          "decision_time": "2019-08-16T21:19:00+00:00"
+        }
+      },
+      "raw_posthoc_derivations": {
+        "signed_delta_ob_minutes": -3.0,
+        "turnaround_gap_minutes": 45.0
+      },
+      "source_artifacts": {
+        "CANONICAL_NODES.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\CANONICAL_NODES.json",
+          "sha256": "sha256:c5d3d556bff2d2d9487e2fb175fe7379af1b6f4cc6ae3ba4c8a81420bfef7a3c"
+        },
+        "CONSEQUENCE_VARIANTS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\CONSEQUENCE_VARIANTS.json",
+          "sha256": "sha256:9aa79134c39d3c7e51db117ff26f79e78d3f13d800c8dbbfff71a0a13c38fe97"
+        },
+        "RECOVERY_DECISIONS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\RECOVERY_DECISIONS.json",
+          "sha256": "sha256:e1fca1ea9cf67621f877bd4394bacbbc3b6c54b110cc112c1787d2aaa787fe05"
+        },
+        "STATE_VARIANTS.json": {
+          "path": "artifacts\\diagnostics\\v2_phase7\\gate_b0_dag\\STATE_VARIANTS.json",
+          "sha256": "sha256:f77dcf3c03a053bf4ac607749beaa018516d2d1b79d14ad8f25715dd80a2442a"
+        }
+      },
+      "stage": "POST_OB_PRE_TO",
+      "status": "TRACE_COMPLETE_TO_PRIORITY_TAXI_U_NOT_AVAILABLE"
+    }
+  ],
+  "unit_contract": {
+    "M1.D_OB": "minutes",
+    "M1.D_TO": "minutes",
+    "M1.D_TX": "minutes",
+    "M1.R_IB": "minutes",
+    "M2.CU": "normalized consequence units (CU), dimensionless",
+    "M2.F_continuity": "minutes",
+    "M2.F_execution": "minutes",
+    "M2.F_propagation": "exposure_minutes",
+    "M2.P_itinerary": "expected_disrupted_connecting_passenger_exposure",
+    "M2.P_service": "expected_long_delay_passenger_service_exposure",
+    "M2.P_time": "passenger_minutes",
+    "M2.R_operating": "excess_taxi_minutes",
+    "M3.priority": "normalized priority score, dimensionless",
+    "M3.u": "minutes per frozen Stage-II contract",
+    "PRE.T_IB_A00": "UTC timestamp",
+    "raw.predecessor_operational_fact.actual_arrival_utc": "UTC timestamp",
+    "raw.schedule_reference.scheduled_departure_utc": "UTC timestamp",
+    "raw.successor_operational_fact.actual_departure_utc": "UTC timestamp",
+    "raw.successor_operational_fact.taxi_out_minutes": "minutes"
+  }
+}

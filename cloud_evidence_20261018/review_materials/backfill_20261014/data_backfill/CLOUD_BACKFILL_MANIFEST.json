@@ -1,0 +1,220 @@
+{
+  "conventions": [
+    "All files are prefixed CLOUD20261013_ so that copying year_{year}/ into data2/reports/paper_formal/{year}/ cannot overwrite frozen baseline files.",
+    "q0 = 0.10 nominal review share; K = ceil(q0*N) per stage and year.",
+    "L_att = 1 - (retained reference consequence)/(reference shortlist consequence).",
+    "L_rec = (sum of comparator reference-objective increments)/(sum of reference recoverable values).",
+    "Intervals are episode-cluster percentile bootstrap intervals, B=2000."
+  ],
+  "created": "2026-10-14",
+  "known_artifact_issues": {
+    "E2_E3_SUMMARY.e2.stage1_rows": "The stored rows are labelled comparator=HISTORY_MARGINAL_EXACT but are computed by the legacy delay-vs-consequence selector: exp.jatm_section5.attention_value.candidate() defaults to HISTORY_JOINT and select_and_evaluate() hardwires comparator=delay, reference=consequence. Their comparator_shortlist reproduces the E1 DELAY shortlist exactly in 12/12 year-stages. Do not report these rows as HM-HJ; the valid HM-HJ Stage-I numbers are in E2_E3_SUMMARY.e2.information_value.CROSS_STATE_DEPENDENCE.",
+    "E3_MECHANISM_DIAGNOSTICS": "Degenerate on the audited cohort: threshold_ablation_status = UNCHANGED for 100% of cases and the headroom fields record only the annual global parameters, because the reference cohort is restricted to fully supported cases. The file is not usable as the threshold x headroom ablation."
+  },
+  "schema": "CLOUD_BACKFILL_MANIFEST_V1",
+  "source_lineage": {
+    "full_chain": {
+      "finished_utc": "2026-10-14T09:31:02Z",
+      "tasks_pass": "18/18",
+      "validation": "FULL_EXECUTION_VALIDATION_REPORT.json all_pass=true"
+    },
+    "local_snapshot": "D:/research/air_slot/airslot_full_execution_snapshot_20261014 (12245/12245 verified)",
+    "server": "ubuntu@134.175.205.112",
+    "worktree": "snapshot 583f2c12 + patch chain d1c72a7 + ffa7487"
+  },
+  "source_root": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013",
+  "years": {
+    "2017": {
+      "E1_SUMMARY.json": {
+        "bytes": 5084223,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e1\\2017\\E1_SUMMARY.json",
+        "sha256": "008f781c814ffa614d537dc1695d279b06f5fc698e1ee8cb45f2026f9799a488"
+      },
+      "E2_E3_SUMMARY.json": {
+        "bytes": 2963051,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2017\\E2_E3_SUMMARY.json",
+        "sha256": "808e144d2f93bd829139528086b5634da2c10b93abb3ffc893661c1598a9c2c4"
+      },
+      "E3_MECHANISM_DIAGNOSTICS.json": {
+        "bytes": 202672,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2017\\E3_MECHANISM_DIAGNOSTICS.json",
+        "sha256": "5890f941b5501ba64f5b40ebecf5b0ff96724a32e6f1af78f4e6bb8f484ab022"
+      },
+      "E3_OBJECTIVE_ROWS.json": {
+        "bytes": 1965470,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2017\\E3_OBJECTIVE_ROWS.json",
+        "sha256": "b5b4c227ac14c77e3a31b0cc34c871f341902d0aa6211f658a4c7d3d374bb9a4"
+      },
+      "E4_EVAL_SUMMARY.json": {
+        "bytes": 10757,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e4\\2017\\EVAL_SUMMARY.json",
+        "sha256": "fc444957d391777d9cd77a3d3e4f2316e4cccf3e06376a618838c12e2b4e21c5"
+      },
+      "EXACT_MARGINAL_AUDIT.json": {
+        "bytes": 7322212,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2017\\EXACT_MARGINAL_AUDIT.json",
+        "sha256": "443dfd1c276b48fa3a90e49ceb8dc8a148ccc1e14016d4cd920bf4829cb361a4"
+      }
+    },
+    "2018": {
+      "E1_SUMMARY.json": {
+        "bytes": 5095407,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e1\\2018\\E1_SUMMARY.json",
+        "sha256": "dc7b423349e1da7fa8c5a638a204495e116d4f63eb92e96bb5a2fe93c5a33d49"
+      },
+      "E2_E3_SUMMARY.json": {
+        "bytes": 2974737,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2018\\E2_E3_SUMMARY.json",
+        "sha256": "f7abacf58c74875452e59e041fa66cd892ab8dd4caf159994f71cfcd6aa939c7"
+      },
+      "E3_MECHANISM_DIAGNOSTICS.json": {
+        "bytes": 203450,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2018\\E3_MECHANISM_DIAGNOSTICS.json",
+        "sha256": "2511fab5bea01741979fb043b2fe43e6ed7595f5fedb0fd6554b04695b9a4dc2"
+      },
+      "E3_OBJECTIVE_ROWS.json": {
+        "bytes": 1974313,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2018\\E3_OBJECTIVE_ROWS.json",
+        "sha256": "3294e2fe16535eb3f8c02075f0a496185aea83368d141935a113acdd889e30d8"
+      },
+      "E4_EVAL_SUMMARY.json": {
+        "bytes": 10757,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e4\\2018\\EVAL_SUMMARY.json",
+        "sha256": "49e50fa12628bf96a6b178c6404998b945156c4830939946016cb1f427bed59b"
+      },
+      "EXACT_MARGINAL_AUDIT.json": {
+        "bytes": 7272806,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2018\\EXACT_MARGINAL_AUDIT.json",
+        "sha256": "5699262826d67e05a639f3e0494118170e0602e7117935b32f3d250796dea0a1"
+      }
+    },
+    "2019": {
+      "E1_SUMMARY.json": {
+        "bytes": 5022749,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e1\\2019\\E1_SUMMARY.json",
+        "sha256": "df20d64e65dd8586bdcd76f110b2eb6f2487a8b0e2b47dd3a1232161fe5bc173"
+      },
+      "E2_E3_SUMMARY.json": {
+        "bytes": 2927866,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2019\\E2_E3_SUMMARY.json",
+        "sha256": "1a3a325c72b140ed4664cad133e10b709940b49acd13702e3e8892685d3d4cf1"
+      },
+      "E3_MECHANISM_DIAGNOSTICS.json": {
+        "bytes": 200338,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2019\\E3_MECHANISM_DIAGNOSTICS.json",
+        "sha256": "69bdd87ab1d3a731d86789a396ed78e37b7bc0a97d02c3b0148d06f3c7ecdc4e"
+      },
+      "E3_OBJECTIVE_ROWS.json": {
+        "bytes": 1942450,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2019\\E3_OBJECTIVE_ROWS.json",
+        "sha256": "50d9e1a7d8e4533efc7270474e4acec6362145ad2485e6490a277b609a891210"
+      },
+      "E4_EVAL_SUMMARY.json": {
+        "bytes": 10757,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e4\\2019\\EVAL_SUMMARY.json",
+        "sha256": "d1a38464144b43321c89745babfc831362e1b0ab88204d09c8796b5b81abf6b2"
+      },
+      "EXACT_MARGINAL_AUDIT.json": {
+        "bytes": 7223994,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2019\\EXACT_MARGINAL_AUDIT.json",
+        "sha256": "1d79ffa555454cf0859951a9bcd42d2843256351268882e71e08aaa4d5e41b03"
+      }
+    },
+    "2020": {
+      "E1_SUMMARY.json": {
+        "bytes": 4633611,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e1\\2020\\E1_SUMMARY.json",
+        "sha256": "eb9edcb436197fa91acb5d51075facc016473eee546189a54299285eda6b6fd5"
+      },
+      "E2_E3_SUMMARY.json": {
+        "bytes": 2697482,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2020\\E2_E3_SUMMARY.json",
+        "sha256": "c424ba15a7fa17535c799703ff2d2308366b4df8451604c2a9008c4202689958"
+      },
+      "E3_MECHANISM_DIAGNOSTICS.json": {
+        "bytes": 184389,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2020\\E3_MECHANISM_DIAGNOSTICS.json",
+        "sha256": "937f0f0192a16d204d3c4513c3095885750d204bf14192e4858a0b5b2b337852"
+      },
+      "E3_OBJECTIVE_ROWS.json": {
+        "bytes": 1790041,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2020\\E3_OBJECTIVE_ROWS.json",
+        "sha256": "f95892def704fbe916cfcbcf181edf5bd3639f42c37cacc034f0e53320716466"
+      },
+      "E4_EVAL_SUMMARY.json": {
+        "bytes": 11121,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e4\\2020\\EVAL_SUMMARY.json",
+        "sha256": "3a2c185adba96504a15e871256b632c5612d9193f70e386c966ec4fcd14b8d40"
+      },
+      "EXACT_MARGINAL_AUDIT.json": {
+        "bytes": 7622681,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2020\\EXACT_MARGINAL_AUDIT.json",
+        "sha256": "0c207b25101618052f329f2e20cfb026779c111d3621c744d6e6a9fe692ee9bf"
+      }
+    },
+    "2021": {
+      "E1_SUMMARY.json": {
+        "bytes": 5103879,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e1\\2021\\E1_SUMMARY.json",
+        "sha256": "f8deff6938390fc10d1dab3d6ba6226195b4ecf69281cb9c141a1253545869f1"
+      },
+      "E2_E3_SUMMARY.json": {
+        "bytes": 2974960,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2021\\E2_E3_SUMMARY.json",
+        "sha256": "f292a733083ae8b5cf0882154483df1dbf52060cb107b4f1174305e09cc268ab"
+      },
+      "E3_MECHANISM_DIAGNOSTICS.json": {
+        "bytes": 203450,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2021\\E3_MECHANISM_DIAGNOSTICS.json",
+        "sha256": "b9a2a9c30dfa1b27f76a759dd854ed79bb13fc59f29e98dbc9eac6ff36adcc9f"
+      },
+      "E3_OBJECTIVE_ROWS.json": {
+        "bytes": 1973761,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2021\\E3_OBJECTIVE_ROWS.json",
+        "sha256": "3dbd60ee27ef1495036a84033a2b422ec2cf4e4b5589102a7a7d8c6ab545424a"
+      },
+      "E4_EVAL_SUMMARY.json": {
+        "bytes": 10805,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e4\\2021\\EVAL_SUMMARY.json",
+        "sha256": "517cc0d0f95376fccb5e00fdfaa58822f44a62c201e8ecfb3442522f6d7b4081"
+      },
+      "EXACT_MARGINAL_AUDIT.json": {
+        "bytes": 7149403,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2021\\EXACT_MARGINAL_AUDIT.json",
+        "sha256": "b54ca90e51031eb1ea186b58b0b67cfaff148361cc445fd6f62a16f594ce242c"
+      }
+    },
+    "2022": {
+      "E1_SUMMARY.json": {
+        "bytes": 5181913,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e1\\2022\\E1_SUMMARY.json",
+        "sha256": "85e1d34ab831851228f2dfd46b65985866d446a3bd33f482577a8d1915fa1541"
+      },
+      "E2_E3_SUMMARY.json": {
+        "bytes": 3028685,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2022\\E2_E3_SUMMARY.json",
+        "sha256": "be9a0359a19567e4f9da79159adf5adfa1cb4b059a32a8116f6def4903bf81c0"
+      },
+      "E3_MECHANISM_DIAGNOSTICS.json": {
+        "bytes": 206951,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2022\\E3_MECHANISM_DIAGNOSTICS.json",
+        "sha256": "53ef3c1bc119d7718b15ab3e8622c81d3ccbf3555f32ab198263b76d45e6228d"
+      },
+      "E3_OBJECTIVE_ROWS.json": {
+        "bytes": 2011352,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2022\\E3_OBJECTIVE_ROWS.json",
+        "sha256": "5cd61a6682660fbb4b13abacc43a0be9e3c26f016ff05dc502823eb2229d3ccf"
+      },
+      "E4_EVAL_SUMMARY.json": {
+        "bytes": 10757,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e4\\2022\\EVAL_SUMMARY.json",
+        "sha256": "b3c7e94e1e502625a64e1eaa9d778f47bb811bc7f8afbeafc776b25ed38022c7"
+      },
+      "EXACT_MARGINAL_AUDIT.json": {
+        "bytes": 7189728,
+        "path": "D:\\research\\air_slot\\airslot_full_execution_snapshot_20261014\\artifacts\\experiment\\jatm_s34\\full_20261013\\e2e3\\2022\\EXACT_MARGINAL_AUDIT.json",
+        "sha256": "ed619bd2a1616a4b01f584a0042fbaa992936b7080b1814ddc2f714525138bed"
+      }
+    }
+  }
+}

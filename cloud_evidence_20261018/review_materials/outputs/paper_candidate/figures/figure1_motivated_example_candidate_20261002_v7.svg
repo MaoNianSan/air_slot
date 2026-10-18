@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180mm" height="94mm" viewBox="0 0 1800 940">
+<defs>
+ <marker id="arrow" markerWidth="12" markerHeight="9" refX="10" refY="4.5" orient="auto"><path d="M0,0 L12,4.5 L0,9 Z" fill="#4B5563"/></marker>
+ <style>
+ .sans{font-family:"Times New Roman",Times,serif;fill:#1F2937}.title{font-size:32px;font-weight:700}
+ .head{font-size:28px;font-weight:700}.body{font-size:25px}.small{font-size:21px}.tiny{font-size:18px}.muted{fill:#6B7280}
+ .line{stroke:#4B5563;stroke-width:3;fill:none}.rule{stroke:#CBD5E1;stroke-width:2}
+ </style>
+</defs>
+<rect width="1800" height="940" fill="#FFFFFF"/>
+<text class="sans title" x="52" y="52">An AOCC recovery decision unfolds from operating context</text>
+<text class="sans small muted" x="52" y="84">Part 1 introduces the application problem; Parts 2 and 3 show the sequential decisions it supports.</text>
+<line x1="52" y1="106" x2="1748" y2="106" class="rule"/>
+<!-- Part 1 large left column -->
+<rect x="52" y="132" width="930" height="748" rx="8" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="2"/>
+<text class="sans head" x="82" y="172">Part 1. One AOCC decision epoch</text>
+<text class="sans small muted" x="82" y="202">Two disrupted successor chains have similar delay, but different operational exposure.</text>
+<!-- operating sequence -->
+<text class="sans small" x="90" y="254">Predecessor</text><text class="sans small" x="380" y="254">Turnaround</text><text class="sans small" x="700" y="254">Successor</text>
+<line x1="110" y1="270" x2="800" y2="270" class="line"/><circle cx="140" cy="270" r="9" fill="#6B7280"/><circle cx="455" cy="270" r="9" fill="#415A77"/><circle cx="760" cy="270" r="9" fill="#C97920"/>
+<text class="sans tiny muted" x="92" y="298">in-block progress</text><text class="sans tiny muted" x="378" y="298">buffer and aircraft continuity</text><text class="sans tiny muted" x="686" y="298">off-block and downstream effects</text>
+<!-- common baseline -->
+<rect x="82" y="330" width="870" height="58" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+<text class="sans body" x="108" y="367" font-weight="700">Observed delay baseline</text><text class="sans body" x="430" y="367">similar predicted successor take-off delay</text>
+<!-- chain A -->
+<rect x="82" y="424" width="870" height="112" rx="7" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans body" x="108" y="461" font-weight="700" fill="#415A77">Chain A</text>
+<line x1="245" y1="454" x2="405" y2="454" stroke="#415A77" stroke-width="7"/><line x1="405" y1="454" x2="540" y2="454" stroke="#415A77" stroke-width="7" stroke-dasharray="9 7"/>
+<text class="sans small" x="108" y="500">tight turnaround</text><text class="sans small" x="350" y="500">aircraft continuity</text><text class="sans small muted" x="650" y="500">same delay signal</text>
+<!-- chain B -->
+<rect x="82" y="564" width="870" height="112" rx="7" fill="#FFFFFF" stroke="#C97920" stroke-width="2"/>
+<text class="sans body" x="108" y="601" font-weight="700" fill="#C97920">Chain B</text>
+<line x1="245" y1="594" x2="405" y2="594" stroke="#C97920" stroke-width="7"/><line x1="405" y1="594" x2="540" y2="594" stroke="#C97920" stroke-width="7" stroke-dasharray="9 7"/>
+<text class="sans small" x="108" y="640">passenger connections</text><text class="sans small" x="410" y="640">downstream exposure</text><text class="sans small muted" x="650" y="640">same delay signal</text>
+<!-- scene takeaway -->
+<line x1="82" y1="720" x2="952" y2="720" class="rule"/>
+<text class="sans body" x="82" y="760" font-weight="700">Why delay alone is insufficient</text>
+<text class="sans small muted" x="82" y="795">A delay signal summarizes severity; the operating context determines</text>
+<text class="sans small muted" x="82" y="824">which Flight, Passenger, and Resource consequences are decision-relevant.</text>
+<!-- arrow to Part 2 -->
+<line x1="982" y1="300" x2="1032" y2="300" class="line" marker-end="url(#arrow)"/>
+<!-- right Part 2 -->
+<rect x="1040" y="132" width="708" height="330" rx="8" fill="#FFFFFF" stroke="#415A77" stroke-width="2"/>
+<text class="sans head" x="1070" y="172">Part 2. Stage I screening</text>
+<text class="sans body" x="1070" y="210">Limited review capacity</text>
+<text class="sans small muted" x="1070" y="238">Which disrupted chains enter detailed recovery review?</text>
+<line x1="1070" y1="268" x2="1710" y2="268" class="rule"/>
+<text class="sans small" x="1070" y="302">candidate chains</text><text class="sans small" x="1400" y="302">priority under retained context</text>
+<rect x="1070" y="322" width="260" height="48" rx="5" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/><text class="sans small" x="1090" y="353">Chain A</text><text class="sans tiny muted" x="1180" y="353">candidate</text>
+<rect x="1070" y="386" width="260" height="48" rx="5" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/><text class="sans small" x="1090" y="417">Chain B</text><text class="sans tiny muted" x="1180" y="417">candidate</text>
+<line x1="1360" y1="346" x2="1700" y2="346" stroke="#415A77" stroke-width="5"/><circle cx="1400" cy="346" r="8" fill="#415A77"/><circle cx="1460" cy="346" r="8" fill="#CBD5E1"/><circle cx="1520" cy="346" r="8" fill="#CBD5E1"/><text class="sans tiny muted" x="1360" y="374">top-K review boundary</text>
+<line x1="1360" y1="410" x2="1700" y2="410" stroke="#415A77" stroke-width="5"/><circle cx="1400" cy="410" r="8" fill="#415A77"/><circle cx="1460" cy="410" r="8" fill="#415A77"/><circle cx="1520" cy="410" r="8" fill="#CBD5E1"/><text class="sans tiny muted" x="1360" y="438">retained context may reorder the shortlist</text>
+<!-- arrow to Part 3 -->
+<line x1="1394" y1="462" x2="1394" y2="504" class="line" marker-end="url(#arrow)"/>
+<!-- right Part 3 -->
+<rect x="1040" y="520" width="708" height="360" rx="8" fill="#FFFFFF" stroke="#C97920" stroke-width="2"/>
+<text class="sans head" x="1070" y="560">Part 3. Stage II local recovery</text>
+<text class="sans body" x="1070" y="598">For a shortlisted chain</text>
+<text class="sans small muted" x="1070" y="626">Priority earns detailed review; it does not guarantee positive recovery.</text>
+<line x1="1070" y1="654" x2="1710" y2="654" class="rule"/>
+<text class="sans small" x="1070" y="690">Compare feasible targets within one chain</text>
+<text class="sans small muted" x="1070" y="722">turnaround feasibility + recovery effort</text>
+<line x1="1100" y1="770" x2="1670" y2="770" stroke="#C97920" stroke-width="5"/><circle cx="1140" cy="770" r="9" fill="#CBD5E1"/><circle cx="1360" cy="770" r="9" fill="#C97920"/><circle cx="1580" cy="770" r="9" fill="#C97920"/>
+<text class="sans tiny muted" x="1100" y="800">no recovery</text><text class="sans tiny muted" x="1310" y="800">positive target</text><text class="sans tiny muted" x="1525" y="800">larger target</text>
+<text class="sans small" x="1070" y="846" fill="#C97920">The supported decision determines information value.</text>
+</svg>

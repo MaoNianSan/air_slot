@@ -1,0 +1,31 @@
+{
+  "created_at_utc": "2026-09-30T06:51:11+00:00",
+  "dataset_instance_id": "data2_2017_2022",
+  "db1b_admissibility": "Q1 + Q2 of Y",
+  "fit_window": {
+    "end": "2020-06-30",
+    "start": "2020-01-01"
+  },
+  "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+  "payload_hashes": {
+    "connection_share": "sha256:68cba096c5b1579219cc4dea6b6a3a2ef222178796de9ab6180570cb17fb1176",
+    "downstream_exposure": "sha256:beb950a0d872d1a5dc2a73eb7d0156b86b5f7d4f7dd5929faa7954dfdcb81d17",
+    "expected_passengers": "sha256:5146850df03b13eb10e8ca695efe242300d00942a3717b7579b4718480e1b691",
+    "passenger": "sha256:4208c9661815bc64fee34c55b97d00316277fc6b226ec1fd8f632412b7faa6f9",
+    "taxi": "sha256:ac346761c5ab021d361403a616ac59a11b4e3245bcc138ab09839c32bbe54c10",
+    "turnaround": "sha256:d23ac9d2c29ef3ce411c4e526eb19ff61b106e89ae163046beb8f31069c860f7"
+  },
+  "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+  "scale_median_preview": {
+    "F_continuity": 41.25,
+    "F_execution": 14.0,
+    "F_propagation": 7.0,
+    "P_itinerary": 8.230148060278546,
+    "P_service": 62.26086956521739,
+    "P_time": 509.55652173913046,
+    "R_operating": 5.0
+  },
+  "schema_version": "M2_REFERENCE_BUNDLE_V1",
+  "t100_admissibility": "YEAR == Y and MONTH <= 6",
+  "year": 2020
+}

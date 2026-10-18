@@ -1,0 +1,4279 @@
+{
+  "created_at_utc": "2026-10-15T02:51:40.793515+00:00",
+  "historical_exposure_note": "2019 is retained as exposed-window replication; no prior six-year S34 Q4 outputs were found in audited report roots.",
+  "input_bytes": 10002318290,
+  "inputs": [
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "1cc1b3c3566de7ff7aa4186171e69f9df874fa4d09627203eb4d958cab404acf",
+      "size_bytes": 3390
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N1024/M1_N.pt",
+      "sha256": "56271db4ed98db952b789c37f8272da74a83e015ade119f8a6925e25b4c0a066",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N1024/M1_N_HASHES.json",
+      "sha256": "cc27c1ae2952f61786ec1bf7ff752259730f821eabedd90ce1637b6942a7fd13",
+      "size_bytes": 801
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N128/M1_N.pt",
+      "sha256": "c60f6a1ffbe327fa2c17c147e62d37689c9604f74dbf35477b4fe675f9114bf8",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N128/M1_N_HASHES.json",
+      "sha256": "187f89ed20c7479ffd0151875c1d2d4ad675aef5b3e0f7e753f9feab7285ed81",
+      "size_bytes": 793
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N2048/M1_N.pt",
+      "sha256": "f6ab4ef00e79f5165bc2f98ad5ec6556cd9392a24c45ef5d2ebb3c632815c9be",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N2048/M1_N_HASHES.json",
+      "sha256": "5d9d51ca7174010a64182889f38f72b5d6e214dd6810bf30d908d312bdfc8bc9",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N256/M1_N.pt",
+      "sha256": "5c63ea8d2781fb661daeb02d7cd6caf53733612b5e0a86487a2f712ae4d443ba",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N256/M1_N_HASHES.json",
+      "sha256": "700831842eaadb7a8b0b4283c65bfdf7fed464047cbf4d89271efb5fb4935341",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N4096/M1_N.pt",
+      "sha256": "37ce07279bd94c84ced657db5696a2a06ee74d6ee54d43f9eb50f43e8e81945e",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N4096/M1_N_HASHES.json",
+      "sha256": "8d1942a41f76c888ac29b8e9b111e93594456fb3ed86d860465d03abf892525b",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N512/M1_N.pt",
+      "sha256": "ca741bf9722cf81d6b723c747a861c5413b92cacff6bc0ebadf4d254148738c7",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N512/M1_N_HASHES.json",
+      "sha256": "0d234196243c6f2dd5e9812a7002a9c001aa43e59ac463bccceb8309c60d99e2",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2017/LADDER_PROBE_2017.json",
+      "sha256": "010289cad9db1b9f14bb29c74e696242c50339c86ad6245e9520312401c11d21",
+      "size_bytes": 1243
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "233fdc8a42159d5498b9742c0d61a3ebe69bc9ba43de7a9bec00a2319d862037",
+      "size_bytes": 3378
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N1024/M1_N.pt",
+      "sha256": "e342143f17a08e3df59afb0cc121cc6d24aff24157a79639bc17deab61e3a820",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N1024/M1_N_HASHES.json",
+      "sha256": "80534919ded93376f22ad63a765d4e795a3c7b2e0c10aed9520925fd5a38b57f",
+      "size_bytes": 801
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N128/M1_N.pt",
+      "sha256": "0348314b0848be7bf6abd2fd4a91892b217af8ee46ab54861fa28240e06b7dda",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N128/M1_N_HASHES.json",
+      "sha256": "065ea1b634f5cdb535223f74b1dc3731aedc5c096f8f4236b96e72a7c9aeb01c",
+      "size_bytes": 793
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N2048/M1_N.pt",
+      "sha256": "e586068af0077b884ae223c2debd01a4bd04bfc36a43265711705fb2ee7c13be",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N2048/M1_N_HASHES.json",
+      "sha256": "3d0169b720b64c05f67d9541c45c6cdb7951c3eb23643cc040642057d9aa2011",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N256/M1_N.pt",
+      "sha256": "883693b17f449a68f56c450ea907ca7cd0ad251372012024fe76d3614732f906",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N256/M1_N_HASHES.json",
+      "sha256": "2fc1f7fc53937cb6ee0e51dbe229c687d89073467721ae5fa5cb4749c532c4bf",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N4096/M1_N.pt",
+      "sha256": "6663fba21cbd2ea6300dbbaf7ff53b74352943df82299f71d71b60a036fbb39a",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N4096/M1_N_HASHES.json",
+      "sha256": "bbe698cbc8fdd62071d950c17088918ecfc250f6d826402b1a27a60410fc5639",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N512/M1_N.pt",
+      "sha256": "57ed40f3c1ffb5b6963687d04cab0284922ebd0a1ab801f03c461467c6aa76c3",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/2018/N512/M1_N_HASHES.json",
+      "sha256": "7c0c70ecf776c7c342763f166d456c58fb60a1bf68e411b9f85cd7eb2866d35b",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2018/LADDER_PROBE_2018.json",
+      "sha256": "3270e8b2b34f3049a68d2ddd23900159e4d9797a00243a087fdaf2657080c8c2",
+      "size_bytes": 1243
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "f6b8d6d4245ff801a8b38e759bbe4f71adfec9c02ef9251bd9dcfa5afbfa415d",
+      "size_bytes": 3676
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N1024/M1_N.pt",
+      "sha256": "ebff1e45dd3e44ade737f3ee87ba1a192fa976951b094f7c4ac2975d9b2901ff",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N1024/M1_N_HASHES.json",
+      "sha256": "baed7279ef27d9a9c57b27c188b8908f3c42e0521935f63beb5baf49eb685b55",
+      "size_bytes": 801
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N128/M1_N.pt",
+      "sha256": "f4b21b95cbdc288685733ea7b148260966b021077d253f3f14b23861e0b8ffa9",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N128/M1_N_HASHES.json",
+      "sha256": "0b5f389bdcbbf90aff80a327ad3a8e2e96a986e23c71a1cf83f947715d6b117a",
+      "size_bytes": 793
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N2048/M1_N.pt",
+      "sha256": "f6574c40cce62c227822f8f5b7412ab54f6dbbbbad88c75ab79c7d164751d9ff",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N2048/M1_N_HASHES.json",
+      "sha256": "ba4fe5cb50ec10c48c08b3a9409cd4be2db7291a2da5302a9a2c2793a678bc82",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N256/M1_N.pt",
+      "sha256": "0da539fa2feb588ca0da1c9c5543a3d834385b947bdd32b8d05f3e92bcd62740",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N256/M1_N_HASHES.json",
+      "sha256": "b96f2d5b4cc51fc40fc3ebb09e4f1edc597d34125485e1da8f4ed10e969d70b6",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N4096/M1_N.pt",
+      "sha256": "2776b1d007311be2e346f9b9485f00aeea07212ea9bab3417f42785da9e5233c",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N4096/M1_N_HASHES.json",
+      "sha256": "5945bab44a62cce99a48065d9d7f72954688c7cb18443b4e5d0fee621ff7e3a0",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N512/M1_N.pt",
+      "sha256": "21c83250c563190c7ee3eecb475d89fc93900aba6bd84ff1f15cd9edfe1d801d",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/2019/N512/M1_N_HASHES.json",
+      "sha256": "4a9ef5ebd6a05473e6c07f0c7e6cd9c3a53445aa5650264ad6ea2bf3794f88b0",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2019/LADDER_PROBE_2019.json",
+      "sha256": "8f4cd773ed2b9c2ce5e61ee565e01b0bd2b672d2109400771c578e745c423b84",
+      "size_bytes": 1243
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "e073d46985c53fec919242fa796e9e2975aa0a88f736f978a072dd075c79b93c",
+      "size_bytes": 3378
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N1024/M1_N.pt",
+      "sha256": "a236598c15c9c980fb302265edd9f54698c8a77f329808622ef3d1e86fb19ace",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N1024/M1_N_HASHES.json",
+      "sha256": "fb0e5faf1230b6da1364883b4033adefe8e4707bce19969eaf0e5fdb9cb2d4c4",
+      "size_bytes": 801
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N128/M1_N.pt",
+      "sha256": "820bc9449cd712c79c16b521ab2a6d5288fb8ad14490f2a6a020ad73efac7068",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N128/M1_N_HASHES.json",
+      "sha256": "b7ef952da100c6f3c25f195d9d9dd75f8937d02a4354498fbef1bcb53d6587f4",
+      "size_bytes": 794
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N2048/M1_N.pt",
+      "sha256": "8e54e9bbcf00da92bcfbf18b31816802854d39b09cb0ccb460aa50c1d469c552",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N2048/M1_N_HASHES.json",
+      "sha256": "ce4ad4e439c227d795c2281c6ce09e5a5367da913922f1fcf943064138f5bf9c",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N256/M1_N.pt",
+      "sha256": "5abbe7cc39d731b6961a6dba2e3e365a5a16aa980a47a972866e3c499b822e9f",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N256/M1_N_HASHES.json",
+      "sha256": "11c92eb81fec168146e530b6305e7bfd3b6d2e3c1c9f972455a95c4ab56dad6f",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N4096/M1_N.pt",
+      "sha256": "2f68d72bbc949af694dafb9f89f1f64bc3b5d9865c921cad5b5d5a3dc7883f7c",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N4096/M1_N_HASHES.json",
+      "sha256": "dc44669c9f5b0a74621f65352db36b4c66e61937f6d8bebbd886455529d8086c",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N512/M1_N.pt",
+      "sha256": "370d24ac42f0a4c620a0d783ddad899e2a994b28cd9bb0a4eb47a6a27084fa40",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/2020/N512/M1_N_HASHES.json",
+      "sha256": "50d21afc4b68379b54bdb4b067f30287666c166d9ca6559d59dc881579f5ba42",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2020/LADDER_PROBE_2020.json",
+      "sha256": "28c4fb4df48b28a93ff25b45bde28afa088bdd09fc4d5d969812162f74918598",
+      "size_bytes": 1243
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "511750b7647237d6c8650257aa2fbe1e96d24ad9239582d00eeff1b6f6a50458",
+      "size_bytes": 3378
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N1024/M1_N.pt",
+      "sha256": "c87716b6731deefe121e34747c6d100780317fc553ddf83b061b5047c2e2600c",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N1024/M1_N_HASHES.json",
+      "sha256": "c18126ff22e7514b27f05aacbe62b5c90805800cf695b1caa8b725bf7c464eba",
+      "size_bytes": 801
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N128/M1_N.pt",
+      "sha256": "626d5267bee21578fd3e644da676552deca471822fed60688e433b09fe8a1df7",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N128/M1_N_HASHES.json",
+      "sha256": "2f8996a9415a7100de5479fe51a168fe1626c720d6f2ae3ddcabce5d4de5f566",
+      "size_bytes": 794
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N2048/M1_N.pt",
+      "sha256": "74433956cbe3f90417d20e86b05d4f8200d3403e6ad8b5cb580428e2d22d7429",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N2048/M1_N_HASHES.json",
+      "sha256": "5efd6e71b92af31f8ac3534bcd3ac42ef3544ee5284cd9f95465cf0a6ce2aeb3",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N256/M1_N.pt",
+      "sha256": "1268a87eeeb887b45385c7617585ec35f076e401642065682663ceea5c5bcce7",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N256/M1_N_HASHES.json",
+      "sha256": "ec1fa3803295bac1711435d38c6c1e638d3a2240a6f90d8439d6924bd8f54551",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N4096/M1_N.pt",
+      "sha256": "635bb582310f498dbbe5d81574fc327e7b0a6104e3c3503e947ee95490ae31c4",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N4096/M1_N_HASHES.json",
+      "sha256": "1ea1bbb359cc5a878289724aab332b69ca38e23739515c2a3ce863f378959de7",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N512/M1_N.pt",
+      "sha256": "8041211e410a194affc2286c29022f901bf0bf6de8a8a81ad85eb87334714160",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/2021/N512/M1_N_HASHES.json",
+      "sha256": "cf4c485debac4502ea0a801c5802a35027c5775b73cbef676f557277806373ff",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2021/LADDER_PROBE_2021.json",
+      "sha256": "0e29fa63f93111e52348fd362de72d954895742028f8eceee9ae99fa28ec99a9",
+      "size_bytes": 1242
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "a37a648b7440ccb0e47ec59c85947e767e460a4223a589ced7839859fe3c6993",
+      "size_bytes": 3390
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N1024/M1_N.pt",
+      "sha256": "9bc9c758b7f2b0526563cb1b22a12902ead7c0d58a5414158554a3226f7f07e5",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N1024/M1_N_HASHES.json",
+      "sha256": "80e0d0b982b88e8c431e1a443bf5761751e8042546ec57b7596f621d65512ea3",
+      "size_bytes": 801
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N128/M1_N.pt",
+      "sha256": "7d68c767abec6a7367c644e9732c59c7308e996c3e6f849fdfa6ec254a22bf3b",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N128/M1_N_HASHES.json",
+      "sha256": "2171e2d287d7438bfb46f2192724b43d8a717ec6bd13403c894c466c424ccd4f",
+      "size_bytes": 794
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N2048/M1_N.pt",
+      "sha256": "6b4fc4868fb749f3bd7062755c2882e5183297c81463af737c7f400a87b86795",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N2048/M1_N_HASHES.json",
+      "sha256": "8f5c9f9cabe048e0cccf27609c75003286033f60890dde04d6e47b980ee548a8",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N256/M1_N.pt",
+      "sha256": "9e7db0e89924773ffe61f621a262fee80648cdf2c5390c290759fed2dfd3b137",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N256/M1_N_HASHES.json",
+      "sha256": "a93570a8fa0e1d765d7b88936fe9680ed5aba1610f11c202c04021219e046473",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N4096/M1_N.pt",
+      "sha256": "17ed6bc0ad1b5a05e2e555665347f30b727c719bfd4984e1a9944d935d20cac4",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N4096/M1_N_HASHES.json",
+      "sha256": "1d26cf3c4e0db879eee13892ed08ab53085f4e91f899b1eab9e7256e87e53f8b",
+      "size_bytes": 803
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N512/M1_N.pt",
+      "sha256": "9e8dae2f1ebee76b7a96d0ba56b4dba68754e21047e795536ee420a5496a0f2d",
+      "size_bytes": 48537
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/2022/N512/M1_N_HASHES.json",
+      "sha256": "abd2b136da0b0c75696b7c6b0b65caa3207fa9cf25c2ae5e1839202dfad0b058",
+      "size_bytes": 795
+    },
+    {
+      "path": "artifacts/experiment/jatm_s34/full_20261013/e4/2022/LADDER_PROBE_2022.json",
+      "sha256": "909477d70a0be202f8afeedc68e6b817e2a262ee55d10069a1e36d311a80d5fe",
+      "size_bytes": 1242
+    },
+    {
+      "path": "artifacts/models/m1/M1_FORMAL_TRAINING_COHORT_V1.json",
+      "sha256": "8a2a35d6f4982e24a36dad68daeff3daf64cb8047c4a8680ba3bb535546b3f24",
+      "size_bytes": 26509
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H16/DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3_MANIFEST.json",
+      "sha256": "64befb0b61a4b96956bc0d0d31c430a295ae6ef505f45d4f7e10b178f360d0eb",
+      "size_bytes": 7941
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_CALIBRATION.json",
+      "sha256": "280662ce058284ff6cf20673b076f38696ddc2a39b0ac257dd9e1f38f295c8f4",
+      "size_bytes": 1679
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_MANIFEST.json",
+      "sha256": "9f5915dd9d31dd74b6c3c2ae0c16173ce521430ae53fbee4d2487c9e233b2936",
+      "size_bytes": 2085
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_TARGET_SUPPORT_MANIFEST.json",
+      "sha256": "668f593c74c942d8639ba0f5f07de47cb0d8d726dc174d1cc783b0a6a3f228f9",
+      "size_bytes": 724
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_TRAINING_MANIFEST.json",
+      "sha256": "44667d4f66e7e32d63c756572c07d6d4740143608d80f0976a02c8efeb74d54b",
+      "size_bytes": 3639
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3_MANIFEST.json",
+      "sha256": "1c5ae37e8cb817e7693d5989e2b4aabbe432a09a41ca863584b6f3c45164961c",
+      "size_bytes": 7941
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST_MANIFEST.json",
+      "sha256": "a6f404a4c41f4c4d9486a99d55e3f942524476f5f14e303115001b02028c71b6",
+      "size_bytes": 7578
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/DATA2_M1_V2_DEVELOPMENT_FAST_PREDICTIVE_DIAGNOSTICS.json",
+      "sha256": "6d898a928d865de767d40a3138a0770bf1d9b6f543d22062e1319b1dfccd3765",
+      "size_bytes": 5164740
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/H8_ARTIFACT_COMPATIBILITY_AUDIT.md",
+      "sha256": "c03441228a77367cc9c217bfed20c085102cbe09734a8503ff8555c95386e050",
+      "size_bytes": 4239
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/M1_FROZEN_H8_CALIBRATION.json",
+      "sha256": "d1d01bf73fa2adccc50fdf511b77c1d59ce2fdbade88cb51b45350e99df16c36",
+      "size_bytes": 1551
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/M1_FROZEN_H8_MANIFEST.json",
+      "sha256": "59b5b7b9b848eb5a3a1768d964e5c2ed48f15acc9076f07a9de2e356dfb5a5ed",
+      "size_bytes": 1829
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/M1_FROZEN_H8_TARGET_SUPPORT_MANIFEST.json",
+      "sha256": "f35c238a5fae95bb4dd35be181efacde7211e34e276e2bb4b8cdfe5e818d516f",
+      "size_bytes": 624
+    },
+    {
+      "path": "artifacts/models/m1/M1_FROZEN_H8/SMOKE_PREP.json",
+      "sha256": "73b2960b814cd937a7e2f864cce364207a7c146544ad8ae02b79e7b63ecdbae2",
+      "size_bytes": 622
+    },
+    {
+      "path": "artifacts/models/m1/M1_H16_CURRENT_COMPARATOR/M1_H16_CURRENT_COMPARATOR_CALIBRATION.json",
+      "sha256": "2e184ce8ff62ea9e6924121c285214b1954ef7cbb78f560fb1dbda4f999f6260",
+      "size_bytes": 1132
+    },
+    {
+      "path": "artifacts/models/m1/M1_H16_CURRENT_COMPARATOR/M1_H16_CURRENT_COMPARATOR_MANIFEST.json",
+      "sha256": "9895214f7aa1a33ea49bc90baef30cae6835b9775c43976e3b7049e4b0d2275f",
+      "size_bytes": 6089
+    },
+    {
+      "path": "artifacts/models/m1/M1_H16_HISTORY_CURRENT_MATCHED_AUDIT.json",
+      "sha256": "414429c3f5d69b3e75c108356c018329713f69d97fe6d6d49a66343364a8502e",
+      "size_bytes": 746
+    },
+    {
+      "path": "artifacts/models/m1/M1_H16_HISTORY_PRIMARY/M1_H16_HISTORY_PRIMARY_CALIBRATION.json",
+      "sha256": "5d812203aa912a3ea582314ad64a8b275e709b426689c079d3e4e334e9ced81f",
+      "size_bytes": 1115
+    },
+    {
+      "path": "artifacts/models/m1/M1_H16_HISTORY_PRIMARY/M1_H16_HISTORY_PRIMARY_MANIFEST.json",
+      "sha256": "5e75a16e0db957a8edb7a8007cc15fed84a0e84a2b522fc32ca58a00b701da6a",
+      "size_bytes": 5926
+    },
+    {
+      "path": "artifacts/models/m1/M1_V2_PHASE5_H8_SENSITIVITY/M1_V2_PHASE5_H8_SENSITIVITY_CALIBRATION.json",
+      "sha256": "5470f66abfa26952f961e57dc25c5f1550441b17a9d31de19d7bf1f556e135c6",
+      "size_bytes": 1194
+    },
+    {
+      "path": "artifacts/models/m1/M1_V2_PHASE5_H8_SENSITIVITY/M1_V2_PHASE5_H8_SENSITIVITY_MANIFEST.json",
+      "sha256": "39dfaf894005015d252a5a085332f0480ee3f05ab54af5b884add631cbe5b696",
+      "size_bytes": 7442
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/M1_CURRENT_COMPARATOR.pt",
+      "sha256": "8233a59b402dda38b46665334115cba358667620549f1f132ae02884f8f02e01",
+      "size_bytes": 40893
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/M1_CURRENT_COMPARATOR_MANIFEST.json",
+      "sha256": "b38df957b221ab9fb1f8fced79bc204909e2878018677792f7cbb40412140307",
+      "size_bytes": 799
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/M1_HISTORY_PRIMARY.pt",
+      "sha256": "ea9f070964747929573b382ce912d0589d5eaaf92ecef5757cf70098a869b504",
+      "size_bytes": 49861
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/M1_HISTORY_PRIMARY_MANIFEST.json",
+      "sha256": "107c36714ff01e91b5d131a3b76acc954aee45cec76a1819d53e3d564db3024d",
+      "size_bytes": 790
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/MANIFEST.json",
+      "sha256": "f8b40d34dd8d82cbd747b6b9e5383b1c9089eb39564a9d81cfe121b2b2632712",
+      "size_bytes": 121494
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/PROGRESS.json",
+      "sha256": "80bf526299d0f8e1440f9b2853a6a74d89973ca0d71764ba4be91c7210711757",
+      "size_bytes": 105
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0000.json",
+      "sha256": "b282d8aac71b54b3151cc338e0c0ed1de7f563faa1849205c2ef92b23b8f52ca",
+      "size_bytes": 10659
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0001.json",
+      "sha256": "e02a38fd735de017665e96d35bb60c098110934b9f88a86a11a738a531aeb3da",
+      "size_bytes": 9350
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0002.json",
+      "sha256": "bbbdf74a19727e2238ee3082d8db40ae29bd1d536aa074a823c199ccf1a33d79",
+      "size_bytes": 9333
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0003.json",
+      "sha256": "f845130934add0cd42b826b0e0876d27ef847169852555e283e6bcdf10fcc2e2",
+      "size_bytes": 9043
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0004.json",
+      "sha256": "061bbe685c86e3ba9e5ce1eb23628dcbe00ef78665ade9b48f87260dee165165",
+      "size_bytes": 8983
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0005.json",
+      "sha256": "cdfb0f14c55049d14f1cc3bab473ea6db91a8d07a1be1ca5357f8a5a840c1c64",
+      "size_bytes": 8830
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0006.json",
+      "sha256": "2d0fc9e30c3b3eadd702a05d3ed2bec55ec26352f0e72d9ac8315a24a351ae79",
+      "size_bytes": 9295
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0007.json",
+      "sha256": "b575b15c00d7c7e3f64c531de6a2a8eaeda4a325a65c043082ea6759c54f34db",
+      "size_bytes": 8546
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0008.json",
+      "sha256": "e5122b52c163536ddee67c203baad939978f37426e6435bcecf694f218fe7417",
+      "size_bytes": 7622
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0009.json",
+      "sha256": "761abd6eac2c012723624e77bf511792053ded23cd164fb2e763baf09c512ae3",
+      "size_bytes": 7749
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0010.json",
+      "sha256": "0dd18f1e33217df0b2895045d892ed308e419baf69de11f748d6b4fc0f4870b6",
+      "size_bytes": 9387
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0011.json",
+      "sha256": "4f25233aefd25e3b05119e4c640b794b963cee2bd53bd0020b209d447892e135",
+      "size_bytes": 8724
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0012.json",
+      "sha256": "f5bf7520e6f7b8dce2bbe958a183ff735ef33a71d3c7446a6c1d8015d3e18869",
+      "size_bytes": 8862
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0013.json",
+      "sha256": "dcd65b3463c52644db851842fdbe3bfe17af91ccd53f0b758b0759a91c913d9e",
+      "size_bytes": 8912
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0014.json",
+      "sha256": "d1ed1172f0c51b4ca69fc575e580a8ef3e9ab19c8f540cfcc815f72cf9931c0a",
+      "size_bytes": 8713
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0015.json",
+      "sha256": "ce7fe39e0e9f030cd715461e25f0109ff16723c6f0f2c4549d57ee46462868d1",
+      "size_bytes": 9049
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0016.json",
+      "sha256": "17e19fd511ca01bbcf2e3b6f7b33de1045b2c1ef0c05baf60463066ba28b7e50",
+      "size_bytes": 8610
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0017.json",
+      "sha256": "062de31546c81c15f633ee0dc13a6d8c35442c58398a8b2513a3ab0a4dbb2fed",
+      "size_bytes": 9473
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0018.json",
+      "sha256": "3f7e311087a3575d3a567c8157024fc0a0e3b26da6f2fdd027db7cc4e22a80c9",
+      "size_bytes": 8611
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0019.json",
+      "sha256": "7194b523e5424e152dfb6460da46bcf3176c1a1d9653253f94fb56a88f0479d2",
+      "size_bytes": 9738
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0020.json",
+      "sha256": "5706c65406aa6da0620593cc7ae066457542273da44b987d1a10a6a7e0c44596",
+      "size_bytes": 10668
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0021.json",
+      "sha256": "b06d62e4eb1e8bf9135f63f70bf4dbe13c24575811da6128645f0cb63c1c678d",
+      "size_bytes": 8514
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0022.json",
+      "sha256": "05a903e470e6a384a4a0eba9255a13f1f3fbb4aba527da44b9b98d782730389f",
+      "size_bytes": 10043
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0023.json",
+      "sha256": "71cf88977976d7b25b2aaf5663af84bb68b3435e38b5fb9cbf6a759086f86feb",
+      "size_bytes": 8767
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0024.json",
+      "sha256": "bc43a46c3a47356b5d52f2f9d6dd8dbf5eb617c7816e70efec606db7ae7a8c08",
+      "size_bytes": 10772
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0025.json",
+      "sha256": "b169d5bf3366ec27c30ad8ad82e1535528caf76c37379aedb3799009754c75a4",
+      "size_bytes": 8897
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0026.json",
+      "sha256": "f0c8d8b5e505705b3b8dc080ba2a477a98f992d0596ba7fc3f880a8f7006429d",
+      "size_bytes": 9572
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0027.json",
+      "sha256": "289880a5075d23e149b7ec1a82355d5db8f6b45379a8b5bc57ccad58716d8c59",
+      "size_bytes": 9552
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0028.json",
+      "sha256": "7f757109cd4f60e03d79a3fb997650e970e101cd1050a0056949a9d52102c6e5",
+      "size_bytes": 7695
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0029.json",
+      "sha256": "988a40cbb2f0736cea60a6396100942298b0f2b81507886b4ba95bd3b8546bec",
+      "size_bytes": 9806
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0030.json",
+      "sha256": "d4e642e51201326f6461539ea8d90fb76d6504ef1ce945f336664aa30b3455a5",
+      "size_bytes": 8257
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2017/TAIL_REFERENCE_V1/train_chunks/chunk_0031.json",
+      "sha256": "13aa781b77334410191666d3354b17ddf1a93e1c70f733a2b2467f5782dff1b5",
+      "size_bytes": 8030
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/M1_CURRENT_COMPARATOR.pt",
+      "sha256": "a11af75719b0443870ea24836e7464e3b3553b7b7d66088a7a77152dd445abb7",
+      "size_bytes": 40893
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/M1_CURRENT_COMPARATOR_MANIFEST.json",
+      "sha256": "8a4618aad83e655094bc191739a104b499d33a3b74d8f0d428f81bc8c7ca3a4b",
+      "size_bytes": 799
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/M1_HISTORY_PRIMARY.pt",
+      "sha256": "2a2f3db0ee543a27cfac24d0762745bb9c372365e4ec7ee0076208e2f8e84b31",
+      "size_bytes": 49861
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/M1_HISTORY_PRIMARY_MANIFEST.json",
+      "sha256": "363c3327479e45260698c10eabade40f2bfbc33bc8ff8e619c68505b60bfdc64",
+      "size_bytes": 790
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/MANIFEST.json",
+      "sha256": "9cf17eacbb7cbed89faa3e44f99faa6c4a2e480891fe80fa0af2167ff3099ee5",
+      "size_bytes": 115862
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/PROGRESS.json",
+      "sha256": "a95b858bc89398cb7e7f6771962a39d883e1294c8c09db11c92f09e12b3fcc2f",
+      "size_bytes": 105
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0000.json",
+      "sha256": "01af0041fcc222e464c99dd703e1622dcba1d960ceea8d3aac25074b02357427",
+      "size_bytes": 9299
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0001.json",
+      "sha256": "881d113945283a9315f397691d0d743debe8ce2158671b207cc1a228b08c60ad",
+      "size_bytes": 9808
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0002.json",
+      "sha256": "b2a4fb5c03b0fcc49cb1c1c5fb6fb79754f4306086de9151ac1bb1ad251048ea",
+      "size_bytes": 9239
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0003.json",
+      "sha256": "0101e5342625ca2ed5089a1c09cd0b91d9ea0bee23ad863fec8fd9f31698a707",
+      "size_bytes": 8897
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0004.json",
+      "sha256": "ef6ba4266ca5321096e9659f8c2cd0f7ca067650d41a7c874f83fad46cc0693c",
+      "size_bytes": 8779
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0005.json",
+      "sha256": "4c1695babc70d07cf4c891345347a8f845ff1fac98361d89049b7a98769707b4",
+      "size_bytes": 8597
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0006.json",
+      "sha256": "97f4cd68419d06c888cc264cd76312c54bb94ed2b21bb52bcaa8d8ba297cd8a2",
+      "size_bytes": 7741
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0007.json",
+      "sha256": "4cdac754bdcc03f30fb9059b46aac7e03d7a37d893795554fc5631912f7bd5b9",
+      "size_bytes": 9239
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0008.json",
+      "sha256": "527ed0b92216a9cfbf3e5c36861180a824b195273977ea57780b19d7f9210302",
+      "size_bytes": 8614
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0009.json",
+      "sha256": "256550e6ffcfe218745506e6dfc2f696141dee4dc8c5aa4c040d06c82ec445cb",
+      "size_bytes": 10823
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0010.json",
+      "sha256": "83acae98f78765ae27d251f46945527158984403ad30d9dcbd8d6f6ff92e4cad",
+      "size_bytes": 8507
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0011.json",
+      "sha256": "cf4284c6ba14d88d217666d16e6243a318359994a3b4b078d4d74ea81d3a4e68",
+      "size_bytes": 8427
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0012.json",
+      "sha256": "e7a2c53693c467ae283c5dab24e6ff9d0213e5cbbf5d5e4be0c5bdb4f1036a50",
+      "size_bytes": 9568
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0013.json",
+      "sha256": "7cb8365669f46e525867b8d3d0ccd07d8b2925f1efafe3bf801c7b8969864301",
+      "size_bytes": 8644
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0014.json",
+      "sha256": "b35e7af1cea1b8f21e9967994f24a13fca547b74c8ef42771fd830aa3e954f8a",
+      "size_bytes": 8809
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0015.json",
+      "sha256": "f41cfe87966cb7e7dbe85a951ce66f920374bdb860a4151ff5cae3104b2c4f3a",
+      "size_bytes": 8923
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0016.json",
+      "sha256": "966abd6d175395a239cdb8950374eece86c30839c36233871f6ce97e5af90d04",
+      "size_bytes": 11621
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0017.json",
+      "sha256": "b231946402110ff7b6d7d0aaa09ec61f593b18e3bbd414dd4b69d2a4bf1097dd",
+      "size_bytes": 9221
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0018.json",
+      "sha256": "0907421e49e83f05505ca32abe0d2dd6da5cd2ec984257b25dc31e0058162cba",
+      "size_bytes": 9925
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0019.json",
+      "sha256": "65ee91981fd24beec71a7ffea0bc18b33b39f5148988f33cc3231db6f4c8ae1e",
+      "size_bytes": 9849
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0020.json",
+      "sha256": "706bbcca0dbdb352130f0fb3a6eb3edefd3d94568cc33e1220e0aa3a4b4ebf62",
+      "size_bytes": 8656
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0021.json",
+      "sha256": "c5a403e311c0f860c2d002a9acf6fab5dc94a71f9ec9ae1a065b621f80f18acf",
+      "size_bytes": 8983
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0022.json",
+      "sha256": "c0baba5129a5b884719e122eaa07d9bda78b8137924f53db53ac7da734a4934c",
+      "size_bytes": 9853
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0023.json",
+      "sha256": "3b6d8a2a09e05dac301aa034e76527917a623ae77a7043d2146f001bdadb4b70",
+      "size_bytes": 11651
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0024.json",
+      "sha256": "28b88611f129ae13ed2663df2cb19d9a76fe901fcd1edc17408c5f05e17d2260",
+      "size_bytes": 8671
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0025.json",
+      "sha256": "0acc39860e275ee5e837ff1a054425226e8fc3b77dcfc95376220c708ff6fc65",
+      "size_bytes": 9143
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0026.json",
+      "sha256": "e792fa9011aeee868747bed60fe154703288808826f2803ceb3c9d1ebf307103",
+      "size_bytes": 7510
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0027.json",
+      "sha256": "6b8f1eee1465a03f9561a437db5a4c5595c7624e1d1b7b8df69950132b44547d",
+      "size_bytes": 8137
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0028.json",
+      "sha256": "ebeb8aded175dd217afc458722c48846f5f5095c4b7d7427a329f426e480b1f5",
+      "size_bytes": 7602
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0029.json",
+      "sha256": "c18795750a481fc0ce85a9f8159677ebd0f543613ac49305d105554d2e375de3",
+      "size_bytes": 8333
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0030.json",
+      "sha256": "51f50a33ae69fa79edc2a110a01985afa5e85021f30ce85bc4fb23d0ce1068fb",
+      "size_bytes": 8459
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/train_chunks/chunk_0031.json",
+      "sha256": "bede2bb9b0b7ede9618e5a55545cf2ccee76c09be097ef9f0a5a4dd3efe1ec20",
+      "size_bytes": 9592
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/ANNUAL_M1_TRAINING_RECEIPT.json",
+      "sha256": "f573141010a131a7a81eab2789a8f550a24f40b8b496ad019b63823d5f6178d1",
+      "size_bytes": 3945
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/M1_CURRENT_COMPARATOR.pt",
+      "sha256": "02d8ed9b5b3d09d8449c3454084f66a3bff3b61b3025338785d048abb981e81d",
+      "size_bytes": 40893
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/M1_CURRENT_COMPARATOR_MANIFEST.json",
+      "sha256": "e4626b99fe79b64a617531539410f63dc405dc7b49f6112f7ed04c869098c687",
+      "size_bytes": 761
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/M1_HISTORY_PRIMARY.pt",
+      "sha256": "1ec3580812a733b7bb077df54ec429dfc194da89d5b4d0dccf97d66cfebb6113",
+      "size_bytes": 49861
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/M1_HISTORY_PRIMARY_MANIFEST.json",
+      "sha256": "afb5a2f4a7fb83cb708d988d9ba89a90d42ba2e643cb0d736e07a11e7ab148b9",
+      "size_bytes": 752
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/MANIFEST.json",
+      "sha256": "a2651c462493d8012a5b087373d413ceccdd584fb29fec9717e33669452c2921",
+      "size_bytes": 125101
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/PROGRESS.json",
+      "sha256": "9fb35afa9f422a273cf83435e3af2bcf4cae45805d9339aeb3122a8066e05682",
+      "size_bytes": 105
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0000.json",
+      "sha256": "3216398a5cab8b24550b0b40f58b06b19e21d1360b098a3b239fb2a0379fa490",
+      "size_bytes": 11180
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0001.json",
+      "sha256": "4d73721a7f2ca81f3497f4b1a90d69f0d445a3621187b54ac4a383f67a02625f",
+      "size_bytes": 8861
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0002.json",
+      "sha256": "5c2acb6adf5003a4712ad0f4139ea22d1ce26819a1f0842328533b24daa2c4f7",
+      "size_bytes": 9652
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0003.json",
+      "sha256": "9a330ae8f6f02db2d518ef34cbed34fe5bc70b350a3ce2f9e8cf07701430ca97",
+      "size_bytes": 8563
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0004.json",
+      "sha256": "b0fda5bfb070deecd1c276751883192660d6d6cdb16b13573553c24bbad10604",
+      "size_bytes": 10343
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0005.json",
+      "sha256": "1ba0d65043d020b07cab8288863020a44c61fc1004c778b33423726ca2606d12",
+      "size_bytes": 9049
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0006.json",
+      "sha256": "0ed6348ebea38b2b324950ac644430f1b39659c660a32b210b3fc718ad308f3d",
+      "size_bytes": 9521
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0007.json",
+      "sha256": "65bcc414e04dbb3d37d0091014b03f6b9a5f2e553366462ead5514b2f708b4b8",
+      "size_bytes": 9764
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0008.json",
+      "sha256": "15388df4e085d1e9d4b336d5a357d978363fe2ee0a46decdfb8acc2d41cbe8d1",
+      "size_bytes": 10845
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0009.json",
+      "sha256": "77bdf02e983c7f81f68e3f3b06d2f88522d61a49ab3e8e035736f7f94dbe2d94",
+      "size_bytes": 10727
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0010.json",
+      "sha256": "0f0ddcdc31f3e1ef81280ddd7c4a61f41bdcf92b74a07583a29c6246152d7a65",
+      "size_bytes": 9864
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0011.json",
+      "sha256": "8bb687a838a71c927551f4bca2e160e7173833f95be8b50076470b1a6a21031a",
+      "size_bytes": 9509
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0012.json",
+      "sha256": "e088b9fdadee6657f30f9e2f4826b419e5b076b5d2dd764f0d88f401fc2b7046",
+      "size_bytes": 9113
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0013.json",
+      "sha256": "9b1fdd24cb6c51fd7ecbca9b84f3b14493e5122e7434e3826c655680cf4b4048",
+      "size_bytes": 9476
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0014.json",
+      "sha256": "4c1dd5186bf8b676ff9f7a015c73bd28512adc03419e2575a6ae3f88c1027053",
+      "size_bytes": 10516
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0015.json",
+      "sha256": "dc655ff363c1d2eaff5f7aecd759686d6e3ad4687cee600b86c3cfc8c8c3abab",
+      "size_bytes": 9344
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0016.json",
+      "sha256": "cbf2945abe66f4f35d4d65429a65ce1d1ff93fef0fe1b199050be4c8dbf3f2c5",
+      "size_bytes": 9091
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0017.json",
+      "sha256": "add6d1752d6410e8734447c7b6d90787b2101bcdbef449e156c38d90940df422",
+      "size_bytes": 9925
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0018.json",
+      "sha256": "bffb732347718f4171550d2252fe8bd68e571404e218335a02f348130911cd9d",
+      "size_bytes": 9509
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0019.json",
+      "sha256": "527056c9efd309ad3a9544fdba126cc066b11f191ce43858261ff980e0f89bcb",
+      "size_bytes": 8976
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0020.json",
+      "sha256": "8509330991b7cd1e09ff5c217308e9d0063942e35c359ba6a8befdb71557667a",
+      "size_bytes": 8774
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0021.json",
+      "sha256": "f5dadb2e439235199781590771769bdcb42879ee9b8cc016815c528066fb674b",
+      "size_bytes": 9960
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0022.json",
+      "sha256": "8902892984025a6c79c5a42f19a959931da3a2869efb74bb4b385a62f1ee2e0c",
+      "size_bytes": 11063
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0023.json",
+      "sha256": "601b8e1ec9eb55edf21c0fd78be3b736d8ba2ad485706865bf2fbf14d287dad5",
+      "size_bytes": 12635
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0024.json",
+      "sha256": "fba70bb98bc8d7e5f33aad09ac146d38d81357e948a9249dce3220ab9fac243f",
+      "size_bytes": 9797
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0025.json",
+      "sha256": "8ce25faa62f93495a051a6e3c018c6df9dcbbd0bfabd93c8cdcf401aa9a96a12",
+      "size_bytes": 10023
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0026.json",
+      "sha256": "790af41be11b73c17220613090054870c3dd8b4be749beb76d717cd459d4df2b",
+      "size_bytes": 8866
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0027.json",
+      "sha256": "9f32dfce8764ffa6f3882c0c4d7dda3e0ada6a29345b056522a28f759fbb0ed9",
+      "size_bytes": 10141
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0028.json",
+      "sha256": "f9893e13dc3b17d9aa545d54d2ce17042053ed98509653412caf55db225c97e1",
+      "size_bytes": 9154
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0029.json",
+      "sha256": "48810ea3054d560e571f738562fc6a6c7a3bea7b1cd246c236e8480a75e7e119",
+      "size_bytes": 8474
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0030.json",
+      "sha256": "599002ebb891c7c57fc088e1027f5782a4ce08bb15208bb25c5062b6bdeaf225",
+      "size_bytes": 10122
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/train_chunks/chunk_0031.json",
+      "sha256": "9470c663e24c0d87020272fdcb8f4363b5632e61841f6ff86d4909720a25df78",
+      "size_bytes": 8471
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/ANNUAL_M1_TRAINING_RECEIPT.json",
+      "sha256": "3188e269ef361b90d85022bd3efe2d14cb26eaf190e4e175cf4644b17c38c2ef",
+      "size_bytes": 3945
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/M1_CURRENT_COMPARATOR.pt",
+      "sha256": "5ecaa967587b2bb6d32b8e4c920f5a8028f396ac7a129231d3be72c019391ac2",
+      "size_bytes": 40893
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/M1_CURRENT_COMPARATOR_MANIFEST.json",
+      "sha256": "fd134cbae676fbf37f7cf3c1380da33f1702c63559faed1e1144dbdfa95db4f0",
+      "size_bytes": 761
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/M1_HISTORY_PRIMARY.pt",
+      "sha256": "8c6bc43990aa461272f49fb6c3fd71848db1b39b280b560d2ccdfbd6875ee7ba",
+      "size_bytes": 49861
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/M1_HISTORY_PRIMARY_MANIFEST.json",
+      "sha256": "06141b9fef3ca41addd62723634ea24c9dfec044b66e717f5048e24f13f44fdf",
+      "size_bytes": 752
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/MANIFEST.json",
+      "sha256": "25be8b7bf813c346677f0441e55ef5436a9f1cf7ac825857c2787d3bd7504b98",
+      "size_bytes": 107469
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/PROGRESS.json",
+      "sha256": "b7a0b85677cb79f51195c402c95924684a4080f0856da57b99ea21584443d55a",
+      "size_bytes": 105
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0000.json",
+      "sha256": "78c40aa306f7c075a2235d3ed421ab9bf2afa82c40f1e682d960e6e2a6fd63d3",
+      "size_bytes": 8611
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0001.json",
+      "sha256": "9cb4a94bd6c33ef5e74c9add59b45501c828ac1f5d71b611b923c3a40c41b00d",
+      "size_bytes": 8521
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0002.json",
+      "sha256": "29abc8c09d2218fc528d5bf0e59b8d82054fbad85b6ee2e1302a6fc9353cef57",
+      "size_bytes": 7682
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0003.json",
+      "sha256": "b4458c147c3b745b2f9993e6bde2bd52e314077c071ba092d3620d41c01c8857",
+      "size_bytes": 7434
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0004.json",
+      "sha256": "3c929783dadd8bdc714aee781669d322dfd522489166f03cebdd0daa807be499",
+      "size_bytes": 9126
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0005.json",
+      "sha256": "fd98dfd6022a13759011404f990be6e7f6c61998e0d52cfcb690ce2c05e168a9",
+      "size_bytes": 7577
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0006.json",
+      "sha256": "392af2a5f10a6658dfaaeba4e3f7f8cfe55cd09a03885b5cbd65cb1e0cbd5741",
+      "size_bytes": 9446
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0007.json",
+      "sha256": "57a92c9b61bea55d7c9afc37184f30cc00143c42563c02d196f002030b6f62c1",
+      "size_bytes": 7979
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0008.json",
+      "sha256": "b52badd16183e1d2d4243df3946b973aeac312e0cc6619622d4ff27a2aa8558b",
+      "size_bytes": 7974
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0009.json",
+      "sha256": "aaeb1747aa372c2b8a9ad0cbe9a2edd612b824d540e86d9fdfe1966d77f11bc4",
+      "size_bytes": 7245
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0010.json",
+      "sha256": "ab332a0ec8da9982ec9892b18c6d0559f355b1b16c0c48c6ba4bb96a06b96143",
+      "size_bytes": 6724
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0011.json",
+      "sha256": "86d31e470277c4bcd2cd16ffc73f6c2926ee7e7a629cc7c0ff1c0c8629d3914a",
+      "size_bytes": 8441
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0012.json",
+      "sha256": "2cdbd1a5a4e558d8999b7c272ecc97ad74096ca606a2e9bdce5538990d641cdc",
+      "size_bytes": 8541
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0013.json",
+      "sha256": "74ff272a556f7e374adba6c9a6b8c70b29261541efd1050729ff38d8c2a75363",
+      "size_bytes": 8066
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0014.json",
+      "sha256": "0e80c0f21b234af4027ec6b50fc0f76a8e9088a58ea9551bef05e1047ca2ea2c",
+      "size_bytes": 7287
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0015.json",
+      "sha256": "a7cf837f3d8527c01802b680b65a4f1da4b818082a30073ee04d6354dd9f2ad8",
+      "size_bytes": 7425
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0016.json",
+      "sha256": "cc3c4efdc5f9dca3a249ffb6f5e0a161191de7a0bcf5fb4f7b85dbcd54c0bc70",
+      "size_bytes": 7215
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0017.json",
+      "sha256": "86da483a84646959ad17aafb9f834a40c696a430e1c987290788c42f3884c898",
+      "size_bytes": 7772
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0018.json",
+      "sha256": "ca3d2bda27fbad46e1ca988e5e01de09195ab63ed726f4c2e402750debe01fae",
+      "size_bytes": 9499
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0019.json",
+      "sha256": "6ae6bbcaf4aedb1274556007994f1a466e6b669ec312ee55c3849b41931e75e7",
+      "size_bytes": 8690
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0020.json",
+      "sha256": "d18ceb6256627e8630d056cf963022df096447e99c8bcf207fdffb7bf746d109",
+      "size_bytes": 8053
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0021.json",
+      "sha256": "cfa5d5045fe95c57a7206e25ce8e1ce2e4a851e15656e46ee2d335811fc3665f",
+      "size_bytes": 7064
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0022.json",
+      "sha256": "c8ccee5dac90d3ace706b0e05cb905a2cc45032219e7d0eabf04a630b439e821",
+      "size_bytes": 9499
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0023.json",
+      "sha256": "b88c224109ba40870a2c005083f960f61370461e4d5acff0cc011520c24ce5b2",
+      "size_bytes": 7581
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0024.json",
+      "sha256": "0e179e796da86d0e15b8afbcaba720c2970bd402faf7e85bf24d4b00fd57cf5d",
+      "size_bytes": 8496
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0025.json",
+      "sha256": "ca0033b89bfefd608ec6d3a2deda3c76bdfe338630b530930136836d22fb1767",
+      "size_bytes": 6037
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0026.json",
+      "sha256": "5ea9f6982ebc2b7178189ceb205e3b1e28a8a2e9b3ca525df7d4f0a96ea185ad",
+      "size_bytes": 10099
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0027.json",
+      "sha256": "7bfb4799e13e6c40441f34bfb6bdc322c5bba20a4167810a47f5c9ef528cc95d",
+      "size_bytes": 8680
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0028.json",
+      "sha256": "acc4b5173e90d37694f006612e1c887a017333df900ba1c37de6349207cf2846",
+      "size_bytes": 8531
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0029.json",
+      "sha256": "0608067045a59429745fb1ca4746a32286808e9a121c9b127b8151663d30576c",
+      "size_bytes": 8126
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0030.json",
+      "sha256": "6a7a844cfcd47a8f81ff32eceea0ae30a8463ff51c126aa654843d504900f099",
+      "size_bytes": 9360
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/train_chunks/chunk_0031.json",
+      "sha256": "3c6aa60c80a15d0d0f4c1ce911f8c86460ed8a47577161acd2a7fef0ee28b1b8",
+      "size_bytes": 7641
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/ANNUAL_M1_TRAINING_RECEIPT.json",
+      "sha256": "e6d029c67f3eded1c191b6ccbcada8d7953e0c7a6864718df4f51a1165e3e823",
+      "size_bytes": 3945
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/M1_CURRENT_COMPARATOR.pt",
+      "sha256": "26cec4eafe5e4dd5fcdb4ec77739104fa0bf76fd883934fb07f8c7b1e8c13357",
+      "size_bytes": 40893
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/M1_CURRENT_COMPARATOR_MANIFEST.json",
+      "sha256": "83c9309abc02bf429309dd267a908b193e3d859254f90a242ebebcdeef76003c",
+      "size_bytes": 761
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/M1_HISTORY_PRIMARY.pt",
+      "sha256": "7a89b888ca06eb5bdc75290b3b0547e715cc7c63cd4066c64cdeb256fe60e224",
+      "size_bytes": 49861
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/M1_HISTORY_PRIMARY_MANIFEST.json",
+      "sha256": "57f5307ab63f9930a3fa6a9e51b00a6ebcfd229fc05d7d92b74c86befb58e04d",
+      "size_bytes": 752
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/MANIFEST.json",
+      "sha256": "2e7c23ece47830368623c79030ebcb266226a07c4d4dc1188865f8dedda884c0",
+      "size_bytes": 116393
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/PROGRESS.json",
+      "sha256": "268dba0cac75480b88336c81124197b5735a4f6fec466ca74adc4e3ae81917fa",
+      "size_bytes": 105
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0000.json",
+      "sha256": "8845a76a9b5faf428fb55cf71521cf7f6761b48792775fabf1396919028e3474",
+      "size_bytes": 10090
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0001.json",
+      "sha256": "5a5101f436e2b7a493d7caf854d4eb997e6dfc0388fd4aa53d04d11c30d3b518",
+      "size_bytes": 9394
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0002.json",
+      "sha256": "0c973dcbc9dec57dd8015188bb61a11e473a3f6f30fc44cf34e4e7193fcdb476",
+      "size_bytes": 9826
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0003.json",
+      "sha256": "40f6bb24f3353697f69d76968e4404849b82b1111de0f233e0791f3f940cc0d6",
+      "size_bytes": 10717
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0004.json",
+      "sha256": "28c6e36406487253035f667a2f072e989d56d88c73e214391661b91d2842d85b",
+      "size_bytes": 9287
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0005.json",
+      "sha256": "6fbbd8cf63c40a5f4c3da9384798baf43f3f21fb468aaead7e247f126e7af833",
+      "size_bytes": 10556
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0006.json",
+      "sha256": "59796fb62666f750c2c57e4dc8898095c09e0ae29ce3a2fe08c6e732e3df44cd",
+      "size_bytes": 9583
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0007.json",
+      "sha256": "08bc6886d815bab16045aa9d518f6af1931b67fe6fae8814c6702b45c9488678",
+      "size_bytes": 9231
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0008.json",
+      "sha256": "deab74b568bee0c212d97551893987d9bfa5b60c902aa0753453c9d179ea38bd",
+      "size_bytes": 8871
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0009.json",
+      "sha256": "20b460ff6158b935618bf91148ab0663d884d70bba159b5ef5bd06d7e71edb60",
+      "size_bytes": 9878
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0010.json",
+      "sha256": "d9c745a3a1c9e3edcb3ff78d50d482c004f6e3a550f793bdd56a4d5b46529a8f",
+      "size_bytes": 8248
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0011.json",
+      "sha256": "3c0e3fa1f2b3333b534386eee6e2fa5c2858c04acb1705bbbb9ea6eaed74049a",
+      "size_bytes": 9791
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0012.json",
+      "sha256": "12d3ffd542c6761a5690c65ee45336b3304c732e5005508dcc584cecbe683490",
+      "size_bytes": 9337
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0013.json",
+      "sha256": "62ce736405dbd928068b44d406c192564ca8563774127bbb06e72114b836fe8d",
+      "size_bytes": 8784
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0014.json",
+      "sha256": "657a4d9a7133551d178b082b133b43bd596d47cf62ce00efdbd4a671470513c9",
+      "size_bytes": 8420
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0015.json",
+      "sha256": "f30726ef0e45e623d58cc47062390a960fecf45488bafab7acb679b7ab70c1f8",
+      "size_bytes": 8292
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0016.json",
+      "sha256": "8c5b3b4d862bc214f4e36b1abda424336b75717ad946aa2b6fee4e791ffbf545",
+      "size_bytes": 8227
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0017.json",
+      "sha256": "944bdddb826e8a4a499e534e9da03d9775a12e7cee068be7f60da70632e3b79b",
+      "size_bytes": 10885
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0018.json",
+      "sha256": "f562042e1c87b0ecbc01ecfcfb27564b7998adc715f2449ac8c74c1626c529ba",
+      "size_bytes": 9657
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0019.json",
+      "sha256": "da7f64f455178a9bb90be2f60079c50bfd17b6942191908efca3a5099cc8e455",
+      "size_bytes": 9296
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0020.json",
+      "sha256": "69c8a2a6799c1c7b15e5376bb4c746969dba094248080088565296b92979d179",
+      "size_bytes": 8956
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0021.json",
+      "sha256": "424e0466b810d8763aea040a355fca52172764014baabad050fb4226f23590ca",
+      "size_bytes": 11496
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0022.json",
+      "sha256": "9625cb850fb04e155816e6b7101a2ebd366ac433e842cb3f23a88f62db8f47eb",
+      "size_bytes": 8314
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0023.json",
+      "sha256": "0437e2ba3680c811292d9dd65116bfd275c98379831566d54b28839a6d0801f7",
+      "size_bytes": 8519
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0024.json",
+      "sha256": "82588630221c8163455940f31dd82a0a703f314762567989c321b5b843810b2f",
+      "size_bytes": 7742
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0025.json",
+      "sha256": "8a28dd08f2c5f2cd1c9b8545add63ffb1de4da6eea8eb484d3a49ff5ce9ecb28",
+      "size_bytes": 8692
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0026.json",
+      "sha256": "7ab178c0ded451a730d56f1878f0f0c60cc2469a28b84da3b9a8ea7de991da06",
+      "size_bytes": 8966
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0027.json",
+      "sha256": "f5ec78b04d32a802173e9ba3d5bd3ce03d8b94c81b826a71f14d30fd63727574",
+      "size_bytes": 8974
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0028.json",
+      "sha256": "bea2d8307583a3a82dd9ce1422a522a1fcc2f4da6b31c00d9a1a7def38e4ccca",
+      "size_bytes": 9946
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0029.json",
+      "sha256": "d8fc9a5aee8259644af1eaff4747fb58fa7bc0e24d50d6b042e797dd126a0755",
+      "size_bytes": 9951
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0030.json",
+      "sha256": "d5552fb76454af75f5006e41e93522f0c5111fea8fcdf6d672ed70764dede9e1",
+      "size_bytes": 8988
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/train_chunks/chunk_0031.json",
+      "sha256": "b7992a3ed3ce9660062ca2c72054215112e32207c0011d0eca6ad7f6a39f0d50",
+      "size_bytes": 8040
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/ANNUAL_M1_TRAINING_RECEIPT.json",
+      "sha256": "4e6bd484b16773e83219adb8306681fc2787056fbf105116e1494acc77364d65",
+      "size_bytes": 3945
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/M1_CURRENT_COMPARATOR.pt",
+      "sha256": "12329688ac6ae5d49fe1e588f82d6da283eaacd17e7607c298188b29043c285c",
+      "size_bytes": 40893
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/M1_CURRENT_COMPARATOR_MANIFEST.json",
+      "sha256": "fe5c44a0a371291cad3a3cd5bbf505d3c234b790bc1f4174ccd1da89eee99671",
+      "size_bytes": 761
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/M1_HISTORY_PRIMARY.pt",
+      "sha256": "03bb441eb96fb4fd535f4e1a29fa970f15b4fea21bf4858172fc1a39ffe3ef39",
+      "size_bytes": 49861
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/M1_HISTORY_PRIMARY_MANIFEST.json",
+      "sha256": "4cbf5e5bd11dbdbcc8222e4bb1c1ab374ede1c3a886a479f1fb04a08e45d82a8",
+      "size_bytes": 752
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/MANIFEST.json",
+      "sha256": "db202ac4bda817479ee4e04ce003b153d4d7f30216cd865929d273339b2b38e2",
+      "size_bytes": 137775
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/PROGRESS.json",
+      "sha256": "e63bb623490217ff28a0509c301c995e254c7a323523ca45b088d7af77247b96",
+      "size_bytes": 105
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0000.json",
+      "sha256": "3db8e431967751ecacce49a0cc98861bd08905a2c2c13f8b6e57c7ea1f08fdcd",
+      "size_bytes": 13787
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0001.json",
+      "sha256": "344e8d67ac3f107467daf3ebd29d26f61f59b3adcd5768793380bf39f35965a4",
+      "size_bytes": 9904
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0002.json",
+      "sha256": "430a7a07471ed8d76ebbd47e15523663875e001712f7a6eebbdb68ab59c4b201",
+      "size_bytes": 9817
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0003.json",
+      "sha256": "34c3d320c13b49f785eb43a0fe8e9c591c990e279d663f7043b59dfb7ff0b9cb",
+      "size_bytes": 11119
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0004.json",
+      "sha256": "b16ccf59f1048f3162f7f144a4a067ecbbcff4490d7e9e7aa14f10c8df9a2059",
+      "size_bytes": 10549
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0005.json",
+      "sha256": "f26573aa3481dec837d361a3e1f24222ead55b656d2ef0296f88b071e587ed6e",
+      "size_bytes": 10809
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0006.json",
+      "sha256": "80c5da1bde720d99c089bba4fd4b850d383597db79465b50362962a63eda66d8",
+      "size_bytes": 11212
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0007.json",
+      "sha256": "4269e21caead8d63c274616ed420deb29f9f28ca4ba289faaf12a03dd8ea2049",
+      "size_bytes": 10597
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0008.json",
+      "sha256": "e9461ff1684f99397239659ba72d435973a4763b03b6cffd1243fd30d4b16a24",
+      "size_bytes": 11502
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0009.json",
+      "sha256": "ef0828686278e0f8e2c0ffee7040b2665c802b10808e96d0e675815aea0bb034",
+      "size_bytes": 9530
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0010.json",
+      "sha256": "fcb93f5a4bd4dbca71af3a58a17ec87c18913e02767ec2b193ade2497f33a244",
+      "size_bytes": 11176
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0011.json",
+      "sha256": "3eb2960078246aac420169d0eb0de7efde5831105f28d526f410f0b5c15d37ba",
+      "size_bytes": 11140
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0012.json",
+      "sha256": "4a0f0b871b39bf6039251ae3f9a4d08d0a13c84bfc090d47add2a0339df43824",
+      "size_bytes": 9586
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0013.json",
+      "sha256": "3a9534feaa6d3d65d803e1ac5432b272bb212b028b14b6f4e5060a9aef9fbafd",
+      "size_bytes": 8558
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0014.json",
+      "sha256": "eee30f3bb92f243468702e64c48de4c42f7e09e6a7fcae8f311e42dda59d04bf",
+      "size_bytes": 9201
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0015.json",
+      "sha256": "a65bc6a58d1eb346a2d6b81e121544f60801f6813faa999ee6a6d53eeb39ded8",
+      "size_bytes": 8849
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0016.json",
+      "sha256": "492646c8154999ae121096e3e1eb4b76aec046ac071411d543923e8e1f66ecb5",
+      "size_bytes": 10664
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0017.json",
+      "sha256": "88272f581ab7a92db98512173de5e1ddb8e5ef5c759215868f48e2363cf25f7c",
+      "size_bytes": 11604
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0018.json",
+      "sha256": "a732f7c6bc0980c540e3f406e145690040c1ab7a53973432bbc3f2c566e5c94b",
+      "size_bytes": 9778
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0019.json",
+      "sha256": "b4f5f3f93ac6a49060c1821602ea9a7be34223344acbf554a8e09de2ecf2ba51",
+      "size_bytes": 11614
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0020.json",
+      "sha256": "37192328509c43028cbb7bcd56d04707060ce3383b3f91dd2f6a559d468b629a",
+      "size_bytes": 12517
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0021.json",
+      "sha256": "7b425d7023a983ff30d347cccd9da445bbd9a5e861b7f1d6e60559159a910005",
+      "size_bytes": 11377
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0022.json",
+      "sha256": "24bf80e1c51441c2642bd7c5d5baeb4b30c481e357bf8be23c7d39146c3353a3",
+      "size_bytes": 12456
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0023.json",
+      "sha256": "13644fbe7c88d93f15d2dbd12aa88ee85fd6355cc5fa2bd1e0110a88379e3250",
+      "size_bytes": 10199
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0024.json",
+      "sha256": "a0b08a2440ea85829c4cfa5f6f91cda278d345ab9a1ef113193a064cd21676f8",
+      "size_bytes": 10808
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0025.json",
+      "sha256": "d0a671f520205c8ba37edcf80ae8134cd41ad86f1eddf93515bf7b45a3e2d81c",
+      "size_bytes": 10832
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0026.json",
+      "sha256": "f310df44e49f76d313ba9bc6701b3f9d53fe23886e39c46f714a95fa4e2e3831",
+      "size_bytes": 8439
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0027.json",
+      "sha256": "c1d71b0eae75d7246876dd72f66ea86f6b61b083aff7f54110817541fe1f565b",
+      "size_bytes": 10726
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0028.json",
+      "sha256": "eef160096f2f48737615545002c50fd7ee8bce610146f300adae49df8a060f68",
+      "size_bytes": 8494
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0029.json",
+      "sha256": "7be5ed5e58ff9edad6ca4abadf128e2dca82bdb9b2f082029709f1f4871df29b",
+      "size_bytes": 10655
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0030.json",
+      "sha256": "2781b2d3870cbaf34ef0b0a1ae52612400febf9fec33422d015120892ed023cb",
+      "size_bytes": 12266
+    },
+    {
+      "path": "artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/train_chunks/chunk_0031.json",
+      "sha256": "7b4faede53ba30c31e1d2781adab477573d2b4992aed039fa7f9ad5815c31d5a",
+      "size_bytes": 8660
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/COHORT_PREPARATION_PROGRESS.json",
+      "sha256": "61c7e20e10e53a9a119c12bc9c3530fab5ca05b62acc91cb1b360de4a35ca3d5",
+      "size_bytes": 687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/COHORT_PREPARATION_STATE.pt",
+      "sha256": "780308449c52572f3af2ce567223df54e2a181281ae3764c0971296127cddafe",
+      "size_bytes": 2029349
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "2a6ee3e7aa0850214c3889dc201b041da5c4bb5921f01af3b64210c5d41c8387",
+      "size_bytes": 106273
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "8ebf7680bc930b4ad42febd4546a98bfad9431e4a5e66affe683f0205a4fd2fe",
+      "size_bytes": 107951
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/PRE_DEVELOPMENT_STREAM_MANIFEST.json",
+      "sha256": "dcdf2a6057a7cf61d848a61c47d9014f243f43d223dc01e3e415f61cd7eb066e",
+      "size_bytes": 14544
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/PRE_DEVELOPMENT_STREAM_RESUME.pt",
+      "sha256": "e917711d2f7958e83ee3c19eb19ba5124b0bcb85cbe6199f7ea46d56bfffc78f",
+      "size_bytes": 1710083
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+      "sha256": "def84c7b8362953d4dc39ebefe8698160a50bea27fb67d321246194ddf84d942",
+      "size_bytes": 28189640
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+      "sha256": "a06d33179d88ec4f2d0cb47e6a53198e7f79d4382b73cc67a91a6b68da10a86b",
+      "size_bytes": 2740
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/REFERENCE_HISTOGRAMS.json",
+      "sha256": "f6463a14652cced2d404b9b259fb8cba5b45c56cce2526bc49d4dff392992c59",
+      "size_bytes": 1188340
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/SPLIT_CONTAINMENT_AUDIT.json",
+      "sha256": "ebddb489e37c86c8bb2b5daddab37fdd94354c4e192962601b31836da15a54a4",
+      "size_bytes": 642
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/STAGE_A_SUMMARY.json",
+      "sha256": "54d93c39cd031c9c571a1313c15cfb31a3d0733816a281166ce52f3efb3c7f2c",
+      "size_bytes": 579
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/STAGE_B_SUMMARY.json",
+      "sha256": "1d4ff1dffd3b5dc247f501ad26947b86e1cb49c11e87aad0b7706a6a15daeff1",
+      "size_bytes": 6197
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/STAGE_C_SUMMARY.json",
+      "sha256": "92cb7283ecda1bad6edb48d678962f9e4f90845b628ef128661ee7c8134d1a75",
+      "size_bytes": 309
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2017/STAGE_R_SUMMARY.json",
+      "sha256": "d8f6e26d55c988968bab97cf15a3e9882cc17af22a5c45162914db00fd02784e",
+      "size_bytes": 211
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/COHORT_PREPARATION_PROGRESS.json",
+      "sha256": "eb81502d7a80696eff683d58fc25ee4d691c5a6ddc67b9015bdf7ec8f00b927a",
+      "size_bytes": 687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/COHORT_PREPARATION_STATE.pt",
+      "sha256": "598b22452f0ea70bde486f7c18c5f22e5ad3df2789b0d29d636fa6a36077559e",
+      "size_bytes": 2432677
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "40ca799389c2620d43ed277c2df1879fdf53d09a72a6ddec542f3be52ad2b3c9",
+      "size_bytes": 119060
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "e618ff826b7d0a6e7cc6b9cd7fb8a74e933845521e8e366cfb49ee508d2e110e",
+      "size_bytes": 121010
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/PRE_DEVELOPMENT_STREAM_MANIFEST.json",
+      "sha256": "c316abb49c4d09addd04949df116c313f8e35826518e0581e9ad03c627726c75",
+      "size_bytes": 14818
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/PRE_DEVELOPMENT_STREAM_RESUME.pt",
+      "sha256": "31d6ebd2b94d470a1935759bf5a790e414bc085435bc977279ac92d740a49e31",
+      "size_bytes": 2089859
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+      "sha256": "acdae3c53f1263910416659c044395662f018bec0408347405a7914636a246ae",
+      "size_bytes": 30038264
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+      "sha256": "e5d7deaaa256f00d8330318d6014f81bc06f845e58b53261ef7b50d88a6ec603",
+      "size_bytes": 2741
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/REFERENCE_HISTOGRAMS.json",
+      "sha256": "15cbaf24f58b35dafb96b62d8a2eb1754d39185680f8658a6a268287eac58c86",
+      "size_bytes": 1404125
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/SPLIT_CONTAINMENT_AUDIT.json",
+      "sha256": "57d0983bcf877345e58d4db8b5a30c15bb73bee078f91abbb135f405a9628bfa",
+      "size_bytes": 645
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/STAGE_A_SUMMARY.json",
+      "sha256": "5a9c1ee0998e6f181d31323c10b58449bb98be0657451c37f96b6e750debf6a2",
+      "size_bytes": 579
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/STAGE_B_SUMMARY.json",
+      "sha256": "de7b205b2c89a67952d6173207682b9e02ca93c89c74082948596fd4b1e08069",
+      "size_bytes": 6469
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/STAGE_C_SUMMARY.json",
+      "sha256": "4b90943246d2097f4fcac8fb67c2231dcaed80a2a9ab73482bd633d05ae5cc53",
+      "size_bytes": 310
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/STAGE_R_SUMMARY.json",
+      "sha256": "34d09f22d730e0272a75e1a4c3898ffddb95d2cb876bbebc4a88362840cbfc54",
+      "size_bytes": 211
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/COHORT_PREPARATION_PROGRESS.json",
+      "sha256": "09026b5f5cdf5bd31de11fcea7730471d5622a888eab4783589653f875f2617e",
+      "size_bytes": 687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/COHORT_PREPARATION_STATE.pt",
+      "sha256": "7e3e6cf767c0c5ca2225d551c07d10fb11ca68b22766ef7f2b0afa2866f85759",
+      "size_bytes": 3452197
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "350aa2f2640d7c5e4204a2cc51e50658de20a52edb71dd64f2e6a79aa11c1758",
+      "size_bytes": 121163
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "483de5193d07dd108df742e74066ee8cf305321356cfa1766e51868905570f33",
+      "size_bytes": 123144
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/GATE_2019_REPRODUCTION.json",
+      "sha256": "7da7076e6260a5b552e77e17aeca6c3c8cd3b012cc6821ddedc1da5cb9491f02",
+      "size_bytes": 1084
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2019-H1.json",
+      "sha256": "3450b72ecf1e5b01d141c22131462f788e723acc01a5d61c8fb715713bb62df3",
+      "size_bytes": 20193285
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2019-H1.json",
+      "sha256": "84be6b53732f74214a2c26a49f910ebb372f81b2f277c7af3924a6248f8ed6b7",
+      "size_bytes": 115312
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2019-H1.json",
+      "sha256": "7317630af77d11c31284f2cb63646508cd34ee1a5ba837837050749cf421cb8a",
+      "size_bytes": 173835687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_PASSENGER_REFERENCE_2019-H1.json",
+      "sha256": "bda4547397532fff78090c784d14c2d89b50a2b00247900d60ba1662b961f46c",
+      "size_bytes": 4645913
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "de5839f63bc7aa597effc670d31a400b45a5ffa2124b3dcc51d68b11bf04ff39",
+      "size_bytes": 1344
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "322d9805a9e28aa121d30555dd5cf720c4c75e95075297b6122d9d952eb76ef1",
+      "size_bytes": 1921
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_TAXI_REFERENCE_2019-H1.json",
+      "sha256": "610ca77b5a1256a5f1dc48b5158ce6b4d27b9c72bf9b60d54e1477af9a469232",
+      "size_bytes": 105634
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2019-H1.json",
+      "sha256": "d4a1a7ec72a62334c5f6a0a69b9f995d7beb574f070f3b730daed160b65af67f",
+      "size_bytes": 106108
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M5_GATE_A_LEGACY_EQUIVALENCE.json",
+      "sha256": "c95f39d3c4284e1b345890a1bc83dd25428dff8327d9bcd04ac775c5bbe5815a",
+      "size_bytes": 1464
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/PRE_DEVELOPMENT_STREAM_MANIFEST.json",
+      "sha256": "2bd9b7af31c7e84634c73ddbed41c97827ccc1754f95c75d7b99dd0680d2ec90",
+      "size_bytes": 15402
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/PRE_DEVELOPMENT_STREAM_RESUME.pt",
+      "sha256": "8c1be1b6c404004fe5513c7999f4468b4db55bdd9133b7dfe7d132a510bf4b39",
+      "size_bytes": 2098563
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+      "sha256": "965386b8f40ed7698e58f913599db424ce67853efa2c0943f458b5291bf8ddd5",
+      "size_bytes": 32066505
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+      "sha256": "11669bfc8cbcc99b74398082e0b569ef593e6b563eee16f00943d2fa2ea686e1",
+      "size_bytes": 2742
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/REFERENCE_HISTOGRAMS.json",
+      "sha256": "87560636d7f84f649239e596ebbcde3255e7507235bb4c99bc1f5f444ae1d7f9",
+      "size_bytes": 1480179
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/SPLIT_CONTAINMENT_AUDIT.json",
+      "sha256": "b2c21be5f1afd2c1bebf03f37898eb24b52d517dac96468ecba45727c03cf88d",
+      "size_bytes": 646
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/STAGE_A_SUMMARY.json",
+      "sha256": "1a70599fcf3227bd8168c0d9e83a693b4bb6feaa53d0ab5f51bca35fcb0ecc10",
+      "size_bytes": 653
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/STAGE_B_SUMMARY.json",
+      "sha256": "31c4cf9204f7ab5bf3f4a0ef8e7ce3adcb174c244bfa358149be146137f34825",
+      "size_bytes": 7054
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/STAGE_C_SUMMARY.json",
+      "sha256": "edec4af4e2e4921654000fc2f19ee6cccb49cba241c3f55d7a659a9824869e24",
+      "size_bytes": 310
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/STAGE_R_SUMMARY.json",
+      "sha256": "188d4f136efd3ca5b06ddc63d1ce3885ec428fd839bac28342815b58b8c87e48",
+      "size_bytes": 212
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/COHORT_PREPARATION_PROGRESS.json",
+      "sha256": "c62397a14ad217541ee00205c49ed5af3fb8aea6f4cc803f2e4af71933224719",
+      "size_bytes": 687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/COHORT_PREPARATION_STATE.pt",
+      "sha256": "514cbb6f87b79a4ca4d8fa1a349e69f0c8aed942d973a2a71c4165ceb0ba5a32",
+      "size_bytes": 1977573
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "27b0e1f4eceeb1790949f922370a617d698da6a61060075eb66aa80f20e04a43",
+      "size_bytes": 122353
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "41937d70f51c6781b06d6d5f30caf3308b034e3c9dffcad5f16710e081160ba0",
+      "size_bytes": 124024
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2020-H1.json",
+      "sha256": "366f8247740ae0109b4a6a6be28b303de70eac67f5b6963dffca1ee397c97ded",
+      "size_bytes": 16156293
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2020-H1.json",
+      "sha256": "cea12b26c2b9c13cb064b3b8a410601979bb9909cfbaf7cb2b06969f04889c89",
+      "size_bytes": 116426
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2020-H1.json",
+      "sha256": "5ac91077881964eb59a84b178bf01cbe9e9941c10798c874be5d2fd6c3d372f7",
+      "size_bytes": 140570999
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_PASSENGER_REFERENCE_2020-H1.json",
+      "sha256": "2d761a45f91d09c1580cbe5cdfebb4eaa1a4f3f92cdd711e5c4cd12a7a3c04f7",
+      "size_bytes": 3801399
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "3bf96788de774072dd94f7eb315fb531855ce45bf35883b948e7e238e560c0c1",
+      "size_bytes": 1344
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "9c07bc8819a6d6189a6ca4d9efbccd138bae74b3b19cc94e76c374e9ee0e883f",
+      "size_bytes": 1919
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_TAXI_REFERENCE_2020-H1.json",
+      "sha256": "679201383c6d7bd9d419d4c4b0a25af1cb9037a373f901a08b707c158022b51e",
+      "size_bytes": 122572
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2020-H1.json",
+      "sha256": "4dd0c60429a372089b53289cf1e781a217671f9de830585717316b4a13d1d6d0",
+      "size_bytes": 106841
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/PRE_DEVELOPMENT_STREAM_MANIFEST.json",
+      "sha256": "e9df717ee8db9d4589c44d416ce9c24d7e26f091e928b6eb5abbc3080deb1d5d",
+      "size_bytes": 13754
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/PRE_DEVELOPMENT_STREAM_RESUME.pt",
+      "sha256": "07c88b22503be5de82cbdfb72000e86884f79d6173eba8cb23735e1e6dec513f",
+      "size_bytes": 1660291
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+      "sha256": "f55e9e4c134da1e5d99aad769cbd972a5c564702bf43be5e49f7b5a3619fc73a",
+      "size_bytes": 31312057
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+      "sha256": "ec10acdca7759c283cf86e47abb054bc7d5ef71b67d69289550f02f8f139a684",
+      "size_bytes": 2742
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/REFERENCE_HISTOGRAMS.json",
+      "sha256": "4dd5701a234ac65d60070c7700fe950f9b8fa754fba143d544a2ba02662404ff",
+      "size_bytes": 1337047
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/SPLIT_CONTAINMENT_AUDIT.json",
+      "sha256": "3cbe1624571408d5f9ec5174c1683d4974e50f667ee0462ec3add434d612d09e",
+      "size_bytes": 636
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/STAGE_A_SUMMARY.json",
+      "sha256": "14452e2d40c17195ba96c29d5ccc08c3a4ec320f3ad8384899e3b1267c24560b",
+      "size_bytes": 579
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/STAGE_B_SUMMARY.json",
+      "sha256": "c984b3bfeeed31258903b8db4848c53965be991809e5ca20f6739eda851f6cb7",
+      "size_bytes": 5406
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/STAGE_C_SUMMARY.json",
+      "sha256": "fbd9db371d134ad847bec4fff85e9e22af03b7071c957cfca9b3b4e21d44146c",
+      "size_bytes": 309
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/STAGE_R_SUMMARY.json",
+      "sha256": "012c169331637d8a6c0f49d46083ca642d4eda1e365c9b5541ab52090e5a0e43",
+      "size_bytes": 211
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/COHORT_PREPARATION_PROGRESS.json",
+      "sha256": "5b8ae5ad38683cedb3e502396178ecee29d6665766ff1f4e40ed387908de8213",
+      "size_bytes": 687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/COHORT_PREPARATION_STATE.pt",
+      "sha256": "6822fe8c3a5c9004c025f7674c70c79fd28a2fe770b78d0e17596e6e36215b7a",
+      "size_bytes": 2378213
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "e3f2ed91e7c4d92d5f79872c92d7249b12111272cae00a86d3628f054d0887db",
+      "size_bytes": 124540
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "9d0f1d956a367ae87aa8f7e119f90cb7527dcadd0e5402de172c53a48a595f6a",
+      "size_bytes": 126199
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/PRE_DEVELOPMENT_STREAM_MANIFEST.json",
+      "sha256": "727cdb5412240ecdf7a7ea78afd976b05a8754bcf33108a522396e6f77775d0d",
+      "size_bytes": 15462
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/PRE_DEVELOPMENT_STREAM_RESUME.pt",
+      "sha256": "ef5b765a86dae7af03ea656985c9530daa81421d3db9f76f42a488ea57c6a38d",
+      "size_bytes": 2039107
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+      "sha256": "fbee53560b42c77412e64555133327cf94fd2df8977902aa8cbd6859ea71cf28",
+      "size_bytes": 31734594
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+      "sha256": "7ed0c0161f02e6b6375181f91d254047043cc706e1d2bd5d68441e22c8f13a61",
+      "size_bytes": 2714
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/REFERENCE_HISTOGRAMS.json",
+      "sha256": "65b9b8d6b0d9dbbf204ee9575c38a3fc24acfe717a0622d05a5671534eb8edb9",
+      "size_bytes": 1398516
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/SPLIT_CONTAINMENT_AUDIT.json",
+      "sha256": "06e4118974f621b098ea08ddc2e9066fa2edab7a35e52a4131444654a03c6d6c",
+      "size_bytes": 642
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/STAGE_A_SUMMARY.json",
+      "sha256": "311249057b996f8764e872aaf76fd5ed23ae2689e6dc960c507181ca07f38efe",
+      "size_bytes": 579
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/STAGE_B_SUMMARY.json",
+      "sha256": "79634bd49c973502d077543511dfeffc58e46b9adb8be64faaa64345dc01333b",
+      "size_bytes": 7114
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/STAGE_C_SUMMARY.json",
+      "sha256": "47302f16bb700da1c773598b6dadbf2fa2a9ab82fa89dfadafe531ccbe8542e7",
+      "size_bytes": 310
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/STAGE_R_SUMMARY.json",
+      "sha256": "fb6a951324ebf80aa1734f190983c6298d2340ae890dcce8d90adb36af4a98c7",
+      "size_bytes": 211
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/COHORT_PREPARATION_PROGRESS.json",
+      "sha256": "77ccc25894fedbf428c81748a0dd50c510ad2c45df060162943ad0db868dbbe6",
+      "size_bytes": 687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/COHORT_PREPARATION_STATE.pt",
+      "sha256": "3edeb3c81e062d8f2a2b75aa32d528ab7c3df47802da203616c42c75b3ac5307",
+      "size_bytes": 2454885
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "99421155def3054790b9f500d41f7ca2a2fca41d9b39282900b61225e3e1d549",
+      "size_bytes": 125178
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json",
+      "sha256": "a3588b78b99c392bc2499ca658c74aa8fa55f36ac59a915dd060f66a74cc8c93",
+      "size_bytes": 127242
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/PRE_DEVELOPMENT_STREAM_MANIFEST.json",
+      "sha256": "764b21a84d35fdc15dfb64f72d17178d5904d1462c6f703bccaf91b31b0c8c25",
+      "size_bytes": 15664
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/PRE_DEVELOPMENT_STREAM_RESUME.pt",
+      "sha256": "e3dec71c3bb0bfd3f4daa04e7304a3d44cd4972c4d21f474b691920530446c63",
+      "size_bytes": 2111619
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+      "sha256": "0b6c7d64cbfcff3df0a15217b26714dd3bc3f1f727c77a5b7c6d30a9c2af7347",
+      "size_bytes": 29804627
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+      "sha256": "6d93f1f1062d25ac138fa91dac87c453561cf4e02a862cc2457a1961e608633c",
+      "size_bytes": 2714
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/REFERENCE_HISTOGRAMS.json",
+      "sha256": "d2316325f20e6c506948ae2b738d28cb7e959ef99272af5e7a416cd50acac4ed",
+      "size_bytes": 1456304
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/SPLIT_CONTAINMENT_AUDIT.json",
+      "sha256": "113290eb88a142674bafb3541a8938334eacf37bd126303f5fb6c804a977689e",
+      "size_bytes": 644
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/STAGE_A_SUMMARY.json",
+      "sha256": "a7189edf557d18b50f3cfe200894ab645a1ed62456b4302f5ac15e542a4cdff6",
+      "size_bytes": 579
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/STAGE_B_SUMMARY.json",
+      "sha256": "c4d67409114346952864257cc643fe33401f23a0b63f62c403fb58eec5d4bad0",
+      "size_bytes": 7315
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/STAGE_C_SUMMARY.json",
+      "sha256": "2f912f184a5b2ee7a96d1c4cc5b700012905c9a2b7bc0602fbc66bcf5f9d7fa8",
+      "size_bytes": 310
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/STAGE_R_SUMMARY.json",
+      "sha256": "7ee56d01f3b2a1c7dc076ef61a675b2089ae7149622dde297a6faf4249f2c48a",
+      "size_bytes": 212
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/LARGE_ARTIFACT_MANIFEST.json",
+      "sha256": "552cfbf26f207655d38402d6a4d5f4b85015ba6bd8dc3d034ab587260611a5be",
+      "size_bytes": 1988
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1/M5_PHASE_B_DEPENDENCY_AUDIT.json",
+      "sha256": "5018b5202fb0df60475e9810291fa551eb249ec16507b73ecd404845766d29e2",
+      "size_bytes": 2019
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2017-H1.json",
+      "sha256": "29afd240b58043caa3c7cc0b0fe7743974f1907131baefd26422e33029f09d7a",
+      "size_bytes": 20308527
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2017-H1.json",
+      "sha256": "400843bd9a726ec81895d9c989fa0a6af7f591ca36295548b1df6d4addd7c307",
+      "size_bytes": 101143
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2017-H1.json",
+      "sha256": "9d123b985adf8374ced0d5c575c63f7ec22cc814700961157f63d1233d19a7f0",
+      "size_bytes": 168995923
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_PASSENGER_REFERENCE_2017-H1.json",
+      "sha256": "f3be40236ba8e7200b1ce4da715f76f52e0e75f23027217eb76b3a5656e74e39",
+      "size_bytes": 4671957
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "70d62c2b2a21209bac0a7758b65bb3cee763ed847b9e07b6f6b101af3530b307",
+      "size_bytes": 1393
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "d61bcbffd7fc2da51bc703eaf3404e97cda97ed81700ccf4cd8e85a81c18c381",
+      "size_bytes": 1921
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_TAXI_REFERENCE_2017-H1.json",
+      "sha256": "6697fc6aaa98c2c8a70ed929a0d3df5514fe7c9032e7f0d60b02d7a50149018b",
+      "size_bytes": 91283
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_D4_2017H1_R2/2017/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2017-H1.json",
+      "sha256": "eff57b1a2dc1f7a784f5f6f5b250b98249f39e831833109ddb7d77f2b3cd4766",
+      "size_bytes": 93022
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2017-H1.json",
+      "sha256": "29afd240b58043caa3c7cc0b0fe7743974f1907131baefd26422e33029f09d7a",
+      "size_bytes": 20308527
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2017-H1.json",
+      "sha256": "400843bd9a726ec81895d9c989fa0a6af7f591ca36295548b1df6d4addd7c307",
+      "size_bytes": 101143
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2017-H1.json",
+      "sha256": "9d123b985adf8374ced0d5c575c63f7ec22cc814700961157f63d1233d19a7f0",
+      "size_bytes": 168995923
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_PASSENGER_REFERENCE_2017-H1.json",
+      "sha256": "f3be40236ba8e7200b1ce4da715f76f52e0e75f23027217eb76b3a5656e74e39",
+      "size_bytes": 4671957
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "70d62c2b2a21209bac0a7758b65bb3cee763ed847b9e07b6f6b101af3530b307",
+      "size_bytes": 1393
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "d61bcbffd7fc2da51bc703eaf3404e97cda97ed81700ccf4cd8e85a81c18c381",
+      "size_bytes": 1921
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_TAXI_REFERENCE_2017-H1.json",
+      "sha256": "6697fc6aaa98c2c8a70ed929a0d3df5514fe7c9032e7f0d60b02d7a50149018b",
+      "size_bytes": 91283
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2017/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2017-H1.json",
+      "sha256": "eff57b1a2dc1f7a784f5f6f5b250b98249f39e831833109ddb7d77f2b3cd4766",
+      "size_bytes": 93022
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2018-H1.json",
+      "sha256": "5bb05c741f31f4da3970523dd7f8b7561f1475a7eddc88c93166992d242c85c2",
+      "size_bytes": 20095277
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2018-H1.json",
+      "sha256": "68eff26e56dc954ae6a75cccd6c5519c50255713901e6e8531f485f1d209ea28",
+      "size_bytes": 113272
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2018-H1.json",
+      "sha256": "9e6bf92dda747389385ca49f562cff6c727c085214406e94a5936dd730fd5b0f",
+      "size_bytes": 174204117
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_PASSENGER_REFERENCE_2018-H1.json",
+      "sha256": "9ed97e6e729d46223d973f7607ab5f188ecda1de9b79f634455413b96bafd2c2",
+      "size_bytes": 4608879
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "3f1bd3c89a8aebc60e38b968271c81a75551db2f371499ef0a04ebbd23434693",
+      "size_bytes": 1393
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "747806cbb1c9b71269699eb181e313b758b411d7bba297c62a4e59d4f1bc0234",
+      "size_bytes": 1922
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_TAXI_REFERENCE_2018-H1.json",
+      "sha256": "51b0cf19d5dc406e0987701c196e7d87af3df27ccf3bf80b6fbab6ec44782a64",
+      "size_bytes": 102257
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2018/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2018-H1.json",
+      "sha256": "ca5b79be1bebe08c2bbff35d2c16866ce082c28ee4a07d5f57f4292c41623c2d",
+      "size_bytes": 104268
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2019-H1.json",
+      "sha256": "3450b72ecf1e5b01d141c22131462f788e723acc01a5d61c8fb715713bb62df3",
+      "size_bytes": 20193285
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2019-H1.json",
+      "sha256": "84be6b53732f74214a2c26a49f910ebb372f81b2f277c7af3924a6248f8ed6b7",
+      "size_bytes": 115312
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2019-H1.json",
+      "sha256": "7317630af77d11c31284f2cb63646508cd34ee1a5ba837837050749cf421cb8a",
+      "size_bytes": 173835687
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_PASSENGER_REFERENCE_2019-H1.json",
+      "sha256": "bda4547397532fff78090c784d14c2d89b50a2b00247900d60ba1662b961f46c",
+      "size_bytes": 4645913
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "de5839f63bc7aa597effc670d31a400b45a5ffa2124b3dcc51d68b11bf04ff39",
+      "size_bytes": 1344
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "322d9805a9e28aa121d30555dd5cf720c4c75e95075297b6122d9d952eb76ef1",
+      "size_bytes": 1921
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_TAXI_REFERENCE_2019-H1.json",
+      "sha256": "610ca77b5a1256a5f1dc48b5158ce6b4d27b9c72bf9b60d54e1477af9a469232",
+      "size_bytes": 105634
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2019-H1.json",
+      "sha256": "d4a1a7ec72a62334c5f6a0a69b9f995d7beb574f070f3b730daed160b65af67f",
+      "size_bytes": 106108
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2020-H1.json",
+      "sha256": "366f8247740ae0109b4a6a6be28b303de70eac67f5b6963dffca1ee397c97ded",
+      "size_bytes": 16156293
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2020-H1.json",
+      "sha256": "cea12b26c2b9c13cb064b3b8a410601979bb9909cfbaf7cb2b06969f04889c89",
+      "size_bytes": 116426
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2020-H1.json",
+      "sha256": "5ac91077881964eb59a84b178bf01cbe9e9941c10798c874be5d2fd6c3d372f7",
+      "size_bytes": 140570999
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_PASSENGER_REFERENCE_2020-H1.json",
+      "sha256": "2d761a45f91d09c1580cbe5cdfebb4eaa1a4f3f92cdd711e5c4cd12a7a3c04f7",
+      "size_bytes": 3801399
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "3bf96788de774072dd94f7eb315fb531855ce45bf35883b948e7e238e560c0c1",
+      "size_bytes": 1344
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "9c07bc8819a6d6189a6ca4d9efbccd138bae74b3b19cc94e76c374e9ee0e883f",
+      "size_bytes": 1919
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_TAXI_REFERENCE_2020-H1.json",
+      "sha256": "679201383c6d7bd9d419d4c4b0a25af1cb9037a373f901a08b707c158022b51e",
+      "size_bytes": 122572
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2020/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2020-H1.json",
+      "sha256": "4dd0c60429a372089b53289cf1e781a217671f9de830585717316b4a13d1d6d0",
+      "size_bytes": 106841
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2021-H1.json",
+      "sha256": "e21db2b53f45d1fa49b3253c3205e245bc54f948d1ce694cf7ded22e3d7cb271",
+      "size_bytes": 18370797
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2021-H1.json",
+      "sha256": "620bfe1ecdca0e54798e69ebb42eae70c34d9cf1606a0a12cb363b4fe3e3fc2f",
+      "size_bytes": 118542
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2021-H1.json",
+      "sha256": "ff9764d4b30cd345081ce1695257ef6fbffdc0db1cdce32dbd6ffdcd9fbd6907",
+      "size_bytes": 160709224
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_PASSENGER_REFERENCE_2021-H1.json",
+      "sha256": "a27f55dc3fd00f23abedb1281a1d1879659194bf40be4e348c0d9a398c054086",
+      "size_bytes": 4271643
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "b672d4f03cf814637d02b64161af3e89148e77ce38bd0ff1d409c8e15c233528",
+      "size_bytes": 1391
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "b5c32ad95591e99e54b54fc5d43bd5e282c030afa61af63113848acba5471859",
+      "size_bytes": 1918
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_TAXI_REFERENCE_2021-H1.json",
+      "sha256": "ced5c1616642782baf0c136eea0e885b5c99bf3aed1ca09c61414d9951dc9584",
+      "size_bytes": 106953
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2021/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2021-H1.json",
+      "sha256": "75e2338cae2ff9c2764543b68b73e667ab1b9686520e3273cb8a83183c5b593e",
+      "size_bytes": 108722
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2022-H1.json",
+      "sha256": "408312a6159de91a54d4cfff9655df1343b761adb47242e6f215aab9f8cbc1b4",
+      "size_bytes": 19884927
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_DOWNSTREAM_EXPOSURE_REFERENCE_2022-H1.json",
+      "sha256": "7386484349cb527ec82917e53d1beceabac33cb6c49386422aece522269294bc",
+      "size_bytes": 119170
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2022-H1.json",
+      "sha256": "815eacc7dda0575a0cf72b90e4f8514272ba6fd392f8496e255a05f126b07d14",
+      "size_bytes": 185958486
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_PASSENGER_REFERENCE_2022-H1.json",
+      "sha256": "e087fdb2ad4dc48bf862546d226715661c050ee9556a5a9701947c5aa2d81e71",
+      "size_bytes": 4556140
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+      "sha256": "cba54e081dbc2427ae5d70b52674d30f4ea0ee8fcbd79993ec03d762f82aa0ae",
+      "size_bytes": 1394
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+      "sha256": "65354bc23fa3a750e09f0366a16b13376245ac89a511922ff4c4f36566d7e953",
+      "size_bytes": 1923
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_TAXI_REFERENCE_2022-H1.json",
+      "sha256": "94027aee097635a63e14f610f5830f7c8a0a3c71df274b7d2bd86d11472ce8c1",
+      "size_bytes": 107493
+    },
+    {
+      "path": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2022/M2_REFERENCES/M2_TURNAROUND_REFERENCE_2022-H1.json",
+      "sha256": "a0f44aaeb04a2590d5b7f537ca1c00aea3dabb0ad84b37d65edea4c133d89ce0",
+      "size_bytes": 109618
+    },
+    {
+      "path": "data2/raw/airport/airports.csv",
+      "sha256": "8f60a5fb2c1bef0254272f7790bf0645fad7b4b23509ef0479af50225b9bdbc3",
+      "size_bytes": 12697282
+    },
+    {
+      "path": "data2/raw/bts/ontime/2017/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_9.csv",
+      "sha256": "bece6fa69ed6459118617a71ad0e9b79c345eddffca92311f58399f561cb0d37",
+      "size_bytes": 205645329
+    },
+    {
+      "path": "data2/raw/bts/ontime/2017/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_10.csv",
+      "sha256": "f8a0341dbb6f80517ec05cbb75bcb7b7ceeda9bf870e2651ca4c0e4f17c7ce4e",
+      "size_bytes": 216565431
+    },
+    {
+      "path": "data2/raw/bts/ontime/2017/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_11.csv",
+      "sha256": "4caa7d615c87972881747c645ed0ce1b115ab7787b3f6e1516fe12f62769d5a1",
+      "size_bytes": 204845068
+    },
+    {
+      "path": "data2/raw/bts/ontime/2017/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_12.csv",
+      "sha256": "327a83dca043f53c33e28f11664df6e4f01f02b06cd160a392a4a6c4e5b6d0b7",
+      "size_bytes": 209853919
+    },
+    {
+      "path": "data2/raw/bts/ontime/2018/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2018_9.csv",
+      "sha256": "0e5f8a1823345d7bcea51f9978ddfe7aa1863914621efca24d3faf543caf8119",
+      "size_bytes": 264145433
+    },
+    {
+      "path": "data2/raw/bts/ontime/2018/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2018_10.csv",
+      "sha256": "419fe2724056543552993985ab26af776524592c7aa31a248fe80fc1085bc19e",
+      "size_bytes": 278632011
+    },
+    {
+      "path": "data2/raw/bts/ontime/2018/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2018_11.csv",
+      "sha256": "cd9997b50e57e5645fcb94759a24ca82fd9ff607d6bd636f8bb4f84e1704fc24",
+      "size_bytes": 265320461
+    },
+    {
+      "path": "data2/raw/bts/ontime/2018/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2018_12.csv",
+      "sha256": "59f3e13da6899583012c57e5ce0f8d9eb9c0f8b6bf36471d79f3de6a59ecae7b",
+      "size_bytes": 268702490
+    },
+    {
+      "path": "data2/raw/bts/ontime/2019/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_9.csv",
+      "sha256": "ad73c2e8df48179da8a4e2ea7e3e8ecf65c2279f82bc9e401e63eccd6af7a548",
+      "size_bytes": 272856955
+    },
+    {
+      "path": "data2/raw/bts/ontime/2019/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_10.csv",
+      "sha256": "d6a04f1408e84c10d37659a76291c502afbca4144d15849c77a6e019e8f6f9df",
+      "size_bytes": 287692620
+    },
+    {
+      "path": "data2/raw/bts/ontime/2019/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_11.csv",
+      "sha256": "03283c08f2de8fda313366db4712a4c720e97a7733f043483b9aca77b2d91e77",
+      "size_bytes": 272302539
+    },
+    {
+      "path": "data2/raw/bts/ontime/2019/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2019_12.csv",
+      "sha256": "3d75e8796070678fd39875b3538362f51717baae3d7d607b20fc2f91f56bc0bf",
+      "size_bytes": 283564511
+    },
+    {
+      "path": "data2/raw/bts/ontime/2020/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2020_9.csv",
+      "sha256": "17007e4b834a4d28c08417dddf37e1a8c06af248d734910af27a3227ad64f3e8",
+      "size_bytes": 145263849
+    },
+    {
+      "path": "data2/raw/bts/ontime/2020/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2020_10.csv",
+      "sha256": "75b87e9159e98eee17bee91bf0dce8beed0686cafa6aad0441bb06edefe08b45",
+      "size_bytes": 158715849
+    },
+    {
+      "path": "data2/raw/bts/ontime/2020/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2020_11.csv",
+      "sha256": "4b31437f274abdca35eaa2ee829f836a97d36965fc2dadf6c169d07bdc2b55ca",
+      "size_bytes": 164176526
+    },
+    {
+      "path": "data2/raw/bts/ontime/2020/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2020_12.csv",
+      "sha256": "429c47cdd49b7d75eec9b9244c8b1288edd132506203e37d2d1e70e1ac1eccc7",
+      "size_bytes": 167550268
+    },
+    {
+      "path": "data2/raw/bts/ontime/2021/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2021_9.csv",
+      "sha256": "322626d42b2e1a9f5ed1f45f6e7212e0b5b0f6e4b3165aca872ea9f086cf4426",
+      "size_bytes": 242256240
+    },
+    {
+      "path": "data2/raw/bts/ontime/2021/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2021_10.csv",
+      "sha256": "4fc1484e811bd40083f0d4b3ab4d4131a51fe2b4a5bbc2ac51351ce28397e3b0",
+      "size_bytes": 255035226
+    },
+    {
+      "path": "data2/raw/bts/ontime/2021/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2021_11.csv",
+      "sha256": "72e967c3f1dd7d7ae56d3685614fd232dc4c324a2fa6e5aced3db9dfa3e5d4d4",
+      "size_bytes": 247414141
+    },
+    {
+      "path": "data2/raw/bts/ontime/2021/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2021_12.csv",
+      "sha256": "964993e5902d27e2ff3e29334cf8d0ccf1e0a86d809b01a835b473f67a067c0e",
+      "size_bytes": 249593249
+    },
+    {
+      "path": "data2/raw/bts/ontime/2022/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_9.csv",
+      "sha256": "6d12f9292828c56b809c485a900bd7432e8493255ba7c00edbaa9dddf51808f8",
+      "size_bytes": 251139731
+    },
+    {
+      "path": "data2/raw/bts/ontime/2022/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_10.csv",
+      "sha256": "467f28053ce1d56a7a2aed656020c825af1c51f0755477ea5b0e661d6db09e3c",
+      "size_bytes": 258555619
+    },
+    {
+      "path": "data2/raw/bts/ontime/2022/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_11.csv",
+      "sha256": "b5ebc71fa64e16022823856d1bda24cb4f3e31ce88e3f6dfbe11bf4905211ae0",
+      "size_bytes": 247107799
+    },
+    {
+      "path": "data2/raw/bts/ontime/2022/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_12.csv",
+      "sha256": "60c4f98005cfcf1704e11690e1d60be8eb3e849bfc6cbe2831c7cd797b939e9b",
+      "size_bytes": 251230458
+    },
+    {
+      "path": "data2/raw/weather/isd-history.csv",
+      "sha256": "1994747ab4af1b97e63adb434b4d0d022f2daee76f0c144ea9ab46be2d906604",
+      "size_bytes": 2914601
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72206013889.csv",
+      "sha256": "db6fbadf939a926294294689e10699ab23694e211d0bb883f2164aeaa8c6fc78",
+      "size_bytes": 8409402
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72207003822.csv",
+      "sha256": "bdd510755282740d77fce1157aa2961a97fc5aace0bb8fff45e1611c90155477",
+      "size_bytes": 7721553
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72211012842.csv",
+      "sha256": "81744ec66bac788c5145e54c68faf33f482800324be398cf7a781cc5d8a01bca",
+      "size_bytes": 8102840
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72222313899.csv",
+      "sha256": "674e2d7a2f7c716ed132bf6c31d626dd4bbd03209f030fe7049876d0cce14546",
+      "size_bytes": 7355951
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72228013876.csv",
+      "sha256": "8948982ef7eb2ce7abad2373a757c0bcee7a1e844c1ac0c50644be3a9979b8ad",
+      "size_bytes": 6856824
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72231012916.csv",
+      "sha256": "bfa047bd79bf0d8fe81f835d89aeac7718b8ac76abf87ffdc07e97d6b2c1a8a5",
+      "size_bytes": 7985370
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72244012918.csv",
+      "sha256": "239f81c323899ff05fceaca6534fb5421f9150502b9fb3b26a92167ab6f24bbb",
+      "size_bytes": 6841636
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72253012921.csv",
+      "sha256": "07997dc7d1800b8563d64e4272fa8d382d0e73db47f9d7dbf2824603e3e93a6d",
+      "size_bytes": 8274311
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72259003927.csv",
+      "sha256": "f5a24c0092f94f9e888a99798c81109a4fef7a9309bad5cc6ab005aa80190445",
+      "size_bytes": 8030903
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72297023129.csv",
+      "sha256": "cfd8814425068de1468772923b4aa8b9bebfede5c0b627d7394114c4e0ee6bd2",
+      "size_bytes": 6666285
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72297793184.csv",
+      "sha256": "3ca250c2b57d3383e2761b8e22d07ff9496215ae79bfb14b4ef97a78c85a886e",
+      "size_bytes": 6220091
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72306013722.csv",
+      "sha256": "1b23d68c381fdd3f1b0f3d6c407a46a1e68b596846d1bd78e4de08e85433d049",
+      "size_bytes": 7034003
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72312003870.csv",
+      "sha256": "a00ea4b42c34ed002bd9f4ae1a23c0d30315ef8ff508cb0c3de13622ef7f0261",
+      "size_bytes": 8160175
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72314013881.csv",
+      "sha256": "699d2b810875f05cf3a5abc192ca86519bb46dcc9605acbc74adc5d52ea53838",
+      "size_bytes": 8015560
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72317013723.csv",
+      "sha256": "1dd4730d8ef10d5e5b18d7bebb13926e235bbf13123dc0b943edfa90009a25f1",
+      "size_bytes": 8020406
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72324013882.csv",
+      "sha256": "a55d5cf31dcc1896ba42b5084c41d1146d98d4dbd591306fe5695be355dc2fd3",
+      "size_bytes": 7853265
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72334013893.csv",
+      "sha256": "5ff042e42e454431812943ba15ec6b0d75867392d3c382d68c94b9b0c0f31247",
+      "size_bytes": 8610177
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72340313963.csv",
+      "sha256": "d39459318388b82351554b0e0d34b3a4b9de84eca1c42e6d33ee6e4f489b20a5",
+      "size_bytes": 6626525
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72356013968.csv",
+      "sha256": "9cf7cd0e6ebfe71b905ec817913fc14a261f34ac39c513fb9bf5dc28bb316b54",
+      "size_bytes": 7547703
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72365023050.csv",
+      "sha256": "0f96e42bb39d7ebae358b4cb65f4e1427e53e1b3600646e5bff153740d434522",
+      "size_bytes": 7595589
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72406093721.csv",
+      "sha256": "c2338222c48d74bf827aba57bf2656a619ef6ace0412423b8816c96149cc57b3",
+      "size_bytes": 7752336
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72421093814.csv",
+      "sha256": "1801cfeacf7b5ab81110ec385aa319a20fa47bdd2f2b471ad62a9ea9fc7eaf7b",
+      "size_bytes": 8010426
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72422093820.csv",
+      "sha256": "5cb907628ffe305124258d598859374b9aaa805199a9f14e68572f5a04dcd1c4",
+      "size_bytes": 7701103
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72423093821.csv",
+      "sha256": "746caafe9a73bda7fd31a665bfc7d858d7177beb8207e9e74602315d658195b7",
+      "size_bytes": 8430873
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72429093815.csv",
+      "sha256": "844a6d41b4322fac5c54cce20f0bbb8e7d2f2bcf645ab25c1e673521c91f3093",
+      "size_bytes": 8510987
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72434013994.csv",
+      "sha256": "bf94144fe64f921209920d10a26aea6572ddf78c4ebd98d690f9675cd58b7677",
+      "size_bytes": 7716553
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72438093819.csv",
+      "sha256": "2ca74a8c5c9aa64f055678ec61791abc2ed0778906bcbbd0cd7a23d7a99109fb",
+      "size_bytes": 8462049
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72483993225.csv",
+      "sha256": "218e462cd8f9444bd7ce0c555a1937eb2d74fcc4232eef09e11db281d0736913",
+      "size_bytes": 5559377
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72488023185.csv",
+      "sha256": "a4032bc141cd433aba1d1982d8cb8360760ae7001733f4aeeb9204cbb1970535",
+      "size_bytes": 6624774
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72494023234.csv",
+      "sha256": "2a9e962b9dab39b2663f7f7c188532eabca93cf2dcebda292c620d5c97c3d080",
+      "size_bytes": 6847258
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72494523293.csv",
+      "sha256": "c62dafacff2db7fda37ab3cda18616d93ec061a7ae8d9cebb80e07ba45370417",
+      "size_bytes": 5932677
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72507014765.csv",
+      "sha256": "6ba27e20927faef28a95dccd296073a7f02364da33755e5fb36b5ccfdafbfde6",
+      "size_bytes": 7600984
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72509014739.csv",
+      "sha256": "c8975a74f6ebda9d3cb0adb794d8db177490e0d90434556fd426c1660c78817c",
+      "size_bytes": 8084599
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72518014735.csv",
+      "sha256": "62b643eca81752ee674d661b065a9757b67ce54bbba011b8c4faae9b2829a795",
+      "size_bytes": 8592282
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72520094823.csv",
+      "sha256": "86bfb9d306befb8a92b7037e88338f64777b6f42df431f3fb938ca21c483b26c",
+      "size_bytes": 8051613
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72524014820.csv",
+      "sha256": "f4a2be6e4c003d3650e8a5e74a020bb73dc55b62208bf7931e30b23c8ba66ae5",
+      "size_bytes": 8903857
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72528014733.csv",
+      "sha256": "6cb59f44e9f89a62c723564d0bf359c9cf647e81f70ca2f36a5f5a61b4c3497a",
+      "size_bytes": 9346141
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72529014768.csv",
+      "sha256": "d05e6c44d36e9a599c36d37bd94915a25a9e342631b81375e6aac758dce28a98",
+      "size_bytes": 8317169
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72537094847.csv",
+      "sha256": "d11f920f7a39c44902f8b8d0d2ec9b7a9429d1de2e746baf3580ef8ce6f69935",
+      "size_bytes": 8826676
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72565003017.csv",
+      "sha256": "f629f4bdea157f70b7dd006dc20d280dc91e592f5b358a10cd2a57cb30082581",
+      "size_bytes": 8400831
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72572024127.csv",
+      "sha256": "01ef64756ed4553f1335f396bc47f48fbe32496103fce927b8ddf42e8f82512f",
+      "size_bytes": 8171995
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72606014764.csv",
+      "sha256": "50cbf366c7484c51fe782f59eee63083a18afe274b79ce9bb62e89810d1b19f8",
+      "size_bytes": 8125765
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72635094860.csv",
+      "sha256": "24882a454b1d1a60445bbe47349696afff044998ccbdcf7e5877fc124df0f30c",
+      "size_bytes": 8923045
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72641014837.csv",
+      "sha256": "3d856eb4bffeea7241dee7d0c1df565fbbdbccafe1e853921378919b9c6b1584",
+      "size_bytes": 8011502
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/72793024233.csv",
+      "sha256": "9ec6d979d97dbf77738aa280afee4f95fa3d025473f5a993a4abfe0584d247ab",
+      "size_bytes": 7661534
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/74486094789.csv",
+      "sha256": "c941eb5711f42ee6acb42854423ea6dfc66c52fc1df31e6701b50557b9549d6a",
+      "size_bytes": 8025490
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/91165022536.csv",
+      "sha256": "3f72ab55a12a9e406e81f0ab5edef77c06c7f838b48bf54747e79b9e2850754d",
+      "size_bytes": 10314267
+    },
+    {
+      "path": "data2/raw/weather/noaa/2017/91197521510.csv",
+      "sha256": "dede7d8d3387953b99d73ba89c09a5f9f14dc808d447e873f18b74d25b08216f",
+      "size_bytes": 5917840
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72206013889.csv",
+      "sha256": "898ec198a5e10c8ee52164140a23ec9e69add19c6bc80c99077b52366c7c72c7",
+      "size_bytes": 8505660
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72207003822.csv",
+      "sha256": "530cc339d91fecaad642db70444e5e7cdb8217417fc1b5aa15d9912e1c5029f3",
+      "size_bytes": 7841125
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72211012842.csv",
+      "sha256": "97a138c766a0846966c2dfe1ce282d2458bacff7134c700f691732fa27e97384",
+      "size_bytes": 8322681
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72222313899.csv",
+      "sha256": "bfeeed2876d312bf0f54787c53f5b9a233cd331c02d18ad9e76b066dd8f49f78",
+      "size_bytes": 7151932
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72228013876.csv",
+      "sha256": "d7f7de024e5a951a9d6567e38577d0d1b31dcc54062d78b9e121f458b9e5fe33",
+      "size_bytes": 6916056
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72231012916.csv",
+      "sha256": "1a5fa8997d9b1a8b65b790206706a06211c525796d18262f4a4a2f8f627a45f6",
+      "size_bytes": 7956816
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72244012918.csv",
+      "sha256": "d8c7946e6dd138ebd705705ed8861f3d9e82eaf2538407118b2d537fa1bb9770",
+      "size_bytes": 6907603
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72253012921.csv",
+      "sha256": "0147d594fec074da2594c9631123020154369c8049c7230ef9351f0b6bcd8d66",
+      "size_bytes": 8506520
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72259003927.csv",
+      "sha256": "d66e2a84e5171a72388716f42271dc300f845fdc52bbd4f19c0e67a59ca08538",
+      "size_bytes": 8251449
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72297023129.csv",
+      "sha256": "912a4e4e31d2a245b10c876ee41572a5cdecf5dbd4585f6ff18ef11aca6a51f4",
+      "size_bytes": 6646052
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72297793184.csv",
+      "sha256": "32a774f8ae1e1b7587b1ae48d1ad8e27622bcdb1cec65c1af05c00647cb2d28b",
+      "size_bytes": 6099075
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72306013722.csv",
+      "sha256": "43b4f1d3df56832d30f5bf45f3888a5e353ee5edb42f2b4e7719e61fd05bae4a",
+      "size_bytes": 7195608
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72312003870.csv",
+      "sha256": "cb425016d2464380bbbdf958d06651cad49d41d763e0d81eebcc6b43f50b3d47",
+      "size_bytes": 8487518
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72314013881.csv",
+      "sha256": "c0b55141f688a6b358e7c68edb364c32135baf15ca6e6fae6b38ce0e6e20f038",
+      "size_bytes": 8330776
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72317013723.csv",
+      "sha256": "d42dd09903760956f7a7140d5889dce06d82f92301bdef8b7169d9d2034094bc",
+      "size_bytes": 8438219
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72324013882.csv",
+      "sha256": "6391e17d39d098438263922f4273e1e9f6a4b5141d44729d3278610467078f4f",
+      "size_bytes": 7959513
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72334013893.csv",
+      "sha256": "cd34f07bc88acd22bde01d17734b73f3bef115ae08628431d48db707cb8ef5bf",
+      "size_bytes": 8736644
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72340313963.csv",
+      "sha256": "2fb2521b349522c868a2753c946c61b90ffc62d74c92c41fef9be51998419bf2",
+      "size_bytes": 6955159
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72356013968.csv",
+      "sha256": "802160924e496684fa68a5bd699367375cce46669bc7cc011a7ab721dd415472",
+      "size_bytes": 7465385
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72365023050.csv",
+      "sha256": "d345ae2e535f51d2ece2711df7da9918fcf1d95fb54d22f92d69150c2c263bfe",
+      "size_bytes": 7587536
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72406093721.csv",
+      "sha256": "3446c6448be605dbc120f3799fc9deebd1151cd3ba8221ad2aee080d7e734d26",
+      "size_bytes": 8223743
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72421093814.csv",
+      "sha256": "fa5544155aee5319e891177a1b469f74632a9c7eba66e1bb02ab6509d914ca00",
+      "size_bytes": 8288972
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72422093820.csv",
+      "sha256": "e4553557e14907a5cacfd9040557cf54751a070f93eaee3fdb4344fd920c08fe",
+      "size_bytes": 8417523
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72423093821.csv",
+      "sha256": "3884c43382f2c68c9f1aeda72ed367801fac21c89c9f7f82ae62ec415e20c1ac",
+      "size_bytes": 9062087
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72429093815.csv",
+      "sha256": "17f105db90e5af5d1f6dddd794312d223fc87f36e1ead6757754463234de4675",
+      "size_bytes": 8722495
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72434013994.csv",
+      "sha256": "32c8060d8de02a510f05ce40bc985c11233d618ed0aed1818402fde242b59aab",
+      "size_bytes": 8082270
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72438093819.csv",
+      "sha256": "f969b499f45a093c93fdaf0b183626dfc4cc6d1c35d9849138dffa3271815240",
+      "size_bytes": 8739237
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72483993225.csv",
+      "sha256": "5475481644f9de7e459740aa9bf7f8c996d9a9813a859651bf5f96700ab69ca3",
+      "size_bytes": 5771897
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72488023185.csv",
+      "sha256": "f7fe697892506e874b0d7e40ac44b4e2861651abc2935e189cf37cd8b08d548c",
+      "size_bytes": 6493669
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72494023234.csv",
+      "sha256": "2f4337b7ef8dca5e6bff3a31dd4b67b2e6e98305ecc463e84a5f9df5f5602734",
+      "size_bytes": 6934354
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72494523293.csv",
+      "sha256": "c0a6df20eb85052dd10c418720516ca2f597edbce44ae0f8fa6be208ce227eb7",
+      "size_bytes": 5919449
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72507014765.csv",
+      "sha256": "248afea06f4e7adc16124c50b07f8821fe7cb15d6813515b04468558f2511979",
+      "size_bytes": 7899784
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72509014739.csv",
+      "sha256": "f722bc0c7152ce40edfc3a09de86879b6bfee3d3e8537acdccb45a52009f60a4",
+      "size_bytes": 8215823
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72518014735.csv",
+      "sha256": "c000ea2630c7fe8f8a75b8fe7c8dcb3eb331ee9898f69f39fbdcb3ec2560a4dd",
+      "size_bytes": 8804798
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72520094823.csv",
+      "sha256": "d32ce5033a60864d54af3e71da3b767ccc5640e9f0a5be9ce3aff7c3e13c34fb",
+      "size_bytes": 8116685
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72524014820.csv",
+      "sha256": "7167aa1e7fd5e9bf68febfee242582083d9c71e52eaf6574b144f4229d8b3442",
+      "size_bytes": 9060648
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72528014733.csv",
+      "sha256": "9fe96725f6af3f357e21b7f0429056d5857aaaef6bb83746cf33d824fd22b5a0",
+      "size_bytes": 9604935
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72529014768.csv",
+      "sha256": "402b377c9a911d123121c1306419a8d840936cfcf63d8442a86f5f02d21b1d40",
+      "size_bytes": 8504521
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72537094847.csv",
+      "sha256": "b0409a90a83a309f2bbb7030fba3bb188e6444201ef84b8e296a3bde716676e2",
+      "size_bytes": 9103923
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72565003017.csv",
+      "sha256": "45ceaa3d8e719cc1ca5e0e40149634504275a9871a40fee487a313420b071061",
+      "size_bytes": 8466859
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72572024127.csv",
+      "sha256": "1b19c437345314fc99ded2e9fba5eda1dd825a0b387e3c66593c3db4af845556",
+      "size_bytes": 7985065
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72606014764.csv",
+      "sha256": "ee10ef4289e9bb2808d49c2a429c2622265e2c609e1c7f1a25b33c52777f8439",
+      "size_bytes": 8278010
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72635094860.csv",
+      "sha256": "87abec676b082670ade913a2243f8a24126bdd2a9ded48584b1c16313aadea9b",
+      "size_bytes": 9110804
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72641014837.csv",
+      "sha256": "9c1edc90076bc254f780f4b33c57c09644ec18e464005b3e305d683758bf287e",
+      "size_bytes": 8381707
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/72793024233.csv",
+      "sha256": "70c114b6780edb721f5dfa837a365dab10fe37fed5c82239204ef81a95da0b77",
+      "size_bytes": 7708638
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/74486094789.csv",
+      "sha256": "394dd88ccb94400f1ec8a36459e65ac0a2a486b1b8d89724d5b7848b12399d25",
+      "size_bytes": 8268738
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/91165022536.csv",
+      "sha256": "735d936134f1cf59cb70069faea0bb029764d3334dd151c8f19c2e68eaaa474f",
+      "size_bytes": 11029504
+    },
+    {
+      "path": "data2/raw/weather/noaa/2018/91197521510.csv",
+      "sha256": "bfb158692fa21aac39177d91a8188c7fae339801619d4cd3dbf0ac8ecba75f9e",
+      "size_bytes": 6456149
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72206013889.csv",
+      "sha256": "931541bf39a0e4a33a31c09425d6e1f3d507c711739c36fdc8fb34d2462d01ea",
+      "size_bytes": 8232215
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72207003822.csv",
+      "sha256": "9ce6268145cf93b0eb8cfbbfaf772af05a0ae87752ec8d187acbf1087fc9eeff",
+      "size_bytes": 7639344
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72211012842.csv",
+      "sha256": "be2d51912e2cd36dccce10b41e0ab2f6778835a43decdf5714cb249059532991",
+      "size_bytes": 8230051
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72222313899.csv",
+      "sha256": "038df89cbecc61321c494fb36c4be63350738ea37df43eaf79f7eab0971f82f3",
+      "size_bytes": 6973731
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72228013876.csv",
+      "sha256": "11841673c014542543c0d7c07a959adf7d6724b9e2e0dec3f5fbc5333bf035cd",
+      "size_bytes": 6858827
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72231012916.csv",
+      "sha256": "3d3b4e904cd383f406bc2bbe083ba0886a6ed34b06790c5db951ab95de687f98",
+      "size_bytes": 7740683
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72244012918.csv",
+      "sha256": "c815f0f6e6b4749fbb3eb23a1f1b5bfa0800f811512a3bf8619c087031113486",
+      "size_bytes": 6952263
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72253012921.csv",
+      "sha256": "1d10c7567b472e8a9cf69139dcd1cacaf84fdb2db574f7b1c01a6aa6fe687720",
+      "size_bytes": 8299917
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72259003927.csv",
+      "sha256": "a3d6c5b1d0f056d17d0e5fc73149bd19515b3f6f278cec48b9cc9f1185e92bb0",
+      "size_bytes": 8051355
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72297023129.csv",
+      "sha256": "ed1a3c0e0f7c88601b685586cb048caef4d69f8eb72b038fd3b1c6ff5ddd2b78",
+      "size_bytes": 6857571
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72297793184.csv",
+      "sha256": "a8a3979978be49f76ac91c93a013f6f4f26967dd9c017ea61fe7e461e947dc77",
+      "size_bytes": 6345457
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72306013722.csv",
+      "sha256": "40e2749b79a8de40d02c9b349512e422086c195984df8f046fe7f3d001ce0447",
+      "size_bytes": 6961037
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72312003870.csv",
+      "sha256": "2097f3bfbf949a399adbcf2a0134640ee3a26a15104df094a51a5d72572bd522",
+      "size_bytes": 8126924
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72314013881.csv",
+      "sha256": "25aa18f3f61cba8718d5d2c692f621fc7974b377758a21409c7e14c91a2fd798",
+      "size_bytes": 8230064
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72317013723.csv",
+      "sha256": "bdcfa75374f368ff81d387995928222ffa6af04d8afc1a19233a548d8358b2a3",
+      "size_bytes": 8090798
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72324013882.csv",
+      "sha256": "a02cab8ca87dc4f165b3097d93269aa8b6403d60d4a13042f83a26be697d7c4d",
+      "size_bytes": 7579868
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72334013893.csv",
+      "sha256": "59f64c1eccec6e415e3190c197be087ca6f4f17061ba561ea4a0c12c94822cbc",
+      "size_bytes": 8714644
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72340313963.csv",
+      "sha256": "ad9e8261893b5027ab0d1f7cc45f8b095c4671b99a0b66b7046cadfeaab95f8a",
+      "size_bytes": 6777933
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72356013968.csv",
+      "sha256": "ed467cbce066a773dea496e4166fc7464db17b1ff5f7f96b1069c21c6f77aadb",
+      "size_bytes": 7864644
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72365023050.csv",
+      "sha256": "55aa7a58e98215bcd9c2992b143e6685ec1effba653ceefeea702ff93fccabc0",
+      "size_bytes": 7690898
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72406093721.csv",
+      "sha256": "59e4a1b3d9b7863f2a2441e46db25fd9f0569190b85a2309927bb6a0d6a84843",
+      "size_bytes": 7743887
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72421093814.csv",
+      "sha256": "3661fe26bdacd41e15f573f614730f8e4c653f1b7b71ad56c017e1024f3bda2a",
+      "size_bytes": 7920149
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72422093820.csv",
+      "sha256": "2105921a07378da9d0c22d2d171f430ac6d4213a49837cad627164382b1bd499",
+      "size_bytes": 7890610
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72423093821.csv",
+      "sha256": "a2d7c4be33f44cd88d4e067a097a37c79b402f695b541be50e25f01d4189ceb9",
+      "size_bytes": 8586613
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72429093815.csv",
+      "sha256": "fbccb0cc29b8927cc6b0eb9e44ac9d2e2f3a6a1add069df43362bb0fb9d869ea",
+      "size_bytes": 8614995
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72434013994.csv",
+      "sha256": "4935eb36cf380abd64f02aef36f9d98195bd022120a7d311ab63abafc0ff8800",
+      "size_bytes": 8233194
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72438093819.csv",
+      "sha256": "d429a834ad1c488c5b5d37895b43f651a8ddbf0f2b0393fe2bbd10295a3ef5e5",
+      "size_bytes": 8721605
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72483993225.csv",
+      "sha256": "2594938002dc0250bef7b3a712675c48c573ba713c4ea52ce310090e860fe256",
+      "size_bytes": 5660647
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72488023185.csv",
+      "sha256": "5102d9938c1504ec3ba3444562fb773fef1288ca6980cb66e1a162d188291fdf",
+      "size_bytes": 6643218
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72494023234.csv",
+      "sha256": "c5074ea470ecb85157960017ba66f91bba3ce0a91437f066602f496a9e6aa0dc",
+      "size_bytes": 6805349
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72494523293.csv",
+      "sha256": "820133c6a11ca01056ea6941078a2ce58f0977f17b233b98810308dfe1896106",
+      "size_bytes": 5992117
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72507014765.csv",
+      "sha256": "6afd6da62f5ee0611b81cb79a90b5389aace3b4851d9879cca27c8bfc511f857",
+      "size_bytes": 7832676
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72509014739.csv",
+      "sha256": "988f829036b57a865779f8410dceb478fda12eec4ff82c6a258f29a8b7f95178",
+      "size_bytes": 8167977
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72518014735.csv",
+      "sha256": "3a4584d789a1d5e8245653d3fa78f6b5fef56394481dc5453c535f73786f42ed",
+      "size_bytes": 8656456
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72520094823.csv",
+      "sha256": "9e53bb9442f868afe284e8bd536d8c3f3e461aee6443ef3071abb29b1fb0df83",
+      "size_bytes": 8118216
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72524014820.csv",
+      "sha256": "c7dfa60e5531b280c1a27a2a35607c02040a2f9be022f196b0d76674f02a713b",
+      "size_bytes": 8874315
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72528014733.csv",
+      "sha256": "e0268636bc1769e28c6ec491447565dfa2d6733fbfae39921002c362bf97d9f4",
+      "size_bytes": 9654132
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72529014768.csv",
+      "sha256": "c0f5ec5c6732940fb35404f612d010fb79a95ad9f06886d6267acbbfb0a2f050",
+      "size_bytes": 8478062
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72537094847.csv",
+      "sha256": "6756b845009af6993c3612b5dab718eb4889cd3a6b3105f4150c12f55f3ebc92",
+      "size_bytes": 9041389
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72565003017.csv",
+      "sha256": "cd1e348ece45a8dd87d77a35f55d130907fc69f895022eef143306fef1fda38c",
+      "size_bytes": 8583761
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72572024127.csv",
+      "sha256": "086155febef86928bea4e846d701793990025179c1e19d5550b32925a31dfb28",
+      "size_bytes": 8264261
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72606014764.csv",
+      "sha256": "013218e0072400b2f878e85c4b390e3d6255559639ec2c2c0a1350ad65133720",
+      "size_bytes": 8105543
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72635094860.csv",
+      "sha256": "1731420882449b819ab4c7786db51bcc820bad061548e8260e9f1d25ad99a8db",
+      "size_bytes": 9342458
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72641014837.csv",
+      "sha256": "abbe9aef43c18ffd46489bc1c68e46db315bf8ea92f17097ec49386d764def20",
+      "size_bytes": 8385457
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/72793024233.csv",
+      "sha256": "852a866502bd3656150ecfde2cb6c3427053fdd4309b7e8a3c2ca039fa7e49b9",
+      "size_bytes": 7732048
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/74486094789.csv",
+      "sha256": "b505c363a0d770bc42e370972bbb0c1e060c3046b95b3234caaf4af9661e6577",
+      "size_bytes": 8108908
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/91165022536.csv",
+      "sha256": "a13ca34337b69e232691f68bb86fd7d12cd112c56eb60e61229a1a0b538c48c2",
+      "size_bytes": 9596113
+    },
+    {
+      "path": "data2/raw/weather/noaa/2019/91197521510.csv",
+      "sha256": "b2cefb24536827f310bf81a52ed96da7e21e83887ceedd1d6314a7cd36b3ca3f",
+      "size_bytes": 5975406
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72206013889.csv",
+      "sha256": "02f471bb8b2bafe3edc3622c7f99fd0b0ab3aa01668aa032459b4d1008f3070a",
+      "size_bytes": 8344244
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72207003822.csv",
+      "sha256": "bb3e8f6ee7321dedf5bdc2743bd8a7004e1958605a571b9c7a7cedce89ea9751",
+      "size_bytes": 7717752
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72211012842.csv",
+      "sha256": "3a9b2b839b176a09624611e6333c2f0c3df03697c8e9f96d5760cf3b42aa339e",
+      "size_bytes": 8016233
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72222313899.csv",
+      "sha256": "4105e45fa9398d0ab13b861b67541369434b7c8c4753f4a3dcdd42e038944f04",
+      "size_bytes": 7118813
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72228013876.csv",
+      "sha256": "a4b0deaa047bc68f256fd63a9605351ba1f891a3ee67be3d284d7a17ebf6710b",
+      "size_bytes": 6994848
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72231012916.csv",
+      "sha256": "2db073e3b7dd8842ff94f150a4a105d621d96fbecc0fa73a2a4edc2fc05923f7",
+      "size_bytes": 7891893
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72244012918.csv",
+      "sha256": "aa91191d7965bcefb2d89be7dcb45e3d32b8236337b42252bcf8ad10e338177a",
+      "size_bytes": 6976816
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72253012921.csv",
+      "sha256": "e74ee52dcc853460136d2e93b301700e9c1b5788188fad1502ee848afee44468",
+      "size_bytes": 8217670
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72259003927.csv",
+      "sha256": "c08da73bebaf4021426ed265a428fbffc0a5cc1482e1763ad704d93ef569e9b7",
+      "size_bytes": 8056133
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72297023129.csv",
+      "sha256": "4faeebc4067303e76471fc307abc974e933e455165f5795ad8fb784af8c577ef",
+      "size_bytes": 6770031
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72297793184.csv",
+      "sha256": "dfed8965b82ab0a80391efe75856be0e08104f7406004f556433906141c9dd39",
+      "size_bytes": 6181022
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72306013722.csv",
+      "sha256": "303f35e193698235d23099d7b8b2d4d519707f3e1e7df08fbc083d0df2ef6281",
+      "size_bytes": 7169753
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72312003870.csv",
+      "sha256": "8f977209ffed7b6dc8467cf75bca3e558418ff93d014c9a857d9e593729e25ad",
+      "size_bytes": 8560210
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72314013881.csv",
+      "sha256": "ea8883035bdb82c5c5ff016bff8ca679c7c19d7f8fd01d96c47f49862701eac7",
+      "size_bytes": 8462245
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72317013723.csv",
+      "sha256": "c7bcb7e6fcfadb0c0b122f5d3092063085a3f988de7646341bb4eb148139de7c",
+      "size_bytes": 8366421
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72324013882.csv",
+      "sha256": "260ab4a01f306443180513eb2caba5255445ef18aa36a7416553a5952d5cda0e",
+      "size_bytes": 7851981
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72334013893.csv",
+      "sha256": "b9c8b8dcc51ea239940e73fb3eb056d3582a1895d3e494740b5e0b69fb69755a",
+      "size_bytes": 8561693
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72340313963.csv",
+      "sha256": "6fb3139be5f9eebb3c4e26d799dd632797c6bb0ba9016eac191523d8f41d0911",
+      "size_bytes": 6961011
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72356013968.csv",
+      "sha256": "7adc5abd6b5f715ebbd9134bed9cac7f4c13e2997381242a2c2b803dd562abb4",
+      "size_bytes": 7245142
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72365023050.csv",
+      "sha256": "2a9ebdc7d36fcabdc61d7ef986fa975d75c7eb3c1d1b2359f4214053839d5f8b",
+      "size_bytes": 7453474
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72406093721.csv",
+      "sha256": "f9339cb19bf088712f28a3adfbe02a420b05b6742a2aa70c18b09847c430acc8",
+      "size_bytes": 7779298
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72421093814.csv",
+      "sha256": "796b6a8850c7445eb3adc459ab352df60c4738f3abfa812e984f7d845e9cf80c",
+      "size_bytes": 7993592
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72422093820.csv",
+      "sha256": "389fb1b3ce69ff01e93aac87c08642a5171998c12f8d2734756fe619ec89f036",
+      "size_bytes": 8047300
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72423093821.csv",
+      "sha256": "cd974e6656067d40ee3225056d46983e9d2b575bf943d87a07c9276ac75b3355",
+      "size_bytes": 8738297
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72429093815.csv",
+      "sha256": "9439486b1694fa09e357494d725ce1c518848e38806dc1697895b783d670086a",
+      "size_bytes": 8650156
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72434013994.csv",
+      "sha256": "1ea914800269defcb107bdbd279a6a65cf550fda65588fc9ebe0a2f6c2e336d6",
+      "size_bytes": 8100372
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72438093819.csv",
+      "sha256": "81873255d879d7c6de4ea6cff0126115ef95e9bdd2dc18b3084da72af133ef51",
+      "size_bytes": 8581484
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72483993225.csv",
+      "sha256": "f1ce588d91007e8682934eeaa4e77b3b1027c53a138958a727d1cc9d72690bdc",
+      "size_bytes": 5649022
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72488023185.csv",
+      "sha256": "fbdcc5a8dcb53a79e72bc58fa10bb3f5ab059da5e321ded34fffe9072bac71d0",
+      "size_bytes": 6397833
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72494023234.csv",
+      "sha256": "cf5e9ee1809568b59d4c5d8f435e613f19d7ab848da8e1c20c2f119c8cf0bce1",
+      "size_bytes": 6966418
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72494523293.csv",
+      "sha256": "6d63e8d91a0d827bd3580aee14bdaedc507ffe6bdcc39a5266ccbf049b320ff9",
+      "size_bytes": 5978582
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72507014765.csv",
+      "sha256": "6154acc26c252bd02d8bc841ab01469621700d32c9ddfbcab17d9ed5394a81f3",
+      "size_bytes": 7677965
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72509014739.csv",
+      "sha256": "beb89c47ef8eb02903783f6c7b398d582ecd81e61cd67b2ace0b12ddffda44bb",
+      "size_bytes": 7879783
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72518014735.csv",
+      "sha256": "852c72d0825f797a71a6ff991b0279c473d032bb2d48bf8af5a9e42c59f7020c",
+      "size_bytes": 8426655
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72520094823.csv",
+      "sha256": "b76a422e78a43e1b5c43f461e404c35122650eaf77b74449bb810bd57d17512e",
+      "size_bytes": 7925764
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72524014820.csv",
+      "sha256": "31077708c64d68980573d4ae625ab68857738a65c7fd41bb9a470e560a515b2b",
+      "size_bytes": 8819922
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72528014733.csv",
+      "sha256": "cc6ba2d36aa2faa27afc2ae6d74fc306017c3bcd49f2d0715a5cd54efe3ade8a",
+      "size_bytes": 9321337
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72529014768.csv",
+      "sha256": "ba7e60628c30c44f1101c1027308e1284f62a07b99553ff113a6b1dc0c7721a6",
+      "size_bytes": 8287930
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72537094847.csv",
+      "sha256": "ba0d3a750c2a6a02fe9781302702ea07dd5d23d445714f475180ba2d640bd2c1",
+      "size_bytes": 8896119
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72565003017.csv",
+      "sha256": "fce3d17e63dec373034c8403df65c4e8c24399fb3634e4cc5abd4e3c6e41a214",
+      "size_bytes": 8081367
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72572024127.csv",
+      "sha256": "642df61a816c6dacb964595aa80ca4090ed7e58bc810e4b4c78131c13ff6d11f",
+      "size_bytes": 7790558
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72606014764.csv",
+      "sha256": "ca4270357d7f53a62832ff701ac8072fb94313eeac8a8e88cd4352e543f29d88",
+      "size_bytes": 8048087
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72635094860.csv",
+      "sha256": "34a81a2b99370b790ac26173c09001186eb7ce62856c713d26fd32036299f191",
+      "size_bytes": 8684289
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72641014837.csv",
+      "sha256": "c1a6bd340abb3fe99414e2994dad835c57d9ccf3e6c4aa7c3f2aac7b072447fb",
+      "size_bytes": 7866216
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/72793024233.csv",
+      "sha256": "4621994beaa243affed66d8c2c1e3aaec30303ba5883728ac7aece9a3062e070",
+      "size_bytes": 7712886
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/74486094789.csv",
+      "sha256": "59c28a2f23bd4be668e640837b3a975319341ebf0005f6d01d5ab48821053b71",
+      "size_bytes": 8057825
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/91165022536.csv",
+      "sha256": "887ff79bd001a1abb506fa143061fe4b4ecc676f99d1ab199b99439672cbeebb",
+      "size_bytes": 9505366
+    },
+    {
+      "path": "data2/raw/weather/noaa/2020/91197521510.csv",
+      "sha256": "528791f5bad11aa39ec8b18e6f07f58eae4c34b292f0e94882c884607ef58a60",
+      "size_bytes": 5991503
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72206013889.csv",
+      "sha256": "a57a20d6eb3ea07127a8948f388ed8e43e5ed199fe31ab1c871a2fb72fc2e8c1",
+      "size_bytes": 8359910
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72207003822.csv",
+      "sha256": "50ad7ee982b91f0579871ab7dd8466014ea549e591aca8f70ee0b8d94841a6de",
+      "size_bytes": 7590187
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72211012842.csv",
+      "sha256": "0231bc9346501199ad2063de38d781417a87e7a4f693d36ed28233a6bff0c772",
+      "size_bytes": 8011202
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72222313899.csv",
+      "sha256": "ccecbc65108a6709bedcf5fe02809113a66a2a0048755516d93c1e89ef8d2a9b",
+      "size_bytes": 7421309
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72228013876.csv",
+      "sha256": "878f685f2d398966bea15010507ed74a19bc748d27fc26418116ee71b4d73d36",
+      "size_bytes": 6840114
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72231012916.csv",
+      "sha256": "c87c811c6e40e84290ea83a838f47ae1a7a03a103f7fad618e5cb26ccdfee835",
+      "size_bytes": 8100252
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72244012918.csv",
+      "sha256": "11367e184e29be7aa1603a5e9ee9a5df0735b6cd602dc8af122297782148a565",
+      "size_bytes": 6960599
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72253012921.csv",
+      "sha256": "0f199b4a01f38c27f985c184b5003806820b1f9d214f7f2eb26e1affdf4ef953",
+      "size_bytes": 8484412
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72259003927.csv",
+      "sha256": "715fa89158c5eaa12ef7272e28723edd2807494032a9bbbf2938e9c1a9654d87",
+      "size_bytes": 8018727
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72297023129.csv",
+      "sha256": "e4a0217517679e3b3ee168217386b21ce06dbaff49d94390507c505fba5ab0d8",
+      "size_bytes": 6749661
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72297793184.csv",
+      "sha256": "95268df3b1cdd62907c91f55ce665747a0b6379a7c0329dc827d8b872d887a0a",
+      "size_bytes": 6199131
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72306013722.csv",
+      "sha256": "890f14364e1f39f7f56c497a15d0f4ec472878d3bd155172a8cf38e8019ccc3e",
+      "size_bytes": 6990826
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72312003870.csv",
+      "sha256": "2af8ad06e51dee3077dd9b6a619b0bfe1a9fafc1791d940beaa6f45e252db79f",
+      "size_bytes": 8044692
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72314013881.csv",
+      "sha256": "ff74bf0fbe98970baafa0c9fb80a525e754050b1676d4543f0765355416defa3",
+      "size_bytes": 8051034
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72317013723.csv",
+      "sha256": "df7ad51a316e4a79000cb9bea5f9dc8a98260307d633c667eca90dc05b03e1ff",
+      "size_bytes": 7985608
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72324013882.csv",
+      "sha256": "d6f20d51a7c7d1c15c42dae5d85b46c04652cbffd00f1d9978bad018fdbf7a9e",
+      "size_bytes": 7743304
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72334013893.csv",
+      "sha256": "da2e35e1aaf798c38f9044062b3189a0e186ad368a2462595aa20658949eaadd",
+      "size_bytes": 8455657
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72340313963.csv",
+      "sha256": "f511f6e3cabe49a8e1e4e6852c0553debf486f84504bed0630fb6085c39bde99",
+      "size_bytes": 6669734
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72356013968.csv",
+      "sha256": "18ac70d8b24719558213bda601d558343bc0d5c6914bb7e4dafab62d8ea959af",
+      "size_bytes": 7074693
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72365023050.csv",
+      "sha256": "5ce49bace0c58ee63bbf97bb4ed309628aed3eb1456a7e7278a5da77e6f700cf",
+      "size_bytes": 7439055
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72406093721.csv",
+      "sha256": "f24a0dab1844f0cffc6e0c6550134c8a038bb37491f8cb8a32f89bf26dc82299",
+      "size_bytes": 7611825
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72421093814.csv",
+      "sha256": "3cd8c04baad596a6fe4560f4e159e70228e0702abb14c2586389c345455000a2",
+      "size_bytes": 8140656
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72422093820.csv",
+      "sha256": "70db5501cee63bd070c5597397adb94fa140066ae5277a842056d0e3dc2619f5",
+      "size_bytes": 7870681
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72423093821.csv",
+      "sha256": "3783b66c277be8ca6d818c8ee02b55de02f257cc6c94a6b9775160ee069a5a09",
+      "size_bytes": 8699954
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72429093815.csv",
+      "sha256": "240c1383b3dfa419d1d504b9cbf82f92bd38886254ecf6e9d00776875987882d",
+      "size_bytes": 8575254
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72434013994.csv",
+      "sha256": "2c792e978afd06178867c2a9ffc783e498442d36933d8054adbff9642f5bdea7",
+      "size_bytes": 7971055
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72438093819.csv",
+      "sha256": "50180e27d7c232d809418cced8250f32e70824006a059f95bd6a1abd34439c83",
+      "size_bytes": 8560402
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72483993225.csv",
+      "sha256": "33abb648c53044b46ff6051183939b15262f134edc2b7fbe08090da37c1df320",
+      "size_bytes": 5741506
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72488023185.csv",
+      "sha256": "9e99674a01c14410bd746c027a2da05df08af7836cdf69fa5857259ed14437ac",
+      "size_bytes": 6651932
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72494023234.csv",
+      "sha256": "2213a6cd972b11f667cb7c212fa04bb850285bb0c5d520b3591775485ddb6ec2",
+      "size_bytes": 7014391
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72494523293.csv",
+      "sha256": "8d276baaa5b2ad2cfaf8d3f46744ce2c88021c5f182141db1267213315de0452",
+      "size_bytes": 5739131
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72507014765.csv",
+      "sha256": "02695b4dad96eef772bbde6cb45d25d8684ec5a5692102f351540625ff9a3df2",
+      "size_bytes": 7588694
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72509014739.csv",
+      "sha256": "c6bb5947807091b166d2b9ea0d650e5be505c76f519994263c82a7f5d49251c6",
+      "size_bytes": 8077366
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72518014735.csv",
+      "sha256": "badf226f7205b79e6bbbed727a721b634ae3da0913d7ffd961320f0bd079a047",
+      "size_bytes": 8739753
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72520094823.csv",
+      "sha256": "812be42166b058581e1489994e908b8f1d25874f56efd88c1332695ae2e59919",
+      "size_bytes": 7948540
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72524014820.csv",
+      "sha256": "593d5782d1e002beab3e475915f8cb99cf7d526f038455850c91930513dae8de",
+      "size_bytes": 8711117
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72528014733.csv",
+      "sha256": "4df5f11f5647865b7c206185177259da38436717d802df582d33c30cbb7386b8",
+      "size_bytes": 8973326
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72529014768.csv",
+      "sha256": "ecf0a2f95ce3ca069317a9416a9b89c3bdb92c5e81530467820f1686a64ac332",
+      "size_bytes": 8401432
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72537094847.csv",
+      "sha256": "ecc4986d1403c3b7ba9035a111d703d681aebfea6301692982b128085b14d382",
+      "size_bytes": 9002341
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72565003017.csv",
+      "sha256": "7d8339e57d68938a71692a486da2cc1c4a73b8ecf3f6a9913125bfc931a3b95e",
+      "size_bytes": 8002278
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72572024127.csv",
+      "sha256": "117dd5d3ca5a2eceb4c34e1999963ec5e63847825fa973dad2440c86803bc24b",
+      "size_bytes": 8070394
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72606014764.csv",
+      "sha256": "29f3a3fd80b3ab18bf93dfdf258c8fe029a8c71fcb8a52e4af742461fde92233",
+      "size_bytes": 7950898
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72635094860.csv",
+      "sha256": "678052e23053ceca319a30cc74c42d3362e387750b4d752016785a3330141092",
+      "size_bytes": 8958955
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72641014837.csv",
+      "sha256": "f404c987a6bc877d408ce31867d466765d1735a35386b76908c9aa59a7b07529",
+      "size_bytes": 7801977
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/72793024233.csv",
+      "sha256": "ab112ecb170d34fe26fa862c809fa98c5595bab11fcfb5adfcf3a749744100e2",
+      "size_bytes": 7930629
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/74486094789.csv",
+      "sha256": "ad7613d6abc6a64c6c5b9b0c3bcc2d5b718f8f0376d8b48848cff2a8802bba82",
+      "size_bytes": 7929636
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/91165022536.csv",
+      "sha256": "4d163050f3fe4ea557382a9506f50b596ba1eca4e3f320fb22a116c7191919e6",
+      "size_bytes": 9703626
+    },
+    {
+      "path": "data2/raw/weather/noaa/2021/91197521510.csv",
+      "sha256": "2cbc49bd617e68a30aad94be3f2ff03c935431db56a350479233d2354580647a",
+      "size_bytes": 5871033
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72206013889.csv",
+      "sha256": "9d64f3cce89555663ec49af02e08353d081ea845707b5a657233cb03eb3f10f0",
+      "size_bytes": 8268750
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72207003822.csv",
+      "sha256": "c8dd52a9a15496a11d801cff7112416d102b53ac626156035a733a4361ace678",
+      "size_bytes": 7623351
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72211012842.csv",
+      "sha256": "d36aa0d60056aebee30e32beaef7ebf41a4f9b609d71888b5b82c53f7f536e0a",
+      "size_bytes": 8089275
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72222313899.csv",
+      "sha256": "54a489317542c50073748814e6fcb96499d26cee70cc7a11567c3c7a4591d4ed",
+      "size_bytes": 7113607
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72228013876.csv",
+      "sha256": "0354dd7e47a8fac3bd147b4d7478ed32d9c47ee438cf255274e03ef1d49e42f4",
+      "size_bytes": 6661651
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72231012916.csv",
+      "sha256": "bc92c22f9b5a0d4810cd15e8a6606e51da86820b4f48e9ded773e30d489448ed",
+      "size_bytes": 7776119
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72244012918.csv",
+      "sha256": "ada56dfbeadf691ffebfccbc9b9bd02572aa989a8a061a045da742e298856a8e",
+      "size_bytes": 6478182
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72253012921.csv",
+      "sha256": "461d7838077716db4e54e5c0e336ac43bb01b4a7297552ddbe85785a6e02a5af",
+      "size_bytes": 8017111
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72259003927.csv",
+      "sha256": "3f93915bd1b06d9567594201dcc75441c953697555771f4f846f8913ca0972bd",
+      "size_bytes": 7795778
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72297023129.csv",
+      "sha256": "038f15d7a873adc8ee440c3335ce3647b38206e7f176433ba9cd5d02b596f983",
+      "size_bytes": 6543871
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72297793184.csv",
+      "sha256": "af5121cc4b6d9b5b46800ed209ced9e3d5296b083fec68482163c0e18f7cde07",
+      "size_bytes": 6005358
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72306013722.csv",
+      "sha256": "85b445fd840ae09b262a17ce8218f3147dc8d17e56ecf93ccaa17c22eb9dca28",
+      "size_bytes": 7361908
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72312003870.csv",
+      "sha256": "f6831a91674ac47b9333fcbdc5ee4c734fe39ff1b652cdf462feaca61b6e8dd4",
+      "size_bytes": 8170660
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72314013881.csv",
+      "sha256": "300ee16a76722f1bc6b70b6e04d730349ba37f8c1d0bee3fe36e550b5415e1a0",
+      "size_bytes": 7850312
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72317013723.csv",
+      "sha256": "ed2acb88947be6df057ee3e95ef8623440a14f90e36ca6bac216a4dff14532be",
+      "size_bytes": 8451221
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72324013882.csv",
+      "sha256": "265ba73ca02214b944c3f4f611893ea3ab962a445f76c31413e704c11e4b36cf",
+      "size_bytes": 7429631
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72334013893.csv",
+      "sha256": "d0b66e113bb5dac146878a70c18cee548f3f99327f35a2bd1928271c53927659",
+      "size_bytes": 8411269
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72340313963.csv",
+      "sha256": "639a39bda16e0cb7f9f7920fa9ffe917700d62e098d15f94a794c673f9d6729d",
+      "size_bytes": 6634813
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72356013968.csv",
+      "sha256": "ca0df5b5d6c97bb627a00885b5e879f56cf29d219479a30d55636f375e43a2df",
+      "size_bytes": 7223683
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72365023050.csv",
+      "sha256": "fc78f21b9addd51be0b542160c338cf9385f9b9e7b73fbf70e4aae81b147a613",
+      "size_bytes": 7547363
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72406093721.csv",
+      "sha256": "f3b14a87935067ab57a84b0d4385b3248405e8824550f202ba260b062060fd63",
+      "size_bytes": 7742544
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72421093814.csv",
+      "sha256": "8e5e5acb36d78b18e1b32628553eec2c633bf41dbe817b2c9fc9f6127f3608ef",
+      "size_bytes": 7966283
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72422093820.csv",
+      "sha256": "78f230f436a9632b9ceb4ee5c787394a0b43d27c0b0993b289b789c5f84c2d66",
+      "size_bytes": 7712263
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72423093821.csv",
+      "sha256": "c48d1a2aae4b3aa5625532f6030585fcf043db01b1189db431bcb3df722f5fe5",
+      "size_bytes": 8505679
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72429093815.csv",
+      "sha256": "7b323398f7a122fa6d24048e1864fe4439d4d8e614e82945a7cd466f4aebaf80",
+      "size_bytes": 8619324
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72434013994.csv",
+      "sha256": "44c1b803d485e573d3a56655827f2e507468f4d09b9d403f447249716229b202",
+      "size_bytes": 7825374
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72438093819.csv",
+      "sha256": "65b34ba38784ed47eb1d719f192415468c19289595b55aa2ca3c1bb9b1912590",
+      "size_bytes": 8417962
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72483993225.csv",
+      "sha256": "044bdac2431fdc8be050b25172d5dc2f0238cf04245fd1e681cf65ec14d06375",
+      "size_bytes": 5557529
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72488023185.csv",
+      "sha256": "03673a8a0d8855066574154e9ae9e73c7bc5a33cd7263f4fe9080e4385bf0fce",
+      "size_bytes": 6423738
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72494023234.csv",
+      "sha256": "5f17c8bab580d61afb84047a94378ad9266e32b3d602560178d64df032a1e79b",
+      "size_bytes": 6817969
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72494523293.csv",
+      "sha256": "dda8fbb20ef5fd17f6ba74515bac6cea7f547689bdc7420734992c7ee9e292e5",
+      "size_bytes": 5535324
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72507014765.csv",
+      "sha256": "41a0434fae300fd927cb450849127fc688caae754b089b507dac1005b6019680",
+      "size_bytes": 8069328
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72509014739.csv",
+      "sha256": "be5394a20a35ae0e6eb2d603dd8a1431dbe4f443153dc5972670bbde07046c38",
+      "size_bytes": 8415384
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72518014735.csv",
+      "sha256": "9f381e580cce248f68ab8d04cc3d4f5aa8ec6d7eeee6f0bfcd753411e9f890b1",
+      "size_bytes": 8642844
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72520094823.csv",
+      "sha256": "4c5e434d8f7043997d2aaa96d798e4c47305ea78692749953104d83e8b24c6b3",
+      "size_bytes": 8291561
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72524014820.csv",
+      "sha256": "43b69f5d16e185b04f27a400607adce97aaf787f9e953e205b02b2c82b289300",
+      "size_bytes": 8999647
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72528014733.csv",
+      "sha256": "bbd06471168e8806975af665cdf0cc3925f09bfa5b6367805acb5c7752d27b97",
+      "size_bytes": 9651045
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72529014768.csv",
+      "sha256": "17842bd7b45fc81bb3a2a5408ee30684cfbb29435aca41749025e8e4a009a0fb",
+      "size_bytes": 8406816
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72537094847.csv",
+      "sha256": "1757072480e01140a7918e4466617f981c81d79815340891489f9a8643b39885",
+      "size_bytes": 8852992
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72565003017.csv",
+      "sha256": "cf2d4535bf49ad57326e0fe2405870607fbf7c4755775b72487a58a9942e8941",
+      "size_bytes": 8165510
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72572024127.csv",
+      "sha256": "f41875b70619b39ec4c4c373cda5a026aee0cfe2589852be832d50d1d9cca5af",
+      "size_bytes": 8043210
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72606014764.csv",
+      "sha256": "d437342c2ac02e32733bf3f8a9ebb2c54a9e254e7967e03d689b7c84fc937493",
+      "size_bytes": 7894045
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72635094860.csv",
+      "sha256": "e941af821107f5c11a0fcb13d252bb4e7bc55599bed15b7d0099e4e4ad03ff65",
+      "size_bytes": 9174960
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72641014837.csv",
+      "sha256": "2ece07078967d0172f5d7bd4519cfb4af39ddf3d530bf614fd117084b358037f",
+      "size_bytes": 8054307
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/72793024233.csv",
+      "sha256": "664768e4923e16168a2dd513749ea5dffba9918ad1ecb6688fa9e109f23a7aff",
+      "size_bytes": 8105646
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/74486094789.csv",
+      "sha256": "7255503097dee933c4f950c401715700b269cb10538f139dfd9096752ff3c92e",
+      "size_bytes": 7969913
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/91165022536.csv",
+      "sha256": "3f44497a8340c54dafe4fc1502658cf62c46984522a4f50eb309d48423f3a02b",
+      "size_bytes": 9153969
+    },
+    {
+      "path": "data2/raw/weather/noaa/2022/91197521510.csv",
+      "sha256": "d8ab1f18da0aa4a852f78ff44fb6faca5d3575618af97d02a54b3cdf0a482895",
+      "size_bytes": 5978324
+    },
+    {
+      "path": "data2/refs/airport_registry.csv",
+      "sha256": "8ed28979ddf3f4a2d965708b20686de0b30fbd66eed52a4f1704bc8cc383abf5",
+      "size_bytes": 205142
+    },
+    {
+      "path": "data2/refs/top_airports_2019.csv",
+      "sha256": "1755f58e0a5a9cf43826fe85e45e78d50577e7ce3e797e48ed041f78884c4777",
+      "size_bytes": 2090
+    },
+    {
+      "path": "data2/refs/us_airport_timezones.csv",
+      "sha256": "58f44866b0f43266c34870a0463a087e89360ea568afd1f5263e501506bc9fb9",
+      "size_bytes": 109155
+    },
+    {
+      "path": "data2/refs/weather_station_map.csv",
+      "sha256": "68db81a50834d9ef5c78ff88ad0d3d225fb6e45575d379f36d01dc9a81b23c69",
+      "size_bytes": 5301
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/2017/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+      "sha256": "7ce01d55b5ef73a3b58ac354c4045119a3a0c2ece6db2200a6c5b1304256f429",
+      "size_bytes": 21553125
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/2018/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+      "sha256": "48bebf1c80baa720dc5dc94d07bda5533838f0063ddfbb993c9056435d5b3c16",
+      "size_bytes": 21552959
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/2019/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+      "sha256": "b6007ffd91d76740bb282409e9f6f81d52af68cabd675ee18afdf236743ff1e6",
+      "size_bytes": 21552962
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/2020/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+      "sha256": "3388e32aa404fdb8ac0cd49afd4830a13e289dd4a5fe27528c82d9a6370551c2",
+      "size_bytes": 21552810
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/2021/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+      "sha256": "52df60f31cae4dabd6b5653502488197d1bc294ede84216f72c3e3430fea818a",
+      "size_bytes": 21552860
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/2022/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+      "sha256": "19e87c530470cd36d1a9c7ec5bb285b0d6a4cb146cfcc7f35dfd4c94f4a85a2f",
+      "size_bytes": 21552920
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/CONSEQUENCE_STABILITY_PROTOCOL_V1.json",
+      "sha256": "cd5dc9701d79c85d077282c6474a46b736b8a21e2bbd68427e4a9ded0862ebfa",
+      "size_bytes": 7938
+    },
+    {
+      "path": "data2/reports/cohort_size_stability/CONSEQUENCE_STABILITY_PROTOCOL_V2.json",
+      "sha256": "a12fa1d4c6aeec2952d3697d7904ca48b595b62c72a5877ffa937a7733ed1b4f",
+      "size_bytes": 9898
+    },
+    {
+      "path": "data2/reports/paper_formal/2017/2017/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "1b39b86f95fccb1406a5d85b0bef58b768c16aa16674c3f834931c5a993b4a0b",
+      "size_bytes": 3600
+    },
+    {
+      "path": "data2/reports/paper_formal/2018/2018/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "71058b19acc052b5921ff05e7a04d75393712c4cbaffcca66e8a7b06b2b30aa4",
+      "size_bytes": 3587
+    },
+    {
+      "path": "data2/reports/paper_formal/2019/2019/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "c44a5b58bcc8817aa1cf9a45c1283ffc3abedd23504321ac61153b61eccd75e0",
+      "size_bytes": 3910
+    },
+    {
+      "path": "data2/reports/paper_formal/2020/2020/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "205f5aa3d2cea0d63622a941812c613ff3a6f5aee47b01ef372a915f72ace8ce",
+      "size_bytes": 3587
+    },
+    {
+      "path": "data2/reports/paper_formal/2021/2021/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "7e924065acd4a71d497e5171d808ebee87b96ef79a83c912bd97791fb63ada91",
+      "size_bytes": 3587
+    },
+    {
+      "path": "data2/reports/paper_formal/2022/2022/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "sha256": "8a35b50eec57c65c8b2e4dc3e68ddd7a44a040ca534c476ef40bb0d4fdbd0f89",
+      "size_bytes": 3600
+    },
+    {
+      "path": "registries/data_usage_rules.yaml",
+      "sha256": "74f418cb8b1a6011e031ddbde4e5a097f26e621cd0baf123fa7c2a2ee8b873a4",
+      "size_bytes": 26313
+    },
+    {
+      "path": "registries/dataset_capabilities.yaml",
+      "sha256": "e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b",
+      "size_bytes": 1844
+    },
+    {
+      "path": "registries/registry_manifest.json",
+      "sha256": "1e1cd2ee8941034b71655778a3865a70f5d4023eb568b653362fe33738b6276a",
+      "size_bytes": 825
+    },
+    {
+      "path": "registries/scientific_variables.yaml",
+      "sha256": "b48f20879001775e40ea2f35b2bb868fb26553a254b8308857560895b1c3c5b0",
+      "size_bytes": 10953
+    },
+    {
+      "path": "registries/source_priority.yaml",
+      "sha256": "34468b63c1327ef37a8be4214791c393e60af8d0a884e495fdd07acdd30e4781",
+      "size_bytes": 522
+    }
+  ],
+  "producer": {
+    "effective_base_commit": "ffa74876bf3c4dfa7031da06e59bf91a0f2899ef",
+    "overlay_binding_updated_at_utc": "2026-10-15T02:55:34.308056+00:00",
+    "overlay_files": [
+      {
+        "path": "data2/scripts/consequence_stability_battery.py",
+        "sha256": "6f7b0763f708e37a672f2e0b2794325e4c95caf2957fa46d176b325cda8962ff",
+        "size_bytes": 38199
+      },
+      {
+        "path": "data2/scripts/consequence_stability_metrics.py",
+        "sha256": "3cee8bee68f06bfd7a24416896df5298209e4f82faa8e1081de19565a7788d74",
+        "size_bytes": 122868
+      },
+      {
+        "path": "exp/jatm_s34/e1_information_gain.py",
+        "sha256": "a2c75ea39a3bdd929321f0b13b62e860c91a321b05b36d1e3144725484319791",
+        "size_bytes": 31811
+      },
+      {
+        "path": "exp/jatm_s34/e2_e3_exact.py",
+        "sha256": "7f74ccfcd92e36aca15981199789b45694980beadd32088b2f8133ca2b474f51",
+        "size_bytes": 33136
+      },
+      {
+        "path": "exp/jatm_s34/e4_run.py",
+        "sha256": "8a8c46e25a1fa17b057247e284ab96993728f119700071caf560beb9ee9644f4",
+        "size_bytes": 11319
+      },
+      {
+        "path": "exp/jatm_s34/q4_bridge.py",
+        "sha256": "1bef309ee66251e7d5a4d2a8d537b9fc1b26c841aaed655c7362fb72f843bdf7",
+        "size_bytes": 12166
+      },
+      {
+        "path": "exp/jatm_s34/q4_cohort.py",
+        "sha256": "bd9913408ba55445760110419ff097d23e0da574d60db8bf0c78828dbb40896d",
+        "size_bytes": 7460
+      },
+      {
+        "path": "exp/jatm_s34/q4_run.py",
+        "sha256": "851c23f68de72d01140e20950a21bde4ceb6f3a676cf3814d55a5f9cacb5081b",
+        "size_bytes": 7604
+      },
+      {
+        "path": "exp/jatm_s34/q4_year_run.py",
+        "sha256": "5a3f804726bbd2d999d4cdc2e33016b66e461d67fd8eb7100a4a66450b90cd2e",
+        "size_bytes": 10435
+      },
+      {
+        "path": "exp/jatm_section5/run_development.py",
+        "sha256": "911f4cf022cbc8b00b9b3feeef80cf0db5d5fa685860ca9beec574f067e73c12",
+        "size_bytes": 39159
+      },
+      {
+        "path": "Q4_OVERLAY_IDENTITY.json",
+        "sha256": "7445a717a3f95b12f6f3da0d2f22d474f37487a468859a426f8ee96bc31286a5",
+        "size_bytes": 675
+      },
+      {
+        "path": "tests/contract/test_jatm_s34_q4_runtime.py",
+        "sha256": "fe73149a7750591a5e561b72d6ad38877931a857269afcd49116034b6c347747",
+        "size_bytes": 4320
+      },
+      {
+        "path": "validation/v2_phase5/families.py",
+        "sha256": "f74021b3ece038a19d06251a1e1e3363bbf0764b3f25112ca4d32ea7a7d0e996",
+        "size_bytes": 40755
+      }
+    ],
+    "source_bundle_sha256": "1553fd994526a706b53296919f771f225841ff31e178701a8226cb23f23df5be"
+  },
+  "q4_source_content_scanned": false,
+  "runtime": {
+    "local_python": "3.11.6",
+    "source_requirements_sha256": "8a3f164000cb1df33861778520237db4c7d5e2413ecd660b743936d9d2e75ac3",
+    "target_python": "3.11"
+  },
+  "schema_version": "JATM_S34_Q4_PRE_RUN_BINDING_V1",
+  "scope": {
+    "bootstrap_replicates": 2000,
+    "consequence_continuity": "LEGACY_A_V1",
+    "n_grid": [
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "parallel_year_workers": 3,
+    "selected_episodes_per_year": 4096,
+    "split": "test",
+    "years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022
+    ]
+  }
+}

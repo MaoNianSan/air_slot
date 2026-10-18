@@ -1,0 +1,25 @@
+{
+  "boundary_candidates": 3472,
+  "cross_split_by_pool": {
+    "calibration": 1418,
+    "development": 1205,
+    "train": 849
+  },
+  "cross_split_removed_episodes": 3472,
+  "cross_split_removed_nodes": 64888,
+  "cross_split_removed_nodes_by_pool": {
+    "calibration": 25918,
+    "development": 24071,
+    "train": 14899
+  },
+  "episodes_scanned": 866746,
+  "same_split_cross_month_allowed": 92,
+  "seconds": 730.7,
+  "stage": "3_SPLIT_CONTAINMENT_CLOSURE",
+  "transitions": {
+    "CALIBRATION_TO_DEVELOPMENT": 1477,
+    "DEVELOPMENT_TO_FINAL_TEST": 1107,
+    "TRAIN_TO_CALIBRATION": 888
+  },
+  "year": 2020
+}

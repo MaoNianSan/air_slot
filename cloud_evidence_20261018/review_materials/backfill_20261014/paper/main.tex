@@ -1,0 +1,45 @@
+\documentclass[a4paper,fleqn]{cas-sc}
+
+\usepackage[authoryear,longnamesfirst]{natbib}
+
+\input{preamble}
+
+\begin{document}
+
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
+
+\shorttitle{Operational Information and Decision Value in Rolling Airline Recovery}
+\shortauthors{Chen}
+
+\title[mode=title]{Operational Information and Decision Value in Rolling Airline Recovery: From Recovery Screening to Local Recovery}
+
+\author[1]{Zhangliang Chen}
+
+\input{sections/00_abstract}
+
+\begin{keywords}
+ airline recovery
+ \sep operational information
+ \sep recovery screening
+ \sep decision support
+ \sep uncertainty representation
+ \sep rolling decision-making
+\end{keywords}
+
+\maketitle
+
+\input{sections/01_intro}
+\input{sections/02_literature_review}
+\input{sections/03_methodology}
+\input{sections/04_implement}
+\input{sections/05_experiment}
+\input{sections/06_discussion}
+\input{sections/07_conclusion}
+
+\bibliographystyle{cas-model2-names}
+\bibliography{references}
+
+
+\end{document}

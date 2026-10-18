@@ -1,0 +1,39 @@
+{
+  "schema_version": "LARGE_ARTIFACT_RELEASE_MANIFEST_V1",
+  "created_at": "2026-10-03",
+  "scope": "artifacts/models/pre/PRE_MULTIYEAR_V1/",
+  "reason": "The 2019-H1 / 2020-H1 expected-passenger reference payloads exceed GitHub's 100 MB per-file hard limit. They are published as GitHub Release assets instead of git objects; the paths remain listed in .gitignore and must not be committed. They are regenerable via the passenger-reference freeze pipeline.",
+  "release": {
+    "repository": "MaoNianSan/air_slot",
+    "tag": "large-artifacts-stage-matched-20261003",
+    "url": "https://github.com/MaoNianSan/air_slot/releases/tag/large-artifacts-stage-matched-20261003"
+  },
+  "restore": {
+    "note": "Download each asset and place it at repository_path (relative to the repository root).",
+    "verify_windows": "Get-FileHash -LiteralPath <path> -Algorithm SHA256",
+    "verify_posix": "sha256sum <path>"
+  },
+  "artifacts": [
+    {
+      "repository_path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2019-H1.json",
+      "asset_name": "M2_EXPECTED_PASSENGERS_REFERENCE_2019-H1.json",
+      "bytes": 173835687,
+      "sha256": "7317630af77d11c31284f2cb63646508cd34ee1a5ba837837050749cf421cb8a"
+    },
+    {
+      "repository_path": "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2020-H1.json",
+      "asset_name": "M2_EXPECTED_PASSENGERS_REFERENCE_2020-H1.json",
+      "bytes": 140570999,
+      "sha256": "5ac91077881964eb59a84b178bf01cbe9e9941c10798c874be5d2fd6c3d372f7"
+    }
+  ],
+  "versioned_in_git": {
+    "note": "Smaller payloads from the same multi-year PRE run stay in version control.",
+    "directory": "artifacts/models/pre/PRE_MULTIYEAR_V1/",
+    "example_files": [
+      "2019/M2_REFERENCES/M2_CONNECTION_SHARE_REFERENCE_2019-H1.json",
+      "2019/PRE_FORMAL_DEVELOPMENT_STATES.jsonl",
+      "2019/REFERENCE_HISTOGRAMS.json"
+    ]
+  }
+}

@@ -1,0 +1,362 @@
+[
+  {
+    "cohort_pool_counts": {
+      "calibration": 4096,
+      "development": 4096,
+      "train": 4096
+    },
+    "cohort_sha256": "sha256:7ce01d55b5ef73a3b58ac354c4045119a3a0c2ece6db2200a6c5b1304256f429",
+    "development_episode_count": 4096,
+    "effective_model_counts": {
+      "calibration": 2048,
+      "train": 4096
+    },
+    "final_test_access_count": 0,
+    "models": {
+      "M1_CURRENT_COMPARATOR": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 30117,
+        "checkpoint": "artifacts/models/m1/YEAR_2017/M1_CURRENT_COMPARATOR.pt",
+        "checkpoint_hash": "sha256:8233a59b402dda38b46665334115cba358667620549f1f132ae02884f8f02e01",
+        "created_at_utc": "2026-10-11T16:04:46.584444+00:00",
+        "development_node_count": 56079,
+        "final_test_access_count": 0,
+        "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:b38df957b221ab9fb1f8fced79bc204909e2878018677792f7cbb40412140307",
+        "n": 4096,
+        "role": "M1_CURRENT_COMPARATOR",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 57383,
+        "year": 2017
+      },
+      "M1_HISTORY_PRIMARY": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 30117,
+        "checkpoint": "artifacts/models/m1/YEAR_2017/M1_HISTORY_PRIMARY.pt",
+        "checkpoint_hash": "sha256:ea9f070964747929573b382ce912d0589d5eaaf92ecef5757cf70098a869b504",
+        "created_at_utc": "2026-10-11T16:02:06.077743+00:00",
+        "development_node_count": 56079,
+        "final_test_access_count": 0,
+        "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:107c36714ff01e91b5d131a3b76acc954aee45cec76a1819d53e3d564db3024d",
+        "n": 4096,
+        "role": "M1_HISTORY_PRIMARY",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 57383,
+        "year": 2017
+      }
+    },
+    "reason": "[Errno 2] No such file or directory: 'D:\\\\Local_Projects\\\\airslot\\\\review_v64_20261014\\\\q4_extension\\\\code\\\\artifacts\\\\models\\\\pre\\\\PRE_MULTIYEAR_V1_D4_2017H1_R2\\\\2017\\\\M2_REFERENCES\\\\M2_REFERENCE_BUNDLE_MANIFEST.json'",
+    "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+    "status": "DATA_INSUFFICIENT",
+    "year": 2017
+  },
+  {
+    "cohort_pool_counts": {
+      "calibration": 4096,
+      "development": 4096,
+      "train": 4096
+    },
+    "cohort_sha256": "sha256:48bebf1c80baa720dc5dc94d07bda5533838f0063ddfbb993c9056435d5b3c16",
+    "development_episode_count": 4096,
+    "effective_model_counts": {
+      "calibration": 2048,
+      "train": 4096
+    },
+    "final_test_access_count": 0,
+    "models": {
+      "M1_CURRENT_COMPARATOR": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 29527,
+        "checkpoint": "artifacts/models/m1/YEAR_2018/M1_CURRENT_COMPARATOR.pt",
+        "checkpoint_hash": "sha256:a11af75719b0443870ea24836e7464e3b3553b7b7d66088a7a77152dd445abb7",
+        "created_at_utc": "2026-10-11T16:05:04.362965+00:00",
+        "development_node_count": 57940,
+        "final_test_access_count": 0,
+        "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:8a4618aad83e655094bc191739a104b499d33a3b74d8f0d428f81bc8c7ca3a4b",
+        "n": 4096,
+        "role": "M1_CURRENT_COMPARATOR",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 57772,
+        "year": 2018
+      },
+      "M1_HISTORY_PRIMARY": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 29527,
+        "checkpoint": "artifacts/models/m1/YEAR_2018/M1_HISTORY_PRIMARY.pt",
+        "checkpoint_hash": "sha256:2a2f3db0ee543a27cfac24d0762745bb9c372365e4ec7ee0076208e2f8e84b31",
+        "created_at_utc": "2026-10-11T16:02:20.509451+00:00",
+        "development_node_count": 57940,
+        "final_test_access_count": 0,
+        "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:363c3327479e45260698c10eabade40f2bfbc33bc8ff8e619c68505b60bfdc64",
+        "n": 4096,
+        "role": "M1_HISTORY_PRIMARY",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 57772,
+        "year": 2018
+      }
+    },
+    "reason": "[Errno 2] No such file or directory: 'D:\\\\Local_Projects\\\\airslot\\\\review_v64_20261014\\\\q4_extension\\\\code\\\\artifacts\\\\models\\\\pre\\\\PRE_MULTIYEAR_V1_D4_2017H1_R2\\\\2017\\\\M2_REFERENCES\\\\M2_REFERENCE_BUNDLE_MANIFEST.json'",
+    "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+    "status": "DATA_INSUFFICIENT",
+    "year": 2018
+  },
+  {
+    "cohort_pool_counts": {
+      "calibration": 4096,
+      "development": 4096,
+      "train": 4096
+    },
+    "cohort_sha256": "sha256:b6007ffd91d76740bb282409e9f6f81d52af68cabd675ee18afdf236743ff1e6",
+    "development_episode_count": 4096,
+    "effective_model_counts": {
+      "calibration": 2048,
+      "train": 4096
+    },
+    "final_test_access_count": 0,
+    "models": {
+      "M1_CURRENT_COMPARATOR": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 31940,
+        "checkpoint": "artifacts/models/m1/YEAR_2019/M1_CURRENT_COMPARATOR.pt",
+        "checkpoint_hash": "sha256:02d8ed9b5b3d09d8449c3454084f66a3bff3b61b3025338785d048abb981e81d",
+        "created_at_utc": "2026-10-13T07:59:46.720780+00:00",
+        "development_node_count": 58554,
+        "final_test_access_count": 0,
+        "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:e4626b99fe79b64a617531539410f63dc405dc7b49f6112f7ed04c869098c687",
+        "n": 4096,
+        "role": "M1_CURRENT_COMPARATOR",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 59737,
+        "year": 2019
+      },
+      "M1_HISTORY_PRIMARY": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 31940,
+        "checkpoint": "artifacts/models/m1/YEAR_2019/M1_HISTORY_PRIMARY.pt",
+        "checkpoint_hash": "sha256:1ec3580812a733b7bb077df54ec429dfc194da89d5b4d0dccf97d66cfebb6113",
+        "created_at_utc": "2026-10-13T07:58:56.064052+00:00",
+        "development_node_count": 58554,
+        "final_test_access_count": 0,
+        "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:afb5a2f4a7fb83cb708d988d9ba89a90d42ba2e643cb0d736e07a11e7ab148b9",
+        "n": 4096,
+        "role": "M1_HISTORY_PRIMARY",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 59737,
+        "year": 2019
+      }
+    },
+    "reason": "[Errno 2] No such file or directory: 'D:\\\\Local_Projects\\\\airslot\\\\review_v64_20261014\\\\q4_extension\\\\code\\\\artifacts\\\\models\\\\pre\\\\PRE_MULTIYEAR_V1_D4_2017H1_R2\\\\2017\\\\M2_REFERENCES\\\\M2_REFERENCE_BUNDLE_MANIFEST.json'",
+    "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+    "status": "DATA_INSUFFICIENT",
+    "year": 2019
+  },
+  {
+    "cohort_pool_counts": {
+      "calibration": 4096,
+      "development": 4096,
+      "train": 4096
+    },
+    "cohort_sha256": "sha256:3388e32aa404fdb8ac0cd49afd4830a13e289dd4a5fe27528c82d9a6370551c2",
+    "development_episode_count": 4096,
+    "effective_model_counts": {
+      "calibration": 2048,
+      "train": 4096
+    },
+    "final_test_access_count": 0,
+    "models": {
+      "M1_CURRENT_COMPARATOR": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 32683,
+        "checkpoint": "artifacts/models/m1/YEAR_2020/M1_CURRENT_COMPARATOR.pt",
+        "checkpoint_hash": "sha256:5ecaa967587b2bb6d32b8e4c920f5a8028f396ac7a129231d3be72c019391ac2",
+        "created_at_utc": "2026-10-13T08:12:15.287159+00:00",
+        "development_node_count": 65715,
+        "final_test_access_count": 0,
+        "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:fd134cbae676fbf37f7cf3c1380da33f1702c63559faed1e1144dbdfa95db4f0",
+        "n": 4096,
+        "role": "M1_CURRENT_COMPARATOR",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 60752,
+        "year": 2020
+      },
+      "M1_HISTORY_PRIMARY": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 32683,
+        "checkpoint": "artifacts/models/m1/YEAR_2020/M1_HISTORY_PRIMARY.pt",
+        "checkpoint_hash": "sha256:8c6bc43990aa461272f49fb6c3fd71848db1b39b280b560d2ccdfbd6875ee7ba",
+        "created_at_utc": "2026-10-13T08:11:38.566773+00:00",
+        "development_node_count": 65715,
+        "final_test_access_count": 0,
+        "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:06141b9fef3ca41addd62723634ea24c9dfec044b66e717f5048e24f13f44fdf",
+        "n": 4096,
+        "role": "M1_HISTORY_PRIMARY",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 60752,
+        "year": 2020
+      }
+    },
+    "reason": "[Errno 2] No such file or directory: 'D:\\\\Local_Projects\\\\airslot\\\\review_v64_20261014\\\\q4_extension\\\\code\\\\artifacts\\\\models\\\\pre\\\\PRE_MULTIYEAR_V1_D4_2017H1_R2\\\\2017\\\\M2_REFERENCES\\\\M2_REFERENCE_BUNDLE_MANIFEST.json'",
+    "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+    "status": "DATA_INSUFFICIENT",
+    "year": 2020
+  },
+  {
+    "cohort_pool_counts": {
+      "calibration": 4096,
+      "development": 4096,
+      "train": 4096
+    },
+    "cohort_sha256": "sha256:52df60f31cae4dabd6b5653502488197d1bc294ede84216f72c3e3430fea818a",
+    "development_episode_count": 4096,
+    "effective_model_counts": {
+      "calibration": 2048,
+      "train": 4096
+    },
+    "final_test_access_count": 0,
+    "models": {
+      "M1_CURRENT_COMPARATOR": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 32326,
+        "checkpoint": "artifacts/models/m1/YEAR_2021/M1_CURRENT_COMPARATOR.pt",
+        "checkpoint_hash": "sha256:26cec4eafe5e4dd5fcdb4ec77739104fa0bf76fd883934fb07f8c7b1e8c13357",
+        "created_at_utc": "2026-10-13T08:12:42.880076+00:00",
+        "development_node_count": 63784,
+        "final_test_access_count": 0,
+        "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:83c9309abc02bf429309dd267a908b193e3d859254f90a242ebebcdeef76003c",
+        "n": 4096,
+        "role": "M1_CURRENT_COMPARATOR",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 64572,
+        "year": 2021
+      },
+      "M1_HISTORY_PRIMARY": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 32326,
+        "checkpoint": "artifacts/models/m1/YEAR_2021/M1_HISTORY_PRIMARY.pt",
+        "checkpoint_hash": "sha256:7a89b888ca06eb5bdc75290b3b0547e715cc7c63cd4066c64cdeb256fe60e224",
+        "created_at_utc": "2026-10-13T08:11:55.749841+00:00",
+        "development_node_count": 63784,
+        "final_test_access_count": 0,
+        "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:57f5307ab63f9930a3fa6a9e51b00a6ebcfd229fc05d7d92b74c86befb58e04d",
+        "n": 4096,
+        "role": "M1_HISTORY_PRIMARY",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 64572,
+        "year": 2021
+      }
+    },
+    "reason": "[Errno 2] No such file or directory: 'D:\\\\Local_Projects\\\\airslot\\\\review_v64_20261014\\\\q4_extension\\\\code\\\\artifacts\\\\models\\\\pre\\\\PRE_MULTIYEAR_V1_D4_2017H1_R2\\\\2017\\\\M2_REFERENCES\\\\M2_REFERENCE_BUNDLE_MANIFEST.json'",
+    "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+    "status": "DATA_INSUFFICIENT",
+    "year": 2021
+  },
+  {
+    "cohort_pool_counts": {
+      "calibration": 4096,
+      "development": 4096,
+      "train": 4096
+    },
+    "cohort_sha256": "sha256:19e87c530470cd36d1a9c7ec5bb285b0d6a4cb146cfcc7f35dfd4c94f4a85a2f",
+    "development_episode_count": 4096,
+    "effective_model_counts": {
+      "calibration": 2048,
+      "train": 4096
+    },
+    "final_test_access_count": 0,
+    "models": {
+      "M1_CURRENT_COMPARATOR": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 33504,
+        "checkpoint": "artifacts/models/m1/YEAR_2022/M1_CURRENT_COMPARATOR.pt",
+        "checkpoint_hash": "sha256:12329688ac6ae5d49fe1e588f82d6da283eaacd17e7607c298188b29043c285c",
+        "created_at_utc": "2026-10-13T08:13:29.276269+00:00",
+        "development_node_count": 65773,
+        "final_test_access_count": 0,
+        "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:fe5c44a0a371291cad3a3cd5bbf505d3c234b790bc1f4174ccd1da89eee99671",
+        "n": 4096,
+        "role": "M1_CURRENT_COMPARATOR",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 66547,
+        "year": 2022
+      },
+      "M1_HISTORY_PRIMARY": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 33504,
+        "checkpoint": "artifacts/models/m1/YEAR_2022/M1_HISTORY_PRIMARY.pt",
+        "checkpoint_hash": "sha256:03bb441eb96fb4fd535f4e1a29fa970f15b4fea21bf4858172fc1a39ffe3ef39",
+        "created_at_utc": "2026-10-13T08:12:37.208744+00:00",
+        "development_node_count": 65773,
+        "final_test_access_count": 0,
+        "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+        "m5b_n128_pilot_reused": false,
+        "manifest_sha256": "sha256:4cbf5e5bd11dbdbcc8222e4bb1c1ab374ede1c3a886a479f1fb04a08e45d82a8",
+        "n": 4096,
+        "role": "M1_HISTORY_PRIMARY",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 66547,
+        "year": 2022
+      }
+    },
+    "reason": "[Errno 2] No such file or directory: 'D:\\\\Local_Projects\\\\airslot\\\\review_v64_20261014\\\\q4_extension\\\\code\\\\artifacts\\\\models\\\\pre\\\\PRE_MULTIYEAR_V1_D4_2017H1_R2\\\\2017\\\\M2_REFERENCES\\\\M2_REFERENCE_BUNDLE_MANIFEST.json'",
+    "scope": "TRAIN_CALIBRATION_DEVELOPMENT_ONLY",
+    "status": "DATA_INSUFFICIENT",
+    "year": 2022
+  }
+]

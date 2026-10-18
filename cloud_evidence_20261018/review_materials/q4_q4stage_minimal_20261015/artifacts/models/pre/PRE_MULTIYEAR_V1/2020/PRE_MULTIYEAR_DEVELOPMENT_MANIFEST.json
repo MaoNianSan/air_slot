@@ -1,0 +1,102 @@
+{
+  "cohort_audit": {
+    "additional_development_episode_count": 0,
+    "cohort_counts": {
+      "calibration": 64,
+      "development": 128,
+      "test": 0,
+      "train": 128
+    },
+    "cohort_seed": 20260813,
+    "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+    "final_test_access_count": 0,
+    "ontime_rows_by_month": {
+      "01": 591372,
+      "02": 560960,
+      "03": 530264,
+      "04": 180992,
+      "05": 166935,
+      "06": 219372,
+      "07": 343277,
+      "08": 366366,
+      "09": 316979
+    },
+    "ontime_rows_skipped": 324007,
+    "pool_sizes": {
+      "calibration": 239916,
+      "development": 477873,
+      "test": 0,
+      "train": 1637411
+    },
+    "pre_decision_nodes": {
+      "calibration": 1113,
+      "development": 1954,
+      "train": 2077
+    },
+    "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+    "sampled_episodes": {
+      "calibration": 64,
+      "development": 128,
+      "train": 128
+    },
+    "stage_counts": {
+      "calibration": {
+        "COMPLETED": 8,
+        "POST_IB_PRE_OB": 985,
+        "POST_OB_PRE_TO": 76,
+        "PRE_IB": 44
+      },
+      "development": {
+        "COMPLETED": 8,
+        "POST_IB_PRE_OB": 1679,
+        "POST_OB_PRE_TO": 145,
+        "PRE_IB": 122
+      },
+      "train": {
+        "COMPLETED": 14,
+        "POST_IB_PRE_OB": 1784,
+        "POST_OB_PRE_TO": 157,
+        "PRE_IB": 122
+      }
+    },
+    "total_episode_pool": 2355200,
+    "weather": {
+      "accepted_train_calibration_development_observations": 475111,
+      "airports": 48,
+      "final_test_access_count": 0
+    }
+  },
+  "created_at_utc": "2026-09-28T23:06:35+00:00",
+  "dataset_instance_id": "data2_2017_2022",
+  "development_episode_count": 128,
+  "development_node_count": 1954,
+  "final_test_access_count": 0,
+  "pool_sizes": {
+    "calibration": 239916,
+    "development": 477873,
+    "test": 0,
+    "train": 1637411
+  },
+  "prestate_count": 1954,
+  "sampled_counts": {
+    "calibration": 64,
+    "development": 128,
+    "test": 0,
+    "train": 128
+  },
+  "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+  "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+  "taxi_reference": {
+    "cells_count": 353,
+    "fit_period": "2020-H1",
+    "global_sample_count": 2249895,
+    "reference_id": "sha256:0263777bbf6575312712693ae48dbad1ceb2a6df8848e85cfd0d2c3c924118de"
+  },
+  "turnaround_reference": {
+    "cells_count": 352,
+    "fit_period": "2020-H1",
+    "global_sample_count": 1638260,
+    "reference_id": "sha256:7cfc47e439d0b9035ad147b0867387ea11135483e079d1f689f4b9efc18bbfa2"
+  },
+  "year": 2020
+}

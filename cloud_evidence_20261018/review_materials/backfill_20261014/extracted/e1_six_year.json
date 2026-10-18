@@ -1,0 +1,4046 @@
+{
+  "2017": {
+    "artifact_hash": "sha256:749d2817bfc993bb375f19367281c6f2a3b09db8dbee9825288cc635bf324c0e",
+    "bootstrap": {
+      "cluster": "episode",
+      "replicates": 2000,
+      "seed_base": 20261011,
+      "with_replacement": true
+    },
+    "candidate_exclusions": {},
+    "common_candidate_counts": {
+      "PRE": 1310,
+      "TURN": 3899
+    },
+    "final_test_access_count": 0,
+    "node_count": 52613,
+    "nominal_q010": {
+      "PRE": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 1310,
+          "k": 131,
+          "n": 1310,
+          "overlap": 131,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.10539325316862776,
+            "overlap": 49,
+            "replacement": -49,
+            "retained_consequence": 0.1053932531686278
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 14.955375,
+          "abstain": 0,
+          "attention_loss": 0.105393,
+          "attention_loss_ci": {
+            "high": 0.135963,
+            "low": 0.082672
+          },
+          "candidate_total": 1310,
+          "k": 131,
+          "n": 1310,
+          "overlap": 82,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 49,
+          "replacement_ci": {
+            "high": 59.0,
+            "low": 42.0
+          },
+          "retained_consequence": 0.894607,
+          "retained_consequence_ci": {
+            "high": 0.917328,
+            "low": 0.864037
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 14.955375,
+          "abstain": 0,
+          "attention_loss": 0.105393,
+          "attention_loss_ci": {
+            "high": 0.136044,
+            "low": 0.081766
+          },
+          "candidate_total": 1310,
+          "k": 131,
+          "n": 1310,
+          "overlap": 82,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 49,
+          "replacement_ci": {
+            "high": 59.025,
+            "low": 42.0
+          },
+          "retained_consequence": 0.894607,
+          "retained_consequence_ci": {
+            "high": 0.918234,
+            "low": 0.863956
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 8.888936,
+          "abstain": 0,
+          "attention_loss": 0.062642,
+          "attention_loss_ci": {
+            "high": 0.085449,
+            "low": 0.04656
+          },
+          "candidate_total": 1310,
+          "k": 131,
+          "n": 1310,
+          "overlap": 91,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.04275130138563468,
+            "overlap": 9,
+            "replacement": -9,
+            "retained_consequence": 0.042751301385634766
+          },
+          "replacement": 40,
+          "replacement_ci": {
+            "high": 49.0,
+            "low": 32.0
+          },
+          "retained_consequence": 0.937358,
+          "retained_consequence_ci": {
+            "high": 0.95344,
+            "low": 0.914551
+          }
+        }
+      },
+      "TURN": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 3899,
+          "k": 390,
+          "n": 3899,
+          "overlap": 390,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.1158656643305838,
+            "overlap": 166,
+            "replacement": -166,
+            "retained_consequence": 0.11586566433058376
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 48.007513,
+          "abstain": 0,
+          "attention_loss": 0.115866,
+          "attention_loss_ci": {
+            "high": 0.129774,
+            "low": 0.09906
+          },
+          "candidate_total": 3899,
+          "k": 390,
+          "n": 3899,
+          "overlap": 224,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 166,
+          "replacement_ci": {
+            "high": 179.0,
+            "low": 149.0
+          },
+          "retained_consequence": 0.884134,
+          "retained_consequence_ci": {
+            "high": 0.90094,
+            "low": 0.870226
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 48.007513,
+          "abstain": 0,
+          "attention_loss": 0.115866,
+          "attention_loss_ci": {
+            "high": 0.129634,
+            "low": 0.100075
+          },
+          "candidate_total": 3899,
+          "k": 390,
+          "n": 3899,
+          "overlap": 224,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 166,
+          "replacement_ci": {
+            "high": 179.0,
+            "low": 148.0
+          },
+          "retained_consequence": 0.884134,
+          "retained_consequence_ci": {
+            "high": 0.899925,
+            "low": 0.870366
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 29.613174,
+          "abstain": 0,
+          "attention_loss": 0.071471,
+          "attention_loss_ci": {
+            "high": 0.083387,
+            "low": 0.059416
+          },
+          "candidate_total": 3899,
+          "k": 390,
+          "n": 3899,
+          "overlap": 264,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.04439455727521914,
+            "overlap": 40,
+            "replacement": -40,
+            "retained_consequence": 0.044394557275219126
+          },
+          "replacement": 126,
+          "replacement_ci": {
+            "high": 141.0,
+            "low": 112.0
+          },
+          "retained_consequence": 0.928529,
+          "retained_consequence_ci": {
+            "high": 0.940584,
+            "low": 0.916613
+          }
+        }
+      }
+    },
+    "q_grid": [
+      {
+        "attention_loss": 0.136632,
+        "ci_high": 0.187016,
+        "ci_low": 0.108143,
+        "k": 66,
+        "n": 1310,
+        "overlap": 36,
+        "q": 0.05,
+        "replacement": 30,
+        "retained_consequence": 0.863368,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.100424,
+        "ci_high": 0.13077,
+        "ci_low": 0.070116,
+        "k": 66,
+        "n": 1310,
+        "overlap": 41,
+        "q": 0.05,
+        "replacement": 25,
+        "retained_consequence": 0.899576,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.136632,
+        "ci_high": 0.192238,
+        "ci_low": 0.108383,
+        "k": 66,
+        "n": 1310,
+        "overlap": 36,
+        "q": 0.05,
+        "replacement": 30,
+        "retained_consequence": 0.863368,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 66,
+        "n": 1310,
+        "overlap": 66,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.105393,
+        "ci_high": 0.135963,
+        "ci_low": 0.082672,
+        "k": 131,
+        "n": 1310,
+        "overlap": 82,
+        "q": 0.1,
+        "replacement": 49,
+        "retained_consequence": 0.894607,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.062642,
+        "ci_high": 0.085449,
+        "ci_low": 0.04656,
+        "k": 131,
+        "n": 1310,
+        "overlap": 91,
+        "q": 0.1,
+        "replacement": 40,
+        "retained_consequence": 0.937358,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.105393,
+        "ci_high": 0.136044,
+        "ci_low": 0.081766,
+        "k": 131,
+        "n": 1310,
+        "overlap": 82,
+        "q": 0.1,
+        "replacement": 49,
+        "retained_consequence": 0.894607,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 131,
+        "n": 1310,
+        "overlap": 131,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.075999,
+        "ci_high": 0.091843,
+        "ci_low": 0.06241,
+        "k": 262,
+        "n": 1310,
+        "overlap": 181,
+        "q": 0.2,
+        "replacement": 81,
+        "retained_consequence": 0.924001,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.056923,
+        "ci_high": 0.072543,
+        "ci_low": 0.045223,
+        "k": 262,
+        "n": 1310,
+        "overlap": 198,
+        "q": 0.2,
+        "replacement": 64,
+        "retained_consequence": 0.943077,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.075999,
+        "ci_high": 0.091834,
+        "ci_low": 0.062478,
+        "k": 262,
+        "n": 1310,
+        "overlap": 181,
+        "q": 0.2,
+        "replacement": 81,
+        "retained_consequence": 0.924001,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 262,
+        "n": 1310,
+        "overlap": 262,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.065985,
+        "ci_high": 0.077021,
+        "ci_low": 0.053946,
+        "k": 393,
+        "n": 1310,
+        "overlap": 296,
+        "q": 0.3,
+        "replacement": 97,
+        "retained_consequence": 0.934015,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.062227,
+        "ci_high": 0.073598,
+        "ci_low": 0.051155,
+        "k": 393,
+        "n": 1310,
+        "overlap": 306,
+        "q": 0.3,
+        "replacement": 87,
+        "retained_consequence": 0.937773,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.066251,
+        "ci_high": 0.076275,
+        "ci_low": 0.053319,
+        "k": 393,
+        "n": 1310,
+        "overlap": 296,
+        "q": 0.3,
+        "replacement": 97,
+        "retained_consequence": 0.933749,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 393,
+        "n": 1310,
+        "overlap": 393,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.137401,
+        "ci_high": 0.164604,
+        "ci_low": 0.11641,
+        "k": 195,
+        "n": 3899,
+        "overlap": 103,
+        "q": 0.05,
+        "replacement": 92,
+        "retained_consequence": 0.862599,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.093363,
+        "ci_high": 0.11164,
+        "ci_low": 0.075839,
+        "k": 195,
+        "n": 3899,
+        "overlap": 116,
+        "q": 0.05,
+        "replacement": 79,
+        "retained_consequence": 0.906637,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.137401,
+        "ci_high": 0.163693,
+        "ci_low": 0.116278,
+        "k": 195,
+        "n": 3899,
+        "overlap": 103,
+        "q": 0.05,
+        "replacement": 92,
+        "retained_consequence": 0.862599,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 195,
+        "n": 3899,
+        "overlap": 195,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.115866,
+        "ci_high": 0.129774,
+        "ci_low": 0.09906,
+        "k": 390,
+        "n": 3899,
+        "overlap": 224,
+        "q": 0.1,
+        "replacement": 166,
+        "retained_consequence": 0.884134,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.071471,
+        "ci_high": 0.083387,
+        "ci_low": 0.059416,
+        "k": 390,
+        "n": 3899,
+        "overlap": 264,
+        "q": 0.1,
+        "replacement": 126,
+        "retained_consequence": 0.928529,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.115866,
+        "ci_high": 0.129634,
+        "ci_low": 0.100075,
+        "k": 390,
+        "n": 3899,
+        "overlap": 224,
+        "q": 0.1,
+        "replacement": 166,
+        "retained_consequence": 0.884134,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 390,
+        "n": 3899,
+        "overlap": 390,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.079099,
+        "ci_high": 0.087134,
+        "ci_low": 0.069771,
+        "k": 780,
+        "n": 3899,
+        "overlap": 554,
+        "q": 0.2,
+        "replacement": 226,
+        "retained_consequence": 0.920901,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.064419,
+        "ci_high": 0.073107,
+        "ci_low": 0.056529,
+        "k": 780,
+        "n": 3899,
+        "overlap": 578,
+        "q": 0.2,
+        "replacement": 202,
+        "retained_consequence": 0.935581,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.077062,
+        "ci_high": 0.086709,
+        "ci_low": 0.069196,
+        "k": 780,
+        "n": 3899,
+        "overlap": 557,
+        "q": 0.2,
+        "replacement": 223,
+        "retained_consequence": 0.922938,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 780,
+        "n": 3899,
+        "overlap": 780,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.061723,
+        "ci_high": 0.068848,
+        "ci_low": 0.055353,
+        "k": 1170,
+        "n": 3899,
+        "overlap": 904,
+        "q": 0.3,
+        "replacement": 266,
+        "retained_consequence": 0.938277,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.063322,
+        "ci_high": 0.070075,
+        "ci_low": 0.056731,
+        "k": 1170,
+        "n": 3899,
+        "overlap": 903,
+        "q": 0.3,
+        "replacement": 267,
+        "retained_consequence": 0.936678,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.061281,
+        "ci_high": 0.06844,
+        "ci_low": 0.054865,
+        "k": 1170,
+        "n": 3899,
+        "overlap": 906,
+        "q": 0.3,
+        "replacement": 264,
+        "retained_consequence": 0.938719,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 1170,
+        "n": 3899,
+        "overlap": 1170,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2017
+  },
+  "2018": {
+    "artifact_hash": "sha256:d863ceeebeae361bb6128504bf1946ffbbca2e4412bb6d89eba8e61b4461f4f0",
+    "bootstrap": {
+      "cluster": "episode",
+      "replicates": 2000,
+      "seed_base": 20261011,
+      "with_replacement": true
+    },
+    "candidate_exclusions": {},
+    "common_candidate_counts": {
+      "PRE": 1345,
+      "TURN": 3873
+    },
+    "final_test_access_count": 0,
+    "node_count": 54461,
+    "nominal_q010": {
+      "PRE": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 1345,
+          "k": 135,
+          "n": 1345,
+          "overlap": 135,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.16066918738434624,
+            "overlap": 62,
+            "replacement": -62,
+            "retained_consequence": 0.1606691873843462
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 20.953758,
+          "abstain": 0,
+          "attention_loss": 0.160669,
+          "attention_loss_ci": {
+            "high": 0.195092,
+            "low": 0.123279
+          },
+          "candidate_total": 1345,
+          "k": 135,
+          "n": 1345,
+          "overlap": 73,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 62,
+          "replacement_ci": {
+            "high": 69.0,
+            "low": 50.0
+          },
+          "retained_consequence": 0.839331,
+          "retained_consequence_ci": {
+            "high": 0.876721,
+            "low": 0.804908
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 20.90275,
+          "abstain": 0,
+          "attention_loss": 0.160278,
+          "attention_loss_ci": {
+            "high": 0.193053,
+            "low": 0.124498
+          },
+          "candidate_total": 1345,
+          "k": 135,
+          "n": 1345,
+          "overlap": 73,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.0003911139901664751,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0003911139901664473
+          },
+          "replacement": 62,
+          "replacement_ci": {
+            "high": 68.0,
+            "low": 50.0
+          },
+          "retained_consequence": 0.839722,
+          "retained_consequence_ci": {
+            "high": 0.875502,
+            "low": 0.806947
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 11.438694,
+          "abstain": 0,
+          "attention_loss": 0.08771,
+          "attention_loss_ci": {
+            "high": 0.111247,
+            "low": 0.063639
+          },
+          "candidate_total": 1345,
+          "k": 135,
+          "n": 1345,
+          "overlap": 90,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.07295958604020275,
+            "overlap": 17,
+            "replacement": -17,
+            "retained_consequence": 0.0729595860402027
+          },
+          "replacement": 45,
+          "replacement_ci": {
+            "high": 51.0,
+            "low": 35.0
+          },
+          "retained_consequence": 0.91229,
+          "retained_consequence_ci": {
+            "high": 0.936361,
+            "low": 0.888753
+          }
+        }
+      },
+      "TURN": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 3873,
+          "k": 388,
+          "n": 3873,
+          "overlap": 388,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.14761124881683865,
+            "overlap": 173,
+            "replacement": -173,
+            "retained_consequence": 0.14761124881683862
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 54.173731,
+          "abstain": 0,
+          "attention_loss": 0.147611,
+          "attention_loss_ci": {
+            "high": 0.166549,
+            "low": 0.127967
+          },
+          "candidate_total": 3873,
+          "k": 388,
+          "n": 3873,
+          "overlap": 215,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 173,
+          "replacement_ci": {
+            "high": 189.0,
+            "low": 157.0
+          },
+          "retained_consequence": 0.852389,
+          "retained_consequence_ci": {
+            "high": 0.872033,
+            "low": 0.833451
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 53.878509,
+          "abstain": 0,
+          "attention_loss": 0.146807,
+          "attention_loss_ci": {
+            "high": 0.166681,
+            "low": 0.128375
+          },
+          "candidate_total": 3873,
+          "k": 388,
+          "n": 3873,
+          "overlap": 215,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.0008044156497923061,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0008044156497922783
+          },
+          "replacement": 173,
+          "replacement_ci": {
+            "high": 187.0,
+            "low": 156.0
+          },
+          "retained_consequence": 0.853193,
+          "retained_consequence_ci": {
+            "high": 0.871625,
+            "low": 0.833319
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 38.645759,
+          "abstain": 0,
+          "attention_loss": 0.105301,
+          "attention_loss_ci": {
+            "high": 0.121853,
+            "low": 0.089393
+          },
+          "candidate_total": 3873,
+          "k": 388,
+          "n": 3873,
+          "overlap": 250,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.042310235816435976,
+            "overlap": 35,
+            "replacement": -35,
+            "retained_consequence": 0.04231023581643589
+          },
+          "replacement": 138,
+          "replacement_ci": {
+            "high": 154.0,
+            "low": 122.0
+          },
+          "retained_consequence": 0.894699,
+          "retained_consequence_ci": {
+            "high": 0.910607,
+            "low": 0.878147
+          }
+        }
+      }
+    },
+    "q_grid": [
+      {
+        "attention_loss": 0.198407,
+        "ci_high": 0.24876,
+        "ci_low": 0.142516,
+        "k": 68,
+        "n": 1345,
+        "overlap": 30,
+        "q": 0.05,
+        "replacement": 38,
+        "retained_consequence": 0.801593,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.116999,
+        "ci_high": 0.154141,
+        "ci_low": 0.079393,
+        "k": 68,
+        "n": 1345,
+        "overlap": 38,
+        "q": 0.05,
+        "replacement": 30,
+        "retained_consequence": 0.883001,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.198407,
+        "ci_high": 0.24933,
+        "ci_low": 0.145583,
+        "k": 68,
+        "n": 1345,
+        "overlap": 30,
+        "q": 0.05,
+        "replacement": 38,
+        "retained_consequence": 0.801593,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 68,
+        "n": 1345,
+        "overlap": 68,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.160669,
+        "ci_high": 0.195092,
+        "ci_low": 0.123279,
+        "k": 135,
+        "n": 1345,
+        "overlap": 73,
+        "q": 0.1,
+        "replacement": 62,
+        "retained_consequence": 0.839331,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.08771,
+        "ci_high": 0.111247,
+        "ci_low": 0.063639,
+        "k": 135,
+        "n": 1345,
+        "overlap": 90,
+        "q": 0.1,
+        "replacement": 45,
+        "retained_consequence": 0.91229,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.160278,
+        "ci_high": 0.193053,
+        "ci_low": 0.124498,
+        "k": 135,
+        "n": 1345,
+        "overlap": 73,
+        "q": 0.1,
+        "replacement": 62,
+        "retained_consequence": 0.839722,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 135,
+        "n": 1345,
+        "overlap": 135,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.107417,
+        "ci_high": 0.130662,
+        "ci_low": 0.090081,
+        "k": 269,
+        "n": 1345,
+        "overlap": 178,
+        "q": 0.2,
+        "replacement": 91,
+        "retained_consequence": 0.892583,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.09326,
+        "ci_high": 0.110519,
+        "ci_low": 0.074089,
+        "k": 269,
+        "n": 1345,
+        "overlap": 178,
+        "q": 0.2,
+        "replacement": 91,
+        "retained_consequence": 0.90674,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.107852,
+        "ci_high": 0.128725,
+        "ci_low": 0.088843,
+        "k": 269,
+        "n": 1345,
+        "overlap": 178,
+        "q": 0.2,
+        "replacement": 91,
+        "retained_consequence": 0.892148,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 269,
+        "n": 1345,
+        "overlap": 269,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.082305,
+        "ci_high": 0.099061,
+        "ci_low": 0.067637,
+        "k": 404,
+        "n": 1345,
+        "overlap": 286,
+        "q": 0.3,
+        "replacement": 118,
+        "retained_consequence": 0.917695,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.075124,
+        "ci_high": 0.089904,
+        "ci_low": 0.063284,
+        "k": 404,
+        "n": 1345,
+        "overlap": 280,
+        "q": 0.3,
+        "replacement": 124,
+        "retained_consequence": 0.924876,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.081404,
+        "ci_high": 0.096291,
+        "ci_low": 0.066069,
+        "k": 404,
+        "n": 1345,
+        "overlap": 286,
+        "q": 0.3,
+        "replacement": 118,
+        "retained_consequence": 0.918596,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 404,
+        "n": 1345,
+        "overlap": 404,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.188567,
+        "ci_high": 0.218438,
+        "ci_low": 0.161356,
+        "k": 194,
+        "n": 3873,
+        "overlap": 86,
+        "q": 0.05,
+        "replacement": 108,
+        "retained_consequence": 0.811433,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.124344,
+        "ci_high": 0.148361,
+        "ci_low": 0.1013,
+        "k": 194,
+        "n": 3873,
+        "overlap": 100,
+        "q": 0.05,
+        "replacement": 94,
+        "retained_consequence": 0.875656,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.188567,
+        "ci_high": 0.218638,
+        "ci_low": 0.161119,
+        "k": 194,
+        "n": 3873,
+        "overlap": 86,
+        "q": 0.05,
+        "replacement": 108,
+        "retained_consequence": 0.811433,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 194,
+        "n": 3873,
+        "overlap": 194,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.147611,
+        "ci_high": 0.166549,
+        "ci_low": 0.127967,
+        "k": 388,
+        "n": 3873,
+        "overlap": 215,
+        "q": 0.1,
+        "replacement": 173,
+        "retained_consequence": 0.852389,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.105301,
+        "ci_high": 0.121853,
+        "ci_low": 0.089393,
+        "k": 388,
+        "n": 3873,
+        "overlap": 250,
+        "q": 0.1,
+        "replacement": 138,
+        "retained_consequence": 0.894699,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.146807,
+        "ci_high": 0.166681,
+        "ci_low": 0.128375,
+        "k": 388,
+        "n": 3873,
+        "overlap": 215,
+        "q": 0.1,
+        "replacement": 173,
+        "retained_consequence": 0.853193,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 388,
+        "n": 3873,
+        "overlap": 388,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.107769,
+        "ci_high": 0.119541,
+        "ci_low": 0.096859,
+        "k": 775,
+        "n": 3873,
+        "overlap": 504,
+        "q": 0.2,
+        "replacement": 271,
+        "retained_consequence": 0.892231,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.094982,
+        "ci_high": 0.105135,
+        "ci_low": 0.085117,
+        "k": 775,
+        "n": 3873,
+        "overlap": 511,
+        "q": 0.2,
+        "replacement": 264,
+        "retained_consequence": 0.905018,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.10689,
+        "ci_high": 0.119673,
+        "ci_low": 0.095943,
+        "k": 775,
+        "n": 3873,
+        "overlap": 505,
+        "q": 0.2,
+        "replacement": 270,
+        "retained_consequence": 0.89311,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 775,
+        "n": 3873,
+        "overlap": 775,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.078197,
+        "ci_high": 0.087159,
+        "ci_low": 0.070113,
+        "k": 1162,
+        "n": 3873,
+        "overlap": 837,
+        "q": 0.3,
+        "replacement": 325,
+        "retained_consequence": 0.921803,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.079748,
+        "ci_high": 0.088286,
+        "ci_low": 0.072323,
+        "k": 1162,
+        "n": 3873,
+        "overlap": 815,
+        "q": 0.3,
+        "replacement": 347,
+        "retained_consequence": 0.920252,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.077659,
+        "ci_high": 0.086158,
+        "ci_low": 0.069819,
+        "k": 1162,
+        "n": 3873,
+        "overlap": 837,
+        "q": 0.3,
+        "replacement": 325,
+        "retained_consequence": 0.922341,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 1162,
+        "n": 3873,
+        "overlap": 1162,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2018
+  },
+  "2019": {
+    "artifact_hash": "sha256:2cad88d0d113b92191c1727c8875dd762e1e79dd2d1aebee9f960da4defd52a3",
+    "bootstrap": {
+      "cluster": "episode",
+      "replicates": 2000,
+      "seed_base": 20261011,
+      "with_replacement": true
+    },
+    "candidate_exclusions": {},
+    "common_candidate_counts": {
+      "PRE": 1252,
+      "TURN": 3888
+    },
+    "final_test_access_count": 0,
+    "node_count": 55046,
+    "nominal_q010": {
+      "PRE": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 1252,
+          "k": 126,
+          "n": 1252,
+          "overlap": 126,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.13359445223603467,
+            "overlap": 51,
+            "replacement": -51,
+            "retained_consequence": 0.13359445223603472
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 18.216551,
+          "abstain": 0,
+          "attention_loss": 0.133594,
+          "attention_loss_ci": {
+            "high": 0.163647,
+            "low": 0.099729
+          },
+          "candidate_total": 1252,
+          "k": 126,
+          "n": 1252,
+          "overlap": 75,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 51,
+          "replacement_ci": {
+            "high": 61.0,
+            "low": 42.0
+          },
+          "retained_consequence": 0.866406,
+          "retained_consequence_ci": {
+            "high": 0.900271,
+            "low": 0.836353
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 18.216551,
+          "abstain": 0,
+          "attention_loss": 0.133594,
+          "attention_loss_ci": {
+            "high": 0.162335,
+            "low": 0.100793
+          },
+          "candidate_total": 1252,
+          "k": 126,
+          "n": 1252,
+          "overlap": 75,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 51,
+          "replacement_ci": {
+            "high": 61.0,
+            "low": 43.0
+          },
+          "retained_consequence": 0.866406,
+          "retained_consequence_ci": {
+            "high": 0.899207,
+            "low": 0.837665
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 11.476628,
+          "abstain": 0,
+          "attention_loss": 0.084166,
+          "attention_loss_ci": {
+            "high": 0.109073,
+            "low": 0.057494
+          },
+          "candidate_total": 1252,
+          "k": 126,
+          "n": 1252,
+          "overlap": 82,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.049428471230657786,
+            "overlap": 7,
+            "replacement": -7,
+            "retained_consequence": 0.049428471230657856
+          },
+          "replacement": 44,
+          "replacement_ci": {
+            "high": 51.0,
+            "low": 33.0
+          },
+          "retained_consequence": 0.915834,
+          "retained_consequence_ci": {
+            "high": 0.942506,
+            "low": 0.890927
+          }
+        }
+      },
+      "TURN": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 3888,
+          "k": 389,
+          "n": 3888,
+          "overlap": 389,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.12334169535563497,
+            "overlap": 154,
+            "replacement": -154,
+            "retained_consequence": 0.123341695355635
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 53.944295,
+          "abstain": 0,
+          "attention_loss": 0.123342,
+          "attention_loss_ci": {
+            "high": 0.140797,
+            "low": 0.105099
+          },
+          "candidate_total": 3888,
+          "k": 389,
+          "n": 3888,
+          "overlap": 235,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 154,
+          "replacement_ci": {
+            "high": 169.0,
+            "low": 138.0
+          },
+          "retained_consequence": 0.876658,
+          "retained_consequence_ci": {
+            "high": 0.894901,
+            "low": 0.859203
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 53.978605,
+          "abstain": 0,
+          "attention_loss": 0.12342,
+          "attention_loss_ci": {
+            "high": 0.140064,
+            "low": 0.105748
+          },
+          "candidate_total": 3888,
+          "k": 389,
+          "n": 3888,
+          "overlap": 235,
+          "paired_increment_vs_delay": {
+            "attention_loss": 7.844762035048858e-05,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": -7.84476203504747e-05
+          },
+          "replacement": 154,
+          "replacement_ci": {
+            "high": 169.0,
+            "low": 138.0
+          },
+          "retained_consequence": 0.87658,
+          "retained_consequence_ci": {
+            "high": 0.894252,
+            "low": 0.859936
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 36.581453,
+          "abstain": 0,
+          "attention_loss": 0.083642,
+          "attention_loss_ci": {
+            "high": 0.097992,
+            "low": 0.067507
+          },
+          "candidate_total": 3888,
+          "k": 389,
+          "n": 3888,
+          "overlap": 262,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.03969951555481856,
+            "overlap": 27,
+            "replacement": -27,
+            "retained_consequence": 0.03969951555481854
+          },
+          "replacement": 127,
+          "replacement_ci": {
+            "high": 141.0,
+            "low": 109.0
+          },
+          "retained_consequence": 0.916358,
+          "retained_consequence_ci": {
+            "high": 0.932493,
+            "low": 0.902008
+          }
+        }
+      }
+    },
+    "q_grid": [
+      {
+        "attention_loss": 0.162103,
+        "ci_high": 0.217898,
+        "ci_low": 0.118602,
+        "k": 63,
+        "n": 1252,
+        "overlap": 33,
+        "q": 0.05,
+        "replacement": 30,
+        "retained_consequence": 0.837897,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.095748,
+        "ci_high": 0.129745,
+        "ci_low": 0.062053,
+        "k": 63,
+        "n": 1252,
+        "overlap": 40,
+        "q": 0.05,
+        "replacement": 23,
+        "retained_consequence": 0.904252,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.162103,
+        "ci_high": 0.21885,
+        "ci_low": 0.118011,
+        "k": 63,
+        "n": 1252,
+        "overlap": 33,
+        "q": 0.05,
+        "replacement": 30,
+        "retained_consequence": 0.837897,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 63,
+        "n": 1252,
+        "overlap": 63,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.133594,
+        "ci_high": 0.163647,
+        "ci_low": 0.099729,
+        "k": 126,
+        "n": 1252,
+        "overlap": 75,
+        "q": 0.1,
+        "replacement": 51,
+        "retained_consequence": 0.866406,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.084166,
+        "ci_high": 0.109073,
+        "ci_low": 0.057494,
+        "k": 126,
+        "n": 1252,
+        "overlap": 82,
+        "q": 0.1,
+        "replacement": 44,
+        "retained_consequence": 0.915834,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.133594,
+        "ci_high": 0.162335,
+        "ci_low": 0.100793,
+        "k": 126,
+        "n": 1252,
+        "overlap": 75,
+        "q": 0.1,
+        "replacement": 51,
+        "retained_consequence": 0.866406,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 126,
+        "n": 1252,
+        "overlap": 126,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.077577,
+        "ci_high": 0.094534,
+        "ci_low": 0.060923,
+        "k": 251,
+        "n": 1252,
+        "overlap": 186,
+        "q": 0.2,
+        "replacement": 65,
+        "retained_consequence": 0.922423,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.085683,
+        "ci_high": 0.10817,
+        "ci_low": 0.067608,
+        "k": 251,
+        "n": 1252,
+        "overlap": 175,
+        "q": 0.2,
+        "replacement": 76,
+        "retained_consequence": 0.914317,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.077577,
+        "ci_high": 0.094905,
+        "ci_low": 0.060379,
+        "k": 251,
+        "n": 1252,
+        "overlap": 186,
+        "q": 0.2,
+        "replacement": 65,
+        "retained_consequence": 0.922423,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 251,
+        "n": 1252,
+        "overlap": 251,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.069148,
+        "ci_high": 0.083187,
+        "ci_low": 0.054434,
+        "k": 376,
+        "n": 1252,
+        "overlap": 284,
+        "q": 0.3,
+        "replacement": 92,
+        "retained_consequence": 0.930852,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.087663,
+        "ci_high": 0.102177,
+        "ci_low": 0.073181,
+        "k": 376,
+        "n": 1252,
+        "overlap": 263,
+        "q": 0.3,
+        "replacement": 113,
+        "retained_consequence": 0.912337,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.06924,
+        "ci_high": 0.081519,
+        "ci_low": 0.054331,
+        "k": 376,
+        "n": 1252,
+        "overlap": 284,
+        "q": 0.3,
+        "replacement": 92,
+        "retained_consequence": 0.93076,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 376,
+        "n": 1252,
+        "overlap": 376,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.13422,
+        "ci_high": 0.160471,
+        "ci_low": 0.112771,
+        "k": 195,
+        "n": 3888,
+        "overlap": 107,
+        "q": 0.05,
+        "replacement": 88,
+        "retained_consequence": 0.86578,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.090424,
+        "ci_high": 0.108092,
+        "ci_low": 0.072049,
+        "k": 195,
+        "n": 3888,
+        "overlap": 117,
+        "q": 0.05,
+        "replacement": 78,
+        "retained_consequence": 0.909576,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.133121,
+        "ci_high": 0.160719,
+        "ci_low": 0.109817,
+        "k": 195,
+        "n": 3888,
+        "overlap": 107,
+        "q": 0.05,
+        "replacement": 88,
+        "retained_consequence": 0.866879,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 195,
+        "n": 3888,
+        "overlap": 195,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.123342,
+        "ci_high": 0.140797,
+        "ci_low": 0.105099,
+        "k": 389,
+        "n": 3888,
+        "overlap": 235,
+        "q": 0.1,
+        "replacement": 154,
+        "retained_consequence": 0.876658,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.083642,
+        "ci_high": 0.097992,
+        "ci_low": 0.067507,
+        "k": 389,
+        "n": 3888,
+        "overlap": 262,
+        "q": 0.1,
+        "replacement": 127,
+        "retained_consequence": 0.916358,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.12342,
+        "ci_high": 0.140064,
+        "ci_low": 0.105748,
+        "k": 389,
+        "n": 3888,
+        "overlap": 235,
+        "q": 0.1,
+        "replacement": 154,
+        "retained_consequence": 0.87658,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 389,
+        "n": 3888,
+        "overlap": 389,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.080727,
+        "ci_high": 0.090326,
+        "ci_low": 0.07061,
+        "k": 778,
+        "n": 3888,
+        "overlap": 561,
+        "q": 0.2,
+        "replacement": 217,
+        "retained_consequence": 0.919273,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.070645,
+        "ci_high": 0.080654,
+        "ci_low": 0.061766,
+        "k": 778,
+        "n": 3888,
+        "overlap": 576,
+        "q": 0.2,
+        "replacement": 202,
+        "retained_consequence": 0.929355,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.080075,
+        "ci_high": 0.090097,
+        "ci_low": 0.07011,
+        "k": 778,
+        "n": 3888,
+        "overlap": 562,
+        "q": 0.2,
+        "replacement": 216,
+        "retained_consequence": 0.919925,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 778,
+        "n": 3888,
+        "overlap": 778,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.060734,
+        "ci_high": 0.068274,
+        "ci_low": 0.053652,
+        "k": 1167,
+        "n": 3888,
+        "overlap": 896,
+        "q": 0.3,
+        "replacement": 271,
+        "retained_consequence": 0.939266,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.070459,
+        "ci_high": 0.077867,
+        "ci_low": 0.062294,
+        "k": 1167,
+        "n": 3888,
+        "overlap": 853,
+        "q": 0.3,
+        "replacement": 314,
+        "retained_consequence": 0.929541,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.059617,
+        "ci_high": 0.067855,
+        "ci_low": 0.053516,
+        "k": 1167,
+        "n": 3888,
+        "overlap": 897,
+        "q": 0.3,
+        "replacement": 270,
+        "retained_consequence": 0.940383,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 1167,
+        "n": 3888,
+        "overlap": 1167,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2019
+  },
+  "2020": {
+    "artifact_hash": "sha256:a7b2cd0cc3157f842ef7b9741375e47a28ac5b2f5314d8e11649e48649bbcf18",
+    "bootstrap": {
+      "cluster": "episode",
+      "replicates": 2000,
+      "seed_base": 20261011,
+      "with_replacement": true
+    },
+    "candidate_exclusions": {},
+    "common_candidate_counts": {
+      "PRE": 675,
+      "TURN": 4053
+    },
+    "final_test_access_count": 0,
+    "node_count": 60759,
+    "nominal_q010": {
+      "PRE": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 675,
+          "k": 68,
+          "n": 675,
+          "overlap": 68,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.10064293275200814,
+            "overlap": 27,
+            "replacement": -27,
+            "retained_consequence": 0.10064293275200809
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 6.188832,
+          "abstain": 0,
+          "attention_loss": 0.100643,
+          "attention_loss_ci": {
+            "high": 0.146053,
+            "low": 0.071189
+          },
+          "candidate_total": 675,
+          "k": 68,
+          "n": 675,
+          "overlap": 41,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 27,
+          "replacement_ci": {
+            "high": 35.0,
+            "low": 21.0
+          },
+          "retained_consequence": 0.899357,
+          "retained_consequence_ci": {
+            "high": 0.928811,
+            "low": 0.853947
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 6.07771,
+          "abstain": 0,
+          "attention_loss": 0.098836,
+          "attention_loss_ci": {
+            "high": 0.140277,
+            "low": 0.069504
+          },
+          "candidate_total": 675,
+          "k": 68,
+          "n": 675,
+          "overlap": 41,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.0018070689455747108,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0018070689455746969
+          },
+          "replacement": 27,
+          "replacement_ci": {
+            "high": 34.0,
+            "low": 21.0
+          },
+          "retained_consequence": 0.901164,
+          "retained_consequence_ci": {
+            "high": 0.930496,
+            "low": 0.859723
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 4.304106,
+          "abstain": 0,
+          "attention_loss": 0.069993,
+          "attention_loss_ci": {
+            "high": 0.097509,
+            "low": 0.037541
+          },
+          "candidate_total": 675,
+          "k": 68,
+          "n": 675,
+          "overlap": 47,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.030649451834591265,
+            "overlap": 6,
+            "replacement": -6,
+            "retained_consequence": 0.030649451834591224
+          },
+          "replacement": 21,
+          "replacement_ci": {
+            "high": 26.0,
+            "low": 14.0
+          },
+          "retained_consequence": 0.930007,
+          "retained_consequence_ci": {
+            "high": 0.962459,
+            "low": 0.902491
+          }
+        }
+      },
+      "TURN": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 4053,
+          "k": 406,
+          "n": 4053,
+          "overlap": 406,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.10678388980199278,
+            "overlap": 170,
+            "replacement": -170,
+            "retained_consequence": 0.10678388980199283
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 39.239719,
+          "abstain": 0,
+          "attention_loss": 0.106784,
+          "attention_loss_ci": {
+            "high": 0.121618,
+            "low": 0.093053
+          },
+          "candidate_total": 4053,
+          "k": 406,
+          "n": 4053,
+          "overlap": 236,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 170,
+          "replacement_ci": {
+            "high": 189.0,
+            "low": 155.0
+          },
+          "retained_consequence": 0.893216,
+          "retained_consequence_ci": {
+            "high": 0.906947,
+            "low": 0.878382
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 38.877425,
+          "abstain": 0,
+          "attention_loss": 0.105798,
+          "attention_loss_ci": {
+            "high": 0.118667,
+            "low": 0.091391
+          },
+          "candidate_total": 4053,
+          "k": 406,
+          "n": 4053,
+          "overlap": 236,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.0009859187750756032,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0009859187750755893
+          },
+          "replacement": 170,
+          "replacement_ci": {
+            "high": 188.0,
+            "low": 155.0
+          },
+          "retained_consequence": 0.894202,
+          "retained_consequence_ci": {
+            "high": 0.908609,
+            "low": 0.881333
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 24.776601,
+          "abstain": 0,
+          "attention_loss": 0.067425,
+          "attention_loss_ci": {
+            "high": 0.077433,
+            "low": 0.057403
+          },
+          "candidate_total": 4053,
+          "k": 406,
+          "n": 4053,
+          "overlap": 276,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.03935879305474378,
+            "overlap": 40,
+            "replacement": -40,
+            "retained_consequence": 0.03935879305474377
+          },
+          "replacement": 130,
+          "replacement_ci": {
+            "high": 144.0,
+            "low": 114.0
+          },
+          "retained_consequence": 0.932575,
+          "retained_consequence_ci": {
+            "high": 0.942597,
+            "low": 0.922567
+          }
+        }
+      }
+    },
+    "q_grid": [
+      {
+        "attention_loss": 0.163077,
+        "ci_high": 0.229468,
+        "ci_low": 0.09932,
+        "k": 34,
+        "n": 675,
+        "overlap": 19,
+        "q": 0.05,
+        "replacement": 15,
+        "retained_consequence": 0.836923,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.070309,
+        "ci_high": 0.103678,
+        "ci_low": 0.040726,
+        "k": 34,
+        "n": 675,
+        "overlap": 19,
+        "q": 0.05,
+        "replacement": 15,
+        "retained_consequence": 0.929691,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.16133,
+        "ci_high": 0.213271,
+        "ci_low": 0.088159,
+        "k": 34,
+        "n": 675,
+        "overlap": 19,
+        "q": 0.05,
+        "replacement": 15,
+        "retained_consequence": 0.83867,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 34,
+        "n": 675,
+        "overlap": 34,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.100643,
+        "ci_high": 0.146053,
+        "ci_low": 0.071189,
+        "k": 68,
+        "n": 675,
+        "overlap": 41,
+        "q": 0.1,
+        "replacement": 27,
+        "retained_consequence": 0.899357,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.069993,
+        "ci_high": 0.097509,
+        "ci_low": 0.037541,
+        "k": 68,
+        "n": 675,
+        "overlap": 47,
+        "q": 0.1,
+        "replacement": 21,
+        "retained_consequence": 0.930007,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.098836,
+        "ci_high": 0.140277,
+        "ci_low": 0.069504,
+        "k": 68,
+        "n": 675,
+        "overlap": 41,
+        "q": 0.1,
+        "replacement": 27,
+        "retained_consequence": 0.901164,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 68,
+        "n": 675,
+        "overlap": 68,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.082616,
+        "ci_high": 0.10857,
+        "ci_low": 0.062002,
+        "k": 135,
+        "n": 675,
+        "overlap": 93,
+        "q": 0.2,
+        "replacement": 42,
+        "retained_consequence": 0.917384,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.073869,
+        "ci_high": 0.095171,
+        "ci_low": 0.056135,
+        "k": 135,
+        "n": 675,
+        "overlap": 91,
+        "q": 0.2,
+        "replacement": 44,
+        "retained_consequence": 0.926131,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.083133,
+        "ci_high": 0.107765,
+        "ci_low": 0.061551,
+        "k": 135,
+        "n": 675,
+        "overlap": 93,
+        "q": 0.2,
+        "replacement": 42,
+        "retained_consequence": 0.916867,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 135,
+        "n": 675,
+        "overlap": 135,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.050827,
+        "ci_high": 0.064316,
+        "ci_low": 0.036173,
+        "k": 203,
+        "n": 675,
+        "overlap": 154,
+        "q": 0.3,
+        "replacement": 49,
+        "retained_consequence": 0.949173,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.064434,
+        "ci_high": 0.07807,
+        "ci_low": 0.047811,
+        "k": 203,
+        "n": 675,
+        "overlap": 149,
+        "q": 0.3,
+        "replacement": 54,
+        "retained_consequence": 0.935566,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.051982,
+        "ci_high": 0.065068,
+        "ci_low": 0.037153,
+        "k": 203,
+        "n": 675,
+        "overlap": 154,
+        "q": 0.3,
+        "replacement": 49,
+        "retained_consequence": 0.948018,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 203,
+        "n": 675,
+        "overlap": 203,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.139385,
+        "ci_high": 0.165587,
+        "ci_low": 0.120017,
+        "k": 203,
+        "n": 4053,
+        "overlap": 103,
+        "q": 0.05,
+        "replacement": 100,
+        "retained_consequence": 0.860615,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.068127,
+        "ci_high": 0.084368,
+        "ci_low": 0.054376,
+        "k": 203,
+        "n": 4053,
+        "overlap": 133,
+        "q": 0.05,
+        "replacement": 70,
+        "retained_consequence": 0.931873,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.138564,
+        "ci_high": 0.162439,
+        "ci_low": 0.117495,
+        "k": 203,
+        "n": 4053,
+        "overlap": 103,
+        "q": 0.05,
+        "replacement": 100,
+        "retained_consequence": 0.861436,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 203,
+        "n": 4053,
+        "overlap": 203,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.106784,
+        "ci_high": 0.121618,
+        "ci_low": 0.093053,
+        "k": 406,
+        "n": 4053,
+        "overlap": 236,
+        "q": 0.1,
+        "replacement": 170,
+        "retained_consequence": 0.893216,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.067425,
+        "ci_high": 0.077433,
+        "ci_low": 0.057403,
+        "k": 406,
+        "n": 4053,
+        "overlap": 276,
+        "q": 0.1,
+        "replacement": 130,
+        "retained_consequence": 0.932575,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.105798,
+        "ci_high": 0.118667,
+        "ci_low": 0.091391,
+        "k": 406,
+        "n": 4053,
+        "overlap": 236,
+        "q": 0.1,
+        "replacement": 170,
+        "retained_consequence": 0.894202,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 406,
+        "n": 4053,
+        "overlap": 406,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.075634,
+        "ci_high": 0.083812,
+        "ci_low": 0.066674,
+        "k": 811,
+        "n": 4053,
+        "overlap": 550,
+        "q": 0.2,
+        "replacement": 261,
+        "retained_consequence": 0.924366,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.065267,
+        "ci_high": 0.073647,
+        "ci_low": 0.057821,
+        "k": 811,
+        "n": 4053,
+        "overlap": 576,
+        "q": 0.2,
+        "replacement": 235,
+        "retained_consequence": 0.934733,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.075128,
+        "ci_high": 0.082151,
+        "ci_low": 0.066291,
+        "k": 811,
+        "n": 4053,
+        "overlap": 551,
+        "q": 0.2,
+        "replacement": 260,
+        "retained_consequence": 0.924872,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 811,
+        "n": 4053,
+        "overlap": 811,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.051137,
+        "ci_high": 0.05696,
+        "ci_low": 0.045348,
+        "k": 1216,
+        "n": 4053,
+        "overlap": 946,
+        "q": 0.3,
+        "replacement": 270,
+        "retained_consequence": 0.948863,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.057242,
+        "ci_high": 0.064189,
+        "ci_low": 0.052259,
+        "k": 1216,
+        "n": 4053,
+        "overlap": 891,
+        "q": 0.3,
+        "replacement": 325,
+        "retained_consequence": 0.942758,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.050782,
+        "ci_high": 0.05677,
+        "ci_low": 0.044934,
+        "k": 1216,
+        "n": 4053,
+        "overlap": 948,
+        "q": 0.3,
+        "replacement": 268,
+        "retained_consequence": 0.949218,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 1216,
+        "n": 4053,
+        "overlap": 1216,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2020
+  },
+  "2021": {
+    "artifact_hash": "sha256:7d6211b336fee9a0434baa968d93731f9675ccff1c5577dfa8eb58dd55b236e9",
+    "bootstrap": {
+      "cluster": "episode",
+      "replicates": 2000,
+      "seed_base": 20261011,
+      "with_replacement": true
+    },
+    "candidate_exclusions": {},
+    "common_candidate_counts": {
+      "PRE": 1297,
+      "TURN": 3930
+    },
+    "final_test_access_count": 0,
+    "node_count": 60503,
+    "nominal_q010": {
+      "PRE": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 1297,
+          "k": 130,
+          "n": 1297,
+          "overlap": 130,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.15378810360358455,
+            "overlap": 67,
+            "replacement": -67,
+            "retained_consequence": 0.15378810360358453
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 18.198954,
+          "abstain": 0,
+          "attention_loss": 0.153788,
+          "attention_loss_ci": {
+            "high": 0.186129,
+            "low": 0.126153
+          },
+          "candidate_total": 1297,
+          "k": 130,
+          "n": 1297,
+          "overlap": 63,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 67,
+          "replacement_ci": {
+            "high": 78.0,
+            "low": 59.0
+          },
+          "retained_consequence": 0.846212,
+          "retained_consequence_ci": {
+            "high": 0.873847,
+            "low": 0.813871
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 18.198954,
+          "abstain": 0,
+          "attention_loss": 0.153788,
+          "attention_loss_ci": {
+            "high": 0.186374,
+            "low": 0.125502
+          },
+          "candidate_total": 1297,
+          "k": 130,
+          "n": 1297,
+          "overlap": 63,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 67,
+          "replacement_ci": {
+            "high": 78.0,
+            "low": 59.0
+          },
+          "retained_consequence": 0.846212,
+          "retained_consequence_ci": {
+            "high": 0.874498,
+            "low": 0.813626
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 13.529008,
+          "abstain": 0,
+          "attention_loss": 0.114325,
+          "attention_loss_ci": {
+            "high": 0.142928,
+            "low": 0.092461
+          },
+          "candidate_total": 1297,
+          "k": 130,
+          "n": 1297,
+          "overlap": 68,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.03946282111793842,
+            "overlap": 5,
+            "replacement": -5,
+            "retained_consequence": 0.03946282111793842
+          },
+          "replacement": 62,
+          "replacement_ci": {
+            "high": 71.0,
+            "low": 50.0
+          },
+          "retained_consequence": 0.885675,
+          "retained_consequence_ci": {
+            "high": 0.907539,
+            "low": 0.857072
+          }
+        }
+      },
+      "TURN": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 3930,
+          "k": 393,
+          "n": 3930,
+          "overlap": 393,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.15622972584055242,
+            "overlap": 207,
+            "replacement": -207,
+            "retained_consequence": 0.1562297258405524
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 54.093874,
+          "abstain": 0,
+          "attention_loss": 0.15623,
+          "attention_loss_ci": {
+            "high": 0.171777,
+            "low": 0.138218
+          },
+          "candidate_total": 3930,
+          "k": 393,
+          "n": 3930,
+          "overlap": 186,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 207,
+          "replacement_ci": {
+            "high": 223.0,
+            "low": 190.0
+          },
+          "retained_consequence": 0.84377,
+          "retained_consequence_ci": {
+            "high": 0.861782,
+            "low": 0.828223
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 53.773981,
+          "abstain": 0,
+          "attention_loss": 0.155306,
+          "attention_loss_ci": {
+            "high": 0.172118,
+            "low": 0.138146
+          },
+          "candidate_total": 3930,
+          "k": 393,
+          "n": 3930,
+          "overlap": 187,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.0009238900235199743,
+            "overlap": 1,
+            "replacement": -1,
+            "retained_consequence": 0.000923890023520002
+          },
+          "replacement": 206,
+          "replacement_ci": {
+            "high": 223.0,
+            "low": 191.0
+          },
+          "retained_consequence": 0.844694,
+          "retained_consequence_ci": {
+            "high": 0.861854,
+            "low": 0.827882
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 39.006561,
+          "abstain": 0,
+          "attention_loss": 0.112656,
+          "attention_loss_ci": {
+            "high": 0.129082,
+            "low": 0.09948
+          },
+          "candidate_total": 3930,
+          "k": 393,
+          "n": 3930,
+          "overlap": 225,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.04357400714197282,
+            "overlap": 39,
+            "replacement": -39,
+            "retained_consequence": 0.04357400714197279
+          },
+          "replacement": 168,
+          "replacement_ci": {
+            "high": 186.0,
+            "low": 154.0
+          },
+          "retained_consequence": 0.887344,
+          "retained_consequence_ci": {
+            "high": 0.90052,
+            "low": 0.870918
+          }
+        }
+      }
+    },
+    "q_grid": [
+      {
+        "attention_loss": 0.184269,
+        "ci_high": 0.233674,
+        "ci_low": 0.138769,
+        "k": 65,
+        "n": 1297,
+        "overlap": 28,
+        "q": 0.05,
+        "replacement": 37,
+        "retained_consequence": 0.815731,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.144437,
+        "ci_high": 0.18613,
+        "ci_low": 0.107537,
+        "k": 65,
+        "n": 1297,
+        "overlap": 32,
+        "q": 0.05,
+        "replacement": 33,
+        "retained_consequence": 0.855563,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.184269,
+        "ci_high": 0.233205,
+        "ci_low": 0.136247,
+        "k": 65,
+        "n": 1297,
+        "overlap": 28,
+        "q": 0.05,
+        "replacement": 37,
+        "retained_consequence": 0.815731,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 65,
+        "n": 1297,
+        "overlap": 65,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.153788,
+        "ci_high": 0.186129,
+        "ci_low": 0.126153,
+        "k": 130,
+        "n": 1297,
+        "overlap": 63,
+        "q": 0.1,
+        "replacement": 67,
+        "retained_consequence": 0.846212,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.114325,
+        "ci_high": 0.142928,
+        "ci_low": 0.092461,
+        "k": 130,
+        "n": 1297,
+        "overlap": 68,
+        "q": 0.1,
+        "replacement": 62,
+        "retained_consequence": 0.885675,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.153788,
+        "ci_high": 0.186374,
+        "ci_low": 0.125502,
+        "k": 130,
+        "n": 1297,
+        "overlap": 63,
+        "q": 0.1,
+        "replacement": 67,
+        "retained_consequence": 0.846212,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 130,
+        "n": 1297,
+        "overlap": 130,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.103609,
+        "ci_high": 0.124778,
+        "ci_low": 0.087583,
+        "k": 260,
+        "n": 1297,
+        "overlap": 166,
+        "q": 0.2,
+        "replacement": 94,
+        "retained_consequence": 0.896391,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.086587,
+        "ci_high": 0.103121,
+        "ci_low": 0.072597,
+        "k": 260,
+        "n": 1297,
+        "overlap": 161,
+        "q": 0.2,
+        "replacement": 99,
+        "retained_consequence": 0.913413,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.10341,
+        "ci_high": 0.124238,
+        "ci_low": 0.088056,
+        "k": 260,
+        "n": 1297,
+        "overlap": 166,
+        "q": 0.2,
+        "replacement": 94,
+        "retained_consequence": 0.89659,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 260,
+        "n": 1297,
+        "overlap": 260,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.071763,
+        "ci_high": 0.08604,
+        "ci_low": 0.059771,
+        "k": 390,
+        "n": 1297,
+        "overlap": 286,
+        "q": 0.3,
+        "replacement": 104,
+        "retained_consequence": 0.928237,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.070596,
+        "ci_high": 0.081895,
+        "ci_low": 0.059794,
+        "k": 390,
+        "n": 1297,
+        "overlap": 275,
+        "q": 0.3,
+        "replacement": 115,
+        "retained_consequence": 0.929404,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.070498,
+        "ci_high": 0.084919,
+        "ci_low": 0.058075,
+        "k": 390,
+        "n": 1297,
+        "overlap": 287,
+        "q": 0.3,
+        "replacement": 103,
+        "retained_consequence": 0.929502,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 390,
+        "n": 1297,
+        "overlap": 390,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.195772,
+        "ci_high": 0.224864,
+        "ci_low": 0.168971,
+        "k": 197,
+        "n": 3930,
+        "overlap": 78,
+        "q": 0.05,
+        "replacement": 119,
+        "retained_consequence": 0.804228,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.129997,
+        "ci_high": 0.152598,
+        "ci_low": 0.110912,
+        "k": 197,
+        "n": 3930,
+        "overlap": 97,
+        "q": 0.05,
+        "replacement": 100,
+        "retained_consequence": 0.870003,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.196151,
+        "ci_high": 0.224467,
+        "ci_low": 0.168178,
+        "k": 197,
+        "n": 3930,
+        "overlap": 78,
+        "q": 0.05,
+        "replacement": 119,
+        "retained_consequence": 0.803849,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 197,
+        "n": 3930,
+        "overlap": 197,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.15623,
+        "ci_high": 0.171777,
+        "ci_low": 0.138218,
+        "k": 393,
+        "n": 3930,
+        "overlap": 186,
+        "q": 0.1,
+        "replacement": 207,
+        "retained_consequence": 0.84377,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.112656,
+        "ci_high": 0.129082,
+        "ci_low": 0.09948,
+        "k": 393,
+        "n": 3930,
+        "overlap": 225,
+        "q": 0.1,
+        "replacement": 168,
+        "retained_consequence": 0.887344,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.155306,
+        "ci_high": 0.172118,
+        "ci_low": 0.138146,
+        "k": 393,
+        "n": 3930,
+        "overlap": 187,
+        "q": 0.1,
+        "replacement": 206,
+        "retained_consequence": 0.844694,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 393,
+        "n": 3930,
+        "overlap": 393,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.109064,
+        "ci_high": 0.12075,
+        "ci_low": 0.099749,
+        "k": 786,
+        "n": 3930,
+        "overlap": 489,
+        "q": 0.2,
+        "replacement": 297,
+        "retained_consequence": 0.890936,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.090022,
+        "ci_high": 0.101024,
+        "ci_low": 0.081477,
+        "k": 786,
+        "n": 3930,
+        "overlap": 510,
+        "q": 0.2,
+        "replacement": 276,
+        "retained_consequence": 0.909978,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.109477,
+        "ci_high": 0.120719,
+        "ci_low": 0.099991,
+        "k": 786,
+        "n": 3930,
+        "overlap": 487,
+        "q": 0.2,
+        "replacement": 299,
+        "retained_consequence": 0.890523,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 786,
+        "n": 3930,
+        "overlap": 786,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.074504,
+        "ci_high": 0.082566,
+        "ci_low": 0.067631,
+        "k": 1179,
+        "n": 3930,
+        "overlap": 830,
+        "q": 0.3,
+        "replacement": 349,
+        "retained_consequence": 0.925496,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.075927,
+        "ci_high": 0.082641,
+        "ci_low": 0.068742,
+        "k": 1179,
+        "n": 3930,
+        "overlap": 810,
+        "q": 0.3,
+        "replacement": 369,
+        "retained_consequence": 0.924073,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.073647,
+        "ci_high": 0.082022,
+        "ci_low": 0.066711,
+        "k": 1179,
+        "n": 3930,
+        "overlap": 830,
+        "q": 0.3,
+        "replacement": 349,
+        "retained_consequence": 0.926353,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 1179,
+        "n": 3930,
+        "overlap": 1179,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2021
+  },
+  "2022": {
+    "artifact_hash": "sha256:b4fd9952e37c6ebc2abd6f028b604659c8f5ac3d1545763c61a79a4207efd1c5",
+    "bootstrap": {
+      "cluster": "episode",
+      "replicates": 2000,
+      "seed_base": 20261011,
+      "with_replacement": true
+    },
+    "candidate_exclusions": {},
+    "common_candidate_counts": {
+      "PRE": 1422,
+      "TURN": 3884
+    },
+    "final_test_access_count": 0,
+    "node_count": 62596,
+    "nominal_q010": {
+      "PRE": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 1422,
+          "k": 143,
+          "n": 1422,
+          "overlap": 143,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.1840022575811478,
+            "overlap": 76,
+            "replacement": -76,
+            "retained_consequence": 0.18400225758114774
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 23.299363,
+          "abstain": 0,
+          "attention_loss": 0.184002,
+          "attention_loss_ci": {
+            "high": 0.216302,
+            "low": 0.150562
+          },
+          "candidate_total": 1422,
+          "k": 143,
+          "n": 1422,
+          "overlap": 67,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 76,
+          "replacement_ci": {
+            "high": 86.025,
+            "low": 65.0
+          },
+          "retained_consequence": 0.815998,
+          "retained_consequence_ci": {
+            "high": 0.849438,
+            "low": 0.783698
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 22.952603,
+          "abstain": 0,
+          "attention_loss": 0.181264,
+          "attention_loss_ci": {
+            "high": 0.21413,
+            "low": 0.150237
+          },
+          "candidate_total": 1422,
+          "k": 143,
+          "n": 1422,
+          "overlap": 68,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.0027384758576330936,
+            "overlap": 1,
+            "replacement": -1,
+            "retained_consequence": 0.0027384758576330936
+          },
+          "replacement": 75,
+          "replacement_ci": {
+            "high": 86.0,
+            "low": 66.0
+          },
+          "retained_consequence": 0.818736,
+          "retained_consequence_ci": {
+            "high": 0.849763,
+            "low": 0.78587
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 21.794454,
+          "abstain": 0,
+          "attention_loss": 0.172118,
+          "attention_loss_ci": {
+            "high": 0.200178,
+            "low": 0.137083
+          },
+          "candidate_total": 1422,
+          "k": 143,
+          "n": 1422,
+          "overlap": 78,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.01188473658994646,
+            "overlap": 11,
+            "replacement": -11,
+            "retained_consequence": 0.011884736589946376
+          },
+          "replacement": 65,
+          "replacement_ci": {
+            "high": 74.0,
+            "low": 55.0
+          },
+          "retained_consequence": 0.827882,
+          "retained_consequence_ci": {
+            "high": 0.862917,
+            "low": 0.799822
+          }
+        }
+      },
+      "TURN": {
+        "CONSEQUENCE": {
+          "absolute_consequence_gap": 0.0,
+          "abstain": 0,
+          "attention_loss": 0.0,
+          "attention_loss_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "candidate_total": 3884,
+          "k": 389,
+          "n": 3884,
+          "overlap": 389,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.18106380974009553,
+            "overlap": 215,
+            "replacement": -215,
+            "retained_consequence": 0.1810638097400955
+          },
+          "replacement": 0,
+          "replacement_ci": {
+            "high": 0.0,
+            "low": 0.0
+          },
+          "retained_consequence": 1.0,
+          "retained_consequence_ci": {
+            "high": 1.0,
+            "low": 1.0
+          }
+        },
+        "DELAY": {
+          "absolute_consequence_gap": 61.292576,
+          "abstain": 0,
+          "attention_loss": 0.181064,
+          "attention_loss_ci": {
+            "high": 0.199588,
+            "low": 0.161769
+          },
+          "candidate_total": 3884,
+          "k": 389,
+          "n": 3884,
+          "overlap": 174,
+          "paired_increment_vs_delay": {
+            "attention_loss": 0.0,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.0
+          },
+          "replacement": 215,
+          "replacement_ci": {
+            "high": 231.0,
+            "low": 197.0
+          },
+          "retained_consequence": 0.818936,
+          "retained_consequence_ci": {
+            "high": 0.838231,
+            "low": 0.800412
+          }
+        },
+        "DELAY_DOWNSTREAM": {
+          "absolute_consequence_gap": 61.249711,
+          "abstain": 0,
+          "attention_loss": 0.180937,
+          "attention_loss_ci": {
+            "high": 0.198323,
+            "low": 0.160922
+          },
+          "candidate_total": 3884,
+          "k": 389,
+          "n": 3884,
+          "overlap": 174,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.00012662602455690286,
+            "overlap": 0,
+            "replacement": 0,
+            "retained_consequence": 0.00012662602455693062
+          },
+          "replacement": 215,
+          "replacement_ci": {
+            "high": 232.0,
+            "low": 196.0
+          },
+          "retained_consequence": 0.819063,
+          "retained_consequence_ci": {
+            "high": 0.839078,
+            "low": 0.801677
+          }
+        },
+        "DELAY_PASSENGER": {
+          "absolute_consequence_gap": 48.941143,
+          "abstain": 0,
+          "attention_loss": 0.144577,
+          "attention_loss_ci": {
+            "high": 0.161659,
+            "low": 0.126323
+          },
+          "candidate_total": 3884,
+          "k": 389,
+          "n": 3884,
+          "overlap": 218,
+          "paired_increment_vs_delay": {
+            "attention_loss": -0.03648724805244122,
+            "overlap": 44,
+            "replacement": -44,
+            "retained_consequence": 0.03648724805244119
+          },
+          "replacement": 171,
+          "replacement_ci": {
+            "high": 189.0,
+            "low": 156.975
+          },
+          "retained_consequence": 0.855423,
+          "retained_consequence_ci": {
+            "high": 0.873677,
+            "low": 0.838341
+          }
+        }
+      }
+    },
+    "q_grid": [
+      {
+        "attention_loss": 0.200771,
+        "ci_high": 0.2606,
+        "ci_low": 0.157372,
+        "k": 72,
+        "n": 1422,
+        "overlap": 33,
+        "q": 0.05,
+        "replacement": 39,
+        "retained_consequence": 0.799229,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.179804,
+        "ci_high": 0.224638,
+        "ci_low": 0.124754,
+        "k": 72,
+        "n": 1422,
+        "overlap": 36,
+        "q": 0.05,
+        "replacement": 36,
+        "retained_consequence": 0.820196,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.200794,
+        "ci_high": 0.259925,
+        "ci_low": 0.15793,
+        "k": 72,
+        "n": 1422,
+        "overlap": 33,
+        "q": 0.05,
+        "replacement": 39,
+        "retained_consequence": 0.799206,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 72,
+        "n": 1422,
+        "overlap": 72,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.184002,
+        "ci_high": 0.216302,
+        "ci_low": 0.150562,
+        "k": 143,
+        "n": 1422,
+        "overlap": 67,
+        "q": 0.1,
+        "replacement": 76,
+        "retained_consequence": 0.815998,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.172118,
+        "ci_high": 0.200178,
+        "ci_low": 0.137083,
+        "k": 143,
+        "n": 1422,
+        "overlap": 78,
+        "q": 0.1,
+        "replacement": 65,
+        "retained_consequence": 0.827882,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.181264,
+        "ci_high": 0.21413,
+        "ci_low": 0.150237,
+        "k": 143,
+        "n": 1422,
+        "overlap": 68,
+        "q": 0.1,
+        "replacement": 75,
+        "retained_consequence": 0.818736,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 143,
+        "n": 1422,
+        "overlap": 143,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.122292,
+        "ci_high": 0.143808,
+        "ci_low": 0.103963,
+        "k": 285,
+        "n": 1422,
+        "overlap": 176,
+        "q": 0.2,
+        "replacement": 109,
+        "retained_consequence": 0.877708,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.116064,
+        "ci_high": 0.138645,
+        "ci_low": 0.097915,
+        "k": 285,
+        "n": 1422,
+        "overlap": 178,
+        "q": 0.2,
+        "replacement": 107,
+        "retained_consequence": 0.883936,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.122478,
+        "ci_high": 0.143378,
+        "ci_low": 0.104699,
+        "k": 285,
+        "n": 1422,
+        "overlap": 176,
+        "q": 0.2,
+        "replacement": 109,
+        "retained_consequence": 0.877522,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 285,
+        "n": 1422,
+        "overlap": 285,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.087642,
+        "ci_high": 0.102697,
+        "ci_low": 0.07496,
+        "k": 427,
+        "n": 1422,
+        "overlap": 296,
+        "q": 0.3,
+        "replacement": 131,
+        "retained_consequence": 0.912358,
+        "stage": "PRE",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.09832,
+        "ci_high": 0.112215,
+        "ci_low": 0.084146,
+        "k": 427,
+        "n": 1422,
+        "overlap": 288,
+        "q": 0.3,
+        "replacement": 139,
+        "retained_consequence": 0.90168,
+        "stage": "PRE",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.088258,
+        "ci_high": 0.103039,
+        "ci_low": 0.073852,
+        "k": 427,
+        "n": 1422,
+        "overlap": 295,
+        "q": 0.3,
+        "replacement": 132,
+        "retained_consequence": 0.911742,
+        "stage": "PRE",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 427,
+        "n": 1422,
+        "overlap": 427,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "PRE",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.195539,
+        "ci_high": 0.231031,
+        "ci_low": 0.170184,
+        "k": 195,
+        "n": 3884,
+        "overlap": 83,
+        "q": 0.05,
+        "replacement": 112,
+        "retained_consequence": 0.804461,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.168793,
+        "ci_high": 0.200258,
+        "ci_low": 0.145832,
+        "k": 195,
+        "n": 3884,
+        "overlap": 89,
+        "q": 0.05,
+        "replacement": 106,
+        "retained_consequence": 0.831207,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.195315,
+        "ci_high": 0.231142,
+        "ci_low": 0.17146,
+        "k": 195,
+        "n": 3884,
+        "overlap": 83,
+        "q": 0.05,
+        "replacement": 112,
+        "retained_consequence": 0.804685,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 195,
+        "n": 3884,
+        "overlap": 195,
+        "q": 0.05,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.181064,
+        "ci_high": 0.199588,
+        "ci_low": 0.161769,
+        "k": 389,
+        "n": 3884,
+        "overlap": 174,
+        "q": 0.1,
+        "replacement": 215,
+        "retained_consequence": 0.818936,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.144577,
+        "ci_high": 0.161659,
+        "ci_low": 0.126323,
+        "k": 389,
+        "n": 3884,
+        "overlap": 218,
+        "q": 0.1,
+        "replacement": 171,
+        "retained_consequence": 0.855423,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.180937,
+        "ci_high": 0.198323,
+        "ci_low": 0.160922,
+        "k": 389,
+        "n": 3884,
+        "overlap": 174,
+        "q": 0.1,
+        "replacement": 215,
+        "retained_consequence": 0.819063,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 389,
+        "n": 3884,
+        "overlap": 389,
+        "q": 0.1,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.118493,
+        "ci_high": 0.132167,
+        "ci_low": 0.107934,
+        "k": 777,
+        "n": 3884,
+        "overlap": 468,
+        "q": 0.2,
+        "replacement": 309,
+        "retained_consequence": 0.881507,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.108361,
+        "ci_high": 0.11921,
+        "ci_low": 0.097416,
+        "k": 777,
+        "n": 3884,
+        "overlap": 478,
+        "q": 0.2,
+        "replacement": 299,
+        "retained_consequence": 0.891639,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.118676,
+        "ci_high": 0.130991,
+        "ci_low": 0.108061,
+        "k": 777,
+        "n": 3884,
+        "overlap": 467,
+        "q": 0.2,
+        "replacement": 310,
+        "retained_consequence": 0.881324,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 777,
+        "n": 3884,
+        "overlap": 777,
+        "q": 0.2,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "attention_loss": 0.086262,
+        "ci_high": 0.094887,
+        "ci_low": 0.078013,
+        "k": 1166,
+        "n": 3884,
+        "overlap": 821,
+        "q": 0.3,
+        "replacement": 345,
+        "retained_consequence": 0.913738,
+        "stage": "TURN",
+        "view": "DELAY"
+      },
+      {
+        "attention_loss": 0.087933,
+        "ci_high": 0.096617,
+        "ci_low": 0.079923,
+        "k": 1166,
+        "n": 3884,
+        "overlap": 800,
+        "q": 0.3,
+        "replacement": 366,
+        "retained_consequence": 0.912067,
+        "stage": "TURN",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "attention_loss": 0.08764,
+        "ci_high": 0.095696,
+        "ci_low": 0.078372,
+        "k": 1166,
+        "n": 3884,
+        "overlap": 817,
+        "q": 0.3,
+        "replacement": 349,
+        "retained_consequence": 0.91236,
+        "stage": "TURN",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "attention_loss": 0.0,
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "k": 1166,
+        "n": 3884,
+        "overlap": 1166,
+        "q": 0.3,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "stage": "TURN",
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2022
+  }
+}

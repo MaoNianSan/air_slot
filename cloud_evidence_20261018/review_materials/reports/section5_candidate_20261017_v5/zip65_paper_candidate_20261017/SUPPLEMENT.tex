@@ -1,0 +1,473 @@
+% English supplementary manuscript for the six-year Section 5 results.
+% This is a standalone candidate file; do not input it into the main manuscript.
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.45cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,longtable,graphicx}
+\usepackage{needspace}
+\usepackage[hidelinks]{hyperref}
+\emergencystretch=2em
+\newcommand{\ind}{\mathbb I}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\numberwithin{equation}{section}
+\renewcommand{\thetable}{S\arabic{table}}
+\author{}
+\title{Supplementary Material\\[4pt]\large Operational Information and Decision Value in Rolling Airline Recovery}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+This supplement accompanies Section 5 of the main manuscript. It documents the annual samples, information representations, consequence scales, decision calculations, inferential units, and year-specific results. Results are reported separately for the six annual windows from 2017 through 2022. Cross-year means are unweighted averages of the six annual point estimates, and annual ranges are minima and maxima rather than confidence intervals. Unless stated otherwise, simulated decision values are not interpreted as realized airline savings, realized operational improvements, or causal effects.
+
+\section{Notation, Analysis Populations, and Time Design}
+\label{sup:design}
+
+The basic analysis unit is a decision case formed at a prespecified operating stage from a predecessor--successor flight chain linked by aircraft tail number. Let $y$ denote year, $g$ operating stage, $s$ scenario, and $t$ decision epoch. Scenario weights represent probability mass in a conditional state distribution; they are not independent observations. PRE and TURN observations and rolling epochs from the same flight chain are likewise not treated as independent statistical samples.
+
+We distinguish the following populations:
+\begin{itemize}
+  \item $\mathcal C_{1,y}$ is the set of PRE/TURN cases in year $y$ satisfying all common-support conditions for Stage II, independently of screening priority.
+  \item $\mathcal C^{HJ}_{y}$ is the intersection of the annual HJ reference shortlist and valid Stage-II support. It is the annual paired reference cohort for representation and recovery-target comparisons.
+  \item $\mathcal C_0$ is the legacy fixed 2019 sample, retained only for historical provenance and not pooled with the six-year results.
+  \item $\mathcal C_3$ is the set of available repeated rolling decision epochs within the same flight chain. The current six-year results do not estimate trajectory effects for this population.
+\end{itemize}
+
+Accordingly, the full Stage-II-eligible sample size in $\mathcal C_{1,y}$, the HJ paired-cohort size in $\mathcal C^{HJ}_{y}$, and the Stage-I screening candidate counts are different denominators. Table~\ref{tab:s1} reports these counts alongside the annual recovery parameters.
+
+\setlength{\tabcolsep}{3pt}
+\small
+\begin{longtable}{>{\raggedleft\arraybackslash}p{0.055\linewidth}>{\raggedleft\arraybackslash}p{0.065\linewidth}>{\raggedleft\arraybackslash}p{0.065\linewidth}>{\raggedleft\arraybackslash}p{0.055\linewidth}>{\raggedleft\arraybackslash}p{0.06\linewidth}>{\raggedleft\arraybackslash}p{0.09\linewidth}>{\raggedleft\arraybackslash}p{0.075\linewidth}>{\raggedleft\arraybackslash}p{0.07\linewidth}>{\raggedleft\arraybackslash}p{0.11\linewidth}>{\raggedleft\arraybackslash}p{0.075\linewidth}}
+\caption{Annual sample support, screening capacity, and recovery parameters.}\label{tab:s1}\\
+\toprule
+Year & PRE $N$ & TURN $N$ & PRE $K$ & TURN $K$ & \shortstack{Stage-II\\eligible} & \shortstack{HJ\\cohort} & \shortstack{E3\\rows} & \shortstack{$T_{\mathrm{turn,lb}}$\\(min)} & \shortstack{$U_{\max}$\\(min)} \\
+\midrule
+\endfirsthead
+\multicolumn{10}{l}{\tablename\ \thetable\ -- continued from previous page}\\
+\toprule
+Year & PRE $N$ & TURN $N$ & PRE $K$ & TURN $K$ & \shortstack{Stage-II\\eligible} & \shortstack{HJ\\cohort} & \shortstack{E3\\rows} & \shortstack{$T_{\mathrm{turn,lb}}$\\(min)} & \shortstack{$U_{\max}$\\(min)} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{10}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+2017 & 1,310 & 3,899 & 131 & 390 & 5,209 & 521 & 4,168 & 40 & 45 \\
+2018 & 1,345 & 3,873 & 135 & 388 & 5,218 & 523 & 4,184 & 41 & 40 \\
+2019 & 1,252 & 3,888 & 126 & 389 & 5,140 & 515 & 4,120 & 41 & 45 \\
+2020 & 675 & 4,053 & 68 & 406 & 4,728 & 474 & 3,792 & 43 & 40 \\
+2021 & 1,297 & 3,930 & 130 & 393 & 5,227 & 523 & 4,184 & 49 & 40 \\
+2022 & 1,422 & 3,884 & 143 & 389 & 5,306 & 532 & 4,256 & 46 & 45 \\
+\end{longtable}
+\normalsize
+\noindent\textit{Note.} $K=\lceil 0.10N\rceil$, computed separately for PRE and TURN. Stage-II eligible cases are the combined PRE and TURN total. The HJ paired cohort is the intersection of the annual nominal HJ shortlist and valid local-recovery support; it does not replace the full $\mathcal C_1$ population. E3 rows equal eight rows per HJ case (four objectives by two representations) and are not independent observations. $T_{\mathrm{turn,lb}}$ and $U_{\max}$ are derived from training-period parameters for the corresponding year.
+
+\subsection{Data sources and annual partition}
+BTS On-Time Performance supplies scheduled flights, operating events, taxi times, and aircraft continuity. NOAA Integrated Surface Database supplies airport weather observations. BTS DB1B and T-100 provide historical passenger-market, connection-exposure, and route/operating-scale references. Exposures constructed from DB1B and T-100 are historical proxies, not passenger manifests for the same flight. Operating-state information at a decision node and exposure references frozen from the training period are handled separately; realized outcomes are used for validation and are not inputs at earlier decision epochs.
+
+Each annual window uses the same temporal roles independently: January--June for model estimation and historical-reference formation, July for probability calibration, August--September for development checks and freezing, and October--December for held-out evaluation. This design evaluates independently formed annual results; it is not a transfer experiment in which a model trained only on 2019 is applied directly to other years.
+
+Five-minute rolling replay generates decision nodes, which are then mapped to PRE, TURN, and other prespecified stages. The canonical node is selected according to the stage rule before probabilistic support is checked; nodes must not be selected merely because their probability interface is valid. Eligible cases must meet the time-quality, required-field, and probabilistic common-support criteria. Screening is analyzed by year and stage. Stage-II representation comparisons are restricted to their separately defined common-support cohorts.
+
+\section{Conditional Operating States and Information Representations}
+\label{sup:representations}
+
+Let $T^{IB}$ denote the predecessor flight's in-block/arrival state, $D^{OB}$ the successor flight's take-off delay, and $D^{TX}$ additional taxi delay. When these quantities remain unresolved, the conditional state is factorized in aircraft-operating order as
+\begin{equation}
+\begin{aligned}
+p(T^{IB},D^{OB},D^{TX}\mid\mathcal E_{\leq t})
+={}&p(T^{IB}\mid\mathcal E_{\leq t})\\
+&\cdot p(D^{OB}\mid T^{IB},\mathcal E_{\leq t})\\
+&\cdot p(D^{TX}\mid T^{IB},D^{OB},\mathcal E_{\leq t}).
+\end{aligned}
+\label{eq:factorization}
+\end{equation}
+
+We use HJ, HM, HP, and CJ for History+Joint, History+Marginal, History+Point, and Current+Joint, respectively.
+
+Operating nodes already realized at the decision epoch are held fixed and are not resampled. HJ retains the joint scenario structure and its probability weights. HP represents the state distribution by a representative point from the weighted joint scenarios. HM constructs an exact discrete product coupling from the HJ weighted marginal distributions of the three unresolved raw states. HM preserves each raw state's one-dimensional weighted marginal while changing cross-state joint coupling. It is a mathematical dependence-structure contrast: it does not imply that real operating states are independent and is not a deployable joint-state forecast.
+
+The annual audit compares the probability mass assigned to each raw-coordinate value under the joint and HM representations for every included candidate node. The exact weighted-marginal check passed for supported nodes in all six years, and probability mass under the full-support condition was 1. In comparisons of consequence components between HM and HJ, Flight and Resource components were numerically identical in all six years (maximum absolute difference below $10^{-13}$ CU), whereas the Passenger component differed at 39\%--66\% of nodes because of threshold-event consequences. Under the current consequence system, this pattern indicates that differences in coupling affect decisions through threshold-based consequences. It does not establish independence or physical feasibility of the real operating states.
+
+CJ and HJ also use different temporal input configurations. Unless implementation differences such as model capacity are controlled simultaneously, CJ--HJ is a comparison of implementation configurations and cannot by itself identify the causal contribution of historical information. We do not use this contrast to claim that one model is superior to another.
+
+\section{Consequences, Management Objectives, and Local Recovery}
+\label{sup:consequences}
+
+\subsection{Consequence components and interpretation}
+Let $D^{TO}=D^{OB}+D^{TX}$, let $N^{pax}$ denote historical passenger exposure, let $s^{conn}$ denote the share of connection-sensitive passengers, and let $E^{down}$ denote a downstream-exposure proxy. The consequence vector contains three Flight components, three Passenger components, and one Resource component.
+
+\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.11\linewidth}>{\raggedright\arraybackslash}p{0.20\linewidth}>{\raggedright\arraybackslash}p{0.30\linewidth}>{\raggedright\arraybackslash}p{0.32\linewidth}}
+\caption{Seven raw consequence components.}\label{tab:s2}\\
+\toprule
+Domain & Component & Raw quantity & Meaning and limitation \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\tablename\ \thetable\ -- continued from previous page}\\
+\toprule
+Domain & Component & Raw quantity & Meaning and limitation \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+Flight & $F_{\mathrm{continuity}}$ & $\max\{0,\ T^{IB}_{\mathrm{signed}}+T_{\mathrm{turn,ref}}-SOBT_{\mathrm{relative}}\}$ & Continuity/turnaround pressure under a frozen training-period turnaround reference; uses the current run's time-coordinate contract. \\
+Flight & $F_{\mathrm{execution}}$ & $D^{OB}$ & Take-off delay. \\
+Flight & $F_{\mathrm{propagation}}$ & $D^{TO}E^{down}$ & Downstream-exposure-weighted delay-propagation proxy. \\
+Passenger & $P_{\mathrm{time}}$ & $N^{pax}D^{TO}$ & Passenger delay exposure. \\
+Passenger & $P_{\mathrm{itinerary}}$ & $N^{pax}s^{conn}\ind\{D^{TO}>45\}$ & Connection-risk proxy at the 45-minute threshold. \\
+Passenger & $P_{\mathrm{service}}$ & $N^{pax}\ind\{D^{TO}\geq180\}$ & Service-exposure proxy at the 180-minute threshold. \\
+Resource & $R_{\mathrm{operating}}$ & $D^{TX}$ & Additional taxi-time proxy. \\
+\end{longtable}
+\normalsize
+\noindent\textit{Note.} $T_{\mathrm{turn,ref}}$ is the frozen training-period turnaround reference used in the continuity consequence. The annual lower bound $T_{\mathrm{turn,lb}}$ used in Stage-II feasibility is a different parameter and should not be conflated with it. Passenger and downstream quantities are historical exposure proxies; they are not actual misconnections, compensation expenditures, or directly realizable airline costs.
+
+Each continuous positive-valued component $k$ is scaled by its positive-value median in the corresponding year's training period, $\xi_k=\operatorname{Median}_{Train}(q_k\mid q_k>0)$, so that $Z_k=q_k/\xi_k$. Threshold-event components are scaled by one native event unit. The three components within Flight and the three within Passenger are averaged with equal weights; Resource has one component. CU is a dimensionless, normatively weighted consequence unit, not a monetary unit or a welfare scale estimated from revealed preferences.
+
+\subsection{Prespecified objective weights}
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+Objective & Flight weight & Passenger weight & Resource weight \\
+\midrule
+Balanced & $1/3$ & $1/3$ & $1/3$ \\
+Flight emphasis & 0.50 & 0.25 & 0.25 \\
+Passenger emphasis & 0.25 & 0.50 & 0.25 \\
+Resource emphasis & 0.25 & 0.25 & 0.50 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Components are first aggregated within each domain as specified above and then combined using the objective weights to form the overall consequence criterion $\Phi^C_{\boldsymbol\omega}$. Equal domain weights therefore do not make all seven raw components equally weighted.
+
+\subsection{Stage-I screening and Stage-II local recovery}
+For year $y$ and stage $g$, screening capacity is $K_{y,g}(q)=\lceil qN_{y,g}\rceil$, and the highest-priority cases are selected from the same candidate population under a fixed ranking rule. The nominal share is $q_0=0.10$; capacity sensitivity uses $q=0.05,0.20,0.30$. The replacement rate measures membership changes relative to the reference shortlist, whereas $L^{att}$ measures the reference-consequence loss of the alternative shortlist; these answer different questions.
+
+The recovery target $u$ lies on a five-minute grid from 0 through that year's $U_{\max}$. For scenario $s$, the feasible take-off-time lower bound, available headroom, and applied recovery amount are
+\begin{equation}
+LB^{OB}_s=\max\{SOBT^+,T^{IB}_s+T_{\mathrm{turn,lb}}\},\qquad
+H_s=[AOBT_s(0)-LB^{OB}_s]_+,\qquad
+r_s(u)=\min\{u,H_s\}.
+\label{eq:headroom}
+\end{equation}
+For objective weights $\boldsymbol\omega$, the local optimization is
+\begin{equation}
+J_{\boldsymbol\omega}(u)
+=\sum_s w_s\Phi^C_{\boldsymbol\omega}(\mathbf C_s(u))
++\lambda\,u/U_{\max},\qquad \lambda=0.25,
+\label{eq:objective}
+\end{equation}
+with the smaller target selected in a tie. The annual $T_{\mathrm{turn,lb}}$ is the 20th percentile of realized turnaround time in the training period. $U_{\max}$ is the 90th percentile of positive training-period headroom, rounded down to the five-minute grid. Annual values are reported in Table~\ref{tab:s1}. The local objective is not a full airline-network recovery optimization and does not directly simulate actual dispatch execution. Setting $u=0$ means that no additional modeled local-recovery target is imposed; it does not mean that no intervention occurred in historical operations.
+
+\section{Evaluation Measures, Stability Boundaries, and Inference}
+\label{sup:inference}
+
+\subsection{Screening and recovery loss}
+For a common-support candidate population and budget, let $\mathcal H^r_g$ be the Top-$K$ list under the reference-consequence ranking, $\mathcal H^a_g$ the list under an alternative ranking, and $P^r_{i,g}$ the reference priority. Screening loss is
+\begin{equation}
+L^{att}_g=1-\frac{\sum_{i\in\mathcal H^a_g}P^r_{i,g}}{\sum_{i\in\mathcal H^r_g}P^r_{i,g}},
+\label{eq:latt}
+\end{equation}
+and is computed only when the reference total is positive. Because the reference Top-$K$ maximizes the reference total over the same candidate population and budget, the alternative loss is nonnegative. It is relative loss under the reference-consequence system, not an incurred airline cost.
+
+Let $u^r_{i,g}$ be the target under the HJ reference representation and $u^a_{i,g}$ the target under a comparison representation. Both are reevaluated using the same HJ reference objective $J^r$ and the same supported scenarios. Define
+\begin{equation}
+\Delta^{rec}_{i,g}=J^r_{i,g}(u^a_{i,g})-J^r_{i,g}(u^r_{i,g}),\qquad
+V^r_{i,g}=J^r_{i,g}(0)-J^r_{i,g}(u^r_{i,g}),
+\label{eq:recovery-components}
+\end{equation}
+and cohort recovery loss
+\begin{equation}
+L^{rec}(\mathcal C)=\frac{\sum_{(i,g)\in\mathcal C}\Delta^{rec}_{i,g}}{\sum_{(i,g)\in\mathcal C}V^r_{i,g}}.
+\label{eq:lrec}
+\end{equation}
+This ratio is reported only when its denominator is positive. $L^{rec}$ is not necessarily between 0 and 1; a zero denominator makes it undefined, not zero. Each management objective has its own HJ reference optimum and recovery-value denominator. Optimality refers only to the optimum in the current local model, not to a recovery action validated as optimal in real airline operations.
+
+\subsection{Sufficient conditions for decision stability}
+For Stage I, let $\mathcal H^r_g$ be the reference Top-$K$ list and define the smallest score gap across the list boundary as
+\begin{equation}
+m_g=\min_{i\in\mathcal H^r_g,\,j\notin\mathcal H^r_g}(P^r_{i,g}-P^r_{j,g}).
+\end{equation}
+If alternative scores can be written as $P^a_{i,g}=P^r_{i,g}+\delta^I_{i,g}$, define the largest differential perturbation across that boundary by
+\begin{equation}
+\Delta^I_g=\max_{\substack{i\in\mathcal H^r_g\\j\notin\mathcal H^r_g}}|\delta^I_{i,g}-\delta^I_{j,g}|.
+\end{equation}
+For any selected--unselected pair,
+\begin{equation}
+P^a_{i,g}-P^a_{j,g}\geq m_g-\Delta^I_g.
+\end{equation}
+Thus, $\Delta^I_g<m_g$ is sufficient to guarantee an unchanged Top-$K$ list. Scores must be on the same scale for this comparison; raw delay minutes and CU cannot be substituted directly.
+
+For Stage II, let $u^r=\arg\min_u J^r(u)$ and define the gap between the reference optimum and the next-best target as
+\begin{equation}
+\gamma=\min_{u\ne u^r}\{J^r(u)-J^r(u^r)\}.
+\end{equation}
+If $J^a(u)=J^r(u)+\delta^{II}(u)$ and
+\begin{equation}
+\Delta^{II}=\max_{u\ne u^r}|\delta^{II}(u)-\delta^{II}(u^r)|,
+\end{equation}
+then
+\begin{equation}
+J^a(u)-J^a(u^r)\geq\gamma-\Delta^{II}.
+\end{equation}
+Therefore, $\Delta^{II}<\gamma$ is sufficient to preserve the reference action as an optimum, under the same tie rule. Both conditions are sufficient, not necessary; failure to satisfy either condition does not imply that the decision changes.
+
+\subsection{Boundary of the dependence-structure comparison}
+Let $P_J$ be the joint scenario distribution and $P_M$ the product coupling that preserves its raw-state weighted marginals. Assume both use the same feasible target set, and let $e_{\boldsymbol\omega}(u)=J_{\boldsymbol\omega}(u;P_J)-J_{\boldsymbol\omega}(u;P_M)$. For any comparison target $v$ and HJ-optimal target $u_J^*$,
+\begin{equation}
+\begin{aligned}
+J_{\boldsymbol\omega}(v;P_M)-J_{\boldsymbol\omega}(u_J^*;P_M)
+={}&[J_{\boldsymbol\omega}(v;P_J)-J_{\boldsymbol\omega}(u_J^*;P_J)]\\
+&-[e_{\boldsymbol\omega}(v)-e_{\boldsymbol\omega}(u_J^*)].
+\end{aligned}
+\label{eq:dependence-identity}
+\end{equation}
+This identity shows that dependence structure can change the selected action only when it changes the relative evaluation of different targets; an additive shift common to all targets does not change their ordering. If, for a fixed objective, the consequence criterion is separable across unresolved raw states, all weighted marginals are identical, and neither the target set nor effort term changes with representation, expected criteria are identical under the two representations. This is a sufficient condition for marginal sufficiency, not a necessary one.
+
+\subsection{Resampling and reporting}
+Uncertainty intervals use aircraft-linked episodes as the resampling unit. PRE/TURN stages and available rolling nodes within the same episode move together in each resample. The reported Stage-I and Stage-II 95\% intervals are percentile intervals from 2,000 episode-cluster bootstrap replicates. Because Stage-I Top-$K$ is a set-valued decision, each replicate re-forms the candidate set, capacity, ranking, tie handling, and reference retained value; the selected list is not held fixed while only its members are resampled. Annual point estimates are reported separately, without pooling candidate cases across years. Objective agreement, $A_0/A_5$, mean targets, and activation rates shown without intervals are descriptive point estimates.
+
+\section{Six-Year Supplementary Results}
+\label{sup:results}
+
+\subsection{Annual screening results at the nominal review capacity}
+Table~\ref{tab:s3} reports candidate counts, Top-$K$ overlap, replacements, and reference-consequence loss by year, stage, and ranking at $q_0=0.10$. The replacement rate is the number of replacements divided by $K$; confidence intervals are obtained by episode-cluster bootstrap.
+
+\scriptsize
+\begin{longtable}{r l l r r r l}
+\caption{Annual screening results at the nominal review capacity $q_0=0.10$.}\label{tab:s3}\\
+\toprule
+Year & Stage & Ranking & $N/K$ & Overlap & Replaced & $L^{att}$ (95\% CI) \\
+\midrule
+\endfirsthead
+\multicolumn{7}{l}{\tablename\ \thetable\ -- continued from previous page}\\
+\toprule
+Year & Stage & Ranking & $N/K$ & Overlap & Replaced & $L^{att}$ (95\% CI) \\
+\midrule
+\endhead
+\midrule
+\multicolumn{7}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+2017 & PRE & Delay & 1,310/131 & 82 & 49 & 0.1054 (0.0827, 0.1360) \\
+2017 & PRE & Delay + Passenger & 1,310/131 & 91 & 40 & 0.0626 (0.0466, 0.0854) \\
+2017 & PRE & Delay + Downstream & 1,310/131 & 82 & 49 & 0.1054 (0.0818, 0.1360) \\
+2017 & TURN & Delay & 3,899/390 & 224 & 166 & 0.1159 (0.0991, 0.1298) \\
+2017 & TURN & Delay + Passenger & 3,899/390 & 264 & 126 & 0.0715 (0.0594, 0.0834) \\
+2017 & TURN & Delay + Downstream & 3,899/390 & 224 & 166 & 0.1159 (0.1001, 0.1296) \\
+2018 & PRE & Delay & 1,345/135 & 73 & 62 & 0.1607 (0.1233, 0.1951) \\
+2018 & PRE & Delay + Passenger & 1,345/135 & 90 & 45 & 0.0877 (0.0636, 0.1112) \\
+2018 & PRE & Delay + Downstream & 1,345/135 & 73 & 62 & 0.1603 (0.1245, 0.1931) \\
+2018 & TURN & Delay & 3,873/388 & 215 & 173 & 0.1476 (0.1280, 0.1665) \\
+2018 & TURN & Delay + Passenger & 3,873/388 & 250 & 138 & 0.1053 (0.0894, 0.1219) \\
+2018 & TURN & Delay + Downstream & 3,873/388 & 215 & 173 & 0.1468 (0.1284, 0.1667) \\
+2019 & PRE & Delay & 1,252/126 & 75 & 51 & 0.1336 (0.0997, 0.1636) \\
+2019 & PRE & Delay + Passenger & 1,252/126 & 82 & 44 & 0.0842 (0.0575, 0.1091) \\
+2019 & PRE & Delay + Downstream & 1,252/126 & 75 & 51 & 0.1336 (0.1008, 0.1623) \\
+2019 & TURN & Delay & 3,888/389 & 235 & 154 & 0.1233 (0.1051, 0.1408) \\
+2019 & TURN & Delay + Passenger & 3,888/389 & 262 & 127 & 0.0836 (0.0675, 0.0980) \\
+2019 & TURN & Delay + Downstream & 3,888/389 & 235 & 154 & 0.1234 (0.1057, 0.1401) \\
+2020 & PRE & Delay & 675/68 & 41 & 27 & 0.1006 (0.0712, 0.1461) \\
+2020 & PRE & Delay + Passenger & 675/68 & 47 & 21 & 0.0700 (0.0375, 0.0975) \\
+2020 & PRE & Delay + Downstream & 675/68 & 41 & 27 & 0.0988 (0.0695, 0.1403) \\
+2020 & TURN & Delay & 4,053/406 & 236 & 170 & 0.1068 (0.0931, 0.1216) \\
+2020 & TURN & Delay + Passenger & 4,053/406 & 276 & 130 & 0.0674 (0.0574, 0.0774) \\
+2020 & TURN & Delay + Downstream & 4,053/406 & 236 & 170 & 0.1058 (0.0914, 0.1187) \\
+2021 & PRE & Delay & 1,297/130 & 63 & 67 & 0.1538 (0.1262, 0.1861) \\
+2021 & PRE & Delay + Passenger & 1,297/130 & 68 & 62 & 0.1143 (0.0925, 0.1429) \\
+2021 & PRE & Delay + Downstream & 1,297/130 & 63 & 67 & 0.1538 (0.1255, 0.1864) \\
+2021 & TURN & Delay & 3,930/393 & 186 & 207 & 0.1562 (0.1382, 0.1718) \\
+2021 & TURN & Delay + Passenger & 3,930/393 & 225 & 168 & 0.1127 (0.0995, 0.1291) \\
+2021 & TURN & Delay + Downstream & 3,930/393 & 187 & 206 & 0.1553 (0.1381, 0.1721) \\
+2022 & PRE & Delay & 1,422/143 & 67 & 76 & 0.1840 (0.1506, 0.2163) \\
+2022 & PRE & Delay + Passenger & 1,422/143 & 78 & 65 & 0.1721 (0.1371, 0.2002) \\
+2022 & PRE & Delay + Downstream & 1,422/143 & 68 & 75 & 0.1813 (0.1502, 0.2141) \\
+2022 & TURN & Delay & 3,884/389 & 174 & 215 & 0.1811 (0.1618, 0.1996) \\
+2022 & TURN & Delay + Passenger & 3,884/389 & 218 & 171 & 0.1446 (0.1263, 0.1617) \\
+2022 & TURN & Delay + Downstream & 3,884/389 & 174 & 215 & 0.1809 (0.1609, 0.1983) \\
+\end{longtable}
+\normalsize
+\noindent\textit{Note.} The reference list is the Consequence ranking at the same year, stage, and capacity. The replacement rate is the number replaced divided by $K$. Intervals are 2,000-replicate episode-cluster percentile-bootstrap intervals for $L^{att}$. Candidate pools are not pooled across years.
+
+\subsection{Review-capacity sensitivity}
+Define $\Delta L^{att}=L^{att}_{\mathrm{Delay}}-L^{att}_{\mathrm{Delay+Passenger}}$; a positive value means that, for that year and stage, adding passenger exposure is associated with lower reference loss. Table~\ref{tab:s4} reports annual values for comparison with the annual means and Figure 5.1 in the main text.
+
+\small
+\begin{longtable}{l r r r r r}
+\caption{Annual loss difference between delay ranking and delay-plus-passenger-exposure ranking.}\label{tab:s4}\\
+\toprule
+Stage & Year & $q=0.05$ & $q=0.10$ & $q=0.20$ & $q=0.30$ \\
+\midrule
+PRE & 2017 & 0.0362 & 0.0428 & 0.0191 & 0.0038 \\
+PRE & 2018 & 0.0814 & 0.0730 & 0.0142 & 0.0072 \\
+PRE & 2019 & 0.0664 & 0.0494 & -0.0081 & -0.0185 \\
+PRE & 2020 & 0.0928 & 0.0306 & 0.0087 & -0.0136 \\
+PRE & 2021 & 0.0398 & 0.0395 & 0.0170 & 0.0012 \\
+PRE & 2022 & 0.0210 & 0.0119 & 0.0062 & -0.0107 \\
+TURN & 2017 & 0.0440 & 0.0444 & 0.0147 & -0.0016 \\
+TURN & 2018 & 0.0642 & 0.0423 & 0.0128 & -0.0016 \\
+TURN & 2019 & 0.0438 & 0.0397 & 0.0101 & -0.0097 \\
+TURN & 2020 & 0.0713 & 0.0394 & 0.0104 & -0.0061 \\
+TURN & 2021 & 0.0658 & 0.0436 & 0.0190 & -0.0014 \\
+TURN & 2022 & 0.0267 & 0.0365 & 0.0101 & -0.0017 \\
+\bottomrule
+\end{longtable}
+\normalsize
+\noindent\textit{Note.} Entries are differences between two annual point estimates; no paired confidence interval was constructed for these differences. The six-year unweighted means for PRE are 0.0563, 0.0412, 0.0095, and -0.0051, respectively; those for TURN are 0.0526, 0.0410, 0.0128, and -0.0037. At $q=0.30$, the PRE annual range crosses zero, whereas all six TURN annual point estimates are negative. This describes direction only and does not replace an inferential test of paired differences.
+
+\subsection{Absolute support for Stage-II representation comparisons}
+Table~\ref{tab:s5} reports the reference recovery value in the common annual HJ cohort, the comparison representation's increase in the HJ reference objective, and the number of non-activation events. A non-activation event occurs when the comparison representation selects $u=0$ while the HJ reference target is positive. CJ--HJ rows are retained as configuration comparisons; because the contrast cannot yet be attributed specifically to historical information, it is not described as a causal effect of that information. CU increments are not monetary losses.
+
+\setlength{\tabcolsep}{3pt}
+\small
+\begin{longtable}{>{\raggedleft\arraybackslash}p{0.055\linewidth}>{\raggedright\arraybackslash}p{0.11\linewidth}>{\raggedleft\arraybackslash}p{0.07\linewidth}>{\raggedright\arraybackslash}p{0.25\linewidth}>{\raggedright\arraybackslash}p{0.20\linewidth}>{\raggedleft\arraybackslash}p{0.16\linewidth}}
+\caption{Annual absolute support and non-activation events for Stage II.}\label{tab:s5}\\
+\toprule
+Year & Contrast & Paired $N$ & \shortstack[l]{HJ reference recovery value\\$\sum_i V_i^{HJ}$ (CU)} & \shortstack[l]{Decision increment\\$\Delta J$ (CU)} & \shortstack{Non-activation\\events} \\
+\midrule
+\endfirsthead
+\multicolumn{6}{l}{\tablename\ \thetable\ -- continued from previous page}\\
+\toprule
+Year & Contrast & Paired $N$ & \shortstack[l]{HJ reference recovery value\\$\sum_i V_i^{HJ}$ (CU)} & \shortstack[l]{Decision increment\\$\Delta J$ (CU)} & \shortstack{Non-activation\\events} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+2017 & CJ--HJ & 521 & 40.37 & 26.96 & 103 \\
+2017 & HP--HJ & 521 & 40.37 & 36.92 & 366 \\
+2017 & HM--HJ & 521 & 40.37 & 4.42 & 17 \\
+2018 & CJ--HJ & 523 & 85.13 & 52.73 & 107 \\
+2018 & HP--HJ & 523 & 85.13 & 83.55 & 428 \\
+2018 & HM--HJ & 523 & 85.13 & 7.96 & 8 \\
+2019 & CJ--HJ & 515 & 42.14 & 29.32 & 168 \\
+2019 & HP--HJ & 515 & 42.14 & 39.28 & 369 \\
+2019 & HM--HJ & 515 & 42.14 & 3.60 & 8 \\
+2020 & CJ--HJ & 474 & 41.36 & 41.26 & 425 \\
+2020 & HP--HJ & 474 & 41.36 & 37.07 & 328 \\
+2020 & HM--HJ & 474 & 41.36 & 3.75 & 7 \\
+2021 & CJ--HJ & 523 & 65.41 & 20.29 & 21 \\
+2021 & HP--HJ & 523 & 65.41 & 62.36 & 396 \\
+2021 & HM--HJ & 523 & 65.41 & 6.87 & 3 \\
+2022 & CJ--HJ & 532 & 78.32 & 46.58 & 69 \\
+2022 & HP--HJ & 532 & 78.32 & 74.99 & 419 \\
+2022 & HM--HJ & 532 & 78.32 & 9.76 & 13 \\
+\end{longtable}
+\normalsize
+\noindent\textit{Note.} $V_i^{HJ}$ is the case-level recoverable value under the HJ reference objective; $\Delta J$ is the cumulative increase in the comparison decision evaluated under that same HJ reference objective. Non-activation counts use the annual HJ reference cohort as their denominator and should not be interpreted as missed recovery opportunities in actual airline operations.
+
+\subsection{Direct paired loss increments for HP versus HM}
+The HP--HM increment is calculated directly from paired output statistics and the stated common-support denominator; it is not obtained by subtracting the HP--HJ and HM--HJ summary rows. Table~\ref{tab:s6} reports the point estimates and 95\% episode-cluster bootstrap intervals.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Direct paired loss increments for HP relative to HM.}\label{tab:s6}
+\begin{tabular}{r r l l}
+\toprule
+Year & Paired support $N$ & Stage-I $\Delta L^{att}$ (95\% CI) & Stage-II $\Delta L^{rec}$ (95\% CI) \\
+\midrule
+2017 & 521 & 0.4965 (0.4959, 0.4971) & 0.8040 (0.8030, 0.8050) \\
+2018 & 523 & 0.5039 (0.5033, 0.5044) & 0.8879 (0.8873, 0.8884) \\
+2019 & 515 & 0.5291 (0.5286, 0.5297) & 0.8466 (0.8457, 0.8475) \\
+2020 & 474 & 0.4314 (0.4308, 0.4320) & 0.8058 (0.8051, 0.8064) \\
+2021 & 523 & 0.4095 (0.4090, 0.4101) & 0.8482 (0.8474, 0.8489) \\
+2022 & 532 & 0.4979 (0.4973, 0.4984) & 0.8330 (0.8322, 0.8338) \\
+\bottomrule
+\end{tabular}
+\end{table}
+\noindent\textit{Note.} Intervals are the 2,000-replicate episode-cluster percentile-bootstrap intervals recorded in the annual outputs. Paired increments compare HP and HM within the same paired definition; the two marginal comparisons against HJ must not be treated as independent estimates and then differenced arithmetically.
+
+\Needspace{6\baselineskip}
+\subsection{Annual detail by management objective and recovery decision}
+Table~\ref{tab:s7} reports exact target agreement, the HJ activation rate, the mean HJ target as a share of the annual upper bound, and the within-year, within-cohort difference between mean HJ and HM target shares under four prespecified objectives. The mean target includes cases with $u^*=0$; activation rate and mean target level are distinct management quantities.
+
+\setlength{\tabcolsep}{3pt}
+\scriptsize
+\begin{longtable}{>{\raggedleft\arraybackslash}p{0.055\linewidth}>{\raggedright\arraybackslash}p{0.105\linewidth}>{\raggedleft\arraybackslash}p{0.045\linewidth}>{\raggedleft\arraybackslash}p{0.13\linewidth}>{\raggedleft\arraybackslash}p{0.10\linewidth}>{\raggedleft\arraybackslash}p{0.15\linewidth}>{\raggedleft\arraybackslash}p{0.22\linewidth}}
+\caption{Annual recovery decisions under alternative objective weights.}\label{tab:s7}\\
+\toprule
+Year & Objective & $N$ & \shortstack{Exact HM--HJ\\agreement} & \shortstack{HJ\\activation} & \shortstack{Mean HJ target/\\$U_{\max}$} & \shortstack[l]{HJ--HM mean-target\\difference (pp)} \\
+\midrule
+\endfirsthead
+\multicolumn{7}{l}{\tablename\ \thetable\ -- continued from previous page}\\
+\toprule
+Year & Objective & $N$ & \shortstack{Exact HM--HJ\\agreement} & \shortstack{HJ\\activation} & \shortstack{Mean HJ target/\\$U_{\max}$} & \shortstack[l]{HJ--HM mean-target\\difference (pp)} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{7}{r}{Continued on next page}\\
+\endfoot
+\bottomrule
+\endlastfoot
+2017 & Balanced & 521 & 69.3\% & 84.3\% & 28.6\% & +0.1 \\
+2017 & Flight & 521 & 73.9\% & 83.9\% & 25.2\% & -0.8 \\
+2017 & Passenger & 521 & 63.5\% & 88.1\% & 34.1\% & -0.7 \\
+2017 & Resource & 521 & 77.2\% & 63.1\% & 19.0\% & -0.4 \\
+2018 & Balanced & 523 & 58.5\% & 90.6\% & 41.3\% & -3.2 \\
+2018 & Flight & 523 & 59.3\% & 90.8\% & 38.8\% & -2.9 \\
+2018 & Passenger & 523 & 56.4\% & 93.7\% & 46.3\% & -4.3 \\
+2018 & Resource & 523 & 60.8\% & 79.5\% & 33.8\% & -2.0 \\
+2019 & Balanced & 515 & 73.0\% & 82.3\% & 21.6\% & -1.4 \\
+2019 & Flight & 515 & 73.6\% & 84.9\% & 20.7\% & -1.8 \\
+2019 & Passenger & 515 & 66.4\% & 84.3\% & 25.0\% & -3.1 \\
+2019 & Resource & 515 & 75.3\% & 67.2\% & 16.3\% & -1.0 \\
+2020 & Balanced & 474 & 63.1\% & 91.6\% & 48.2\% & -0.6 \\
+2020 & Flight & 474 & 66.0\% & 90.3\% & 44.2\% & +0.5 \\
+2020 & Passenger & 474 & 56.3\% & 92.8\% & 52.5\% & -4.5 \\
+2020 & Resource & 474 & 72.4\% & 83.5\% & 33.0\% & +2.3 \\
+2021 & Balanced & 523 & 61.8\% & 88.5\% & 38.6\% & -4.0 \\
+2021 & Flight & 523 & 65.0\% & 88.3\% & 36.4\% & -0.7 \\
+2021 & Passenger & 523 & 54.7\% & 92.5\% & 48.3\% & -5.9 \\
+2021 & Resource & 523 & 70.6\% & 83.4\% & 30.6\% & +1.0 \\
+2022 & Balanced & 532 & 58.1\% & 90.2\% & 43.3\% & -0.1 \\
+2022 & Flight & 532 & 61.3\% & 88.5\% & 39.5\% & +0.6 \\
+2022 & Passenger & 532 & 56.4\% & 91.4\% & 48.2\% & -3.7 \\
+2022 & Resource & 532 & 61.3\% & 78.6\% & 33.2\% & +1.3 \\
+\end{longtable}
+\normalsize
+\noindent\textit{Note.} Target shares are normalized by the training-period $U_{\max}$ for each year and calculated over the complete HJ cohort. The difference is the annual mean HJ target share minus the HM target share. Cross-year summaries weight the six years equally. All entries are descriptive point estimates; no confidence intervals are reported.
+
+\subsection{Magnitude decomposition of recovery-target disagreement}
+Let $A_0$ be the proportion for which the HM or HP target exactly matches the HJ target, and let $A_5$ be the proportion for which the targets differ by no more than five minutes. Since targets lie on a five-minute grid, $A_5-A_0$ is the proportion differing by exactly one grid step and $1-A_5$ is the proportion differing by more than five minutes. Table~\ref{tab:s8} separates exact agreement from the magnitude of disagreement.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Annual magnitude of target disagreement for HM--HJ and HP--HJ.}\label{tab:s8}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{>{\raggedleft\arraybackslash}p{0.06\linewidth}>{\raggedright\arraybackslash}p{0.15\linewidth}>{\raggedleft\arraybackslash}p{0.07\linewidth}>{\raggedleft\arraybackslash}p{0.13\linewidth}>{\raggedleft\arraybackslash}p{0.18\linewidth}>{\raggedleft\arraybackslash}p{0.18\linewidth}}
+\toprule
+Year & \shortstack[l]{Representation\\contrast} & Paired $N$ & \shortstack{Exact\\agreement $A_0$} & \shortstack{Exactly 5 min\\$A_5-A_0$} & \shortstack{More than 5 min\\$1-A_5$} \\
+\midrule
+2017 & HM--HJ & 521 & 69.3\% & 20.3\% & 10.4\% \\
+2017 & HP--HJ & 521 & 22.6\% & 33.4\% & 44.0\% \\
+2018 & HM--HJ & 523 & 58.5\% & 33.7\% & 7.8\% \\
+2018 & HP--HJ & 523 & 13.0\% & 17.8\% & 69.2\% \\
+2019 & HM--HJ & 515 & 73.0\% & 22.9\% & 4.1\% \\
+2019 & HP--HJ & 515 & 24.1\% & 41.4\% & 34.6\% \\
+2020 & HM--HJ & 474 & 63.1\% & 30.2\% & 6.8\% \\
+2020 & HP--HJ & 474 & 17.1\% & 25.1\% & 57.8\% \\
+2021 & HM--HJ & 523 & 61.8\% & 28.1\% & 10.1\% \\
+2021 & HP--HJ & 523 & 15.3\% & 20.7\% & 64.1\% \\
+2022 & HM--HJ & 532 & 58.1\% & 29.5\% & 12.4\% \\
+2022 & HP--HJ & 532 & 13.0\% & 19.9\% & 67.1\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+\noindent\textit{Note.} Both $A_0$ and $A_5$ use the annual HJ reference cohort as denominator and are point estimates without confidence intervals. Percentages are decomposed from unrounded annual agreement rates and then rounded to one decimal place; row totals may differ from 100\% by 0.1 percentage point. The five-minute tolerance explains the discrete target grid and is not an operator- or airline-validated acceptable decision error.
+
+\subsection{Identification boundary for the sample-size stability check}
+The independent M5-b check covered $N\in\{128,256,512,1024,2048,4096\}$ and used $E=4096$ as the evaluation reference. No stability boundary was identified on this grid in any of the six years; at $N=4096$, the status was \texttt{NOT\_IDENTIFIABLE\_AT\_THIS\_N}. This result does not show that $N=4096$ is sufficient and does not identify the minimum sample size needed for stability. The empirical statement in the main text should therefore remain limited to descriptive evidence within the evaluated cohorts and support range.
+
+The current six-year outputs do not provide recovery-opportunity coverage over the full Stage-II-eligible population, the association between coverage and screening priority, a threshold-by-headroom ablation including partial-support states, matched-capacity temporal attribution, or full within-chain rolling-trajectory estimates. These unreported quantities are not treated as zero and are not used to extend the empirical claims in the main text.
+
+\end{document}
