@@ -1,0 +1,24 @@
+[2026-10-13T11:52:38Z] START pilot_e4 :: /data/airslot/logs/raw_inputs_migration_20261013/bcu_20261013/pilot_e4.py
+{
+  "status": "ENGINEERING_INCOMPLETE",
+  "years": [
+    {
+      "schema_version": "JATM_S34_E4_YEAR_STATE_V1",
+      "year": 2019,
+      "status": "ENGINEERING_INCOMPLETE",
+      "updated_at": "2026-10-13T11:52:41+00:00",
+      "bundle_root": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+      "n_grid": [
+        128
+      ],
+      "resumed_from_checkpoint": false,
+      "completed_phases": [],
+      "error": "RuntimeError: E4_PHASE_FAILED:2019:headroom:1"
+    }
+  ],
+  "n_grid": [
+    128
+  ]
+}
+E4_YEAR_STATE: {"status": "ENGINEERING_INCOMPLETE", "completed_phases": [], "resumed_from_checkpoint": false}
+E4_PILOT_RESULT: ENGINEERING_INCOMPLETE

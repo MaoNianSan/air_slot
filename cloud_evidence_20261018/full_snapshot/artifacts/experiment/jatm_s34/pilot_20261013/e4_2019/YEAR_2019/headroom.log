@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 749, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 384, in main
+    log(f"phase={args.phase} protocol={protocol_hash()[:20]}... "
+                                       ^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 106, in protocol_hash
+    m5b.create_or_verify_protocol_v2(STUDY_ROOT)
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_metrics.py", line 388, in create_or_verify_protocol_v2
+    raise ProtocolHashMismatch(f"PROTOCOL_V1_MISSING:{v1_path}")
+consequence_stability_metrics.ProtocolHashMismatch: PROTOCOL_V1_MISSING:/data/airslot/worktree/data2/reports/cohort_size_stability/CONSEQUENCE_STABILITY_PROTOCOL_V1.json

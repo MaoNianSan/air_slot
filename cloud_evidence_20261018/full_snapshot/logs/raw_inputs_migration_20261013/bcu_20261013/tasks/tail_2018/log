@@ -1,0 +1,23 @@
+[2026-10-13T05:46:11Z] START tail_2018 (tail-only build)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/data/airslot/worktree/exp/jatm_s34/build_annual_tail.py", line 91, in <module>
+    a=p.parse_args();build(a.year,a.decision,chunk_size=a.chunk_size)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/exp/jatm_s34/build_annual_tail.py", line 56, in build
+    prepared=materialize_preselected_cohorts(scientific,root=ROOT,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/development.py", line 212, in materialize_preselected_cohorts
+    config_hash_value, registry_hash_value = config_hash(root), registry_hash(root)
+                                                                ^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/streaming/data2.py", line 88, in registry_hash
+    bundle = load_registry_bundle(root / "registries")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/feature_registry/loader.py", line 79, in load_registry_bundle
+    raise RegistryError("published registry manifest mismatch")
+model.common.errors.RegistryError: published registry manifest mismatch
+TAIL_2018_BUILD_FAIL rc=1
+[2026-10-13T05:54:33Z] START tail_2018 (tail-only build)
+TAIL_2018_VERIFY: {"final_test_access_count": 0, "fit_period": ["2018-01-01", "2018-06-30"], "source_hashes": {"artifacts/models/pre/PRE_MULTIYEAR_V1/2018/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json": "sha256:40ca799389c2620d43ed277c2df1879fdf53d09a72a6ddec542f3be52ad2b3c9", "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json": "sha256:e618ff826b7d0a6e7cc6b9cd7fb8a74e933845521e8e366cfb49ee508d2e110e", "data2/reports/cohort_size_stability/2018/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl": "sha256:48bebf1c80baa720dc5dc94d07bda5533838f0063ddfbb993c9056435d5b3c16"}, "tail_id": "sha256:c35678914853dcb4b0ad8cd7f5aea1d5611196e1f6532e3b011550fc9b4aea9a", "targets": {"D_OB": {"artifact_hash": "sha256:552b73914f749d68aed8c3cdac504f71cbeefa693e592d1bd79a6948aa5e2c5e", "positive_n": 18214, "q90": 84.0, "tail_n": 1817}, "D_TX": {"artifact_hash": "sha256:befee057fded722ddf6897bd9739c844bbfe2a57770bfd9d61b6161dec126ae3", "positive_n": 27429, "q90": 22.0, "tail_n": 2485}}, "year": 2018}
+TAIL_2018_BUILD_PASS

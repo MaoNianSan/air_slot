@@ -1,0 +1,39 @@
+{
+  "schema_version": "AIRSLOT_CODE_PATCH_RECORD_V1",
+  "patch_id": "20261013_b_continuity_row_contract_fix",
+  "created_at_utc": "2026-10-13T05:06:00Z",
+  "purpose": "Minimal field-access fix authorized 2026-10-13: compute_train_scales_continuity_b reads successor['event_start_time'] instead of the non-existent flat key 'scheduled_departure_utc' (semantically identical: canonical FlightRecord aliases both onto schedule_dep). Regression test added over the real train-row contract.",
+  "local_source": {
+    "repo": "D:/research/air_slot/code/explore",
+    "branch": "v2/paper-primary",
+    "commit": "d1c72a7830965b053c921262a099a07aac4152ce",
+    "commit_short": "d1c72a7",
+    "commit_date": "2026-10-13 12:55:26 +0800",
+    "files": {
+      "model/PRE/reference/data2_m2_train_fit.py": {
+        "sha256_parent": "4ba8b5e15d8ce5a13937d73edb6531deb8bfbf1fce9713494e8c1342418611ca",
+        "sha256_fixed": "6fa95b228db5689e439be111445fcc5c3c339612f8ee9f04ee4a3087eed5e4a0"
+      },
+      "tests/m2/test_b_continuity_scales_row_contract.py": {
+        "sha256_new": "dc7804fb6806a41a17e194c16b125e756e1699ea9480e0d863c809489cfa8716"
+      }
+    }
+  },
+  "patch": {
+    "file": "/data/airslot/patches/20261013_b_continuity_row_contract_fix.patch",
+    "sha256": "8cc7a1b7bfa727334e962d24728d9554eb4f579e440612ee54f43d50f40468ec",
+    "target_root": "/data/airslot/worktree",
+    "apply_method": "patch -p1 (dry-run checked before apply)"
+  },
+  "cloud_verification": {
+    "before_sha256": "4ba8b5e15d8ce5a13937d73edb6531deb8bfbf1fce9713494e8c1342418611ca",
+    "after_sha256": "6fa95b228db5689e439be111445fcc5c3c339612f8ee9f04ee4a3087eed5e4a0",
+    "test_file_sha256": "dc7804fb6806a41a17e194c16b125e756e1699ea9480e0d863c809489cfa8716",
+    "py_compile": "OK",
+    "import_smoke": "OK"
+  },
+  "snapshot_identity": {
+    "note": "The original cloud snapshot identity is NOT overwritten: CODE_SNAPSHOT.json remains git_head 583f2c12d54297ce6522285b44ff8bf008587308 / source_archive_sha256 sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d. The worktree is now 'snapshot 583f2c12 + this versioned patch'; any run under this tree must be attributed to the patched state.",
+    "patched_state_effective_for": "all subsequent worktree computations after 2026-10-13T05:05Z"
+  }
+}

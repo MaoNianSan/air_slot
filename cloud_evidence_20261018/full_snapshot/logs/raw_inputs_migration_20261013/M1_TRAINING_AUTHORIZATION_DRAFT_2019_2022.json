@@ -1,0 +1,15 @@
+{
+  "schema": "JATM_ANNUAL_M1_TRAINING_AUTHORIZATION_V1",
+  "status": "NOT_APPROVED",
+  "years": [2019, 2020, 2021, 2022],
+  "n": 4096,
+  "roles": [
+    "M1_HISTORY_PRIMARY",
+    "M1_CURRENT_COMPARATOR"
+  ],
+  "train_months": [1, 2, 3, 4, 5, 6],
+  "calibration_months": [7],
+  "development_used_for_fit": false,
+  "final_test_access_count": 0,
+  "note": "PREPARED DRAFT ONLY (2026-10-13). Status remains NOT_APPROVED. Per the authorization template, copy to a separately controlled record and edit status/years ONLY after explicit user approval. cloud_train_models.validate_authorization requires status=USER_APPROVED; this draft must not be used as-is."
+}

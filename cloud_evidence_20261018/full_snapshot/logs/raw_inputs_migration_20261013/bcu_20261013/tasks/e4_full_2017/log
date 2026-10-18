@@ -1,0 +1,29 @@
+[2026-10-13T13:40:50Z] START e4_full_2017 :: /data/airslot/logs/raw_inputs_migration_20261013/bcu_20261013/full_e4.py 2017
+{
+  "year": 2017,
+  "terminal_status": "DEVELOPMENT_COMPLETE",
+  "completion_class": null,
+  "eval_decision": "N_GRID_UPPER_BOUND_REACHED",
+  "n_grid_coverage": {
+    "evaluation_E": 4096,
+    "full_default_grid_observed": true,
+    "interpretation": "PARTIAL_OR_FULL_GRID",
+    "observed_eval": [
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "requested": [
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ]
+  }
+}
+E4_FULL_RESULT: CHAIN_COMPLETE

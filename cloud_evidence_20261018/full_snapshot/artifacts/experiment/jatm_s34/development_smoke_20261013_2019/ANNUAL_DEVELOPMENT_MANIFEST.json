@@ -1,0 +1,3247 @@
+{
+  "bounded_memory": true,
+  "chunk_size": 4,
+  "e1": {
+    "artifact_hash": "sha256:de3e9ae714f00d223e24961da59a7dbc5a186df7e8197f19e79099aa6c0814f7",
+    "bootstrap": {
+      "cluster": "episode",
+      "replicates": 5,
+      "seed_base": 20261011,
+      "with_replacement": true
+    },
+    "bounded_memory": true,
+    "candidate_exclusions": {},
+    "chunk_count": 2,
+    "chunk_size": 4,
+    "common_candidate_counts": {
+      "POST_IB_PRE_OB": 8,
+      "PRE_IB": 3
+    },
+    "estimand": "stage-local shortlist overlap, replacement and retained consequence against P^C",
+    "exposure_reference_audit_count": 160,
+    "final_test_access_count": 0,
+    "n": 4096,
+    "node_count": 160,
+    "research_question": "Does adding approved passenger or downstream exposure to P^D change Stage-I screening while holding cohort, q and M3 tie-break fixed?",
+    "schema_version": "JATM_S34_E1_DEVELOPMENT_BOUNDED_V1",
+    "selected_rows": [
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.05,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.05,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.05,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.05,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.1,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.1,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.1,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.1,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.2,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.2,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.2,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.2,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.3,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.3,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.3,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+        "q": 0.3,
+        "selected": true,
+        "stage": "PRE_IB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.05,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.05,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.05,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.05,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.1,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.1,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.1,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.1,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.2,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:13b99a9fdeff9aca04ca0fbcd6eaca8149206db1e43b85a52ec7828805b131ac",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY"
+      },
+      {
+        "node_id": "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "node_id": "sha256:13b99a9fdeff9aca04ca0fbcd6eaca8149206db1e43b85a52ec7828805b131ac",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "node_id": "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "CONSEQUENCE"
+      },
+      {
+        "node_id": "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+        "q": 0.3,
+        "selected": true,
+        "stage": "POST_IB_PRE_OB",
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "status": "DEVELOPMENT_COMPLETE",
+    "summary_rows": [
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261016
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.11048024759529113,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.2619433442855236,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.7380566557144764,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261017
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261018
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261019
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261021
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261022
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261023
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261024
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261031
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.11048024759529113,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.2619433442855236,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.7380566557144764,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261032
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261033
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261034
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261041
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.11048024759529113,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.2619433442855236,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.7380566557144764,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261042
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261043
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20261044
+        },
+        "candidate_total": 3,
+        "k": 1,
+        "n": 3,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 1.3371102688192227,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3371102688192227,
+        "selected_reference": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "selected_view": [
+          "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+        ],
+        "stage": "PRE_IB",
+        "support_denominator": 3,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262016
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3405160923706083,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.3040312192413055,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.22680161840030408,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.3040312192413055,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.22680161840030408,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.7731983815996959,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262017
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 0,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.22680161840030408,
+          "overlap": -1,
+          "replacement": 1,
+          "retained_consequence": -0.2268016184003041
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 1,
+        "retained_consequence": 0.7731983815996959,
+        "retained_consequence_sum": 1.0364848731293028,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262018
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3405160923706083,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262019
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.05,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3405160923706083,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.1118030429007314,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.10972275699326144,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.8902772430067386,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262021
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3405160923706083,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.3040312192413055,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.22680161840030408,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.3040312192413055,
+              "ci_low": 0.03040312192413055,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.22680161840030408,
+              "ci_low": 0.02268016184003041,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 0.8999999999999999,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 1.0,
+              "ci_low": 0.1,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 0.9773198381599696,
+              "ci_low": 0.7731983815996959,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262022
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 0,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.22680161840030408,
+          "overlap": -1,
+          "replacement": 1,
+          "retained_consequence": -0.2268016184003041
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 1,
+        "retained_consequence": 0.7731983815996959,
+        "retained_consequence_sum": 1.0364848731293028,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.10062273861065825,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.09875048129393528,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 0.1,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.8999999999999999,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.9012495187060647,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262023
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3405160923706083,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262024
+        },
+        "candidate_total": 8,
+        "k": 1,
+        "n": 8,
+        "overlap": 1,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.1,
+        "reference_consequence_sum": 1.3405160923706083,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 1.3405160923706083,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 2.0,
+              "ci_low": 2.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262031
+        },
+        "candidate_total": 8,
+        "k": 2,
+        "n": 8,
+        "overlap": 2,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 2.377000965499911,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 2.377000965499911,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.30403121924130566,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.12645492575543898,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 2.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 1.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.8735450742445611,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262032
+        },
+        "candidate_total": 8,
+        "k": 2,
+        "n": 8,
+        "overlap": 2,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 2.377000965499911,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 2.377000965499911,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.10062273861065835,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.04264623036868628,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 2.0,
+              "ci_low": 1.1,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.8999999999999999,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.9573537696313137,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262033
+        },
+        "candidate_total": 8,
+        "k": 2,
+        "n": 8,
+        "overlap": 2,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 2.377000965499911,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 2.377000965499911,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 2.0,
+              "ci_low": 2.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262034
+        },
+        "candidate_total": 8,
+        "k": 2,
+        "n": 8,
+        "overlap": 2,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.2,
+        "reference_consequence_sum": 2.377000965499911,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 2.377000965499911,
+        "selected_reference": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      },
+      {
+        "absolute_consequence_gap": 0.11180304290073151,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.03292236315699653,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 3.0,
+              "ci_low": 3.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262041
+        },
+        "candidate_total": 8,
+        "k": 3,
+        "n": 8,
+        "overlap": 2,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 3.3959604408583157,
+        "replacement": 1,
+        "retained_consequence": 0.9670776368430035,
+        "retained_consequence_sum": 3.284157397957584,
+        "selected_reference": [
+          "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:13b99a9fdeff9aca04ca0fbcd6eaca8149206db1e43b85a52ec7828805b131ac",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 3.0,
+              "ci_low": 3.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262042
+        },
+        "candidate_total": 8,
+        "k": 3,
+        "n": 8,
+        "overlap": 3,
+        "paired_increment_vs_delay": {
+          "attention_loss": -0.03292236315699653,
+          "overlap": 1,
+          "replacement": -1,
+          "retained_consequence": 0.03292236315699648
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 3.3959604408583157,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 3.3959604408583157,
+        "selected_reference": [
+          "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_PASSENGER"
+      },
+      {
+        "absolute_consequence_gap": 0.11180304290073151,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.03292236315699653,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.10062273861065835,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.032543674644025286,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 3.0,
+              "ci_low": 2.1,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.8999999999999999,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 0.9674563253559747,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262043
+        },
+        "candidate_total": 8,
+        "k": 3,
+        "n": 8,
+        "overlap": 2,
+        "paired_increment_vs_delay": {
+          "attention_loss": 0.0,
+          "overlap": 0,
+          "replacement": 0,
+          "retained_consequence": 0.0
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 3.3959604408583157,
+        "replacement": 1,
+        "retained_consequence": 0.9670776368430035,
+        "retained_consequence_sum": 3.284157397957584,
+        "selected_reference": [
+          "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:13b99a9fdeff9aca04ca0fbcd6eaca8149206db1e43b85a52ec7828805b131ac",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "DELAY_DOWNSTREAM"
+      },
+      {
+        "absolute_consequence_gap": 0.0,
+        "abstain": 0,
+        "abstain_reasons": {},
+        "attention_loss": 0.0,
+        "bootstrap_ci": {
+          "metrics": {
+            "absolute_consequence_gap": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "attention_loss": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "overlap": {
+              "ci_high": 3.0,
+              "ci_low": 3.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "replacement": {
+              "ci_high": 0.0,
+              "ci_low": 0.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            },
+            "retained_consequence": {
+              "ci_high": 1.0,
+              "ci_low": 1.0,
+              "status": "PASS",
+              "valid_replicates": 5
+            }
+          },
+          "replicate_count": 5,
+          "seed": 20262044
+        },
+        "candidate_total": 8,
+        "k": 3,
+        "n": 8,
+        "overlap": 3,
+        "paired_increment_vs_delay": {
+          "attention_loss": -0.03292236315699653,
+          "overlap": 1,
+          "replacement": -1,
+          "retained_consequence": 0.03292236315699648
+        },
+        "q": 0.3,
+        "reference_consequence_sum": 3.3959604408583157,
+        "replacement": 0,
+        "retained_consequence": 1.0,
+        "retained_consequence_sum": 3.3959604408583157,
+        "selected_reference": [
+          "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "selected_view": [
+          "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+          "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1"
+        ],
+        "stage": "POST_IB_PRE_OB",
+        "support_denominator": 8,
+        "valid_reference_denominator": true,
+        "view": "CONSEQUENCE"
+      }
+    ],
+    "views": {
+      "CONSEQUENCE": "P^C",
+      "DELAY": "P^D",
+      "DELAY_DOWNSTREAM": "P^D * expected_downstream_exposure",
+      "DELAY_PASSENGER": "P^D * expected_passengers_per_flight"
+    },
+    "year": 2019
+  },
+  "e2_e3": {
+    "artifact_hash": "sha256:9a36326bd1e1236702f5474a1f2c34bd2989fccc97cc3ec24ce56bbd209a1fd8",
+    "chunk_count": 2,
+    "chunk_size": 4,
+    "e2": {
+      "bootstrap": [
+        {
+          "ci_high": 0.0,
+          "ci_low": 0.0,
+          "estimate": 0.0,
+          "information_component": "ROLLING_HISTORY",
+          "metric": "L_att",
+          "replicate_count": 5
+        },
+        {
+          "ci_high": 1.8715654024365642,
+          "ci_low": 1.8715654024365642,
+          "estimate": 1.8715654024365642,
+          "information_component": "ROLLING_HISTORY",
+          "metric": "L_rec",
+          "replicate_count": 5
+        },
+        {
+          "ci_high": 0.6580378042530898,
+          "ci_low": 0.4201796186182196,
+          "estimate": 0.6839367513469491,
+          "information_component": "DISTRIBUTIONAL_INFORMATION",
+          "metric": "L_att",
+          "replicate_count": 5
+        },
+        {
+          "ci_high": 1.0,
+          "ci_low": 1.0,
+          "estimate": 1.0,
+          "information_component": "DISTRIBUTIONAL_INFORMATION",
+          "metric": "L_rec",
+          "replicate_count": 5
+        },
+        {
+          "ci_high": 0.0,
+          "ci_low": 0.0,
+          "estimate": 0.0,
+          "information_component": "CROSS_STATE_DEPENDENCE",
+          "metric": "L_att",
+          "replicate_count": 5
+        },
+        {
+          "ci_high": 0.0,
+          "ci_low": 0.0,
+          "estimate": 0.0,
+          "information_component": "CROSS_STATE_DEPENDENCE",
+          "metric": "L_rec",
+          "replicate_count": 5
+        },
+        {
+          "ci_high": 0.5285430687837932,
+          "ci_low": 0.42896164138953896,
+          "estimate": 0.4756856941982665,
+          "information_component": "MARGINAL_UNCERTAINTY",
+          "metric": "L_att_POINT_MINUS_MARGINAL",
+          "replicate_count": 5
+        },
+        {
+          "ci_high": 1.0,
+          "ci_low": 1.0,
+          "estimate": 1.0,
+          "information_component": "MARGINAL_UNCERTAINTY",
+          "metric": "L_rec_POINT_MINUS_MARGINAL",
+          "replicate_count": 5
+        }
+      ],
+      "diagnostics": [
+        {
+          "comparator": "CURRENT_JOINT",
+          "exact_action_agreement": 0.0,
+          "false_activation": 0,
+          "information_component": "ROLLING_HISTORY",
+          "mean_absolute_action_difference": 7.5,
+          "median_absolute_action_difference": null,
+          "missed_activation": 1,
+          "over_recovery": 1,
+          "typed_fallback_count": 0,
+          "under_recovery": 0,
+          "within_5min_agreement": 0.5
+        },
+        {
+          "comparator": "HISTORY_POINT",
+          "exact_action_agreement": 0.0,
+          "false_activation": 0,
+          "information_component": "DISTRIBUTIONAL_INFORMATION",
+          "mean_absolute_action_difference": 5.0,
+          "median_absolute_action_difference": null,
+          "missed_activation": 2,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 0,
+          "within_5min_agreement": 1.0
+        },
+        {
+          "comparator": "HISTORY_MARGINAL",
+          "exact_action_agreement": 1.0,
+          "false_activation": 0,
+          "information_component": "CROSS_STATE_DEPENDENCE",
+          "mean_absolute_action_difference": 0.0,
+          "median_absolute_action_difference": null,
+          "missed_activation": 0,
+          "over_recovery": 0,
+          "typed_fallback_count": 0,
+          "under_recovery": 0,
+          "within_5min_agreement": 1.0
+        }
+      ],
+      "estimand": "CURRENT_JOINT_HISTORY_JOINT_HISTORY_POINT_HISTORY_MARGINAL_EXACT",
+      "information_candidate_count": 17,
+      "information_value": [
+        {
+          "A0": 0.0,
+          "A5": 0.5,
+          "L_att": 0.0,
+          "L_att_ci_high": 0.0,
+          "L_att_ci_low": 0.0,
+          "L_rec": 1.8715654024365642,
+          "L_rec_ci_high": 1.8715654024365642,
+          "L_rec_ci_low": 1.8715654024365642,
+          "comparator": "CURRENT_JOINT",
+          "delta_J": 0.05666700425554172,
+          "false_activation": 0,
+          "information_component": "ROLLING_HISTORY",
+          "missed_activation": 1,
+          "over_recovery": 1,
+          "reference_V": 0.030277864819347355,
+          "stage1_reassigned_share": 0.0,
+          "under_recovery": 0
+        },
+        {
+          "A0": 0.0,
+          "A5": 1.0,
+          "L_att": 0.6839367513469491,
+          "L_att_ci_high": 0.6580378042530898,
+          "L_att_ci_low": 0.4201796186182196,
+          "L_rec": 1.0,
+          "L_rec_ci_high": 1.0,
+          "L_rec_ci_low": 1.0,
+          "comparator": "HISTORY_POINT",
+          "delta_J": 0.030277864819347355,
+          "false_activation": 0,
+          "information_component": "DISTRIBUTIONAL_INFORMATION",
+          "missed_activation": 2,
+          "over_recovery": 0,
+          "reference_V": 0.030277864819347355,
+          "stage1_reassigned_share": 1.0,
+          "under_recovery": 0
+        },
+        {
+          "A0": 1.0,
+          "A5": 1.0,
+          "L_att": 0.0,
+          "L_att_ci_high": 0.0,
+          "L_att_ci_low": 0.0,
+          "L_rec": 0.0,
+          "L_rec_ci_high": 0.0,
+          "L_rec_ci_low": 0.0,
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "delta_J": 0.0,
+          "false_activation": 0,
+          "information_component": "CROSS_STATE_DEPENDENCE",
+          "missed_activation": 0,
+          "over_recovery": 0,
+          "reference_V": 0.030277864819347355,
+          "stage1_reassigned_share": 0.0,
+          "under_recovery": 0
+        },
+        {
+          "A0": null,
+          "A5": null,
+          "L_att": 0.4756856941982665,
+          "L_att_ci_high": 0.5285430687837932,
+          "L_att_ci_low": 0.42896164138953896,
+          "L_rec": 1.0,
+          "L_rec_ci_high": 1.0,
+          "L_rec_ci_low": 1.0,
+          "comparator": "POINT_MINUS_MARGINAL",
+          "delta_J": 0.030277864819347355,
+          "false_activation": null,
+          "information_component": "MARGINAL_UNCERTAINTY",
+          "missed_activation": null,
+          "over_recovery": null,
+          "reference_V": null,
+          "stage1_reassigned_share": null,
+          "under_recovery": null
+        }
+      ],
+      "recovery_rows": [
+        {
+          "delta_recovery_objective": 0.05666700425554172,
+          "loss": 1.8715654024365642,
+          "reference_recoverable_value": 0.030277864819347355,
+          "representation": "CURRENT_JOINT",
+          "typed_fallbacks": {}
+        },
+        {
+          "delta_recovery_objective": 0.030277864819347355,
+          "loss": 1.0,
+          "reference_recoverable_value": 0.030277864819347355,
+          "representation": "HISTORY_POINT",
+          "typed_fallbacks": {}
+        },
+        {
+          "delta_recovery_objective": 0.0,
+          "loss": 0.0,
+          "reference_recoverable_value": 0.030277864819347355,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "typed_fallbacks": {}
+        }
+      ],
+      "reference_cohort_size": 2,
+      "stage1_rows": [
+        {
+          "K": 1,
+          "L_att": 0.0,
+          "N": 3,
+          "candidate_node_ids": [
+            "sha256:200bd78c5ce252353924aa20a7402d2a7aff3c919b3eaa2908307933c5fcbf0c",
+            "sha256:3fbd3d62e72efdf9082f00b75357966644dbfb7c9ff08daa137e5dce8d1ecfc2",
+            "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+          ],
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "comparator_shortlist": [
+            "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+          ],
+          "overlap": 1,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "reference_shortlist": [
+            "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3"
+          ],
+          "stage": "PRE"
+        },
+        {
+          "K": 1,
+          "L_att": 0.0,
+          "N": 8,
+          "candidate_node_ids": [
+            "sha256:13b99a9fdeff9aca04ca0fbcd6eaca8149206db1e43b85a52ec7828805b131ac",
+            "sha256:522c0dd96af9fd2f16f0dd18836cf80a6831da72ff66cc4577747a4836453a85",
+            "sha256:a3d3648b6e9ea50fb415c12a33067430ae1b80c293af5b5c348917c8856c6426",
+            "sha256:a961c7ef8a4ffec45fef972258fb4226e1b5fe7fbf203efc2cfd2eb7b25ba16f",
+            "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+            "sha256:b5539511ad83eedeec8e82c9bc5fd8d40feffc33b628f27e375defe90ef0a083",
+            "sha256:bb68d93ed24b60b32e40fdd367c5939c2c8ff514c8a47d50ff4384b49b8384d1",
+            "sha256:c80e78ade2f2f9bf003de8a7b98bbbcb770e903fa8568dbf9de7808fe573eee1"
+          ],
+          "comparator": "HISTORY_MARGINAL_EXACT",
+          "comparator_shortlist": [
+            "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+          ],
+          "overlap": 1,
+          "q": 0.1,
+          "reference": "HISTORY_JOINT",
+          "reference_shortlist": [
+            "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817"
+          ],
+          "stage": "TURN"
+        }
+      ]
+    },
+    "e3": {
+      "joint_marginal_pair_count": 16,
+      "mechanism_diagnostics": [
+        {
+          "full_support_mass": 1.0,
+          "headroom_positive": true,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "nominal_support_mass": 1.0,
+          "nominal_threshold": 0.9,
+          "operator_change": "THRESHOLD_FULL_SUPPORT_DIAGNOSTIC_AND_HEADROOM_BOUNDARY_DIAGNOSTIC",
+          "threshold_ablation_status": "UNCHANGED"
+        },
+        {
+          "full_support_mass": 1.0,
+          "headroom_positive": true,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "nominal_support_mass": 1.0,
+          "nominal_threshold": 0.9,
+          "operator_change": "THRESHOLD_FULL_SUPPORT_DIAGNOSTIC_AND_HEADROOM_BOUNDARY_DIAGNOSTIC",
+          "threshold_ablation_status": "UNCHANGED"
+        }
+      ],
+      "profiles": [
+        "BALANCED",
+        "FLIGHT",
+        "PASSENGER",
+        "RESOURCE"
+      ],
+      "rows": [
+        {
+          "J_star": 1.323341835831596,
+          "J_zero": 1.3371102688192227,
+          "action_grid_size": 10,
+          "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+          "decision_margin": 0.013768432987626644,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "BALANCED",
+          "recoverable_value": 0.013768432987626644,
+          "representation": "HISTORY_JOINT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.322168316919756,
+          "J_zero": 1.3371102688192165,
+          "action_grid_size": 10,
+          "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+          "decision_margin": 0.01494195189946046,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "BALANCED",
+          "recoverable_value": 0.01494195189946046,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.3240066605388878,
+          "J_zero": 1.3405160923706085,
+          "action_grid_size": 10,
+          "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+          "decision_margin": 0.01650943183172071,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "BALANCED",
+          "recoverable_value": 0.01650943183172071,
+          "representation": "HISTORY_JOINT",
+          "stage": "TURN",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.324006660538888,
+          "J_zero": 1.3405160923706076,
+          "action_grid_size": 10,
+          "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+          "decision_margin": 0.0165094318317196,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "BALANCED",
+          "recoverable_value": 0.0165094318317196,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "TURN",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.2311259948249489,
+          "J_zero": 1.2512473742039583,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+          "decision_margin": 0.01890151204455348,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "FLIGHT",
+          "recoverable_value": 0.020121379379009374,
+          "representation": "HISTORY_JOINT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.2297730298794063,
+          "J_zero": 1.2512473742039523,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+          "decision_margin": 0.018901512044554813,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "FLIGHT",
+          "recoverable_value": 0.02147434432454598,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.2308611802951648,
+          "J_zero": 1.254142692258616,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+          "decision_margin": 0.01890151204455348,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "FLIGHT",
+          "recoverable_value": 0.023281511963451296,
+          "representation": "HISTORY_JOINT",
+          "stage": "TURN",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.2308611802951646,
+          "J_zero": 1.2541426922586154,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+          "decision_margin": 0.018901512044553703,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "FLIGHT",
+          "recoverable_value": 0.02328151196345085,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "TURN",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.6829475565640122,
+          "J_zero": 1.7007495958516066,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+          "decision_margin": 0.017802039287594384,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "PASSENGER",
+          "recoverable_value": 0.017802039287594384,
+          "representation": "HISTORY_JOINT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.6816601039578858,
+          "J_zero": 1.7007495958516188,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+          "decision_margin": 0.01772560213163077,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "PASSENGER",
+          "recoverable_value": 0.01908949189373299,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.6829380227287993,
+          "J_zero": 1.7037471768311634,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+          "decision_margin": 0.019331312487800068,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "PASSENGER",
+          "recoverable_value": 0.020809154102364058,
+          "representation": "HISTORY_JOINT",
+          "stage": "TURN",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.6829380227287989,
+          "J_zero": 1.7037471768311638,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+          "decision_margin": 0.01772560213163188,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "PASSENGER",
+          "recoverable_value": 0.020809154102364946,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "TURN",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.0559519561058277,
+          "J_zero": 1.059333836402103,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+          "decision_margin": 0.003381880296275286,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "RESOURCE",
+          "recoverable_value": 0.003381880296275286,
+          "representation": "HISTORY_JOINT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.055071816921922,
+          "J_zero": 1.0593338364021054,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+          "decision_margin": 0.004262019480183454,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:9e46a44f2af4f2f0d5493093a122e40b388353469a8227fa36cfac68a1e940a3",
+          "profile": "RESOURCE",
+          "recoverable_value": 0.004262019480183454,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "PRE",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.0582207785926994,
+          "J_zero": 1.0636584080220453,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+          "decision_margin": 0.0054376294293458916,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "RESOURCE",
+          "recoverable_value": 0.0054376294293458916,
+          "representation": "HISTORY_JOINT",
+          "stage": "TURN",
+          "u_star": 5.0
+        },
+        {
+          "J_star": 1.0582207785926991,
+          "J_zero": 1.0636584080220453,
+          "action_grid_size": 10,
+          "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+          "decision_margin": 0.005437629429346114,
+          "headroom_u_max": 45.0,
+          "node_id": "sha256:b1e861d214f88286fe5ec20acc3e7852d071e5a65384a6154ee29fc4febd5817",
+          "profile": "RESOURCE",
+          "recoverable_value": 0.005437629429346114,
+          "representation": "HISTORY_MARGINAL_EXACT",
+          "stage": "TURN",
+          "u_star": 5.0
+        }
+      ]
+    },
+    "exact_marginal": {
+      "audit_count": 17,
+      "exact_result_label": "HISTORY_MARGINAL_EXACT",
+      "legacy_result_label": "HISTORY_MARGINAL_LEGACY",
+      "max_product_scenarios": 7616,
+      "physical_feasibility": "NOT_ASSERTED_PRODUCT_COUPLING",
+      "support_abstain_count": 0,
+      "support_included_count": 17
+    },
+    "input_contract": {
+      "bounded_memory": true,
+      "final_test_access_count": 0,
+      "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+      "headroom_source": "/data/airslot/worktree/data2/reports/paper_formal/2019/2019/M2_TRAIN_HEADROOM_SUMMARY.json",
+      "scientific_recomputation": true,
+      "sealed_executor_called": false,
+      "two_pass": "score_only_then_shortlist_stage_II"
+    },
+    "node_count": 17,
+    "schema_version": "JATM_S34_E2_E3_EXACT_DEVELOPMENT_BOUNDED_V1",
+    "second_pass_chunk_count": 2,
+    "status": "DEVELOPMENT_COMPLETE",
+    "year": 2019
+  },
+  "final_test_access_count": 0,
+  "input_contract": {
+    "audit": {
+      "annual_m1_current_path": "/data/airslot/worktree/artifacts/models/m1/YEAR_2019/M1_CURRENT_COMPARATOR.pt",
+      "annual_m1_history_path": "/data/airslot/worktree/artifacts/models/m1/YEAR_2019/M1_HISTORY_PRIMARY.pt",
+      "annual_m1_main_model_available": true,
+      "cohort_counts": {
+        "calibration": 64,
+        "development": 128,
+        "test": 0,
+        "train": 128
+      },
+      "final_test_access_count": 0,
+      "input_hashes": {
+        "cohort_state": "sha256:7e3e6cf767c0c5ca2225d551c07d10fb11ca68b22766ef7f2b0afa2866f85759",
+        "m2_manifest": "sha256:de5839f63bc7aa597effc670d31a400b45a5ffa2124b3dcc51d68b11bf04ff39",
+        "pre_manifest": "sha256:11669bfc8cbcc99b74398082e0b569ef593e6b563eee16f00943d2fa2ea686e1",
+        "split_audit": "sha256:17d1d48a44f79fce1bcee306396039732d04b73e24ad35e2f7a7d95951196622",
+        "states": "sha256:965386b8f40ed7698e58f913599db424ce67853efa2c0943f458b5291bf8ddd5"
+      },
+      "m2_scale_keys": [
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "P_itinerary",
+        "P_service",
+        "P_time",
+        "R_operating"
+      ],
+      "m2_scale_positive": true,
+      "pilot_n128_is_scientific_model": false,
+      "reasons": [],
+      "required_paths": {
+        "cohort_state": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1/2019/COHORT_PREPARATION_STATE.pt",
+        "m2_manifest": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES/M2_REFERENCE_BUNDLE_MANIFEST.json",
+        "pre_manifest": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1/2019/PRE_MULTIYEAR_DEVELOPMENT_MANIFEST.json",
+        "split_audit": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1/2019/SPLIT_CONTAINMENT_AUDIT.json",
+        "states": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1/2019/PRE_FORMAL_DEVELOPMENT_STATES.jsonl"
+      }
+    },
+    "final_test_access_count": 0,
+    "m2_manifest": {
+      "created_at_utc": "2026-09-30T05:57:45+00:00",
+      "dataset_instance_id": "data2_2017_2022",
+      "db1b_admissibility": "Q1 + Q2 of Y",
+      "fit_window": {
+        "end": "2019-06-30",
+        "start": "2019-01-01"
+      },
+      "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+      "payload_hashes": {
+        "connection_share": "sha256:a7454f0ca6a826e65459d04c453e81d0abb1b93cbafcc477f76bbee09b571fba",
+        "downstream_exposure": "sha256:a8865f48b2426876c432bfe4fa7f73ac42b3868056ffbc3d4cd6bad7cedcbb13",
+        "expected_passengers": "sha256:7839181ba7fcab2c9dac5864c58319f6f2093b07826018f1ee4136a524e10e5b",
+        "passenger": "sha256:fe552ba4218b5debfb53c72863bd5b3d5805d10aef4e3a0935d71a44efd07f62",
+        "taxi": "sha256:cbf021bf5211b9bb3218956bb8fa048e2020e042e6ae0b1ea392404c3b98a698",
+        "turnaround": "sha256:5b31a13665679cbedaf99b8b10e8ef6f2c0e428a042b78ca85444d822004c10e"
+      },
+      "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+      "scale_median_preview": {
+        "F_continuity": 44.0,
+        "F_execution": 17.0,
+        "F_propagation": 10.0,
+        "P_itinerary": 9.882948210182091,
+        "P_service": 104.88473684210527,
+        "P_time": 990.3555555555556,
+        "R_operating": 5.0
+      },
+      "schema_version": "M2_REFERENCE_BUNDLE_V1",
+      "t100_admissibility": "YEAR == Y and MONTH <= 6",
+      "year": 2019
+    },
+    "m2_root": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019/M2_REFERENCES",
+    "manifest": {
+      "cohort_audit": {
+        "additional_development_episode_count": 0,
+        "cohort_counts": {
+          "calibration": 64,
+          "development": 128,
+          "test": 0,
+          "train": 128
+        },
+        "cohort_seed": 20260813,
+        "config_hash": "sha256:3e313a8731261ba2fb2d2e7649da8abfceb0cd14467705f300fb418827ce3382",
+        "final_test_access_count": 0,
+        "ontime_rows_by_month": {
+          "01": 559098,
+          "02": 510259,
+          "03": 611338,
+          "04": 589233,
+          "05": 614364,
+          "06": 613368,
+          "07": 635790,
+          "08": 638146,
+          "09": 589317
+        },
+        "ontime_rows_skipped": 196894,
+        "pool_sizes": {
+          "calibration": 490886,
+          "development": 946184,
+          "test": 0,
+          "train": 2665240
+        },
+        "pre_decision_nodes": {
+          "calibration": 1103,
+          "development": 1994,
+          "train": 1672
+        },
+        "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+        "sampled_episodes": {
+          "calibration": 64,
+          "development": 128,
+          "train": 128
+        },
+        "stage_counts": {
+          "calibration": {
+            "COMPLETED": 4,
+            "POST_IB_PRE_OB": 876,
+            "POST_OB_PRE_TO": 52,
+            "PRE_IB": 171
+          },
+          "development": {
+            "COMPLETED": 4,
+            "POST_IB_PRE_OB": 1573,
+            "POST_OB_PRE_TO": 103,
+            "PRE_IB": 314
+          },
+          "train": {
+            "COMPLETED": 5,
+            "POST_IB_PRE_OB": 1400,
+            "POST_OB_PRE_TO": 110,
+            "PRE_IB": 157
+          }
+        },
+        "total_episode_pool": 4102310,
+        "weather": {
+          "accepted_train_calibration_development_observations": 473979,
+          "airports": 48,
+          "final_test_access_count": 0
+        }
+      },
+      "created_at_utc": "2026-09-28T17:55:15+00:00",
+      "dataset_instance_id": "data2_2017_2022",
+      "development_episode_count": 128,
+      "development_node_count": 1994,
+      "final_test_access_count": 0,
+      "pool_sizes": {
+        "calibration": 490886,
+        "development": 946184,
+        "test": 0,
+        "train": 2665240
+      },
+      "prestate_count": 1994,
+      "sampled_counts": {
+        "calibration": 64,
+        "development": 128,
+        "test": 0,
+        "train": 128
+      },
+      "schema_version": "PRE_MULTIYEAR_DEVELOPMENT_V1",
+      "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0",
+      "taxi_reference": {
+        "cells_count": 349,
+        "fit_period": "2019-H1",
+        "global_sample_count": 3497660,
+        "reference_id": "sha256:be1a68b0c51c77da35f0ec631c2f846a79dd073d8b29ca49ee42b2d1de4e5c66"
+      },
+      "turnaround_reference": {
+        "cells_count": 349,
+        "fit_period": "2019-H1",
+        "global_sample_count": 2668529,
+        "reference_id": "sha256:aa241b902536c500c21e6a9563ba3c9ac563d1167d4220c77a1e89771677ad57"
+      },
+      "year": 2019
+    },
+    "pre_root": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1/2019",
+    "scientific_status": "READY_TO_RUN",
+    "status": "READY_TO_RUN",
+    "year": 2019
+  },
+  "schema_version": "JATM_ANNUAL_DEVELOPMENT_BOUNDED_V1",
+  "scientific_status": "DEVELOPMENT_OBSERVATION_READY",
+  "status": "DEVELOPMENT_COMPLETE",
+  "year": 2019
+}

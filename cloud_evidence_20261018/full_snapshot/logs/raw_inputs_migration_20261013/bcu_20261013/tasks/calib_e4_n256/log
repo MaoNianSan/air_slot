@@ -1,0 +1,26 @@
+[2026-10-13T12:50:57Z] START calib_e4_n256 :: /data/airslot/logs/raw_inputs_migration_20261013/bcu_20261013/calib_e4.py
+{
+  "terminal_status": "ENGINEERING_INCOMPLETE",
+  "completion_class": null,
+  "eval_decision": null,
+  "n_grid_coverage": null
+}
+E4_CALIB_RESULT: INCOMPLETE
+[2026-10-13T13:06:46Z] START calib_e4_n256 :: /data/airslot/logs/raw_inputs_migration_20261013/bcu_20261013/calib_e4.py
+{
+  "terminal_status": "ENGINEERING_INCOMPLETE",
+  "completion_class": "PILOT_COMPLETE_HARD_STOP",
+  "eval_decision": "M5B_PILOT_COMPLETE_HARD_STOP",
+  "n_grid_coverage": {
+    "evaluation_E": 4096,
+    "full_default_grid_observed": false,
+    "interpretation": "PARTIAL_OR_FULL_GRID",
+    "observed_eval": [
+      256
+    ],
+    "requested": [
+      256
+    ]
+  }
+}
+E4_CALIB_RESULT: CHAIN_COMPLETE

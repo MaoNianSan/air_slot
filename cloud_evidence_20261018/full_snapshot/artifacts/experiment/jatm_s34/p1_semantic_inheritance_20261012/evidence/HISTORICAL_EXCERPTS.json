@@ -1,0 +1,1040 @@
+{
+  "initial_archive": {
+    "sections/04_implement.tex": [
+      {
+        "line": 57,
+        "text": "The time remaining to the successor's scheduled off-block time is $c_{i,t}=T_{i}^{OB,+,\\mathrm{sched}}-t$. For operating scenario $s$, the corresponding turnaround margin is"
+      },
+      {
+        "line": 58,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 59,
+        "text": "M_{i,t,s}^{\\mathrm{turn}}"
+      },
+      {
+        "line": 60,
+        "text": "="
+      },
+      {
+        "line": 61,
+        "text": "c_{i,t}-R_{i,t,s}^{IB}-T_i^{\\mathrm{turn,ref}},"
+      },
+      {
+        "line": 62,
+        "text": "\\label{eq:turnaround_margin}"
+      },
+      {
+        "line": 63,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 64,
+        "text": "where positive values denote remaining turnaround slack and negative values denote a shortfall relative to the successor's scheduled off-block window."
+      },
+      {
+        "line": 126,
+        "text": "The flight-operation channel first distinguishes aircraft-continuity exposure, successor execution, and downstream propagation. With turnaround margin $M_{i,t,s}^{\\mathrm{turn}}$ from Eq.~\\eqref{eq:turnaround_margin}, the three native consequences are"
+      },
+      {
+        "line": 127,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 128,
+        "text": "\\begin{aligned}"
+      },
+      {
+        "line": 129,
+        "text": "Q_{i,t,s}^{0,F,\\mathrm{cont}}"
+      },
+      {
+        "line": 130,
+        "text": "&=[-M_{i,t,s}^{\\mathrm{turn}}]_+"
+      },
+      {
+        "line": 131,
+        "text": "="
+      },
+      {
+        "line": 132,
+        "text": "\\left[R_{i,t,s}^{IB}+T_i^{\\mathrm{turn,ref}}-c_{i,t}\\right]_+,\\\\"
+      },
+      {
+        "line": 133,
+        "text": "Q_{i,t,s}^{0,F,\\mathrm{exec}}"
+      },
+      {
+        "line": 134,
+        "text": "&=[D_{i,t,s}^{+,OB}]_+,\\\\"
+      },
+      {
+        "line": 135,
+        "text": "Q_{i,t,s}^{0,F,\\mathrm{prop}}"
+      },
+      {
+        "line": 136,
+        "text": "&=[D_{i,t,s}^{+,TO}]_+E_{i,t}^{\\mathrm{down}}."
+      },
+      {
+        "line": 137,
+        "text": "\\end{aligned}"
+      },
+      {
+        "line": 138,
+        "text": "\\label{eq:flight_consequence_components}"
+      },
+      {
+        "line": 139,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 140,
+        "text": "The first quantity measures a loss of turnaround slack caused by delayed predecessor release, and the second records the successor's own off-block deviation. The third is a study-defined propagation proxy: it combines takeoff-delay exposure with the downstream same-aircraft schedule that remains exposed. Turnaround-aware recovery and delay-propagation studies motivate separating these mechanisms before valuation \\citep{evlerIntegrationTurnaround2022,fleurquinSystemicDelayPropagation2013}; the multiplicative form in Eq.~\\eqref{eq:flight_consequence_components} is the empirical operationalization used here rather than a formula reproduced from those studies."
+      }
+    ]
+  },
+  "corrected_20260825": {
+    "sections/04_implement.tex": [
+      {
+        "line": 90,
+        "text": "These references are inputs to the consequence construction rather than additional state variables. In particular, the continuity consequence compares the remaining predecessor in-block exposure with the Train-frozen turnaround reference for the connection airport. The same frozen reference is reused for all actions evaluated at a decision node."
+      },
+      {
+        "line": 197,
+        "text": "Each aligned operating scenario is converted into the F/P/R consequence representation defined in Section~\\ref{subsec:m2_consequence}. The flight-chain channel records continuity, successor execution, and downstream propagation. Its three empirical components are"
+      },
+      {
+        "line": 198,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 199,
+        "text": "\\begin{aligned}"
+      },
+      {
+        "line": 200,
+        "text": "q_{i,t,s}^{F,\\mathrm{cont}}"
+      },
+      {
+        "line": 201,
+        "text": "&="
+      },
+      {
+        "line": 202,
+        "text": "\\left[R_{i,t,s}^{IB}-T_i^{\\mathrm{turn,ref}}\\right]_+,\\\\"
+      },
+      {
+        "line": 203,
+        "text": "q_{i,t,s}^{F,\\mathrm{exec}}"
+      },
+      {
+        "line": 204,
+        "text": "&=[D_{i,t,s}^{+,OB}]_+,\\\\"
+      },
+      {
+        "line": 205,
+        "text": "q_{i,t,s}^{F,\\mathrm{prop}}"
+      },
+      {
+        "line": 206,
+        "text": "&=[D_{i,t,s}^{+,TO}]_+E_{i,t}^{\\mathrm{down}}."
+      },
+      {
+        "line": 207,
+        "text": "\\end{aligned}"
+      },
+      {
+        "line": 208,
+        "text": "\\label{eq:m2_flight_channel_components_en}"
+      },
+      {
+        "line": 209,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 210,
+        "text": "The continuity component records remaining predecessor exposure beyond the Train-frozen turnaround reference for the connection airport. The execution component records the successor's off-block deviation. The propagation component scales takeoff delay by the remaining same-aircraft schedule exposure. These three quantities are kept separate because they correspond to different recovery mechanisms even when their aggregate severity is similar."
+      },
+      {
+        "line": 297,
+        "text": "$F_{\\mathrm{cont}}$ & Remaining in-block exposure beyond turnaround reference & BTS timing + Train turnaround reference & Anchored, assumption-grounded \\\\"
+      }
+    ]
+  },
+  "intermediate_8": {
+    "sections/04_implement.tex": [
+      {
+        "line": 206,
+        "text": "The most direct predecessor effect on the successor arises through aircraft availability and turnaround flexibility. Let"
+      },
+      {
+        "line": 207,
+        "text": "\\(T_i^{\\mathrm{turn,ref}}\\)"
+      },
+      {
+        "line": 208,
+        "text": "denote an operating reference obtained from historical completed turnarounds. The continuity consequence is"
+      },
+      {
+        "line": 209,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 210,
+        "text": "q_{i,t,s}^{F,\\mathrm{cont}}"
+      },
+      {
+        "line": 211,
+        "text": "="
+      },
+      {
+        "line": 212,
+        "text": "\\left["
+      },
+      {
+        "line": 213,
+        "text": "R_{i,t,s}^{IB}"
+      },
+      {
+        "line": 214,
+        "text": "-"
+      },
+      {
+        "line": 215,
+        "text": "T_i^{\\mathrm{turn,ref}}"
+      },
+      {
+        "line": 216,
+        "text": "\\right]_+."
+      },
+      {
+        "line": 217,
+        "text": "\\label{eq:m2_continuity_component_en}"
+      },
+      {
+        "line": 218,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 219,
+        "text": "This quantity measures the operating pressure created when predecessor aircraft availability consumes the normal turnaround reference."
+      }
+    ]
+  },
+  "current_62": {
+    "sections/03_methodology.tex": [
+      {
+        "line": 41,
+        "text": "The aircraft-linked state follows the operating sequence"
+      },
+      {
+        "line": 42,
+        "text": "\\["
+      },
+      {
+        "line": 43,
+        "text": "T^{IB}_{i,t}\\longrightarrow D^{OB}_{i,t}\\longrightarrow D^{TX}_{i,t},"
+      },
+      {
+        "line": 44,
+        "text": "\\]"
+      },
+      {
+        "line": 45,
+        "text": "where $T^{IB}$ is the predecessor in-block timing quantity, $D^{OB}$ the successor off-block delay, and $D^{TX}$ the successor's additional taxi-out delay. The arrows express operating sequence and the adopted conditional modeling order, not an identified causal effect among the variables. All three primitives may be unresolved in PRE; the predecessor in-block event is factual in TURN; and both predecessor in-block and successor off-block are factual in TAXI. Only unresolved primitives receive probabilistic predictions, while realized milestones remain fixed. The temporal origin of $T^{IB}$ and the native consequence units must be reconciled with the implementation before numerical claims are finalized."
+      },
+      {
+        "line": 84,
+        "text": "Each supported operating-state representation enters the same seven-component consequence mapping. The Flight domain covers aircraft continuity and turnaround pressure, successor execution delay, and downstream delay propagation. The Passenger domain covers passenger time exposure, itinerary-sensitive connection exposure, and prolonged-disruption service exposure. The Resource domain represents local operating burden through additional taxi-out delay. Write $\\mathbf C_{i,g,s}(u)=(C_{i,g,s,k}(u))_{k=1}^{7}$ for the seven-dimensional consequence vector of chain $i$ at operating stage $g$, scenario $s$, and local recovery target $u$. Several components are constructed exposure proxies rather than directly observed financial losses."
+      },
+      {
+        "line": 85,
+        "text": ""
+      },
+      {
+        "line": 86,
+        "text": "Because these components have different native units, they are converted using training-period reference scales into standardized, dimensionless consequence units (CU). The criterion aggregates them first within each domain and then across domains:"
+      },
+      {
+        "line": 87,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 88,
+        "text": "\\begin{aligned}"
+      },
+      {
+        "line": 89,
+        "text": "D_{i,g,s,d}(u)"
+      },
+      {
+        "line": 90,
+        "text": "&=\\sum_{k\\in\\mathcal K_d}\\alpha_{d,k}Z_{i,g,s,k}(u),\\\\"
+      },
+      {
+        "line": 91,
+        "text": "\\Phi_{\\boldsymbol\\omega}\\!\\left(\\mathbf C_{i,g,s}(u)\\right)"
+      },
+      {
+        "line": 92,
+        "text": "&=\\sum_{d\\in\\{F,P,R\\}}\\omega_dD_{i,g,s,d}(u)."
+      },
+      {
+        "line": 93,
+        "text": "\\end{aligned}"
+      },
+      {
+        "line": 94,
+        "text": "\\label{eq:consequence_criterion_sec3}"
+      },
+      {
+        "line": 95,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 96,
+        "text": "Here $Z_{i,g,s,k}(u)$ denotes a standardized consequence, $\\mathcal K_d$ the components assigned to domain $d$, $\\alpha_{d,k}$ their fixed within-domain weights, and $\\boldsymbol\\omega=(\\omega_F,\\omega_P,\\omega_R)$ the normative weights across the Flight, Passenger, and Resource domains. Under the primary \\emph{Balanced} criterion, each domain receives one-third of the total weight; within Flight and Passenger, the three components receive equal within-domain shares. Thus Balanced means \\emph{equal domain weights}, not equal weights for all seven components. Prespecified Flight-, Passenger-, and Resource-emphasis criteria change the managerial objective without changing the available operating evidence. Standardization addresses measurement scales, whereas weights express trade-offs among management objectives. Neither the weights nor the CU scale are inferred monetary costs or empirically elicited airline utility. Native component definitions, proxy status, and scaling rules are documented in Section~\\ref{sec:implementation} and the accompanying technical material."
+      },
+      {
+        "line": 97,
+        "text": ""
+      },
+      {
+        "line": 98,
+        "text": "The same consequence mapping supports the two decision layers in different ways: Stage I compares baseline exposure across flight chains, whereas Stage II evaluates changes in the consequences of one chain after a modeled recovery adjustment and accounts for recovery effort. The two layers therefore share an evaluation framework without repeating the same optimization problem. Re-evaluating the seven components after an adjustment does not imply that every component responds to that adjustment."
+      },
+      {
+        "line": 124,
+        "text": "For a shortlisted chain with valid local support, let $u\\in\\mathcal U_{i,g}$ denote a candidate effective recovery target, with $0\\in\\mathcal U_{i,g}$. The nominal target $u$ is distinct from the advance actually achievable in a particular state: scenario $s$ supplies nonnegative modeled recovery headroom $H_{i,g,s}$, so that"
+      },
+      {
+        "line": 125,
+        "text": "\\["
+      },
+      {
+        "line": 126,
+        "text": "r_{i,g,s}(u)=\\min\\{u,H_{i,g,s}\\},\\qquad"
+      },
+      {
+        "line": 127,
+        "text": "AOBT_{i,g,s}(u)=AOBT_{i,g,s}(0)-r_{i,g,s}(u)."
+      },
+      {
+        "line": 128,
+        "text": "\\]"
+      },
+      {
+        "line": 129,
+        "text": "The first expression distinguishes the selected target from the scenario-specific realized improvement, while the second updates the successor's actual off-block time. All seven consequences are recomputed using their native response functions under the adjusted state, but some components may remain invariant. For example, if additional taxi-out delay is unchanged by the off-block adjustment, the Resource component cannot be said to improve directly. Nevertheless, changing its weight can alter the relative importance of responsive consequences and effort, thereby affecting the chosen target. For representation $R$ with conditional state distribution $P_R$, the Stage-II objective is"
+      },
+      {
+        "line": 130,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 131,
+        "text": "J_{i,g,\\boldsymbol\\omega}(u;P_R)"
+      },
+      {
+        "line": 132,
+        "text": "=\\mathbb E_{s\\sim P_R}\\!\\left["
+      },
+      {
+        "line": 133,
+        "text": "\\Phi_{\\boldsymbol\\omega}\\!\\left(\\mathbf C_{i,g,s}(u)\\right)"
+      },
+      {
+        "line": 134,
+        "text": "\\right]+c_i^A(u),"
+      },
+      {
+        "line": 135,
+        "text": "\\label{eq:stage2_objective_sec3}"
+      },
+      {
+        "line": 136,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 137,
+        "text": "where the first term is the expected multidimensional consequence after the target is applied and $c_i^A(u)$ is a normative effort penalty for selecting that target. This term is not directly measured expenditure. The optimal target and its model-relative recoverable value are"
+      },
+      {
+        "line": 138,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 139,
+        "text": "\\begin{aligned}"
+      },
+      {
+        "line": 140,
+        "text": "u^*_{i,g,\\boldsymbol\\omega}(P_R)"
+      },
+      {
+        "line": 141,
+        "text": "&=\\argmin_{u\\in\\mathcal U_{i,g}}"
+      },
+      {
+        "line": 142,
+        "text": "J_{i,g,\\boldsymbol\\omega}(u;P_R),\\\\"
+      },
+      {
+        "line": 143,
+        "text": "V_{i,g,\\boldsymbol\\omega}(P_R)"
+      },
+      {
+        "line": 144,
+        "text": "&=J_{i,g,\\boldsymbol\\omega}(0;P_R)"
+      },
+      {
+        "line": 145,
+        "text": "-J_{i,g,\\boldsymbol\\omega}\\!\\left(u^*_{i,g,\\boldsymbol\\omega}(P_R);P_R\\right)."
+      },
+      {
+        "line": 146,
+        "text": "\\end{aligned}"
+      },
+      {
+        "line": 147,
+        "text": "\\label{eq:stage2_opt_sec3}"
+      },
+      {
+        "line": 148,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 149,
+        "text": "Ties are resolved in favor of the smaller target. As zero is always feasible, the model-optimal recoverable value is nonnegative. Yet $u^*$ is an effective local-recovery target rather than a validated resource-dispatch instruction, and $V$ is a modeled objective improvement rather than an observed economic benefit. The zero-target case excludes only \\emph{additional} adjustments represented in this framework; it does not presume the absence of historical airline interventions. Likewise, the headroom restriction covers the modeled timing limits, not all crew, gate, maintenance, and airport-capacity requirements. Detailed effort parameters, physical consistency checks, and component-wise response audits are addressed in Section~\\ref{sec:implementation} and the supplementary material."
+      },
+      {
+        "line": 188,
+        "text": "For a paired, actionable cohort $\\mathcal C$, define"
+      },
+      {
+        "line": 189,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 190,
+        "text": "L^{\\mathrm{rec}}(\\mathcal C,\\boldsymbol\\omega)"
+      },
+      {
+        "line": 191,
+        "text": "=\\frac{\\displaystyle\\sum_{(i,g)\\in\\mathcal C}"
+      },
+      {
+        "line": 192,
+        "text": "\\Delta^{\\mathrm{rec}}_{i,g,\\boldsymbol\\omega}}"
+      },
+      {
+        "line": 193,
+        "text": "{\\displaystyle\\sum_{(i,g)\\in\\mathcal C}"
+      },
+      {
+        "line": 194,
+        "text": "V^r_{i,g,\\boldsymbol\\omega}},"
+      },
+      {
+        "line": 195,
+        "text": "\\label{eq:normalized_recovery_loss}"
+      },
+      {
+        "line": 196,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 197,
+        "text": "only for a positive reference-value denominator and a paired cohort with common support and feasibility. The ratio is not intrinsically bounded above by one, and a zero denominator produces an undefined ratio rather than an observed zero loss. Absolute CU losses, denominator values, and supported sample sizes must accompany normalized results. Each $\\boldsymbol\\omega$ has its \\emph{own} reference optimum and reference-value denominator; a Balanced solution cannot serve as the optimum for a different preference criterion. Zero loss under the reference representation follows by construction from its model-defined optimality and cannot establish that it is the best representation in real-world airline recovery. Stage-I and Stage-II losses also have different objects and denominators: their magnitudes should not be directly compared as if they measured a single realized benefit."
+      }
+    ],
+    "sections/04_implement.tex": [
+      {
+        "line": 35,
+        "text": "As operating milestones become realized, the conditional state is reconstructed from the information available at the decision epoch. Only unresolved primitives are predicted: predecessor in-block timing is modeled using a discrete-hazard representation, while successor off-block delay and additional taxi-out delay use hurdle-type distributions that accommodate both zero and positive delay outcomes. The primitive states are conditioned in their operating sequence so that new observations reduce the remaining uncertainty without resampling quantities already realized."
+      },
+      {
+        "line": 36,
+        "text": ""
+      },
+      {
+        "line": 37,
+        "text": "At PRE, all three primitive states may remain unresolved. At TURN, predecessor in-block timing is factual and enters the subsequent conditional evaluation as observed evidence. At TAXI, successor off-block timing is also realized, leaving the remaining taxi-out uncertainty to be represented. This stage-conditioned treatment preserves the operating information that would have been available at the corresponding decision time."
+      },
+      {
+        "line": 38,
+        "text": ""
+      },
+      {
+        "line": 39,
+        "text": "For supported conditional states, the original Joint interface consists of 64 calibrated weighted scenarios, each with a coherent set of primitive state values and a nonnegative probability weight; weights sum to one. The model-specific compound successor take-off delay is formed from successor off-block delay and additional taxi-out delay. This constructed quantity follows the state convention in Section~\\ref{subsec:state_representation}, rather than being identified with every administrative definition of observed departure delay."
+      },
+      {
+        "line": 40,
+        "text": ""
+      },
+      {
+        "line": 41,
+        "text": "Held-out prediction accuracy, probabilistic calibration, and state-support checks provide evidence on the reliability of these conditional reconstructions. Nodes with unavailable required state information or unsupported probability distributions are recorded explicitly rather than assigned zero consequences. The conditional distributions, sampling and calibration procedures, temporal origins, and support tests are given in the Supplementary Material. State definitions and validation rules remain common across years, while model parameters and calibrations are fitted independently within each annual partition."
+      },
+      {
+        "line": 42,
+        "text": ""
+      },
+      {
+        "line": 43,
+        "text": "\\subsubsection{Current and History representations}"
+      },
+      {
+        "line": 44,
+        "text": ""
+      },
+      {
+        "line": 45,
+        "text": "Two temporal-information representations are constructed at the same decision epoch. \\emph{Current} uses the contemporaneously admissible operating state and frozen historical references. \\emph{History} additionally encodes the legally available trajectory of preceding operating observations. The established History model uses a single-layer unidirectional gated recurrent unit (GRU) with hidden dimension 16. Both representations predict the same unresolved primitives and feed the same consequence and decision interfaces; neither may access subsequent realized milestones."
+      },
+      {
+        "line": 46,
+        "text": ""
+      },
+      {
+        "line": 47,
+        "text": "The original Current+Joint (CJ) versus History+Joint (HJ) comparison measures the decision effects of these implemented predictor specifications. Because adding a history encoder can also change model architecture and parameter capacity, this difference is not identified solely as the effect of historical information. A matched-capacity control is therefore included in the extended evaluation design, comparing access to the admissible trajectory while holding predictive targets, output distributions, temporal partitions, training procedures, and model complexity as comparable as practicable. Its purpose is to strengthen attribution to temporal representation, not to claim that all differences in model inductive bias have been eliminated."
+      },
+      {
+        "line": 48,
+        "text": ""
+      },
+      {
+        "line": 49,
+        "text": "The six-year evaluation retains common architecture-selection and interface rules while estimating prediction and calibration parameters within each year's legitimate data partitions. The full trajectory construction, GRU specifications, and matched-capacity diagnostics are provided in the Supplementary Material."
+      },
+      {
+        "line": 76,
+        "text": "$F_{\\mathrm{continuity}}$ & Predecessor in-block and turnaround-continuity proxy; temporal formula pending reconciliation & min (to verify) & Aircraft turnaround and continuity pressure \\\\"
+      },
+      {
+        "line": 77,
+        "text": "$F_{\\mathrm{execution}}$ & $D^{OB}$ & min & Successor off-block execution delay \\\\"
+      },
+      {
+        "line": 78,
+        "text": "$F_{\\mathrm{propagation}}$ & $D^{TO}E^{down}$ & exposure-min & Downstream operating-delay exposure \\\\"
+      },
+      {
+        "line": 79,
+        "text": "$P_{\\mathrm{time}}$ & $N^{pax}D^{TO}$ & passenger-min & Passenger-weighted time exposure \\\\"
+      },
+      {
+        "line": 80,
+        "text": "$P_{\\mathrm{itinerary}}$ & $N^{pax}s^{conn}\\mathbf1\\{D^{TO}>45\\}$ & event exposure & Connection-sensitive itinerary exposure \\\\"
+      },
+      {
+        "line": 81,
+        "text": "$P_{\\mathrm{service}}$ & $N^{pax}\\mathbf1\\{D^{TO}\\geq180\\}$ & event exposure & Prolonged-disruption service exposure \\\\"
+      },
+      {
+        "line": 82,
+        "text": "$R_{\\mathrm{operating}}$ & $D^{TX}$ & min & Additional taxi-out operating burden \\\\"
+      },
+      {
+        "line": 83,
+        "text": "\\hline"
+      },
+      {
+        "line": 84,
+        "text": "\\end{tabular}"
+      },
+      {
+        "line": 85,
+        "text": "\\end{table*}"
+      },
+      {
+        "line": 86,
+        "text": ""
+      },
+      {
+        "line": 87,
+        "text": "Flight consequences represent aircraft turnaround continuity, successor execution delay, and downstream delay propagation. Passenger consequences comprise time exposure, connection-sensitive itinerary exposure, and service exposure associated with prolonged disruption. The Resource measure captures additional taxi-out delay as a local operating burden. The downstream factor $E^{down}$, historical passenger reference $N^{pax}$, and connection-exposure proportion $s^{conn}$ are distinguished from realized passenger-level or downstream disruption outcomes. The itinerary indicator uses a strict threshold above 45 minutes, while the prolonged-disruption indicator includes delays of 180 minutes or more. These event cutoffs are prespecified measurement conventions."
+      },
+      {
+        "line": 88,
+        "text": ""
+      },
+      {
+        "line": 89,
+        "text": "The continuity measure requires confirmation of the temporal origin shared by predecessor in-block timing and the turnaround reference. In particular, subtracting a duration from an absolute timestamp would not yield a coherent turnaround-pressure quantity without an appropriate reference transformation. Its native formula and any affected results therefore remain subject to scientific reconciliation. The other consequence rules likewise require componentwise provenance and support checks; the table records their model definitions rather than independent evidence of incurred losses."
+      },
+      {
+        "line": 123,
+        "text": "For shortlisted flight-chain--stage cases with valid local-recovery support, Stage II selects from the discrete nominal target set $\\mathcal U=\\{0,5,10,\\ldots,45\\}$ minutes. An empirical turnaround reference of $T_{\\mathrm{turn,lb}}=41$ minutes is derived from the lower 20th percentile of historical realized turnaround times. Together with scheduled successor off-block time and scenario-specific predecessor in-block timing, it defines the earliest modeled successor off-block time and the available local recovery headroom:"
+      },
+      {
+        "line": 124,
+        "text": "\\["
+      },
+      {
+        "line": 125,
+        "text": "\\begin{aligned}"
+      },
+      {
+        "line": 126,
+        "text": "LB^{OB}_{i,g,s}&=\\max\\{SOBT_i^+,\\,T^{IB}_{i,g,s}+T_{\\mathrm{turn,lb}}\\},\\\\"
+      },
+      {
+        "line": 127,
+        "text": "H_{i,g,s}&=[AOBT_{i,g,s}(0)-LB^{OB}_{i,g,s}]_+,\\\\"
+      },
+      {
+        "line": 128,
+        "text": "r_{i,g,s}(u)&=\\min\\{u,H_{i,g,s}\\}."
+      },
+      {
+        "line": 129,
+        "text": "\\end{aligned}"
+      },
+      {
+        "line": 130,
+        "text": "\\]"
+      },
+      {
+        "line": 131,
+        "text": "The empirical turnaround bound constrains modeled timing adjustments; it is not a universal aircraft, airport, crew, or safety minimum. In addition, zero headroom produced by positive-part truncation does not by itself establish the feasibility of the underlying baseline state. Inconsistent timing or unsupported scenarios are subject to separate diagnostics."
+      },
+      {
+        "line": 132,
+        "text": ""
+      },
+      {
+        "line": 133,
+        "text": "For each candidate target, the model computes the effective reduction in successor off-block time for each conditional operating scenario, updates the corresponding state, and re-evaluates the same seven consequences. The response depends on which states the target changes: delay-related components may improve, event-exposure measures may change when thresholds are crossed, and unaffected components may remain constant. A nominal recovery-effort penalty is then added, with $\\lambda_0=0.25$ and $U_{\\max}=45$ minutes under the reference specification. The penalty is proportional to the \\emph{selected} target rather than the realized scenario-by-scenario advance, providing a model-defined trade-off between expected consequences and additional effort."
+      },
+      {
+        "line": 134,
+        "text": ""
+      },
+      {
+        "line": 135,
+        "text": "Each information representation selects the target minimizing its own expected consequence-plus-effort objective on the common feasible target grid; ties are resolved in favor of the smaller target. Selecting $u=0$ means no additional modeled local recovery, not that historical operations involved no other interventions. All target evaluations require valid operating-state and temporal support. Implementation diagnostics and detailed effort-cost sensitivity are provided in the Supplementary Material."
+      }
+    ],
+    "sections/05_experiment.tex": [
+      {
+        "line": 90,
+        "text": "\\end{figure}"
+      },
+      {
+        "line": 91,
+        "text": "% RESULT 5.3-A: Insert six-year reference activation, zero-target share,"
+      },
+      {
+        "line": 92,
+        "text": "% recoverable-value distribution, and actual priority--opportunity association."
+      },
+      {
+        "line": 93,
+        "text": ""
+      },
+      {
+        "line": 94,
+        "text": "The downstream implications of screening are evaluated with recovery-opportunity Coverage@K. For each year, operating stage, and reference objective, this measure compares the HJ recoverable value captured by a shortlist with the total reference recoverable value in the corresponding full eligible population. Comparing Coverage@K for Delay, Delay+Exposure, and Consequence screening clarifies whether methods that preserve baseline consequence coverage also capture the same opportunities for additional local recovery. The ratio is reported only when its reference denominator is positive."
+      },
+      {
+        "line": 95,
+        "text": "% RESULT 5.3-B: Insert recovery-opportunity Coverage@K for each screening method,"
+      },
+      {
+        "line": 174,
+        "text": "To investigate how dependence can alter a recovery decision, we distinguish the perturbation of an individual target's expected objective from the \\emph{relative} perturbation between competing targets, as defined in Section~\\ref{sec:incremental_decision_value}. A controlled threshold-by-headroom analysis then examines two operational mechanisms: discrete changes in the consequence exposure associated with delay thresholds, and state-dependent limits on the recoverable off-block advance. The four diagnostic structures are evaluated using declared mathematical operators and appropriately matched reference criteria; disabling a threshold operator is not equated with removing an entire consequence domain."
+      },
+      {
+        "line": 175,
+        "text": ""
+      },
+      {
+        "line": 176,
+        "text": "\\begin{figure}[pos=t]"
+      },
+      {
+        "line": 177,
+        "text": "\\centering"
+      },
+      {
+        "line": 178,
+        "text": "\\fbox{\\begin{minipage}[c][33mm][c]{0.90\\linewidth}"
+      },
+      {
+        "line": 179,
+        "text": "\\centering\\small"
+      },
+      {
+        "line": 180,
+        "text": "\\textit{Threshold $\\times$ headroom mechanism results to be inserted}\\par"
+      },
+      {
+        "line": 181,
+        "text": "\\footnotesize Fixed-target and action-relative perturbations, target changes, regret"
+      },
+      {
+        "line": 182,
+        "text": "\\end{minipage}}"
+      },
+      {
+        "line": 183,
+        "text": "\\caption{Joint-dependence sensitivity under threshold and recovery-headroom mechanisms. The finalized display will separate changes in fixed-target evaluation from changes in optimal recovery choice and reference regret.}"
+      },
+      {
+        "line": 184,
+        "text": "\\label{fig:threshold_headroom}"
+      },
+      {
+        "line": 185,
+        "text": "\\end{figure}"
+      },
+      {
+        "line": 186,
+        "text": "% RESULT 5.5-B: Insert weighted-marginal audit, objective perturbations,"
+      },
+      {
+        "line": 187,
+        "text": "% threshold x headroom ablation, and decision-boundary results."
+      },
+      {
+        "line": 188,
+        "text": "% INTERPRETATION 5.5: No advance claim that Passenger has greatest value"
+      },
+      {
+        "line": 189,
+        "text": "% or that Joint is uniformly superior. Account for invariant Resource components."
+      },
+      {
+        "line": 190,
+        "text": ""
+      },
+      {
+        "line": 191,
+        "text": "\\subsection{Operating-stage and Regime Differences}"
+      },
+      {
+        "line": 192,
+        "text": "\\label{subsec:results_heterogeneity}"
+      },
+      {
+        "line": 193,
+        "text": ""
+      },
+      {
+        "line": 194,
+        "text": "The preceding analyses use annual evidence throughout rather than treating additional years as an appendix to a 2019 benchmark. This final subsection considers which relationships vary with the operating environment, without repeating the full annual metric tables. We compare PRE with TURN and examine annual contrasts in the pre-pandemic operating years (2017--2019), the pandemic disruption year (2020), and the recovery years (2021--2022). Differences are interpreted with their stage composition, eligibility, and evaluation scales; they do not isolate a causal effect of the pandemic or any particular external shock."
+      },
+      {
+        "line": 195,
+        "text": "% RESULT 5.6-A: Insert supported annual/stage and three-regime heterogeneity"
+      },
+      {
+        "line": 196,
+        "text": "% based on E1--E3 primary estimates. Do not duplicate all earlier tables."
+      },
+      {
+        "line": 197,
+        "text": ""
+      },
+      {
+        "line": 198,
+        "text": "For flight chains with multiple admissible rolling epochs, we also trace how unresolved-state uncertainty, remaining feasible recovery headroom, chosen recovery targets, and representation-dependent decision loss evolve as operating events are realized. Progressively more resolved operating states do not, by definition, imply greater remaining recovery opportunity: information availability and the feasible opportunity to intervene may change at the same time. Within-chain analysis therefore describes their joint progression and complements fixed-epoch representation contrasts, rather than identifying an isolated causal effect of information revelation."
+      },
+      {
+        "line": 199,
+        "text": "% RESULT 5.6-B: Insert supported within-chain trajectories, if adequate; otherwise"
+      }
+    ],
+    "SUPPLEMENT.tex": [
+      {
+        "line": 148,
+        "text": "\\caption{Native consequence definitions inherited from the source appendix, with outstanding verification explicitly identified.}\\label{tab:sup_consequences}"
+      },
+      {
+        "line": 149,
+        "text": "\\begin{tabular}{p{0.24\\linewidth}p{0.50\\linewidth}p{0.16\\linewidth}}\\toprule"
+      },
+      {
+        "line": 150,
+        "text": "Component & Native construction & Unit\\\\\\midrule"
+      },
+      {
+        "line": 151,
+        "text": "$F_{\\mathrm{continuity}}$ & Predecessor-in-block/turnaround reference pressure; \\textbf{time-origin formula requires validation} & min\\\\"
+      },
+      {
+        "line": 152,
+        "text": "$F_{\\mathrm{execution}}$ & $D^{OB}$ & min\\\\"
+      },
+      {
+        "line": 153,
+        "text": "$F_{\\mathrm{propagation}}$ & $D^{TO} E^{down}$ & exposure--min\\\\"
+      },
+      {
+        "line": 154,
+        "text": "$P_{\\mathrm{time}}$ & $N^{pax} D^{TO}$ & passenger--min\\\\"
+      },
+      {
+        "line": 155,
+        "text": "$P_{\\mathrm{itinerary}}$ & $N^{pax}s^{conn}\\ind\\{D^{TO}>45\\}$ & event exposure\\\\"
+      },
+      {
+        "line": 156,
+        "text": "$P_{\\mathrm{service}}$ & $N^{pax}\\ind\\{D^{TO}\\ge 180\\}$ & event exposure\\\\"
+      },
+      {
+        "line": 157,
+        "text": "$R_{\\mathrm{operating}}$ & $D^{TX}$ & min\\\\"
+      },
+      {
+        "line": 158,
+        "text": "\\bottomrule\\end{tabular}\\end{table}"
+      },
+      {
+        "line": 159,
+        "text": "The source Appendix D.1 wrote $[T^{IB}-T_{\\mathrm{turn,ref}}]_+$ for Flight continuity. This expression requires explicit checking of its time origin and units before the formula can be carried into the final submission. The frozen historical reference $T_{\\mathrm{turn,ref}}$ also must not be conflated with the separate Stage-II turnaround feasibility reference $T_{\\mathrm{turn,lb}}=41$ min. Itinerary and service components are exposure proxies rather than observed missed connections or compensation expenditures."
+      },
+      {
+        "line": 160,
+        "text": ""
+      },
+      {
+        "line": 192,
+        "text": "The nominal Stage-II grid is $\\mathcal U=\\{0,5,\\ldots,45\\}$ minutes, with turnaround feasibility reference $T_{\\mathrm{turn,lb}}=41$ minutes. Under scenario $s$,"
+      },
+      {
+        "line": 193,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 194,
+        "text": "\\begin{aligned}"
+      },
+      {
+        "line": 195,
+        "text": "LB^{OB}_s&=\\max\\{SOBT^+,T^{IB}_s+T_{\\mathrm{turn,lb}}\\},\\\\"
+      },
+      {
+        "line": 196,
+        "text": "H_s&=[AOBT_s(0)-LB^{OB}_s]_+,\\\\"
+      },
+      {
+        "line": 197,
+        "text": "r_s(u)&=\\min\\{u,H_s\\},\\\\"
+      },
+      {
+        "line": 198,
+        "text": "J(u)&=\\sum_s w_s\\Phi^C(\\mathbf C_s(u))+\\lambda u/U_{\\max},"
+      },
+      {
+        "line": 199,
+        "text": "\\end{aligned}\\label{eq:sup_stage2_core}"
+      },
+      {
+        "line": 200,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 201,
+        "text": "with nominal $\\lambda=0.25$, $U_{\\max}=45$ min. The smallest minimizing target is selected. Here $u=0$ means no additional modeled local-recovery target, not the absence of historical operational intervention. The 41-minute quantity is an empirical feasibility reference, not a verified minimum for every flight."
+      },
+      {
+        "line": 202,
+        "text": ""
+      },
+      {
+        "line": 203,
+        "text": "\\subsection{Reference cohorts and paired decision evaluation}"
+      },
+      {
+        "line": 204,
+        "text": "The 2019 original frozen HJ cohort contains three PRE and 13 TURN cases (16 in total); it remains archived as $\\mathcal C_0$. Each year independently forms an HJ reference shortlist under the same screening rule and an annual supported Stage-II cohort $\\mathcal C^{HJ}_{y,g}$. Full eligibility $\\mathcal C_{1,y,g}$ is determined without selecting cases by a particular screening method. The shortlist union $\\mathcal C_2$ and rolling cohort $\\mathcal C_3$ answer distinct questions. None can replace another denominator without declaration."
+      },
+      {
+        "line": 205,
+        "text": ""
+      },
+      {
+        "line": 206,
+        "text": "Reference regret uses the same decision target grid and the specified Joint evaluator for all compared representations. A zero reference recoverable-value denominator does not justify reporting zero normalized regret; absolute CU loss remains reportable. The reference optimum is model-relative, not demonstrated real-world optimum."
+      },
+      {
+        "line": 207,
+        "text": ""
+      },
+      {
+        "line": 208,
+        "text": "\\subsection{Stability and sensitivity protocols}"
+      },
+      {
+        "line": 209,
+        "text": "For same-scale screening score perturbations, a sufficient top-$K$ certificate compares the active shortlist margin $m_g$ with the priority perturbation span $\\Delta^I_g$. For local recovery, a sufficient certificate compares the optimum-to-alternative objective gap $\\gamma_{i,g}$ with the action-differential perturbation span $\\Delta^{II}_{i,g}$. Conditions $\\Delta^I_g<m_g$ and $\\Delta^{II}_{i,g}<\\gamma_{i,g}$ are sufficient, not necessary; their failure is not evidence of a changed decision. The full derivation and tie cases require insertion following reconciliation with the main methodology."
+      },
+      {
+        "line": 210,
+        "text": ""
+      },
+      {
+        "line": 211,
+        "text": "Sensitivity varies turnaround bounds ($34$, $41$, $47$ min), effort weights ($0.10$, $0.25$, $0.50$, $1.00$), and the maximum recovery range ($25$, $45$, $75$ min). Changing $U_{\\max}$ in $\\lambda u/U_{\\max}$ changes both the range and the effort slope; a decoupled experiment must hold $\\lambda/U_{\\max}$ fixed when isolating range effects. Objective-by-distribution and threshold-by-headroom controls must use explicit common reference criteria and supported samples."
+      },
+      {
+        "line": 279,
+        "text": "\\subsection{Dependence-specific objective perturbations}"
+      },
+      {
+        "line": 280,
+        "text": "For a valid Marginal coupling $P_M$ and Joint reference $P_J$ sharing the same weighted primitive marginals and a common target set, put $e_{\\omega}(u)=J_{\\omega}(u;P_J)-J_{\\omega}(u;P_M)$. For any comparator $v$ against the Joint optimum $u_J^*$,"
+      },
+      {
+        "line": 281,
+        "text": "\\begin{equation}"
+      },
+      {
+        "line": 282,
+        "text": "\\begin{aligned}"
+      },
+      {
+        "line": 283,
+        "text": "J_{\\omega}(v;P_M)-J_{\\omega}(u_J^*;P_M)"
+      },
+      {
+        "line": 284,
+        "text": "={}&[J_{\\omega}(v;P_J)-J_{\\omega}(u_J^*;P_J)]\\\\"
+      },
+      {
+        "line": 285,
+        "text": "&-[e_{\\omega}(v)-e_{\\omega}(u_J^*)]."
+      },
+      {
+        "line": 286,
+        "text": "\\end{aligned}"
+      },
+      {
+        "line": 287,
+        "text": "\\label{eq:sup_dep_boundary}"
+      },
+      {
+        "line": 288,
+        "text": "\\end{equation}"
+      },
+      {
+        "line": 289,
+        "text": "Dependence changes the selected target only if it sufficiently changes \\emph{relative} evaluations of feasible targets. An additive shift of all target values does not change their ordering. If the entire fixed-target consequence criterion is separable across unresolved primitive states, all one-dimensional weighted marginals match, and the target set and effort terms are distribution independent, then $J_{\\omega}(u;P_M)=J_{\\omega}(u;P_J)$ for every feasible $u$. This is a sufficient rather than necessary condition for marginal sufficiency."
+      },
+      {
+        "line": 290,
+        "text": ""
+      },
+      {
+        "line": 291,
+        "text": "\\subsection{Paired resampling and operating-regime design}"
+      },
+      {
+        "line": 292,
+        "text": "The unit of resampling is the aircraft-linked episode; its canonical stages and all admissible rolling epochs move together into each bootstrap replicate. The original paired comparisons use 2,000 percentile bootstrap replicates. Stage-I Top-$K$ requires recomputing candidate selection, $K=\\lceil qN\\rceil$, fixed tie-breaking, and reference coverage within each replicate; applying a bootstrap to an already selected shortlist would not reproduce the sampling variation of the screening rule. A calendar-day or airport--date block check can probe shared operating shocks where the number of independent blocks permits it. Annual estimates are reported separately; any pooled summary must declare year-equal versus episode-weighted aggregation. Repeated operating nodes, 64 scenarios per episode, and trial targets are not independent units for confidence intervals."
+      },
+      {
+        "line": 304,
+        "text": "Supporting results will contain paired CJ--HJ, HP--HJ, and HM--HJ target agreement, activation, reference absolute/normalized loss, full-eligible recoverable opportunity, and shortlist opportunity coverage. Historical capacity-matched control results and weighted-marginal-coupling audit outputs must accompany interpretations attributing effects to historical information or dependence."
+      },
+      {
+        "line": 305,
+        "text": ""
+      },
+      {
+        "line": 306,
+        "text": "\\subsection{E3: objective-by-distribution and structural controls}"
+      },
+      {
+        "line": 307,
+        "text": "Supporting results will contain the shared eligible cohort for the four prespecified managerial objectives, all Marginal/Joint decisions, reference gap distributions, threshold $\\times$ headroom ablation, and component-level action responses. Results must not be pooled across incompatible objectives or CU scales without an explicit aggregation rule."
+      },
+      {
+        "line": 308,
+        "text": ""
+      },
+      {
+        "line": 309,
+        "text": "\\subsection{E4: operating period, stage, and rolling heterogeneity}"
+      },
+      {
+        "line": 310,
+        "text": "Supporting results will report the three operating periods (2017--2019, 2020, 2021--2022), PRE and TURN contrasts, threshold/headroom subgroups, year-specific coverage, and within-chain rolling trajectories. Correlations across years or epochs are descriptive without additional causal identification."
+      },
+      {
+        "line": 311,
+        "text": ""
+      },
+      {
+        "line": 312,
+        "text": "\\subsection{Archived 2019-only evidence}"
+      },
+      {
+        "line": 313,
+        "text": "The complete original Appendix F and its numerical tables remain preserved verbatim under \\texttt{legacy/F\\_2019\\_additional\\_results\\_ORIGINAL.tex}. They document the provenance of the original 2019 nominal analysis, not independently audited six-year conclusions. Old HM--HJ dependence interpretations require reconciliation with the weighted-marginal construction before being presented as valid dependence-specific evidence. Archive inclusion here does not constitute final evidentiary acceptance."
+      }
+    ]
+  },
+  "git_snapshots": {
+    "8aa01f9866d12fd7cdf01148087db7e5fb688b8b:model/M2/drivers.py": {
+      "sha256": "sha256:82fd9ca3a8d79761d42410559d6981874a78a3fa191716e27ae9b7152b892cb2",
+      "matched_lines": [
+        {
+          "line": 19,
+          "text": "            component_id=\"F_continuity\","
+        },
+        {
+          "line": 176,
+          "text": "            \"F_continuity\","
+        },
+        {
+          "line": 177,
+          "text": "            lambda: max(0.0, rib - float(ctx(\"turnaround_reference\").value)),"
+        },
+        {
+          "line": 179,
+          "text": "            \"turnaround_compression\","
+        }
+      ]
+    },
+    "1acfd29e3142d4bc5e9830aa875c544f89761962:registries/m2_data2_formal_cu_v1.json": {
+      "sha256": "sha256:186c9cf155dc7f50094257234108902819b7b5c8002ae0c590fe2656c5a2f21f",
+      "matched_lines": [
+        {
+          "line": 4,
+          "text": "    \"F_continuity\": 1.0,"
+        },
+        {
+          "line": 12,
+          "text": "    \"F_continuity\","
+        },
+        {
+          "line": 19,
+          "text": "    \"F_continuity\": {"
+        },
+        {
+          "line": 20,
+          "text": "      \"definition\": \"max(0, R_IB - turnaround_reference(connection_airport))\","
+        },
+        {
+          "line": 21,
+          "text": "      \"driver\": \"turnaround_compression\","
+        },
+        {
+          "line": 86,
+          "text": "    \"F_continuity\": {"
+        },
+        {
+          "line": 88,
+          "text": "      \"definition\": \"max(0, R_IB - turnaround_reference(connection_airport))\","
+        }
+      ]
+    }
+  }
+}

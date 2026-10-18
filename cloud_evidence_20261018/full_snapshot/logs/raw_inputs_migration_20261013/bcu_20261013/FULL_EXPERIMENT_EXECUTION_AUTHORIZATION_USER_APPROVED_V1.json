@@ -1,0 +1,40 @@
+{
+  "schema": "FULL_EXPERIMENT_EXECUTION_AUTHORIZATION_V1",
+  "record_id": "FULL_EXPERIMENT_EXECUTION_AUTHORIZATION_USER_APPROVED_V1",
+  "experiment_ids": ["E1", "E2", "E3", "E4"],
+  "years": [2017, 2018, 2019, 2020, 2021, 2022],
+  "user_approval_status": "USER_APPROVED",
+  "execution_scope": "DEVELOPMENT_ONLY",
+  "final_test_access_count": 0,
+  "stage_plan": {
+    "stage_1": {"experiment": "E4", "years": "2017-2022", "bundle": "PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1", "n_grid": [128, 256, 512, 1024, 2048, 4096], "concurrency": 6, "per_year_isolation": true},
+    "stage_2": {"experiment": "E2/E3", "years": "2017-2022", "chunk_size": 64, "replicates": 2000, "seed": 20261011, "concurrency": 3},
+    "stage_3": {"experiment": "E1", "years": "2017-2022", "chunk_size": 64, "concurrency": 3}
+  },
+  "prohibitions": [
+    "no Final-Test access", "no model/formula/action-space/consequence changes",
+    "no M1 retraining", "no regeneration of input reference bundles",
+    "no overwriting of pilot/calibration artifacts", "no same-year/same-output concurrency",
+    "no blind restarts; failures stop only their own year and are recorded"
+  ],
+  "dataset_snapshot": {
+    "development_bundle_track": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+    "binding_anchors": "SIX_YEAR_INPUTS_VALIDATED.json; protocol V1/V2; M1 receipts 2017-2022; tails 2017-2022",
+    "registry_frozen_sha256": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca"
+  },
+  "code_snapshot": {
+    "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+    "source_archive_sha256": "sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d",
+    "patch_chain": [
+      {"patch_sha256": "8cc7a1b7bfa727334e962d24728d9554eb4f579e440612ee54f43d50f40468ec", "local_commit": "d1c72a7"},
+      {"patch_sha256": "1d3ba5d32b243773201eb924aa1a3aca6fe1443ead60af6184d872b03a02fdbb", "local_commit": "ffa7487"}
+    ]
+  },
+  "resource_budget_reference": "FINAL_EXECUTION_RESOURCE_PLAN_V2.md (36-48 machine-hours; ~10-12h wall; 20 GiB floor; single-thread discipline; per-attempt time_v naming + pre-launch status check required)",
+  "provenance": {
+    "created_at_utc": "2026-10-13T13:42:00Z",
+    "created_by": "ZCode execution agent (transcription of explicit user authorization)",
+    "authorization_source": "User's round-8 instruction (2026-10-13): '开始 Air Slot Full Experiment Execution Phase 1. 目标：执行正式 E1–E4 Development 全量实验.' with stage order (E4 Full 6 workers -> E2/E3 Full 3 concurrent -> E1 Full 3 concurrent), per-year isolation, checkpoint/provenance requirements, and the explicit prohibitions list.",
+    "not_modified": "FULL_EXPERIMENT_EXECUTION_AUTHORIZATION_V1.json (NOT_APPROVED template) remains unchanged."
+  }
+}

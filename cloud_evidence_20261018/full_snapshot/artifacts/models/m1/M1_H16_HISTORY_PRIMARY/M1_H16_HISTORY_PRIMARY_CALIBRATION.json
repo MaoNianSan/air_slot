@@ -1,0 +1,28 @@
+{
+  "calibration_cohort_hash": "sha256:fb7f4a068dae322d8f34ac8abe0e67e013d0cbff4394a19e09fc68a7a98cb6f9",
+  "calibration_hash": "sha256:f8747ac873c8bc930b50985b254912425a05e3384e50fabf91047ac4c26772e3",
+  "calibration_partition": {
+    "end": "2019-07-31",
+    "start": "2019-07-01"
+  },
+  "calibration_protocol": {
+    "final_test_access_count": 0,
+    "positive_quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+    "predecessor_calibration_method": "TEMPERATURE_ON_HAZARD_LOGITS",
+    "predecessor_probability_calibration": "DISCRETE_HAZARD_EVENT_TIME_NLL",
+    "split": "calibration",
+    "successor_zero_mass_calibration": "HURDLE_ZERO_BINARY_CE_TEMPERATURE",
+    "version": "M1_CALIBRATION_CONTRACT_V1"
+  },
+  "final_test_access_count": 0,
+  "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+  "model_role": "PRIMARY",
+  "model_version": "M1_STATE_ESTIMATOR_V2_H16",
+  "reused_h32_temperature": false,
+  "schema_version": "M1_FORMAL_H16_CALIBRATION_V1",
+  "temperatures": {
+    "D_OB_ZERO": 0.5792439579963684,
+    "D_TX_ZERO": 0.05000000074505806,
+    "T_IB_REMAINING_HAZARD": 0.1657029688358307
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "artifact_hash": "sha256:bbe0874f82885c3b804c8ed671b5642161c4def8f659986e874b8ec293f0f3c2",
+  "artifact_status": "FORMAL_MODEL_RUNTIME_ARTIFACT_READY",
+  "batch_size": 64,
+  "calibration_cohort_hash": "sha256:fb7f4a068dae322d8f34ac8abe0e67e013d0cbff4394a19e09fc68a7a98cb6f9",
+  "calibration_hash": "sha256:fc9e3fb1f0be643ffa380aa52cdd879512edf6b74e7d242f31ea1e3d6bfcc209",
+  "calibration_parameters_are_variant_specific": true,
+  "calibration_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_CURRENT_COMPARATOR\\M1_H16_CURRENT_COMPARATOR_CALIBRATION.json",
+  "checkpoint_hash": "sha256:68a349a2d82f1d2c8c344c30e85777c55c644e63605e01a94364afdce7183ee3",
+  "checkpoint_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_CURRENT_COMPARATOR\\M1_H16_CURRENT_COMPARATOR.pt",
+  "code_commit": "9729354261de2a23c82b2e02350ba84aaba6dab7",
+  "development_cohort_hash": "sha256:79c3dd9d47e3ec6f15f228213f69bf84f40e8b8f5b6bb7fbea390fbe5613af79",
+  "development_used_for_parameter_selection": false,
+  "epochs": 8,
+  "feature_contract_hash": "sha256:56253d8ef9095588c48a31506f5bd3952ed52fbe457f5ef2c1f8d635a3cd4097",
+  "final_test_access_count": 0,
+  "formal_training_contract_source": "model/M1/tuning_stage1.py:STAGE1_TRAINING_CONFIG",
+  "hidden_size": 16,
+  "history_contract": {
+    "full_episode_access": "FORBIDDEN",
+    "future_information": "FORBIDDEN",
+    "history_encoder_enabled": false,
+    "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+    "input_contract": "CURRENT_ADMISSIBLE_OBSERVATION_ONLY",
+    "selection_role": "BASELINE_DIAGNOSTIC_ONLY"
+  },
+  "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+  "learning_rate": 0.001,
+  "model_role": "EXP1_NO_HISTORY_COMPARATOR",
+  "model_version": "M1_STATE_ESTIMATOR_V2_H16",
+  "optimizer": "Adam",
+  "optional_robustness_seeds": [
+    20260814,
+    20260815,
+    20260816,
+    20260817
+  ],
+  "paper_result": false,
+  "quantile_grid": [
+    0.1,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ],
+  "scenario_count": 64,
+  "schema_version": "M1_FORMAL_H16_RUNTIME_ARTIFACT_MANIFEST_V1",
+  "selection_or_tuning": false,
+  "selection_role": "BASELINE_DIAGNOSTIC_ONLY",
+  "support_contract_hash": "sha256:aadc580d2015c3c6f7c30d2f5ef346e25108775552d70fb3f62200a144573d8a",
+  "target_contract_hash": "sha256:524bd12352762b4bde9f74f3c01f27da15d5adb2c4433f0a25d7cc2a6f3dacf9",
+  "train_episode_hash": "sha256:8db8fd936c6a39e5b437e2c56f45061f00bf9caa284fc0a1a55d7c19b07eb7e7",
+  "training": [
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 1,
+      "loss": 30.455381393432617,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 2,
+      "loss": 30.369544982910156,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 3,
+      "loss": 30.284862518310547,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 4,
+      "loss": 30.20179557800293,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 5,
+      "loss": 30.118244171142578,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 6,
+      "loss": 30.034757614135742,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 7,
+      "loss": 29.95071792602539,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 8,
+      "loss": 29.866317749023438,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    }
+  ],
+  "training_cohort_hash": "sha256:b60a80f7ca1acc0d70b8e71ae1563a3263a6db8a7ff4bb5d689bee9de6628478",
+  "training_cohort_id": "M1_FORMAL_TRAINING_COHORT_V1",
+  "training_seed": 20260813,
+  "weight_decay": 0.0
+}

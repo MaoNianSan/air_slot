@@ -1,0 +1,5 @@
+DIAGNOSIS ADDENDUM (2026-10-13, pilot_e4 attempt-1)
+- Failure: E4_PHASE_FAILED:2019:headroom:1 in 3s.
+- Root cause: consequence_stability_metrics.ProtocolHashMismatch: PROTOCOL_V1_MISSING: data2/reports/cohort_size_stability/CONSEQUENCE_STABILITY_PROTOCOL_V1.json (battery protocol anchor absent on the cloud tree).
+- Remedy: protocol V1 restored from the authoritative local copy at 11:54:13Z; sha256 cd5dc9701d79c85d077282c6474a46b736b8a21e2bbd68427e4a9ded0862ebfa matches local byte-for-byte; battery protocol genesis then created V2 during the successful re-run.
+- Outcome: attempt-2 (pilot_e4_r2) ran all four phases to completion. Original runner records unmodified; this addendum is the diagnosis of record.

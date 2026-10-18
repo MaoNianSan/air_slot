@@ -1,0 +1,38 @@
+{
+  "artifact_hash": "sha256:67add51100195036e77ded3c20de04da335a0fdc5f5d49a72e56450b730747b8",
+  "artifact_id": "M1_POSITIVE_TAIL_E2E_SMOKE",
+  "artifact_scope": "DEVELOPMENT_ONLY_SMOKE",
+  "attempts": [
+    {
+      "decision_node_id": "sha256:23dec23294559cfc898e0c25266639a867991fb0ba2f5792d61ad1dd497adec6",
+      "formal_m2_scenarios": 64,
+      "m2_status": "PASS",
+      "scenario_count": 64
+    }
+  ],
+  "experiment_created": false,
+  "final_test_access_count": 0,
+  "m1": "PASS",
+  "m2": "PASS",
+  "m3": "PASS",
+  "m4": "PASS",
+  "model_retrained": false,
+  "parameter_reselected": false,
+  "pre": "PASS",
+  "scenario_artifact_hash": "sha256:97f559807939f388c68eabbe931fb4d9483964ec2e1f1ba7b77548c9d895ed81",
+  "schema_version": "M1_POSITIVE_TAIL_E2E_SMOKE_V1",
+  "selected": {
+    "a00_recommendation_authorized": false,
+    "decision_node_id": "sha256:23dec23294559cfc898e0c25266639a867991fb0ba2f5792d61ad1dd497adec6",
+    "m2_formal_scenarios": 64,
+    "m3_action_id": "A00",
+    "m3_envelope_hash": "sha256:2a80e112b9acab7159812c8daf9ba59c7abc9374763928dd1c61eb8b5c125906",
+    "m4_comparison_status": "SUPPORTED_INPUTS",
+    "m4_cvar_0_90": 11.16416590045807,
+    "m4_expected_monetary_loss": 1.8624486835715144,
+    "m4_numerical_state": "DEFINED",
+    "m4_residual_risk_objective": 4.187877987793153,
+    "m4_support_state": "SUPPORTED",
+    "scenario_count": 64
+  }
+}

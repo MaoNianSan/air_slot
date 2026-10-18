@@ -1,0 +1,14 @@
+[2026-10-13T12:58:21+00:00] phase=ladder protocol=sha256:18db92f0b3e82... years=[2019] n=[128, 256, 512, 1024, 2048, 4096]
+Traceback (most recent call last):
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 749, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 396, in main
+    return ladder_phase(args.years, scientific, selected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 464, in ladder_phase
+    raise RuntimeError(
+RuntimeError: BLOCK_M5B_SENTINEL_CHECKPOINT_MISSING:/data/airslot/worktree/artifacts/experiment/jatm_s34/calibration_20261013/e4_n256/2019/sentinel_N128_r1/N128/M1_N.pt
+[2026-10-13T13:06:48+00:00] phase=ladder protocol=sha256:18db92f0b3e82... years=[2019] n=[128, 256, 512, 1024, 2048, 4096]
+[2026-10-13T13:06:53+00:00] [m5b-metrics] headroom 2019: reused (u_max=45.0)
+[2026-10-13T13:08:23+00:00] [m5b-metrics] ladder 2019: evaluation_E=4096 (per_node=0.0120s, projections={'4096': {'projected_nodes': 60288, 'projected_hours': 0.222}, '2048': {'projected_nodes': 30144, 'projected_hours': 0.121}, '1024': {'projected_nodes': 15072, 'projected_hours': 0.07}})

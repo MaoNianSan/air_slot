@@ -1,0 +1,42 @@
+{
+  "schema": "EXPERIMENT_EXECUTION_AUTHORIZATION_V1",
+  "status_note": "TEMPLATE ONLY. Copy to a separately controlled authorization record and edit ONLY after explicit user approval. The gate requires user_approval_status = USER_APPROVED plus explicit experiment_ids and years; nothing in this file authorizes any run.",
+  "experiment_ids": [],
+  "years": [],
+  "dataset_snapshot": {
+    "development_bundle_track": "PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1 (legacy Development track consumed by E1/E2/E3 via annual_bridge)",
+    "year_local_b_track": "PRE_MULTIYEAR_V1_E4_YEARLOCAL_B_V1 (validated, six-year INPUTS_VALIDATED)",
+    "fixed_common_d4": ["PRE_MULTIYEAR_V1_D4_2017H1_R2", "PRE_MULTIYEAR_V1_D4_2017H1_B_V1"],
+    "cohort": "data2/reports/cohort_size_stability/{year}/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+    "m1_models": "artifacts/models/m1/YEAR_{year} (both roles, receipts TRAINED_AND_HASH_VALIDATED)",
+    "tails": "artifacts/models/m1/YEAR_{year}/TAIL_REFERENCE_V1/MANIFEST.json",
+    "registry_frozen_sha256": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+    "benchmark": "SIX_YEAR_INPUTS_VALIDATED (2026-10-13)"
+  },
+  "code_snapshot": {
+    "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+    "source_archive_sha256": "sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d",
+    "patch_chain": [
+      {"patch_sha256": "8cc7a1b7bfa727334e962d24728d9554eb4f579e440612ee54f43d50f40468ec", "local_commit": "d1c72a7"},
+      {"patch_sha256": "1d3ba5d32b243773201eb924aa1a3aca6fe1443ead60af6184d872b03a02fdbb", "local_commit": "ffa7487"}
+    ],
+    "gitless_runtime_adapter": "GIT_DIR=/data/airslot/smoke_gitmeta/repo/.git (HEAD -> 583f2c12) for official entries that record git provenance"
+  },
+  "final_test_access_count": 0,
+  "development_only": true,
+  "full_execution": false,
+  "resource_budget": {
+    "platform": "32 vCPU / 123.3 GiB / /data 295 GiB",
+    "safety_floor_gib": 20,
+    "per_task_peak_rss_gib_max": 16,
+    "recommended_concurrency": {"E4_workers": "2 measured -> 4-6 if RSS permits", "E1_E2_E3": "1 per year; 2-3 if RSS <= 12 GiB"},
+    "wall_time_policy": "two-stage: pilot ladder (node_limit 128/512; E4 n_grid=(128,) route check) then freeze budget with +20% margin; no extrapolation from smoke alone",
+    "checkpoint_policy": "E1 chunk JSONs / E2E3 two-pass checkpoints / E4 phase-level E4_YEAR_STATE.json; resume only with matching git_head+input_hashes; never blind-restart"
+  },
+  "user_approval_status": "NOT_APPROVED",
+  "provenance": {
+    "template_created_at_utc": "2026-10-13T09:50:00Z",
+    "created_by": "ZCode execution agent (round-5 preparation; per user instruction the status remains NOT_APPROVED)",
+    "approval_instructions": "Set user_approval_status=USER_APPROVED, fill experiment_ids (subset of [E1,E2,E3,E4]) and years ([2017..2022]), compute sha256, archive both sides. Rows in E1_E4_READINESS_REPORT.md / RESOURCE_BUDGET_PLAN.md define the frozen input and resource basis."
+  }
+}

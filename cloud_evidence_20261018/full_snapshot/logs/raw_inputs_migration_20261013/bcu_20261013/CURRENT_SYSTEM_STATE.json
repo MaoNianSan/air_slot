@@ -1,0 +1,137 @@
+{
+  "code_identity": {
+    "code_snapshot": {
+      "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+      "schema_version": "JATM_CODE_SNAPSHOT_V1",
+      "source_archive_sha256": "sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d"
+    },
+    "gitless_note": "worktree has no .git (tarball deployment); GIT_DIR adapter at /data/airslot/smoke_gitmeta/repo/.git declares HEAD=583f2c12 for official entries that call git rev-parse.",
+    "patch_chain": [
+      {
+        "local_commit": "d1c72a7",
+        "patch": "20261013_b_continuity_row_contract_fix.patch",
+        "sha256": "8cc7a1b7bfa727334e962d24728d9554eb4f579e440612ee54f43d50f40468ec"
+      },
+      {
+        "local_commit": "ffa7487",
+        "patch": "20261013_bcu2019_context_fix.patch",
+        "sha256": "1d3ba5d32b243773201eb924aa1a3aca6fe1443ead60af6184d872b03a02fdbb"
+      }
+    ],
+    "patched_file_sha256": {
+      "data2/scripts/build_year_references.py": "20f4bc900c780291064dec1729cab9a0a464b3624165769ede408be77993df12",
+      "model/PRE/reference/data2_m2_train_fit.py": "28e8067c449756b7c59fb58f422408cdb6307ba7d0208813681447d927f693df"
+    },
+    "registry_frozen_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca"
+  },
+  "created_at_utc": "2026-10-13T09:44:34+00:00",
+  "final_test_access": {
+    "evidence": [
+      "SIX_YEAR_INPUT_GATE_FINAL.json per-year t100_accounting.final_test_evaluation_access = 0",
+      "M1 receipts final_test_access_count = 0 (all four new models)",
+      "DEVELOPMENT_SMOKE_VERIFICATION final_test_access_count = 0 (input_contract READY_TO_RUN)",
+      "SIX_YEAR_INPUTS_VALIDATED scope: Final-Test sealed"
+    ],
+    "final_test_access_count": 0
+  },
+  "matrix": {
+    "2017": {
+      "b_cu_year_local": "VALID",
+      "d4_fixed_common": "VALID",
+      "input_gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    },
+    "2018": {
+      "b_cu_year_local": "VALID",
+      "d4_fixed_common": "VALID",
+      "input_gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    },
+    "2019": {
+      "b_cu_year_local": "VALID",
+      "d4_fixed_common": "VALID",
+      "input_gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "m1_training": {
+        "peak_rss_kib": "7509932",
+        "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+        "wall": "6:28.09"
+      },
+      "tail": "VALID",
+      "tail_manifest_sha256": "a2651c462493d8012a5b087373d413ceccdd584fb29fec9717e33669452c2921"
+    },
+    "2020": {
+      "b_cu_year_local": "VALID",
+      "d4_fixed_common": "VALID",
+      "input_gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "m1_training": {
+        "peak_rss_kib": "7847140",
+        "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+        "wall": "5:39.59"
+      },
+      "tail": "VALID",
+      "tail_manifest_sha256": "25be8b7bf813c346677f0441e55ef5436a9f1cf7ac825857c2787d3bd7504b98"
+    },
+    "2021": {
+      "b_cu_year_local": "VALID",
+      "d4_fixed_common": "VALID",
+      "input_gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "m1_training": {
+        "peak_rss_kib": "7852828",
+        "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+        "wall": "6:06.57"
+      },
+      "tail": "VALID",
+      "tail_manifest_sha256": "2e7c23ece47830368623c79030ebcb266226a07c4d4dc1188865f8dedda884c0"
+    },
+    "2022": {
+      "b_cu_year_local": "VALID",
+      "d4_fixed_common": "VALID",
+      "input_gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "m1_training": {
+        "peak_rss_kib": "8105544",
+        "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+        "wall": "6:53.15"
+      },
+      "tail": "VALID",
+      "tail_manifest_sha256": "db202ac4bda817479ee4e04ce003b153d4d7f30216cd865929d273339b2b38e2"
+    }
+  },
+  "processes": {
+    "airslot_residual_processes": [],
+    "checked_at_utc": "2026-10-13T09:44:54+00:00",
+    "clean": true,
+    "detector_v1_note": "Detector v1 over-matched the OS daemon networkd-dispatcher (pid 1609, system service, unrelated to Air Slot). Targeted re-check found no Air Slot compute/aux processes.",
+    "system_daemon_matched_by_v1": "pid 1609 networkd-dispatcher (system)"
+  },
+  "schema_version": "AIRSLOT_CURRENT_SYSTEM_STATE_V1",
+  "six_year_inputs_validated": true,
+  "smoke_result": "PASS",
+  "storage": {
+    "data_disk": "/dev/vdb        295G   69G  211G  25% /data"
+  },
+  "tail_verification_all_valid": true,
+  "training_summary_all_pass": true,
+  "verification_files": {
+    "ANNUAL_TAIL_2019_2022_VERIFICATION.json": {
+      "sha256": "866733408958cf6ba43c8d0933e357cbfbdc1228741f5ea8186e51fd5eee236e"
+    },
+    "DEVELOPMENT_SMOKE_VERIFICATION.json": {
+      "sha256": "be1ff8946bb6ba61f4efd76775c607416d4061b3325d3596c762c7e311af742f"
+    },
+    "M1_2019_2022_TRAINING_SUMMARY.json": {
+      "sha256": "2a42d6241603b7ac0c5ed91d1eca058c3b4a3374fadc3f863a4f1ecb286326f5"
+    },
+    "SIX_YEAR_INPUTS_VALIDATED.json": {
+      "sha256": "6e427cdd66606ac56a0075c4a679ba8eab13d1f2075d0f7c68f11e61d340e6fc"
+    },
+    "SIX_YEAR_INPUT_GATE_FINAL.json": {
+      "sha256": "c69ff4df7e929f021e17974eddeeeb3c9548e81b104aa12679c60828dd631303"
+    }
+  }
+}

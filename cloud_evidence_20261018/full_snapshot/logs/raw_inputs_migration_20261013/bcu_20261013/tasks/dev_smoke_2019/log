@@ -1,0 +1,32 @@
+[2026-10-13T08:54:39Z] START dev_smoke_2019 (bounded annual Development, 2019, DEVELOPMENT-ONLY)
+fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+Traceback (most recent call last):
+  File "/data/airslot/logs/raw_inputs_migration_20261013/bcu_20261013/run_dev_smoke.py", line 17, in <module>
+    result = run_year_bounded(year=2019, output_root=out, n=4096, chunk_size=4,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/exp/jatm_s34/annual_development.py", line 75, in run_year_bounded
+    result["e1"] = run_e1_bounded(output_root=out / "E1", year=year, n=n,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/exp/jatm_s34/e1_information_gain.py", line 433, in run_bounded_annual
+    current_head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/share/uv/python/cpython-3.11.6-linux-x86_64-gnu/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/share/uv/python/cpython-3.11.6-linux-x86_64-gnu/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.
+DEV_SMOKE_FAIL rc=1
+[2026-10-13T08:55:58Z] START dev_smoke_2019 (bounded annual Development, 2019, DEVELOPMENT-ONLY)
+{
+  "schema_version": "JATM_ANNUAL_DEVELOPMENT_BOUNDED_V1",
+  "status": "DEVELOPMENT_COMPLETE",
+  "scientific_status": "DEVELOPMENT_OBSERVATION_READY",
+  "final_test_access_count": 0,
+  "bounded_memory": true,
+  "chunk_size": 4
+}
+SMOKE_RESULT: PASS
+DEVELOPMENT_SMOKE_VERIFICATION written: PASS
+DEV_SMOKE_PASS

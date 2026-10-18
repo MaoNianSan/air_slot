@@ -1,0 +1,24 @@
+[2026-10-13T05:22:34Z] START y2019 year=2019 output=artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_B_V1
+[2026-10-13T05:22:35+00:00] 2019: streaming Y-H1 on-time rows (months 1-6)
+[2026-10-13T05:26:58+00:00] 2019: Y-H1 rows = 3497660 (reference-legality gate dropped 0)
+[2026-10-13T05:28:21+00:00] 2019: non-physical rotation flights excluded = 0 (1 chaining passes)
+[2026-10-13T05:28:21+00:00] 2019: fit_train_references (turnaround/exposure/passenger)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 320, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 313, in main
+    manifest = build_year(year, output_root=args.output_root,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 217, in build_year
+    references = fit_train_references(rows, root=REPO,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/reference/data2_m2_train_fit.py", line 675, in fit_train_references
+    turnaround = build_data2_turnaround_reference(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/reference/turnaround_data2.py", line 182, in build_data2_turnaround_reference
+    raise ContractError("REFERENCE_DATASET_MISMATCH")
+model.common.errors.ContractError: REFERENCE_DATASET_MISMATCH
+B_CU_2019_BUILD_FAIL rc=1

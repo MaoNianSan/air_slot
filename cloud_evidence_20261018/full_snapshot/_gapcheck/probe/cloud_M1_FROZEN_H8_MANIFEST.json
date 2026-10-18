@@ -1,0 +1,47 @@
+{
+  "artifact_hash": "sha256:335825ea372ed18e373d2ad93042603d5bab4fb98575bb300862f24fafee136c",
+  "artifact_status": "FROZEN_MODEL_RUNTIME_ARTIFACT_READY",
+  "calibration_hash": "sha256:31448e750fbbd44fc9bc6bce0ada59e083dc0ec5cf44dc9f49807a41615c1a36",
+  "calibration_partition": {
+    "end": "2019-07-31",
+    "start": "2019-07-01"
+  },
+  "calibration_path": "artifacts\\models\\m1\\M1_FROZEN_H8\\M1_FROZEN_H8_CALIBRATION.json",
+  "causal": true,
+  "checkpoint_hash": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
+  "checkpoint_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H8\\DATA2_M1_V2_DEVELOPMENT_FAST.pt",
+  "code_commit": "9849669ea958b8c884ead85196f268d27f739af0",
+  "development_partition": {
+    "end": "2019-09-30",
+    "start": "2019-08-01"
+  },
+  "feature_contract_hash": "sha256:56253d8ef9095588c48a31506f5bd3952ed52fbe457f5ef2c1f8d635a3cd4097",
+  "final_test_access_count": 0,
+  "hidden_dim": 8,
+  "layers": 1,
+  "model_family": "M1_STATE_ESTIMATOR_V2",
+  "model_version": "M1_STATE_ESTIMATOR_V2_H8",
+  "overflow": {
+    "D_OB": 185,
+    "D_TX": 65,
+    "T_IB_A00": 365
+  },
+  "paper_result": false,
+  "parameter_registry_hash": "sha256:d98d5d81acac0e74c5bbf4d3674c1d1115515cf53322c9453022412dfdfaad6d",
+  "roll_minutes": 5,
+  "scenario_count": 64,
+  "schema_version": "M1_FROZEN_H8_RUNTIME_ARTIFACT_MANIFEST_V1",
+  "selection_or_tuning": false,
+  "support": {
+    "D_OB": 180,
+    "D_TX": 60,
+    "T_IB_REMAINING_HAZARD": 360
+  },
+  "target_contract_hash": "sha256:524bd12352762b4bde9f74f3c01f27da15d5adb2c4433f0a25d7cc2a6f3dacf9",
+  "target_manifest_path": "artifacts\\models\\m1\\M1_FROZEN_H8\\M1_FROZEN_H8_TARGET_SUPPORT_MANIFEST.json",
+  "train_partition": {
+    "end": "2019-06-30",
+    "start": "2019-01-01"
+  },
+  "training_seed": 20260821
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "JATM_ANNUAL_M1_TRAINING_AUTHORIZATION_V1",
+  "status": "USER_APPROVED",
+  "years": [2019, 2020, 2021, 2022],
+  "n": 4096,
+  "roles": ["M1_HISTORY_PRIMARY", "M1_CURRENT_COMPARATOR"],
+  "train_months": [1, 2, 3, 4, 5, 6],
+  "calibration_months": [7],
+  "development_used_for_fit": false,
+  "final_test_access_count": 0,
+  "provenance": {
+    "record_id": "M1_TRAINING_AUTHORIZATION_USER_APPROVED_20261013",
+    "created_at_utc": "2026-10-13T08:05:00Z",
+    "created_by": "ZCode execution agent (transcription of explicit user authorization)",
+    "authorization_source": "User's round-4 instruction (2026-10-13), section 1: '执行前核验用户明确批准的 JATM_ANNUAL_M1_TRAINING_AUTHORIZATION_V1 记录。授权范围仅限：年份：2019、2020、2021、2022。N=4096。两角色：M1_HISTORY_PRIMARY、M1_CURRENT_COMPARATOR。Train：1–6 月；Calibration：7 月。Development 不参与模型拟合。Test / Final-Test 继续封存。'",
+    "basis": "Round-3 proposal M1_TRAINING_AUTHORIZATION_PROPOSAL_2019_2022.md + prepared draft M1_TRAINING_AUTHORIZATION_DRAFT_2019_2022.json (NOT_APPROVED). This record transcribes exactly the user-stated scope; no field was added or widened by the agent. The official template (deploy/jatm_cloud/scientific_decisions/M1_TRAINING_AUTHORIZATION_TEMPLATE.json) was NOT modified.",
+    "scope_guard": "recorded years are exactly [2019,2020,2021,2022]; 2017/2018 models remain untouched (train_year refuses non-empty YEAR dirs)"
+  }
+}

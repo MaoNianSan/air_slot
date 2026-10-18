@@ -1,0 +1,25 @@
+{
+  "schema_version": "AIRSLOT_REGISTRY_STATE_REPAIR_V1",
+  "created_at_utc": "2026-10-13T05:56:00Z",
+  "trigger": "tail_2018 (tag) failed at model/PRE/feature_registry/loader.py:79 RegistryError('published registry manifest mismatch') via model/PRE/streaming/data2.py registry_hash -> load_registry_bundle; the same gate also blocks future M1 training (materialize_preselected_cohorts).",
+  "diagnosis": {
+    "frozen_authority": "registries/registry_manifest.json (committed, published, validation_status PASS) pins combined sha256 befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca; every historical computation on the development host used these bytes.",
+    "dev_host_state": "registries/{data_usage_rules,scientific_variables,dataset_capabilities}.yaml on the development working tree hash to the published manifest values (CRLF-style bytes captured by the published manifest).",
+    "cloud_state": "The cloud worktree was materialized in LF form (matching the git blobs), so raw-byte hashes differ from the published manifest and registry_hash fails. First LF-side execution of this gate (the 2026-10-13 round) exposed it.",
+    "content_equivalence": "LF-normalized content is identical on both sides (git-blob hash equality); the difference is line-ending bytes only."
+  },
+  "repair": {
+    "direction": "restore the cloud files byte-for-byte to the frozen published state (identical bytes to the development worktree / manifest authority), preserving lineage hash befc3ae1...",
+    "method": "scp dev-host files to registries/.regen_tmp_<name>.yaml, sha256 verified against the published manifest values, originals quarantined, atomic mv",
+    "files": [
+      {"path": "registries/data_usage_rules.yaml", "before_sha256": "6b3f968759095b73b36fc219237b115cd17774537060d6183b50171cf49e3645", "after_sha256": "74f418cb8b1a6011e031ddbde4e5a097f26e621cd0baf123fa7c2a2ee8b873a4"},
+      {"path": "registries/scientific_variables.yaml", "before_sha256": "fb3f2d0a38e966903ba0b843697fef0c5029cccabe15ddc1a9a6ac92a627d639", "after_sha256": "b48f20879001775e40ea2f35b2bb868fb26553a254b8308857560895b1c3c5b0"},
+      {"path": "registries/dataset_capabilities.yaml", "before_sha256": "6be24e4857bc2cf6013ecd64c87b70d10241cfffd5e089635df60b5e6027e345", "after_sha256": "e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b"}
+    ],
+    "untouched": ["registries/source_priority.yaml (cloud hash already equals the published value 34468b63...)", "registry_manifest.json (NOT modified)", "all code and all other artifacts"],
+    "quarantine": "/data/airslot/logs/raw_inputs_migration_20261013/registry_quarantine_20261013/*.yaml.lf-original",
+    "post_repair_verification": "registry_hash(worktree) = sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca (equals the frozen/historical combined hash); load_registry_bundle passes."
+  },
+  "repo_level_finding_for_owner": "The committed registry_manifest.json pins development-host (CRLF) byte hashes while the .gitattributes policy and git blobs are LF; a clean LF checkout can never pass registry_hash. Any future canonicalization of registry bytes (e.g., re-publishing the manifest on an LF checkout) would change the combined lineage hash befc3ae1... and must be handled as an authorized change with full downstream impact analysis. Until then the frozen operational state is the published manifest's bytes (restored here on the cloud).",
+  "final_test_access_count": 0
+}

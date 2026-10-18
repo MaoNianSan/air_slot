@@ -1,0 +1,153 @@
+{
+  "authorization": "EXPERIMENT_EXECUTION_AUTHORIZATION_PILOT_V1.json (sha256 a427b36f7c925d8bcd9b031dd09ff9f185335c635cadb88d87ac0f4821c1b214)",
+  "code_state": "snapshot 583f2c12 + patch 8cc7a1b7 (d1c72a7) + patch 1d3ba5d3 (ffa7487); GIT_DIR adapter HEAD=583f2c12",
+  "created_at_utc": "2026-10-13T12:40:00Z",
+  "disclaimer": "PILOT ONLY - chain validation, resource measurement and scheduling determination. Not for paper conclusions. No scientific result tables; validation-health counts only.",
+  "failure_diagnosis": [
+    {
+      "item": "E4 attempt-1 (pilot_e4, 11:52:38Z)",
+      "remedy": "protocol V1 restored from the authoritative local copy at 11:54:13Z; sha256 cd5dc9701d79c85d077282c6474a46b736b8a21e2bbd68427e4a9ded0862ebfa matches local byte-for-byte; V2 then created by the battery's own protocol genesis during r2",
+      "root_cause": "consequence_stability_metrics.ProtocolHashMismatch: PROTOCOL_V1_MISSING: data2/reports/cohort_size_stability/CONSEQUENCE_STABILITY_PROTOCOL_V1.json (battery protocol anchor absent on the cloud tree)",
+      "status": "RESOLVED_AND_DOCUMENTED",
+      "symptom": "rc=1 in 3s; E4_PHASE_FAILED:2019:headroom:1"
+    },
+    {
+      "consequence": "E2_E3_SUMMARY.json hash 809ab8a8... unchanged (mtime 11:46); one record-level consequence: the valid run's /usr/bin/time_v.txt was truncated by an opener; its wall/max-RSS were reconstructed from sampler + log timestamps (disclosed in tasks/pilot_e2e3/RECORD_ANOMALY_NOTE.txt v2)",
+      "evidence": "resource_pilot.log sampler shows only pid 166388 CPU-bound during the entire valid window (10:31:47Z -> 11:46:10Z); every duplicate died during import/load (e.g., the 11:30:26 one was terminated on discovery; the 12:16:31Z one was killed at 12:17:34Z after 60s) and never persisted a python",
+      "item": "E2/E3 duplicate-launch incidents (START lines: 11:05:02, 11:23:21, 11:30:26, 11:51:10, 12:06:44, 12:16:31Z; valid run = the 10:31:47Z survivor instance)",
+      "status": "DISCLOSED; NO OUTPUT CORRUPTION",
+      "symptom": "six short-lived duplicate/retry launches of pilot_e2e3 appended to the same task log; mixed origins (a parallel session on the same network AND later retries from this session), occurring both during the valid run's window and after its 11:46:10Z completion; single-driver discipline was enforced (PILOT_DRIVER_NOTICE.md; RECORD_ANOMALY_NOTE.txt v2)"
+    },
+    {
+      "item": "E4 driver success criterion",
+      "root_cause": "driver exits non-zero unless status == DEVELOPMENT_COMPLETE; pilot-scope runs terminate at the designed PILOT_COMPLETE_HARD_STOP which e4_run maps to ENGINEERING_INCOMPLETE",
+      "status": "EXPECTED_BEHAVIOR_FOR_PILOT; documented, not a chain failure",
+      "symptom": "runner status FAILED_rc=1 while all four phases completed"
+    }
+  ],
+  "final_test_access_count": 0,
+  "input_hashes_file": "artifacts/experiment/jatm_s34/pilot_20261013/pilot_input_hashes.txt",
+  "pilots": {
+    "E1": {
+      "bootstrap_and_summary": "10:26:20Z -> 10:27:37Z = 1:17",
+      "checkpoint_inventory": {
+        "E1_CHUNK_CHECKPOINT.json": "810face3be201baa9eb7f487e1d41da11baced87796e0eab7c4e01f898a848cd",
+        "chunk_files": 32,
+        "resume_guard": "git_head + input_hashes recorded in checkpoint; resume refuses mismatches"
+      },
+      "chunk_phase": "09:50:24Z -> 10:26:20Z = 35:56 (32/32 chunks)",
+      "config": {
+        "bootstrap_replicates": 2000,
+        "chunk_size": 4,
+        "n": 4096,
+        "node_limit": 128,
+        "seed_base": 20261011,
+        "year": 2019
+      },
+      "output_hashes": {
+        "E1_SUMMARY.json": "59e9a277b0e47379c2fd2c3c941fd443f4e1d809b06a6a4081e567127f9b57cc"
+      },
+      "peak_rss_kib": 3668664,
+      "percent_cpu": "99%",
+      "task_tag": "pilot_e1",
+      "team_state": "PASS (DEVELOPMENT_COMPLETE)",
+      "throughput": {
+        "chunks_per_hour": 53.4,
+        "items_per_hour": 214,
+        "items_per_min": 3.56,
+        "nodes_built": 1781,
+        "nodes_per_hour": 2974
+      },
+      "wall": "38:34.36 (09:49:02Z -> 10:27:37Z)",
+      "wall_seconds": 2314.4
+    },
+    "E2_E3": {
+      "chain_evidence": {
+        "bootstrap": "replicates=2000 x 8 CI rows present; values deliberately NOT reported (pilot, not for paper)",
+        "e3": {
+          "joint_marginal_pair_count": 136,
+          "profiles": [
+            "BALANCED",
+            "FLIGHT",
+            "PASSENGER",
+            "RESOURCE"
+          ]
+        },
+        "exact_marginal_audit": {
+          "audit_count": 230,
+          "labels": "HISTORY_MARGINAL_EXACT vs HISTORY_MARGINAL_LEGACY",
+          "max_product_scenarios": 13284,
+          "support_abstain": 0,
+          "support_included": 230
+        },
+        "input_contract": "final_test_access_count=0; sealed_executor_called=false; scientific_recomputation=true",
+        "node_count": 230
+      },
+      "checkpoint_inventory": {
+        "E2_E3_FIRST_PASS_CHECKPOINT.json": "8ca8f7cbd64d07b2945cd078890433630a1de843025b60dd197485d5993c7f52",
+        "E2_E3_SECOND_PASS_CHECKPOINT.json": "5414d424488c2a69ff233310a77841a17df9ac065245235966b4634de3880873",
+        "E2_E3_SUMMARY.json": "809ab8a860888e72e70a091f6a373350fb4dffe37dbbd0a152f9e41c7c7438fe"
+      },
+      "config": {
+        "bootstrap_replicates": 2000,
+        "chunk_size": 4,
+        "n": 4096,
+        "node_limit": 128,
+        "seed": 20261011,
+        "year": 2019
+      },
+      "peak_rss_gib_observed": ">=3.92 (sampler; exact time_v report lost to duplicate-launch truncation, disclosed)",
+      "task_tag": "pilot_e2e3",
+      "team_state": "PASS (DEVELOPMENT_COMPLETE)",
+      "throughput": {
+        "chunks": "32 + 32 (two-pass)",
+        "items_per_hour": 103
+      },
+      "wall": "74:23 (10:31:47Z -> 11:46:10Z)"
+    },
+    "E4": {
+      "config": {
+        "bundle_root": "PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+        "n_grid": [
+          128
+        ],
+        "year": 2019
+      },
+      "eval_decision": {
+        "failed_instances": [],
+        "status": "M5B_PILOT_COMPLETE_HARD_STOP"
+      },
+      "n_grid_coverage": {
+        "evaluation_E": 4096,
+        "interpretation": "N128_PILOT_ONLY",
+        "observed_eval": [
+          128
+        ],
+        "requested": [
+          128
+        ]
+      },
+      "output_hashes": {
+        "E4_DEVELOPMENT_MANIFEST.json": "060805e5b48425cdeca9234949aa6f745c209a83d783562e6335427f4fecb8b5",
+        "EVAL_SUMMARY.json": "ba4bc92a864ff005c0b99911ca1b4176a18d2f0c210d388cab65ec73d850a381",
+        "YEAR_2019/E4_YEAR_STATE.json": "35899e92ce66d2af9314fabaf40ff1a872093dfeb8f8b19184e8fa9b729ca1cb"
+      },
+      "peak_rss_kib": 14206128,
+      "percent_cpu": "99%",
+      "phase_checkpoints": "E4_YEAR_STATE.json phase-level resume (headroom/fit/ladder/eval); outputs: 2019/M2_TRAIN_HEADROOM_SUMMARY.json, LADDER_PROBE_2019.json, 2019/N128/M1_N.pt (+M1_N_HASHES.json), 2019/passes/fitN128, EVAL_METRICS_2019_N128.json",
+      "phase_walls": {
+        "eval": "21:24",
+        "fit": "1:20",
+        "headroom": "5:58",
+        "ladder": "1:37"
+      },
+      "task_tag": "pilot_e4_r2 (valid); pilot_e4 = attempt-1 fast-fail",
+      "team_state": "CHAIN_COMPLETE_PILOT_HARD_STOP (e4_run terminal string: ENGINEERING_INCOMPLETE + completion_class PILOT_COMPLETE_HARD_STOP by design for pilot scope; driver rc=1 by strict criterion, disclosed - not a chain failure)",
+      "wall": "30:19.34 (11:54:22Z -> 12:24:4xZ)",
+      "wall_seconds": 1819.3
+    }
+  },
+  "process_cleanup": "no Air Slot compute processes remain after pilot completion (verified twice, 12:28Z and at archive time)",
+  "round": "R6 pilot (E1/E2/E3/E4 on year 2019)",
+  "schema_version": "AIRSLOT_PILOT_RESULTS_V1"
+}

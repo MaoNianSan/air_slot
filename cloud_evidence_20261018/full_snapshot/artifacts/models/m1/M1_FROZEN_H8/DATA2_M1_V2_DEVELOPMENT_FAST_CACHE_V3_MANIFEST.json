@@ -1,0 +1,267 @@
+{
+  "array_dtypes": {
+    "active_D_OB": "bool",
+    "active_D_TX": "bool",
+    "active_T_IB_REMAINING_HAZARD": "bool",
+    "episode_ids": "<U71",
+    "episode_offsets": "int64",
+    "labels_D_OB": "float32",
+    "labels_D_TX": "float32",
+    "labels_T_IB_REMAINING_HAZARD": "float32",
+    "sample_decision_node_ids": "<U71",
+    "sample_end_offsets": "int32",
+    "sample_episode_dates": "<U10",
+    "sample_episode_ids": "<U71",
+    "sample_episode_indices": "int32",
+    "sample_splits": "<U11",
+    "sample_start_offsets": "int32",
+    "static_context_lineages": "<U1821",
+    "static_values": "float32",
+    "values_flat": "float32"
+  },
+  "audit": {
+    "PRE_registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+    "active_stage_counts": {
+      "calibration": {
+        "POST_IB_PRE_OB": 803,
+        "POST_OB_PRE_TO": 54,
+        "PRE_IB": 203
+      },
+      "development": {
+        "POST_IB_PRE_OB": 1454,
+        "POST_OB_PRE_TO": 98,
+        "PRE_IB": 217
+      },
+      "train": {
+        "POST_IB_PRE_OB": 1451,
+        "POST_OB_PRE_TO": 87,
+        "PRE_IB": 342
+      }
+    },
+    "additional_development_episode_count": 0,
+    "base_cohort_counts": {
+      "calibration": 64,
+      "development": 128,
+      "test": 0,
+      "train": 128
+    },
+    "cohort_counts": {
+      "calibration": 64,
+      "development": 128,
+      "test": 0,
+      "train": 128
+    },
+    "cohort_seed": 20260813,
+    "config_hash": "sha256:9671657072eaa93e34268e176a3d2ed7b06a5deab9ded3c8090de3694e58bedc",
+    "development_evaluation_source": "BASE_DEVELOPMENT_COHORT",
+    "final_test_access_count": 0,
+    "ontime_rows_by_month": {
+      "01": 559098,
+      "02": 510259,
+      "03": 611338,
+      "04": 589233,
+      "05": 614364,
+      "06": 613368,
+      "07": 635790,
+      "08": 638146,
+      "09": 589317
+    },
+    "ontime_rows_skipped": 196894,
+    "pool_sizes": {
+      "calibration": 490886,
+      "development": 946184,
+      "test": 0,
+      "train": 2665240
+    },
+    "pre_decision_nodes": {
+      "calibration": 1061,
+      "development": 1775,
+      "train": 1882
+    },
+    "preparation_state_reused": true,
+    "registry_hash": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+    "sampled_episodes": {
+      "calibration": 64,
+      "development": 128,
+      "train": 128
+    },
+    "source_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+    "stage_counts": {
+      "calibration": {
+        "COMPLETED": 1,
+        "POST_IB_PRE_OB": 803,
+        "POST_OB_PRE_TO": 54,
+        "PRE_IB": 203
+      },
+      "development": {
+        "COMPLETED": 4,
+        "POST_IB_PRE_OB": 1454,
+        "POST_OB_PRE_TO": 100,
+        "PRE_IB": 217
+      },
+      "train": {
+        "COMPLETED": 2,
+        "POST_IB_PRE_OB": 1451,
+        "POST_OB_PRE_TO": 87,
+        "PRE_IB": 342
+      }
+    },
+    "total_episode_pool": 4102310,
+    "weather": {
+      "accepted_train_calibration_development_observations": 473979,
+      "airports": 48,
+      "final_test_access_count": 0
+    }
+  },
+  "cache_build_scope": [
+    "train",
+    "calibration",
+    "development"
+  ],
+  "cache_bytes": 695250,
+  "cache_hash": "sha256:cc57f1532d9efb3ae9d33a2c768340f708938cb56828174805eee036fe396b3d",
+  "cache_key": "sha256:dd4c235422f0303d9e8a02e200cc3302b5aabcd501afc0d354c28f6e75510efe",
+  "cache_miss_to_hit_equivalence": {
+    "numeric_values_equal": true,
+    "static_block_equal": true,
+    "static_context_lineage_equal": true,
+    "status": "PASS"
+  },
+  "cache_schema_version": "M1_V2_DEVELOPMENT_BASE_CACHE_V4",
+  "calibration_episode_count": 64,
+  "candidate_status": null,
+  "canonical_node_count": 4709,
+  "contract_hashes": {
+    "PRE_contract_hash": "sha256:bb01bd237e092067c21b9f9f63488726559fb88768eb2fc1a8a8db0f6d8d106d",
+    "episode_construction_hash": "sha256:148bb3d98c20b74b307b0407585f6ff64d21ce8f0ce2d7194d2fe06dec21f27e",
+    "episode_contract_hash": "sha256:148bb3d98c20b74b307b0407585f6ff64d21ce8f0ce2d7194d2fe06dec21f27e",
+    "feature_contract_hash": "sha256:987cc8c1af5c72770089a4ea1e0ff3e1c189cc8ecaa8464182641e54c686fed5",
+    "normalization_contract_hash": "sha256:6e34633d43692b5e532e1d1bf9ac71847a75dfc667c8daaab189a7ed7111607c",
+    "roll_contract_hash": "sha256:cc20609a4b906489b893c1eef5ef1283f63f70f2595ee124ab330e6f3e7b7be4",
+    "split_contract_hash": "sha256:8f9a476aec98f643354eae8ed345cb26b3b62a3c585bed7aff0cc9f98ba6066a"
+  },
+  "development_episode_count": 128,
+  "episode_count": 320,
+  "expanded_prefix_node_count": 65240,
+  "feature_count": 39,
+  "feature_names": [
+    "dynamic_feature_0",
+    "dynamic_feature_1",
+    "dynamic_feature_2",
+    "dynamic_feature_3",
+    "dynamic_feature_4",
+    "dynamic_feature_5",
+    "dynamic_feature_6",
+    "dynamic_feature_7",
+    "dynamic_feature_8",
+    "dynamic_feature_9",
+    "dynamic_feature_10",
+    "dynamic_feature_11",
+    "dynamic_feature_12",
+    "dynamic_feature_13",
+    "dynamic_feature_14",
+    "dynamic_feature_15",
+    "dynamic_feature_16",
+    "dynamic_feature_17",
+    "dynamic_feature_18",
+    "dynamic_feature_19",
+    "dynamic_feature_20",
+    "dynamic_feature_21",
+    "dynamic_feature_22",
+    "dynamic_feature_23",
+    "dynamic_feature_24",
+    "dynamic_feature_25",
+    "dynamic_feature_26",
+    "dynamic_feature_27",
+    "dynamic_feature_28",
+    "dynamic_feature_29",
+    "dynamic_feature_30",
+    "dynamic_feature_31",
+    "dynamic_feature_32",
+    "dynamic_feature_33",
+    "dynamic_feature_34",
+    "dynamic_feature_35",
+    "dynamic_feature_36",
+    "dynamic_feature_37",
+    "dynamic_feature_38"
+  ],
+  "feature_schema_hash": "sha256:987cc8c1af5c72770089a4ea1e0ff3e1c189cc8ecaa8464182641e54c686fed5",
+  "final_test_access_count": 0,
+  "final_test_included": false,
+  "normalization": {
+    "fitted_split": "train",
+    "values": {
+      "schedule.signed_minutes_to_crs_departure": {
+        "mean": 139.7341647116928,
+        "std": 101.33927876445115
+      },
+      "weather.ceiling_base_m": {
+        "mean": 2145.737574552684,
+        "std": 2479.047286619699
+      },
+      "weather.dewpoint_c": {
+        "mean": 2.4076495879611146,
+        "std": 9.869123170102121
+      },
+      "weather.observation_age_minutes": {
+        "mean": 25.02699272296497,
+        "std": 17.331414571944144
+      },
+      "weather.qnh_hpa": {
+        "mean": 1018.4984115942024,
+        "std": 5.5707399996440845
+      },
+      "weather.temperature_c": {
+        "mean": 11.218299892510933,
+        "std": 12.367216603522817
+      },
+      "weather.visibility_m": {
+        "mean": 12381.229935506986,
+        "std": 6186.870358676836
+      },
+      "weather.wind_speed_mps": {
+        "mean": 3.641275528484016,
+        "std": 2.5710111925417074
+      }
+    }
+  },
+  "partition_counts": {
+    "calibration": 1060,
+    "development": 1769,
+    "train": 1880
+  },
+  "provenance": {},
+  "raw_input_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+  "sample_count": 4709,
+  "source_manifest_hash": "sha256:ef5e82060426004522113dc5eaa32e7115939bdd3176a932d34f775852b3c3aa",
+  "static_feature_count": 4,
+  "static_feature_names": [
+    "turnaround_reference_minutes",
+    "taxi_reference_minutes",
+    "turnaround_reference_minutes.missing_mask",
+    "taxi_reference_minutes.missing_mask"
+  ],
+  "static_normalization": {
+    "episode_count": 128,
+    "episode_ids_hash": "sha256:f74a348b9942a501bea392a565d348d7fa5f471143907378d07f45a5f65724ef",
+    "episode_level_fit": true,
+    "fitted_split": "train",
+    "values": {
+      "taxi_reference_minutes": {
+        "count": 128,
+        "max": 24.0,
+        "mean": 15.328125,
+        "min": 10.0,
+        "std": 3.3145262081291498
+      },
+      "turnaround_reference_minutes": {
+        "count": 128,
+        "max": 75.0,
+        "mean": 52.8203125,
+        "min": 25.0,
+        "std": 8.63535030571104
+      }
+    }
+  },
+  "train_episode_count": 128
+}

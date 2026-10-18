@@ -1,0 +1,232 @@
+{
+  "schema_version": "CONSEQUENCE_STABILITY_PROTOCOL_V2",
+  "protocol_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_PROTOCOL_HASH",
+  "created_at_utc": "2026-09-29T00:00:00+00:00",
+  "purpose": "consequence-side cohort-size stability battery (FIT/EVAL two-stage); development window only; final-test reads forbidden",
+  "instance_id": "data2_2017_2022",
+  "split_rule": "DATA2_TEMPORAL_SPLIT@2.0.0 (within-year month window; immutable)",
+  "sampling_contract": {
+    "rank": "SHA256(FIXED_M5_SEED || episode_id)",
+    "fixed_seed": "M5-COHORT-SEED-20260928",
+    "identical_across_years": true,
+    "nested_prefixes": true,
+    "size_vector": {
+      "TRAIN": "N",
+      "CALIBRATION": "N/2",
+      "DEVELOPMENT": "N"
+    }
+  },
+  "n_grid": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "n_ref": 4096,
+  "stability_eligible_n": [
+    128,
+    256,
+    512,
+    1024,
+    2048
+  ],
+  "n_grid_upper_bound_rule": "4096 is NEVER auto-judged stable; if any binding metric fails at 2048-vs-4096, status = N_GRID_UPPER_BOUND_REACHED and 8192 extension requires human confirmation",
+  "stages": {
+    "FIT_SIZE_STABILITY": {
+      "varies": "M1_N trained on the N-prefix of the year's hash-ranked TRAIN cohort; calibrated on the N/2-prefix of Y-07",
+      "fixed": "the same top-4096 development evaluation cases for every N; identical M2 reference bundle for every N",
+      "bootstrap": {
+        "type": "EPISODE_LEVEL_PAIRED",
+        "method": "all M1_N models are evaluated on the identical fixed development cases; per-replicate resampling is over episodes (grouped, seed below); Metric_N and Metric_4096 are computed within the same replicate on the same resampled cases; Delta_N = Metric_N - Metric_4096 per replicate",
+        "replicates": 2000,
+        "seed": 20260906
+      }
+    },
+    "EVAL_SIZE_STABILITY": {
+      "varies": "development cohort = nested hash-ranked prefix of size N (same M1_4096 model, same M2 bundle)",
+      "fixed": "the M1_4096 model and M2 reference bundle",
+      "bootstrap": {
+        "type": "NESTED_COHORT",
+        "method": "D_N is a hash-ranked nested prefix of D_4096; each bootstrap replicate preserves the prefix dependence: the replicate draws an episode subset R (episode-level, grouped) and evaluates Metric on (D_N intersect R) and (D_4096 intersect R) within the same replicate; Delta_N = Metric_N(R) - Metric_4096(R) per replicate. Plain paired bootstrap over different sample sizes is NOT used.",
+        "replicates": 2000,
+        "seed": 20260906
+      }
+    }
+  },
+  "practical_equivalence_bands": {
+    "note": "95% CI of Delta_N must fall entirely inside the band; bands frozen before any metric computation",
+    "kendall_tau_b": [
+      -0.02,
+      0.02
+    ],
+    "ranking_at_k": [
+      -0.02,
+      0.02
+    ],
+    "top_k_overlap_abs": 0.02,
+    "large_decile_displacement_rate_abs": 0.01,
+    "seven_cu_components_scale_normalized_abs": 0.05,
+    "activation_rate_abs": 0.02,
+    "missed_activation_rate_abs": 0.01,
+    "false_activation_rate_abs": 0.01,
+    "l_att_scale_normalized_abs": 0.05,
+    "l_rec_scale_normalized_abs": 0.05
+  },
+  "scale_normalization": {
+    "formula": "normalized_delta = abs(T_N - T_ref) / max(scale_floor_T, abs(T_ref))",
+    "scale_source": "TRAIN / Y-H1-side information only; never development results",
+    "floors": {
+      "F_continuity": {
+        "scale_source": "year_train_scale_median",
+        "value": 40.0,
+        "epsilon": 0.05
+      },
+      "F_execution": {
+        "scale_source": "year_train_scale_median",
+        "value": 15.0,
+        "epsilon": 0.05
+      },
+      "F_propagation": {
+        "scale_source": "year_train_scale_median",
+        "value": 10.0,
+        "epsilon": 0.05
+      },
+      "P_time": {
+        "scale_source": "year_train_scale_median",
+        "value": 900.0,
+        "epsilon": 0.05
+      },
+      "P_itinerary": {
+        "scale_source": "year_train_scale_median",
+        "value": 9.0,
+        "epsilon": 0.05
+      },
+      "P_service": {
+        "scale_source": "year_train_scale_median",
+        "value": 100.0,
+        "epsilon": 0.05
+      },
+      "R_operating": {
+        "scale_source": "year_train_scale_median",
+        "value": 5.0,
+        "epsilon": 0.05
+      },
+      "L_att": {
+        "scale_source": "fixed_floor",
+        "value": 0.01,
+        "epsilon": 0.05
+      },
+      "L_rec": {
+        "scale_source": "fixed_floor",
+        "value": 0.01,
+        "epsilon": 0.05
+      },
+      "activation_rate": {
+        "scale_source": "unit_scale",
+        "value": 1.0,
+        "epsilon": 0.02
+      }
+    },
+    "note": "the 'value' entries above are the protocol-level floors from the 2019 frozen train scales; the battery recomputes year_train_scale_median per year from the year's Y-H1 rows and uses max(floor, year_median) at runtime, recording both"
+  },
+  "identifiability_gate": {
+    "min_event_count": 30,
+    "applies_to": [
+      "missed_activation_rate",
+      "false_activation_rate",
+      "any conditional probability metric"
+    ],
+    "rule": "if the denominator event count < min_event_count: status = NOT_IDENTIFIABLE_AT_THIS_N; NOT_IDENTIFIABLE never counts as stability PASS; zero denominator never auto-sets rate to 0"
+  },
+  "compute_fallback_ladder": {
+    "note": "selected ONLY on runtime/memory probe results before any consequence metric is computed; never outcome-aware",
+    "ladder": [
+      4096,
+      2048,
+      1024
+    ],
+    "probe": "time the per-node scenario+consequence cost on the first 128 dev nodes; choose the largest ladder step whose projected wall time fits the pre-registered budget of 6 hours per (year, fixed-dev evaluation)",
+    "protocol_hash_freeze": "the protocol hash is frozen before any scientific metric computation; ladder selection is recorded in the run manifest"
+  },
+  "m2_reference_fixity": {
+    "fit_once_per_year": true,
+    "windows": {
+      "taxi": "Y-01-01..Y-06-30",
+      "turnaround": "Y-01-01..Y-06-30",
+      "db1b_passenger": "coupon Q1+Q2 of Y",
+      "t100": "YEAR == Y and MONTH <= 6 (annual file is storage granularity, not admissibility granularity)",
+      "downstream_exposure": "Y-01-01..Y-06-30"
+    },
+    "shared_across_all_N": true,
+    "bundle_hash_identity_check": "required across all N before metrics"
+  },
+  "m1_determinism_sentinel": {
+    "runs": [
+      [
+        "2019",
+        128
+      ],
+      [
+        "2019",
+        4096
+      ]
+    ],
+    "protocol": "retrain twice with identical seed/data/config; compare training-example hash, normalization hash, calibration hash, checkpoint logits, development metrics",
+    "floor_rule": {
+      "detection": "per sentinel setting (year, N): compare the two replica digests (examples, normalization, calibration, state_dict); any digest mismatch sets nondeterminism_detected for that setting",
+      "quantification": "evaluate both replica checkpoints of every sentinel setting on the SAME fixed development case set (top evaluation_E episodes, with evaluation_E chosen by the compute_fallback_ladder probe) and compute every binding metric value per replica; TRAINING_NONDETERMINISM_FLOOR_m = max over settings of |metric_m(replica_1) - metric_m(replica_2)|",
+      "binding_metrics": [
+        "activation_rate",
+        "component_F_continuity",
+        "component_F_execution",
+        "component_F_propagation",
+        "component_P_itinerary",
+        "component_P_service",
+        "component_P_time",
+        "component_R_operating",
+        "false_activation_rate",
+        "kendall_tau_b",
+        "l_att",
+        "l_rec",
+        "large_decile_displacement_rate",
+        "missed_activation_rate",
+        "ranking_at_k",
+        "top_k_overlap"
+      ],
+      "decision": "stop with BLOCK_M5B_NONDETERMINISM iff any binding metric has floor_m >= floor_fraction * half_width(band_m); otherwise record all floors and proceed to FIT/EVAL",
+      "floor_fraction": 0.1,
+      "scope": "floor metrics are diagnostic only; they are computed before any FIT/EVAL stability metric and are never stability results"
+    },
+    "floor_rule_v1_text": "if nondeterminism is detected, quantify TRAINING_NONDETERMINISM_FLOOR; if the floor is the same order as any practical-equivalence band, the stability battery is stopped until training determinism is addressed"
+  },
+  "pilot": {
+    "years": [
+      2019,
+      2020
+    ],
+    "sanity_checks": [
+      "metric converges plausibly with N",
+      "paired bootstrap has discriminating power",
+      "practical-equivalence bands neither trivially tight nor trivially loose",
+      "FIT and EVAL stability are distinguishable",
+      "M2 bundle hash-identical across all N"
+    ],
+    "epsilon_amendment_rule": "no epsilon may be tuned from pilot results; if a band must change, the pilot decision status is voided, the protocol version is bumped, and all six years rerun under the new version"
+  },
+  "hard_stops": [
+    "no Oct-Dec (final-test) reads at any point",
+    "no COMMON_N_STAR freeze in this stage",
+    "no other years beyond the pilot until human review",
+    "no 8192 rescan without human confirmation"
+  ],
+  "v2_lineage": {
+    "predecessor_schema_version": "CONSEQUENCE_STABILITY_PROTOCOL_V1",
+    "predecessor_protocol_hash": "sha256:bbb70f0796a947488001da21a9ec3e1b5ba7a8b48a7b8a95bd1a6f6692fc8d40",
+    "predecessor_protocol_hash_recomputed_match": false,
+    "change_scope": "m1_determinism_sentinel.floor_rule operationalization only; bands, seed, N grid, and fallback ladder are unchanged",
+    "created_by": "data2/scripts/consequence_stability_metrics.py"
+  },
+  "protocol_hash": "sha256:18db92f0b3e82b526a85cd85dfa88055a1022d231e8a0f47c608bf653bde7caf"
+}

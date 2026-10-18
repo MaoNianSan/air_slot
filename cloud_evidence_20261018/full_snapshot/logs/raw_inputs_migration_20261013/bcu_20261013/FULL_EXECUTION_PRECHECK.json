@@ -1,0 +1,67 @@
+{
+  "all_valid": true,
+  "authorization": "FULL_EXPERIMENT_EXECUTION_AUTHORIZATION_USER_APPROVED_V1.json",
+  "code_snapshot": {
+    "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+    "schema_version": "JATM_CODE_SNAPSHOT_V1",
+    "source_archive_sha256": "sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d"
+  },
+  "created_at_utc": "2026-10-13T13:40:39+00:00",
+  "final_test_access_count": 0,
+  "inputs_validated": true,
+  "patch_chain": [
+    "8cc7a1b7bfa727334e962d24728d9554eb4f579e440612ee54f43d50f40468ec",
+    "1d3ba5d32b243773201eb924aa1a3aca6fe1443ead60af6184d872b03a02fdbb"
+  ],
+  "patched_file_sha256": {
+    "data2/scripts/build_year_references.py": "20f4bc900c780291064dec1729cab9a0a464b3624165769ede408be77993df12",
+    "model/PRE/reference/data2_m2_train_fit.py": "28e8067c449756b7c59fb58f422408cdb6307ba7d0208813681447d927f693df"
+  },
+  "per_year": {
+    "2017": {
+      "bcu": "VALID",
+      "d4": "VALID",
+      "gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    },
+    "2018": {
+      "bcu": "VALID",
+      "d4": "VALID",
+      "gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    },
+    "2019": {
+      "bcu": "VALID",
+      "d4": "VALID",
+      "gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    },
+    "2020": {
+      "bcu": "VALID",
+      "d4": "VALID",
+      "gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    },
+    "2021": {
+      "bcu": "VALID",
+      "d4": "VALID",
+      "gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    },
+    "2022": {
+      "bcu": "VALID",
+      "d4": "VALID",
+      "gate": "INPUTS_VALIDATED",
+      "m1": "VALID",
+      "tail": "VALID"
+    }
+  },
+  "registry_frozen_sha256": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+  "residual_processes_precheck": "",
+  "schema_version": "AIRSLOT_FULL_EXECUTION_PRECHECK_V1"
+}

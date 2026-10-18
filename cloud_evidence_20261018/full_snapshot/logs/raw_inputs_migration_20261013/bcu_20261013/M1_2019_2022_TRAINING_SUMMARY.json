@@ -1,0 +1,181 @@
+{
+  "all_pass": true,
+  "approval_binding": {
+    "canonical_record": "/data/airslot/logs/raw_inputs_migration_20261013/M1_TRAINING_AUTHORIZATION_APPROVED_2019_2022.json",
+    "canonical_record_sha256": "826ad275977fc9588fe6a77e1d42f7a9695f8239aadf4c90a6f51aed7f000816",
+    "equivalence_note": "The first run (m1_2019) was launched under the transcription record before the canonical record was requested; both records carry byte-identical fixed fields (schema/status/years/n/roles/months/development_used_for_fit/final_test_access_count). Per the no-duplicate-formal-training rule the run was not restarted; receipts embed the launch record hash.",
+    "launch_record_sha256": "add7004cf189821ddea0f6be95701fb777bf481a616573efca0f90af0886fa65",
+    "launch_record_used": "/data/airslot/logs/raw_inputs_migration_20261013/M1_TRAINING_AUTHORIZATION_USER_APPROVED_20261013.json",
+    "scope": "2019-2022 M1 only; NOT for 2017/2018 retraining, model changes, or E1-E4."
+  },
+  "code_state": "snapshot 583f2c12 + patch 8cc7a1b7 (d1c72a7) + patch 1d3ba5d3 (ffa7487)",
+  "created_at_utc": "2026-10-13T08:35:34+00:00",
+  "schema_version": "AIRSLOT_M1_TRAINING_SUMMARY_V1",
+  "training_config_constants": {
+    "batch_size": 64,
+    "bucketed": true,
+    "calibration_months": [
+      7
+    ],
+    "development_used_for_fit": false,
+    "epochs": 8,
+    "final_test_access_count": 0,
+    "learning_rate": 0.001,
+    "n": 4096,
+    "roles": [
+      "M1_HISTORY_PRIMARY (FULL_ADAPTIVE_CAUSAL_PREFIX)",
+      "M1_CURRENT_COMPARATOR (NO_HISTORY_CURRENT_OBSERVATION)"
+    ],
+    "seed": 20260813,
+    "source": "exp/jatm_s34/annual_models.py (same code path that produced the frozen 2017/2018 models)",
+    "teacher_forcing": true,
+    "train_months": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  "years": {
+    "2019": {
+      "exit_code": "0",
+      "files": [
+        "ANNUAL_M1_TRAINING_RECEIPT.json",
+        "M1_CURRENT_COMPARATOR.pt",
+        "M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "M1_HISTORY_PRIMARY.pt",
+        "M1_HISTORY_PRIMARY_MANIFEST.json",
+        "TAIL_REFERENCE_V1"
+      ],
+      "final_test_access_count": 0,
+      "meta": [
+        "started_at=2026-10-13T07:53:22Z",
+        "code_snapshot=583f2c12 + patch_8cc7a1b7 (d1c72a7) + patch_1d3ba5d3 (ffa7487)",
+        "task=m1_2019 year=2019 approval=/data/airslot/logs/raw_inputs_migration_20261013/M1_TRAINING_AUTHORIZATION_USER_APPROVED_20261013.json",
+        "canonical_approval_record=/data/airslot/logs/raw_inputs_migration_20261013/M1_TRAINING_AUTHORIZATION_APPROVED_2019_2022.json",
+        "canonical_approval_sha256_pending=see M1_2019_2022_TRAINING_SUMMARY.json (launch used equivalent transcription record add7004cf; no rerun per no-duplicate-formal-training rule)",
+        "finished_at=2026-10-13T07:59:51Z"
+      ],
+      "output_sha256": [
+        "02d8ed9b5b3d09d8449c3454084f66a3bff3b61b3025338785d048abb981e81d  M1_CURRENT_COMPARATOR.pt",
+        "1ec3580812a733b7bb077df54ec429dfc194da89d5b4d0dccf97d66cfebb6113  M1_HISTORY_PRIMARY.pt",
+        "e4626b99fe79b64a617531539410f63dc405dc7b49f6112f7ed04c869098c687  M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "afb5a2f4a7fb83cb708d988d9ba89a90d42ba2e643cb0d736e07a11e7ab148b9  M1_HISTORY_PRIMARY_MANIFEST.json",
+        "f573141010a131a7a81eab2789a8f550a24f40b8b496ad019b63823d5f6178d1  ANNUAL_M1_TRAINING_RECEIPT.json"
+      ],
+      "peak_rss_kib": "7509932",
+      "percent_cpu": "99%",
+      "receipt_approval_sha256": "sha256:add7004cf189821ddea0f6be95701fb777bf481a616573efca0f90af0886fa65",
+      "receipt_sha256": "f573141010a131a7a81eab2789a8f550a24f40b8b496ad019b63823d5f6178d1",
+      "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+      "status": "PASS",
+      "task_tag": "m1_2019",
+      "user_time_s": "385.26",
+      "wall": "6:28.09"
+    },
+    "2020": {
+      "exit_code": "0",
+      "files": [
+        "ANNUAL_M1_TRAINING_RECEIPT.json",
+        "M1_CURRENT_COMPARATOR.pt",
+        "M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "M1_HISTORY_PRIMARY.pt",
+        "M1_HISTORY_PRIMARY_MANIFEST.json",
+        "TAIL_REFERENCE_V1"
+      ],
+      "final_test_access_count": 0,
+      "meta": [
+        "started_at=2026-10-13T08:06:39Z",
+        "code_snapshot=583f2c12 + patch_8cc7a1b7 (d1c72a7) + patch_1d3ba5d3 (ffa7487)",
+        "task=m1_2020 year=2020 approval=/data/airslot/logs/raw_inputs_migration_20261013/M1_TRAINING_AUTHORIZATION_USER_APPROVED_20261013.json",
+        "finished_at=2026-10-13T08:12:20Z"
+      ],
+      "output_sha256": [
+        "5ecaa967587b2bb6d32b8e4c920f5a8028f396ac7a129231d3be72c019391ac2  M1_CURRENT_COMPARATOR.pt",
+        "8c6bc43990aa461272f49fb6c3fd71848db1b39b280b560d2ccdfbd6875ee7ba  M1_HISTORY_PRIMARY.pt",
+        "fd134cbae676fbf37f7cf3c1380da33f1702c63559faed1e1144dbdfa95db4f0  M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "06141b9fef3ca41addd62723634ea24c9dfec044b66e717f5048e24f13f44fdf  M1_HISTORY_PRIMARY_MANIFEST.json",
+        "3188e269ef361b90d85022bd3efe2d14cb26eaf190e4e175cf4644b17c38c2ef  ANNUAL_M1_TRAINING_RECEIPT.json"
+      ],
+      "peak_rss_kib": "7847140",
+      "percent_cpu": "99%",
+      "receipt_approval_sha256": "sha256:add7004cf189821ddea0f6be95701fb777bf481a616573efca0f90af0886fa65",
+      "receipt_sha256": "3188e269ef361b90d85022bd3efe2d14cb26eaf190e4e175cf4644b17c38c2ef",
+      "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+      "status": "PASS",
+      "task_tag": "m1_2020",
+      "user_time_s": "337.28",
+      "wall": "5:39.59"
+    },
+    "2021": {
+      "exit_code": "0",
+      "files": [
+        "ANNUAL_M1_TRAINING_RECEIPT.json",
+        "M1_CURRENT_COMPARATOR.pt",
+        "M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "M1_HISTORY_PRIMARY.pt",
+        "M1_HISTORY_PRIMARY_MANIFEST.json",
+        "TAIL_REFERENCE_V1"
+      ],
+      "final_test_access_count": 0,
+      "meta": [
+        "started_at=2026-10-13T08:06:39Z",
+        "code_snapshot=583f2c12 + patch_8cc7a1b7 (d1c72a7) + patch_1d3ba5d3 (ffa7487)",
+        "task=m1_2021 year=2021 approval=/data/airslot/logs/raw_inputs_migration_20261013/M1_TRAINING_AUTHORIZATION_USER_APPROVED_20261013.json",
+        "finished_at=2026-10-13T08:12:47Z"
+      ],
+      "output_sha256": [
+        "26cec4eafe5e4dd5fcdb4ec77739104fa0bf76fd883934fb07f8c7b1e8c13357  M1_CURRENT_COMPARATOR.pt",
+        "7a89b888ca06eb5bdc75290b3b0547e715cc7c63cd4066c64cdeb256fe60e224  M1_HISTORY_PRIMARY.pt",
+        "83c9309abc02bf429309dd267a908b193e3d859254f90a242ebebcdeef76003c  M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "57f5307ab63f9930a3fa6a9e51b00a6ebcfd229fc05d7d92b74c86befb58e04d  M1_HISTORY_PRIMARY_MANIFEST.json",
+        "e6d029c67f3eded1c191b6ccbcada8d7953e0c7a6864718df4f51a1165e3e823  ANNUAL_M1_TRAINING_RECEIPT.json"
+      ],
+      "peak_rss_kib": "7852828",
+      "percent_cpu": "99%",
+      "receipt_approval_sha256": "sha256:add7004cf189821ddea0f6be95701fb777bf481a616573efca0f90af0886fa65",
+      "receipt_sha256": "e6d029c67f3eded1c191b6ccbcada8d7953e0c7a6864718df4f51a1165e3e823",
+      "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+      "status": "PASS",
+      "task_tag": "m1_2021",
+      "user_time_s": "364.11",
+      "wall": "6:06.57"
+    },
+    "2022": {
+      "exit_code": "0",
+      "files": [
+        "ANNUAL_M1_TRAINING_RECEIPT.json",
+        "M1_CURRENT_COMPARATOR.pt",
+        "M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "M1_HISTORY_PRIMARY.pt",
+        "M1_HISTORY_PRIMARY_MANIFEST.json",
+        "TAIL_REFERENCE_V1"
+      ],
+      "final_test_access_count": 0,
+      "meta": [
+        "started_at=2026-10-13T08:06:39Z",
+        "code_snapshot=583f2c12 + patch_8cc7a1b7 (d1c72a7) + patch_1d3ba5d3 (ffa7487)",
+        "task=m1_2022 year=2022 approval=/data/airslot/logs/raw_inputs_migration_20261013/M1_TRAINING_AUTHORIZATION_USER_APPROVED_20261013.json",
+        "finished_at=2026-10-13T08:13:34Z"
+      ],
+      "output_sha256": [
+        "12329688ac6ae5d49fe1e588f82d6da283eaacd17e7607c298188b29043c285c  M1_CURRENT_COMPARATOR.pt",
+        "03bb441eb96fb4fd535f4e1a29fa970f15b4fea21bf4858172fc1a39ffe3ef39  M1_HISTORY_PRIMARY.pt",
+        "fe5c44a0a371291cad3a3cd5bbf505d3c234b790bc1f4174ccd1da89eee99671  M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "4cbf5e5bd11dbdbcc8222e4bb1c1ab374ede1c3a886a479f1fb04a08e45d82a8  M1_HISTORY_PRIMARY_MANIFEST.json",
+        "4e6bd484b16773e83219adb8306681fc2787056fbf105116e1494acc77364d65  ANNUAL_M1_TRAINING_RECEIPT.json"
+      ],
+      "peak_rss_kib": "8105544",
+      "percent_cpu": "99%",
+      "receipt_approval_sha256": "sha256:add7004cf189821ddea0f6be95701fb777bf481a616573efca0f90af0886fa65",
+      "receipt_sha256": "4e6bd484b16773e83219adb8306681fc2787056fbf105116e1494acc77364d65",
+      "receipt_status": "TRAINED_AND_HASH_VALIDATED",
+      "status": "PASS",
+      "task_tag": "m1_2022",
+      "user_time_s": "410.79",
+      "wall": "6:53.15"
+    }
+  }
+}

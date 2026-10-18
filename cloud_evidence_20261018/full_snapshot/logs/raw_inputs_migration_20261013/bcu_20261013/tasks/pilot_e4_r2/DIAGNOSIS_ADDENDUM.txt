@@ -1,0 +1,4 @@
+DIAGNOSIS ADDENDUM (2026-10-13, pilot_e4_r2 terminal status)
+- Runner recorded FAILED_rc=1 because the driver requires status == DEVELOPMENT_COMPLETE.
+- True terminal semantics: all four phases completed (headroom/fit/ladder/eval); EVAL_SUMMARY decision = M5B_PILOT_COMPLETE_HARD_STOP with failed_instances=[]; e4_run maps pilot hard-stop to status ENGINEERING_INCOMPLETE + completion_class PILOT_COMPLETE_HARD_STOP BY DESIGN for pilot scope.
+- Interpretation: chain validation PASS for pilot; no N_GRID expansion; N128_PILOT_ONLY. Original records unmodified; see PILOT_RESULTS.json for the consolidated record.

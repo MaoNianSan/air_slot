@@ -1,0 +1,129 @@
+{
+  "adapter_registry_hash": "sha256:907c38f958a328356dd68054ddfaee7bbc878d018d6f32ea0b4825c405e8e2e4",
+  "adapter_registry_id": "JATM_V5_YEAR_LOCAL_2017_H1_V1",
+  "bundle_manifest": {
+    "continuity_contract": "JATM_F_CONTINUITY_B_V1",
+    "created_at_utc": "2026-10-13T05:19:28+00:00",
+    "dataset_instance_id": "data2_2017_2022",
+    "db1b_admissibility": "Q1 + Q2 of Y",
+    "fit_window": {
+      "end": "2017-06-30",
+      "start": "2017-01-01"
+    },
+    "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+    "non_physical_rotation_flights_excluded": 2,
+    "payload_hashes": {
+      "connection_share": "sha256:7a91df22705362a2465dbb020d483dea5b1ac088dc117d4edcaceff16b543723",
+      "downstream_exposure": "sha256:bde6d8923137228613db69f7d203ba86038d1330483e6852de20e5c0a8191c00",
+      "expected_passengers": "sha256:42b994c9c14085e18731a973e24d9b7eef618624788c13cb233edb2b19d18388",
+      "passenger": "sha256:20d9442ba149cb6f05bf764d33108ef69b58862ecd3570931c4beb0e6b6febdb",
+      "taxi": "sha256:083211b3145fddf8737da867d02a6a762022f9e5033210f4744b648a6c894c4f",
+      "turnaround": "sha256:728635291b03fcff650df3382bd9fa95dd9040d27af9e42adcc06766bd441597"
+    },
+    "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+    "scale_median_preview": {
+      "F_continuity": 16.0,
+      "F_execution": 17.0,
+      "F_propagation": 10.0,
+      "P_itinerary": 11.45907189802828,
+      "P_service": 115.52173913043478,
+      "P_time": 1022.3710247349823,
+      "R_operating": 5.0
+    },
+    "schema_version": "M2_REFERENCE_BUNDLE_V1",
+    "t100_admissibility": "YEAR == Y and MONTH <= 6",
+    "year": 2017
+  },
+  "file_sha256": {
+    "M2_CONNECTION_SHARE_REFERENCE_2017-H1.json": "f57f2e16392e830b479c87b43c7a715d97419c862a087392083b06683a137c7b",
+    "M2_DOWNSTREAM_EXPOSURE_REFERENCE_2017-H1.json": "f513c73826aa98e6613acbb2f6694d293e6f8ea990b5fc0ee05d9baa6b3347cf",
+    "M2_EXPECTED_PASSENGERS_REFERENCE_2017-H1.json": "3bc4100762a99cea2472856c2511b5f3242c10526311ad2d363a1dd5874f5737",
+    "M2_PASSENGER_REFERENCE_2017-H1.json": "a6ef981e348ca52cf4a8fc1d8151d6a164722b3073f8dbb3187ce7f04bbc07eb",
+    "M2_REFERENCE_BUNDLE_MANIFEST.json": "54f4f6cccbf8d099be7332b48b3b6bbd150442c0ac119f9ed4122a2f27d4f873",
+    "M2_SEVEN_COMPONENT_TRAIN_SCALES.json": "118ac16e771a9a97137ce50a63e6802a90a187cbd51a78999bdff2711028f0dc",
+    "M2_TAXI_REFERENCE_2017-H1.json": "9e3dca34bd599e6f1cf4b4ecf1ab83f6a5378134848b2b024921b20c3dbd20a6",
+    "M2_TURNAROUND_REFERENCE_2017-H1.json": "ee1759e572d081caff93304e434153c616ffe0ac47f06d190abf3b7ff2fc2a64"
+  },
+  "files": [
+    "M2_CONNECTION_SHARE_REFERENCE_2017-H1.json",
+    "M2_DOWNSTREAM_EXPOSURE_REFERENCE_2017-H1.json",
+    "M2_EXPECTED_PASSENGERS_REFERENCE_2017-H1.json",
+    "M2_PASSENGER_REFERENCE_2017-H1.json",
+    "M2_REFERENCE_BUNDLE_MANIFEST.json",
+    "M2_SEVEN_COMPONENT_TRAIN_SCALES.json",
+    "M2_TAXI_REFERENCE_2017-H1.json",
+    "M2_TURNAROUND_REFERENCE_2017-H1.json"
+  ],
+  "official_acceptance": "PASS",
+  "output_root": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_B_V1",
+  "problems": [],
+  "provenance": {
+    "continuity_contract": "JATM_F_CONTINUITY_B_V1",
+    "continuity_definition": "max(0, T_IB + turnaround_reference - SOBT)",
+    "continuity_reference_evidence": "build_year_references.compute_train_scales receives the same turnaround payload written to this bundle",
+    "event_scale_rule": "ONE_NATIVE_EVENT_UNIT",
+    "final_test_access_count": 0,
+    "fit_period": "2017-H1",
+    "generator_sha256": "sha256:b593a3f7bd2d239067ad3c6bcff1f36a150b03899c67b6f88af654fe25ff16a1",
+    "original_turnaround_sha256": "sha256:8ebf7680bc930b4ad42febd4546a98bfad9431e4a5e66affe683f0205a4fd2fe",
+    "principal_rule": "MEDIAN_H1_TRAIN_POSITIVE",
+    "reference_sha256": {
+      "connection_share": "sha256:f57f2e16392e830b479c87b43c7a715d97419c862a087392083b06683a137c7b",
+      "downstream_exposure": "sha256:f513c73826aa98e6613acbb2f6694d293e6f8ea990b5fc0ee05d9baa6b3347cf",
+      "expected_passengers": "sha256:3bc4100762a99cea2472856c2511b5f3242c10526311ad2d363a1dd5874f5737",
+      "passenger": "sha256:a6ef981e348ca52cf4a8fc1d8151d6a164722b3073f8dbb3187ce7f04bbc07eb",
+      "taxi": "sha256:9e3dca34bd599e6f1cf4b4ecf1ab83f6a5378134848b2b024921b20c3dbd20a6",
+      "turnaround": "sha256:ee1759e572d081caff93304e434153c616ffe0ac47f06d190abf3b7ff2fc2a64"
+    },
+    "reference_year": 2017,
+    "scales": {
+      "F_continuity": 16.0,
+      "F_execution": 17.0,
+      "F_propagation": 10.0,
+      "P_itinerary": 1.0,
+      "P_service": 1.0,
+      "P_time": 1022.3710247349823,
+      "R_operating": 5.0
+    },
+    "schema_version": "JATM_ANNUAL_V5_CU_ADAPTER_V1",
+    "source_manifest_sha256": "sha256:54f4f6cccbf8d099be7332b48b3b6bbd150442c0ac119f9ed4122a2f27d4f873",
+    "source_scale_sha256": "sha256:118ac16e771a9a97137ce50a63e6802a90a187cbd51a78999bdff2711028f0dc",
+    "track": "YEAR_LOCAL",
+    "turnaround_counts_identical": false,
+    "turnaround_numeric_lookup_match": true
+  },
+  "scales": {
+    "F_continuity": {
+      "median": 16.0,
+      "positive_n": 1017589
+    },
+    "F_execution": {
+      "median": 17.0,
+      "positive_n": 979953
+    },
+    "F_propagation": {
+      "median": 10.0,
+      "positive_n": 1756494
+    },
+    "P_itinerary": {
+      "median": 11.45907189802828,
+      "positive_n": 273067
+    },
+    "P_service": {
+      "median": 115.52173913043478,
+      "positive_n": 33886
+    },
+    "P_time": {
+      "median": 1022.3710247349823,
+      "positive_n": 1765272
+    },
+    "R_operating": {
+      "median": 5.0,
+      "positive_n": 1249042
+    }
+  },
+  "status": "PASS",
+  "track": "YEAR_LOCAL",
+  "verified_at_utc": "2026-10-13T05:22:13+00:00",
+  "year": 2017
+}

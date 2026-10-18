@@ -1,0 +1,19 @@
+{
+  "schema_version": "AIRSLOT_B_CU_TASK_OUTCOME_V1",
+  "task_tag": "y2019",
+  "year": 2019,
+  "output_root": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_B_V1",
+  "status": "FAILED_CODE_DEFECT",
+  "exit_code": 1,
+  "started_at_utc": "2026-10-13T05:22:34Z",
+  "failed_at_utc": "2026-10-13T05:28:46Z",
+  "failure": "ContractError: REFERENCE_DATASET_MISMATCH at model/PRE/reference/turnaround_data2.py:182",
+  "call_chain": "build_year_references.build_year (line 217) -> fit_train_references (data2_m2_train_fit.py:675) with dataset_instance_id='data2_2019' (year==2019 special case, lines 672-674) -> build_data2_turnaround_reference -> rows were stamped 'data2_2017_2022' by the builder (data2/scripts/build_year_references.py INSTANCE_ID via iter_train_rows) -> `datasets != {dataset_instance_id}` -> deterministic mismatch on the first reference builder",
+  "root_cause": "Commit 3f27f6e (2026-10-11 15:15:40 +0800) special-cased year==2019 in fit_train_references to the legacy 'data2_2019' identity (and a legacy frozen-v5 taxi branch), while the M5 year-replicated builder stamps every year's rows with the shared six-year identity 'data2_2017_2022'. Any year-2019 build through this script now fails before writing anything.",
+  "historical_evidence": "PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019 (created 2026-09-30T05:57:45Z, before the special case existed) carries dataset_instance_id='data2_2017_2022' and reference_contract_id='YEAR_SPECIFIC_H1_M2_REFERENCES_V1' — i.e., the year-replicated design treats 2019 like every other year.",
+  "not_repaired": "A second scientific-code change is NOT authorized. Two candidate directions require an owner decision: (a) remove the year==2019 legacy identity/taxi branches on the year-replicated path so all years share the identity used by every other year and by the historical R1/2019 bundle; (b) stamp 2019 rows as 'data2_2019' (contradicts the shared-identity design and existing B-bundle lineage). Recommendation: (a). Awaiting explicit authorization before any code change.",
+  "artifacts_written": "none (failure occurred before any reference file was written; 2019/M2_REFERENCES was and remains empty)",
+  "final_test_access_count": 0,
+  "records": "task dir bcu_20261013/tasks/y2019/ (log, exitcode, time_v, input_sha256, status)",
+  "dispatcher_action": "y2019 marked FAILED_rc=1 and was not retried; the freed slot continued with y2020 (independent authorized task)."
+}

@@ -1,0 +1,211 @@
+{
+  "all_ok": true,
+  "created_at_utc": "2026-10-13T04:59:51+00:00",
+  "honest_scan_record": "Pre-seal, every annual file was read in FULL on disk by SHA-256 sweeps and the Phase-2 structural parse, INCLUDING months 7-12; those reads were verification/administration only and were never fit inputs. Post-seal, months 7-12 rows exist only in the audit copy outside the active computation tree.",
+  "method": "H1 file = byte-verbatim line subset of the audited annual file (header kept verbatim; data line kept iff its MONTH parses by the code's _parse_month rule to 1..6).",
+  "purpose": "Seal the T-100 storage/admissibility boundary: the reference fits admit only MONTH<=6 rows; the active computation tree now contains H1-only files, and the audited annual originals live outside the active tree.",
+  "root_active": "/data/airslot/worktree/data2/raw/bts/t100",
+  "root_audit": "/data/airslot/raw_audit/t100",
+  "schema_version": "T100_H1_SEAL_V1",
+  "scientific_invariant": "The admissible row set is identical to what the builder consumed from the annual file (the builder admits exactly MONTH<=6); every kept row is byte-identical to the audited source.",
+  "years": {
+    "2017": {
+      "annual": {
+        "audit_path": "/data/airslot/raw_audit/t100/2017/T_T100_SEGMENT_ALL_CARRIER_annual.csv",
+        "bytes": 144981481,
+        "expected_frozen_sha256": "7bb2512e174d40e1d1fe13e54be8ae4e702645c08f6516b3cbc20ad8866d16a9",
+        "sha256": "7bb2512e174d40e1d1fe13e54be8ae4e702645c08f6516b3cbc20ad8866d16a9",
+        "sha256_match_frozen_manifest": true
+      },
+      "h1": {
+        "bytes": 72362631,
+        "dropped_months_7_12": {
+          "10": 37249,
+          "11": 38275,
+          "12": 39243,
+          "7": 38981,
+          "8": 40341,
+          "9": 38285
+        },
+        "invalid_month_rows": 0,
+        "line_subset_guard": "field-count verified for every line; rows byte-verbatim copies of audited annual lines",
+        "months": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "path": "/data/airslot/worktree/data2/raw/bts/t100/2017/T_T100_SEGMENT_ALL_CARRIER.csv",
+        "rows": 232055,
+        "sha256": "9ca7821ceae8277a1ab0d6541e221f0f18dc0249bc971317d2fea416451ddd9e"
+      }
+    },
+    "2018": {
+      "annual": {
+        "audit_path": "/data/airslot/raw_audit/t100/2018/T_T100_SEGMENT_ALL_CARRIER_annual.csv",
+        "bytes": 148461308,
+        "expected_frozen_sha256": "4391a96142cbae4cb26757a6b5eb2eac69a6dadc62dc803ce55ab29ced5826ea",
+        "sha256": "4391a96142cbae4cb26757a6b5eb2eac69a6dadc62dc803ce55ab29ced5826ea",
+        "sha256_match_frozen_manifest": true
+      },
+      "h1": {
+        "bytes": 73050417,
+        "dropped_months_7_12": {
+          "10": 39016,
+          "11": 41471,
+          "12": 41126,
+          "7": 39409,
+          "8": 41185,
+          "9": 38589
+        },
+        "invalid_month_rows": 0,
+        "line_subset_guard": "field-count verified for every line; rows byte-verbatim copies of audited annual lines",
+        "months": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "path": "/data/airslot/worktree/data2/raw/bts/t100/2018/T_T100_SEGMENT_ALL_CARRIER.csv",
+        "rows": 233342,
+        "sha256": "6a3184f2e4884a0b6c54f0a02980106a3517e60573e0033e81d89b5c249d42f8"
+      }
+    },
+    "2019": {
+      "annual": {
+        "audit_path": "/data/airslot/raw_audit/t100/2019/T_T100_SEGMENT_ALL_CARRIER_annual.csv",
+        "bytes": 152535728,
+        "expected_frozen_sha256": "9b838fd6f15594f0481b03380e6744b2dc0e3061248188a587b61fd5fe96b667",
+        "sha256": "9b838fd6f15594f0481b03380e6744b2dc0e3061248188a587b61fd5fe96b667",
+        "sha256_match_frozen_manifest": true
+      },
+      "h1": {
+        "bytes": 75271130,
+        "dropped_months_7_12": {
+          "10": 39793,
+          "11": 41669,
+          "12": 43808,
+          "7": 40792,
+          "8": 41806,
+          "9": 38945
+        },
+        "invalid_month_rows": 0,
+        "line_subset_guard": "field-count verified for every line; rows byte-verbatim copies of audited annual lines",
+        "months": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "path": "/data/airslot/worktree/data2/raw/bts/t100/2019/T_T100_SEGMENT_ALL_CARRIER.csv",
+        "rows": 241110,
+        "sha256": "ea57226ba56d5eefdd174e35e3ae091a6aecb629fbbbbb4c0e5d4c6c90915b79"
+      }
+    },
+    "2020": {
+      "annual": {
+        "audit_path": "/data/airslot/raw_audit/t100/2020/T_T100_SEGMENT_ALL_CARRIER_annual.csv",
+        "bytes": 111278410,
+        "expected_frozen_sha256": "84113e14e9323f3a4835aa0785b1b7af2da94e8865d73001c2aa55e7b4f818ce",
+        "sha256": "84113e14e9323f3a4835aa0785b1b7af2da94e8865d73001c2aa55e7b4f818ce",
+        "sha256_match_frozen_manifest": true
+      },
+      "h1": {
+        "bytes": 57806331,
+        "dropped_months_7_12": {
+          "10": 27166,
+          "11": 29650,
+          "12": 32547,
+          "7": 26523,
+          "8": 27583,
+          "9": 26979
+        },
+        "invalid_month_rows": 0,
+        "line_subset_guard": "field-count verified for every line; rows byte-verbatim copies of audited annual lines",
+        "months": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "path": "/data/airslot/worktree/data2/raw/bts/t100/2020/T_T100_SEGMENT_ALL_CARRIER.csv",
+        "rows": 184853,
+        "sha256": "c084db1abd7cb52ffc9fe23dea896834fd5367480c5070aeefb0595553e83f03"
+      }
+    },
+    "2021": {
+      "annual": {
+        "audit_path": "/data/airslot/raw_audit/t100/2021/T_T100_SEGMENT_ALL_CARRIER_annual.csv",
+        "bytes": 144730140,
+        "expected_frozen_sha256": "1415fef5df6796f8ff9f82783412326ed48d5e16fd21c5bf6493cc4cb13776a3",
+        "sha256": "1415fef5df6796f8ff9f82783412326ed48d5e16fd21c5bf6493cc4cb13776a3",
+        "sha256_match_frozen_manifest": true
+      },
+      "h1": {
+        "bytes": 65626066,
+        "dropped_months_7_12": {
+          "10": 41666,
+          "11": 42249,
+          "12": 44007,
+          "7": 41152,
+          "8": 41682,
+          "9": 40389
+        },
+        "invalid_month_rows": 0,
+        "line_subset_guard": "field-count verified for every line; rows byte-verbatim copies of audited annual lines",
+        "months": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "path": "/data/airslot/worktree/data2/raw/bts/t100/2021/T_T100_SEGMENT_ALL_CARRIER.csv",
+        "rows": 208542,
+        "sha256": "1d45d229582cb1c052c5dd05b61257b62339862de472a8f4acfa61172e52ddb9"
+      }
+    },
+    "2022": {
+      "annual": {
+        "audit_path": "/data/airslot/raw_audit/t100/2022/T_T100_SEGMENT_ALL_CARRIER_annual.csv",
+        "bytes": 159604804,
+        "expected_frozen_sha256": "137ab84cacaaaa5a35082660f7842ef1b4f99b4abe38291646a641c29b6e63ec",
+        "sha256": "137ab84cacaaaa5a35082660f7842ef1b4f99b4abe38291646a641c29b6e63ec",
+        "sha256_match_frozen_manifest": true
+      },
+      "h1": {
+        "bytes": 79362098,
+        "dropped_months_7_12": {
+          "10": 42318,
+          "11": 43877,
+          "12": 44611,
+          "7": 41049,
+          "8": 41758,
+          "9": 42285
+        },
+        "invalid_month_rows": 0,
+        "line_subset_guard": "field-count verified for every line; rows byte-verbatim copies of audited annual lines",
+        "months": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "path": "/data/airslot/worktree/data2/raw/bts/t100/2022/T_T100_SEGMENT_ALL_CARRIER.csv",
+        "rows": 252950,
+        "sha256": "b37578dcf7010c2378d1315fae4bfbc4b7848026dd4de609456cf76d04e83909"
+      }
+    }
+  }
+}

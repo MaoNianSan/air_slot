@@ -1,0 +1,44 @@
+{
+  "schema": "EXPERIMENT_EXECUTION_AUTHORIZATION_PILOT_V1",
+  "experiment_ids": [
+    "E1_PILOT",
+    "E2_PILOT",
+    "E3_PILOT",
+    "E4_PILOT"
+  ],
+  "years": ["2019"],
+  "dataset_snapshot": {
+    "development_bundle_track": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1/2019 (M2_REFERENCES bundle manifest sha recorded at runtime)",
+    "pre_reference_root": "artifacts/models/pre/PRE_MULTIYEAR_V1/2019 (taxi/turnaround frozen + PRE development manifest/states/cohort_state/split_audit)",
+    "cohort": "data2/reports/cohort_size_stability/2019/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl",
+    "m1_models": "artifacts/models/m1/YEAR_2019 (both roles; receipt TRAINED_AND_HASH_VALIDATED)",
+    "registry_frozen_sha256": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+    "pilot_input_hashes": "recorded at runtime in pilot_20261013/pilot_input_hashes.txt"
+  },
+  "code_snapshot": {
+    "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+    "source_archive_sha256": "sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d",
+    "patch_chain": [
+      {"patch_sha256": "8cc7a1b7bfa727334e962d24728d9554eb4f579e440612ee54f43d50f40468ec", "local_commit": "d1c72a7"},
+      {"patch_sha256": "1d3ba5d32b243773201eb924aa1a3aca6fe1443ead60af6184d872b03a02fdbb", "local_commit": "ffa7487"}
+    ],
+    "gitless_runtime_adapter": "GIT_DIR=/data/airslot/smoke_gitmeta/repo/.git (HEAD -> 583f2c12)"
+  },
+  "final_test_access_count": 0,
+  "execution_scope": "DEVELOPMENT_ONLY",
+  "user_approval_status": "USER_APPROVED",
+  "resource_budget_reference": "RESOURCE_BUDGET_PLAN",
+  "pilot_limits": {
+    "E1_PILOT": {"year": 2019, "node_limit": 128, "chunk_size": 4, "note": "no expansion to 512"},
+    "E2_PILOT": {"year": 2019, "node_limit": 128, "replicates": 2000, "seed": 20261011},
+    "E3_PILOT": {"year": 2019, "node_limit": 128, "note": "comparator module-swap audit only; no full mechanism sweep"},
+    "E4_PILOT": {"year": 2019, "n_grid": [128], "note": "headroom -> fit -> ladder -> eval on 2019 only; no N_GRID expansion; no six-year"}
+  },
+  "provenance": {
+    "record_id": "EXPERIMENT_EXECUTION_AUTHORIZATION_PILOT_V1",
+    "created_at_utc": "2026-10-13T10:00:00Z",
+    "created_by": "ZCode execution agent (transcription of explicit user authorization)",
+    "authorization_source": "User's round-6 instruction (2026-10-13): 'Task A：生成正式执行授权 ... user_approval_status:\"USER_APPROVED\" ... 只允许 pilot。' with the stated scope: Development dataset only; Final-Test forbidden; no code/model/loss/action/consequence changes; provenance on all outputs.",
+    "scope_guard": "PILOT ONLY - E1 node_limit=128/chunk=4, E2/E3 node_limit=128 (replicates=2000, seed=20261011), E4 2019 N_GRID=(128). Full E1-E4 and any other year require a NEW authorization."
+  }
+}

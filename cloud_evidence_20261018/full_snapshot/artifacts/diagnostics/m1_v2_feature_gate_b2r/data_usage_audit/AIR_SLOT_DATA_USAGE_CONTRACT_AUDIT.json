@@ -1,0 +1,3068 @@
+{
+  "artifact_hash": "sha256:b644eb83fa398815a063a6d52cb5af05b7b2567cf9a9850ef093950a335d746f",
+  "artifact_hash_basis": "JSON_SERIALIZED_PAYLOAD_WITHOUT_ARTIFACT_HASH",
+  "artifacts": {
+    "audit": "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json",
+    "m1_feature_audit": "AIR_SLOT_DATA_USAGE_M1_FEATURE_AUDIT.csv",
+    "mapping_draft": "AIR_SLOT_DATA_USAGE_MAPPING_DRAFT.csv",
+    "mapping_draft_yaml": "AIR_SLOT_DATA_USAGE_MAPPING_DRAFT.yaml",
+    "pre_output_audit": "AIR_SLOT_DATA_USAGE_PRE_OUTPUT_AUDIT.csv",
+    "raw_column_audit": "AIR_SLOT_DATA_USAGE_RAW_COLUMN_AUDIT.csv"
+  },
+  "authority": "CONTRACT_VALIDATION_AFTER_HUMAN_DECISIONS",
+  "counts": {
+    "ACTIVE_PRE_OUTPUT_CONFLICT": 0,
+    "ACTIVE_REGISTRY_CONFLICT": 0,
+    "ACTIVE_SEMANTIC_CONFLICT": 0,
+    "AMBIGUOUS_ACTIVE_COLUMN": 0,
+    "PRE_BYPASS": 0,
+    "RUNTIME_USED_NO_CONTRACT": 0,
+    "data_usage_rules": 28,
+    "m1_feature_status": {
+      "ACTIVE_PRE_OUTPUT_CONFLICT": 0,
+      "ACTIVE_REGISTRY_CONFLICT": 0,
+      "ACTIVE_SEMANTIC_CONFLICT": 0,
+      "AMBIGUOUS_ACTIVE_COLUMN": 0,
+      "COVERED_ACTIVE": 43,
+      "DIAGNOSTIC_ONLY": 0,
+      "EXPLICITLY_UNUSED": 0,
+      "PRE_BYPASS": 0,
+      "REFERENCE_BUILD_ONLY": 0,
+      "RUNTIME_USED_NO_CONTRACT": 0,
+      "SOURCE_SCHEMA_METADATA": 0
+    },
+    "mapping_draft_rows": 147,
+    "pre_output_status": {
+      "ACTIVE_PRE_OUTPUT_CONFLICT": 0,
+      "ACTIVE_REGISTRY_CONFLICT": 0,
+      "ACTIVE_SEMANTIC_CONFLICT": 0,
+      "AMBIGUOUS_ACTIVE_COLUMN": 0,
+      "COVERED_ACTIVE": 13,
+      "DIAGNOSTIC_ONLY": 0,
+      "EXPLICITLY_UNUSED": 0,
+      "PRE_BYPASS": 0,
+      "REFERENCE_BUILD_ONLY": 0,
+      "RUNTIME_USED_NO_CONTRACT": 0,
+      "SOURCE_SCHEMA_METADATA": 0
+    },
+    "raw_column_rows": 105,
+    "raw_column_status": {
+      "ACTIVE_PRE_OUTPUT_CONFLICT": 0,
+      "ACTIVE_REGISTRY_CONFLICT": 0,
+      "ACTIVE_SEMANTIC_CONFLICT": 0,
+      "AMBIGUOUS_ACTIVE_COLUMN": 0,
+      "COVERED_ACTIVE": 85,
+      "DIAGNOSTIC_ONLY": 1,
+      "EXPLICITLY_UNUSED": 8,
+      "PRE_BYPASS": 0,
+      "REFERENCE_BUILD_ONLY": 9,
+      "RUNTIME_USED_NO_CONTRACT": 0,
+      "SOURCE_SCHEMA_METADATA": 2
+    },
+    "rule_status": {
+      "ACTIVE_PRE_OUTPUT_CONFLICT": 0,
+      "ACTIVE_REGISTRY_CONFLICT": 0,
+      "ACTIVE_SEMANTIC_CONFLICT": 0,
+      "AMBIGUOUS_ACTIVE_COLUMN": 0,
+      "COVERED_ACTIVE": 28,
+      "DIAGNOSTIC_ONLY": 0,
+      "EXPLICITLY_UNUSED": 0,
+      "PRE_BYPASS": 0,
+      "REFERENCE_BUILD_ONLY": 0,
+      "RUNTIME_USED_NO_CONTRACT": 0,
+      "SOURCE_SCHEMA_METADATA": 0
+    },
+    "runtime_rule_references_missing_from_registry": 0,
+    "source_adapters": 11
+  },
+  "m1_feature_audit": [
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_FACTUAL_REPLAY_STAGE",
+      "feature": "state.ib_realized",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "decision_node.operational_stage"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_FACTUAL_REPLAY_STAGE",
+      "feature": "state.ob_realized",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "decision_node.operational_stage"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_FACTUAL_REPLAY_STAGE",
+      "feature": "state.to_realized",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "decision_node.operational_stage"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_SUCCESSOR_STATE",
+      "feature": "schedule.signed_minutes_to_crs_departure",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "schedule_reference"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.temperature_c",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.dewpoint_c",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.wind_direction_deg.sin",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.wind_direction_deg.cos",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.wind_speed_mps",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.qnh_hpa",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.visibility_m",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.ceiling_base_m",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.temperature_c",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.dewpoint_c",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.wind_speed_mps",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.qnh_hpa",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.visibility_m",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.ceiling_base_m",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.temperature_c.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.dewpoint_c.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.wind_direction_deg.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.wind_speed_mps.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.qnh_hpa.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.visibility_m.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.ceiling_base_m.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "M1_EVIDENCE_SUPPORT_ENCODING",
+      "feature": "current_weather.stale_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "M1_EVIDENCE_SUPPORT_ENCODING",
+      "feature": "current_weather.fallback_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_SUCCESSOR_STATE",
+      "feature": "schedule.signed_minutes_to_crs_departure.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "schedule_reference"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_SUCCESSOR_STATE",
+      "feature": "schedule.signed_minutes_to_crs_departure.stale_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "schedule_reference"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_SUCCESSOR_STATE",
+      "feature": "schedule.signed_minutes_to_crs_departure.fallback_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "schedule_reference"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.ceiling_base_m.unlimited_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.temperature_c.derived_missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.dewpoint_c.derived_missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.wind_speed_mps.derived_missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.qnh_hpa.derived_missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.visibility_m.derived_missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "delta.weather.ceiling_base_m.derived_missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "PRE_CURRENT_STATE",
+      "feature": "weather.observation_age_minutes",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "dynamic",
+      "consumption_path": "M1_EVIDENCE_SUPPORT_ENCODING",
+      "feature": "current_weather.support.ABSTAIN",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "current_weather"
+    },
+    {
+      "branch": "static",
+      "consumption_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "feature": "turnaround_reference_minutes",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "turnaround_reference"
+    },
+    {
+      "branch": "static",
+      "consumption_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "feature": "taxi_reference_minutes",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "taxi_reference"
+    },
+    {
+      "branch": "static",
+      "consumption_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "feature": "turnaround_reference_minutes.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "turnaround_reference"
+    },
+    {
+      "branch": "static",
+      "consumption_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "feature": "taxi_reference_minutes.missing_mask",
+      "findings": [],
+      "status": "COVERED_ACTIVE",
+      "upstream_pre_variable": "taxi_reference"
+    }
+  ],
+  "missing_runtime_rule_registrations": [],
+  "pre_bypass_findings": [],
+  "pre_output_audit": [
+    {
+      "canonical_inputs": [
+        "predecessor_motion"
+      ],
+      "consumers": [
+        "M1"
+      ],
+      "findings": [],
+      "pre_family": "predecessor_state",
+      "publication_path": "REGISTRY_PRE_MAPPER",
+      "scientific_variable": "predecessor_motion",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "current_weather"
+      ],
+      "consumers": [
+        "M1"
+      ],
+      "findings": [],
+      "pre_family": "current_state",
+      "publication_path": "REGISTRY_PRE_MAPPER",
+      "scientific_variable": "current_weather",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "schedule_reference"
+      ],
+      "consumers": [
+        "M1",
+        "M2"
+      ],
+      "findings": [],
+      "pre_family": "successor_state",
+      "publication_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "scientific_variable": "schedule_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "passenger_reference"
+      ],
+      "consumers": [
+        "M2",
+        "EVALUATION_ONLY"
+      ],
+      "findings": [],
+      "pre_family": "reference_state",
+      "publication_path": "REGISTRY_PRE_MAPPER",
+      "scientific_variable": "passenger_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "airport_reference"
+      ],
+      "consumers": [
+        "PRE",
+        "M1",
+        "M2",
+        "M3"
+      ],
+      "findings": [],
+      "pre_family": "reference_state",
+      "publication_path": "REGISTRY_PRE_MAPPER",
+      "scientific_variable": "airport_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "realized_operational_event",
+        "derived_operational_event"
+      ],
+      "consumers": [
+        "EVALUATION_ONLY"
+      ],
+      "findings": [],
+      "pre_family": "realized_outcome",
+      "publication_path": "POSTHOC_OUTCOME_WITH_SEPARATE_FACTUAL_REPLAY_PROJECTION",
+      "scientific_variable": "realized_operational_event",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "schedule_reference"
+      ],
+      "consumers": [
+        "M1"
+      ],
+      "findings": [],
+      "pre_family": "successor_state",
+      "publication_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "scientific_variable": "route_context",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "schedule_reference"
+      ],
+      "consumers": [
+        "M1"
+      ],
+      "findings": [],
+      "pre_family": "successor_state",
+      "publication_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "scientific_variable": "carrier_context",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "schedule_reference"
+      ],
+      "consumers": [
+        "M1"
+      ],
+      "findings": [],
+      "pre_family": "successor_state",
+      "publication_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "scientific_variable": "aircraft_identity",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "turnaround_reference"
+      ],
+      "consumers": [
+        "M1",
+        "M2"
+      ],
+      "findings": [],
+      "pre_family": "successor_state",
+      "publication_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "scientific_variable": "turnaround_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "taxi_reference"
+      ],
+      "consumers": [
+        "M1",
+        "M2"
+      ],
+      "findings": [],
+      "pre_family": "successor_state",
+      "publication_path": "PRE_STATIC_REFERENCE_PUBLICATION",
+      "scientific_variable": "taxi_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "segment_reference"
+      ],
+      "consumers": [
+        "M2",
+        "M3",
+        "EVALUATION_ONLY"
+      ],
+      "findings": [],
+      "pre_family": "reference_state",
+      "publication_path": "REGISTRY_PRE_MAPPER",
+      "scientific_variable": "segment_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_inputs": [
+        "airport_timezone"
+      ],
+      "consumers": [
+        "PRE"
+      ],
+      "findings": [],
+      "pre_family": "reference_state",
+      "publication_path": "REGISTRY_PRE_MAPPER",
+      "scientific_variable": "airport_timezone",
+      "status": "COVERED_ACTIVE"
+    }
+  ],
+  "raw_column_audit": [
+    {
+      "adapter_id": "D1-EUROSTAT",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "projected": false,
+      "raw_column": "class",
+      "required": true,
+      "rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "source_family": "eurostat",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-EUROSTAT",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "projected": false,
+      "raw_column": "dimension",
+      "required": true,
+      "rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "source_family": "eurostat",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-EUROSTAT",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "SOURCE_SCHEMA_METADATA",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "projected": false,
+      "raw_column": "id",
+      "required": true,
+      "rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "source_family": "eurostat",
+      "status": "SOURCE_SCHEMA_METADATA"
+    },
+    {
+      "adapter_id": "D1-EUROSTAT",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "SOURCE_SCHEMA_METADATA",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "projected": false,
+      "raw_column": "size",
+      "required": true,
+      "rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "source_family": "eurostat",
+      "status": "SOURCE_SCHEMA_METADATA"
+    },
+    {
+      "adapter_id": "D1-EUROSTAT",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "projected": false,
+      "raw_column": "value",
+      "required": true,
+      "rule_ids": [
+        "D1-EUROSTAT"
+      ],
+      "source_family": "eurostat",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "projected": true,
+      "raw_column": "callsign",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "source_family": "opensky_flightlist",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "projected": true,
+      "raw_column": "day",
+      "required": false,
+      "rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "source_family": "opensky_flightlist",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "projected": true,
+      "raw_column": "destination",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "source_family": "opensky_flightlist",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "projected": true,
+      "raw_column": "firstseen",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "source_family": "opensky_flightlist",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "projected": true,
+      "raw_column": "icao24",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "source_family": "opensky_flightlist",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "projected": true,
+      "raw_column": "lastseen",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "source_family": "opensky_flightlist",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "number",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "opensky_flightlist",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "projected": true,
+      "raw_column": "origin",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-FLIGHT",
+        "D1-OPENSKY-FLIGHT-EVENT"
+      ],
+      "source_family": "opensky_flightlist",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "registration",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "opensky_flightlist",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D1-FLIGHTLIST",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "typecode",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "opensky_flightlist",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "drct",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "dwpf",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "gust",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "metar",
+      "required": true,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "mslp",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "iem_metar",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "sknt",
+      "required": true,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "skyc1",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "skyc2",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "skyc3",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "skyl1",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "skyl2",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "skyl3",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "station",
+      "required": true,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "tmpf",
+      "required": true,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "valid",
+      "required": true,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "vsby",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-METAR",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-METAR"
+      ],
+      "projected": true,
+      "raw_column": "wxcodes",
+      "required": false,
+      "rule_ids": [
+        "D1-METAR"
+      ],
+      "source_family": "iem_metar",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-OURAIRPORTS",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "projected": true,
+      "raw_column": "elevation_ft",
+      "required": false,
+      "rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "source_family": "ourairports",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D1-OURAIRPORTS",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "projected": true,
+      "raw_column": "iata_code",
+      "required": true,
+      "rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "source_family": "ourairports",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-OURAIRPORTS",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "projected": true,
+      "raw_column": "ident",
+      "required": true,
+      "rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "source_family": "ourairports",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-OURAIRPORTS",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "projected": true,
+      "raw_column": "latitude_deg",
+      "required": true,
+      "rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "source_family": "ourairports",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-OURAIRPORTS",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "projected": true,
+      "raw_column": "longitude_deg",
+      "required": true,
+      "rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "source_family": "ourairports",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-OURAIRPORTS",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "projected": true,
+      "raw_column": "type",
+      "required": false,
+      "rule_ids": [
+        "D1-OURAIRPORTS"
+      ],
+      "source_family": "ourairports",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "baroaltitude",
+      "required": false,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "callsign",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "opensky_state_vectors",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "geoaltitude",
+      "required": false,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "heading",
+      "required": false,
+      "rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "icao24",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "lastcontact",
+      "required": false,
+      "rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "lastposupdate",
+      "required": false,
+      "rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "lat",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "lon",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "onground",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "time",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "velocity",
+      "required": true,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D1-STATE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data1_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D1-OPENSKY-STATE"
+      ],
+      "projected": true,
+      "raw_column": "vertrate",
+      "required": false,
+      "rule_ids": [
+        "D1-OPENSKY-STATE",
+        "D1-TRAJECTORY-EVENT"
+      ],
+      "source_family": "opensky_state_vectors",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-AIRPORT-REFERENCE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "elevation_ft",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "airport_reference",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D2-AIRPORT-REFERENCE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "projected": true,
+      "raw_column": "iata_code",
+      "required": true,
+      "rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "source_family": "airport_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-AIRPORT-REFERENCE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "projected": true,
+      "raw_column": "ident",
+      "required": true,
+      "rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "source_family": "airport_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-AIRPORT-REFERENCE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "projected": true,
+      "raw_column": "latitude_deg",
+      "required": true,
+      "rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "source_family": "airport_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-AIRPORT-REFERENCE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "projected": true,
+      "raw_column": "longitude_deg",
+      "required": true,
+      "rule_ids": [
+        "D2-AIRPORT-REFERENCE"
+      ],
+      "source_family": "airport_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-AIRPORT-REFERENCE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "type",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "airport_reference",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D2-DB1B",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-DB1B"
+      ],
+      "projected": true,
+      "raw_column": "Dest",
+      "required": true,
+      "rule_ids": [
+        "D2-DB1B",
+        "D2-PASSENGER-REFERENCE",
+        "D2-PASSENGER-REFERENCE-H1"
+      ],
+      "source_family": "bts_db1b",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-DB1B",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-DB1B"
+      ],
+      "projected": true,
+      "raw_column": "ItinID",
+      "required": false,
+      "rule_ids": [
+        "D2-DB1B"
+      ],
+      "source_family": "bts_db1b",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-DB1B",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "MktFare",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "bts_db1b",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D2-DB1B",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-DB1B"
+      ],
+      "projected": true,
+      "raw_column": "MktID",
+      "required": false,
+      "rule_ids": [
+        "D2-DB1B"
+      ],
+      "source_family": "bts_db1b",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-DB1B",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-DB1B"
+      ],
+      "projected": true,
+      "raw_column": "Origin",
+      "required": true,
+      "rule_ids": [
+        "D2-DB1B",
+        "D2-PASSENGER-REFERENCE",
+        "D2-PASSENGER-REFERENCE-H1"
+      ],
+      "source_family": "bts_db1b",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-DB1B",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-DB1B"
+      ],
+      "projected": true,
+      "raw_column": "Passengers",
+      "required": true,
+      "rule_ids": [
+        "D2-DB1B",
+        "D2-PASSENGER-REFERENCE",
+        "D2-PASSENGER-REFERENCE-H1"
+      ],
+      "source_family": "bts_db1b",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "CALL_SIGN",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "noaa_isd",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "CIG",
+      "required": true,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "DATE",
+      "required": true,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "DEW",
+      "required": true,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "REM",
+      "required": false,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "DIAGNOSTIC_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "REPORT_TYPE",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "noaa_isd",
+      "status": "DIAGNOSTIC_ONLY"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "EXPLICITLY_UNUSED",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [],
+      "projected": true,
+      "raw_column": "SLP",
+      "required": false,
+      "rule_ids": [],
+      "source_family": "noaa_isd",
+      "status": "EXPLICITLY_UNUSED"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "STATION",
+      "required": true,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "TMP",
+      "required": true,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "VIS",
+      "required": true,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ISD",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "projected": true,
+      "raw_column": "WND",
+      "required": true,
+      "rule_ids": [
+        "D2-NOAA-ISD"
+      ],
+      "source_family": "noaa_isd",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "SIGNED_TIME_OFFSET",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "ArrDelay",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "NONNEGATIVE_DELAY_REPORTING_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "ArrDelayMinutes",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "ArrTime",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL",
+        "D2-CHAIN-GATE-GAP",
+        "D2-LABEL-R-IB",
+        "D2-TURNAROUND-REFERENCE"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-SCHEDULE"
+      ],
+      "projected": true,
+      "raw_column": "CRSArrTime",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-SCHEDULE",
+        "D2-CHAIN-GATE-GAP"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-SCHEDULE"
+      ],
+      "projected": true,
+      "raw_column": "CRSDepTime",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-SCHEDULE",
+        "D2-CHAIN-GATE-GAP",
+        "D2-LABEL-DELTA-OB"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "Cancelled",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "SIGNED_TIME_OFFSET",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "DepDelay",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "NONNEGATIVE_DELAY_REPORTING_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "DepDelayMinutes",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "DepTime",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL",
+        "D2-CHAIN-GATE-GAP",
+        "D2-LABEL-DELTA-OB",
+        "D2-LABEL-R-IB",
+        "D2-TURNAROUND-REFERENCE"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY",
+        "D2-BTS-SCHEDULE"
+      ],
+      "projected": true,
+      "raw_column": "Dest",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY",
+        "D2-BTS-SCHEDULE",
+        "D2-CHAIN-GATE-GAP"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "Diverted",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY",
+        "D2-BTS-SCHEDULE"
+      ],
+      "projected": true,
+      "raw_column": "FlightDate",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY",
+        "D2-BTS-SCHEDULE",
+        "D2-CHAIN-GATE-GAP",
+        "D2-TEMPORAL-SPLIT"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY"
+      ],
+      "projected": true,
+      "raw_column": "Flight_Number_Reporting_Airline",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY",
+        "D2-BTS-SCHEDULE"
+      ],
+      "projected": true,
+      "raw_column": "Origin",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY",
+        "D2-BTS-SCHEDULE",
+        "D2-CHAIN-GATE-GAP"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY"
+      ],
+      "projected": true,
+      "raw_column": "Reporting_Airline",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY"
+      ],
+      "projected": true,
+      "raw_column": "Tail_Number",
+      "required": true,
+      "rule_ids": [
+        "D2-BTS-FLIGHT-IDENTITY",
+        "D2-CHAIN-GATE-GAP"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "TaxiIn",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "TaxiOut",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL",
+        "D2-LABEL-T-TX",
+        "D2-TAXI-REFERENCE"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "WheelsOff",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-ONTIME",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "projected": true,
+      "raw_column": "WheelsOn",
+      "required": false,
+      "rule_ids": [
+        "D2-BTS-ACTUAL"
+      ],
+      "source_family": "bts_ontime",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": false,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100"
+      ],
+      "projected": true,
+      "raw_column": "AIRCRAFT_TYPE",
+      "required": false,
+      "rule_ids": [
+        "D2-T100"
+      ],
+      "source_family": "bts_t100",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100-CLASS"
+      ],
+      "projected": true,
+      "raw_column": "CLASS",
+      "required": false,
+      "rule_ids": [
+        "D2-T100-CLASS"
+      ],
+      "source_family": "bts_t100",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100"
+      ],
+      "projected": true,
+      "raw_column": "DEST",
+      "required": false,
+      "rule_ids": [
+        "D2-T100"
+      ],
+      "source_family": "bts_t100",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100"
+      ],
+      "projected": true,
+      "raw_column": "MONTH",
+      "required": false,
+      "rule_ids": [
+        "D2-T100"
+      ],
+      "source_family": "bts_t100",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100"
+      ],
+      "projected": true,
+      "raw_column": "ORIGIN",
+      "required": false,
+      "rule_ids": [
+        "D2-T100"
+      ],
+      "source_family": "bts_t100",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100"
+      ],
+      "projected": true,
+      "raw_column": "PASSENGERS",
+      "required": true,
+      "rule_ids": [
+        "D2-T100"
+      ],
+      "source_family": "bts_t100",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100"
+      ],
+      "projected": true,
+      "raw_column": "SEATS",
+      "required": true,
+      "rule_ids": [
+        "D2-T100"
+      ],
+      "source_family": "bts_t100",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-T100",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": "REFERENCE_BUILD_ONLY",
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-T100"
+      ],
+      "projected": true,
+      "raw_column": "YEAR",
+      "required": false,
+      "rule_ids": [
+        "D2-T100"
+      ],
+      "source_family": "bts_t100",
+      "status": "REFERENCE_BUILD_ONLY"
+    },
+    {
+      "adapter_id": "D2-TIMEZONE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-TIMEZONE"
+      ],
+      "projected": true,
+      "raw_column": "iata",
+      "required": true,
+      "rule_ids": [
+        "D2-TIMEZONE"
+      ],
+      "source_family": "timezone_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-TIMEZONE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-TIMEZONE"
+      ],
+      "projected": true,
+      "raw_column": "ident",
+      "required": true,
+      "rule_ids": [
+        "D2-TIMEZONE"
+      ],
+      "source_family": "timezone_reference",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "adapter_id": "D2-TIMEZONE",
+      "canonicalizer_accessed": true,
+      "dataset_instance_id": "data2_2019",
+      "declared_role": null,
+      "findings": [],
+      "pre_bypass_locations": [],
+      "primary_rule_ids": [
+        "D2-TIMEZONE"
+      ],
+      "projected": true,
+      "raw_column": "timezone",
+      "required": true,
+      "rule_ids": [
+        "D2-TIMEZONE"
+      ],
+      "source_family": "timezone_reference",
+      "status": "COVERED_ACTIVE"
+    }
+  ],
+  "repository_head": "2c9d63f92afb2bc5f5d744480c898550554ee7aa",
+  "rule_audit": [
+    {
+      "canonical_variable": "predecessor_motion",
+      "dataset_instance_id": "data1_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D1-OPENSKY-STATE",
+      "scientific_variables": [
+        "predecessor_motion"
+      ],
+      "source_family": "opensky_state_vectors",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "episode_identity",
+      "dataset_instance_id": "data1_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D1-OPENSKY-FLIGHT",
+      "scientific_variables": [],
+      "source_family": "opensky_flightlist",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "derived_operational_event",
+      "dataset_instance_id": "data1_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D1-OPENSKY-FLIGHT-EVENT",
+      "scientific_variables": [
+        "realized_operational_event"
+      ],
+      "source_family": "opensky_flightlist",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "derived_operational_event",
+      "dataset_instance_id": "data1_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D1-TRAJECTORY-EVENT",
+      "scientific_variables": [
+        "realized_operational_event"
+      ],
+      "source_family": "opensky_state_vectors",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "current_weather",
+      "dataset_instance_id": "data1_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D1-METAR",
+      "scientific_variables": [
+        "current_weather"
+      ],
+      "source_family": "iem_metar",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "passenger_reference",
+      "dataset_instance_id": "data1_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D1-EUROSTAT",
+      "scientific_variables": [
+        "passenger_reference"
+      ],
+      "source_family": "eurostat",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "airport_reference",
+      "dataset_instance_id": "data1_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D1-OURAIRPORTS",
+      "scientific_variables": [
+        "airport_reference"
+      ],
+      "source_family": "ourairports",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "schedule_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-BTS-SCHEDULE",
+      "scientific_variables": [
+        "aircraft_identity",
+        "carrier_context",
+        "route_context",
+        "schedule_reference"
+      ],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "flight_identity",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-BTS-FLIGHT-IDENTITY",
+      "scientific_variables": [],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "realized_operational_event",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-BTS-ACTUAL",
+      "scientific_variables": [
+        "realized_operational_event"
+      ],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "factual_replay_operational_event",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-BTS-FACTUAL-REPLAY",
+      "scientific_variables": [],
+      "source_family": "bts_ontime",
+      "source_kind": "PROJECTION",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "passenger_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-DB1B",
+      "scientific_variables": [
+        "passenger_reference"
+      ],
+      "source_family": "bts_db1b",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "segment_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-T100",
+      "scientific_variables": [
+        "segment_reference"
+      ],
+      "source_family": "bts_t100",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "airport_timezone",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-TIMEZONE",
+      "scientific_variables": [
+        "airport_timezone"
+      ],
+      "source_family": "timezone_reference",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "airport_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-AIRPORT-REFERENCE",
+      "scientific_variables": [
+        "airport_reference"
+      ],
+      "source_family": "airport_reference",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "episode_identity",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-CHAIN-GATE-GAP",
+      "scientific_variables": [],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "turnaround_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-TURNAROUND-REFERENCE",
+      "scientific_variables": [
+        "turnaround_reference"
+      ],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "taxi_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-TAXI-REFERENCE",
+      "scientific_variables": [
+        "taxi_reference"
+      ],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "expected_downstream_exposure",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-DOWNSTREAM-EXPOSURE",
+      "scientific_variables": [],
+      "source_family": "pre_canonical_schedule",
+      "source_kind": "DERIVED_ARTIFACT",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "current_weather",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-NOAA-ISD",
+      "scientific_variables": [
+        "current_weather"
+      ],
+      "source_family": "noaa_isd",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "passenger_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-PASSENGER-REFERENCE",
+      "scientific_variables": [
+        "passenger_reference"
+      ],
+      "source_family": "bts_db1b",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "passenger_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-PASSENGER-REFERENCE-H1",
+      "scientific_variables": [
+        "passenger_reference"
+      ],
+      "source_family": "bts_db1b",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "r_ib_label",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-LABEL-R-IB",
+      "scientific_variables": [],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "delta_ob_label",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-LABEL-DELTA-OB",
+      "scientific_variables": [],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "t_tx_label",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-LABEL-T-TX",
+      "scientific_variables": [],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "m1_training_coverage",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-M1-TRAINING-COVERAGE",
+      "scientific_variables": [],
+      "source_family": "pre_decision_node",
+      "source_kind": "DERIVED_ARTIFACT",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "dataset_partition",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-TEMPORAL-SPLIT",
+      "scientific_variables": [],
+      "source_family": "bts_ontime",
+      "source_kind": "RAW_SOURCE",
+      "status": "COVERED_ACTIVE"
+    },
+    {
+      "canonical_variable": "segment_reference",
+      "dataset_instance_id": "data2_2019",
+      "findings": [],
+      "missing_source_columns": [],
+      "rule_id": "D2-T100-CLASS",
+      "scientific_variables": [
+        "segment_reference"
+      ],
+      "source_family": "bts_t100",
+      "source_kind": "PROJECTION",
+      "status": "COVERED_ACTIVE"
+    }
+  ],
+  "runtime_rule_references": [
+    {
+      "line": 188,
+      "path": "model/PRE/canonical/normalization_references.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D1-EUROSTAT"
+    },
+    {
+      "line": 252,
+      "path": "model/PRE/canonical/normalization_references.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D1-EUROSTAT"
+    },
+    {
+      "line": 88,
+      "path": "model/PRE/canonical/normalization_weather.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D1-METAR"
+    },
+    {
+      "line": 227,
+      "path": "model/PRE/canonical/normalization_flights.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D1-OPENSKY-FLIGHT"
+    },
+    {
+      "line": 249,
+      "path": "model/PRE/canonical/normalization_flights.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D1-OPENSKY-FLIGHT-EVENT"
+    },
+    {
+      "line": 281,
+      "path": "model/PRE/canonical/normalization_flights.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D1-OPENSKY-STATE"
+    },
+    {
+      "line": 345,
+      "path": "model/PRE/canonical/normalization_flights.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D1-TRAJECTORY-EVENT"
+    },
+    {
+      "line": 174,
+      "path": "model/PRE/canonical/normalization_flights.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D2-BTS-ACTUAL"
+    },
+    {
+      "line": 74,
+      "path": "model/PRE/factual/replay.py",
+      "reference_kind": "declared_replay_rule_id",
+      "rule_id": "D2-BTS-FACTUAL-REPLAY"
+    },
+    {
+      "line": 82,
+      "path": "model/PRE/canonical/normalization_flights.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D2-BTS-SCHEDULE"
+    },
+    {
+      "line": 318,
+      "path": "model/PRE/canonical/normalization_weather.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D2-NOAA-ISD"
+    },
+    {
+      "line": 77,
+      "path": "model/PRE/canonical/normalization_references.py",
+      "reference_kind": "provenance_rule_id",
+      "rule_id": "D2-TIMEZONE"
+    }
+  ],
+  "safety": {
+    "FINAL_TEST_ACCESS_COUNT": 0,
+    "GATE_B_ENTERED": false,
+    "M1_TRAINING_RUNS": 0,
+    "PAPER_FULL_RUN": false,
+    "TUNING_RUNS": 0
+  },
+  "schema_version": "AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT_V2",
+  "scope": "READ_ONLY_REGISTRY_PRE_M1_STATIC_AUDIT",
+  "source_hashes": {
+    "configs/scientific/foundation.yaml": "sha256:658b0bcae4bb827edb281f63eeeefd187e597f6b0ea79d025999ad5cda551012",
+    "docs/reconciliation/AIR_SLOT_DATA_USAGE_CONTRACT_V1.md": "sha256:bc28019f9dbfefd557bfc76f1f5cfbe860a3268a1000f552e3d51b34a9525f4d",
+    "model/M1/data.py": "sha256:0db9cae172e53a7bc960c5ec4966d8d0204bd75bb0b8a6e20acfae812dcce688",
+    "model/M2/cu/registry.py": "sha256:a9eff4aace470301a9210b7437dc451f2520e90fc9a64c58adacf0e708725c0e",
+    "model/PRE/adapters/registry.py": "sha256:897d9682fd3cc3300fdb47ed4168d894a8c26bce8e89b9ec664b1a109d446886",
+    "model/PRE/canonical/data2_timestamps.py": "sha256:050600232901618c2370808546b5885cb493c289539850d94b796aa085e23743",
+    "model/PRE/canonical/normalization_flights.py": "sha256:96daa96ab4f51d666eb530cfde8a0c00a225978125880d5ed25336fcf7ca419b",
+    "model/PRE/canonical/normalization_references.py": "sha256:b4ab91550fd4bc56586024cd549f338731f5d57715ea54ce01cd98705b7ac73b",
+    "model/PRE/canonical/normalization_weather.py": "sha256:f39213290839b724427dee582292cf900b8e0ecb280f246ff24fecaaf964cc19",
+    "model/PRE/contracts/training_artifacts.py": "sha256:55f7779970f9ec8b2051d044bca012ccedea4a51e8cf9c74982ebdd001e07016",
+    "model/PRE/feature_registry/models.py": "sha256:7e7a8a9df1bbb0d0883ae4b796dd478bb9070efff48f3f028bd5e13d1d6a81b0",
+    "model/PRE/mapping.py": "sha256:9fa38b62199f3b88ddd330f1c27bf5d73c175d601f4bb42cc4914010c0a03ba9",
+    "model/PRE/publication/static_reference.py": "sha256:231d3654f1501ffb392e490d491b1e7989654e8ea7681dab074240a37dc85d18",
+    "model/PRE/reference/data2_m2_train_fit.py": "sha256:85f935003c977a5d73f50654bcbd57184a80c87d5e0d1725b13cbe67153d64ef",
+    "registries/data_usage_rules.yaml": "sha256:74f418cb8b1a6011e031ddbde4e5a097f26e621cd0baf123fa7c2a2ee8b873a4",
+    "registries/dataset_capabilities.yaml": "sha256:e1e99045a685215335eff53711cd07ba4e45b92d08649f5cd262d90de74c605b",
+    "registries/scientific_variables.yaml": "sha256:b48f20879001775e40ea2f35b2bb868fb26553a254b8308857560895b1c3c5b0",
+    "registries/source_adapter_registry.yaml": "sha256:83f288e0123ea04ed2e49152efd73e003c5548b37696dad4d186c3733ab96c70",
+    "validation/data_usage_classification.py": "sha256:84b82db1442eb5bcd0e5056d6dd5a3af30b8410f496acc2aa623c352cb6531d8",
+    "validation/data_usage_contract_audit.py": "sha256:59d3f9c67b1b93ef1360a4c9a7ae90e11e52513711b90f522ccbbb051adf7d3c"
+  },
+  "status": "DATA_USAGE_CONTRACT_AUDIT_PASS"
+}

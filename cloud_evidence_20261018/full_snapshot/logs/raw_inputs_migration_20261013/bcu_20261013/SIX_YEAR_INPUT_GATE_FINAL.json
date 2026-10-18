@@ -1,0 +1,285 @@
+{
+  "all_inputs_validated": true,
+  "code_state": "snapshot 583f2c12 + patch 8cc7a1b7 (d1c72a7) + patch 1d3ba5d3 (ffa7487)",
+  "contract": "JATM_F_CONTINUITY_B_V1",
+  "created_at_utc": "2026-10-13T08:53:27+00:00",
+  "schema_version": "AIRSLOT_SIX_YEAR_INPUT_GATE_FINAL_V1",
+  "years": {
+    "2017": {
+      "fixed_common_bcu": {
+        "adapter_registry_id": "JATM_V5_FIXED_COMMON_2017_H1_V1",
+        "status": "VALID"
+      },
+      "input_gate": {
+        "cohort_pool_counts": {
+          "calibration": 4096,
+          "development": 4096,
+          "train": 4096
+        },
+        "cohort_sha256": "sha256:7ce01d55b5ef73a3b58ac354c4045119a3a0c2ece6db2200a6c5b1304256f429",
+        "reason": null,
+        "status": "INPUTS_VALIDATED"
+      },
+      "m1": {
+        "checkpoint_hashes": {
+          "M1_CURRENT_COMPARATOR": "sha256:8233a59b402dda38b46665334115cba358667620549f1f132ae02884f8f02e01",
+          "M1_HISTORY_PRIMARY": "sha256:ea9f070964747929573b382ce912d0589d5eaaf92ecef5757cf70098a869b504"
+        },
+        "manifest_sha256": {
+          "M1_CURRENT_COMPARATOR": "sha256:b38df957b221ab9fb1f8fced79bc204909e2878018677792f7cbb40412140307",
+          "M1_HISTORY_PRIMARY": "sha256:107c36714ff01e91b5d131a3b76acc954aee45cec76a1819d53e3d564db3024d"
+        },
+        "status": "VALID"
+      },
+      "t100_accounting": {
+        "active_h1_input_sha256": "9ca7821ceae8277a1ab0d6541e221f0f18dc0249bc971317d2fea416451ddd9e",
+        "audited_annual_matches_frozen": true,
+        "audited_annual_original_sha256": "7bb2512e174d40e1d1fe13e54be8ae4e702645c08f6516b3cbc20ad8866d16a9",
+        "final_test_evaluation_access": 0,
+        "raw_annual_full_file_scans_on_record": [
+          "migration SHA-256 sweeps (months 1-12, pre-seal)",
+          "Phase-2 structural parse (pre-seal)"
+        ],
+        "train_h1_fit_inputs": "sealed H1 file only (MONTH<=6, plus code-level filter)"
+      },
+      "tail": {
+        "manifest_sha256": "f8b40d34dd8d82cbd747b6b9e5383b1c9089eb39564a9d81cfe121b2b2632712",
+        "status": "VALID"
+      },
+      "year_local_bcu": {
+        "adapter_registry_id": "JATM_V5_YEAR_LOCAL_2017_H1_V1",
+        "status": "VALID"
+      }
+    },
+    "2018": {
+      "fixed_common_bcu": {
+        "adapter_registry_id": "JATM_V5_FIXED_COMMON_2017_H1_V1",
+        "status": "VALID"
+      },
+      "input_gate": {
+        "cohort_pool_counts": {
+          "calibration": 4096,
+          "development": 4096,
+          "train": 4096
+        },
+        "cohort_sha256": "sha256:48bebf1c80baa720dc5dc94d07bda5533838f0063ddfbb993c9056435d5b3c16",
+        "reason": null,
+        "status": "INPUTS_VALIDATED"
+      },
+      "m1": {
+        "checkpoint_hashes": {
+          "M1_CURRENT_COMPARATOR": "sha256:a11af75719b0443870ea24836e7464e3b3553b7b7d66088a7a77152dd445abb7",
+          "M1_HISTORY_PRIMARY": "sha256:2a2f3db0ee543a27cfac24d0762745bb9c372365e4ec7ee0076208e2f8e84b31"
+        },
+        "manifest_sha256": {
+          "M1_CURRENT_COMPARATOR": "sha256:8a4618aad83e655094bc191739a104b499d33a3b74d8f0d428f81bc8c7ca3a4b",
+          "M1_HISTORY_PRIMARY": "sha256:363c3327479e45260698c10eabade40f2bfbc33bc8ff8e619c68505b60bfdc64"
+        },
+        "status": "VALID"
+      },
+      "t100_accounting": {
+        "active_h1_input_sha256": "6a3184f2e4884a0b6c54f0a02980106a3517e60573e0033e81d89b5c249d42f8",
+        "audited_annual_matches_frozen": true,
+        "audited_annual_original_sha256": "4391a96142cbae4cb26757a6b5eb2eac69a6dadc62dc803ce55ab29ced5826ea",
+        "final_test_evaluation_access": 0,
+        "raw_annual_full_file_scans_on_record": [
+          "migration SHA-256 sweeps (months 1-12, pre-seal)",
+          "Phase-2 structural parse (pre-seal)"
+        ],
+        "train_h1_fit_inputs": "sealed H1 file only (MONTH<=6, plus code-level filter)"
+      },
+      "tail": {
+        "manifest_sha256": "9cf17eacbb7cbed89faa3e44f99faa6c4a2e480891fe80fa0af2167ff3099ee5",
+        "status": "VALID"
+      },
+      "year_local_bcu": {
+        "adapter_registry_id": "JATM_V5_YEAR_LOCAL_2018_H1_V1",
+        "status": "VALID"
+      }
+    },
+    "2019": {
+      "fixed_common_bcu": {
+        "adapter_registry_id": "JATM_V5_FIXED_COMMON_2017_H1_V1",
+        "status": "VALID"
+      },
+      "input_gate": {
+        "cohort_pool_counts": {
+          "calibration": 4096,
+          "development": 4096,
+          "train": 4096
+        },
+        "cohort_sha256": "sha256:b6007ffd91d76740bb282409e9f6f81d52af68cabd675ee18afdf236743ff1e6",
+        "reason": null,
+        "status": "INPUTS_VALIDATED"
+      },
+      "m1": {
+        "checkpoint_hashes": {
+          "M1_CURRENT_COMPARATOR": "sha256:02d8ed9b5b3d09d8449c3454084f66a3bff3b61b3025338785d048abb981e81d",
+          "M1_HISTORY_PRIMARY": "sha256:1ec3580812a733b7bb077df54ec429dfc194da89d5b4d0dccf97d66cfebb6113"
+        },
+        "manifest_sha256": {
+          "M1_CURRENT_COMPARATOR": "sha256:e4626b99fe79b64a617531539410f63dc405dc7b49f6112f7ed04c869098c687",
+          "M1_HISTORY_PRIMARY": "sha256:afb5a2f4a7fb83cb708d988d9ba89a90d42ba2e643cb0d736e07a11e7ab148b9"
+        },
+        "status": "VALID"
+      },
+      "t100_accounting": {
+        "active_h1_input_sha256": "ea57226ba56d5eefdd174e35e3ae091a6aecb629fbbbbb4c0e5d4c6c90915b79",
+        "audited_annual_matches_frozen": true,
+        "audited_annual_original_sha256": "9b838fd6f15594f0481b03380e6744b2dc0e3061248188a587b61fd5fe96b667",
+        "final_test_evaluation_access": 0,
+        "raw_annual_full_file_scans_on_record": [
+          "migration SHA-256 sweeps (months 1-12, pre-seal)",
+          "Phase-2 structural parse (pre-seal)"
+        ],
+        "train_h1_fit_inputs": "sealed H1 file only (MONTH<=6, plus code-level filter)"
+      },
+      "tail": {
+        "manifest_sha256": "a2651c462493d8012a5b087373d413ceccdd584fb29fec9717e33669452c2921",
+        "status": "VALID"
+      },
+      "year_local_bcu": {
+        "adapter_registry_id": "JATM_V5_YEAR_LOCAL_2019_H1_V1",
+        "status": "VALID"
+      }
+    },
+    "2020": {
+      "fixed_common_bcu": {
+        "adapter_registry_id": "JATM_V5_FIXED_COMMON_2017_H1_V1",
+        "status": "VALID"
+      },
+      "input_gate": {
+        "cohort_pool_counts": {
+          "calibration": 4096,
+          "development": 4096,
+          "train": 4096
+        },
+        "cohort_sha256": "sha256:3388e32aa404fdb8ac0cd49afd4830a13e289dd4a5fe27528c82d9a6370551c2",
+        "reason": null,
+        "status": "INPUTS_VALIDATED"
+      },
+      "m1": {
+        "checkpoint_hashes": {
+          "M1_CURRENT_COMPARATOR": "sha256:5ecaa967587b2bb6d32b8e4c920f5a8028f396ac7a129231d3be72c019391ac2",
+          "M1_HISTORY_PRIMARY": "sha256:8c6bc43990aa461272f49fb6c3fd71848db1b39b280b560d2ccdfbd6875ee7ba"
+        },
+        "manifest_sha256": {
+          "M1_CURRENT_COMPARATOR": "sha256:fd134cbae676fbf37f7cf3c1380da33f1702c63559faed1e1144dbdfa95db4f0",
+          "M1_HISTORY_PRIMARY": "sha256:06141b9fef3ca41addd62723634ea24c9dfec044b66e717f5048e24f13f44fdf"
+        },
+        "status": "VALID"
+      },
+      "t100_accounting": {
+        "active_h1_input_sha256": "c084db1abd7cb52ffc9fe23dea896834fd5367480c5070aeefb0595553e83f03",
+        "audited_annual_matches_frozen": true,
+        "audited_annual_original_sha256": "84113e14e9323f3a4835aa0785b1b7af2da94e8865d73001c2aa55e7b4f818ce",
+        "final_test_evaluation_access": 0,
+        "raw_annual_full_file_scans_on_record": [
+          "migration SHA-256 sweeps (months 1-12, pre-seal)",
+          "Phase-2 structural parse (pre-seal)"
+        ],
+        "train_h1_fit_inputs": "sealed H1 file only (MONTH<=6, plus code-level filter)"
+      },
+      "tail": {
+        "manifest_sha256": "25be8b7bf813c346677f0441e55ef5436a9f1cf7ac825857c2787d3bd7504b98",
+        "status": "VALID"
+      },
+      "year_local_bcu": {
+        "adapter_registry_id": "JATM_V5_YEAR_LOCAL_2020_H1_V1",
+        "status": "VALID"
+      }
+    },
+    "2021": {
+      "fixed_common_bcu": {
+        "adapter_registry_id": "JATM_V5_FIXED_COMMON_2017_H1_V1",
+        "status": "VALID"
+      },
+      "input_gate": {
+        "cohort_pool_counts": {
+          "calibration": 4096,
+          "development": 4096,
+          "train": 4096
+        },
+        "cohort_sha256": "sha256:52df60f31cae4dabd6b5653502488197d1bc294ede84216f72c3e3430fea818a",
+        "reason": null,
+        "status": "INPUTS_VALIDATED"
+      },
+      "m1": {
+        "checkpoint_hashes": {
+          "M1_CURRENT_COMPARATOR": "sha256:26cec4eafe5e4dd5fcdb4ec77739104fa0bf76fd883934fb07f8c7b1e8c13357",
+          "M1_HISTORY_PRIMARY": "sha256:7a89b888ca06eb5bdc75290b3b0547e715cc7c63cd4066c64cdeb256fe60e224"
+        },
+        "manifest_sha256": {
+          "M1_CURRENT_COMPARATOR": "sha256:83c9309abc02bf429309dd267a908b193e3d859254f90a242ebebcdeef76003c",
+          "M1_HISTORY_PRIMARY": "sha256:57f5307ab63f9930a3fa6a9e51b00a6ebcfd229fc05d7d92b74c86befb58e04d"
+        },
+        "status": "VALID"
+      },
+      "t100_accounting": {
+        "active_h1_input_sha256": "1d45d229582cb1c052c5dd05b61257b62339862de472a8f4acfa61172e52ddb9",
+        "audited_annual_matches_frozen": true,
+        "audited_annual_original_sha256": "1415fef5df6796f8ff9f82783412326ed48d5e16fd21c5bf6493cc4cb13776a3",
+        "final_test_evaluation_access": 0,
+        "raw_annual_full_file_scans_on_record": [
+          "migration SHA-256 sweeps (months 1-12, pre-seal)",
+          "Phase-2 structural parse (pre-seal)"
+        ],
+        "train_h1_fit_inputs": "sealed H1 file only (MONTH<=6, plus code-level filter)"
+      },
+      "tail": {
+        "manifest_sha256": "2e7c23ece47830368623c79030ebcb266226a07c4d4dc1188865f8dedda884c0",
+        "status": "VALID"
+      },
+      "year_local_bcu": {
+        "adapter_registry_id": "JATM_V5_YEAR_LOCAL_2021_H1_V1",
+        "status": "VALID"
+      }
+    },
+    "2022": {
+      "fixed_common_bcu": {
+        "adapter_registry_id": "JATM_V5_FIXED_COMMON_2017_H1_V1",
+        "status": "VALID"
+      },
+      "input_gate": {
+        "cohort_pool_counts": {
+          "calibration": 4096,
+          "development": 4096,
+          "train": 4096
+        },
+        "cohort_sha256": "sha256:19e87c530470cd36d1a9c7ec5bb285b0d6a4cb146cfcc7f35dfd4c94f4a85a2f",
+        "reason": null,
+        "status": "INPUTS_VALIDATED"
+      },
+      "m1": {
+        "checkpoint_hashes": {
+          "M1_CURRENT_COMPARATOR": "sha256:12329688ac6ae5d49fe1e588f82d6da283eaacd17e7607c298188b29043c285c",
+          "M1_HISTORY_PRIMARY": "sha256:03bb441eb96fb4fd535f4e1a29fa970f15b4fea21bf4858172fc1a39ffe3ef39"
+        },
+        "manifest_sha256": {
+          "M1_CURRENT_COMPARATOR": "sha256:fe5c44a0a371291cad3a3cd5bbf505d3c234b790bc1f4174ccd1da89eee99671",
+          "M1_HISTORY_PRIMARY": "sha256:4cbf5e5bd11dbdbcc8222e4bb1c1ab374ede1c3a886a479f1fb04a08e45d82a8"
+        },
+        "status": "VALID"
+      },
+      "t100_accounting": {
+        "active_h1_input_sha256": "b37578dcf7010c2378d1315fae4bfbc4b7848026dd4de609456cf76d04e83909",
+        "audited_annual_matches_frozen": true,
+        "audited_annual_original_sha256": "137ab84cacaaaa5a35082660f7842ef1b4f99b4abe38291646a641c29b6e63ec",
+        "final_test_evaluation_access": 0,
+        "raw_annual_full_file_scans_on_record": [
+          "migration SHA-256 sweeps (months 1-12, pre-seal)",
+          "Phase-2 structural parse (pre-seal)"
+        ],
+        "train_h1_fit_inputs": "sealed H1 file only (MONTH<=6, plus code-level filter)"
+      },
+      "tail": {
+        "manifest_sha256": "db202ac4bda817479ee4e04ce003b153d4d7f30216cd865929d273339b2b38e2",
+        "status": "VALID"
+      },
+      "year_local_bcu": {
+        "adapter_registry_id": "JATM_V5_YEAR_LOCAL_2022_H1_V1",
+        "status": "VALID"
+      }
+    }
+  }
+}

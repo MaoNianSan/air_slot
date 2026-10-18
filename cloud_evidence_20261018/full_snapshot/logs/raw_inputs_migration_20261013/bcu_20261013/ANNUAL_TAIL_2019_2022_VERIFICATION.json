@@ -1,0 +1,185 @@
+{
+  "all_2019_2022_valid": true,
+  "created_at_utc": "2026-10-13T08:53:26+00:00",
+  "frozen_2017_2018": {
+    "2017": {
+      "manifest_sha256": "f8b40d34dd8d82cbd747b6b9e5383b1c9089eb39564a9d81cfe121b2b2632712",
+      "note": "frozen this round; never rebuilt"
+    },
+    "2018": {
+      "manifest_sha256": "9cf17eacbb7cbed89faa3e44f99faa6c4a2e480891fe80fa0af2167ff3099ee5",
+      "note": "frozen this round; never rebuilt"
+    }
+  },
+  "schema_version": "AIRSLOT_ANNUAL_TAIL_VERIFICATION_V1",
+  "years": {
+    "2019": {
+      "exit_code": "0",
+      "manifest_path": "/data/airslot/worktree/artifacts/models/m1/YEAR_2019/TAIL_REFERENCE_V1/MANIFEST.json",
+      "manifest_sha256": "a2651c462493d8012a5b087373d413ceccdd584fb29fec9717e33669452c2921",
+      "official_load_validation": "PASS",
+      "peak_rss_kib": "2812736",
+      "summary": {
+        "final_test_access_count": 0,
+        "fit_period": [
+          "2019-01-01",
+          "2019-06-30"
+        ],
+        "source_hashes": {
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json": "sha256:350aa2f2640d7c5e4204a2cc51e50658de20a52edb71dd64f2e6a79aa11c1758",
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2019/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json": "sha256:483de5193d07dd108df742e74066ee8cf305321356cfa1766e51868905570f33",
+          "data2/reports/cohort_size_stability/2019/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl": "sha256:b6007ffd91d76740bb282409e9f6f81d52af68cabd675ee18afdf236743ff1e6"
+        },
+        "tail_id": "sha256:a8d01456dc59f07b981da24afb94bae485e455dc57447dabc5548e6302bdea62",
+        "targets": {
+          "D_OB": {
+            "artifact_hash": "sha256:7bccad607453494e3acd65ee43547d8ca8cb3f72a7e58999ca3ddc88a2ad5409",
+            "positive_n": 21392,
+            "q90": 94.0,
+            "tail_n": 2088
+          },
+          "D_TX": {
+            "artifact_hash": "sha256:e19dcfb552953d02f4497ed0ce998f289a2ebe56fa3fd1b01bda6553559359f5",
+            "positive_n": 27465,
+            "q90": 20.0,
+            "tail_n": 2556
+          }
+        },
+        "year": 2019
+      },
+      "targets": [
+        "D_OB",
+        "D_TX"
+      ],
+      "task_status": "PASS",
+      "task_tag": "tail_2019",
+      "wall": "37:45.41"
+    },
+    "2020": {
+      "exit_code": "0",
+      "manifest_path": "/data/airslot/worktree/artifacts/models/m1/YEAR_2020/TAIL_REFERENCE_V1/MANIFEST.json",
+      "manifest_sha256": "25be8b7bf813c346677f0441e55ef5436a9f1cf7ac825857c2787d3bd7504b98",
+      "official_load_validation": "PASS",
+      "peak_rss_kib": "2826108",
+      "summary": {
+        "final_test_access_count": 0,
+        "fit_period": [
+          "2020-01-01",
+          "2020-06-30"
+        ],
+        "source_hashes": {
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json": "sha256:27b0e1f4eceeb1790949f922370a617d698da6a61060075eb66aa80f20e04a43",
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2020/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json": "sha256:41937d70f51c6781b06d6d5f30caf3308b034e3c9dffcad5f16710e081160ba0",
+          "data2/reports/cohort_size_stability/2020/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl": "sha256:3388e32aa404fdb8ac0cd49afd4830a13e289dd4a5fe27528c82d9a6370551c2"
+        },
+        "tail_id": "sha256:4aa40456762482f9335b3f5804745b5f716633aeeb6095290f01013e991b5d11",
+        "targets": {
+          "D_OB": {
+            "artifact_hash": "sha256:d760659fae9447cfa0a30b41c46c9f164f7f7836ffd3303c3957c32720f4bc0e",
+            "positive_n": 12731,
+            "q90": 76.0,
+            "tail_n": 1263
+          },
+          "D_TX": {
+            "artifact_hash": "sha256:75a3f1f14207be349616f992d2b87315136d6b30fcd026fce664dfc93f67aab1",
+            "positive_n": 27603,
+            "q90": 18.0,
+            "tail_n": 2733
+          }
+        },
+        "year": 2020
+      },
+      "targets": [
+        "D_OB",
+        "D_TX"
+      ],
+      "task_status": "PASS",
+      "task_tag": "tail_2020",
+      "wall": "29:07.94"
+    },
+    "2021": {
+      "exit_code": "0",
+      "manifest_path": "/data/airslot/worktree/artifacts/models/m1/YEAR_2021/TAIL_REFERENCE_V1/MANIFEST.json",
+      "manifest_sha256": "2e7c23ece47830368623c79030ebcb266226a07c4d4dc1188865f8dedda884c0",
+      "official_load_validation": "PASS",
+      "peak_rss_kib": "2797164",
+      "summary": {
+        "final_test_access_count": 0,
+        "fit_period": [
+          "2021-01-01",
+          "2021-06-30"
+        ],
+        "source_hashes": {
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json": "sha256:e3f2ed91e7c4d92d5f79872c92d7249b12111272cae00a86d3628f054d0887db",
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2021/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json": "sha256:9d0f1d956a367ae87aa8f7e119f90cb7527dcadd0e5402de172c53a48a595f6a",
+          "data2/reports/cohort_size_stability/2021/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl": "sha256:52df60f31cae4dabd6b5653502488197d1bc294ede84216f72c3e3430fea818a"
+        },
+        "tail_id": "sha256:e19ea593c5eb7172719a48327a715646d1da6c61ab9ba03f8f07d800cd76359a",
+        "targets": {
+          "D_OB": {
+            "artifact_hash": "sha256:ce4328daf8b15bb85c174f053e3c508ef7f6441a3bc342a469db87e00ddd992e",
+            "positive_n": 17717,
+            "q90": 77.0,
+            "tail_n": 1740
+          },
+          "D_TX": {
+            "artifact_hash": "sha256:9999c559d609798fdcce8a66fec2564c58bdacf163a1ce608d09dfadeb9fc185",
+            "positive_n": 29362,
+            "q90": 17.0,
+            "tail_n": 2596
+          }
+        },
+        "year": 2021
+      },
+      "targets": [
+        "D_OB",
+        "D_TX"
+      ],
+      "task_status": "PASS",
+      "task_tag": "tail_2021",
+      "wall": "32:22.57"
+    },
+    "2022": {
+      "exit_code": "0",
+      "manifest_path": "/data/airslot/worktree/artifacts/models/m1/YEAR_2022/TAIL_REFERENCE_V1/MANIFEST.json",
+      "manifest_sha256": "db202ac4bda817479ee4e04ce003b153d4d7f30216cd865929d273339b2b38e2",
+      "official_load_validation": "PASS",
+      "peak_rss_kib": "2790596",
+      "summary": {
+        "final_test_access_count": 0,
+        "fit_period": [
+          "2022-01-01",
+          "2022-06-30"
+        ],
+        "source_hashes": {
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json": "sha256:99421155def3054790b9f500d41f7ca2a2fca41d9b39282900b61225e3e1d549",
+          "artifacts/models/pre/PRE_MULTIYEAR_V1/2022/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json": "sha256:a3588b78b99c392bc2499ca658c74aa8fa55f36ac59a915dd060f66a74cc8c93",
+          "data2/reports/cohort_size_stability/2022/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl": "sha256:19e87c530470cd36d1a9c7ec5bb285b0d6a4cb146cfcc7f35dfd4c94f4a85a2f"
+        },
+        "tail_id": "sha256:c8e010ddf307960cd854e5266bd9818757a390d657d8d1e26ba2b86e841b2c7e",
+        "targets": {
+          "D_OB": {
+            "artifact_hash": "sha256:49d03e2ad7cba4cc621c2e270ef237aa30e70f38b026de0ae13f4914a33cdfd8",
+            "positive_n": 24931,
+            "q90": 82.0,
+            "tail_n": 2478
+          },
+          "D_TX": {
+            "artifact_hash": "sha256:81d658ffe13df1552e23a31c001a863ac6e0475c96047f0c923ae44ecda41d5c",
+            "positive_n": 29275,
+            "q90": 17.0,
+            "tail_n": 2663
+          }
+        },
+        "year": 2022
+      },
+      "targets": [
+        "D_OB",
+        "D_TX"
+      ],
+      "task_status": "PASS",
+      "task_tag": "tail_2022",
+      "wall": "35:19.34"
+    }
+  }
+}

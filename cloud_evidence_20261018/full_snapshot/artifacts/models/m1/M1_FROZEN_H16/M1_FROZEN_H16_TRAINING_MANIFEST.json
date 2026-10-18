@@ -1,0 +1,115 @@
+{
+  "batch_size": 64,
+  "cache": {
+    "cache_hash": "sha256:c915c28660b7492ca4280827d873447630bb32b0a1f7530b183a4bc394b45a35",
+    "cache_key": "sha256:7ebf930cba9f21e5d7573bbba2748cea067e37f7e16798aa14abee7f81b7032d",
+    "cache_miss_to_hit_equivalence": {
+      "numeric_values_equal": true,
+      "static_block_equal": true,
+      "static_context_lineage_equal": true,
+      "status": "PASS"
+    },
+    "manifest": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H16\\DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3_MANIFEST.json",
+    "path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H16\\DATA2_M1_V2_DEVELOPMENT_FAST_CACHE_V3.npz",
+    "status": "HIT"
+  },
+  "calibration": {
+    "temperatures": {
+      "D_OB_ZERO": 20.0,
+      "D_TX_ZERO": 2.608981132507324,
+      "T_IB_REMAINING_HAZARD": 0.32894524931907654
+    }
+  },
+  "calibration_counts": {
+    "active_D_OB": 1006,
+    "active_D_TX": 1060,
+    "active_T_IB_REMAINING_HAZARD": 203,
+    "examples": 1060,
+    "positive_D_OB": 461,
+    "positive_D_TX": 400,
+    "zero_D_OB": 545,
+    "zero_D_TX": 660
+  },
+  "calibration_split": {
+    "end": "2019-07-31",
+    "start": "2019-07-01"
+  },
+  "dataset": "DATA2_2019",
+  "development_diagnostics": "NOT_RUN",
+  "development_split": {
+    "end": "2019-09-30",
+    "start": "2019-08-01"
+  },
+  "development_used_for_parameter_selection": false,
+  "epochs": 2,
+  "fast_config_hash": "sha256:a1bb8f66f85463812c365872d1d09f07622e332c50ca26d352dde4ed6994b319",
+  "final_test_access_count": 0,
+  "hidden_size": 16,
+  "input_schema_hash": "sha256:56253d8ef9095588c48a31506f5bd3952ed52fbe457f5ef2c1f8d635a3cd4097",
+  "normalization_fitted_split": "train",
+  "references": {
+    "taxi_artifact_hash": "sha256:9e67d6f5d0b9870947e1c882fdf65ecc7609404cdf209f7162f381889ecab4dc",
+    "taxi_reference_hash": "sha256:fe344d8b26ea9dd8380122470d617be43636d453f2ec365d269eeb6b1e4b35af",
+    "taxi_reference_id": "sha256:7e304a84c006ddd76f9a6fa685703a083a1711fe54cd1f33969e3f2c3a2873b3",
+    "turnaround_artifact_hash": "sha256:f4992f85fa65232115256a7eb9e18e9323995cd4c026463fb5a58bf4cf31cfdb",
+    "turnaround_reference_hash": "sha256:89b5329d984f7070f68818832caec72aa46ac2f79d93f303661ab0f81adf1b0a",
+    "turnaround_reference_id": "sha256:7c6ac01673f200260fc925eb4c0b57f143fcc34532832375124945252b69707c"
+  },
+  "scenario_generation": "NOT_RUN",
+  "schema_version": "M1_FROZEN_H16_TRAINING_MANIFEST_V1",
+  "seed": 20260821,
+  "train_counts": {
+    "active_D_OB": 1793,
+    "active_D_TX": 1880,
+    "active_T_IB_REMAINING_HAZARD": 342,
+    "examples": 1880,
+    "positive_D_OB": 669,
+    "positive_D_TX": 664,
+    "zero_D_OB": 1124,
+    "zero_D_TX": 1216
+  },
+  "train_split": {
+    "end": "2019-06-30",
+    "start": "2019-01-01"
+  },
+  "training": [
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 1,
+      "loss": 30.152820587158203,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 2,
+      "loss": 30.06304931640625,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    }
+  ]
+}

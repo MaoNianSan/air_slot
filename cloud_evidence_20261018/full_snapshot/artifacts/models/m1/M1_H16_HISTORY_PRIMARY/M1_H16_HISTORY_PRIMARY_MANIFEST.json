@@ -1,0 +1,209 @@
+{
+  "artifact_hash": "sha256:beffb5c1467b8754168214b60d8ecc66703cbad9ab3e67ae519ad5359c353ea4",
+  "artifact_status": "FORMAL_MODEL_RUNTIME_ARTIFACT_READY",
+  "batch_size": 64,
+  "calibration_cohort_hash": "sha256:fb7f4a068dae322d8f34ac8abe0e67e013d0cbff4394a19e09fc68a7a98cb6f9",
+  "calibration_hash": "sha256:f8747ac873c8bc930b50985b254912425a05e3384e50fabf91047ac4c26772e3",
+  "calibration_parameters_are_variant_specific": true,
+  "calibration_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_HISTORY_PRIMARY\\M1_H16_HISTORY_PRIMARY_CALIBRATION.json",
+  "checkpoint_hash": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+  "checkpoint_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_HISTORY_PRIMARY\\M1_H16_HISTORY_PRIMARY.pt",
+  "code_commit": "9729354261de2a23c82b2e02350ba84aaba6dab7",
+  "development_cohort_hash": "sha256:79c3dd9d47e3ec6f15f228213f69bf84f40e8b8f5b6bb7fbea390fbe5613af79",
+  "development_used_for_parameter_selection": false,
+  "epochs": 8,
+  "feature_contract_hash": "sha256:56253d8ef9095588c48a31506f5bd3952ed52fbe457f5ef2c1f8d635a3cd4097",
+  "final_test_access_count": 0,
+  "formal_training_contract_source": "model/M1/tuning_stage1.py:STAGE1_TRAINING_CONFIG",
+  "hidden_size": 16,
+  "history_contract": {
+    "full_episode_access": "CAUSAL_PREFIX_ONLY",
+    "future_information": "FORBIDDEN",
+    "history_encoder_enabled": true,
+    "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX"
+  },
+  "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+  "learning_rate": 0.001,
+  "model_role": "PRIMARY",
+  "model_version": "M1_STATE_ESTIMATOR_V2_H16",
+  "optimizer": "Adam",
+  "optional_robustness_seeds": [
+    20260814,
+    20260815,
+    20260816,
+    20260817
+  ],
+  "paper_result": false,
+  "quantile_grid": [
+    0.1,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ],
+  "scenario_count": 64,
+  "schema_version": "M1_FORMAL_H16_RUNTIME_ARTIFACT_MANIFEST_V1",
+  "selection_or_tuning": false,
+  "selection_role": null,
+  "support_contract_hash": "sha256:aadc580d2015c3c6f7c30d2f5ef346e25108775552d70fb3f62200a144573d8a",
+  "target_contract_hash": "sha256:524bd12352762b4bde9f74f3c01f27da15d5adb2c4433f0a25d7cc2a6f3dacf9",
+  "train_episode_hash": "sha256:8db8fd936c6a39e5b437e2c56f45061f00bf9caa284fc0a1a55d7c19b07eb7e7",
+  "training": [
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 1,
+      "loss": 30.329145431518555,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 2,
+      "loss": 30.241222381591797,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 3,
+      "loss": 30.153579711914062,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 4,
+      "loss": 30.06629180908203,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 5,
+      "loss": 29.978757858276367,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 6,
+      "loss": 29.891128540039062,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 7,
+      "loss": 29.8038330078125,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    },
+    {
+      "active_counts": {
+        "D_OB": 1793,
+        "D_TX": 1880,
+        "T_IB_REMAINING_HAZARD": 342
+      },
+      "episode_denominators": {
+        "ib": 40,
+        "ob_positive": 50,
+        "ob_zero": 128,
+        "tx_positive": 47,
+        "tx_zero": 128
+      },
+      "epoch": 8,
+      "loss": 29.716428756713867,
+      "microbatch_count": 30,
+      "optimizer_steps": 1,
+      "weight_decay": 0.0
+    }
+  ],
+  "training_cohort_hash": "sha256:b60a80f7ca1acc0d70b8e71ae1563a3263a6db8a7ff4bb5d689bee9de6628478",
+  "training_cohort_id": "M1_FORMAL_TRAINING_COHORT_V1",
+  "training_seed": 20260813,
+  "weight_decay": 0.0
+}

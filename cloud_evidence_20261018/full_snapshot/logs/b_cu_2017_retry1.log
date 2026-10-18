@@ -1,0 +1,24 @@
+[2026-10-13T04:24:24Z] B_CU_2017_RETRY1 start (contract JATM_F_CONTINUITY_B_V1)
+[2026-10-13T04:24:25+00:00] 2017: streaming Y-H1 on-time rows (months 1-6)
+[2026-10-13T04:27:47+00:00] 2017: Y-H1 rows = 2711361 (reference-legality gate dropped 1)
+[2026-10-13T04:29:46+00:00] 2017: non-physical rotation flights excluded = 2 (2 chaining passes)
+[2026-10-13T04:29:46+00:00] 2017: fit_train_references (turnaround/exposure/passenger)
+[2026-10-13T04:33:12+00:00] 2017: fit_passenger_consequence_references (T100 MONTH<=6, DB1B Q1+Q2)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 320, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 313, in main
+    manifest = build_year(year, output_root=args.output_root,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 233, in build_year
+    scales = scale_builder(
+             ^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/reference/data2_m2_train_fit.py", line 515, in compute_train_scales_continuity_b
+    (predecessor["actual_arrival_utc"] - successor["scheduled_departure_utc"]).total_seconds() / 60.0
+                                         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'scheduled_departure_utc'
+B_CU_2017_BUILD_FAIL rc=1
+EXIT_CODE=1

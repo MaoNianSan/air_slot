@@ -1,0 +1,52 @@
+{
+  "schema_version": "AIRSLOT_CODE_PATCH_RECORD_V1",
+  "patch_id": "20261013_bcu2019_context_fix",
+  "created_at_utc": "2026-10-13T07:22:00Z",
+  "purpose": "Round-3 authorized fix: route an explicit construction context (dataset_instance_id) through fit_train_references / stream_passenger_routes so the year-replicated builder's shared six-year identity no longer collides with the legacy year==2019 default. No formulas, screening, taxi source or legacy behavior changed.",
+  "local_source": {
+    "repo": "D:/research/air_slot/code/explore",
+    "branch": "v2/paper-primary",
+    "commit": "ffa74876bf3c4dfa7031da06e59bf91a0f2899ef",
+    "commit_short": "ffa7487",
+    "commit_date": "2026-10-13 15:16:20 +0800",
+    "files": {
+      "model/PRE/reference/data2_m2_train_fit.py": {
+        "sha256_parent": "6fa95b228db5689e439be111445fcc5c3c339612f8ee9f04ee4a3087eed5e4a0",
+        "sha256_fixed": "28e8067c449756b7c59fb58f422408cdb6307ba7d0208813681447d927f693df"
+      },
+      "data2/scripts/build_year_references.py": {
+        "sha256_parent": "b593a3f7bd2d239067ad3c6bcff1f36a150b03899c67b6f88af654fe25ff16a1",
+        "sha256_fixed": "20f4bc900c780291064dec1729cab9a0a464b3624165769ede408be77993df12"
+      },
+      "tests/m2/test_bcu_2019_construction_context.py": {
+        "sha256_new": "f7f5bf232bf2834e6fd69d25d49f8b0fb934edfd5556be162b5752f1ccbc1d3d"
+      },
+      "tests/m2/test_freeze_registry.py": {
+        "sha256_parent": "b84ea311609d0784967812560b184191cc637ad3868bd20f52354ede810d3949",
+        "sha256_fixed": "a6216f33320b600d65870e4d9fd4b1d3ed14e2e7587e5c2c070a24391c49de24"
+      }
+    }
+  },
+  "tests": {
+    "local_focused_batch": "24 passed (new context file + round-1 regression + freeze_registry + jatm_continuity_b)",
+    "local_extended_batch": "155 passed (tests/m2 full + passenger/exposure units + contract g0 trace)",
+    "server": "py_compile OK on all four files; fit_train_references/stream_passenger_routes signatures verified on the cloud tree"
+  },
+  "patch": {
+    "file": "/data/airslot/patches/20261013_bcu2019_context_fix.patch",
+    "sha256": "1d3ba5d32b243773201eb924aa1a3aca6fe1443ead60af6184d872b03a02fdbb",
+    "target_root": "/data/airslot/worktree",
+    "apply_method": "patch -p1 (dry-run checked; before-hashes matched parents; after-hashes match committed blobs)"
+  },
+  "cloud_verification": {
+    "data2_m2_train_fit.py": {"before": "6fa95b228db5689e439be111445fcc5c3c339612f8ee9f04ee4a3087eed5e4a0", "after": "28e8067c449756b7c59fb58f422408cdb6307ba7d0208813681447d927f693df"},
+    "data2/scripts/build_year_references.py": {"before": "b593a3f7bd2d239067ad3c6bcff1f36a150b03899c67b6f88af654fe25ff16a1", "after": "20f4bc900c780291064dec1729cab9a0a464b3624165769ede408be77993df12"},
+    "tests/m2/test_bcu_2019_construction_context.py": {"before": "ABSENT", "after": "f7f5bf232bf2834e6fd69d25d49f8b0fb934edfd5556be162b5752f1ccbc1d3d"},
+    "tests/m2/test_freeze_registry.py": {"before": "b84ea311609d0784967812560b184191cc637ad3868bd20f52354ede810d3949", "after": "a6216f33320b600d65870e4d9fd4b1d3ed14e2e7587e5c2c070a24391c49de24"}
+  },
+  "snapshot_identity": {
+    "note": "The original cloud snapshot identity remains untouched (CODE_SNAPSHOT.json git_head 583f2c12 / source_archive_sha256 4e8e64b6 unchanged). The worktree is now 'snapshot 583f2c12 + patch 8cc7a1b7 (d1c72a7) + patch 1d3ba5d3 (ffa7487)'. Any run under this tree must be attributed to the patched state.",
+    "patched_state_effective_for": "all subsequent worktree computations after 2026-10-13T07:21Z"
+  },
+  "input_completeness_note": "A separate input gap was closed the same day: artifacts/diagnostics/v5_development_freeze/DATA2_TAXI_REFERENCE_TRAIN_FROZEN_V1.json (required by the 2019 taxi path; not covered by the 439-file manifest; git-ignored) was uploaded and verified at sha256:12ca5e93a6f6f0dcfc0dfe217a14a132fea93811ecef94875a4042025a0d5b34."
+}

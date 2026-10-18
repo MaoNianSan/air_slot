@@ -1,0 +1,6 @@
+RECORD ANOMALY DISCLOSURE v2 (2026-10-13, pilot_e2e3) - CORRECTED WITH SAMPLER EVIDENCE:
+- Log START entries: 10:31:47Z, 11:05:02Z, 11:23:21Z, 11:30:26Z (issued during a session-gap window, not by this ZCode session) + 11:51:10Z (this session's duplicate, killed 11:52Z on discovery).
+- VALID COMPLETED RUN = the 10:31:47Z attempt: its python (pid 166388, runner 166382) is observed by resource_pilot.log alive and CPU-bound from 10:31:47Z (etime 47:13 @11:19, 57:13 @11:29, 1:07:13 @11:39) until completion; runner wrote exitcode=0 / status=PASS at 11:46:10Z.
+  => wall = 10:31:47 -> 11:46:10 = 74m23s. Peak RSS from sampler: 3.03..3.92 GiB across samples (peak >= 3.9 GiB); its /usr/bin/time report was later truncated by the duplicate's launch (documented).
+- The 11:05/11:23/11:30 START lines correspond to short-lived retries whose python processes never persisted (no traceback, no exitcode, no partial outputs attributed); no overlapping pilot python was observed in any sampler sample besides 166388.
+- No scientific outputs affected; outputs are chain-validation artifacts only (PILOT, not for paper). This session's duplicate was terminated before it could overwrite outputs (verified: output hashes captured immediately after the kill).

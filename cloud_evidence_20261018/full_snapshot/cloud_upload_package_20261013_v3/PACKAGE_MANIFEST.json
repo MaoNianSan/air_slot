@@ -1,0 +1,25 @@
+{
+  "schema": "JATM_CLOUD_UPLOAD_PACKAGE_V1",
+  "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+  "continuity_contract": "JATM_F_CONTINUITY_B_V1",
+  "stage2_time_coordinate_contract": "JATM_STAGE2_SIGNED_T_IB_V1",
+  "source_archive": "source/airslot_source_583f2c1.tar.gz",
+  "source_archive_sha256": "sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d",
+  "source_archive_bytes": 95785199,
+  "file_index": "FILE_INDEX.json",
+  "file_index_sha256": "sha256:0f2a39eff8893f6ef7860cf3223ab33c6fe06469db8bb86dca0f215d92c05597",
+  "input_manifest": "inputs/DATA_TRANSFER_MANIFEST.json",
+  "input_manifest_sha256": "sha256:b0735bd93a3a0e75c0e1967c404531f6c842a2abe6134b2d0492228019b9fc82",
+  "network_transfer_performed": false,
+  "cloud_connection": false,
+  "scientific_execution_started": false,
+  "final_test_access_count": 0,
+  "status": "CLOUD_UPLOAD_PACKAGE_BUILT",
+  "execution_gate": "SIX_YEAR_EXECUTION_BLOCKED",
+  "input_gate": "checks/B_CONTINUITY_INPUT_GATE.json",
+  "notes": [
+    "This source/deployment package does not contain raw data or annual model/reference outputs.",
+    "2017-2022 B CU bundles are missing; annual model/tail gaps are recorded in the input gate.",
+    "No credentials or cloud endpoint are included."
+  ]
+}

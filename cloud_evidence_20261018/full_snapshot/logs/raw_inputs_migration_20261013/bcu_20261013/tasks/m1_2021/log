@@ -1,0 +1,107 @@
+[2026-10-13T08:06:39Z] START m1_2021 year=2021 (M1 training, both roles)
+{
+  "approval_sha256": "sha256:add7004cf189821ddea0f6be95701fb777bf481a616573efca0f90af0886fa65",
+  "final_test_access_count": 0,
+  "model_retrained": true,
+  "models": {
+    "M1_CURRENT_COMPARATOR": {
+      "calibration_episode_count": 2048,
+      "calibration_examples": 32326,
+      "checkpoint": "artifacts/models/m1/YEAR_2021/M1_CURRENT_COMPARATOR.pt",
+      "checkpoint_hash": "sha256:26cec4eafe5e4dd5fcdb4ec77739104fa0bf76fd883934fb07f8c7b1e8c13357",
+      "created_at_utc": "2026-10-13T08:12:42.880076+00:00",
+      "development_node_count": 63784,
+      "final_test_access_count": 0,
+      "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+      "m5b_n128_pilot_reused": false,
+      "manifest_sha256": "sha256:83c9309abc02bf429309dd267a908b193e3d859254f90a242ebebcdeef76003c",
+      "n": 4096,
+      "role": "M1_CURRENT_COMPARATOR",
+      "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+      "scientific_model_n": 4096,
+      "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+      "train_episode_count": 4096,
+      "train_examples": 64572,
+      "year": 2021
+    },
+    "M1_HISTORY_PRIMARY": {
+      "calibration_episode_count": 2048,
+      "calibration_examples": 32326,
+      "checkpoint": "artifacts/models/m1/YEAR_2021/M1_HISTORY_PRIMARY.pt",
+      "checkpoint_hash": "sha256:7a89b888ca06eb5bdc75290b3b0547e715cc7c63cd4066c64cdeb256fe60e224",
+      "created_at_utc": "2026-10-13T08:11:55.749841+00:00",
+      "development_node_count": 63784,
+      "final_test_access_count": 0,
+      "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+      "m5b_n128_pilot_reused": false,
+      "manifest_sha256": "sha256:57f5307ab63f9930a3fa6a9e51b00a6ebcfd229fc05d7d92b74c86befb58e04d",
+      "n": 4096,
+      "role": "M1_HISTORY_PRIMARY",
+      "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+      "scientific_model_n": 4096,
+      "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+      "train_episode_count": 4096,
+      "train_examples": 64572,
+      "year": 2021
+    }
+  },
+  "n": 4096,
+  "roles": [
+    "M1_HISTORY_PRIMARY",
+    "M1_CURRENT_COMPARATOR"
+  ],
+  "schema_version": "JATM_ANNUAL_M1_TRAINING_RECEIPT_V1",
+  "status": "TRAINED_AND_HASH_VALIDATED",
+  "training_summary": {
+    "final_test_access_count": 0,
+    "models": {
+      "M1_CURRENT_COMPARATOR": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 32326,
+        "checkpoint": "/data/airslot/worktree/artifacts/models/m1/YEAR_2021/M1_CURRENT_COMPARATOR.pt",
+        "checkpoint_hash": "sha256:26cec4eafe5e4dd5fcdb4ec77739104fa0bf76fd883934fb07f8c7b1e8c13357",
+        "created_at_utc": "2026-10-13T08:12:42.880076+00:00",
+        "development_node_count": 63784,
+        "final_test_access_count": 0,
+        "history_mode": "NO_HISTORY_CURRENT_OBSERVATION",
+        "m5b_n128_pilot_reused": false,
+        "manifest": "/data/airslot/worktree/artifacts/models/m1/YEAR_2021/M1_CURRENT_COMPARATOR_MANIFEST.json",
+        "manifest_hash": "sha256:83c9309abc02bf429309dd267a908b193e3d859254f90a242ebebcdeef76003c",
+        "n": 4096,
+        "role": "M1_CURRENT_COMPARATOR",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 64572,
+        "year": 2021
+      },
+      "M1_HISTORY_PRIMARY": {
+        "calibration_episode_count": 2048,
+        "calibration_examples": 32326,
+        "checkpoint": "/data/airslot/worktree/artifacts/models/m1/YEAR_2021/M1_HISTORY_PRIMARY.pt",
+        "checkpoint_hash": "sha256:7a89b888ca06eb5bdc75290b3b0547e715cc7c63cd4066c64cdeb256fe60e224",
+        "created_at_utc": "2026-10-13T08:11:55.749841+00:00",
+        "development_node_count": 63784,
+        "final_test_access_count": 0,
+        "history_mode": "FULL_ADAPTIVE_CAUSAL_PREFIX",
+        "m5b_n128_pilot_reused": false,
+        "manifest": "/data/airslot/worktree/artifacts/models/m1/YEAR_2021/M1_HISTORY_PRIMARY_MANIFEST.json",
+        "manifest_hash": "sha256:57f5307ab63f9930a3fa6a9e51b00a6ebcfd229fc05d7d92b74c86befb58e04d",
+        "n": 4096,
+        "role": "M1_HISTORY_PRIMARY",
+        "schema_version": "JATM_ANNUAL_M1_RUNTIME_V1",
+        "scientific_model_n": 4096,
+        "source": "data2.reports.cohort_size_stability.HASH_SELECTED_COHORT_RECORDS_N4096",
+        "train_episode_count": 4096,
+        "train_examples": 64572,
+        "year": 2021
+      }
+    },
+    "n": 4096,
+    "year": 2021
+  },
+  "year": 2021
+}
+BINDINGS_OK {"M1_CURRENT_COMPARATOR": {"checkpoint_hash": "sha256:26cec4eafe5e4dd5fcdb4ec77739104fa0bf76fd883934fb07f8c7b1e8c13357", "manifest_sha256": "sha256:83c9309abc02bf429309dd267a908b193e3d859254f90a242ebebcdeef76003c"}, "M1_HISTORY_PRIMARY": {"checkpoint_hash": "sha256:7a89b888ca06eb5bdc75290b3b0547e715cc7c63cd4066c64cdeb256fe60e224", "manifest_sha256": "sha256:57f5307ab63f9930a3fa6a9e51b00a6ebcfd229fc05d7d92b74c86befb58e04d"}}
+M1_2021_TRAIN_PASS

@@ -1,0 +1,50 @@
+{
+  "calibration_contract": {
+    "final_test_access_count": 0,
+    "positive_quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+    "predecessor_calibration_method": "TEMPERATURE_ON_HAZARD_LOGITS",
+    "predecessor_probability_calibration": "DISCRETE_HAZARD_EVENT_TIME_NLL",
+    "split": "calibration",
+    "successor_zero_mass_calibration": "HURDLE_ZERO_BINARY_CE_TEMPERATURE",
+    "version": "M1_CALIBRATION_CONTRACT_V1"
+  },
+  "calibration_hash": "sha256:31448e750fbbd44fc9bc6bce0ada59e083dc0ec5cf44dc9f49807a41615c1a36",
+  "calibration_partition": {
+    "end": "2019-07-31",
+    "start": "2019-07-01"
+  },
+  "diagnostics": {
+    "policy_version": "M1_CALIBRATION_CONTRACT_V1",
+    "positive_quantile_coverage": {
+      "D_OB": {
+        "0.1": 0.0,
+        "0.3": 0.0,
+        "0.5": 0.06724511831998825,
+        "0.7": 0.06724511831998825,
+        "0.9": 0.09761388599872589
+      },
+      "D_TX": {
+        "0.1": 0.0,
+        "0.3": 0.054999999701976776,
+        "0.5": 0.12250000238418579,
+        "0.7": 0.14499999582767487,
+        "0.9": 0.27250000834465027
+      }
+    },
+    "positive_quantile_status": "QUANTILE_CALIBRATION_NOT_APPLIED",
+    "split": "calibration"
+  },
+  "final_test_access_count": 0,
+  "model_version": "M1_STATE_ESTIMATOR_V2_H8",
+  "schema_version": "M1_FROZEN_H8_CALIBRATION_ARTIFACT_V1",
+  "support": {
+    "D_OB": 180,
+    "D_TX": 60,
+    "T_IB_REMAINING_HAZARD": 360
+  },
+  "temperatures": {
+    "D_OB_ZERO": 1.3648149967193604,
+    "D_TX_ZERO": 1.445334553718567,
+    "T_IB_REMAINING_HAZARD": 20.0
+  }
+}

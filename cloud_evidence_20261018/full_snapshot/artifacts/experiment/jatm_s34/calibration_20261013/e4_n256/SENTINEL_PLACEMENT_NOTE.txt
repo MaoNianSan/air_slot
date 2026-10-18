@@ -1,0 +1,12 @@
+SENTINEL PLACEMENT NOTE (R7 calibration, 2026-10-13)
+- The battery ladder phase anchors on {root}/2019/N128/M1_N.pt; its documented legacy fallback
+  (consequence_stability_battery.ladder_phase) is {root}/2019/sentinel_N128_r1/N128/M1_N.pt.
+- The N_GRID=(256) calibration trains N=256 only, so the N128 anchor was absent -> ladder halted
+  (BLOCK_M5B_SENTINEL_CHECKPOINT_MISSING).
+- Resolution: the R6 pilot r2 run's trained N=128 replica (same repo snapshot+patches, same protocol
+  V1/V2, same internal seed; deterministic per the M5-b sentinel protocol) was copied into the
+  designed fallback slot. Hash equality verified; source and destination hashes recorded below.
+- This affects only the ladder probe's per-node rate anchor; no model/formula/definition change;
+  no checkpoint regeneration (copy of an existing artifact).
+source_sha256=f4b21b95cbdc288685733ea7b148260966b021077d253f3f14b23861e0b8ffa9
+placed_sha256=f4b21b95cbdc288685733ea7b148260966b021077d253f3f14b23861e0b8ffa9

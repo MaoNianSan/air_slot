@@ -1,0 +1,22 @@
+{
+  "schema": "JATM_ANNUAL_M1_TRAINING_AUTHORIZATION_V1",
+  "status": "USER_APPROVED",
+  "years": [2019, 2020, 2021, 2022],
+  "n": 4096,
+  "roles": [
+    "M1_HISTORY_PRIMARY",
+    "M1_CURRENT_COMPARATOR"
+  ],
+  "train_months": [1, 2, 3, 4, 5, 6],
+  "calibration_months": [7],
+  "development_used_for_fit": false,
+  "final_test_access_count": 0,
+  "provenance": {
+    "record_id": "M1_TRAINING_AUTHORIZATION_APPROVED_2019_2022",
+    "authorization_date": "2026-10-13",
+    "authorization_source": "User's explicit approval, round-4 supplement (2026-10-13): '用户已于 2026-10-13 明确批准 2019–2022 年 M1 训练', with the fixed scope reproduced byte-for-byte in this record.",
+    "scope": "2019-2022 M1 formal training ONLY. NOT valid for: retraining 2017/2018, modifying scientific models, or executing E1-E4.",
+    "supersedes": "M1_TRAINING_AUTHORIZATION_USER_APPROVED_20261013.json (transcription record, sha256 add7004cf..., identical fixed fields; m1_2019 was launched under it before this canonical record was requested).",
+    "not_modified": "M1_TRAINING_AUTHORIZATION_TEMPLATE.json and M1_TRAINING_AUTHORIZATION_DRAFT_2019_2022.json remain unchanged (NOT_APPROVED)."
+  }
+}

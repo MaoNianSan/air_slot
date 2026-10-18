@@ -1,0 +1,37 @@
+{
+  "schema": "FULL_EXPERIMENT_EXECUTION_AUTHORIZATION_V1",
+  "experiment_ids": ["E1", "E2", "E3", "E4"],
+  "years": [2017, 2018, 2019, 2020, 2021, 2022],
+  "dataset_snapshot": {
+    "development_bundle_track": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1 (six-year, LEGACY_A Development track consumed by E1/E2/E3 via annual_bridge)",
+    "binding_anchors": "SIX_YEAR_INPUTS_VALIDATED.json (2026-10-13); protocol V1/V2 in data2/reports/cohort_size_stability; M1 YEAR_{year} receipts; tails 2017-2022",
+    "st3registry_frozen_sha256": "sha256:befc3ae161cc40325d379ac61d72358e7dfc068465cb82dceca1ff66df59e1ca",
+    "notes": "E4 uses --bundle-base = R1 root; E1/E2E3 full runs use the annual bounded runners with chunk=64 (default), per FINAL_EXECUTION_RESOURCE_PLAN_V2.md"
+  },
+  "code_snapshot": {
+    "git_head": "583f2c12d54297ce6522285b44ff8bf008587308",
+    "source_archive_sha256": "sha256:4e8e64b6aa74b4f7be0b3c9fbb022920b3b24a50f6d0a347d35b7858554abb4d",
+    "patch_chain": [
+      {"patch_sha256": "8cc7a1b7bfa727334e962d24728d9554eb4f579e440612ee54f43d50f40468ec", "local_commit": "d1c72a7"},
+      {"patch_sha256": "1d3ba5d32b243773201eb924aa1a3aca6fe1443ead60af6184d872b03a02fdbb", "local_commit": "ffa7487"}
+    ],
+    "gitless_runtime_adapter": "GIT_DIR=/data/airslot/smoke_gitmeta/repo/.git (HEAD -> 583f2c12)"
+  },
+  "final_test_access_count": 0,
+  "execution_scope": "DEVELOPMENT_ONLY",
+  "resource_budget": {
+    "basis": "R6 pilot + R7 calibration (CALIBRATION_REPORT_V1.md); plan = FINAL_EXECUTION_RESOURCE_PLAN_V2.md",
+    "machine_hours_estimate": "36-48 (E1 6-9, E2E3 15-18, E4 15-21); recommend budget 40-55 incl. overhead",
+    "wall_plan": "E4 six-worker wave ~3h; E2E3 3-concurrent ~5-6h; E1 3-concurrent ~2-3h; total ~10-12h wall",
+    "memory_floor_gib": 20,
+    "concurrency": {"E4": "6 workers (one per year)", "E1_E2E3": "up to 3 concurrent year jobs", "rule": "single-thread envs; no same-year/same-output concurrency"},
+    "checkpoint_resume": "E4 phase-level E4_YEAR_STATE; E2E3 two-pass checkpoints; E1 chunk checkpoints; no blind restarts",
+    "runner_hardening_required": "per-attempt time_v naming + pre-launch status/marker check (single-driver rule) per R7 incident findings"
+  },
+  "user_approval_status": "NOT_APPROVED",
+  "provenance": {
+    "created_at_utc": "2026-10-13T13:42:00Z",
+    "created_by": "ZCode execution agent (round-7 preparation; status deliberately left NOT_APPROVED)",
+    "approval_instructions": "Set user_approval_status=USER_APPROVED, confirm experiment_ids/years, compute sha256, archive both sides; then follow FINAL_EXECUTION_RESOURCE_PLAN_V2.md execution order. Scope guard: DEVELOPMENT_ONLY; Final-Test remains sealed; no code/model/formula changes."
+  }
+}

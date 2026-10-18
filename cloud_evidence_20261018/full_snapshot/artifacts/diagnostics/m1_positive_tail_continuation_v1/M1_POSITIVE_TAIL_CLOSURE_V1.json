@@ -1,0 +1,106 @@
+{
+  "artifact_hash": "sha256:58b4a15c715c8654fa0323dc1d55716717f943ec72eccbb30562db46697f04a4",
+  "artifact_id": "M1_POSITIVE_TAIL_CLOSURE",
+  "closure_date": "2026-09-03",
+  "cvar_validation": {
+    "status": "PASS",
+    "test": "finite empirical-tail scenarios retained in CVaR_0.90",
+    "test_command": "pytest -q tests/m4/test_v2_monetary_residual_risk.py"
+  },
+  "data_guard": {
+    "data1_modified": false,
+    "data2_modified": false,
+    "exp_directory_exists": false,
+    "experiment_created": false,
+    "final_test_access_count": 0
+  },
+  "development_e2e": {
+    "a00_recommendation_authorized": false,
+    "artifact_hash": "sha256:67add51100195036e77ded3c20de04da335a0fdc5f5d49a72e56450b730747b8",
+    "m1": "PASS",
+    "m2": "PASS",
+    "m2_formal_scenarios": 64,
+    "m3": "PASS",
+    "m3_action": "A00",
+    "m4": "PASS",
+    "m4_cvar_0_90": 11.16416590045807,
+    "m4_numerical_state": "DEFINED",
+    "pre": "PASS",
+    "status": "PASS"
+  },
+  "final_status": {
+    "blocked_positive_tail": "RESOLVED",
+    "model_baseline_ready_for_seal": "YES",
+    "positive_tail_numerical_realization": "CLOSED"
+  },
+  "m3_readiness": {
+    "missing_response_cells": 13,
+    "numerically_complete": 11,
+    "numerically_partial": 12,
+    "structural": 23
+  },
+  "model_identity": {
+    "architecture_changed": false,
+    "checkpoint_hash": "sha256:d78de00e708b359c881b6594c3d507fbf34bc3d570c3cbc5cf245be9e83be11d",
+    "checkpoint_path": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_FROZEN_H8\\DATA2_M1_V2_DEVELOPMENT_FAST.pt",
+    "model_retrained": false,
+    "parameter_reselected": false,
+    "quantile_grid": [
+      0.1,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ],
+    "scenario_count_contract": 64,
+    "supports": {
+      "D_OB": 180,
+      "D_TX": 60,
+      "T_IB": 360
+    }
+  },
+  "positive_quantile_calibration": "QUANTILE_CALIBRATION_NOT_APPLIED",
+  "scenario_materialization": {
+    "artifact_hash": "sha256:97f559807939f388c68eabbe931fb4d9483964ec2e1f1ba7b77548c9d895ed81",
+    "d_to_equals_d_ob_plus_d_tx": true,
+    "determinism": true,
+    "final_test_access_count": 0,
+    "nodes": 8,
+    "overflow_draws": 0,
+    "positive_tail_and_overflow_draws": 0,
+    "positive_tail_draws": 72,
+    "scenario_count": 512,
+    "scenarios_per_node": 64,
+    "status": "PASS"
+  },
+  "schema_version": "M1_POSITIVE_TAIL_CLOSURE_V1",
+  "scientific_method": "TRAIN_EMPIRICAL_EXCEEDANCE_CONTINUATION",
+  "targets": {
+    "D_OB": {
+      "artifact_hash": "sha256:a319fa325e14b1118b30410332ee8e5df5d8e29ad318f15d0c475bcae8b11675",
+      "fit_end": "2019-06-30",
+      "fit_partition": "train",
+      "fit_start": "2019-01-01",
+      "max_excess": 252.0,
+      "median_excess": 98.0,
+      "min_excess": 27.0,
+      "positive_n": 669,
+      "tail_n": 59,
+      "tail_support_status": "PASS",
+      "train_positive_q90": 91.0
+    },
+    "D_TX": {
+      "artifact_hash": "sha256:562ab6347e9dcfe7d4a4351176b92c48ba81b0c274833f7a7334dcf20695c604",
+      "fit_end": "2019-06-30",
+      "fit_partition": "train",
+      "fit_start": "2019-01-01",
+      "max_excess": 26.0,
+      "median_excess": 9.0,
+      "min_excess": 1.0,
+      "positive_n": 664,
+      "tail_n": 55,
+      "tail_support_status": "PASS",
+      "train_positive_q90": 14.0
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "final_test_access_count": 0,
+  "loaded_targets": [
+    "D_OB",
+    "D_TX"
+  ],
+  "manifest_path": "/data/airslot/worktree/artifacts/models/m1/YEAR_2018/TAIL_REFERENCE_V1/MANIFEST.json",
+  "manifest_sha256": "9cf17eacbb7cbed89faa3e44f99faa6c4a2e480891fe80fa0af2167ff3099ee5",
+  "official_load_validation": "PASS",
+  "schema_version": "AIRSLOT_TAIL_PASS_REGISTRATION_V1",
+  "tag": "TAIL_2018_PASS",
+  "tail_manifest_summary": {
+    "final_test_access_count": 0,
+    "fit_period": [
+      "2018-01-01",
+      "2018-06-30"
+    ],
+    "source_hashes": {
+      "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/DATA2_TAXI_REFERENCE_TRAIN_FROZEN.json": "sha256:40ca799389c2620d43ed277c2df1879fdf53d09a72a6ddec542f3be52ad2b3c9",
+      "artifacts/models/pre/PRE_MULTIYEAR_V1/2018/DATA2_TURNAROUND_REFERENCE_TRAIN_FROZEN.json": "sha256:e618ff826b7d0a6e7cc6b9cd7fb8a74e933845521e8e366cfb49ee508d2e110e",
+      "data2/reports/cohort_size_stability/2018/HASH_SELECTED_COHORT_RECORDS_N4096.jsonl": "sha256:48bebf1c80baa720dc5dc94d07bda5533838f0063ddfbb993c9056435d5b3c16"
+    },
+    "tail_id": "sha256:c35678914853dcb4b0ad8cd7f5aea1d5611196e1f6532e3b011550fc9b4aea9a",
+    "targets": {
+      "D_OB": {
+        "artifact_hash": "sha256:552b73914f749d68aed8c3cdac504f71cbeefa693e592d1bd79a6948aa5e2c5e",
+        "positive_n": 18214,
+        "q90": 84.0,
+        "tail_n": 1817
+      },
+      "D_TX": {
+        "artifact_hash": "sha256:befee057fded722ddf6897bd9739c844bbfe2a57770bfd9d61b6161dec126ae3",
+        "positive_n": 27429,
+        "q90": 22.0,
+        "tail_n": 2485
+      }
+    },
+    "year": 2018
+  },
+  "verified_at_utc": "2026-10-13T06:36:46+00:00",
+  "year": 2018
+}

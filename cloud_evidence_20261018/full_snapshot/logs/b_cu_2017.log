@@ -1,0 +1,23 @@
+[2026-10-13T03:10:54+00:00] 2017: streaming Y-H1 on-time rows (months 1-6)
+[2026-10-13T03:14:15+00:00] 2017: Y-H1 rows = 2711361 (reference-legality gate dropped 1)
+[2026-10-13T03:16:14+00:00] 2017: non-physical rotation flights excluded = 2 (2 chaining passes)
+[2026-10-13T03:16:14+00:00] 2017: fit_train_references (turnaround/exposure/passenger)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 320, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 313, in main
+    manifest = build_year(year, output_root=args.output_root,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/data2/scripts/build_year_references.py", line 217, in build_year
+    references = fit_train_references(rows, root=REPO,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/reference/data2_m2_train_fit.py", line 689, in fit_train_references
+    passenger = build_data2_passenger_reference(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/model/PRE/reference/passenger_data2.py", line 208, in build_data2_passenger_reference
+    raise ContractError("REFERENCE_DATASET_MISMATCH")
+model.common.errors.ContractError: REFERENCE_DATASET_MISMATCH
+EXIT_CODE=1

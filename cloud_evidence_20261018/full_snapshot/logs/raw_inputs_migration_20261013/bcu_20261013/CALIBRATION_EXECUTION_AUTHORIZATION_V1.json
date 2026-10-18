@@ -1,0 +1,23 @@
+{
+  "schema": "CALIBRATION_EXECUTION_AUTHORIZATION_V1",
+  "round": "R7 final resource calibration (pre-full)",
+  "user_approval_status": "USER_APPROVED",
+  "execution_scope": "DEVELOPMENT_ONLY",
+  "final_test_access_count": 0,
+  "experiments": {
+    "E1_CALIB": {"year": 2019, "node_limit": 128, "chunk_size": 64, "bootstrap_replicates": 2000,
+                 "baseline_comparison": "pilot chunk=4 (38:34, 3.50 GiB, 214 items/h)"},
+    "E2E3_CALIB": {"year": 2019, "node_limit": 128, "chunk_size": 64, "replicates": 2000, "seed": 20261011,
+                   "baseline_comparison": "pilot chunk=4 (74:23)"},
+    "E4_CALIB": {"year": 2019, "n_grid": [256], "bundle_root": "artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+                 "note": "same protocol (V1/V2 in STUDY_ROOT), same internal seed; baseline N=128 (30:19, 13.55 GiB)"}
+  },
+  "prohibitions": ["no full E1-E4", "no Final-Test", "no model/formula/action/consequence changes",
+                   "no regeneration of existing input artifacts", "no N_GRID beyond (256,)"],
+  "provenance": {
+    "record_id": "CALIBRATION_EXECUTION_AUTHORIZATION_V1",
+    "created_at_utc": "2026-10-13T12:36:00Z",
+    "created_by": "ZCode execution agent (transcription of explicit user authorization)",
+    "authorization_source": "User's round-7 instruction (2026-10-13): E1 chunk calib (2019, node_limit=128, chunk=64); E2/E3 chunk calib (same, replicates=2000, seed 20261011); E4 scaling calib (2019, N_GRID=(256), same R1 bundle/protocol/seed)."
+  }
+}
