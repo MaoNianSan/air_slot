@@ -1,0 +1,61 @@
+{
+  "n_grid": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "schema_version": "JATM_S34_E4_DEVELOPMENT_V1",
+  "status": "DEVELOPMENT_COMPLETE",
+  "test_access_count": 0,
+  "updated_at": "2026-10-13T18:26:55+00:00",
+  "year_local_rule": "Train Jan-Jun; Calibration Jul; Development Aug-Sep; Test Oct-Dec",
+  "years": [
+    {
+      "bundle_root": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+      "completed_phases": [
+        "headroom",
+        "fit",
+        "ladder",
+        "eval"
+      ],
+      "eval_decision": "N_GRID_UPPER_BOUND_REACHED",
+      "n_grid": [
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096
+      ],
+      "n_grid_coverage": {
+        "evaluation_E": 4096,
+        "full_default_grid_observed": true,
+        "interpretation": "PARTIAL_OR_FULL_GRID",
+        "observed_eval": [
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096
+        ],
+        "requested": [
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096
+        ]
+      },
+      "resumed_from_checkpoint": false,
+      "schema_version": "JATM_S34_E4_YEAR_STATE_V1",
+      "status": "DEVELOPMENT_COMPLETE",
+      "updated_at": "2026-10-13T18:26:55+00:00",
+      "year": 2022
+    }
+  ]
+}
