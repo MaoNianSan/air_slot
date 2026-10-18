@@ -1,0 +1,47 @@
+{
+  "completed_test_model_evaluations": {
+    "2018": {}
+  },
+  "n_grid": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "q4_cohort_hashes": {
+    "2018": "f4c5d69c47e9aa889f453415387d037baf59ef125e195abfcd781e6a10ebaa0b"
+  },
+  "schema_version": "JATM_S34_E4_TEST_V1",
+  "split": "test",
+  "status": "ENGINEERING_INCOMPLETE",
+  "test_access_count": 0,
+  "test_access_count_unit": "selected_q4_episode_model_evaluations",
+  "updated_at": "2026-10-15T11:12:09+00:00",
+  "year_local_rule": "Train Jan-Jun; Calibration Jul; Development Aug-Sep; Test Oct-Dec",
+  "years": [
+    {
+      "bundle_root": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+      "completed_phases": [],
+      "error": "RuntimeError: E4_PHASE_FAILED:2018:eval:1",
+      "frozen_e4_root": "/data/airslot/worktree/artifacts/experiment/jatm_s34/full_20261013/e4",
+      "n_grid": [
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096
+      ],
+      "q4_cohort_hash": "f4c5d69c47e9aa889f453415387d037baf59ef125e195abfcd781e6a10ebaa0b",
+      "q4_cohort_root": "/data/airslot/results/q4_extension_20261015/cohorts",
+      "resumed_from_checkpoint": false,
+      "schema_version": "JATM_S34_E4_YEAR_STATE_V1",
+      "split": "test",
+      "status": "ENGINEERING_INCOMPLETE",
+      "updated_at": "2026-10-15T11:12:09+00:00",
+      "year": 2018
+    }
+  ]
+}

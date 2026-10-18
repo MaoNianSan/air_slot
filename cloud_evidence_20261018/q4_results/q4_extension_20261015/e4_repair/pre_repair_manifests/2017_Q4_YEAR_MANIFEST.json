@@ -1,0 +1,64 @@
+{
+  "E1": {
+    "artifact_hash": "sha256:86dee4b7ab284865fdc19ddf792d8c339f22689ad0be0b167d2c849e73c16d95",
+    "node_count": 54237,
+    "status": "TEST_COMPLETE"
+  },
+  "E2_E3": {
+    "artifact_hash": "sha256:df3e93ee388a474e679729d0b11c667ece5588fd97199e63c6e9aac602fa7c2d",
+    "first_pass_episode_accesses": 4096,
+    "node_count": 7623,
+    "second_pass_episode_accesses": 4096,
+    "status": "TEST_COMPLETE"
+  },
+  "E4": {
+    "access_count_unit": "selected_q4_episodes",
+    "manifest": "/data/airslot/results/q4_extension_20261015/2017/E4/E4_DEVELOPMENT_MANIFEST.json",
+    "status": "ENGINEERING_INCOMPLETE"
+  },
+  "cohort": {
+    "eligible_episode_count": 1040108,
+    "q4_raw_rows_read": 1398164,
+    "selected_episode_count": 4096,
+    "selected_ids_sha256": "3090f567e09c2538e97ec85cb63a000cab1d6f6eb457c619ee3c1db2ad431839",
+    "september_context_rows_read": 458727,
+    "source_hashes": {
+      "data2/raw/bts/ontime/2017/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_9.csv": "bece6fa69ed6459118617a71ad0e9b79c345eddffca92311f58399f561cb0d37",
+      "data2/raw/bts/ontime/2017/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_10.csv": "f8a0341dbb6f80517ec05cbb75bcb7b7ceeda9bf870e2651ca4c0e4f17c7ce4e",
+      "data2/raw/bts/ontime/2017/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_11.csv": "4caa7d615c87972881747c645ed0ce1b115ab7787b3f6e1516fe12f62769d5a1",
+      "data2/raw/bts/ontime/2017/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2017_12.csv": "327a83dca043f53c33e28f11664df6e4f01f02b06cd160a392a4a6c4e5b6d0b7"
+    }
+  },
+  "completed_stages": [
+    "COHORT_FROZEN",
+    "E1",
+    "E2_E3",
+    "E4"
+  ],
+  "current_stage": "COMPLETE",
+  "final_test_access_count": 36864,
+  "final_test_access_count_unit": "selected_q4_episode_evaluations",
+  "final_test_access_ledger": {
+    "raw_q4_ontime_source_rows_read": 1398164,
+    "selected_q4_episode_evaluations": {
+      "E1": 4096,
+      "E2_E3_first_pass": 4096,
+      "E2_E3_second_pass": 4096,
+      "E4": 24576
+    }
+  },
+  "n": 4096,
+  "n_grid": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "schema_version": "JATM_S34_Q4_YEAR_RUN_V1",
+  "split": "test",
+  "status": "TEST_COMPLETE",
+  "updated_at": "2026-10-15T08:26:38+00:00",
+  "year": 2017
+}

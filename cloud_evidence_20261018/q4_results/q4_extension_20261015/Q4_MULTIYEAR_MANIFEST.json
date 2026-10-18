@@ -1,0 +1,58 @@
+{
+  "direct_year_workers": [
+    2021,
+    2022
+  ],
+  "e4_repair_binding_manifest": "/data/airslot/results/q4_extension_20261015/e4_repair/Q4_E4_REPAIR_BINDING_20261015.json",
+  "e4_repair_binding_manifest_sha256": "eb85dbe672628d3c9cd46fbba3062ee72fb4135b899d69677a6f9e539aa3974d",
+  "e4_repair_preflight": "PASS",
+  "e4_repair_started_at": "2026-10-15T11:02:52+00:00",
+  "elapsed_seconds": 25534.4,
+  "finished_at": "2026-10-15T10:26:56+00:00",
+  "max_observed_year_workers": 6,
+  "max_workers": 3,
+  "n": 4096,
+  "n_grid": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "orchestrator_recovery_note": "The original orchestrator stopped after launching the initial batch. Existing workers were preserved; 2017 resumed from its frozen cohort, and 2021-2022 were attached as direct year workers without duplicate year processes.",
+  "pre_repair_status": "TEST_COMPLETE",
+  "pre_repair_year_status": {
+    "2017": "TEST_COMPLETE",
+    "2018": "TEST_COMPLETE",
+    "2019": "TEST_COMPLETE",
+    "2020": "TEST_COMPLETE",
+    "2021": "TEST_COMPLETE",
+    "2022": "TEST_COMPLETE"
+  },
+  "pre_run_binding_hash_discrepancy": "The recorded digest differs from the current on-server binding file; the discrepancy is retained and the E4 repair is separately bound.",
+  "pre_run_binding_manifest": "/data/airslot/worktree/Q4_PRE_RUN_BINDING_MANIFEST.json",
+  "pre_run_binding_manifest_sha256": "04cb8c3aca102ffc13927af59f9af4b32972f5f21aa067d6b61bb9ebce5c3847",
+  "pre_run_binding_manifest_sha256_observed": "9c0277cce004e2172d715f9f32ba39464b3376484b43d8cf47a27d81c128b3b9",
+  "schema_version": "JATM_S34_Q4_MULTIYEAR_RUN_V1",
+  "split": "test",
+  "started_at": "2026-10-15T03:21:22+00:00",
+  "status": "E4_REPAIR_REQUIRED",
+  "updated_at": "2026-10-15T11:02:52+00:00",
+  "year_status": {
+    "2017": "ENGINEERING_INCOMPLETE",
+    "2018": "ENGINEERING_INCOMPLETE",
+    "2019": "ENGINEERING_INCOMPLETE",
+    "2020": "ENGINEERING_INCOMPLETE",
+    "2021": "ENGINEERING_INCOMPLETE",
+    "2022": "ENGINEERING_INCOMPLETE"
+  },
+  "years": [
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+  ]
+}

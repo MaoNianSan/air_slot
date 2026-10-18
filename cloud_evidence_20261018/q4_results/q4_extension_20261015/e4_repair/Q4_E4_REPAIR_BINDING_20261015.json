@@ -1,0 +1,80 @@
+{
+  "schema_version": "JATM_S34_Q4_E4_REPAIR_BINDING_V1",
+  "created_at_utc": "2026-10-15T11:02:34.0359684Z",
+  "purpose": "Repair only the Q4 E4 adapter and completion gate; reuse hash-validated E1 and E2_E3 summaries.",
+  "parent": {
+    "pre_run_binding_path": "/data/airslot/worktree/Q4_PRE_RUN_BINDING_MANIFEST.json",
+    "observed_pre_run_binding_sha256": "9c0277cce004e2172d715f9f32ba39464b3376484b43d8cf47a27d81c128b3b9",
+    "multi_year_manifest_recorded_binding_sha256": "04cb8c3aca102ffc13927af59f9af4b32972f5f21aa067d6b61bb9ebce5c3847",
+    "binding_hash_discrepancy": "The multi-year manifest digest differs from the current on-server pre-run binding file; both values are retained for audit.",
+    "multi_year_manifest_sha256_before_repair": "ed222dd7b6708888bb8fdeb7f94ab87a7277a0e46319101dc30d0c518ea81286"
+  },
+  "failure": {
+    "E4": "Q4_PREPARED_COHORT_SIZE_INVALID: node rows were counted as selected episodes",
+    "year_manifest": "The E4 submanifest remained ENGINEERING_INCOMPLETE, while the outer year manifest incorrectly declared TEST_COMPLETE."
+  },
+  "repair": {
+    "adapter": "Deduplicate prepared decision-node rows to one prepared episode per frozen Q4 ID, preserving cohort rank order.",
+    "completion_gate": "Require TEST_COMPLETE E4 status, complete model grid, matching cohort hash, and 4096 completed test cases per model before marking a year complete.",
+    "scope": "E4 only; no M1 fitting, cohort reselection, parameter changes, or E1/E2_E3 recomputation."
+  },
+  "scope": {
+    "years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022
+    ],
+    "split": "test",
+    "episodes_per_year": 4096,
+    "n_grid": [
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "expected_E4_model_evaluations_per_year": 24576
+  },
+  "frozen_cohort_sha256": {
+    "2017": "3090f567e09c2538e97ec85cb63a000cab1d6f6eb457c619ee3c1db2ad431839",
+    "2018": "f4c5d69c47e9aa889f453415387d037baf59ef125e195abfcd781e6a10ebaa0b",
+    "2019": "9f239b411f9d17d7699aed8d2841c0cb1931ccfaae4bffc4ed67a655e4ce83ae",
+    "2020": "8679a7f8eb8f5ca196491ba8f271b37bc7be5adfdb2ec6683f53f51e23e78318",
+    "2021": "b03e4548bf971bc9f91812b1e51fe83e51f43df221421b5940f10129716f9567",
+    "2022": "a5ee227d728e1b83462c9467f2b5aa524d36565a6fbf7e630a854eaff349b904"
+  },
+  "patched_files": [
+    {
+      "path": "exp/jatm_s34/q4_bridge.py",
+      "sha256": "c182c7d59fa0c6c7bbeee3596be6b817d9bf2dce211998531166e88a2f410435"
+    },
+    {
+      "path": "exp/jatm_s34/e4_run.py",
+      "sha256": "221722dcdfb9fbd692c5d4c967d8902836e3109586c6c228f85bdc840c834390"
+    },
+    {
+      "path": "exp/jatm_s34/q4_year_run.py",
+      "sha256": "c8f7ebc1eb79af5de5d37f47d4ff55818e251562397cfff99ece20a234448b44"
+    },
+    {
+      "path": "tests/contract/test_jatm_s34_q4_runtime.py",
+      "sha256": "2f499f9a65a5a6f39358a4c154b3921e67c844ae033b0771fd99c5904dbf8db6"
+    }
+  ],
+  "test_result": {
+    "command": "python -m pytest tests/contract/test_jatm_s34_q4_runtime.py -q",
+    "result": "5 passed",
+    "python": "local isolated q4_runtime environment"
+  },
+  "audit_tooling": [
+    {
+      "path": "repair_q4_e4_prepare.py",
+      "sha256": "5211f960db050491ac607a9b83fbb5b7e4105116f7a1bceeadb5c659799f95d0",
+      "purpose": "Validate frozen cohorts and E1/E2_E3 receipts, archive pre-repair manifests, and correct false completion status before E4 resume."
+    }
+  ]
+}

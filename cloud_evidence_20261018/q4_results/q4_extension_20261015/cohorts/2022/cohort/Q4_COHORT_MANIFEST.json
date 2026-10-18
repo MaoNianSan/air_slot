@@ -1,0 +1,47 @@
+{
+  "context_months": [
+    9
+  ],
+  "eligible_episode_count": 1201193,
+  "final_test_access_count": 1675792,
+  "final_test_access_count_unit": "raw_q4_ontime_source_rows_read",
+  "parsed_rows_by_month": {
+    "2022-09": 542044,
+    "2022-10": 560027,
+    "2022-11": 532155,
+    "2022-12": 516972
+  },
+  "q4_raw_rows_read": 1675792,
+  "rank_contract": "SHA256(M5-COHORT-SEED-20260928 || episode_id)",
+  "raw_rows_read_by_month": {
+    "2022-09": 557494,
+    "2022-10": 572287,
+    "2022-11": 546410,
+    "2022-12": 557095
+  },
+  "schema_version": "JATM_S34_Q4_COHORT_V1",
+  "selected_episode_count": 4096,
+  "selected_ids_sha256": "a5ee227d728e1b83462c9467f2b5aa524d36565a6fbf7e630a854eaff349b904",
+  "september_context_rows_read": 557494,
+  "service_date_window": {
+    "end_inclusive": "2022-12-31",
+    "start_inclusive": "2022-10-01"
+  },
+  "skipped_rows_by_month": {
+    "2022-09": 15450,
+    "2022-10": 12260,
+    "2022-11": 14255,
+    "2022-12": 40123
+  },
+  "source_hashes": {
+    "data2/raw/bts/ontime/2022/month=09/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_9.csv": "6d12f9292828c56b809c485a900bd7432e8493255ba7c00edbaa9dddf51808f8",
+    "data2/raw/bts/ontime/2022/month=10/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_10.csv": "467f28053ce1d56a7a2aed656020c825af1c51f0755477ea5b0e661d6db09e3c",
+    "data2/raw/bts/ontime/2022/month=11/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_11.csv": "b5ebc71fa64e16022823856d1bda24cb4f3e31ce88e3f6dfbe11bf4905211ae0",
+    "data2/raw/bts/ontime/2022/month=12/On_Time_Reporting_Carrier_On_Time_Performance_(1987_present)_2022_12.csv": "60c4f98005cfcf1704e11690e1d60be8eb3e849bfc6cbe2831c7cd797b939e9b"
+  },
+  "split": "test",
+  "status": "COHORT_FROZEN",
+  "tie_break": "episode_id_ascending",
+  "weather_and_model_evaluation_started": false,
+  "year": 2022
+}

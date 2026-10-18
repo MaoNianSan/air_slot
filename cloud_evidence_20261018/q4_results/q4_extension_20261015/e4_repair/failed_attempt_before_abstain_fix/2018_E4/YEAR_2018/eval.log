@@ -1,0 +1,224 @@
+[2026-10-15T08:21:28+00:00] phase=eval protocol=sha256:18db92f0b3e82... years=[2018] n=[128, 256, 512, 1024, 2048, 4096]
+Traceback (most recent call last):
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 836, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 439, in main
+    prepared = materialize_q4_case_cohort(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/exp/jatm_s34/q4_bridge.py", line 280, in materialize_q4_case_cohort
+    raise RuntimeError(f"Q4_PREPARED_COHORT_SIZE_INVALID:{year}:{len(prepared)}")
+RuntimeError: Q4_PREPARED_COHORT_SIZE_INVALID:2018:57337
+[2026-10-15T11:03:37+00:00] phase=eval protocol=sha256:18db92f0b3e82... years=[2018] n=[128, 256, 512, 1024, 2048, 4096]
+[2026-10-15T11:05:41+00:00] [m5b-metrics] headroom 2018: reused (u_max=40.0)
+Traceback (most recent call last):
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 836, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 452, in main
+    return eval_phase(
+           ^^^^^^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 748, in eval_phase
+    m5b.evaluate_model_on_cases(
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_metrics.py", line 1058, in evaluate_model_on_cases
+    consequences = _abstaining_consequence_set(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_metrics.py", line 835, in _abstaining_consequence_set
+    return ConsequenceScenarioSet(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/venv/lib/python3.11/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 64 validation errors for ConsequenceScenarioSet
+scenarios.0
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.1
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.2
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.3
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.4
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.5
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.6
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.7
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.8
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.9
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.10
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.11
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.12
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.13
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.14
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.15
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.16
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.17
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.18
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.19
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.20
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.21
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.22
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.23
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.24
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.25
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.26
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.27
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.28
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.29
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.30
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.31
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.32
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.33
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.34
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.35
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.36
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.37
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.38
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.39
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.40
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.41
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.42
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.43
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.44
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.45
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.46
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.47
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.48
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.49
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.50
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.51
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.52
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.53
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.54
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.55
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.56
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.57
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.58
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.59
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.60
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.61
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.62
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+scenarios.63
+  Input should be a valid dictionary or instance of ConsequenceScenario [type=model_type, input_value=StateScenario(scenario_id...alse, tx_observed=False), input_type=StateScenario]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type

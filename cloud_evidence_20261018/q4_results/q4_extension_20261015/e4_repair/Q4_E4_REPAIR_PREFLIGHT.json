@@ -1,0 +1,67 @@
+{
+  "action": "Mark the prior overall result incomplete and authorize E4-only resume using frozen cohorts and hash-validated E1/E2_E3 summaries.",
+  "created_at": "2026-10-15T11:02:52+00:00",
+  "e4_repair_binding_manifest_sha256": "eb85dbe672628d3c9cd46fbba3062ee72fb4135b899d69677a6f9e539aa3974d",
+  "observed_parent_binding_manifest_sha256": "9c0277cce004e2172d715f9f32ba39464b3376484b43d8cf47a27d81c128b3b9",
+  "parent_master_manifest_sha256_before_repair": "ed222dd7b6708888bb8fdeb7f94ab87a7277a0e46319101dc30d0c518ea81286",
+  "recorded_parent_binding_manifest_sha256": "04cb8c3aca102ffc13927af59f9af4b32972f5f21aa067d6b61bb9ebce5c3847",
+  "results_root": "/data/airslot/results/q4_extension_20261015",
+  "schema_version": "JATM_S34_Q4_E4_REPAIR_PREFLIGHT_V1",
+  "status": "PASS",
+  "years": {
+    "2017": {
+      "cohort_hash": "3090f567e09c2538e97ec85cb63a000cab1d6f6eb457c619ee3c1db2ad431839",
+      "completed_e4_test_model_evaluations_before_repair": 0,
+      "e1_artifact_hash": "sha256:86dee4b7ab284865fdc19ddf792d8c339f22689ad0be0b167d2c849e73c16d95",
+      "e2_e3_artifact_hash": "sha256:df3e93ee388a474e679729d0b11c667ece5588fd97199e63c6e9aac602fa7c2d",
+      "e4_error": "RuntimeError: E4_PHASE_FAILED:2017:eval:1",
+      "e4_status_before_repair": "ENGINEERING_INCOMPLETE",
+      "q4_year_manifest_sha256_before_repair": "e37686fbe568ad93f947aa89203e5c8b29a9575e7f1d390700fb4a1c6bc424c3"
+    },
+    "2018": {
+      "cohort_hash": "f4c5d69c47e9aa889f453415387d037baf59ef125e195abfcd781e6a10ebaa0b",
+      "completed_e4_test_model_evaluations_before_repair": 0,
+      "e1_artifact_hash": "sha256:6c68334c4db8fd24ee05e00c6c0c33b93efbba975fa4d8e85c280c722c875656",
+      "e2_e3_artifact_hash": "sha256:dc2d0150ded13763a4431a750d127d4c20585b3fa80653c857560903309e88e9",
+      "e4_error": "RuntimeError: E4_PHASE_FAILED:2018:eval:1",
+      "e4_status_before_repair": "ENGINEERING_INCOMPLETE",
+      "q4_year_manifest_sha256_before_repair": "a618755035730394efb7d6c1924d31d24ffc3ca00fdca12f63363a5ac55f925b"
+    },
+    "2019": {
+      "cohort_hash": "9f239b411f9d17d7699aed8d2841c0cb1931ccfaae4bffc4ed67a655e4ce83ae",
+      "completed_e4_test_model_evaluations_before_repair": 0,
+      "e1_artifact_hash": "sha256:8a628dada80d5df28e0ff0b865d01f3f5fb86befa906d6cdd61e1321a1afb552",
+      "e2_e3_artifact_hash": "sha256:cb855a72f1082f04be2430ed9251c0f01639a1ce16e43b058bc5474f1af41df0",
+      "e4_error": "RuntimeError: E4_PHASE_FAILED:2019:eval:1",
+      "e4_status_before_repair": "ENGINEERING_INCOMPLETE",
+      "q4_year_manifest_sha256_before_repair": "7b398d96abe7649becfee25a84b6507432fec79478a5d6b6f12a67d34be933b5"
+    },
+    "2020": {
+      "cohort_hash": "8679a7f8eb8f5ca196491ba8f271b37bc7be5adfdb2ec6683f53f51e23e78318",
+      "completed_e4_test_model_evaluations_before_repair": 0,
+      "e1_artifact_hash": "sha256:6a0f31c6f3122576e6b3c8e721ede8062699f3e5ed239e9418a9ef11cf8fe0af",
+      "e2_e3_artifact_hash": "sha256:b572e81b529ede0d07cb625664f44649a5ebaed656501c1f305b103feb50e91a",
+      "e4_error": "RuntimeError: E4_PHASE_FAILED:2020:eval:1",
+      "e4_status_before_repair": "ENGINEERING_INCOMPLETE",
+      "q4_year_manifest_sha256_before_repair": "5a609e486a7b149a61cb5a4a70f3aac1547dca7f97d1c0c621f9969334d10d3e"
+    },
+    "2021": {
+      "cohort_hash": "b03e4548bf971bc9f91812b1e51fe83e51f43df221421b5940f10129716f9567",
+      "completed_e4_test_model_evaluations_before_repair": 0,
+      "e1_artifact_hash": "sha256:2e684aa443e9d498403d4baf11d117d89a49f3ed33166c088a9c64df01ffe577",
+      "e2_e3_artifact_hash": "sha256:603ae69574aa0df2bc70c96317a04561cd6edceb0d81a1889fbbb920f394b750",
+      "e4_error": "RuntimeError: E4_PHASE_FAILED:2021:eval:1",
+      "e4_status_before_repair": "ENGINEERING_INCOMPLETE",
+      "q4_year_manifest_sha256_before_repair": "f06919b403afd0c43e993e635427d49c78855f7dec7f55e45275b70752ef96b5"
+    },
+    "2022": {
+      "cohort_hash": "a5ee227d728e1b83462c9467f2b5aa524d36565a6fbf7e630a854eaff349b904",
+      "completed_e4_test_model_evaluations_before_repair": 0,
+      "e1_artifact_hash": "sha256:6f71911425600dcc1a8269af6bc0ccf61276789f751cbe67f6d08fe88fb8587e",
+      "e2_e3_artifact_hash": "sha256:8b390afcbeccab8637c603a1575feb43251e2bcf84ba5cfab9da2cd69a4da66e",
+      "e4_error": "RuntimeError: E4_PHASE_FAILED:2022:eval:1",
+      "e4_status_before_repair": "ENGINEERING_INCOMPLETE",
+      "q4_year_manifest_sha256_before_repair": "3764bafd32e76285a800cee8e186ac5de7c09eebc7881046d4b8d8a7882dbf7b"
+    }
+  }
+}
