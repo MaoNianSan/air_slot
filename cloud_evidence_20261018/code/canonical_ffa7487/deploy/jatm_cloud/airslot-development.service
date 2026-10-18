@@ -1,0 +1,21 @@
+[Unit]
+Description=Air Slot deterministic Development queue
+After=local-fs.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=airslot
+WorkingDirectory=/opt/airslot
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/airslot/.venv/bin/python -m exp.jatm_s34.cloud_schedule --config deploy/jatm_cloud/run.yml
+Restart=on-failure
+RestartSec=30
+KillSignal=SIGTERM
+TimeoutStopSec=3600
+Environment=OMP_NUM_THREADS=8
+Environment=MKL_NUM_THREADS=8
+
+[Install]
+WantedBy=multi-user.target

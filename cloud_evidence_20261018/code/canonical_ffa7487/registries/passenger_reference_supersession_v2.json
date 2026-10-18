@@ -1,0 +1,22 @@
+{
+  "registry_id": "PASSENGER_REFERENCE_SUPERSESSION_V2",
+  "version": "2.0.0",
+  "effective_date": "2026-09-02",
+  "supersedes": [
+    {
+      "registry_id": "M2_DATA2_FORMAL_CU_V3",
+      "artifact": "registries/m2_data2_formal_cu_v3.json",
+      "status": "SUPERSEDED_AFTER_REFERENCE_BOUNDARY_CORRECTION",
+      "reason": "PASSENGER_REFERENCE_TRAIN_PERIOD_AND_SCHEMA_GUARD_CORRECTION",
+      "active_replacement": "M2_DATA2_FORMAL_CU_V4"
+    }
+  ],
+  "active_replacements": {
+    "m2_cu_registry": "registries/m2_data2_formal_cu_v4.json",
+    "passenger_design": "registries/m2_v4_passenger_consequence_design.json",
+    "m4_rmb_registry": "registries/m4_rmb_base_mapping_v2.json"
+  },
+  "historical_artifacts_modified": false,
+  "final_test_ontime_access_count": 0,
+  "paper_full_run": false
+}

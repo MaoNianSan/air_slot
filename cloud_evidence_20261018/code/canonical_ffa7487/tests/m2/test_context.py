@@ -1,0 +1,190 @@
+import pytest
+
+from model.M2.context import (
+    AirportReferenceKeys,
+    build_m2_context,
+    build_m2_frozen_scope,
+    load_data2_reference_bundle,
+    smoke_reference_payloads,
+)
+from model.M2.consequences.engine import native_quantities
+from model.PRE.transformation import ConstructionType
+from model.common.enums import EvidenceClass, SupportState
+from model.common.estimand import ScopeStatus
+from model.common.errors import ContractError
+
+
+def scenario():
+    # Formal M1 scenario contract: D_OB/D_TX/D_TO supplied by M1; M2 never
+    # reconstructs delay state from DELTA_OB/T_TX/taxi reference.
+    return {
+        "decision_node_id": "n",
+        "scenario_id": 0,
+        "scenario_weight": 1.0,
+        "r_ib_minutes": 10,
+        "delta_ob_minutes": 20,
+        "t_tx_minutes": 15,
+        "d_ob_minutes": 20,
+        "d_tx_minutes": 0,
+        "d_to_minutes": 20,
+        "ib_support": "SUPPORTED",
+        "delta_ob_support": "SUPPORTED",
+        "tx_support": "SUPPORTED",
+        "d_ob_support": "SUPPORTED",
+        "d_tx_support": "SUPPORTED",
+        "d_to_support": "SUPPORTED",
+    }
+
+
+def test_context_from_smoke_frozen_payloads():
+    bundle = load_data2_reference_bundle(smoke_reference_payloads())
+    context = build_m2_context(
+        bundle,
+        AirportReferenceKeys(
+            connection_airport_id="ABE",
+            successor_destination_airport_id="ATL",
+        ),
+    )
+    assert context.turnaround_reference.value == 38.0
+    assert context.taxi_reference.value == 15.0
+    assert context.expected_downstream_exposure.value == 1.0
+    assert context.expected_passengers_per_flight.value == 100.0
+    assert context.connection_share_reference.value == 0.25
+    assert context.itinerary_buffer_reference.value == 45.0
+    assert context.service_policy_reference.value == 180.0
+    for value in (
+        context.turnaround_reference,
+        context.taxi_reference,
+        context.expected_downstream_exposure,
+        context.expected_passengers_per_flight,
+        context.connection_share_reference,
+    ):
+        assert value.construction_type is ConstructionType.TRAIN_FROZEN_REFERENCE
+        assert value.freeze_id.startswith("sha256:")
+        assert value.reference_period == "2019-H1"
+
+
+def test_missing_optional_normative_inputs_abstain():
+    bundle = load_data2_reference_bundle(smoke_reference_payloads())
+    context = build_m2_context(
+        bundle,
+        AirportReferenceKeys(
+            connection_airport_id="ABE",
+            successor_destination_airport_id="ATL",
+        ),
+    )
+    assert context.turnaround_floor.value is None
+    assert context.turnaround_floor.support_state is SupportState.ABSTAIN
+    assert context.itinerary_buffer_reference.support_state is SupportState.SUPPORTED
+    assert context.service_policy_reference.support_state is SupportState.SUPPORTED
+    assert context.itinerary_buffer_reference.evidence_class is EvidenceClass.SCENARIO_PARAMETER
+    assert context.service_policy_reference.evidence_class is EvidenceClass.SCENARIO_PARAMETER
+
+
+def test_expected_reference_id_mismatch_raises():
+    payloads = smoke_reference_payloads()
+    with pytest.raises(ContractError, match="M2_REFERENCE_ID_MISMATCH:taxi"):
+        load_data2_reference_bundle(
+            payloads,
+            expected_reference_ids={"taxi": f"sha256:{'0' * 64}"},
+        )
+
+
+def test_missing_reference_payload_raises():
+    payloads = smoke_reference_payloads()
+    del payloads["taxi"]
+    with pytest.raises(ContractError, match="M2_REFERENCE_PAYLOAD_MISSING:taxi"):
+        load_data2_reference_bundle(payloads)
+
+
+def test_mapping_uses_frozen_context():
+    bundle = load_data2_reference_bundle(smoke_reference_payloads())
+    context = build_m2_context(
+        bundle,
+        AirportReferenceKeys(
+            connection_airport_id="ABE",
+            successor_destination_airport_id="ATL",
+        ),
+    )
+    by_component = {row.component_id: row for row in native_quantities(scenario(), context)}
+    assert by_component["F_continuity"].native_quantity == 0.0
+    # Formal D_TO = D_OB + D_TX = 20 + 0.
+    assert by_component["F_propagation"].native_quantity == 20.0
+    assert by_component["P_time"].native_quantity == 2000.0
+    assert by_component["R_operating"].native_quantity == 0.0
+    assert by_component["P_itinerary"].native_quantity == 0.0
+    assert by_component["P_itinerary"].support_state is SupportState.SUPPORTED
+    assert by_component["P_service"].native_quantity == 0.0
+    assert by_component["P_service"].support_state is SupportState.SUPPORTED
+
+
+def test_d_to_identity_consumes_formal_scenario_fields():
+    bundle = load_data2_reference_bundle(smoke_reference_payloads())
+    context = build_m2_context(
+        bundle,
+        AirportReferenceKeys(
+            connection_airport_id="ABE",
+            successor_destination_airport_id="ATL",
+        ),
+    )
+    # Early departure without excess taxi: D_TO = D_OB + D_TX = 0 + 0.
+    early = {
+        **scenario(),
+        "delta_ob_minutes": -10,
+        "t_tx_minutes": 15,
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 0,
+        "d_to_minutes": 0,
+        "delta_ob_support": "SUPPORTED",
+    }
+    by_component = {row.component_id: row for row in native_quantities(early, context)}
+    assert by_component["F_propagation"].native_quantity == 0.0
+    assert by_component["P_time"].native_quantity == 0.0
+    # Excess taxi still contributes to the formal D_TO identity.
+    with_excess = {
+        **scenario(),
+        "delta_ob_minutes": -10,
+        "t_tx_minutes": 25,
+        "d_ob_minutes": 0,
+        "d_tx_minutes": 10,
+        "d_to_minutes": 10,
+        "delta_ob_support": "SUPPORTED",
+    }
+    by_component = {row.component_id: row for row in native_quantities(with_excess, context)}
+    assert by_component["F_propagation"].native_quantity == 10.0
+    assert by_component["P_time"].native_quantity == 1000.0
+
+
+def test_m2_frozen_scope_is_seven_component_v4_and_formal_ready():
+    scope = build_m2_frozen_scope(
+        {
+            "formal_scope": [
+                "F_continuity",
+                "F_execution",
+                "F_propagation",
+                "P_time",
+                "P_itinerary",
+                "P_service",
+                "R_operating",
+            ]
+        }
+    )
+    assert scope.scope_status is ScopeStatus.FORMAL_READY
+    assert scope.cu_normalization_registry_id == "M2_DATA2_FORMAL_CU_V4"
+    assert scope.aggregation_rule_id == "SUM_OVER_SEVEN_ONLY_IF_ALL_SUPPORTED"
+    assert scope.included_components == (
+        "F_continuity",
+        "F_execution",
+        "F_propagation",
+        "P_time",
+        "P_itinerary",
+        "P_service",
+        "R_operating",
+    )
+
+
+def test_m2_frozen_scope_rejects_scope_drift():
+    from model.common.errors import ContractError
+
+    with pytest.raises(ContractError, match="M2_V4_FORMAL_SCOPE_MISMATCH"):
+        build_m2_frozen_scope({"formal_scope": ["F_continuity"]})

@@ -1,0 +1,21 @@
+{
+  "schema_version": "M4_CU_RMB_MAPPING_DESIGN_V2",
+  "registry_id": "M4_CU_RMB_MAPPING_DESIGN_V2",
+  "scientific_status": "SCIENTIFIC_DECISION_REQUIRED",
+  "input_unit_id": "CU",
+  "constructed_unit_id": "RMB",
+  "real_currency_claim": false,
+  "scenario_dependent": true,
+  "production_mapping_enabled": false,
+  "mapping_contract": {
+    "input_object": "CU_k",
+    "output_object": "RMB_k",
+    "formula": "RMB_k = f_k(CU_k)",
+    "aggregation": "RMB = SUM_k RMB_k",
+    "required_linear_parameter_name": "rmb_per_cu",
+    "anonymous_parameter_names_prohibited": ["weight", "gamma", "omega"]
+  },
+  "component_order": ["F_continuity", "F_execution", "F_propagation", "P_time", "P_itinerary", "P_service", "R_operating"],
+  "claim_boundary": "CU and RMB are constructed representations; RMB is not observed currency or monetary ground truth.",
+  "safety": {"FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": false, "FULL": false}
+}

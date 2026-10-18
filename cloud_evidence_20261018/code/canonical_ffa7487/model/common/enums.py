@@ -1,0 +1,88 @@
+from enum import Enum
+
+
+class StrEnum(str, Enum):
+    pass
+
+
+class AvailabilityBasis(StrEnum):
+    OBSERVED_AVAILABILITY = "OBSERVED_AVAILABILITY"
+    REPLAY_EVENT_TIME = "REPLAY_EVENT_TIME"
+    SCHEDULE_REFERENCE_ASSUMPTION = "SCHEDULE_REFERENCE_ASSUMPTION"
+    ARCHIVE_PUBLICATION_RULE = "ARCHIVE_PUBLICATION_RULE"
+    REFERENCE_PERIOD = "REFERENCE_PERIOD"
+    FACTUAL_REPLAY_RULE = "FACTUAL_REPLAY_RULE"
+    POSTHOC_ONLY = "POSTHOC_ONLY"
+    UNAVAILABLE = "UNAVAILABLE"
+
+
+class DecisionTimeRole(StrEnum):
+    EPISODE_CONSTRUCTION = "EPISODE_CONSTRUCTION"
+    INFERENCE_EVIDENCE = "INFERENCE_EVIDENCE"
+    FROZEN_REFERENCE = "FROZEN_REFERENCE"
+    TRAIN_LABEL = "TRAIN_LABEL"
+    EVAL_OUTCOME = "EVAL_OUTCOME"
+    FACTUAL_REPLAY_EVIDENCE = "FACTUAL_REPLAY_EVIDENCE"
+    REPLAY_ASSUMPTION = "REPLAY_ASSUMPTION"
+    SCENARIO_ONLY = "SCENARIO_ONLY"
+    UNSUPPORTED = "UNSUPPORTED"
+
+
+class EvidenceClass(StrEnum):
+    DIRECT = "DIRECT"
+    DERIVED = "DERIVED"
+    DOMAIN_PROXY = "DOMAIN_PROXY"
+    EMPIRICAL_REFERENCE = "EMPIRICAL_REFERENCE"
+    EXTERNAL_STANDARD = "EXTERNAL_STANDARD"
+    SCENARIO_PARAMETER = "SCENARIO_PARAMETER"
+    UNSUPPORTED = "UNSUPPORTED"
+
+
+class SupportState(StrEnum):
+    SUPPORTED = "SUPPORTED"
+    DEGRADED = "DEGRADED"
+    ABSTAIN = "ABSTAIN"
+
+
+class FreezeState(StrEnum):
+    FROZEN = "FROZEN"
+    DEVELOPMENT_FROZEN = "DEVELOPMENT_FROZEN"
+    DEVELOPMENT_CANDIDATE = "DEVELOPMENT_CANDIDATE"
+    SENSITIVITY_ONLY = "SENSITIVITY_ONLY"
+    DEVELOPMENT_ONLY = "DEVELOPMENT_ONLY"
+    # Round 2.1: a scientific decision is required before any numeric rule may
+    # be frozen; the parameter carries a policy name, never a numeric rule.
+    HUMAN_DECISION_REQUIRED = "HUMAN_DECISION_REQUIRED"
+    NOT_FROZEN = "NOT_FROZEN"
+    UNSUPPORTED = "UNSUPPORTED"
+
+
+class OperationalStage(StrEnum):
+    PRE_IB = "PRE_IB"
+    POST_IB_PRE_OB = "POST_IB_PRE_OB"
+    POST_OB_PRE_TO = "POST_OB_PRE_TO"
+    COMPLETED = "COMPLETED"
+
+
+class ArtifactLayer(StrEnum):
+    RUNTIME = "RUNTIME"
+    FORMAL = "FORMAL"
+    EVALUATION = "EVALUATION"
+    PAPER_CANDIDATE = "PAPER_CANDIDATE"
+    MANUSCRIPT_VALUES = "MANUSCRIPT_VALUES"
+
+
+_EVIDENCE_RANK = {
+    EvidenceClass.DIRECT: 0,
+    EvidenceClass.DERIVED: 1,
+    EvidenceClass.DOMAIN_PROXY: 2,
+    EvidenceClass.EMPIRICAL_REFERENCE: 2,
+    EvidenceClass.EXTERNAL_STANDARD: 2,
+    EvidenceClass.SCENARIO_PARAMETER: 3,
+    EvidenceClass.UNSUPPORTED: 4,
+}
+
+
+def weaker_or_equal(value: EvidenceClass, ceiling: EvidenceClass) -> bool:
+    """Return whether value is no stronger than its declared ceiling."""
+    return _EVIDENCE_RANK[value] >= _EVIDENCE_RANK[ceiling]

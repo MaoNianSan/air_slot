@@ -1,0 +1,28 @@
+{
+  "schema_version": "M4_MONETARY_MAPPING_DESIGN_V3",
+  "registry_id": "M4_MONETARY_MAPPING_DESIGN_V3",
+  "scientific_status": "FROZEN",
+  "implementation_status": "MATCH",
+  "production_mapping_enabled": true,
+  "active_registry_id": "M4_RMB_BASE_MAPPING_V2",
+  "supersedes": ["M4_RMB_BASE_MAPPING_V1", "M4_MONETARY_MAPPING_DESIGN_V2"],
+  "monetary_systems": ["RMB"],
+  "mapping_contract": {
+    "required_fields": ["monetary_system_id", "component_id", "mapping_function", "parameter_version", "source_type", "reference", "freeze_id", "parameters", "provenance", "rule_id", "rule_hash"],
+    "anonymous_parameter_names_prohibited": ["weight", "gamma", "omega"],
+    "implemented_mapping_functions": ["LINEAR_SCALE"],
+    "required_linear_parameter_name": "money_per_cu"
+  },
+  "component_status": [
+    {"component_id":"F_continuity","mapping_function":"LINEAR_SCALE","parameter_version":"2.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260902_RMB_BASE_V2","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"F_execution","mapping_function":"LINEAR_SCALE","parameter_version":"2.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260902_RMB_BASE_V2","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"F_propagation","mapping_function":"LINEAR_SCALE","parameter_version":"2.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260902_RMB_BASE_V2","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"P_time","mapping_function":"LINEAR_SCALE","parameter_version":"2.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260902_RMB_BASE_V2","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"P_itinerary","mapping_function":"LINEAR_SCALE","parameter_version":"2.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260902_RMB_BASE_V2","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"P_service","mapping_function":"LINEAR_SCALE","parameter_version":"2.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260902_RMB_BASE_V2","support_state":"SUPPORTED","base_beta":1.0},
+    {"component_id":"R_operating","mapping_function":"LINEAR_SCALE","parameter_version":"2.0.0","source_type":"SCENARIO_ASSUMPTION","freeze_id":"AIR_SLOT_MODEL_FREEZE_20260902_RMB_BASE_V2","support_state":"SUPPORTED","base_beta":1.0}
+  ],
+  "claim_boundary": "1 CU = 1 RMB is a constructed reporting and measurement convention, not currency conversion, accounting cost, empirical airline loss, or observed airline expenditure.",
+  "final_test_access_count": 0,
+  "paper_full_run": false
+}

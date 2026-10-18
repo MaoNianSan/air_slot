@@ -1,0 +1,44 @@
+{
+  "design_id": "M2_PASSENGER_CONSEQUENCE_REFERENCE_REFACTOR",
+  "version": "4.0.0",
+  "status": "FROZEN",
+  "fit_partition": "TRAIN",
+  "fit_year": 2019,
+  "fit_months": [1, 2, 3, 4, 5, 6],
+  "db1b_quarters": [1, 2],
+  "components": {
+    "P_time": {
+      "formula": "expected_passengers_per_flight * D_TO",
+      "native_unit": "passenger_minutes",
+      "reference": "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE"
+    },
+    "P_itinerary": {
+      "formula": "expected_passengers_per_flight * connection_share * I[D_TO > itinerary_threshold_minutes]",
+      "native_unit": "expected_disrupted_connecting_passenger_exposure",
+      "references": [
+        "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE",
+        "DB1B_CONNECTION_SHARE_REFERENCE"
+      ],
+      "itinerary_threshold_minutes": 45.0
+    },
+    "P_service": {
+      "formula": "expected_passengers_per_flight * I[D_TO >= service_threshold_minutes]",
+      "native_unit": "expected_long_delay_passenger_service_exposure",
+      "service_threshold_minutes": 180.0
+    }
+  },
+  "semantic_channels": {
+    "P_service": {
+      "consequence_semantics": "passenger service / care burden",
+      "baseline_empirical_realization": "expected passengers x I[D_TO >= 180]"
+    },
+    "R_operating": {
+      "consequence_semantics": "operating / recovery-resource burden",
+      "baseline_empirical_realization": "D_TX"
+    }
+  },
+  "cu_normalization": "Median_Train(q_k | q_k > 0)",
+  "rmb_mapping_registry": "M4_RMB_BASE_MAPPING_V2",
+  "final_test_ontime_access_count": 0,
+  "paper_full_run": false
+}

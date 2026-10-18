@@ -1,0 +1,8 @@
+schema_version: "1.0.0"
+dataset_instance_id: data1_2019
+dataset_profile: TRAJECTORY_RICH_ROLLING_INSTANCE
+cross_dataset_reference_overlay: false
+production_reader: IMPLEMENTED
+raw_root_policy: READ_ONLY
+known_source_limitations: [REPLAY_LAG_REQUIRES_EXPLICIT_VALUE]
+capability_profile_registry: registries/dataset_capabilities.yaml

@@ -1,0 +1,245 @@
+{
+  "component_mappings": {
+    "F_continuity": {
+      "component_id": "F_continuity",
+      "constructed_unit_id": "RMB",
+      "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+      "input_unit_id": "CU",
+      "mapping_function": "LINEAR_SCALE",
+      "parameter_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+      "parameters": [
+        {
+          "parameter_name": "rmb_per_cu",
+          "provenance": [
+            "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION",
+            "NO_OBSERVED_CURRENCY_CALIBRATION"
+          ],
+          "unit": "constructed_RMB_per_CU",
+          "value": 1.0
+        }
+      ],
+      "provenance": [
+        "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+        "LITERATURE_SUPPORTS_MECHANISM_NOT_NUMERIC_COEFFICIENT",
+        "RMB_IS_CONSTRUCTED_NOT_REAL_CURRENCY"
+      ],
+      "reference": [
+        "10.1016/j.cor.2020.105137",
+        "10.1016/j.ejtl.2023.100117",
+        "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION"
+      ],
+      "rule_hash": "sha256:b2b0f9fcc02932c7d00c8f115e9095b0ada423c642220dce44ecd2d36914074a",
+      "rule_id": "RMB_CANDIDATE_F_continuity_V1",
+      "source_type": "SCENARIO_ASSUMPTION"
+    },
+    "F_execution": {
+      "component_id": "F_execution",
+      "constructed_unit_id": "RMB",
+      "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+      "input_unit_id": "CU",
+      "mapping_function": "LINEAR_SCALE",
+      "parameter_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+      "parameters": [
+        {
+          "parameter_name": "rmb_per_cu",
+          "provenance": [
+            "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION",
+            "NO_OBSERVED_CURRENCY_CALIBRATION"
+          ],
+          "unit": "constructed_RMB_per_CU",
+          "value": 1.0
+        }
+      ],
+      "provenance": [
+        "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+        "LITERATURE_SUPPORTS_MECHANISM_NOT_NUMERIC_COEFFICIENT",
+        "RMB_IS_CONSTRUCTED_NOT_REAL_CURRENCY"
+      ],
+      "reference": [
+        "10.1016/j.eng.2020.08.021",
+        "10.1016/j.ejtl.2023.100117",
+        "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION"
+      ],
+      "rule_hash": "sha256:4874a2078058ebe213b9bf872b4180d06762ec1091ccfda88443f8dcdc0c0d9c",
+      "rule_id": "RMB_CANDIDATE_F_execution_V1",
+      "source_type": "SCENARIO_ASSUMPTION"
+    },
+    "F_propagation": {
+      "component_id": "F_propagation",
+      "constructed_unit_id": "RMB",
+      "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+      "input_unit_id": "CU",
+      "mapping_function": "LINEAR_SCALE",
+      "parameter_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+      "parameters": [
+        {
+          "parameter_name": "rmb_per_cu",
+          "provenance": [
+            "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION",
+            "NO_OBSERVED_CURRENCY_CALIBRATION"
+          ],
+          "unit": "constructed_RMB_per_CU",
+          "value": 1.0
+        }
+      ],
+      "provenance": [
+        "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+        "LITERATURE_SUPPORTS_MECHANISM_NOT_NUMERIC_COEFFICIENT",
+        "RMB_IS_CONSTRUCTED_NOT_REAL_CURRENCY"
+      ],
+      "reference": [
+        "10.1016/j.cor.2020.105137",
+        "10.1016/j.eng.2020.08.021",
+        "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION"
+      ],
+      "rule_hash": "sha256:f07b395d9bb8191578d30c147c23f236065899442a0674963bf441df0ae4c316",
+      "rule_id": "RMB_CANDIDATE_F_propagation_V1",
+      "source_type": "SCENARIO_ASSUMPTION"
+    },
+    "P_itinerary": {
+      "component_id": "P_itinerary",
+      "constructed_unit_id": "RMB",
+      "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+      "input_unit_id": "CU",
+      "mapping_function": "LINEAR_SCALE",
+      "parameter_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+      "parameters": [
+        {
+          "parameter_name": "rmb_per_cu",
+          "provenance": [
+            "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION",
+            "NO_OBSERVED_CURRENCY_CALIBRATION"
+          ],
+          "unit": "constructed_RMB_per_CU",
+          "value": 1.0
+        }
+      ],
+      "provenance": [
+        "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+        "LITERATURE_SUPPORTS_MECHANISM_NOT_NUMERIC_COEFFICIENT",
+        "RMB_IS_CONSTRUCTED_NOT_REAL_CURRENCY"
+      ],
+      "reference": [
+        "10.1016/j.tre.2016.01.002",
+        "10.1016/j.cor.2020.105137",
+        "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION"
+      ],
+      "rule_hash": "sha256:be8fa71d47e8b1c43b8332176a8e3c759bd2836b1f3a5b403cb52d9ba2a2654e",
+      "rule_id": "RMB_CANDIDATE_P_itinerary_V1",
+      "source_type": "SCENARIO_ASSUMPTION"
+    },
+    "P_service": {
+      "component_id": "P_service",
+      "constructed_unit_id": "RMB",
+      "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+      "input_unit_id": "CU",
+      "mapping_function": "LINEAR_SCALE",
+      "parameter_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+      "parameters": [
+        {
+          "parameter_name": "rmb_per_cu",
+          "provenance": [
+            "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION",
+            "NO_OBSERVED_CURRENCY_CALIBRATION"
+          ],
+          "unit": "constructed_RMB_per_CU",
+          "value": 1.0
+        }
+      ],
+      "provenance": [
+        "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+        "LITERATURE_SUPPORTS_MECHANISM_NOT_NUMERIC_COEFFICIENT",
+        "RMB_IS_CONSTRUCTED_NOT_REAL_CURRENCY"
+      ],
+      "reference": [
+        "10.1016/j.cor.2020.105137",
+        "10.1016/j.tre.2016.01.002",
+        "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION"
+      ],
+      "rule_hash": "sha256:b0c91d1f2cd46311cb7d391cc0d05887a2ba6f920cba66bb6bf0796b5c6fee57",
+      "rule_id": "RMB_CANDIDATE_P_service_V1",
+      "source_type": "SCENARIO_ASSUMPTION"
+    },
+    "P_time": {
+      "component_id": "P_time",
+      "constructed_unit_id": "RMB",
+      "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+      "input_unit_id": "CU",
+      "mapping_function": "LINEAR_SCALE",
+      "parameter_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+      "parameters": [
+        {
+          "parameter_name": "rmb_per_cu",
+          "provenance": [
+            "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION",
+            "NO_OBSERVED_CURRENCY_CALIBRATION"
+          ],
+          "unit": "constructed_RMB_per_CU",
+          "value": 1.0
+        }
+      ],
+      "provenance": [
+        "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+        "LITERATURE_SUPPORTS_MECHANISM_NOT_NUMERIC_COEFFICIENT",
+        "RMB_IS_CONSTRUCTED_NOT_REAL_CURRENCY"
+      ],
+      "reference": [
+        "10.1016/j.cor.2020.105137",
+        "10.1016/j.tre.2016.01.002",
+        "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION"
+      ],
+      "rule_hash": "sha256:df116e6f86b69308d4ddb77a35057c235d018c2775e696d5328262eb5cc1a18a",
+      "rule_id": "RMB_CANDIDATE_P_time_V1",
+      "source_type": "SCENARIO_ASSUMPTION"
+    },
+    "R_operating": {
+      "component_id": "R_operating",
+      "constructed_unit_id": "RMB",
+      "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+      "input_unit_id": "CU",
+      "mapping_function": "LINEAR_SCALE",
+      "parameter_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+      "parameters": [
+        {
+          "parameter_name": "rmb_per_cu",
+          "provenance": [
+            "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION",
+            "NO_OBSERVED_CURRENCY_CALIBRATION"
+          ],
+          "unit": "constructed_RMB_per_CU",
+          "value": 1.0
+        }
+      ],
+      "provenance": [
+        "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+        "LITERATURE_SUPPORTS_MECHANISM_NOT_NUMERIC_COEFFICIENT",
+        "RMB_IS_CONSTRUCTED_NOT_REAL_CURRENCY"
+      ],
+      "reference": [
+        "10.1016/j.eng.2020.08.021",
+        "10.1016/j.ejtl.2023.100117",
+        "SCENARIO_ASSUMPTION_UNIT_NORMALIZATION"
+      ],
+      "rule_hash": "sha256:0f97921ab31650939aa91919ea57c6128a8568666919a1a66924def8369d21b7",
+      "rule_id": "RMB_CANDIDATE_R_operating_V1",
+      "source_type": "SCENARIO_ASSUMPTION"
+    }
+  },
+  "constructed_unit_id": "RMB",
+  "final_test_access_count": 0,
+  "freeze_id": "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+  "input_unit_id": "CU",
+  "monetary_ground_truth_claim": false,
+  "paper_full_run": false,
+  "provenance": [
+    "M4_RMB_MAPPING_FREEZE_CANDIDATE_20260823",
+    "CONSTRUCTED_UNIT_NORMALIZATION",
+    "LITERATURE_MECHANISM_SUPPORT_ONLY"
+  ],
+  "reference_period": "DEVELOPMENT_SENSITIVITY_ONLY",
+  "registry_hash": "sha256:9e0c5ce0cbd7e6070f596d50080f71fe9e5b35391b8a65b196868f0586e325a9",
+  "registry_id": "M4_CU_RMB_MAPPING_CANDIDATE_V1",
+  "registry_version": "RMB_CANDIDATE_UNIT_NORMALIZATION_V1",
+  "scenario_dependent": true,
+  "status": "TEST_ONLY"
+}

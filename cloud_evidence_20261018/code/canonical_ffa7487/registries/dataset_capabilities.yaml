@@ -1,0 +1,16 @@
+schema_version: "1.0.0"
+profiles:
+  - dataset_instance_id: data1_2019
+    dataset_profile: TRAJECTORY_RICH_ROLLING_INSTANCE
+    cross_dataset_reference_overlay: false
+    capabilities:
+      - {scientific_object: trajectory, decision_time_role: INFERENCE_EVIDENCE, max_evidence_class: DIRECT, formal_input_support: DIRECT, realized_outcome_support: DERIVED, freeze_state: FROZEN, source_families: [opensky_state_vectors]}
+      - {scientific_object: schedule, decision_time_role: UNSUPPORTED, max_evidence_class: UNSUPPORTED, formal_input_support: UNSUPPORTED, realized_outcome_support: UNSUPPORTED, freeze_state: UNSUPPORTED, reason_code: NO_TRUE_SCHEDULE, source_families: []}
+      - {scientific_object: action_response_history, decision_time_role: SCENARIO_ONLY, max_evidence_class: UNSUPPORTED, formal_input_support: UNSUPPORTED, realized_outcome_support: UNSUPPORTED, freeze_state: UNSUPPORTED, reason_code: NO_ACTION_LOG, source_families: []}
+  - dataset_instance_id: data2_2019
+    dataset_profile: EVENT_RICH_POSTHOC_INSTANCE
+    cross_dataset_reference_overlay: false
+    capabilities:
+      - {scientific_object: realized_events, decision_time_role: EVAL_OUTCOME, max_evidence_class: DIRECT, formal_input_support: UNSUPPORTED, realized_outcome_support: DIRECT, freeze_state: FROZEN, reason_code: POSTHOC_ONLY, source_families: [bts_ontime]}
+      - {scientific_object: trajectory, decision_time_role: UNSUPPORTED, max_evidence_class: UNSUPPORTED, formal_input_support: UNSUPPORTED, realized_outcome_support: UNSUPPORTED, freeze_state: UNSUPPORTED, reason_code: NO_TRAJECTORY, source_families: []}
+      - {scientific_object: weather, decision_time_role: INFERENCE_EVIDENCE, max_evidence_class: DIRECT, formal_input_support: DIRECT, realized_outcome_support: DIRECT, freeze_state: FROZEN, source_families: [noaa_isd]}

@@ -1,0 +1,383 @@
+schema_version: M3_RESPONSE_SCENARIO_V1
+registry_id: M3_RESPONSE_SCENARIO_V1
+
+scientific_status: HUMAN_APPROVED_SCENARIO_SPECIFICATION
+formal_support_upgrade: false
+
+response_model: BERNOULLI_BETA
+response_provenance_default: ASSUMPTION_GROUNDED
+
+beta_concentration: 12.0
+induced_score_to_cu: 0.10
+induced_score_unit: INDUCED_SCORE
+induced_score_to_cu_unit: CU_PER_INDUCED_SCORE
+induced_burden_semantics: ACTION_ATTEMPT_BURDEN
+induced_burden_requires_realized_mitigation: false
+induced_burden_components: [F_continuity, F_execution, F_propagation, P_time, P_itinerary, P_service, R_operating]
+
+sensitivity:
+  principal_axis: RESPONSE_EFFICACY
+  low:
+    success_probability_delta: -0.15
+    response_mean_delta: -0.10
+  base:
+    success_probability_delta: 0.00
+    response_mean_delta: 0.00
+  high:
+    success_probability_delta: 0.15
+    response_mean_delta: 0.10
+
+secondary_burden_sensitivity:
+  enabled: true
+  induced_score_to_cu: [0.075, 0.10, 0.125]
+  principal: false
+
+tiers:
+  T1: {success_probability: 0.80, beta_mean: 0.70}
+  T2: {success_probability: 0.65, beta_mean: 0.60}
+  T3: {success_probability: 0.50, beta_mean: 0.50}
+  T4: {success_probability: 0.35, beta_mean: 0.45}
+  T5: {success_probability: 0.95, beta_mean: 0.90}
+  T6: {success_probability: 0.90, beta_mean: 0.85}
+
+actions:
+  A00:
+    response_model: DETERMINISTIC
+    response_parameter_status: NOT_REQUIRED
+    response_provenance: OPERATOR_INDUSTRY
+    value: 0.0
+  A11:
+    tier: T1
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: PASSENGER_REACCOMMODATION_PROXY
+      formula: R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]
+      literature:
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+        - YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991
+        - CookTanner2015_EUROCONTROL
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A13:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: PROPAGATION_SLACK_CUT
+      formula: R_a(s) = max(0, inbound_delay(s) - slack_a)
+      literature:
+        - KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A21:
+    tier: T1
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: HOLD_OR_WAIT_DELAY_ABSORPTION
+      formula: R_a(s) = max(0, planned_wait_minutes(s) - residual_delay(s))
+      literature:
+        - KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A22:
+    tier: T3
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: HOLD_OR_WAIT_DELAY_ABSORPTION
+      formula: R_a(s) = max(0, planned_wait_minutes(s) - residual_delay(s))
+      literature:
+        - KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A23:
+    tier: T3
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: HOLD_OR_WAIT_DELAY_ABSORPTION
+      formula: R_a(s) = max(0, planned_wait_minutes(s) - residual_delay(s))
+      literature:
+        - KafleZou2016_TRB_DOI_10.1016/j.trb.2016.08.012
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A31:
+    tier: T1
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: PASSENGER_REACCOMMODATION_PROXY
+      formula: R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]
+      literature:
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+        - YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991
+        - CookTanner2015_EUROCONTROL
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A32:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: PASSENGER_REACCOMMODATION_PROXY
+      formula: R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]
+      literature:
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+        - YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991
+        - CookTanner2015_EUROCONTROL
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A33:
+    tier: T1
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: PASSENGER_REACCOMMODATION_PROXY
+      formula: R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]
+      literature:
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+        - YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991
+        - CookTanner2015_EUROCONTROL
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A41:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A42:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A43:
+    tier: T3
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A51:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A52:
+    tier: T3
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A53:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A54:
+    tier: T4
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A55:
+    tier: T4
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A61:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A62:
+    tier: T2
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A63:
+    tier: T4
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A64:
+    tier: T3
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: SWAP_TURNAROUND_MISMATCH_REDUCTION
+      formula: R_a(s) = max(0, turnaround_mismatch(aircraft_pair) - swap_buffer_a)
+      literature:
+        - Evler2021_COR_DOI_10.1016/j.cor.2021.105602
+        - Arikan2017_TranspSci_DOI_10.1287/trsc.2016.0716
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A71:
+    tier: T5
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: PASSENGER_REACCOMMODATION_PROXY
+      formula: R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]
+      literature:
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+        - YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991
+        - CookTanner2015_EUROCONTROL
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}
+  A72:
+    tier: T6
+    response_parameter_status: FROZEN
+    response_provenance: ASSUMPTION_GROUNDED
+    response_model: BERNOULLI_BETA
+    assumption_grounded:
+      mechanism: PASSENGER_REACCOMMODATION_PROXY
+      formula: R_a(s) = n_pax_affected(s) * 1[service_policy_threshold_breached]
+      literature:
+        - BratuBarnhart2006_JOS_DOI_10.1007/s10951-006-6781-0
+        - YetimogluAkturk2020_JATM_DOI_10.1016/j.jairtraman.2020.101991
+        - CookTanner2015_EUROCONTROL
+      sensitivity_band:
+        low: {success_probability_delta: -0.15, response_mean_delta: -0.1}
+        base: {success_probability_delta: 0.0, response_mean_delta: 0.0}
+        high: {success_probability_delta: 0.15, response_mean_delta: 0.1}

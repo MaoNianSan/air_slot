@@ -1,0 +1,30 @@
+{
+  "schema_version": "M4_RMB_MAPPING_DESIGN_V1",
+  "registry_id": "M4_RMB_MAPPING_DESIGN_V1",
+  "scientific_status": "SCIENTIFIC_DECISION_REQUIRED",
+  "constructed_unit_id": "RMB",
+  "real_currency_claim": false,
+  "scenario_dependent": true,
+  "production_mapping_enabled": false,
+  "mapping_contract": {
+    "input_object": "C_k",
+    "output_object": "RMB_k",
+    "formula": "RMB_k = f_k(C_k)",
+    "aggregation": "RMB = SUM_k RMB_k",
+    "required_fields": ["component_id", "mapping_function", "parameter_version", "source_type", "reference", "freeze_id", "parameters", "provenance", "rule_id", "rule_hash"],
+    "required_linear_parameter_name": "rmb_per_consequence_unit",
+    "anonymous_parameter_names_prohibited": ["weight", "gamma", "omega"]
+  },
+  "component_order": ["F_continuity", "F_execution", "F_propagation", "P_time", "P_itinerary", "P_service", "R_operating"],
+  "component_status": [
+    {"component_id":"F_continuity","support_state":"ABSTAIN","reason_code":"RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
+    {"component_id":"F_execution","support_state":"ABSTAIN","reason_code":"RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
+    {"component_id":"F_propagation","support_state":"ABSTAIN","reason_code":"RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
+    {"component_id":"P_time","support_state":"ABSTAIN","reason_code":"RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
+    {"component_id":"P_itinerary","support_state":"ABSTAIN","reason_code":"RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
+    {"component_id":"P_service","support_state":"ABSTAIN","reason_code":"RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"},
+    {"component_id":"R_operating","support_state":"ABSTAIN","reason_code":"RMB_MAPPING_SCIENTIFIC_DECISION_REQUIRED"}
+  ],
+  "claim_boundary": "RMB is a constructed monetary unit for scenario-dependent risk evaluation, not observed currency or monetary ground truth.",
+  "safety": {"FINAL_TEST_ACCESS_COUNT": 0, "PAPER_FULL_RUN": false, "FULL": false}
+}

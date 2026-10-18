@@ -1,0 +1,298 @@
+schema_version: "1.0.0"
+parameters:
+  replay_lag_minutes: {freeze_state: FROZEN, value: 0}
+  data2_weather_replay_lag_minutes:
+    freeze_state: FROZEN
+    value: 5
+    provenance: {selection_state: DEVELOPMENT_FROZEN, scope: data2_2019, decision: "D2-6 replay-lag new decision 2026-08-16 (user approved): data2 NOAA-ISD weather availability lag 5 min; data1 replay_lag_minutes unchanged at 0"}
+  data2_factual_replay_availability:
+    freeze_state: FROZEN
+    value: DECLARED_EVENT_TIME_REPLAY
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: DATA2_FACTUAL_REPLAY_POLICY_A1
+      decision_date: "2026-08-21"
+      principal_lag_minutes: 0
+      observed_availability_claim: false
+      production_availability_claim: false
+      note: "Retrospective event-time replay assumption only; Data2 has no observed message-arrival or production-availability timestamps."
+      final_test_access_count: 0
+  replay_lag_sensitivity_minutes: {freeze_state: FROZEN, value: [0, 5, 10]}
+  weather_max_age_minutes: {freeze_state: FROZEN, value: 60}
+  cloud_encoding: {freeze_state: FROZEN, value: both}
+  roll_minutes: {freeze_state: FROZEN, value: 5}
+  roll_sensitivity_minutes: {freeze_state: FROZEN, value: [10]}
+  forecast_horizons_minutes: {freeze_state: FROZEN, value: [0, 15, 60]}
+  evaluation_lead_times_minutes:
+    freeze_state: FROZEN
+    value: [0, 30, 60, 120, 180, 240, 300, 360, 420, 480]
+    provenance:
+      role: EVALUATION_NODE_SLICING_ONLY
+      model_forecast_horizon: false
+      note: "ell is historical decision-node lead time; it is not tau and does not create prediction heads."
+  delay_thresholds_minutes: {freeze_state: FROZEN, value: [15, 30, 60]}
+  downstream_exposure_horizon_minutes:
+    freeze_state: FROZEN
+    value: 360
+    provenance:
+      scientific_object: AIRCRAFT_CHAIN_EXPECTED_DOWNSTREAM_EXPOSURE
+      distinct_from_m1_finite_support: true
+      reference_rules: [EXPECTED_DOWNSTREAM_EXPOSURE@1.0.0, DATA2_DOWNSTREAM_EXPOSURE@1.0.0]
+  m1_hidden_size:
+    freeze_state: FROZEN
+    value: 16
+    provenance:
+      selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
+      decision_id: AIR_SLOT_MODEL_FREEZE_20260901
+      decision_date: "2026-09-01"
+      role: PRIMARY
+      target_contract: [T_IB_REMAINING_HAZARD, D_OB, D_TX]
+      architecture: SINGLE_LAYER_CAUSAL_UNIDIRECTIONAL_GRU
+      legacy_v1_provenance: "H=32 is SUPERSEDED and is not active runtime authority"
+      final_test_access_count: 0
+  m1_sensitivity_hidden_size:
+    freeze_state: FROZEN
+    value: 8
+    provenance:
+      selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
+      decision_id: AIR_SLOT_MODEL_FREEZE_20260901
+      decision_date: "2026-09-01"
+      role: PREDEFINED_LOWER_CAPACITY_SENSITIVITY
+      tuning_candidate: false
+      final_test_access_count: 0
+  m1_fixed_history_window_minutes:
+    freeze_state: SENSITIVITY_ONLY
+    value: 30
+    provenance:
+      role: HISTORICAL_V1_SENSITIVITY_ONLY
+      migration: "ROUND2_M1_V2 (2026-08-19): the fixed 30-minute window is a V1 sensitivity artifact; the V2 principal history is FULL_ADAPTIVE_CAUSAL_PREFIX"
+      selection_state: DEVELOPMENT_FROZEN
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
+      decision_date: "2026-08-17"
+      selection_metric: episode-balanced Development joint NLL
+      practical_equivalence_threshold: 0.005
+      target_contract: [R_IB, DELTA_OB, T_TX]
+      evidence: artifacts/diagnostics/v5_development_freeze/m1_signed_wstar_evidence.json
+      evidence_hash: sha256:a3da36adae926b206a7073edf88b7dcbf49b8ee01949820543c2aaf3473247ff
+      final_test_access_count: 0
+  m1_stochastic_targets:
+    freeze_state: FROZEN
+    value: [R_IB, DELTA_OB, T_TX]
+    provenance:
+      role: LEGACY_V1
+      migration: "ROUND2_M1_V2 (2026-08-19): retained as LEGACY_V1 provenance only; the V2 principal targets are m1_state_estimator_v2 primitive_targets=[T_IB_A00, D_OB, D_TX]"
+      selection_state: HUMAN_APPROVED
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
+      decision_date: "2026-08-17"
+      derived_scenario_values: [R_OB, T_OB, T_TO, D_TO]
+      final_test_access_count: 0
+  m1_formal_output_contract:
+    freeze_state: FROZEN
+    value: [R_IB, D_OB, D_TX, D_TO]
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_MODEL_MANUSCRIPT_RECONCILIATION_2026-08-19
+      decision_date: "2026-08-19"
+      formal_successor_targets: [D_OB, D_TX]
+      derived_targets: [D_TO]
+      internal_auxiliaries: [DELTA_OB, T_TX]
+      d_to_identity: "D_TO = D_OB + D_TX per scenario"
+      final_test_access_count: 0
+  m1_bin_width_minutes: {freeze_state: FROZEN, value: 5}
+  m1_r_ib_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 360
+    provenance:
+      role: LEGACY_V1_PROVENANCE_ONLY
+      controls_principal_v2_pipeline: false
+      target_contract: R_IB
+      final_test_access_count: 0
+  m1_delta_ob_min_finite_minutes:
+    freeze_state: FROZEN
+    value: -180
+    provenance: &m1_legacy_signed_target_support_provenance
+      role: LEGACY_V1_PROVENANCE_ONLY
+      controls_principal_v2_pipeline: false
+      decision_id: D3_SIGNED_M1_H_W_REFREEZE
+      decision_date: "2026-08-17"
+      target_contract: DELTA_OB
+      support_rule: symmetric_signed_support_with_explicit_tails
+      bin_width_minutes: 5
+      final_test_access_count: 0
+  m1_delta_ob_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 180
+    provenance: *m1_legacy_signed_target_support_provenance
+  m1_t_tx_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 60
+    provenance:
+      role: LEGACY_V1_PROVENANCE_ONLY
+      controls_principal_v2_pipeline: false
+      target_contract: T_TX
+      final_test_access_count: 0
+  m1_v2_t_ib_remaining_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 360
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      support_provenance: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+      selection_unit: TRAIN_EPISODE_BALANCED
+      statistic: EPISODE_MAX_ACTIVE_REMAINING
+      calibration_role: DIAGNOSTIC_ONLY
+      development_role: DIAGNOSTIC_ONLY
+      final_test_access_count: 0
+  m1_v2_d_ob_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 180
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      support_provenance: AIR_SLOT_MODEL_FREEZE_20260901
+      selection_unit: TRAIN_EPISODE_BALANCED
+      statistic: UNIQUE_EPISODE_OUTCOME
+      calibration_role: DIAGNOSTIC_ONLY
+      development_role: DIAGNOSTIC_ONLY
+      final_test_access_count: 0
+  m1_v2_d_tx_max_finite_minutes:
+    freeze_state: FROZEN
+    value: 60
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_V2_PAPER_MODEL_CLOSURE
+      decision_date: "2026-08-22"
+      support_provenance: V2_SUPPORT_REFROZEN_AFTER_A2_B2
+      selection_unit: TRAIN_EPISODE_BALANCED
+      statistic: UNIQUE_EPISODE_OUTCOME
+      calibration_role: DIAGNOSTIC_ONLY
+      development_role: DIAGNOSTIC_ONLY
+      final_test_access_count: 0
+  m1_state_estimator_v2:
+    freeze_state: FROZEN
+    value: M1_STATE_ESTIMATOR_V2
+    provenance:
+      selection_state: ROUND2_TRANCHE2_SPEC
+      decision_id: AIR_SLOT_ROUND2_EMPIRICAL_MODEL_ALIGNMENT_TRANCHE2
+      decision_date: "2026-08-19"
+      primitive_targets: [T_IB_A00, D_OB, D_TX]
+      derived_targets: [R_IB, D_TO]
+      dependency_chain: "T_IB_A00 -> D_OB -> D_TX"
+      state_aware: causal_single_layer_unidirectional_GRU_H16_PRIMARY
+      sensitivity: causal_single_layer_unidirectional_GRU_H8_LOWER_CAPACITY_SENSITIVITY
+      predecessor_head: DISCRETE_HAZARD
+      successor_heads: HURDLE_QUANTILE
+      successor_conditioning: "D_TX | T_IB_A00, D_OB (formal D_OB only; never signed DELTA_OB)"
+      r_ib_identity: "R_IB = max(0, T_IB_A00 - t); derived, never a separate head"
+      d_to_identity: "D_TO = D_OB + D_TX per scenario; never a separate head"
+      history: FULL_ADAPTIVE_CAUSAL_PREFIX
+      scenario_count: 64
+      support_sources: "AIR_SLOT_MODEL_FREEZE_20260901 (m1_v2_t_ib_remaining_max_finite_minutes=360, m1_v2_d_ob_max_finite_minutes=180, m1_v2_d_tx_max_finite_minutes=60, m1_bin_width_minutes=5); Final Test access 0"
+      training_objective: TARGET_SPECIFIC_EPISODE_BALANCED
+      development_selection_metric: EPISODE_BALANCED_JOINT_VALIDATION_LOSS
+      legacy_v1: "m1_stochastic_targets=[R_IB, DELTA_OB, T_TX] retained as LEGACY_V1 provenance only; m1_fixed_history_window_minutes=30 migrated to SENSITIVITY_ONLY/HISTORICAL_V1"
+      final_test_access_count: 0
+  m1_v2_quantile_levels:
+    freeze_state: FROZEN
+    value: [0.1, 0.3, 0.5, 0.7, 0.9]
+    provenance:
+      selection_state: HISTORICAL_MODEL_FREEZE_RECONCILIATION
+      decision_id: AIR_SLOT_MODEL_FREEZE_20260901
+      decision_date: "2026-09-01"
+      role: FROZEN_REPRESENTATION_GRID_NO_PARAMETER_SELECTION
+      note: "Current implemented positive-quantile grid retained as the active model representation; no tuning or reselection performed."
+      final_test_access_count: 0
+  m1_v2_positive_tail_policy:
+    freeze_state: FROZEN
+    value: FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS
+    provenance:
+      selection_state: HUMAN_APPROVED
+      decision_id: AIR_SLOT_M1_POSITIVE_TAIL_POLICY_FREEZE
+      decision_date: "2026-08-22"
+      representation: "FINITE_SUPPORT_BINS_PLUS_EXPLICIT_TAIL_CLASS"
+      tail_class_id: OVERFLOW_TAIL
+      target_q_max_minutes:
+        T_IB_A00: 360
+        D_OB: 180
+        D_TX: 60
+      finite_support_bins:
+        bin_width_minutes: 5
+        interval_semantics: "[bin_start, bin_end), with support_max included in the terminal finite bin"
+        terminal_finite_bin_exclusive_upper_bound: false
+        maximum_finite_scalar_inclusive: true
+        off_grid_scalar_policy: "CONTINUOUS_NO_ROUNDING; value > support_max is OVERFLOW_TAIL"
+      tail_observability:
+        events_observable: true
+        raw_value_preserved: true
+        overflow_flag_preserved: true
+        no_truncation: true
+        no_deletion: true
+        no_winsorization: true
+      threshold_tuning:
+        development_based_threshold_tuning: false
+        q_max_source: AIR_SLOT_MODEL_FREEZE_20260901
+      continuous_quantile_queries_above_q_max: "ABSTAIN_EXPLICIT_TAIL_CLASS_REQUIRED"
+      note: "Finite support includes the scalar q_max. Any continuous scalar above q_max is retained as an explicit OVERFLOW_TAIL value with raw observed value and lineage; no rounding, scalar tail clipping, truncation, deletion, or winsorization is permitted."
+      cvar_alpha_reference: 0.90
+      final_test_access_count: 0
+  m1_v2_representation_contract:
+    freeze_state: FROZEN
+    value: ROUND2_2_MANUSCRIPT_IMPLEMENTATION
+    provenance:
+      selection_state: DEVELOPMENT_FROZEN_POLICY
+      role: ROUND2_MANUSCRIPT_IMPLEMENTATION
+      implementation_choice: ROUND2_2_DETERMINISTIC_CURRENT_AR_BLOCK_NO_SEARCH
+      static_context_status: PRE_PUBLISHED_TYPED
+      note: "state-aware = concat(GRU(history), projection(r_fast), projection(c_static)); FAST = concat(r_fast, c_static). PRE publishes typed route/carrier/aircraft/schedule/turnaround/taxi context; only train-frozen turnaround/taxi are numeric MODEL_FEATURES, while retained identities are never ordinal encoded. schedule.signed_minutes_to_crs_departure remains DYNAMIC and is not duplicated in c_static."
+      final_test_access_count: 0
+  m1_v2_calibration_contract:
+    freeze_state: FROZEN
+    value: M1_CALIBRATION_CONTRACT_V1
+    provenance:
+      selection_state: DEVELOPMENT_FROZEN_POLICY
+      predecessor_probability_calibration: DISCRETE_HAZARD_EVENT_TIME_NLL
+      successor_zero_mass_calibration: HURDLE_ZERO_BINARY_CE_TEMPERATURE
+      positive_quantile_calibration: QUANTILE_CALIBRATION_NOT_APPLIED
+      split: calibration
+      split_start: 2019-07-01
+      split_end: 2019-07-31
+      primitive_calibration_objects: [T_IB_A00_HAZARD, D_OB_ZERO_MASS, D_TX_ZERO_MASS]
+      path_semantics: "STATE_AWARE and FAST share the policy and output contract; fitted temperatures remain model/checkpoint specific"
+      active_primary_artifact_status: MATERIALIZED_FOR_H16
+      active_primary_artifact: artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_MANIFEST.json
+      active_primary_checkpoint: artifacts/models/m1/M1_FROZEN_H16/DATA2_M1_V2_DEVELOPMENT_FAST.pt
+      active_primary_calibration: artifacts/models/m1/M1_FROZEN_H16/M1_FROZEN_H16_CALIBRATION.json
+      active_primary_checkpoint_hash: sha256:5a5e53f786d082e382bd3e6ba6a146eec1eadf91a6cf9f832bd64e62e24f854e
+      active_primary_calibration_hash: sha256:44fd067cf64f832a6ca7115b79ec1d89bff2496c71439ecf54ed296f2a6ce775
+      superseded_artifact: artifacts/calibration/m1_v2_calibration_20260826/M1_V2_CALIBRATION_ARTIFACT.json
+      superseded_artifact_scope: H32_AND_CURRENT_ONLY_ONLY
+      note: "Do not apply the H32/CURRENT_ONLY fitted temperatures to H16; H16-specific temperatures must be fitted on the frozen July calibration split."
+      final_test_access_count: 0
+  m1_episode_partition_contract:
+    freeze_state: FROZEN
+    value: SUCCESSOR_SERVICE_DATE_EPISODE_ATOMIC
+    provenance:
+      partitions:
+        train: [2019-01-01, 2019-06-30]
+        calibration: [2019-07-01, 2019-07-31]
+        development: [2019-08-01, 2019-09-30]
+        test: [2019-10-01, OPEN]
+      invariant: "all rolling nodes for one (f-, f+) episode remain in one partition"
+  m1_episode_weighting_contract:
+    freeze_state: FROZEN
+    value: TARGET_SPECIFIC_INVERSE_ELIGIBLE_NODE_COUNT
+    provenance:
+      formula: "w_i,n = 1/N_i for eligible nodes of each target/loss component"
+      episode_total_weight: 1.0
+  m1_scenario_random_key_contract:
+    freeze_state: FROZEN
+    value: SHA256_STABLE_KEY_V2
+    provenance:
+      key_fields: [global_seed, episode_id, scenario_id, target_identity]
+      excludes: [worker_order, batch_order, cpu_count, decision_node_id]
+      invariant: "same scientific input and seed imply the same scenario lineage"
+  scenario_count: {freeze_state: FROZEN, value: 64}
+  m4_lambda: {freeze_state: FROZEN, value: 0.25}
+  m4_alpha: {freeze_state: FROZEN, value: 0.90}

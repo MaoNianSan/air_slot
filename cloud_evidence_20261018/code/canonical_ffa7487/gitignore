@@ -1,0 +1,142 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+
+# ===== IDE & Editor =====
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ===== Environment & Secrets =====
+.env
+.env.*
+!.env.example
+*.local
+.venv/
+venv/
+env/
+
+# ===== Raw / local dataset content (kept local, never uploaded) =====
+# Data roots are read-only local inputs; only code/config/schema/docs are versioned.
+data1/raw/
+data1/_download/
+data2/raw/
+data2/_download/
+data2/logs/
+data2/manifests/
+
+# ===== Generated experiment / validation outputs =====
+outputs/
+reports/
+data2/reports/
+
+# Generated diagnostics (freeze / smoke runs) — regenerable, keep local
+artifacts/diagnostics/v5_development_freeze/
+
+# ===== Local temporary files =====
+*.tmp
+*.bak
+*.log
+
+# ===== Spec archive (redundant with extracted specs/) =====
+specs/*.zip
+
+# ===== Large generated scenario/consequence artifacts =====
+# Regenerable experiment outputs exceeding GitHub size limits (kept local)
+artifacts/experiment/**/M1_V2_CURRENT_STAGE_TYPED_JOINT_SCENARIOS.json
+artifacts/experiment/**/M2_V2_CURRENT_STAGE_TYPED_CONSEQUENCES.json
+
+# ===== Artifact archive (moved duplicates/superseded versions, kept local) =====
+artifacts/_archive/
+
+# ===== Fast-gate runtime outputs (regenerable, kept local) =====
+artifacts/real_fast/
+
+# ===== Experiment run logs =====
+*.log.*
+artifacts/diagnostics/*.log.*
+
+
+# ===== Large regenerable experiment outputs (kept local) =====
+# Parquet / bulk inference payloads exceed GitHub size limits or are
+# regenerable from frozen caches; tables/figures/manifests stay versioned.
+artifacts/experiments/**/*.parquet
+artifacts/experiment/full_development_inputs_v1/M1_V2_FULL_DEVELOPMENT_INFERENCE_INPUTS.json
+
+# ===== Over-100MB regenerable artifacts (GitHub hard limit, kept local) =====
+# Exp2A full-development joint/marginal CSV dumps (~330-360MB) and M2
+# full-development consequences parquet (~313MB) exceed GitHub's 100MB hard
+# limit; small point/variogram tables & manifests remain versioned.
+artifacts/experiment/exp2/exp2_representation_refactor_20260825/EXP2A_JOINT_RECORDS_DEVELOPMENT_ONLY.csv
+artifacts/experiment/exp2/exp2_representation_refactor_20260825/EXP2A_MARGINAL_RECORDS_DEVELOPMENT_ONLY.csv
+artifacts/paper_results_v1/exp2/M2_FULL_DEVELOPMENT_CONSEQUENCES.parquet
+
+# ===== Over-100MB Final Test RMB regenerable artifact (GitHub hard limit) =====
+# M2 Final Test consequences parquet (~304MB) exceeds GitHub's 100MB hard
+# limit; regenerable from the frozen Final Test input & lineage caches.
+artifacts/paper_results_v2_final_test_rmb/exp2/M2_FINAL_TEST_CONSEQUENCES.parquet
+
+# ===== Over-100MB regenerable passenger-reference freeze (GitHub hard limit) =====
+# T100 expected-pax-per-flight reference JSON (~312MB) exceeds GitHub's 100MB
+# hard limit; regenerable via the passenger-reference freeze materialization
+# pipeline (see materialization.log / PASSENGER_REFERENCE_MANIFEST.json).
+artifacts/diagnostics/passenger_reference_freeze/T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json
+artifacts/diagnostics/passenger_reference_freeze_v4/T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE.json
+
+# ===== Large regenerable bootstrap draws & freeze references (kept local) =====
+# EXP3/EXP4 bootstrap draw matrices (~73MB each) are regenerable from frozen
+# draw seeds; DB1B connection-share freeze reference is regenerable via the
+# passenger-reference freeze pipeline.
+artifacts/experiment/exp3/development/EXP3_BOOTSTRAP_DRAWS.npy
+artifacts/experiment/exp4/development/EXP4_BOOTSTRAP_DRAWS.npy
+artifacts/diagnostics/passenger_reference_freeze_v4/DB1B_CONNECTION_SHARE_REFERENCE.json
+
+# ===== Large regenerable final-test data (kept local; user decision 2026-09-08) =====
+# Full record-level pair parquets and PRE states are regenerable from the
+# frozen final-test inputs & pipeline; summaries/manifests stay versioned.
+artifacts/experiment/final_test/exp2/data/EXP2_SIMILAR_DELAY_PAIRS.parquet
+artifacts/experiment/final_test/exp2/data/EXP2C_MATCHED_PAIRS.parquet
+artifacts/experiment/final_test/FINAL_TEST_PRE_STATES.jsonl
+
+# ===== Local reference material (not tracked; user decision 2026-09-02) =====
+Rolling_Airline_Recovery (4).pdf
+Rolling_Airline_Recovery (7).pdf
+
+# ===== Large regenerable Phase-7 Final-Test checkpoints (kept local) =====
+# The ~587MB sealed-run checkpoint payloads stay local; the committed
+# manifest artifacts/experiment/final_test_v2/CHECKPOINT_MANIFEST.json carries
+# their stage order, dependencies and hashes.
+artifacts/experiment/final_test_v2/checkpoints/
+
+# ===== Over-100MB stage-matched Final-Test payloads (GitHub hard limit) =====
+# These two per-file JSON payloads exceed GitHub's 100MB hard limit and are
+# distributed as GitHub Release assets instead of git objects; see
+# artifacts/experiment/final_test_v2_stage_matched/LARGE_ARTIFACT_MANIFEST.json
+# for the release tag and sha256 hashes.  Smaller checkpoint files in the same
+# directory stay versioned.
+artifacts/experiment/final_test_v2_stage_matched/checkpoints/CONSEQUENCE_VARIANTS.json
+artifacts/experiment/final_test_v2_stage_matched/checkpoints/STATE_VARIANTS.json
+
+# ===== Over-100MB expected-passenger reference payloads (GitHub hard limit) =====
+# The 2019-H1/2020-H1 T100 expected-passenger reference JSONs exceed GitHub's
+# 100MB hard limit; regenerable via the passenger-reference freeze pipeline and
+# distributed as GitHub Release assets (hashes recorded in
+# artifacts/models/pre/PRE_MULTIYEAR_V1/LARGE_ARTIFACT_MANIFEST.json).
+artifacts/models/pre/PRE_MULTIYEAR_V1/2019/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2019-H1.json
+artifacts/models/pre/PRE_MULTIYEAR_V1/2020/M2_REFERENCES/M2_EXPECTED_PASSENGERS_REFERENCE_2020-H1.json
+
+# ===== Local scratch scripts, probes and run logs (kept local) =====
+tmp/

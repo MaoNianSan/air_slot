@@ -1,0 +1,8 @@
+FROM python:3.11.6-slim
+ENV PYTHONUNBUFFERED=1 TZ=UTC OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 NUMEXPR_NUM_THREADS=8
+WORKDIR /app
+COPY deploy/jatm_cloud/requirements.runtime.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir torch==2.11.0+cpu --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+# Mount the verified repository/input closure at /app and separate outputs at /runs.
+ENTRYPOINT ["python", "-m", "exp.jatm_s34.cloud_schedule"]

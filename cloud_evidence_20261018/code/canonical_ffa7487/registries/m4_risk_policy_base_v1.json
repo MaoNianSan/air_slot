@@ -1,0 +1,16 @@
+{
+  "policy_id": "M4_RISK_POLICY_BASE_V1",
+  "version": "1.0.0",
+  "freeze_id": "AIR_SLOT_MODEL_FREEZE_20260901_RISK_BASE",
+  "lambda": 0.25,
+  "alpha": 0.90,
+  "expected_loss_weight": 0.75,
+  "cvar_weight": 0.25,
+  "tail_support_state": "FROZEN_ASSUMPTION_GROUNDED",
+  "scientific_status": "FROZEN",
+  "implementation_status": "MATCH",
+  "provenance": [
+    "HISTORICAL_MODEL_FREEZE_RECONCILIATION_20260901",
+    "M1_EXPLICIT_OVERFLOW_TAIL_CONTRACT"
+  ]
+}

@@ -1,0 +1,299 @@
+{
+  "claim_statement": "constructed scale anchored on EUROCONTROL EUR-basis values, not a currency conversion; assumption-grounded, not empirical cost; no authoritative, optimal, or regret claim",
+  "conversion_plan": {
+    "issue": "Dual EUR-native layers: ops layer is constructed_EUR anchored on the EUROCONTROL EUR-per-minute literature; compensation layer is the EU261 EUR regulatory staircase; no cross-currency conversion is required because both layers are EUR",
+    "options": [
+      {
+        "assumptions": [
+          "no exchange-rate assumption",
+          "no purchasing-power assumption",
+          "each layer carries its own constructed/regulatory label"
+        ],
+        "description": "Report both layers in their own EUR units (constructed_EUR ops + EU261 EUR compensation) and keep J_post as a two-part expression without any cross-currency conversion",
+        "option_id": "OPTION_A_DUAL_LAYER",
+        "recommended": true
+      },
+      {
+        "assumptions": [
+          "requires user-specified reference rate and period",
+          "introduces an extra assumption not grounded in the cited literature"
+        ],
+        "description": "Convert one layer into the other with a reference rate before summing J_post",
+        "option_id": "OPTION_B_FIXED_RATE",
+        "recommended": false
+      },
+      {
+        "assumptions": [
+          "requires welfare-transfer estimates",
+          "heavier assumption load; not recommended for the paper"
+        ],
+        "description": "Reweight compensation amounts via welfare coefficients into the ops-layer scale",
+        "option_id": "OPTION_C_WELFARE_WEIGHTED",
+        "recommended": false
+      }
+    ],
+    "status": "FROZEN"
+  },
+  "eu261": {
+    "regulatory_reference": [
+      "Regulation (EC) No 261/2004, Articles 6-7 (regulatory fact; 250/400/600 EUR and 1500/3500 km thresholds verified against the regulation text before publication)",
+      "CJEU C-402/07 Sturgeon v Condor (2011), Air & Space Law, DOI 10.54648/aila2011027 (3h trigger extension)"
+    ],
+    "tau_comp_options_minutes": [
+      150,
+      180,
+      210
+    ],
+    "tau_comp_selected_minutes": 180,
+    "tau_comp_sensitivity_minutes": [
+      150,
+      210
+    ],
+    "tiers": [
+      {
+        "compensation_eur": 250,
+        "max_distance_km": 1500
+      },
+      {
+        "compensation_eur": 400,
+        "max_distance_km": 3500
+      },
+      {
+        "compensation_eur": 600,
+        "max_distance_km": null
+      }
+    ],
+    "trigger_minutes": 180
+  },
+  "final_test_access_count": 0,
+  "monetary_ground_truth_claim": false,
+  "monetary_system_id": "EUR",
+  "numeric_freeze_status": "FROZEN_ASSUMPTION_GROUNDED",
+  "ops_components": [
+    {
+      "anchor_reason": "CU unit = minutes; EUROCONTROL 2004 network average 72 EUR/min applies directly",
+      "anchor_status": "FROZEN_ASSUMPTION_GROUNDED",
+      "bands": [
+        {
+          "band_id": "LOW",
+          "per_cu_money": 36.0,
+          "scale_factor": 0.5,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "BASE",
+          "per_cu_money": 72.0,
+          "scale_factor": 1.0,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "HIGH",
+          "per_cu_money": 144.0,
+          "scale_factor": 2.0,
+          "unit": "constructed_EUR_per_CU"
+        }
+      ],
+      "base_per_cu_money": 72.0,
+      "base_reference": [
+        "EUROCONTROL_2004_NETWORK_AVERAGE_72_EUR_PER_MINUTE",
+        "72 Euros per minute network average for 'long' ATFM delays (over 15 minutes), weighted by aircraft types and the ATFM delay-minute distribution; includes reactionary delay costs; excludes strategic buffer minutes (EUROCONTROL 2004, results F.2, page 15)"
+      ],
+      "component_id": "F_continuity",
+      "layer": "OPERATIONS"
+    },
+    {
+      "anchor_reason": "CU unit = minutes (R_OB = max(0, DELTA_OB)); 72 EUR/min applies directly",
+      "anchor_status": "FROZEN_ASSUMPTION_GROUNDED",
+      "bands": [
+        {
+          "band_id": "LOW",
+          "per_cu_money": 36.0,
+          "scale_factor": 0.5,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "BASE",
+          "per_cu_money": 72.0,
+          "scale_factor": 1.0,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "HIGH",
+          "per_cu_money": 144.0,
+          "scale_factor": 2.0,
+          "unit": "constructed_EUR_per_CU"
+        }
+      ],
+      "base_per_cu_money": 72.0,
+      "base_reference": [
+        "EUROCONTROL_2004_NETWORK_AVERAGE_72_EUR_PER_MINUTE",
+        "72 Euros per minute network average for 'long' ATFM delays (over 15 minutes), weighted by aircraft types and the ATFM delay-minute distribution; includes reactionary delay costs; excludes strategic buffer minutes (EUROCONTROL 2004, results F.2, page 15)"
+      ],
+      "component_id": "F_execution",
+      "layer": "OPERATIONS"
+    },
+    {
+      "anchor_reason": "CU unit = exposure_minutes = delay_minutes x expected_downstream_exposure(origin); each exposure-minute is one expected downstream airline delay minute costed at the same EUROCONTROL 2004 network-average 72 EUR/min (mathematical assumption: unit-consistent linear anchor; no separate literature value)",
+      "anchor_status": "FROZEN_ASSUMPTION_GROUNDED",
+      "bands": [
+        {
+          "band_id": "LOW",
+          "per_cu_money": 36.0,
+          "scale_factor": 0.5,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "BASE",
+          "per_cu_money": 72.0,
+          "scale_factor": 1.0,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "HIGH",
+          "per_cu_money": 144.0,
+          "scale_factor": 2.0,
+          "unit": "constructed_EUR_per_CU"
+        }
+      ],
+      "base_per_cu_money": 72.0,
+      "base_reference": [
+        "EUROCONTROL_2004_NETWORK_AVERAGE_72_EUR_PER_MINUTE",
+        "72 Euros per minute network average for 'long' ATFM delays (over 15 minutes), weighted by aircraft types and the ATFM delay-minute distribution; includes reactionary delay costs; excludes strategic buffer minutes (EUROCONTROL 2004, results F.2, page 15)"
+      ],
+      "component_id": "F_propagation",
+      "layer": "OPERATIONS"
+    },
+    {
+      "anchor_reason": "CU unit = passenger_minutes; EUROCONTROL 2004 estimate 0.30 EUR per passenger per delay minute applies directly",
+      "anchor_status": "FROZEN_ASSUMPTION_GROUNDED",
+      "bands": [
+        {
+          "band_id": "LOW",
+          "per_cu_money": 0.15,
+          "scale_factor": 0.5,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "BASE",
+          "per_cu_money": 0.3,
+          "scale_factor": 1.0,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "HIGH",
+          "per_cu_money": 0.6,
+          "scale_factor": 2.0,
+          "unit": "constructed_EUR_per_CU"
+        }
+      ],
+      "base_per_cu_money": 0.3,
+      "base_reference": [
+        "EUROCONTROL_2004_PASSENGER_DELAY_0_30_EUR_PER_PASSENGER_MINUTE",
+        "EUR 0.30 per average passenger, per average delay minute, per average delayed flight, covering 'hard' compensation/rebooking costs and 'soft' future-revenue costs (EUROCONTROL 2004, summary item 6; carrier range 0.27-0.32 EUR per passenger per minute: Austrian vs Airline Z)"
+      ],
+      "component_id": "P_time",
+      "layer": "PASSENGER"
+    },
+    {
+      "anchor_reason": "CU unit = events (N_miss = n_pax x 1[D_TO >= tau_itinerary]); retrieved EUROCONTROL 2004 text (sec. 2.3.2.3.7) documents missed-connection costs only qualitatively (compensation, rebooking, accommodation; no per-passenger numeric value); per-event anchor requires a literature value (e.g. AGIFORS missed-connection cost study) or a user-authorized assumption",
+      "anchor_status": "HUMAN_DECISION_REQUIRED",
+      "bands": [
+        {
+          "band_id": "LOW",
+          "per_cu_money": null,
+          "scale_factor": 0.5,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "BASE",
+          "per_cu_money": null,
+          "scale_factor": 1.0,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "HIGH",
+          "per_cu_money": null,
+          "scale_factor": 2.0,
+          "unit": "constructed_EUR_per_CU"
+        }
+      ],
+      "base_per_cu_money": null,
+      "base_reference": [
+        "EUROCONTROL (Cook, Tanner, Anderson) 2004: Evaluating the true cost to airlines of one minute of airborne or ground delay - final report, Transport Studies Group, University of Westminster (report; no DOI; local copies artifacts/diagnostics/cost_of_delay_2004_eurocontrol.pdf and artifacts/diagnostics/cost_of_delay_2004_text.txt)"
+      ],
+      "component_id": "P_itinerary",
+      "layer": "PASSENGER"
+    },
+    {
+      "anchor_reason": "CU unit = events (N_svc = n_pax x 1[D_TO >= tau_service]); no per-event cost anchor in the retrieved literature (EUROCONTROL 2004/2015); per-event anchor requires a literature value or a user-authorized assumption",
+      "anchor_status": "HUMAN_DECISION_REQUIRED",
+      "bands": [
+        {
+          "band_id": "LOW",
+          "per_cu_money": null,
+          "scale_factor": 0.5,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "BASE",
+          "per_cu_money": null,
+          "scale_factor": 1.0,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "HIGH",
+          "per_cu_money": null,
+          "scale_factor": 2.0,
+          "unit": "constructed_EUR_per_CU"
+        }
+      ],
+      "base_per_cu_money": null,
+      "base_reference": [
+        "EUROCONTROL (Cook, Tanner, Anderson) 2004: Evaluating the true cost to airlines of one minute of airborne or ground delay - final report, Transport Studies Group, University of Westminster (report; no DOI; local copies artifacts/diagnostics/cost_of_delay_2004_eurocontrol.pdf and artifacts/diagnostics/cost_of_delay_2004_text.txt)"
+      ],
+      "component_id": "P_service",
+      "layer": "PASSENGER"
+    },
+    {
+      "anchor_reason": "CU unit = excess taxi minutes; 72 EUR/min applies directly",
+      "anchor_status": "FROZEN_ASSUMPTION_GROUNDED",
+      "bands": [
+        {
+          "band_id": "LOW",
+          "per_cu_money": 36.0,
+          "scale_factor": 0.5,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "BASE",
+          "per_cu_money": 72.0,
+          "scale_factor": 1.0,
+          "unit": "constructed_EUR_per_CU"
+        },
+        {
+          "band_id": "HIGH",
+          "per_cu_money": 144.0,
+          "scale_factor": 2.0,
+          "unit": "constructed_EUR_per_CU"
+        }
+      ],
+      "base_per_cu_money": 72.0,
+      "base_reference": [
+        "EUROCONTROL_2004_NETWORK_AVERAGE_72_EUR_PER_MINUTE",
+        "72 Euros per minute network average for 'long' ATFM delays (over 15 minutes), weighted by aircraft types and the ATFM delay-minute distribution; includes reactionary delay costs; excludes strategic buffer minutes (EUROCONTROL 2004, results F.2, page 15)"
+      ],
+      "component_id": "R_operating",
+      "layer": "OPERATIONS"
+    }
+  ],
+  "paper_full_run": false,
+  "references": [
+    "EUROCONTROL (Cook, Tanner, Anderson) 2004: Evaluating the true cost to airlines of one minute of airborne or ground delay - final report, Transport Studies Group, University of Westminster (report; no DOI; local copies artifacts/diagnostics/cost_of_delay_2004_eurocontrol.pdf and artifacts/diagnostics/cost_of_delay_2004_text.txt)",
+    "Cook, Tanner 2015: The cost of passenger delay to airlines in Europe - consultation document, EUROCONTROL (report; no DOI)",
+    "Regulation (EC) No 261/2004, Articles 6-7 (regulatory fact; 250/400/600 EUR and 1500/3500 km thresholds verified against the regulation text before publication)",
+    "CJEU C-402/07 Sturgeon v Condor (2011), Air & Space Law, DOI 10.54648/aila2011027 (3h trigger extension)"
+  ],
+  "registry_hash": "sha256:88beec332b885baf90cef90e3cc8091c8679f4ea93628c0e9227cd919c76d6a3",
+  "registry_id": "M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V1",
+  "schema_version": "M4_EUR_MAPPING_ASSUMPTION_GROUNDED_FROZEN_V1"
+}

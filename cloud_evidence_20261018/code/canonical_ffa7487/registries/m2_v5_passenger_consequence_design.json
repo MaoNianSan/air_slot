@@ -1,0 +1,78 @@
+{
+  "activation_status": "DRAFT_NOT_ACTIVATED",
+  "components": {
+    "P_itinerary": {
+      "formula": "expected_passengers_per_flight * connection_share * I[D_TO > itinerary_threshold_minutes]",
+      "itinerary_threshold_minutes": 45.0,
+      "native_unit": "expected_disrupted_connecting_passenger_exposure",
+      "references": [
+        "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE",
+        "DB1B_CONNECTION_SHARE_REFERENCE"
+      ]
+    },
+    "P_service": {
+      "formula": "expected_passengers_per_flight * I[D_TO >= service_threshold_minutes]",
+      "native_unit": "expected_long_delay_passenger_service_exposure",
+      "service_threshold_minutes": 180.0
+    },
+    "P_time": {
+      "formula": "expected_passengers_per_flight * D_TO",
+      "native_unit": "passenger_minutes",
+      "reference": "T100_EXPECTED_PAX_PER_FLIGHT_REFERENCE"
+    }
+  },
+  "cu_normalization_partition": {
+    "event_components": [
+      "P_itinerary",
+      "P_service"
+    ],
+    "event_rule": "ASSUMPTION_EVENT_NORMALIZATION",
+    "event_scale": 1.0,
+    "principal_components": [
+      "F_continuity",
+      "F_execution",
+      "F_propagation",
+      "P_time",
+      "R_operating"
+    ],
+    "principal_rule": "POSITIVE_TRAIN_PERIOD_MEDIAN"
+  },
+  "cu_registry": "M2_DATA2_FORMAL_CU_V5",
+  "db1b_quarters": [
+    1,
+    2
+  ],
+  "design_id": "M2_PASSENGER_CONSEQUENCE_REFERENCE_REFACTOR",
+  "final_test_access_count": 0,
+  "fit_months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "fit_partition": "TRAIN",
+  "fit_year": 2019,
+  "paper_full_run": false,
+  "priority_aggregation": {
+    "mapping": "P^C = Phi_C(C^CU)",
+    "note": "P^D is the parallel common-support conditional-mean delay comparator; both signals share one Stage-I selector",
+    "primary_view": "PRIMARY_DOMAIN_BALANCED",
+    "primary_view_definition": "( [ (F_continuity + F_execution + F_propagation) / 3 ] + [ (P_time + P_itinerary + P_service) / 3 ] + R_operating ) / 3"
+  },
+  "rmb_mapping_registry": "M4_RMB_BASE_MAPPING_V2",
+  "semantic_channels": {
+    "P_service": {
+      "baseline_empirical_realization": "expected passengers x I[D_TO >= 180]",
+      "consequence_semantics": "passenger service / care burden"
+    },
+    "R_operating": {
+      "baseline_empirical_realization": "D_TX",
+      "consequence_semantics": "operating / recovery-resource burden"
+    }
+  },
+  "status": "HUMAN_APPROVED_PENDING_FREEZE",
+  "supersedes": "M2_PASSENGER_CONSEQUENCE_REFERENCE_REFACTOR 4.0.0 (empirical seven-component median partition)",
+  "version": "5.0.0"
+}

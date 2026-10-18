@@ -1,0 +1,108 @@
+{
+  "design_id": "M2_OPERATIONAL_CONSEQUENCE_V2",
+  "version": "2.0.0",
+  "interface_version": "2.1.0",
+  "design_status": "FROZEN",
+  "formal_aggregate_status": "COMPONENT_INTERFACE_FROZEN_M4_SCOPE_EXPLICIT",
+  "component_order": [
+    "F_continuity",
+    "F_execution",
+    "F_propagation",
+    "P_time",
+    "P_itinerary",
+    "P_service",
+    "R_operating"
+  ],
+  "ontology_contract": {
+    "K": ["F_continuity", "F_execution", "F_propagation", "P_time", "P_itinerary", "P_service", "R_operating"],
+    "comparison_scope_owner": "M4",
+    "comparison_scope_default": null
+  },
+  "components": {
+    "F_continuity": {
+      "aspect": "Flight",
+      "mechanism": "turnaround continuity pressure",
+      "native_unit": "minutes",
+      "source_type": "HYBRID",
+      "support_class": "REFERENCE_BASED"
+    },
+    "F_execution": {
+      "aspect": "Flight",
+      "mechanism": "off-block execution delay",
+      "native_unit": "minutes",
+      "source_type": "SCENARIO_ASSUMPTION",
+      "support_class": "AVAILABLE_FROM_M1"
+    },
+    "F_propagation": {
+      "aspect": "Flight",
+      "mechanism": "node-specific downstream propagation",
+      "native_unit": "exposure_minutes",
+      "source_type": "HYBRID",
+      "support_class": "HIERARCHICAL_REFERENCE"
+    },
+    "P_time": {
+      "aspect": "Passenger",
+      "mechanism": "aggregate passenger time exposure",
+      "native_unit": "passenger_minutes",
+      "source_type": "HYBRID",
+      "support_class": "REFERENCE_BASED_PROXY"
+    },
+    "P_itinerary": {
+      "aspect": "Passenger",
+      "mechanism": "itinerary disruption events",
+      "native_unit": "events",
+      "source_type": "DATA",
+      "support_class": "ABSTAIN",
+      "definition_form": "g_itin(D_TO, itinerary_buffer_reference)",
+      "reference_object": "M2_ITINERARY_BUFFER_ASSUMPTION_V1",
+      "default_context_status": "ABSTAIN"
+    },
+    "P_service": {
+      "aspect": "Passenger",
+      "mechanism": "service-policy threshold events",
+      "native_unit": "threshold_events",
+      "source_type": "OPERATIONAL_RULE",
+      "support_class": "ABSTAIN",
+      "definition_form": "g_service(D_TO, service_policy_reference)",
+      "reference_object": "M2_SERVICE_POLICY_THRESHOLD_ASSUMPTION_V1",
+      "default_context_status": "ABSTAIN"
+    },
+    "R_operating": {
+      "aspect": "Resource",
+      "mechanism": "excess taxi operating exposure",
+      "native_unit": "excess_taxi_minutes",
+      "source_type": "SCENARIO_ASSUMPTION",
+      "support_class": "AVAILABLE_FROM_M1"
+    }
+  },
+  "cu_definition": "Principal components: C_k_CU=q_k_native/Median_Train(q_k>0); P_itinerary/P_service: explicit assumption event normalization, never empirical median",
+  "cu_normalization_registry_id": "M2_DATA2_FORMAL_CU_V2",
+  "cu_normalization_status": "FROZEN",
+  "monetary_mapping_layer": "M4_ONLY",
+  "downstream_fallback_hierarchy": [
+    "SAME_AIRCRAFT_SUCCESSOR_CHAIN",
+    "SAME_ROUTE_PROPAGATION",
+    "AIRPORT_REFERENCE",
+    "GLOBAL_REFERENCE"
+  ],
+  "action_contract": "M2_OUTPUT_IS_BASELINE_C0_CU;ACTION_EFFECT_IS_NOT_NATIVE_CONSEQUENCE",
+  "output_contract": {
+    "component_row_fields": [
+      "scenario_id",
+      "scenario_weight",
+      "component_id",
+      "native_quantity",
+      "cu_quantity",
+      "support_state",
+      "reference_source",
+      "reference_lineage",
+      "confidence"
+    ],
+    "cu_artifact_identity": "NATIVE_ARTIFACT_PLUS_REGISTRY_HASH_PLUS_RULE_VERSION_PLUS_SCALE_FREEZE_PLUS_REFERENCE_PERIOD",
+    "scenario_distribution": "ALL_SCENARIOS_WITH_IDS_AND_WEIGHTS;NO_TOP_K_OR_POINT_COLLAPSE",
+    "formal_aggregate_owner": "DOWNSTREAM_ACTION_OR_M4_LAYER",
+    "m3_contract_module": "model.M3.m2_action_interface"
+  },
+  "final_test_access_count": 0,
+  "paper_full_run": false
+}
