@@ -1,0 +1,34 @@
+{
+  "schema_version": "M5B_LADDER_PROBE_V1",
+  "year": 2017,
+  "status": "PASS",
+  "evaluation_E": 4096,
+  "probe_checkpoint": "/data/airslot/worktree/artifacts/experiment/jatm_s34/full_20261013/e4/2017/2017/N128/M1_N.pt",
+  "probe_checkpoint_hash": "sha256:c60f6a1ffbe327fa2c17c147e62d37689c9604f74dbf35477b4fe675f9114bf8",
+  "probe_model_note": "runtime-only timing with a per-year N128 M1 checkpoint (the year's fit checkpoint when present, else the legacy 2019 sentinel replica); probe outputs are timing numbers, never metrics",
+  "probe_scope": "binding + sampling + consequence + common support (mirrors evaluate_model_on_cases)",
+  "probe_episodes": 128,
+  "probe_nodes": 1803,
+  "probe_scored_nodes": 1803,
+  "fixed_seconds": 61.9,
+  "variable_seconds": 24.9,
+  "per_node_seconds": 0.0138,
+  "budget_hours": 6.0,
+  "projections": {
+    "4096": {
+      "projected_nodes": 57696,
+      "projected_hours": 0.239
+    },
+    "2048": {
+      "projected_nodes": 28848,
+      "projected_hours": 0.128
+    },
+    "1024": {
+      "projected_nodes": 14424,
+      "projected_hours": 0.073
+    }
+  },
+  "demotions": [],
+  "final_test_access_count": 0,
+  "artifact_hash": "sha256:0dc6b8fc5b5a5bf736fea54d5041f6fa0e96c951905bdc912ab99cbe6f97a139"
+}
