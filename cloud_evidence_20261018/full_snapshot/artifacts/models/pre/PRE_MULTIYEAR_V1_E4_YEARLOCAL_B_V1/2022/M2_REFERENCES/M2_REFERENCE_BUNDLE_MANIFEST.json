@@ -1,0 +1,33 @@
+{
+  "continuity_contract": "JATM_F_CONTINUITY_B_V1",
+  "created_at_utc": "2026-10-13T05:49:28+00:00",
+  "dataset_instance_id": "data2_2017_2022",
+  "db1b_admissibility": "Q1 + Q2 of Y",
+  "fit_window": {
+    "end": "2022-06-30",
+    "start": "2022-01-01"
+  },
+  "m2_reference_fixity": "fit once per year; shared across all N (correction 2)",
+  "non_physical_rotation_flights_excluded": 0,
+  "payload_hashes": {
+    "connection_share": "sha256:860fcada39b9ecff258c1d25ec3316e23bd19dff8ef80902c1f6108c952ad4e1",
+    "downstream_exposure": "sha256:7c29f399258321acf392aaf11a7bf162564f7449a0070f47d5af390bad9d2f4b",
+    "expected_passengers": "sha256:5ca63123524ec6f0132e88285fd71f96834f01b8ec3b49f25eb06ebae0278234",
+    "passenger": "sha256:498255fc07fa97ed1ee932af21af76bd05ae3631dde938d44b7758d244d912cd",
+    "taxi": "sha256:f82c9871bd4a8a27cf4d48c384d8afccbd3d840abaff2bf141a3a981fea2dc73",
+    "turnaround": "sha256:86fa1cdd32a94f9065b5fb125088f35e7f34c91a985b81e69de47d5bc2bd7984"
+  },
+  "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+  "scale_median_preview": {
+    "F_continuity": 18.0,
+    "F_execution": 17.0,
+    "F_propagation": 10.0,
+    "P_itinerary": 10.574100308814986,
+    "P_service": 113.89918733361355,
+    "P_time": 1039.3777777777777,
+    "R_operating": 5.0
+  },
+  "schema_version": "M2_REFERENCE_BUNDLE_V1",
+  "t100_admissibility": "YEAR == Y and MONTH <= 6",
+  "year": 2022
+}

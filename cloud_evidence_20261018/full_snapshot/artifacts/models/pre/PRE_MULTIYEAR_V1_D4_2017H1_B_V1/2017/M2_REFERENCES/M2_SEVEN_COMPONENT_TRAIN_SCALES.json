@@ -1,0 +1,63 @@
+{
+  "bundle_hash": "sha256:f0ebc85cfbb3fe05b57c52aca6455d8e924829a9e998e0f227e81e13b95acd95",
+  "continuity_contract": "JATM_F_CONTINUITY_B_V1",
+  "dataset_instance_id": "data2_2017_2022",
+  "experiment_year": 2017,
+  "fit_period": "2017-H1",
+  "reference_contract_id": "YEAR_SPECIFIC_H1_M2_REFERENCES_V1",
+  "scales": {
+    "F_continuity": {
+      "continuity_contract": "JATM_F_CONTINUITY_B_V1",
+      "definition": "max(0, T_IB + turnaround_reference - SOBT)",
+      "driver": "planned_connection_time_gap",
+      "median": 16.0,
+      "population_rows": 2055806,
+      "positive_n": 1017589,
+      "quantity": "Z_turn_B",
+      "unit": "minutes"
+    },
+    "F_execution": {
+      "definition": "D_OB",
+      "median": 17.0,
+      "population_rows": 2711358,
+      "positive_n": 979953,
+      "unit": "minutes"
+    },
+    "F_propagation": {
+      "definition": "D_TO * expected_downstream_exposure(origin)",
+      "median": 10.0,
+      "population_rows": 2711358,
+      "positive_n": 1756494,
+      "unit": "exposure_minutes"
+    },
+    "P_itinerary": {
+      "definition": "expected_passengers_per_flight * connection_share * I[D_TO > 45 minutes]",
+      "median": 11.45907189802828,
+      "population_rows": 2711358,
+      "positive_n": 273067,
+      "unit": "expected_disrupted_connecting_passenger_exposure"
+    },
+    "P_service": {
+      "definition": "expected_passengers_per_flight * I[D_TO >= 180 minutes]",
+      "median": 115.52173913043478,
+      "population_rows": 2711358,
+      "positive_n": 33886,
+      "unit": "expected_long_delay_passenger_service_exposure"
+    },
+    "P_time": {
+      "definition": "expected_passengers_per_flight * D_TO",
+      "median": 1022.3710247349823,
+      "population_rows": 2711358,
+      "positive_n": 1765272,
+      "unit": "passenger_minutes"
+    },
+    "R_operating": {
+      "definition": "D_TX",
+      "median": 5.0,
+      "population_rows": 2711358,
+      "positive_n": 1249042,
+      "unit": "excess_taxi_minutes"
+    }
+  },
+  "schema_version": "M2_DATA2_TRAIN_SCALES_B_V1"
+}
