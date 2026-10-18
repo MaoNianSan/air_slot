@@ -1,0 +1,77 @@
+{
+  "completed_test_model_evaluations": {
+    "2020": {
+      "1024": 4096,
+      "128": 4096,
+      "2048": 4096,
+      "256": 4096,
+      "4096": 4096,
+      "512": 4096
+    }
+  },
+  "n_grid": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "q4_cohort_hashes": {
+    "2020": "8679a7f8eb8f5ca196491ba8f271b37bc7be5adfdb2ec6683f53f51e23e78318"
+  },
+  "schema_version": "JATM_S34_E4_TEST_V1",
+  "split": "test",
+  "status": "TEST_COMPLETE",
+  "test_access_count": 24576,
+  "test_access_count_unit": "selected_q4_episode_model_evaluations",
+  "updated_at": "2026-10-15T15:30:15+00:00",
+  "year_local_rule": "Train Jan-Jun; Calibration Jul; Development Aug-Sep; Test Oct-Dec",
+  "years": [
+    {
+      "bundle_root": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+      "completed_phases": [
+        "eval"
+      ],
+      "eval_decision": "N_GRID_UPPER_BOUND_REACHED",
+      "frozen_e4_root": "/data/airslot/worktree/artifacts/experiment/jatm_s34/full_20261013/e4",
+      "n_grid": [
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096
+      ],
+      "n_grid_coverage": {
+        "evaluation_E": 4096,
+        "full_default_grid_observed": true,
+        "interpretation": "PARTIAL_OR_FULL_GRID",
+        "observed_eval": [
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096
+        ],
+        "requested": [
+          128,
+          256,
+          512,
+          1024,
+          2048,
+          4096
+        ]
+      },
+      "q4_cohort_hash": "8679a7f8eb8f5ca196491ba8f271b37bc7be5adfdb2ec6683f53f51e23e78318",
+      "q4_cohort_root": "/data/airslot/results/q4_extension_20261015/cohorts",
+      "resumed_from_checkpoint": false,
+      "schema_version": "JATM_S34_E4_YEAR_STATE_V1",
+      "split": "test",
+      "status": "TEST_COMPLETE",
+      "updated_at": "2026-10-15T15:30:15+00:00",
+      "year": 2020
+    }
+  ]
+}

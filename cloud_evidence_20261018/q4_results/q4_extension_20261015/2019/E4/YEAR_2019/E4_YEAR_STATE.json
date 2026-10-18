@@ -1,0 +1,45 @@
+{
+  "bundle_root": "/data/airslot/worktree/artifacts/models/pre/PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1",
+  "completed_phases": [
+    "eval"
+  ],
+  "eval_decision": "N_GRID_UPPER_BOUND_REACHED",
+  "frozen_e4_root": "/data/airslot/worktree/artifacts/experiment/jatm_s34/full_20261013/e4",
+  "n_grid": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096
+  ],
+  "n_grid_coverage": {
+    "evaluation_E": 4096,
+    "full_default_grid_observed": true,
+    "interpretation": "PARTIAL_OR_FULL_GRID",
+    "observed_eval": [
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "requested": [
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ]
+  },
+  "q4_cohort_hash": "9f239b411f9d17d7699aed8d2841c0cb1931ccfaae4bffc4ed67a655e4ce83ae",
+  "q4_cohort_root": "/data/airslot/results/q4_extension_20261015/cohorts",
+  "resumed_from_checkpoint": false,
+  "schema_version": "JATM_S34_E4_YEAR_STATE_V1",
+  "split": "test",
+  "status": "TEST_COMPLETE",
+  "updated_at": "2026-10-15T15:29:32+00:00",
+  "year": 2019
+}
