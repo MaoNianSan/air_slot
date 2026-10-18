@@ -1,0 +1,26 @@
+[2026-10-15T10:23:17+00:00] phase=eval protocol=sha256:18db92f0b3e82... years=[2022] n=[128, 256, 512, 1024, 2048, 4096]
+Traceback (most recent call last):
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 836, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/data/airslot/worktree/data2/scripts/consequence_stability_battery.py", line 439, in main
+    prepared = materialize_q4_case_cohort(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/airslot/worktree/exp/jatm_s34/q4_bridge.py", line 280, in materialize_q4_case_cohort
+    raise RuntimeError(f"Q4_PREPARED_COHORT_SIZE_INVALID:{year}:{len(prepared)}")
+RuntimeError: Q4_PREPARED_COHORT_SIZE_INVALID:2022:64410
+[2026-10-15T11:11:35+00:00] phase=eval protocol=sha256:18db92f0b3e82... years=[2022] n=[128, 256, 512, 1024, 2048, 4096]
+[2026-10-15T11:13:47+00:00] [m5b-metrics] headroom 2022: reused (u_max=45.0)
+[2026-10-15T11:29:12+00:00] [m5b-metrics] pass 2022_test_fitN128: 64410 nodes in 933s
+[2026-10-15T11:29:21+00:00] [m5b-metrics] headroom 2022: reused (u_max=45.0)
+[2026-10-15T11:45:05+00:00] [m5b-metrics] pass 2022_test_fitN256: 64410 nodes in 952s
+[2026-10-15T11:45:14+00:00] [m5b-metrics] headroom 2022: reused (u_max=45.0)
+[2026-10-15T12:00:54+00:00] [m5b-metrics] pass 2022_test_fitN512: 64410 nodes in 948s
+[2026-10-15T12:01:03+00:00] [m5b-metrics] headroom 2022: reused (u_max=45.0)
+[2026-10-15T12:17:04+00:00] [m5b-metrics] pass 2022_test_fitN1024: 64410 nodes in 970s
+[2026-10-15T12:17:13+00:00] [m5b-metrics] headroom 2022: reused (u_max=45.0)
+[2026-10-15T12:32:47+00:00] [m5b-metrics] pass 2022_test_fitN2048: 64410 nodes in 943s
+[2026-10-15T12:32:56+00:00] [m5b-metrics] headroom 2022: reused (u_max=45.0)
+[2026-10-15T12:48:49+00:00] [m5b-metrics] pass 2022_test_fitN4096: 64410 nodes in 961s
+[2026-10-15T12:48:52+00:00] [m5b-metrics] headroom 2022: reused (u_max=45.0)
+[2026-10-15T15:20:03+00:00] eval decision: N_GRID_UPPER_BOUND_REACHED
