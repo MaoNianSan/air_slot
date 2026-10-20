@@ -155,7 +155,7 @@ INSTRUCTION_REPO_PATH = (
 INSTRUCTION_DOWNLOAD_PATH = Path(
     os.environ.get(
         "AIRSLOT_PHASE7_INSTRUCTION_DOWNLOAD_PATH",
-        r"D:\Download_all\AirSlot_V2_Phase7_Final_Test_OneShot_Instruction_R2_20260919.md",
+        str(INSTRUCTION_REPO_PATH),
     )
 )
 FINAL_TEST_V2_ROOT = ROOT / "artifacts" / "experiment" / "final_test_v2"

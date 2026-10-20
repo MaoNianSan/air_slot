@@ -47,3 +47,7 @@
 *.tar     binary
 *.woff    binary
 *.woff2   binary
+
+# Deployment text files - LF
+Dockerfile* text eol=lf
+*.service text eol=lf
