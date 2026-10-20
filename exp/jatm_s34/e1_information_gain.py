@@ -415,7 +415,10 @@ def run(*, output_root: Path, node_limit: int | None = None, bootstrap_replicate
 
 def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                        chunk_size: int = 128, node_limit: int | None = None,
-                       bootstrap_replicates: int = 2000, resume: bool = True) -> dict:
+                       bootstrap_replicates: int = 2000, resume: bool = True,
+                       bridge_factory=None, evaluation_split: str = "development",
+                       final_test_access_count: int = 0,
+                       evaluation_cohort_hash: str | None = None) -> dict:
     """Run E1 with bounded PRE/M1/RepresentationNode lifetime.
 
     Every Development chunk is scored with the same Section-5 builder and
@@ -423,6 +426,9 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
     chunks, so the complete cohort remains available for K/N and bootstrap
     calculations without retaining state/consequence scenario tensors.
     """
+    if evaluation_split not in {"development", "test"}:
+        raise ValueError(f"JATM_S34_E1_SPLIT_INVALID:{evaluation_split}")
+    bridge_factory = bridge_factory or iter_annual_bridges
     out = Path(output_root).resolve(); out.mkdir(parents=True, exist_ok=True)
     nodes: list[_CompactNode] = []
     built_node_count = 0
@@ -438,6 +444,7 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
         "m2_manifest": root / "artifacts" / "models" / "pre" / "PRE_MULTIYEAR_V1_E4_YEARLOCAL_R1" / str(int(year)) / "M2_REFERENCES" / "M2_REFERENCE_BUNDLE_MANIFEST.json",
     }
     input_hashes = {name: (_sha256(path) if path.is_file() else None) for name, path in input_paths.items()}
+    input_hashes["evaluation_cohort_hash"] = evaluation_cohort_hash
     chunk_dir = out / "chunks"; chunk_dir.mkdir(parents=True, exist_ok=True)
 
     def atomic_write(path: Path, payload: dict) -> None:
@@ -468,8 +475,8 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
             factor_by_node.update({str(key): (float(value[0]), float(value[1])) for key, value in saved.get("factors", {}).items()})
             completed += 1
         chunk_count = completed
-    for context in iter_annual_bridges(year=year, n=n, chunk_size=chunk_size,
-                                       node_limit=node_limit, start_chunk=completed):
+    for context in bridge_factory(year=year, n=n, chunk_size=chunk_size,
+                                  node_limit=node_limit, start_chunk=completed):
         chunk_count += 1
         chunk_start = len(nodes)
         layer = build_consequence_service(
@@ -527,9 +534,11 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
         })
         atomic_write(out / "E1_CHUNK_CHECKPOINT.json", {
             "schema_version": "JATM_S34_E1_BOUNDED_CHECKPOINT_V2", "year": int(year),
+            "split": evaluation_split,
             "completed_chunks": chunk_index + 1, "processed_node_records": len(nodes),
             "chunk_artifacts": [path.name for path in sorted(chunk_dir.glob("chunk_*.json"))],
-            "git_head": current_head, "input_hashes": input_hashes, "final_test_access_count": 0,
+            "git_head": current_head, "input_hashes": input_hashes,
+            "final_test_access_count": int(final_test_access_count),
         })
         del built, layer, context
     # Match the frozen canonical cohort rule: one earliest node per
@@ -579,8 +588,9 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                     for key in ("overlap", "replacement", "retained_consequence", "attention_loss")
                 }
     payload = {
-        "schema_version": "JATM_S34_E1_DEVELOPMENT_BOUNDED_V1",
-        "status": "DEVELOPMENT_COMPLETE",
+        "schema_version": f"JATM_S34_E1_{evaluation_split.upper()}_BOUNDED_V1",
+        "status": "DEVELOPMENT_COMPLETE" if evaluation_split == "development" else "TEST_COMPLETE",
+        "split": evaluation_split,
         "year": int(year), "n": int(n), "chunk_size": int(chunk_size),
         "chunk_count": chunk_count, "node_count": built_node_count,
         "research_question": "Does adding approved passenger or downstream exposure to P^D change Stage-I screening while holding cohort, q and M3 tie-break fixed?",
@@ -593,7 +603,8 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
         "bootstrap": {"replicates": int(bootstrap_replicates), "cluster": "episode",
                        "with_replacement": True, "seed_base": 20261011},
         "summary_rows": summaries, "selected_rows": selected_rows,
-        "final_test_access_count": 0, "bounded_memory": True,
+        "final_test_access_count": int(final_test_access_count), "bounded_memory": True,
+        "evaluation_cohort_hash": evaluation_cohort_hash,
     }
     payload["artifact_hash"] = content_id(payload)
     (out / "E1_SUMMARY.json").write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")

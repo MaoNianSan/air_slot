@@ -461,11 +461,17 @@ def run(*, output_root: Path, node_limit: int | None = None, annual_context=None
 
 def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                        chunk_size: int = 64, node_limit: int | None = None,
-                       bootstrap_replicates: int = 2000) -> dict[str, Any]:
+                       bootstrap_replicates: int = 2000, bridge_factory=None,
+                       evaluation_split: str = "development",
+                       final_test_access_count: int = 0,
+                       evaluation_cohort_hash: str | None = None) -> dict[str, Any]:
     """Run E2/E3 with score-only first pass and shortlist-only Stage-II pass."""
+    if evaluation_split not in {"development", "test"}:
+        raise ValueError(f"JATM_S34_E2_E3_SPLIT_INVALID:{evaluation_split}")
+    bridge_factory = bridge_factory or iter_annual_bridges
     output_root = Path(output_root).resolve(); output_root.mkdir(parents=True, exist_ok=True)
     light_by_key = {}; audits = []; chunk_count = 0; last_authorities = None
-    for context in iter_annual_bridges(year=year, n=n, chunk_size=chunk_size, node_limit=node_limit):
+    for context in bridge_factory(year=year, n=n, chunk_size=chunk_size, node_limit=node_limit):
         chunk_count += 1; last_authorities = context["authorities"]
         layer = build_consequence_service(authorities=context["authorities"], bridge=context["bridge"],
                                            output_dir=output_root / "materialization" / f"first_{chunk_count:04d}")
@@ -488,8 +494,10 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                 light_by_key[key] = light
         (output_root / "E2_E3_FIRST_PASS_CHECKPOINT.json").write_text(
             json.dumps({"schema_version": "JATM_S34_E2_E3_BOUNDED_CHECKPOINT_V1",
-                        "year": int(year), "pass": "score_only", "completed_chunks": chunk_count,
-                        "canonical_records": len(light_by_key), "final_test_access_count": 0},
+                        "year": int(year), "split": evaluation_split,
+                        "pass": "score_only", "completed_chunks": chunk_count,
+                        "canonical_records": len(light_by_key),
+                        "final_test_access_count": int(final_test_access_count)},
                        indent=2, sort_keys=True) + "\n", encoding="utf-8")
         del built, layer, context
     projected = tuple(light_by_key.values())
@@ -498,7 +506,7 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
 
     # Second pass: rebuild only Stage-II shortlist nodes and their exact states.
     full_by_id = {}; selected_bindings = {}; second_chunks = 0
-    for context in iter_annual_bridges(year=year, n=n, chunk_size=chunk_size, node_limit=node_limit):
+    for context in bridge_factory(year=year, n=n, chunk_size=chunk_size, node_limit=node_limit):
         second_chunks += 1
         layer = build_consequence_service(authorities=context["authorities"], bridge=context["bridge"],
                                            output_dir=output_root / "materialization" / f"second_{second_chunks:04d}")
@@ -516,8 +524,10 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
             full_by_id[node.node_id] = _replace_with_exact(node, (exact_state, exact_consequence, support, values))
         (output_root / "E2_E3_SECOND_PASS_CHECKPOINT.json").write_text(
             json.dumps({"schema_version": "JATM_S34_E2_E3_BOUNDED_CHECKPOINT_V1",
-                        "year": int(year), "pass": "shortlist_stage_II", "completed_chunks": second_chunks,
-                        "selected_full_nodes": len(full_by_id), "final_test_access_count": 0},
+                        "year": int(year), "split": evaluation_split,
+                        "pass": "shortlist_stage_II", "completed_chunks": second_chunks,
+                        "selected_full_nodes": len(full_by_id),
+                        "final_test_access_count": int(final_test_access_count)},
                        indent=2, sort_keys=True) + "\n", encoding="utf-8")
         del built, layer, context
     service = M2ConsequenceService(last_authorities.registry, selected_bindings)
@@ -542,7 +552,9 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                               "typed_fallbacks": dict(result.typed_fallbacks)})
     e3 = _e3_rows(reference_cohort, service, headroom); mechanisms = _mechanism_rows(selected_nodes, service, headroom)
     payload = {
-        "schema_version": "JATM_S34_E2_E3_EXACT_DEVELOPMENT_BOUNDED_V1", "status": "DEVELOPMENT_COMPLETE",
+        "schema_version": f"JATM_S34_E2_E3_EXACT_{evaluation_split.upper()}_BOUNDED_V1",
+        "status": "DEVELOPMENT_COMPLETE" if evaluation_split == "development" else "TEST_COMPLETE",
+        "split": evaluation_split,
         "year": int(year), "chunk_size": int(chunk_size), "chunk_count": chunk_count,
         "second_pass_chunk_count": second_chunks, "node_count": len(projected),
         "exact_marginal": {"max_product_scenarios": max((row.get("product_scenario_count", 0) for row in audits), default=0),
@@ -555,7 +567,8 @@ def run_bounded_annual(*, output_root: Path, year: int, n: int = 4096,
                "recovery_rows": recovery_rows, "reference_cohort_size": len(reference_cohort.nodes), "information_candidate_count": len(information_nodes)},
         "e3": {"profiles": list(PROFILES), "rows": e3, "mechanism_diagnostics": mechanisms, "joint_marginal_pair_count": len(e3)},
         "input_contract": {"git_head": subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip(),
-                            "final_test_access_count": 0, "scientific_recomputation": True, "sealed_executor_called": False,
+                            "final_test_access_count": int(final_test_access_count), "scientific_recomputation": True, "sealed_executor_called": False,
+                            "evaluation_cohort_hash": evaluation_cohort_hash,
                             "bounded_memory": True, "two_pass": "score_only_then_shortlist_stage_II",
                             "headroom_source": str(ROOT / "data2" / "reports" / "paper_formal" / str(int(year)) / str(int(year)) / "M2_TRAIN_HEADROOM_SUMMARY.json")},
     }

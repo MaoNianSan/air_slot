@@ -330,8 +330,8 @@ def _pass_dir(year: int, tag: str) -> Path:
     return out_path(year, "passes", tag)
 
 
-def _ladder_e(year: int) -> int:
-    path = OUTPUT_ROOT / f"LADDER_PROBE_{year}.json"
+def _ladder_e(year: int, *, root: Path | None = None) -> int:
+    path = (root or OUTPUT_ROOT) / f"LADDER_PROBE_{year}.json"
     if not path.is_file():
         raise RuntimeError(f"BLOCK_M5B_LADDER_PROBE_MISSING:{path}")
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -353,6 +353,10 @@ def main() -> int:
     parser.add_argument("--reuse-fit-comparison", action="store_true",
                         help="eval phase: reuse hash-verified FIT comparison "
                              "payloads instead of recomputing them")
+    parser.add_argument("--q4-cohort-root", default=None,
+                        help="Q4 extension root containing <year>/cohort manifests; only eval phase accepts it")
+    parser.add_argument("--frozen-e4-root", default=None,
+                        help="Existing E4 root whose trained checkpoints, ladder, and headroom are reused for Q4")
     parser.add_argument("--scope-tag", default=None,
                         help="redirect shared battery artifacts into "
                              "<output-root>/<scope-tag>/")
@@ -384,7 +388,12 @@ def main() -> int:
     log(f"phase={args.phase} protocol={protocol_hash()[:20]}... "
         f"years={args.years} n={args.n}")
     scientific = load_config_layers(REPO / "configs").scientific
-    selected = {year: load_hash_cohort(year) for year in args.years}
+    # The Q4 Test route consumes its separately frozen Q4 cohort. Do not even
+    # open the Development cohort files on that path.
+    selected = ({year: {"train": [], "calibration": [], "development": []}
+                 for year in args.years}
+                if args.phase == "eval" and args.q4_cohort_root
+                else {year: load_hash_cohort(year) for year in args.years})
     if args.phase == "sentinel":
         return sentinel_phase(args.years, scientific, selected)
     if args.phase == "headroom":
@@ -403,6 +412,50 @@ def main() -> int:
     if args.phase == "eval":
         if not EVAL_IMPLEMENTED:
             raise RuntimeError("BLOCKED_CONSEQUENCE_INTERFACE")
+        if args.q4_cohort_root:
+            from exp.jatm_s34.q4_bridge import (
+                load_frozen_q4_cohort,
+                materialize_q4_case_cohort,
+            )
+            q4_root = Path(args.q4_cohort_root).resolve()
+            if not args.frozen_e4_root:
+                raise RuntimeError("M5B_Q4_FROZEN_E4_ROOT_REQUIRED")
+            frozen_e4_root = Path(args.frozen_e4_root).resolve()
+            q4_cases = {}
+            for year in args.years:
+                year_root = frozen_e4_root / str(year)
+                if not (year_root / f"LADDER_PROBE_{year}.json").is_file():
+                    raise RuntimeError(f"M5B_Q4_FROZEN_LADDER_MISSING:{year}")
+                headroom_path = year_root / str(year) / "M2_TRAIN_HEADROOM_SUMMARY.json"
+                if not headroom_path.is_file():
+                    raise RuntimeError(f"M5B_Q4_FROZEN_HEADROOM_MISSING:{year}")
+                cached_headroom = OUTPUT_ROOT / str(year) / "M2_TRAIN_HEADROOM_SUMMARY.json"
+                cached_headroom.parent.mkdir(parents=True, exist_ok=True)
+                cached_headroom.write_bytes(headroom_path.read_bytes())
+                cohort_dir = q4_root / str(year) / "cohort"
+                ranked, cohort_manifest = load_frozen_q4_cohort(
+                    cohort_dir, year=year
+                )
+                prepared = materialize_q4_case_cohort(
+                    year=year,
+                    cohort_dir=cohort_dir,
+                    output_root=OUTPUT_ROOT / str(year) / "q4_materialization",
+                )
+                q4_cases[year] = {
+                    "ranked": ranked,
+                    "prepared": prepared,
+                    "access_count": int(prepared.audit["final_test_access_count"]),
+                    "cohort_manifest": cohort_manifest,
+                    "frozen_year_root": year_root,
+                }
+                selected[year]["development"] = list(ranked)
+            return eval_phase(
+                args.years, args.n, scientific, selected,
+                reuse_fit_comparison=args.reuse_fit_comparison,
+                evaluation_cohorts_by_year=q4_cases,
+                evaluation_split="test",
+                frozen_e4_root=frozen_e4_root,
+            )
         return eval_phase(args.years, args.n, scientific, selected,
                           reuse_fit_comparison=args.reuse_fit_comparison)
     return 0
@@ -652,27 +705,52 @@ def fit_phase(years, n_grid, scientific, selected_by_year) -> int:
 
 
 def eval_phase(years, n_grid, scientific, selected_by_year, *,
-               reuse_fit_comparison: bool = False) -> int:
+               reuse_fit_comparison: bool = False,
+               evaluation_cohorts_by_year=None,
+               evaluation_split: str = "development",
+               frozen_e4_root: Path | None = None) -> int:
     """FIT-stage (paired bootstrap) + EVAL-stage (nested bootstrap) metrics."""
     import consequence_stability_metrics as m5b
+    if evaluation_split not in {"development", "test"}:
+        raise ValueError(f"M5B_EVAL_SPLIT_INVALID:{evaluation_split}")
+    if evaluation_split == "test" and evaluation_cohorts_by_year is None:
+        raise RuntimeError("M5B_Q4_COHORT_OVERRIDE_REQUIRED")
     protocol = _protocol_payload()
     summary = {"schema_version": "M5B_EVAL_SUMMARY_V1",
+               "split": evaluation_split,
                "protocol_hash": protocol["protocol_hash"],
                "bootstrap": {"replicates": m5b.BOOTSTRAP_REPLICATES,
                              "seed": m5b.BOOTSTRAP_SEED},
                "years": {}}
     for year in years:
-        e_probe = _ladder_e(year)
+        frozen_year_root = (Path(frozen_e4_root) / str(year)
+                            if evaluation_split == "test" and frozen_e4_root
+                            else None)
+        e_probe = _ladder_e(year, root=frozen_year_root)
         dev = selected_by_year[year]["development"][:e_probe]
+        cohorts_override = None
+        if evaluation_split == "test":
+            q4_case = evaluation_cohorts_by_year[year]
+            dev = q4_case["ranked"]
+            if e_probe != len(dev) or e_probe != 4096:
+                raise RuntimeError(
+                    f"M5B_Q4_EVALUATION_SIZE_MISMATCH:{year}:{e_probe}:{len(dev)}"
+                )
+            cohorts_override = q4_case["prepared"]
         passes = {}
         for n in n_grid:
-            checkpoint = out_path(year, f"N{n}", "M1_N.pt")
+            checkpoint = ((frozen_year_root / str(year) / f"N{n}" / "M1_N.pt")
+                          if frozen_year_root is not None
+                          else out_path(year, f"N{n}", "M1_N.pt"))
             if not checkpoint.is_file():
                 raise RuntimeError(f"BLOCK_M5B_FIT_CHECKPOINT_MISSING:{checkpoint}")
             passes[int(n)] = _pass_dir(year, f"fitN{n}")
             m5b.evaluate_model_on_cases(
                 year, checkpoint, dev, scientific=scientific,
-                out_dir=passes[int(n)], pass_id=f"{year}_fitN{n}")
+                out_dir=passes[int(n)],
+                pass_id=f"{year}_{evaluation_split}_fitN{n}",
+                cohorts_override=cohorts_override,
+                evaluation_split=evaluation_split)
         ref_n = N_REF if N_REF in passes else max(passes)
         ref_dir = passes[ref_n]
         comp_dirs = {n: path for n, path in passes.items() if n != ref_n}
@@ -740,6 +818,15 @@ def eval_phase(years, n_grid, scientific, selected_by_year, *,
                                else "M5B_PILOT_COMPLETE_HARD_STOP"),
                     "failed_instances": sorted(set(failed))}
     summary["decision"] = decision
+    summary["final_test_access_count"] = (
+        0 if evaluation_split == "development"
+        else sum(int(item["access_count"]) * len(n_grid)
+                 for item in evaluation_cohorts_by_year.values())
+    )
+    summary["final_test_access_count_unit"] = (
+        "none" if evaluation_split == "development"
+        else "selected_q4_episode_model_evaluations"
+    )
     write_json(scoped_path("EVAL_SUMMARY.json"), summary)
     log(f"eval decision: {decision['status']}")
     return 0

@@ -510,7 +510,9 @@ def materialize_family_a(
     specs = _model_specs()
     current_rows = {
         row.decision_node_id: row
-        for row in cache.partition("development", representation="CURRENT")
+        for row in cache.partition(
+            bridge.get("cache_split", "development"), representation="CURRENT"
+        )
     }
     from exp.exp2.development_inputs import _observed
 

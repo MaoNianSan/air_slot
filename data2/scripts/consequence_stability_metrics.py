@@ -51,6 +51,7 @@ if str(_REPO_ROOT) not in sys.path:
 from model.common.decision_contracts import (  # noqa: E402
     AttentionDecision,
     AttentionEntry,
+    ConsequenceScenario,
     ConsequenceScenarioSet,
     HeadroomSummary,
     PrioritySignal,
@@ -841,12 +842,10 @@ def _abstaining_consequence_set(state_set: StateScenarioSet, *,
         registry_id=registry_id,
         registry_hash=registry_hash,
         scenarios=tuple(
-            state_scenario_from_coordinates(
+            ConsequenceScenario(
                 scenario_id=scenario.scenario_id,
                 scenario_weight=scenario.scenario_weight,
-                stage=scenario.stage,
-                t_ib_minutes=None, d_ob_minutes=None, d_tx_minutes=None,
-                d_to_minutes=None, support=SupportState.ABSTAIN,
+                support=SupportState.ABSTAIN,
             )
             for scenario in state_set.scenarios
         ),
@@ -895,6 +894,8 @@ def evaluate_model_on_cases(
     scientific: Any,
     out_dir: Path,
     pass_id: str,
+    cohorts_override: Any | None = None,
+    evaluation_split: str = "development",
 ) -> dict[str, Any]:
     """Evaluate one M1 checkpoint on a fixed, rank-ordered development case set.
 
@@ -925,6 +926,8 @@ def evaluate_model_on_cases(
             return manifest
         raise M5BBlockedError(f"M5B_PASS_DIR_INCONSISTENT:{out_dir}")
 
+    if evaluation_split not in {"development", "test"}:
+        raise ValueError(f"M5B_EVAL_SPLIT_INVALID:{evaluation_split}")
     taxi, turnaround = _load_year_references(year)
     bundle = load_year_m2_bundle(year)
     bundle_object = reference_bundle_object(bundle)
@@ -936,16 +939,22 @@ def evaluate_model_on_cases(
     rank_of = {record.episode_id: position
                for position, (_rank, record) in enumerate(ranked_dev_episodes)}
 
-    # materialize_preselected_cohorts requires all three partition keys;
-    # the evaluation pass needs only the development partition (train and
-    # calibration are empty here and are never read by this pass).
-    partitions = {"train": (),
-                  "calibration": (),
-                  "development": tuple(record for _rank, record in ranked_dev_episodes)}
-    cohorts = materialize_preselected_cohorts(
-        scientific, root=REPO, partitions=partitions, year=year,
-        dataset_instance_id=INSTANCE_ID, split_resolver=split_for_date_multiyear,
-        taxi_reference=taxi, turnaround_reference=turnaround)
+    if cohorts_override is None:
+        if evaluation_split != "development":
+            raise ValueError("M5B_TEST_EVALUATION_REQUIRES_Q4_COHORT_ADAPTER")
+        # Development path retained unchanged for historical reproduction.
+        partitions = {"train": (), "calibration": (),
+                      "development": tuple(record for _rank, record in ranked_dev_episodes)}
+        cohorts = materialize_preselected_cohorts(
+            scientific, root=REPO, partitions=partitions, year=year,
+            dataset_instance_id=INSTANCE_ID, split_resolver=split_for_date_multiyear,
+            taxi_reference=taxi, turnaround_reference=turnaround)
+    else:
+        if evaluation_split != "test":
+            raise ValueError("M5B_COHORT_OVERRIDE_ONLY_VALID_FOR_TEST")
+        if len(cohorts_override.development) != len(ranked_dev_episodes):
+            raise ValueError("M5B_TEST_COHORT_OVERRIDE_SIZE_MISMATCH")
+        cohorts = cohorts_override
     pipeline = M1Pipeline.load(checkpoint)
     tails = load_tail_continuations(
         REPO / "artifacts" / "diagnostics" / "m1_positive_tail_continuation_v1"
@@ -1101,6 +1110,7 @@ def evaluate_model_on_cases(
     manifest = {
         "schema_version": "M5B_EVAL_PASS_V1",
         "status": "PASS",
+        "split": evaluation_split,
         "pass_id": pass_id,
         "year": year,
         "checkpoint": str(checkpoint),
@@ -1118,7 +1128,10 @@ def evaluate_model_on_cases(
         "bundle_hash": bundle["bundle_hash"],
         "headroom_summary_hash": sha256_json(headroom.model_dump(mode="json")),
         "analysis_layer": "CONSEQUENCE_FRAMES_ONLY",
-        "final_test_access_count": 0,
+        "final_test_access_count": (
+            0 if evaluation_split == "development"
+            else len(cohorts.development)
+        ),
         "seconds": round(seconds, 1),
         "git_head": provenance["git_head"],
         "git_branch": provenance["git_branch"],

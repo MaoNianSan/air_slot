@@ -203,7 +203,7 @@ def _iter_nodes(
     current_rows = {
         row.decision_node_id: row
         for row in bridge["cache"].partition(
-            "development", representation="CURRENT"
+            bridge.get("cache_split", "development"), representation="CURRENT"
         )
     }
     specs = _representation_specs()
