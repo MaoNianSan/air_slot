@@ -52,6 +52,13 @@ This repository is the single canonical Air Slot code authority
 - Validation CLIs: `python -m validation.<module>` with the module's own
   `--help`. Final-Test / paper experiments are only re-run by explicit
   human authorization.
+- Sparse shells: `torch._dynamo` needs `getpass.getuser()`, which on Windows
+  falls back to the (POSIX-only) `pwd` module when `USERNAME`/`USER`/`LOGNAME`
+  are unset. Without them the first optimizer construction raises inside
+  `torch._dynamo` import and a retry then fails with
+  `Artifact of type=precompile already registered in mega-cache artifact
+  factory`. Set `USERNAME` (any value) before running the M1 suites from a
+  stripped environment; the tests themselves are fine.
 
 ## Rules for agents
 
