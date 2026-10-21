@@ -39,6 +39,9 @@ This repository is the single canonical Air Slot code authority
   Sealed Final-Test epochs live under `artifacts/experiment/final_test_v2*`;
   checkpoints are local-only (gitignored) and hash-validated.
 - `data1/`, `data2/` — read-only raw data (gitignored). Never write into them.
+  `data1/` is not present in this checkout; the V2 chain reads `data2/` only,
+  and the `data1_2019` adapter contract in `registries/` is retained on purpose.
+  Tests that need those raw files skip themselves.
 
 ## Running things
 

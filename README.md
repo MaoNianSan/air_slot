@@ -23,6 +23,12 @@ raw data (read only) -> PRE -> M1 -> M2 -> M3 -> M4
 differences stop at PRE. Model code must not create caches, indexes, temporary
 files, or documentation inside either data root.
 
+`data1/` is not distributed with this checkout. The current V2 chain reads
+`data2/` only: no module under `exp/` or `formal/` references `data1`, the
+`data1_2019` adapter stays declared in `registries/` as a contract, and every
+test that would need those raw files skips itself with
+`configured data1 root unavailable`.
+
 The old Exp1-Exp4 implementation and the old Section 5 paper-result pipeline
 are retired as primary authorities. Their drivers were removed from the working
 tree on 2026-10-21 (they remain retrievable from Git history), while the modules
