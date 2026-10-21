@@ -1,5 +1,6 @@
 import numpy as np
 
+import validation.m1_v2_feature_gate_b2 as gate_b2
 from validation.m1_v2_feature_gate_b2r import run as run_b2r
 from validation.m1_v2_feature_gate_b2 import run as run_b2
 from validation.m1_v2_feature_redundancy import _exact_groups
@@ -49,10 +50,15 @@ def test_b2r_preserves_partial_static_and_removes_schedule_delta(tmp_path):
     assert report["redundancy"]["empirical_exact_duplicate_count"] == 2
 
 
-def test_b2_freeze_only_after_contract_blockers_are_clear(tmp_path):
-    b2r = run_b2r()
+def test_b2_freeze_only_after_contract_blockers_are_clear(tmp_path, monkeypatch):
+    # Materialize B2R into the test's own directory: run_b2r() with no argument
+    # writes the candidate cache, report and packet into the repository's
+    # artifacts/diagnostics tree, which then blocks the phase-7 clean-tree gates.
+    b2r_dir = tmp_path / "b2r"
+    b2r = run_b2r(b2r_dir)
     assert b2r["FEATURE_GATE_STATUS"] == "FEATURE_GATE_B2R_PASS_CANDIDATE_READY_FOR_B2"
 
+    monkeypatch.setattr(gate_b2, "B2R_OUTPUT", b2r_dir)
     report = run_b2(tmp_path)
 
     assert report["FEATURE_GATE_STATUS"] == "FEATURE_GATE_B2_PASS_TARGET_SUPPORT_REVIEW_NEXT"
