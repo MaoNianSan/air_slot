@@ -243,51 +243,54 @@ def test_published_audit_reads_existing_rows_without_new_score(published):
                for item in audit["preserved_source_abstentions"])
 
 
+GATE_BASELINE = (
+    reporting.ROOT / "docs/maintenance/SECTION5_SECONDARY_GATE_BASELINE_20261021.json"
+)
+
+
+def _protected_state(manifest):
+    """Split the frozen protected table into absent and drifted paths."""
+    missing, drifted = set(), set()
+    for path, value in manifest["protected_file_hashes"].items():
+        target = reporting.ROOT / path
+        if not target.is_file():
+            missing.add(path)
+        elif reporting.digest(target) != value:
+            drifted.add(path)
+    return missing, drifted
+
+
 def test_published_hashes_model_calibration_parameters_and_primary_unchanged(published):
     manifest = published["manifest"]
     # The frozen manifest records the materialization-era HEAD; the
     # consolidation moved the branch tip, so it is checked against the frozen
     # authority constant, not the live HEAD.
     assert manifest["HEAD_START"] == manifest["HEAD_END"] == reporting.AUTHORITY
-    # The consolidation intentionally touched these protected files (authority
-    # merge of v2/paper-primary vs v2/phase7-gate-a, governance-list updates,
-    # beta-class diagnostic re-runs, doc updates). Any OTHER drift still fails.
-    CONSOLIDATION_PROTECTED_DELTAS = {
-        ".gitignore",
-        "OUTPUT_INDEX.md",
-        "README.md",
-        "artifacts/diagnostics/m1_v2_feature_gate_b2r/AIR_SLOT_M1_V2_FEATURE_GATE_B2R.json",
-        "artifacts/diagnostics/m1_v2_feature_gate_b2r/data_usage_audit/AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json",
-        "exp/inputs/development.py",
-        "model/M2/cu/registry.py",
-        "model/M2/freeze_cli.py",
-        "model/M2/scientific_registry.py",
-        "model/M3/README.md",
-        "model/M3/__init__.py",
-        "model/M3/service.py",
-        "model/M4/README.md",
-        "model/M4/__init__.py",
-        "model/M4/m3_action_interface.py",
-        "model/M4/residual_risk.py",
-        "model/M4/service.py",
-        "model/PRE/streaming/data2.py",
-        "requirements.txt",
-        "tests/integration/test_refactor_behavioral_equivalence.py",
-        "tests/m1/test_model_baseline_fingerprint.py",
-        "validation/code_size.py",
-        "validation/dependency_rules.py",
-        "validation/ownership_gate_v2.py",
-    }
-    mismatched = {
-        path
-        for path, value in manifest["protected_file_hashes"].items()
-        if reporting.digest(reporting.ROOT / path) != value
-    }
-    assert mismatched == CONSOLIDATION_PROTECTED_DELTAS
-    for path, value in manifest["protected_file_hashes"].items():
-        if path in CONSOLIDATION_PROTECTED_DELTAS:
-            continue
-        assert reporting.digest(reporting.ROOT / path) == value
+
+    # Everything the published artifact is known to disagree with is declared in
+    # docs/maintenance/SECTION5_SECONDARY_GATE_BASELINE_20261021.json: the
+    # 2026-10-21 Exp1-Exp4 retirement (relocated_to / retired), the absent local
+    # data1/ documentation files, and the drift accumulated after authority
+    # 860befd. NEW drift, an undeclared disappearance, or a relocated home that
+    # no longer exists still fails. The artifact itself is never re-baselined.
+    baseline = reporting.read_json(GATE_BASELINE)
+    assert baseline["artifact"] == reporting.OUTPUT_NAMES[3]
+    assert baseline["authority_head"] == reporting.AUTHORITY
+
+    missing, drifted = _protected_state(manifest)
+    declared_missing = (
+        set(baseline["data_root_not_present"])
+        | set(baseline["relocated_to"])
+        | set(baseline["retired"])
+    )
+    assert not set(baseline["relocated_to"]) & set(baseline["retired"])
+    assert missing == declared_missing, sorted(missing ^ declared_missing)
+    for source, destination in baseline["relocated_to"].items():
+        assert (reporting.ROOT / destination).is_file(), destination
+        assert source not in drifted
+    recorded_drift = set(baseline["drifted"])
+    assert drifted == recorded_drift, sorted(drifted ^ recorded_drift)
+
     assert any(path.startswith("model/") for path in manifest["protected_file_hashes"])
     assert any(path.startswith("artifacts/calibration/")
                for path in manifest["protected_file_hashes"])
