@@ -19,7 +19,7 @@ from .common_support import (
     conditional_node_summary,
     identify_common_supported_scenarios,
 )
-from .protocol import COMPONENTS
+from exp.shared.protocol_constants import COMPONENTS
 
 
 def active_model_contract() -> (

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Mapping, Sequence
 
-from .metrics import marginal_variogram_score, variogram_score, weighted_crps, weighted_wasserstein_1
+from exp.shared.forecast_metrics import marginal_variogram_score, variogram_score, weighted_crps, weighted_wasserstein_1
 from .representations import JointRepresentation, MarginalRepresentation, PointRepresentation
 
 

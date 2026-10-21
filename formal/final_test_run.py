@@ -27,8 +27,8 @@ import matplotlib.pyplot as plt
 from exp.exp1.formal import LEAD_GRID
 from exp.exp1.paired import hazard_crps_records, paired_records, summarize_targets
 from exp.exp1.scenarios import analyze_nodes
-from exp.exp1.formal_inputs import nearest_lead
-from exp.exp2 import development_inputs as exp2_inputs
+from exp.inputs.formal import nearest_lead
+from exp.inputs import development as exp2_inputs
 from exp.exp2.run import execute_node_materialization
 from exp.exp2.figures import component_figure, priority_figure
 from exp.exp3.analysis import (
@@ -38,7 +38,7 @@ from exp.exp3.analysis import (
     evaluate_stages,
     stage_contrasts,
 )
-from exp.exp4.triage import (
+from exp.shared.screening_triage import (
     bootstrap_screening,
     evaluate_screening,
     prepare_canonical_events,

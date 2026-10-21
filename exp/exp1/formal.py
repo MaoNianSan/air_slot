@@ -13,7 +13,7 @@ from model.M1.lifecycle import M1Lifecycle
 from exp.shared.output import GUARDS, write_json
 from exp.shared.resampling import bootstrap_plan
 
-from .formal_inputs import load_exact_inputs
+from exp.inputs.formal import load_exact_inputs
 from .paired import hazard_crps_records, paired_records, summarize_targets
 from .scenarios import SCENARIO_PATH, analyze_nodes, load_scenario_artifact
 

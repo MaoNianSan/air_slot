@@ -11,8 +11,8 @@ from exp.shared.recovery_priority import (
     compute_no_f_execution_priority,
 )
 
-from .metrics import priority_metrics
-from .protocol import COMPONENTS
+from .rank_metrics import priority_metrics
+from .protocol_constants import COMPONENTS
 
 
 def no_f_execution_scores(frame: pd.DataFrame) -> pd.Series:

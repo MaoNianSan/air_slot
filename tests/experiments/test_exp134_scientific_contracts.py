@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from exp.exp2.bootstrap import run_bootstrap
-from exp.exp2.informativeness import informativeness_table
+from exp.shared.priority_bootstrap import run_bootstrap
+from exp.shared.informativeness import informativeness_table
 from exp.exp3.analysis import (
     _heterogeneity,
     bootstrap_stage,
@@ -12,7 +12,7 @@ from exp.exp3.analysis import (
     stage_agreement,
     stage_heterogeneity,
 )
-from exp.exp4.triage import evaluate_screening, prepare_canonical_events, robust_sets
+from exp.shared.screening_triage import evaluate_screening, prepare_canonical_events, robust_sets
 from exp.shared.analytical import scores
 from exp.shared.resampling import expand_draw
 

@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import numpy as np
 import pandas as pd
 
-from exp.exp2 import development_inputs as exp2_inputs
+from exp.inputs import development as exp2_inputs
 from model.M2.contracts import M2ScenarioInput
 from model.M2.consequences.engine import native_quantities
 from model.common.enums import SupportState

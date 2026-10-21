@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from exp.exp2.protocol import COMPONENTS
-from exp.exp2.similar_delay import aggregate_episode_pairs, build_similar_delay_pairs
+from exp.shared.protocol_constants import COMPONENTS
+from exp.shared.similar_delay import aggregate_episode_pairs, build_similar_delay_pairs
 
 
 def _row(episode, node, stage, delay, rank, z):

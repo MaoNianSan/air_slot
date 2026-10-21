@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from .protocol import DISPLAY_NAMES
+from exp.shared.protocol_constants import DISPLAY_NAMES
 
 
 def priority_figure(base: pd.DataFrame, path: Path) -> None:

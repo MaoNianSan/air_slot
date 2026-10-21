@@ -2,13 +2,13 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from exp.exp2.model_inputs import (
+from exp.inputs.model_inputs import (
     active_model_contract,
     flatten_node,
     map_model_outputs,
     typed_m1_inputs,
 )
-from exp.exp2.protocol import COMMON_SUPPORT_RULE_ID, COMPONENTS
+from exp.shared.protocol_constants import COMMON_SUPPORT_RULE_ID, COMPONENTS
 from model.M1.contracts import M1V2Scenario
 from model.M2.context import (
     AirportReferenceKeys,

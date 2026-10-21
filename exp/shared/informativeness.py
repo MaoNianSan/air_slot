@@ -5,8 +5,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .metrics import kendall_tau_b
-from .protocol import COMPONENTS
+from .rank_metrics import kendall_tau_b
+from .protocol_constants import COMPONENTS
 
 
 def informativeness_table(frame: pd.DataFrame) -> pd.DataFrame:

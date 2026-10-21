@@ -4,7 +4,7 @@ This package contains evaluation-only orchestration helpers.  Scientific model
 semantics remain in :mod:`model` and are never reimplemented here.
 """
 
-from .metrics import (
+from exp.shared.forecast_metrics import (
     energy_score,
     marginal_variogram_score,
     variogram_score,

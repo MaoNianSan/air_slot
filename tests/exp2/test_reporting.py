@@ -3,8 +3,8 @@ import json
 import pandas as pd
 
 from exp.exp2 import run
-from exp.exp2.protocol import COMPONENTS
-from exp.exp2.reporting import write_frame, write_json
+from exp.shared.protocol_constants import COMPONENTS
+from exp.inputs.writers import write_frame, write_json
 
 
 def test_reporting_writes_json_csv_and_parquet(tmp_path):

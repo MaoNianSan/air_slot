@@ -2,14 +2,14 @@ from types import SimpleNamespace
 
 import pytest
 
-from exp.exp2.common_support import (
+from exp.inputs.common_support import (
     compute_common_support_mass,
     conditional_node_summary,
     identify_common_supported_scenarios,
     support_flags,
 )
-from exp.exp2.model_inputs import active_model_contract
-from exp.exp2.protocol import COMPONENTS
+from exp.inputs.model_inputs import active_model_contract
+from exp.shared.protocol_constants import COMPONENTS
 from model.common.cu_normalization import CUNormalizationStatus
 from model.common.enums import SupportState
 from model.common.estimand import FormalEstimandStatus

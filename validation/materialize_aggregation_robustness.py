@@ -29,8 +29,8 @@ except ImportError:  # pragma: no cover - fallback is covered by the Python path
 if str(Path(__file__).resolve().parents[1]) not in sys.path:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from exp.exp2.metrics import midrank_percentiles, priority_metrics
-from exp.exp2.protocol import (
+from exp.shared.rank_metrics import midrank_percentiles, priority_metrics
+from exp.shared.protocol_constants import (
     ACTIVE_STAGES,
     BOOTSTRAP_REPLICATES,
     BOOTSTRAP_SEED,
@@ -40,7 +40,7 @@ from exp.exp2.protocol import (
     TOP_FRACTION_PRIMARY,
 )
 from exp.shared.resampling import bootstrap_plan, episode_ids, expand_draw
-from exp.exp4.triage import _views as canonical_views
+from exp.shared.screening_triage import _views as canonical_views
 
 
 ROOT = Path(__file__).resolve().parents[1]

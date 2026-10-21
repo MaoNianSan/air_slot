@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from exp.exp2 import development_inputs as source
+from exp.inputs import development as source
 from model.PRE.contracts.pre_state import PREState
 from model.PRE.development import materialize_preselected_cohorts
 from model.common.config import load_config_layers

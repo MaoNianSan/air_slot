@@ -7,7 +7,7 @@ import pandas as pd
 
 from exp.shared.analytical import ACTIVE_STAGES, scores as _scores, primary_mask
 from exp.shared.resampling import bootstrap_plan, episode_ids, expand_draw
-from exp.exp2.metrics import midrank_percentiles, priority_metrics
+from exp.shared.rank_metrics import midrank_percentiles, priority_metrics
 
 SHARED_INPUT = Path(__file__).resolve().parents[2] / "artifacts/experiment/shared/development/SHARED_DEVELOPMENT_INPUTS.parquet"
 METRICS = ("kendall_tau_b", "top10_overlap", "median_rank_displacement",

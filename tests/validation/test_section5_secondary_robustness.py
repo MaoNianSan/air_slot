@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from exp.exp2.bootstrap import run_bootstrap
-from exp.exp2.priority import rank_base_sample
-from exp.exp2.protocol import COMPONENTS
+from exp.shared.priority_bootstrap import run_bootstrap
+from exp.shared.priority_population import rank_base_sample
+from exp.shared.protocol_constants import COMPONENTS
 from exp.shared.resampling import bootstrap_plan, episode_ids, expand_draw
 from validation import materialize_section5_secondary_robustness as reporting
 
@@ -258,7 +258,7 @@ def test_published_hashes_model_calibration_parameters_and_primary_unchanged(pub
         "README.md",
         "artifacts/diagnostics/m1_v2_feature_gate_b2r/AIR_SLOT_M1_V2_FEATURE_GATE_B2R.json",
         "artifacts/diagnostics/m1_v2_feature_gate_b2r/data_usage_audit/AIR_SLOT_DATA_USAGE_CONTRACT_AUDIT.json",
-        "exp/exp2/development_inputs.py",
+        "exp/inputs/development.py",
         "model/M2/cu/registry.py",
         "model/M2/freeze_cli.py",
         "model/M2/scientific_registry.py",
