@@ -23,9 +23,13 @@ raw data (read only) -> PRE -> M1 -> M2 -> M3 -> M4
 differences stop at PRE. Model code must not create caches, indexes, temporary
 files, or documentation inside either data root.
 
-The old Exp1-Exp4 implementation and old Section 5 paper-result pipeline are
-retired as primary authorities; they remain under `exp/exp1..exp4` and
-`artifacts/experiment/final_test/` as historical development evidence only.
+The old Exp1-Exp4 implementation and the old Section 5 paper-result pipeline
+are retired as primary authorities. Their drivers were removed from the working
+tree on 2026-10-21 (they remain retrievable from Git history), while the modules
+still used by the current chain were extracted into `exp/inputs/` (the data
+input chain) and `exp/shared/` (analysis helpers). The frozen results under
+`artifacts/experiment/final_test/` are untouched and remain historical
+development evidence.
 
 Current experiment and reporting layers:
 

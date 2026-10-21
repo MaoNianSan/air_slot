@@ -22,9 +22,14 @@ This repository is the single canonical Air Slot code authority
 ## Layout
 
 - `model/` — scientific implementations (PRE/M1/M2/M3/M4 + common).
-- `exp/` — experiment drivers: `exp/jatm_section4` (M1 history-capacity),
-  `exp/jatm_section5` (Section-5 development layer), `exp/exp1..exp4`
-  (historical development evidence).
+- `exp/` — experiment drivers and the layers they build on:
+  `exp/jatm_section4` (M1 history-capacity), `exp/jatm_section5`
+  (Section-5 development layer), `exp/shared` (reusable analysis helpers:
+  forecast/rank metrics, protocol constants, priority population and bootstrap,
+  similar-delay, informativeness, perturbation views, screening triage),
+  `exp/inputs` (the preserved data-input chain: cache -> canonical -> PRE ->
+  typed model inputs). The V1 Exp1-Exp4 drivers were retired on 2026-10-21 and
+  survive only in Git history.
 - `formal/v2_phase7/` — sealed Final-Test runner (read-only projections; the
   executor never recomputes science from raw data).
 - `validation/` — validation gates and materialization scripts.
