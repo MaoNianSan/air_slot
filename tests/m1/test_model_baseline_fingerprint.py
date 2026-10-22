@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from model.common.identity import content_id
+from validation.v2_phase6.common import canonical_text_file_hash
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -131,7 +132,66 @@ def test_active_pointer_uses_v1r1_manifest_and_live_hashes():
         "model/PRE/streaming/containment.py",
         "model/PRE/transform/rules.py",
     }
-    assert mismatched == CONSOLIDATION_DELTA_ENTRIES
+    # 2026-10-22 forensics: three further drift classes were undeclared. They are
+    # named and re-proved below rather than folded into one blanket exemption.
+    #
+    # (A) LINE_ENDING_ONLY_DELTAS - the frozen V1 source snapshot stored these
+    #     copies with CRLF while the repository stores LF (AGENTS.md rule 3:
+    #     compare text artifacts with canonical-LF hashing). The text is
+    #     identical; only the encoding of the line break differs. Each entry is
+    #     re-proved text-identical on every run, so a real edit smuggled into
+    #     this set still fails.
+    # (B) V1R1_ONLY_WITHOUT_SNAPSHOT - V1R1 carries entries beyond the 177 that
+    #     the immutable V1 snapshot backs. These five are among them, so their
+    #     recorded hash never had a reconstructable byte source; the last commit
+    #     touching each one is the V1R1 finalize commit itself.
+    # (C) POST_V1R1_AUTHORIZED_EDITS - authorized work landed after V1R1 was
+    #     frozen and was never registered here: multi-year PRE runtime
+    #     (c0e3de6), annual development adapters (618240f), reviewed shared
+    #     annual candidate (9665165), 2019 reference identity fix (ffa7487).
+    LINE_ENDING_ONLY_DELTAS = {
+        "model/M2/cli.py",
+        "model/PRE/factual/__init__.py",
+        "model/PRE/publication/__init__.py",
+        "model/PRE/reference/__init__.py",
+        "model/PRE/transform/__init__.py",
+        "model/PRE/transformation.py",
+        "model/common/cu_normalization.py",
+        "model/common/estimand.py",
+    }
+    V1R1_ONLY_WITHOUT_SNAPSHOT = {
+        "model/M1/calibration_layer/hurdle_temperature.py",
+        "model/M1/model_layer/gru.py",
+        "model/M1/scenario_layer/sampler.py",
+        "model/M3/registry_layer/actions.py",
+        "model/M3/instantiation_layer/builder.py",
+    }
+    POST_V1R1_AUTHORIZED_EDITS = {
+        "model/M1/cache.py",
+        "model/M1/pipeline.py",
+        "model/PRE/reference/data2_m2_train_fit.py",
+        "model/PRE/reference/passenger_data2.py",
+    }
+    assert mismatched == (
+        CONSOLIDATION_DELTA_ENTRIES
+        | LINE_ENDING_ONLY_DELTAS
+        | V1R1_ONLY_WITHOUT_SNAPSHOT
+        | POST_V1R1_AUTHORIZED_EDITS
+    )
+    snapshot_root = SNAPSHOT_MANIFEST_PATH.parent
+    for relative_path in LINE_ENDING_ONLY_DELTAS:
+        snapshot = snapshot_root / relative_path
+        assert snapshot.is_file(), relative_path
+        # Still genuinely different bytes, and provably the same text.
+        assert _sha256(snapshot) != _sha256(ROOT / relative_path), relative_path
+        assert canonical_text_file_hash(snapshot) == canonical_text_file_hash(
+            ROOT / relative_path
+        ), relative_path
+    for relative_path in V1R1_ONLY_WITHOUT_SNAPSHOT:
+        assert (ROOT / relative_path).is_file(), relative_path
+        assert not (snapshot_root / relative_path).exists(), relative_path
+    for relative_path in POST_V1R1_AUTHORIZED_EDITS:
+        assert (snapshot_root / relative_path).is_file(), relative_path
     for entry in manifest["entries"]:
         path = ROOT / entry["relative_path"]
         assert path.is_file()

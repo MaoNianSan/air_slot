@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from .protocol import COMPONENTS, MATERIAL_RANK_GAP
+from .protocol_constants import COMPONENTS, MATERIAL_RANK_GAP
 
 
 def build_similar_delay_pairs(frame: pd.DataFrame, *, caliper: float) -> pd.DataFrame:

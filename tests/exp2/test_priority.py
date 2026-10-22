@@ -2,14 +2,14 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from exp.exp2.metrics import (
+from exp.shared.rank_metrics import (
     kendall_tau_b,
     midrank_percentiles,
     priority_metrics,
     top_k_ids,
 )
-from exp.exp2.priority import add_domain_scores, base_sample
-from exp.exp2.protocol import COMPONENTS
+from exp.shared.priority_population import add_domain_scores, base_sample
+from exp.shared.protocol_constants import COMPONENTS
 
 
 def test_perfect_agreement_and_reversal():

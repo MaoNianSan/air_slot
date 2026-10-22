@@ -36,8 +36,8 @@ from .model_inputs import (
     map_model_outputs,
     typed_m1_inputs,
 )
-from .protocol import COMPONENTS
-from .reporting import write_frame, write_json
+from exp.shared.protocol_constants import COMPONENTS
+from .writers import write_frame, write_json
 
 
 MODEL_ROOT = PROJECT_ROOT / "artifacts" / "models" / "m1"

@@ -16,10 +16,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from exp.exp2 import protocol
-from exp.exp2.bootstrap import percentile_interval, run_bootstrap
-from exp.exp2.priority import base_sample, rank_base_sample
-from exp.exp2.similar_delay import (
+from exp.shared import protocol_constants as protocol
+from exp.shared.priority_bootstrap import percentile_interval, run_bootstrap
+from exp.shared.priority_population import base_sample, rank_base_sample
+from exp.shared.similar_delay import (
     aggregate_episode_pairs,
     build_similar_delay_pairs,
     summarize_episode_pairs,

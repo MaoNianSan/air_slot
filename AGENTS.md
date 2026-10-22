@@ -22,9 +22,14 @@ This repository is the single canonical Air Slot code authority
 ## Layout
 
 - `model/` — scientific implementations (PRE/M1/M2/M3/M4 + common).
-- `exp/` — experiment drivers: `exp/jatm_section4` (M1 history-capacity),
-  `exp/jatm_section5` (Section-5 development layer), `exp/exp1..exp4`
-  (historical development evidence).
+- `exp/` — experiment drivers and the layers they build on:
+  `exp/jatm_section4` (M1 history-capacity), `exp/jatm_section5`
+  (Section-5 development layer), `exp/shared` (reusable analysis helpers:
+  forecast/rank metrics, protocol constants, priority population and bootstrap,
+  similar-delay, informativeness, perturbation views, screening triage),
+  `exp/inputs` (the preserved data-input chain: cache -> canonical -> PRE ->
+  typed model inputs). The V1 Exp1-Exp4 drivers were retired on 2026-10-21 and
+  survive only in Git history.
 - `formal/v2_phase7/` — sealed Final-Test runner (read-only projections; the
   executor never recomputes science from raw data).
 - `validation/` — validation gates and materialization scripts.
@@ -34,6 +39,9 @@ This repository is the single canonical Air Slot code authority
   Sealed Final-Test epochs live under `artifacts/experiment/final_test_v2*`;
   checkpoints are local-only (gitignored) and hash-validated.
 - `data1/`, `data2/` — read-only raw data (gitignored). Never write into them.
+  `data1/` is not present in this checkout; the V2 chain reads `data2/` only,
+  and the `data1_2019` adapter contract in `registries/` is retained on purpose.
+  Tests that need those raw files skip themselves.
 
 ## Running things
 
@@ -44,6 +52,13 @@ This repository is the single canonical Air Slot code authority
 - Validation CLIs: `python -m validation.<module>` with the module's own
   `--help`. Final-Test / paper experiments are only re-run by explicit
   human authorization.
+- Sparse shells: `torch._dynamo` needs `getpass.getuser()`, which on Windows
+  falls back to the (POSIX-only) `pwd` module when `USERNAME`/`USER`/`LOGNAME`
+  are unset. Without them the first optimizer construction raises inside
+  `torch._dynamo` import and a retry then fails with
+  `Artifact of type=precompile already registered in mega-cache artifact
+  factory`. Set `USERNAME` (any value) before running the M1 suites from a
+  stripped environment; the tests themselves are fine.
 
 ## Rules for agents
 

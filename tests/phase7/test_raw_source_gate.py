@@ -120,7 +120,7 @@ def test_local_input_root_resolution_prefers_the_frozen_worktree(
 
 
 def test_declared_reference_payloads_match_frozen_development_inputs() -> None:
-    from exp.exp2 import development_inputs as dev_inputs
+    from exp.inputs import development as dev_inputs
     from model.common.paths import PROJECT_ROOT
 
     expected = {

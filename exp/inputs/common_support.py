@@ -16,7 +16,7 @@ from model.common.cu_normalization import CUNormalizationStatus
 from model.common.enums import SupportState
 from model.common.estimand import FormalEstimandStatus
 
-from .protocol import (
+from exp.shared.protocol_constants import (
     COMMON_SUPPORT_CONDITIONAL_ESTIMAND,
     COMPONENTS,
     PRIMARY_SUPPORT_THRESHOLD,

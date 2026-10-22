@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 
-from exp.exp2.bootstrap import bootstrap_once, resample_episode_clusters
-from exp.exp2.protocol import COMPONENTS
-from exp.exp2.similar_delay import build_similar_delay_pairs
+from exp.shared.priority_bootstrap import bootstrap_once, resample_episode_clusters
+from exp.shared.protocol_constants import COMPONENTS
+from exp.shared.similar_delay import build_similar_delay_pairs
 
 
 def _base():

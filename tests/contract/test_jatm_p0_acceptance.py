@@ -154,12 +154,36 @@ def test_c2_recovery_summary_cannot_mix_other_representations_or_fallback_denomi
     assert result['excluded_n']==1
 
 
+EVALUATION_SUMMARIES=('E1/E1_PAIRED_SUMMARY.json','E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json',
+                     'E2_E3/E2_E3_SUMMARY.json')
+
+
+def publish_receipts(directory,identity,stages=None):
+    """Publish the v2 per-stage receipts through the production writer.
+
+    valid_annual used to hand-write a single EVALUATION_COMPLETE receipt, which
+    stopped being a valid annual result once evaluation_is_current moved to
+    per-stage receipts (receipts_v2 pointers + JATM_STAGE_RECEIPT_V2 attempts).
+    Building them with publish_stage_receipt keeps this fixture on the real
+    contract instead of a stale approximation of it.
+    """
+    from exp.jatm_s34.shared_run import (
+        EVALUATION_STAGES,evaluation_stage_identity,publish_stage_receipt)
+    published={}
+    for stage,folder,summary in EVALUATION_STAGES:
+        if stages is not None and stage not in stages:
+            continue
+        stage_id=evaluation_stage_identity(directory,identity,stage)
+        published[stage]=publish_stage_receipt(directory,stage,stage_id,folder,summary)
+    return published
+
+
 def valid_annual(root,year):
     directory=root/str(year)
     atomic_json(directory/'RUN_MANIFEST.json',dict(year=year,scope='FULL_DEVELOPMENT',status='COMPUTED_PENDING_SCIENTIFIC_ACCEPTANCE'))
     atomic_json(directory/'shared/CACHE_MANIFEST.json',dict(identity=dict(year=year,cu_contract=dict(track='YEAR_LOCAL',reference_year=year))))
     atomic_json(directory/'shared/SHARED_ANNUAL_MANIFEST.json',{'fixture':True})
-    e1=dict(replicates=2000,rows=[])
+    e1=dict(replicates=2000,rows=[],final_test_access_count=0)
     atomic_json(directory/'E1/E1_PAIRED_SUMMARY.json',dict(e1,cu_reference_label='YEAR_LOCAL_V5'))
     atomic_json(directory/'E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json',dict(e1,cu_reference_label='FIXED_COMMON_2017_H1_V5'))
     payload=dict(year=year,scope='FULL_DEVELOPMENT',schema_version='JATM_SHARED_E2_E3_V3_P1',
@@ -173,11 +197,13 @@ def valid_annual(root,year):
         fixed_common_e1_recovery_opportunity_coverage=[{} for _ in range(128)],
         policy_sensitivity_settings=[{'policy_id':'NOMINAL'}],
         policy_sensitivity_rows=[],fixed_common_policy_sensitivity_rows=[],
-        policy_sensitivity_missing_nodes=[],fixed_common_policy_sensitivity_missing_nodes=[])
+        policy_sensitivity_missing_nodes=[],fixed_common_policy_sensitivity_missing_nodes=[],
+        final_test_access_count=0)
     atomic_json(directory/'E2_E3/E2_E3_SUMMARY.json',payload)
     identity={'fixture':'expected-current-code-and-inputs'}
-    names=('E1/E1_PAIRED_SUMMARY.json','E1_FIXED_COMMON/E1_PAIRED_SUMMARY.json','E2_E3/E2_E3_SUMMARY.json')
-    atomic_json(directory/'EVALUATION_COMPLETE.json',dict(identity=identity,outputs={n:file_hash(directory/n) for n in names}))
+    atomic_json(directory/'EVALUATION_COMPLETE.json',dict(identity=identity,
+        outputs={n:file_hash(directory/n) for n in EVALUATION_SUMMARIES},
+        stage_receipts=publish_receipts(directory,identity)))
     return identity
 
 
@@ -205,7 +231,11 @@ def test_e4_rejects_stale_receipt_and_old_estimand_even_when_output_hashes_match
     payload=json.loads(path.read_text());payload['recovery_loss_estimand']='NODE_MEAN'
     atomic_json(path,payload)
     receipt=tmp_path/'2017/EVALUATION_COMPLETE.json';data=json.loads(receipt.read_text())
-    data['outputs']['E2_E3/E2_E3_SUMMARY.json']=file_hash(path);atomic_json(receipt,data)
+    data['outputs']['E2_E3/E2_E3_SUMMARY.json']=file_hash(path)
+    # Keep the receipt internally consistent, so the only thing wrong is the
+    # estimand: re-publish the E2_E3 stage receipt for the tampered summary.
+    data['stage_receipts'].update(publish_receipts(tmp_path/'2017',identity,stages={'E2_E3'}))
+    atomic_json(receipt,data)
     assert inspect_annual_result(tmp_path,2017)[0]['status']=='STATISTICS_OR_REFERENCE_INCOMPLETE'
 
 

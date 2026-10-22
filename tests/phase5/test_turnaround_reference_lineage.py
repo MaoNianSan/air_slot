@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from exp.exp2 import development_inputs
+from exp.inputs import development as development_inputs
 from model.M2.context import load_data2_reference_bundle
 from model.M2.scientific_registry import load_active_v2_cu_registry
 from model.common.identity import content_id

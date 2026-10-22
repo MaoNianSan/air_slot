@@ -11,8 +11,8 @@ from exp.shared.recovery_priority import (
     compute_domain_scores,
 )
 
-from .metrics import midrank_percentiles, priority_metrics
-from .protocol import (
+from .rank_metrics import midrank_percentiles, priority_metrics
+from .protocol_constants import (
     ACTIVE_STAGES,
     COMPONENTS,
     MATERIAL_RANK_GAP,

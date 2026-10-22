@@ -1,20 +1,23 @@
-import pandas as pd
+"""Population, bootstrap and screening contracts on the preserved analysis layer.
+
+Salvaged from tests/experiments/test_exp134_scientific_contracts.py when the
+Exp1--Exp4 experiment drivers were retired. Only the cases that exercise code
+kept after the refactor (exp.shared.priority_bootstrap, exp.shared.informativeness,
+exp.shared.screening_triage, exp.shared.analytical) are kept.
+"""
+
 import numpy as np
+import pandas as pd
 import pytest
 
-from exp.exp2.bootstrap import run_bootstrap
-from exp.exp2.informativeness import informativeness_table
-from exp.exp3.analysis import (
-    _heterogeneity,
-    bootstrap_stage,
-    bootstrap_stage_fast,
-    evaluate_stages,
-    stage_agreement,
-    stage_heterogeneity,
-)
-from exp.exp4.triage import evaluate_screening, prepare_canonical_events, robust_sets
 from exp.shared.analytical import scores
-from exp.shared.resampling import expand_draw
+from exp.shared.informativeness import informativeness_table
+from exp.shared.priority_bootstrap import run_bootstrap
+from exp.shared.screening_triage import (
+    evaluate_screening,
+    prepare_canonical_events,
+    robust_sets,
+)
 
 
 def _rows():
@@ -143,39 +146,6 @@ def test_exp2_reference_and_optimized_bootstrap_match_on_fixed_draw():
                 assert actual == expected
 
 
-def test_exp3_primary_support_and_percentile_gap():
-    frame = _rows()
-    frame.loc[1, "support_primary"] = False
-    assert stage_agreement(frame).iloc[0].n_nodes == 1
-    assert stage_heterogeneity(_rows()).iloc[0].median_consequence_priority_percentile_gap == 0
-
-
-def test_exp3_same_delay_heterogeneity_uses_percentile_gap():
-    frame = pd.concat([
-        _rows().iloc[[0]].assign(
-            episode_id="e1", original_episode_id="e1", decision_node_id="n1",
-            score_C=1.0, Z_F_continuity_cs=1.0, Z_F_execution_cs=1.0,
-            Z_F_propagation_cs=1.0, Z_P_time_cs=1.0, Z_P_itinerary_cs=1.0,
-            Z_P_service_cs=1.0, Z_R_operating_cs=1.0,
-        ),
-        _rows().iloc[[0]].assign(
-            episode_id="e2", original_episode_id="e2", decision_node_id="n2",
-            score_C=2.0, Z_F_continuity_cs=2.0, Z_F_execution_cs=2.0,
-            Z_F_propagation_cs=2.0, Z_P_time_cs=2.0, Z_P_itinerary_cs=2.0,
-            Z_P_service_cs=2.0, Z_R_operating_cs=2.0,
-        ),
-        _rows().iloc[[0]].assign(
-            episode_id="e3", original_episode_id="e3", decision_node_id="n3",
-            score_C=100.0, Z_F_continuity_cs=100.0, Z_F_execution_cs=100.0,
-            Z_F_propagation_cs=100.0, Z_P_time_cs=100.0, Z_P_itinerary_cs=100.0,
-            Z_P_service_cs=100.0, Z_R_operating_cs=100.0,
-        ),
-    ], ignore_index=True)
-    result = _heterogeneity(scores(frame), caliper=5.0, reference=True)
-    assert result["median_consequence_priority_percentile_gap"] == pytest.approx(1 / 3)
-    assert result["median_consequence_priority_percentile_gap"] != 98.0
-
-
 def test_exp4_canonical_before_support_and_stage_local_robust_sets():
     frame = _rows()
     frame.loc[0, "support_primary"] = False
@@ -184,35 +154,6 @@ def test_exp4_canonical_before_support_and_stage_local_robust_sets():
     supported, _ = prepare_canonical_events(_rows())
     robust = robust_sets(supported, 4)
     assert robust["stage"].nunique() == 1
-
-
-def test_bootstrap_duplicate_instances_are_not_folded_or_self_paired():
-    frame = scores(_rows())
-    expanded = expand_draw(frame, ("e1", "e1"))
-    assert len(expanded) == 2
-    assert expanded.bootstrap_instance_id.nunique() == 2
-    assert expanded.technical_node_id.nunique() == 2
-    result = evaluate_stages(expanded)
-    assert result.iloc[0].n_nodes == 2
-    assert result.iloc[0].heterogeneity_status == "ABSTAIN_INSUFFICIENT_MATCHES"
-
-
-def test_exp3_reference_and_optimized_bootstrap_match_on_fixed_draw():
-    frame = scores(_rows())
-    draw = np.asarray([["e1", "e2"]], dtype=object)
-    reference = bootstrap_stage(frame, plan=draw, reference=True)
-    optimized = bootstrap_stage_fast(frame, plan=draw)
-    columns = [
-        "stage", "n_nodes", "kendall_tau_b", "top10_overlap",
-        "median_rank_displacement", "p90_rank_displacement",
-        "median_consequence_priority_percentile_gap",
-        "p90_consequence_priority_percentile_gap",
-    ]
-    pd.testing.assert_frame_equal(
-        reference[columns].reset_index(drop=True),
-        optimized[columns].reset_index(drop=True),
-        check_dtype=False,
-    )
 
 
 def test_exp4_stage_local_top10_and_no_f_execution_from_shared_scores():
@@ -225,3 +166,4 @@ def test_exp4_stage_local_top10_and_no_f_execution_from_shared_scores():
     assert frame.iloc[0].NO_F_EXECUTION == pytest.approx(
         ((1.0 + 3.0) / 2.0 + 5.0 + 7.0) / 3.0
     )
+

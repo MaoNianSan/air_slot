@@ -423,18 +423,36 @@ def test_pre_open_gate_rejects_existing_epoch(
     assert error.value.code == "FREEZE_STAGE_MATCHED_EPOCH_ROOT_PREEXISTING"
 
 
+# execution_freeze._epoch_tree_hash hashes every file on disk, so the count
+# depends on which gitignored release-asset payloads have been downloaded into
+# this checkout. The canonical epoch tracks every file it carries; the
+# non-canonical one carries 14 tracked files plus the two >100 MB payloads,
+# which exist only after a manual download.
+COMMITTED_TREE_FILES = {
+    "consumed_stage_matched_epoch_provenance": 15,
+    "previous_noncanonical_epoch_provenance": 14,
+}
+OPTIONAL_RELEASE_PAYLOADS = (
+    "checkpoints/CONSEQUENCE_VARIANTS.json",
+    "checkpoints/STATE_VARIANTS.json",
+)
+
+
 def test_failed_epoch_tree_hashes_are_frozen(
     freeze_payload: dict[str, object],
 ) -> None:
-    for key in (
-        "consumed_stage_matched_epoch_provenance",
-        "previous_noncanonical_epoch_provenance",
-    ):
+    for key, committed in COMMITTED_TREE_FILES.items():
         provenance = freeze_payload[key]
         tree = provenance["tree_content_hash"]
         assert tree["present"] is True
-        assert tree["file_count"] == 15
         assert str(tree["sha256"]).startswith("sha256:")
+        expected = committed
+        if key == "previous_noncanonical_epoch_provenance":
+            expected += sum(
+                (Path(tree["root"]) / name).is_file()
+                for name in OPTIONAL_RELEASE_PAYLOADS
+            )
+        assert tree["file_count"] == expected, key
 
 
 def test_failed_epoch_hash_stability_passes_when_unchanged(

@@ -8,7 +8,7 @@ from typing import Mapping
 
 import pandas as pd
 
-from .protocol import COMPONENTS
+from exp.shared.protocol_constants import COMPONENTS
 
 
 def write_json(path: Path, payload: Mapping[str, object]) -> None:

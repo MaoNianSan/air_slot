@@ -602,7 +602,7 @@ def load_authorities() -> Authorities:
         raise Phase5GuardError("PHASE5_REGISTRY_FINAL_TEST_ACCESS_VIOLATION")
     taxi_reference, _, reference_audit = _load_references(PROJECT_ROOT)
 
-    from exp.exp2.development_inputs import _reference_payloads
+    from exp.inputs.development import _reference_payloads
 
     bundle = load_data2_reference_bundle(_reference_payloads())
     corrected_turnaround = read_json(CORRECTED_TURNAROUND_REFERENCE_PATH)
@@ -691,7 +691,7 @@ def load_development_bridge():
     reloading per model.
     """
 
-    from exp.exp1.formal_inputs import load_exact_inputs
+    from exp.inputs.formal import load_exact_inputs
 
     cache, rows, mapping, taxi_reference, manifest = load_exact_inputs()
     if len(rows) != DEVELOPMENT_NODE_COUNT:
