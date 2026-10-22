@@ -39,8 +39,15 @@ def test_gate_a_refactor_evidence_equivalence(
         r"[0-9a-f]{40}", observed_commit
     )
     generated_preflight.pop("gate_a_commit")
-    observed_preflight["authority"]["instruction"].pop("repo_path", None)
-    generated_preflight["authority"]["instruction"].pop("repo_path", None)
+    for payload in (observed_preflight, generated_preflight):
+        instruction = payload["authority"]["instruction"]
+        instruction.pop("repo_path", None)
+        # The instruction document is an env-overridable external input
+        # (REPOSITORY_AUTHORITY rule 8): it is read from D:\Download_all when
+        # that copy exists, otherwise from the repository copy under docs/.
+        # Only the location differs - sha256, byte_identical and status are all
+        # still compared below.
+        instruction.pop("download_path", None)
     for key, value in observed_preflight.items():
         if key in {"access_boundary", "release_schema"}:
             for legacy_key, legacy_value in value.items():
