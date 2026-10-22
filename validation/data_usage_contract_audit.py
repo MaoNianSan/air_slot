@@ -107,6 +107,26 @@ _STATIC_PUBLICATION = {
 }
 _ALLOWED_UNPUBLISHED_ROLES = {"EPISODE_CONSTRUCTION", "TRAIN_LABEL", "EVAL_OUTCOME"}
 
+# Downstream-of-PRE raw reads that are packaging, not science.
+#
+# exp/jatm_s34/prepare_transfer.py builds the cloud upload package: it copies
+# each raw NOAA ISD CSV truncated at the Development boundary and writes a hash
+# receipt per file. It re-emits raw rows verbatim - it never canonicalizes a
+# row, never builds PRE state and never feeds a model - so the ordered-prefix
+# rule it applies there is the transport cut, not a scientific read. PRE owns
+# the scientific side of that rule (model/PRE/development.py: weather_index
+# with end_out at 1 October), and PRE has no "export a truncated raw CSV" API
+# because packaging is not its job.
+#
+# The declared access is still reported (see declared_packaging_accesses) so it
+# cannot pass unseen; only UNDECLARED downstream raw reads count as PRE_BYPASS.
+_DECLARED_PACKAGING_ACCESSES: dict[str, str] = {
+    "exp/jatm_s34/prepare_transfer.py": (
+        "raw ISD rows are copied verbatim, truncated at the Development boundary; "
+        "no canonicalization, no PRE state, no model input"
+    ),
+}
+
 
 def _source_columns(source: SourceAdapterDefinition) -> tuple[str, ...]:
     return tuple(dict.fromkeys(source.required_columns + source.projected_columns))
@@ -165,14 +185,30 @@ def _column_accesses(path: Path, known_columns: set[str]) -> list[dict[str, Any]
     ]
 
 
-def _downstream_raw_accesses(known_columns: set[str]) -> list[dict[str, Any]]:
-    findings: list[dict[str, Any]] = []
+def _downstream_raw_accesses(
+    known_columns: set[str],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split downstream raw-column reads into undeclared bypasses and declared packaging.
+
+    Returns (bypasses, declared_packaging_accesses). Only the first list is a
+    failure class; the second is reported for review.
+    """
+    bypasses: list[dict[str, Any]] = []
+    declared: list[dict[str, Any]] = []
     scannable = known_columns - _AMBIGUOUS_COLUMN_KEYS
     for root in _DOWNSTREAM_ROOTS:
         for path in sorted((ROOT / root).rglob("*.py")):
-            if "__pycache__" not in path.parts:
-                findings.extend(_column_accesses(path, scannable))
-    return findings
+            if "__pycache__" in path.parts:
+                continue
+            findings = _column_accesses(path, scannable)
+            if not findings:
+                continue
+            relative = path.relative_to(ROOT).as_posix()
+            if relative in _DECLARED_PACKAGING_ACCESSES:
+                declared.extend(findings)
+            else:
+                bypasses.extend(findings)
+    return bypasses, declared
 
 
 def _runtime_rule_references() -> list[dict[str, Any]]:
@@ -572,7 +608,7 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     source_registry_path = registry_root / "source_adapter_registry.yaml"
     sources = SourceAdapterRegistry.load(source_registry_path).sources
     known_columns = {column for source in sources for column in _source_columns(source)}
-    bypasses = _downstream_raw_accesses(known_columns)
+    bypasses, declared_packaging = _downstream_raw_accesses(known_columns)
     rule_rows = _rule_audit(bundle, sources)
     raw_rows = _raw_column_audit(bundle, sources, bypasses)
     mapping_rows = _mapping_draft(bundle, sources, raw_rows)
@@ -671,6 +707,15 @@ def run(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "pre_output_audit": pre_rows,
         "m1_feature_audit": m1_rows,
         "pre_bypass_findings": bypasses,
+        "declared_packaging_accesses": declared_packaging,
+        "declared_packaging_rationale": {
+            path: _DECLARED_PACKAGING_ACCESSES[path]
+            for path in sorted({item["path"] for item in declared_packaging})
+        },
+        "stale_declared_packaging_paths": sorted(
+            set(_DECLARED_PACKAGING_ACCESSES)
+            - {item["path"] for item in declared_packaging}
+        ),
         "runtime_rule_references": runtime_refs,
         "missing_runtime_rule_registrations": missing_runtime_rules,
         "artifacts": {
