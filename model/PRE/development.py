@@ -51,16 +51,19 @@ def development_input_identity(root: Path) -> dict[str, str]:
     }
 
 
-def eligible_development_episodes_from_rows(rows: list[dict]):
+def eligible_development_episodes_from_rows(rows: list[dict], *,
+                                            split_resolver=None):
     """Yield split-contained Development episodes from PRE-canonical rows."""
     by_id = {row["flight_id"]: row for row in rows}
     for episode in build_data2_episode_records(rows):
         successor_date = date.fromisoformat(
             by_id[episode.successor_flight_id]["service_date"]
         )
-        if split_for_date(successor_date) != "development":
+        resolve_split = split_resolver or split_for_date
+        if resolve_split(successor_date) != "development":
             continue
-        containment = episode_containment_from_rows(episode, by_id)
+        containment = episode_containment_from_rows(
+            episode, by_id, split_resolver=resolve_split)
         if containment.allowed and containment.split == "development":
             yield episode, by_id
 
@@ -70,6 +73,8 @@ def build_development_episode_nodes(
     episodes: tuple[object, ...],
     paths: tuple[Path, ...],
     zones: dict[str, str],
+    *,
+    split_resolver=None,
 ):
     """Construct the PRE-owned rolling grid for selected Development episodes."""
     schedules, outcomes = load_selected_typed_records(episodes, paths, zones)
@@ -85,8 +90,9 @@ def build_development_episode_nodes(
             registry_hash=registry_hash_value,
             legal_record_ids=episode.source_record_ids,
         )
+        resolve_split = split_resolver or split_for_date
         if any(
-            split_for_date(node.decision_time.date()) != "development"
+            resolve_split(node.decision_time.date()) != "development"
             for node in episode_nodes
         ):
             raise RuntimeError("PRE_DEVELOPMENT_NODE_SPLIT_VIOLATION")
@@ -105,6 +111,7 @@ def _publish_partition(
     publisher: ProductionPREPublisher,
     taxi_reference=None,
     turnaround_reference=None,
+    dataset_instance_id: str = "data2_2019",
 ):
     output = []
     stages = Counter()
@@ -119,6 +126,7 @@ def _publish_partition(
             publisher=publisher,
             taxi_reference=taxi_reference,
             turnaround_reference=turnaround_reference,
+            dataset_instance_id=dataset_instance_id,
         )
         stages.update(node.operational_stage.value for node in nodes)
         output.append(
@@ -143,8 +151,15 @@ def materialize_preselected_cohorts(
     heartbeat=None,
     taxi_reference=None,
     turnaround_reference=None,
+    year: int = 2019,
+    dataset_instance_id: str = "data2_2019",
+    split_resolver=None,
 ) -> PREDevelopmentCohorts:
-    """Publish PRE states for already selected non-Test episode reservoirs."""
+    """Publish PRE states for already selected non-Test episode reservoirs.
+
+    M4b: ``year`` / ``dataset_instance_id`` / ``split_resolver``
+    parameterize the flow for the data2_2017_2022 instance; the defaults
+    reproduce the legacy data2_2019 behavior exactly."""
     expected = {"train", "calibration", "development"}
     if set(partitions) != expected:
         raise ValueError("PRE_PRESELECTED_PARTITIONS_INVALID")
@@ -156,7 +171,7 @@ def materialize_preselected_cohorts(
     if len(all_ids) != len(set(all_ids)):
         raise ValueError("PRE_PRESELECTED_EPISODE_DUPLICATE")
 
-    paths = ontime_paths(root)
+    paths = ontime_paths(root, year=year)
     data2_root = root / "data2"
     zones = load_timezones(data2_root / "refs" / "us_airport_timezones.csv")
     selected = tuple(
@@ -165,11 +180,14 @@ def materialize_preselected_cohorts(
         for episode in partitions[name]
     )
     schedules, outcomes = load_selected_typed_records(
-        selected, paths, zones, heartbeat=heartbeat
+        selected, paths, zones, heartbeat=heartbeat,
+        dataset_instance_id=dataset_instance_id,
     )
+    resolve_split = split_resolver or split_for_date
     for name in ("train", "calibration", "development"):
         if any(
-            split_for_date(schedules[episode.successor_flight_id].service_date) != name
+            resolve_split(schedules[episode.successor_flight_id].service_date)
+            != name
             for episode in partitions[name]
         ):
             raise ValueError(f"PRE_PRESELECTED_SPLIT_VIOLATION:{name}")
@@ -184,7 +202,13 @@ def materialize_preselected_cohorts(
     }
     replay_lag = int(scientific.parameters["data2_weather_replay_lag_minutes"].value)
     max_age = int(scientific.parameters["weather_max_age_minutes"].value)
-    weather, weather_audit = weather_index(data2_root, replay_lag, heartbeat=heartbeat)
+    weather, weather_audit = weather_index(
+        data2_root,
+        replay_lag,
+        heartbeat=heartbeat,
+        end_exclusive=date(year, 10, 1),
+        stamp_year=str(year),
+    )
     config_hash_value, registry_hash_value = config_hash(root), registry_hash(root)
     publisher = ProductionPREPublisher.from_project()
     published = {}
@@ -200,6 +224,7 @@ def materialize_preselected_cohorts(
             publisher=publisher,
             taxi_reference=taxi_reference,
             turnaround_reference=turnaround_reference,
+            dataset_instance_id=dataset_instance_id,
         )
     audit = {
         **(selection_audit or {}),
@@ -234,9 +259,12 @@ def build_sampled_pre_cohorts(
     taxi_reference=None,
     turnaround_reference=None,
     additional_development=(),
+    year: int = 2019,
+    dataset_instance_id: str = "data2_2019",
+    split_resolver=None,
 ) -> PREDevelopmentCohorts:
     """Build Development-safe typed PRE states without invoking M1."""
-    paths = ontime_paths(root)
+    paths = ontime_paths(root, year=year)
     data2_root = root / "data2"
     zones = load_timezones(data2_root / "refs" / "us_airport_timezones.csv")
     reservoirs, pool_sizes, total_episodes, per_month, skipped = episode_reservoirs(
@@ -249,6 +277,9 @@ def build_sampled_pre_cohorts(
         manifest_path=preparation_manifest,
         resume=resume,
         heartbeat=heartbeat,
+        year=year,
+        dataset_instance_id=dataset_instance_id,
+        split_resolver=split_resolver,
     )
     if reservoirs["test"]:
         raise RuntimeError("FINAL_TEST_EPISODE_MATERIALIZED")
@@ -266,9 +297,11 @@ def build_sampled_pre_cohorts(
             raise ValueError(
                 f"PRE_ADDITIONAL_DEVELOPMENT_DUPLICATE:{sorted(duplicate_ids)}"
             )
+        development_floor = date(year, 8, 1).isoformat()
+        development_ceiling = date(year, 9, 30).isoformat()
         if any(
-            item.episode_start_time.date().isoformat() < "2019-08-01"
-            or item.episode_end_time.date().isoformat() > "2019-09-30"
+            item.episode_start_time.date().isoformat() < development_floor
+            or item.episode_end_time.date().isoformat() > development_ceiling
             for item in extra_development
         ):
             raise ValueError("PRE_ADDITIONAL_DEVELOPMENT_SPLIT_VIOLATION")
@@ -297,4 +330,7 @@ def build_sampled_pre_cohorts(
         heartbeat=heartbeat,
         taxi_reference=taxi_reference,
         turnaround_reference=turnaround_reference,
+        year=year,
+        dataset_instance_id=dataset_instance_id,
+        split_resolver=split_resolver,
     )

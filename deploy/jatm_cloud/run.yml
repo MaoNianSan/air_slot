@@ -1,0 +1,15 @@
+years: [2017, 2018, 2019, 2020, 2021, 2022]
+max_year_workers: 1
+cpu_threads_per_worker: 8
+cpu_budget: 32
+memory_per_worker_gib: 24
+reserve_gib: 12
+device: cpu
+continuity_contract: JATM_F_CONTINUITY_B_V1
+resume: true
+chunk_size: 32
+phase: all
+output_root: /runs/development_v5_annual_tail_v1
+stop_before_test: true
+max_retries: 1
+tail_decision: deploy/jatm_cloud/scientific_decisions/ANNUAL_TAIL_USER_DECISION.json

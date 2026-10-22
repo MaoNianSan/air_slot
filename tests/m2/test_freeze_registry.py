@@ -170,16 +170,22 @@ def test_fit_train_references_keys_match_registry_contract(monkeypatch):
 
     monkeypatch.setattr(
         fit, "build_data2_turnaround_reference",
-        lambda rows, fit_period="2019-H1": _load("turnaround"),
+        lambda rows, fit_period="2019-H1", dataset_instance_id="data2_2019",
+        **kw: _load("turnaround"),
     )
     monkeypatch.setattr(
         fit, "build_data2_downstream_exposure",
-        lambda rows, fit_period="2019-H1": _load("downstream_exposure"),
+        lambda rows, fit_period="2019-H1", dataset_instance_id="data2_2019",
+        **kw: _load("downstream_exposure"),
     )
-    monkeypatch.setattr(fit, "stream_passenger_routes", lambda coupon_paths: [])
+    # M5: stream_passenger_routes gained an optional year kwarg (legacy
+    # default 2019); the stub mirrors the real signature.
+    monkeypatch.setattr(fit, "stream_passenger_routes",
+                        lambda coupon_paths, **kwargs: [])
     monkeypatch.setattr(
         fit, "build_data2_passenger_reference",
-        lambda rows, fit_period="2019-H1", rule_id="": _load("passenger"),
+        lambda rows, fit_period="2019-H1", rule_id="",
+        dataset_instance_id="data2_2019", **kw: _load("passenger"),
     )
     monkeypatch.setattr(
         fit, "data2_taxi_reference_from_payload", lambda payload: _load("taxi"),

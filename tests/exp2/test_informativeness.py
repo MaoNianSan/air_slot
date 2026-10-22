@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from exp.exp2.informativeness import informativeness_table
-from exp.exp2.protocol import COMPONENTS
+from exp.shared.informativeness import informativeness_table
+from exp.shared.protocol_constants import COMPONENTS
 
 
 def _frame():

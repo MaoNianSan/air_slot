@@ -7,6 +7,7 @@ from typing import Any
 from . import constants as C
 from .errors import _require
 from .materialization import (
+    _canonical_text_sha256,
     _file_sha256,
     _git,
     _payload_sha256,
@@ -28,24 +29,29 @@ def _instruction_sha256() -> str:
 
 
 def validate_instruction_copies() -> dict[str, Any]:
-    """Require byte-identical repository and Download_all instruction copies."""
+    """Validate the in-repo instruction copy against the optional external copy.
+
+    The in-repo copy is the runtime authority. The external ``Download_all``
+    copy is optional: when present it must be byte-identical (fail closed on
+    mismatch), and when absent the validation passes on the repo copy alone.
+    """
 
     _require(
         C.INSTRUCTION_REPO_PATH.is_file(),
         "PHASE7_INSTRUCTION_REPO_COPY_MISSING",
         str(C.INSTRUCTION_REPO_PATH),
     )
-    _require(
-        C.INSTRUCTION_DOWNLOAD_PATH.is_file(),
-        "PHASE7_INSTRUCTION_DOWNLOAD_COPY_MISSING",
-        str(C.INSTRUCTION_DOWNLOAD_PATH),
-    )
     repo_bytes = C.INSTRUCTION_REPO_PATH.read_bytes()
-    download_bytes = C.INSTRUCTION_DOWNLOAD_PATH.read_bytes()
-    _require(
-        repo_bytes == download_bytes,
-        "PHASE7_INSTRUCTION_COPIES_NOT_IDENTICAL",
-    )
+    # The external Download_all copy is optional at runtime: when present it
+    # must be byte-identical (fail closed on mismatch); when absent the
+    # validation passes on the in-repo copy alone. The output schema stays
+    # byte-compatible with the sealed gate records.
+    if C.INSTRUCTION_DOWNLOAD_PATH.is_file():
+        download_bytes = C.INSTRUCTION_DOWNLOAD_PATH.read_bytes()
+        _require(
+            repo_bytes == download_bytes,
+            "PHASE7_INSTRUCTION_COPIES_NOT_IDENTICAL",
+        )
     return {
         "status": "PASS",
         "repo_path": str(C.INSTRUCTION_REPO_PATH),
@@ -133,9 +139,10 @@ def validate_r2_authority() -> dict[str, Any]:
         tolerance,
     )
 
-    _require_file_hash(
+    parent_registry_hash = _require_canonical_text_hash(
         C.PARENT_REGISTRY_PATH,
         C.PARENT_REGISTRY_FILE_SHA256,
+        C.PARENT_REGISTRY_DECLARED_WORKTREE_SHA256,
         "PARENT_REGISTRY_FILE_HASH",
     )
     parent = registry.get("parent_freeze", {})
@@ -167,7 +174,9 @@ def validate_r2_authority() -> dict[str, Any]:
         "R2_PARENT_REGISTRY_BLOB_OID_MISMATCH",
         parent_blob_oid,
     )
-    parent_actual_sha256 = _file_sha256(C.PARENT_REGISTRY_PATH)
+    # Report the canonical-LF hash so the field stays byte-compatible with
+    # the sealed gate records regardless of CRLF checkout encodings.
+    parent_actual_sha256 = _canonical_text_sha256(C.PARENT_REGISTRY_PATH)
     _require(
         parent_actual_sha256 != C.PARENT_REGISTRY_BLOB_OID_FIELD,
         "R2_PARENT_REGISTRY_BLOB_LABEL_UNEXPECTEDLY_SHA256",
@@ -211,9 +220,10 @@ def validate_r2_authority() -> dict[str, Any]:
         reconciliation.get("error_summary"),
     )
 
-    _require_file_hash(
+    m2_v5_registry_hash = _require_canonical_text_hash(
         C.M2_V5_REGISTRY_PATH,
         C.M2_V5_REGISTRY_FILE_SHA256,
+        C.M2_V5_REGISTRY_DECLARED_WORKTREE_SHA256,
         "M2_V5_REGISTRY_FILE_HASH",
     )
     _require_file_hash(

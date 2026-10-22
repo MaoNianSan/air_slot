@@ -11,6 +11,19 @@ have different meanings:
 
 ## Where to find the current local results
 
+- Sealed Final-Test epoch (canonical, audited):
+  `artifacts/experiment/final_test_v2_stage_matched_canonical_v2/` with
+  `PAPER_FACING_SECTION5_RESULTS.{json,md}` and `EPOCH_SEAL.json`.
+- Sealed Final-Test checkpoints (local-only, hash-validated):
+  `artifacts/experiment/final_test_v2/checkpoints/`.
+- Section-5 development layer (hash-locked):
+  `artifacts/experiment/jatm_section5/development/`.
+- Stage x screening-capacity (q) supplementary analysis:
+  `artifacts/paper_results_v2_final_test_rmb/stage_q_sensitivity/`.
+- Section-4 history-capacity diagnostics:
+  `artifacts/diagnostics/jatm_section4/h_capacity/`.
+- Section-5 secondary robustness:
+  `artifacts/experiment/final_test/section5_secondary/`.
 - Foundation/runtime validation: `outputs/runtime/foundation_validation/validation_result.json`
 - M2 smoke context and consequences: `outputs/runtime/m2_smoke/`
 - Data2 M1 fast runs: `outputs/runtime/data2_m1_fast_2019_full_year_wx_v2_rl5/`

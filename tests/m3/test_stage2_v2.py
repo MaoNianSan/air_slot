@@ -399,7 +399,7 @@ def test_stage2_selects_interior_breakpoint_and_reports_recoverable_value() -> N
         headroom_summary=_headroom_summary(),
     )
     assert decision.actionable_status is TypedStatus.SUPPORTED
-    assert decision.solver_status is SolverStatus.PYOMO_HIGHS
+    assert decision.solver_status is SolverStatus.EXACT_ENUMERATION
     assert decision.action_grid == (0.0, 5.0, 10.0)
     assert decision.u_star == 5.0
     assert decision.j_star is not None

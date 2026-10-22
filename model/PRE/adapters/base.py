@@ -14,7 +14,11 @@ class AdapterDescription(FrozenModel):
     @field_validator("dataset_instance_id")
     @classmethod
     def independent_identity(cls, value: str) -> str:
-        if "+" in value or value not in {"data1_2019", "data2_2019"}:
+        # M4a (authorized 2026-09-28): data2_2017_2022 joins the closed set as
+        # a cohort-profiling-only instance; pooled identity stays rejected.
+        if "+" in value or value not in {
+            "data1_2019", "data2_2019", "data2_2017_2022"
+        }:
             raise ValueError("dataset instance must remain independent")
         return value
 

@@ -1,4 +1,4 @@
-﻿import pandas as pd
+import pandas as pd
 from pathlib import Path
 from math import radians, sin, cos, sqrt, atan2
 

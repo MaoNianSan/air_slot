@@ -30,7 +30,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from exp.exp1.metrics import (
+from exp.shared.forecast_metrics import (
     energy_score,
     marginal_variogram_score,
     variogram_score,
@@ -199,6 +199,7 @@ def build_consequence_service(
     authorities: Authorities,
     bridge: Mapping[str, Any],
     output_dir: Path = PHASE_DIR,
+    continuity_contract: str = "LEGACY_A_V1",
 ) -> ConsequenceLayer:
     """Resolve every Development node binding once and persist the audit."""
 
@@ -216,6 +217,18 @@ def build_consequence_service(
             "destination_airport_id"
         ):
             raise ContractError(f"PHASE5_ROUTE_CONTEXT_MISSING:{node.decision_node_id}")
+        schedule = state.successor_state.get("schedule_reference")
+        schedule_value = None if schedule is None else schedule.value
+        scheduled = schedule_value.get("scheduled_departure_utc") if isinstance(schedule_value, dict) else None
+        if scheduled is None:
+            sobt_relative = None
+        else:
+            from datetime import datetime
+            scheduled_time = datetime.fromisoformat(str(scheduled).replace("Z", "+00:00"))
+            decision_time = node.decision_time
+            if scheduled_time.tzinfo is None or decision_time.tzinfo is None:
+                raise ContractError("M2_SOBT_RELATIVE_REQUIRES_TIMEZONE_AWARE_UTC")
+            sobt_relative = float((scheduled_time - decision_time).total_seconds() / 60.0)
         resolved = build_node_binding(
             node_id=node.decision_node_id,
             episode_id=node.episode_id,
@@ -224,6 +237,8 @@ def build_consequence_service(
             destination_airport_id=str(route_value["destination_airport_id"]),
             decision_time=node.decision_time,
             bundle=authorities.reference_bundle,
+            continuity_contract=continuity_contract,
+            sobt_relative_minutes=sobt_relative,
         )
         record = dict(resolved.audit)
         record["operational_stage"] = node.operational_stage.value
@@ -244,6 +259,7 @@ def build_consequence_service(
         "artifact_scope": "DEVELOPMENT_ONLY",
         "registry_id": service.registry_id,
         "registry_hash": service.registry_hash,
+        "continuity_contract": continuity_contract,
         "inert_binding_fields": list(INERT_BINDING_FIELDS),
         "bound_node_count": len(bindings),
         "unsupported_node_count": len(unsupported),
@@ -494,9 +510,11 @@ def materialize_family_a(
     specs = _model_specs()
     current_rows = {
         row.decision_node_id: row
-        for row in cache.partition("development", representation="CURRENT")
+        for row in cache.partition(
+            bridge.get("cache_split", "development"), representation="CURRENT"
+        )
     }
-    from exp.exp2.development_inputs import _observed
+    from exp.inputs.development import _observed
 
     count = len(rows)
     node_ids = np.asarray(

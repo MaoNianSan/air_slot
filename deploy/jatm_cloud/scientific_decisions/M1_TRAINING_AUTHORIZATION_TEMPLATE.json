@@ -1,0 +1,15 @@
+{
+  "schema": "JATM_ANNUAL_M1_TRAINING_AUTHORIZATION_V1",
+  "status": "NOT_APPROVED",
+  "years": [],
+  "n": 4096,
+  "roles": [
+    "M1_HISTORY_PRIMARY",
+    "M1_CURRENT_COMPARATOR"
+  ],
+  "train_months": [1, 2, 3, 4, 5, 6],
+  "calibration_months": [7],
+  "development_used_for_fit": false,
+  "final_test_access_count": 0,
+  "note": "Copy to a separately controlled authorization record and edit only after explicit approval. cloud_schedule/cloud_worker never invoke this training command."
+}

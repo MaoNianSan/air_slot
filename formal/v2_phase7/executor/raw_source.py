@@ -46,7 +46,7 @@ from typing import Any, Callable, Mapping, Sequence
 
 from .. import constants as C
 from ..errors import TypedBlocker, _require
-from ..materialization import _file_sha256, _read_json, _sha256_bytes
+from ..materialization import _canonical_text_sha256, _file_sha256, _read_json, _sha256_bytes
 from .nodes import (
     ROLLING_IDENTITY_SCHEMA,
     ROLLING_REFERENCE_SUPPORTED,
@@ -247,7 +247,7 @@ def load_cohort_manifest(profile: RawMaterializationProfile) -> tuple[str, ...]:
     path = Path(profile.cohort_manifest_path)
     _require(path.is_file(), "PHASE7_RAW_COHORT_MANIFEST_MISSING", str(path))
     _require(
-        _file_sha256(path) == profile.cohort_manifest_file_sha256,
+        _canonical_text_sha256(path) == profile.cohort_manifest_file_sha256,
         "PHASE7_RAW_COHORT_MANIFEST_FILE_HASH_MISMATCH",
         str(path),
     )

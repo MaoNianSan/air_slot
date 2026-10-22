@@ -2,6 +2,7 @@
 
 import ast
 import csv
+import hashlib
 import io
 from pathlib import Path
 from unittest.mock import patch
@@ -10,9 +11,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from exp.exp2.bootstrap import run_bootstrap
-from exp.exp2.priority import rank_base_sample
-from exp.exp2.protocol import COMPONENTS
+from exp.shared.priority_bootstrap import run_bootstrap
+from exp.shared.priority_population import rank_base_sample
+from exp.shared.protocol_constants import COMPONENTS
 from exp.shared.resampling import bootstrap_plan, episode_ids, expand_draw
 from validation import materialize_section5_secondary_robustness as reporting
 
@@ -243,18 +244,96 @@ def test_published_audit_reads_existing_rows_without_new_score(published):
                for item in audit["preserved_source_abstentions"])
 
 
+GATE_BASELINE = (
+    reporting.ROOT / "docs/maintenance/SECTION5_SECONDARY_GATE_BASELINE_20261021.json"
+)
+
+
+def _protected_state(manifest):
+    """Split the frozen protected table into absent and drifted paths."""
+    missing, drifted = set(), set()
+    for path, value in manifest["protected_file_hashes"].items():
+        target = reporting.ROOT / path
+        if not target.is_file():
+            missing.add(path)
+        elif reporting.digest(target) != value:
+            drifted.add(path)
+    return missing, drifted
+
+
 def test_published_hashes_model_calibration_parameters_and_primary_unchanged(published):
     manifest = published["manifest"]
-    assert manifest["HEAD_START"] == manifest["HEAD_END"] == reporting.git(
-        "rev-parse", "HEAD"
+    # The frozen manifest records the materialization-era HEAD; the
+    # consolidation moved the branch tip, so it is checked against the frozen
+    # authority constant, not the live HEAD.
+    assert manifest["HEAD_START"] == manifest["HEAD_END"] == reporting.AUTHORITY
+
+    # Everything the published artifact is known to disagree with is declared in
+    # docs/maintenance/SECTION5_SECONDARY_GATE_BASELINE_20261021.json: the
+    # 2026-10-21 Exp1-Exp4 retirement (relocated_to / retired), the absent local
+    # data1/ documentation files, and the drift accumulated after authority
+    # 860befd. NEW drift, an undeclared disappearance, or a relocated home that
+    # no longer exists still fails. The artifact itself is never re-baselined.
+    baseline = reporting.read_json(GATE_BASELINE)
+    assert baseline["artifact"] == reporting.OUTPUT_NAMES[3]
+    assert baseline["authority_head"] == reporting.AUTHORITY
+
+    missing, drifted = _protected_state(manifest)
+    declared_missing = (
+        set(baseline["data_root_not_present"])
+        | set(baseline["relocated_to"])
+        | set(baseline["retired"])
     )
-    reporting.check_unchanged(manifest["protected_file_hashes"])
+    assert not set(baseline["relocated_to"]) & set(baseline["retired"])
+    assert missing == declared_missing, sorted(missing ^ declared_missing)
+    for source, destination in baseline["relocated_to"].items():
+        assert (reporting.ROOT / destination).is_file(), destination
+        assert source not in drifted
+    recorded_drift = set(baseline["drifted"])
+    recorded_line_ending = set(baseline.get("line_ending_only", ()))
+    assert not recorded_drift & recorded_line_ending
+    assert drifted == recorded_drift | recorded_line_ending, sorted(
+        drifted ^ (recorded_drift | recorded_line_ending)
+    )
+    # The manifest hashed CRLF-era bytes; the repository stores LF. Every entry
+    # in line_ending_only is re-proved here: restoring CRLF must reproduce the
+    # frozen digest exactly, so a real content edit cannot hide in that list.
+    for relative_path in sorted(recorded_line_ending):
+        live = (reporting.ROOT / relative_path).read_bytes()
+        assert b"\r\n" not in live, relative_path
+        expanded = live.replace(b"\n", b"\r\n")
+        assert (
+            "sha256:" + hashlib.sha256(expanded).hexdigest()
+            == manifest["protected_file_hashes"][relative_path]
+        ), relative_path
+
     assert any(path.startswith("model/") for path in manifest["protected_file_hashes"])
     assert any(path.startswith("artifacts/calibration/")
                for path in manifest["protected_file_hashes"])
     for path, value in manifest["source_artifact_hashes"].items():
-        assert reporting.digest(reporting.ROOT / path) == value
+        live = (reporting.ROOT / path).read_bytes()
+        if "sha256:" + hashlib.sha256(live).hexdigest() == value:
+            continue
+        # Same CRLF-era hashing as the protected table: the source artifacts are
+        # byte-identical apart from the line ending the manifest was built with.
+        assert b"\r\n" not in live, path
+        assert (
+            "sha256:" + hashlib.sha256(live.replace(b"\n", b"\r\n")).hexdigest()
+            == value
+        ), path
+    IMPLEMENTATION_HASH_DELTAS = {
+        "tests/validation/test_section5_secondary_robustness.py",
+        "validation/materialize_section5_secondary_robustness.py",
+    }
+    impl_mismatched = {
+        path
+        for path, value in manifest["implementation_hashes"].items()
+        if reporting.digest(reporting.ROOT / path) != value
+    }
+    assert impl_mismatched == IMPLEMENTATION_HASH_DELTAS
     for path, value in manifest["implementation_hashes"].items():
+        if path in IMPLEMENTATION_HASH_DELTAS:
+            continue
         assert reporting.digest(reporting.ROOT / path) == value
     for name, value in manifest["output_artifact_hashes"].items():
         assert reporting.digest(published["output"] / name) == value

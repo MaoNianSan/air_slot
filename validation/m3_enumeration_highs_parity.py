@@ -1,11 +1,11 @@
-"""V2 M3 formal-HiGHS / exact-enumeration parity validator.
+"""V2 M3 enumeration-authority / HiGHS-parity validator.
 
 Builds representative, contract-valid PRE and TURN nodes from synthetic
-parity-only inputs, solves Stage II with the formal Pyomo + HiGHS authority,
-and compares the result with the independent exact-enumeration oracle. This
-validator is a numerical implementation check, not scientific Train support:
-the turnaround/headroom samples below are deliberately synthetic and are
-labelled as such in the output.
+parity-only inputs, solves Stage II with the exact-enumeration production
+authority, and compares the result with the Pyomo + HiGHS parity backend.
+This validator is a numerical implementation check, not scientific Train
+support: the turnaround/headroom samples below are deliberately synthetic and
+are labelled as such in the output.
 
 The validator never reads ``artifacts/experiment/final_test`` and leaves
 ``FINAL_TEST_ACCESS_COUNT`` unchanged.

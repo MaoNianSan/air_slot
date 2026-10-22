@@ -1,0 +1,293 @@
+{
+  "schema_version": "JATM_P1_SEMANTIC_SOURCE_INDEX_V1",
+  "git_head_at_generation": "6b5c85e0ee6b7e2a4fa4bac1770766251f73919f",
+  "scope": "SOURCE_AND_EXISTING_DEVELOPMENT_EVIDENCE_ONLY",
+  "repo_files": {
+    "REPOSITORY_AUTHORITY.md": {
+      "status": "PRESENT",
+      "bytes": 3737,
+      "sha256": "sha256:05694c97ae40cf243761e6e9b7ec27ef532fffc83910c32184907adf4c68edd5"
+    },
+    "docs/HUMAN_DECISION_LOG.md": {
+      "status": "PRESENT",
+      "bytes": 44540,
+      "sha256": "sha256:0b296dd55034173e7021207b8afc26a5c488c2bd1ec8425f9b95805f999c678f"
+    },
+    "docs/V2_FREEZE_PRECHECK_REPORT.md": {
+      "status": "PRESENT",
+      "bytes": 11790,
+      "sha256": "sha256:d36f50c3b1344f08965749d1da61338be1f65b998809c496b86578f0c668d86f"
+    },
+    "model/PRE/transform/rules.py": {
+      "status": "PRESENT",
+      "bytes": 37984,
+      "sha256": "sha256:e3315e0f2171fb534e95ffa9ec84c9bf90f4f3d2db55ff03c14faa82425d198f"
+    },
+    "model/M1/semantics.py": {
+      "status": "PRESENT",
+      "bytes": 11498,
+      "sha256": "sha256:3daafa5208bbb13fd1bcef348c504d987ed0c93b489fd787369b062988738915"
+    },
+    "model/M1/contracts.py": {
+      "status": "PRESENT",
+      "bytes": 39829,
+      "sha256": "sha256:717b4eb6101a525d1fb315e0407ec5c5ec06658a17285f3fb9304eaf072191c3"
+    },
+    "model/M1/scenario_layer/sampler.py": {
+      "status": "PRESENT",
+      "bytes": 23937,
+      "sha256": "sha256:a83af657a0b2a72570bc8645ba24f6d60a6e10a20c5071192b38617b97f45044"
+    },
+    "model/M1/marginal_distribution.py": {
+      "status": "PRESENT",
+      "bytes": 6956,
+      "sha256": "sha256:77e55653ce3816deeef14508a8ea1d19e6e772fe820c4220abc92c602a9d66cc"
+    },
+    "model/M2/consequence_service.py": {
+      "status": "PRESENT",
+      "bytes": 6671,
+      "sha256": "sha256:313a42f1381520a3dc209c094e3377df8314f8ebc3ff87fed45bca76f5eb50fb"
+    },
+    "model/M2/context.py": {
+      "status": "PRESENT",
+      "bytes": 25790,
+      "sha256": "sha256:0e8a7441d75050dabf7993f52476d96813022e10bd5c85044d0e780de3fe963c"
+    },
+    "model/M2/comparison_support.py": {
+      "status": "PRESENT",
+      "bytes": 16845,
+      "sha256": "sha256:f7fac1e71774d3334310ba43dc2257ad42907927d0990902fd54bed604d2fb3a"
+    },
+    "model/M2/cu/registry.py": {
+      "status": "PRESENT",
+      "bytes": 27612,
+      "sha256": "sha256:a9eff4aace470301a9210b7437dc451f2520e90fc9a64c58adacf0e708725c0e"
+    },
+    "registries/m2_data2_formal_cu_v1.json": {
+      "status": "PRESENT",
+      "bytes": 5871,
+      "sha256": "sha256:edaa8bc1787dfd01e3de73d41daae86ee2afe7f71ca3447c7d1225e3288fc25a"
+    },
+    "model/M3/transition.py": {
+      "status": "PRESENT",
+      "bytes": 3283,
+      "sha256": "sha256:aea244a950e75be379a30062f10fa71213e9adb1eeaa15567a86a44a8fb45a33"
+    },
+    "model/M3/stage1.py": {
+      "status": "PRESENT",
+      "bytes": 6591,
+      "sha256": "sha256:eca2d669e74538b27dba0e415069f148b7703efaf817a872a4e9f612bcb8ee6c"
+    },
+    "model/M3/stage2.py": {
+      "status": "PRESENT",
+      "bytes": 9922,
+      "sha256": "sha256:f0d4e1220b84d072ddf34f449e8d7cf5794da1df7680d2075a09223c435381c6"
+    },
+    "model/M4/evaluation.py": {
+      "status": "PRESENT",
+      "bytes": 33816,
+      "sha256": "sha256:e492ac0c1a94cf1515ed408f5cbc3034a4bbc6e65942da341992836c0b898b60"
+    },
+    "validation/v2_phase5/common.py": {
+      "status": "PRESENT",
+      "bytes": 28359,
+      "sha256": "sha256:3ad8672d077401592c8a84e6e8eac349c76e509199408e28e0699a878495ade9"
+    },
+    "exp/jatm_section5/contracts.py": {
+      "status": "PRESENT",
+      "bytes": 4354,
+      "sha256": "sha256:0fa1f9a847e4979aef084ec46361accdee765dd4f6910a8a0730239fb3a4693f"
+    },
+    "exp/jatm_section5/recovery_value.py": {
+      "status": "PRESENT",
+      "bytes": 12866,
+      "sha256": "sha256:7a3a59bf4f1b537fc4e62a7a2ed62eb07674cf79559b9febe94b8131bb8f9a4e"
+    },
+    "exp/jatm_s34/annual_bridge.py": {
+      "status": "PRESENT",
+      "bytes": 12539,
+      "sha256": "sha256:7e73420e128601424730d767bb52fa76d0dc4764748b60c2b2a56b79de18d64c"
+    },
+    "exp/jatm_s34/annual_cu.py": {
+      "status": "PRESENT",
+      "bytes": 4606,
+      "sha256": "sha256:62efa1dd451f0628f07b92f98ce5a005871a20f49d4bf7b4cc1cb558ef05a997"
+    },
+    "exp/jatm_s34/annual_tail.py": {
+      "status": "PRESENT",
+      "bytes": 2383,
+      "sha256": "sha256:884304a69560d696417ecb1e2ab9451bf22829e2e86d4037685a63d827c6f745"
+    },
+    "exp/jatm_s34/canonical_preselection.py": {
+      "status": "PRESENT",
+      "bytes": 1087,
+      "sha256": "sha256:59cb125ab48154c5f51542698e853442f5fa883b7b4090c563eeab7435212b42"
+    },
+    "exp/jatm_s34/exact_stream.py": {
+      "status": "PRESENT",
+      "bytes": 5478,
+      "sha256": "sha256:66a14c57f5f3f02b4021cdf3bb5f373a2b643cb6aee7ad122a6d0a9b9880dc00"
+    },
+    "exp/jatm_s34/shared_science.py": {
+      "status": "PRESENT",
+      "bytes": 14253,
+      "sha256": "sha256:887990e3929d22779c723d0bfbf088db200b336993fc52d65d2ea170fe02d636"
+    },
+    "exp/jatm_s34/shared_populations.py": {
+      "status": "PRESENT",
+      "bytes": 6303,
+      "sha256": "sha256:e5590dd7ba5eb7147b4a9be61b114d6f77284e15ab17a0f8d080a2ad82404b85"
+    },
+    "exp/jatm_s34/shared_actions.py": {
+      "status": "PRESENT",
+      "bytes": 22262,
+      "sha256": "sha256:7fe959b1a973851a77b7c4439a7c818fdcdebdb6a32a1525bcc2c831705cfdaa"
+    },
+    "exp/jatm_s34/shared_statistics.py": {
+      "status": "PRESENT",
+      "bytes": 21670,
+      "sha256": "sha256:2692306e84771b5aedd2e4fe047d496d0fd8e4fb10ad5b4780b191537c5998e4"
+    },
+    "exp/jatm_s34/shared_run.py": {
+      "status": "PRESENT",
+      "bytes": 6893,
+      "sha256": "sha256:90132a8826afe4a7c1ebc26bad2e9ffe5d70524bb014355934fd6c1e77722b19"
+    },
+    "exp/jatm_s34/e1_shared_evaluation.py": {
+      "status": "PRESENT",
+      "bytes": 10810,
+      "sha256": "sha256:6aaa42decd7687056a3784d5199dbd5f96468a0ffdee3bee7bf4908528b6598b"
+    },
+    "exp/jatm_s34/e4_shared_aggregate.py": {
+      "status": "PRESENT",
+      "bytes": 12252,
+      "sha256": "sha256:ce65ddf42b7564865521dc58c178b8442a5d581874c88d94d923c1ccc4dd7dfa"
+    },
+    "exp/jatm_s34/mechanisms.py": {
+      "status": "PRESENT",
+      "bytes": 4321,
+      "sha256": "sha256:ea33e630eecf1135998483c4d407a485c091a629fd0cfac481fca1371c8e432c"
+    },
+    "exp/jatm_s34/scientific_tracks.py": {
+      "status": "PRESENT",
+      "bytes": 1422,
+      "sha256": "sha256:440babff6f61af8342ad37bc1f6a7a106ddf9a04bb03f2792fc55bcd8dcb8f18"
+    },
+    "exp/jatm_s34/policy_sensitivity.py": {
+      "status": "PRESENT",
+      "bytes": 5597,
+      "sha256": "sha256:9c7801e6d6706cb1fe5616224c4a71a7ceb142c265179bac90aa182be1f6ec97"
+    },
+    "data2/scripts/build_year_references.py": {
+      "status": "PRESENT",
+      "bytes": 13465,
+      "sha256": "sha256:d2c595cb4f28cb9acca0758c49d9a0afcdde0bb9746c9387e6a1900f0b28ffa1"
+    },
+    "tests/contract/test_jatm_p0_acceptance.py": {
+      "status": "PRESENT",
+      "bytes": 14178,
+      "sha256": "sha256:1fb19d96ffad2b037d7f188ac523125ca68ce64266c61045e8cd13efa42bbd14"
+    },
+    "tests/contract/test_jatm_p1_closure.py": {
+      "status": "PRESENT",
+      "bytes": 10334,
+      "sha256": "sha256:95ece4587188cbc7b83dda7468acf135c89d66df5053ea7784fb1347e59f9c60"
+    },
+    "artifacts/experiment/jatm_s34/shared_cloud_delivery_20261012/LEGACY_2017_CLASSIFICATION.json": {
+      "status": "PRESENT",
+      "bytes": 616,
+      "sha256": "sha256:0f62c19a1cfd2eada55a52c2e8f22fa9a1a4dcba6e6320f98fbcc2ab55103006"
+    },
+    "artifacts/experiment/jatm_s34/independent_review_p0_20261012/ANNUAL_GAPS_CURRENT.json": {
+      "status": "PRESENT",
+      "bytes": 1675,
+      "sha256": "sha256:dc9e04fafbba747ea7251779f4132c8f0ff43189ccd41874064dfaa6ce9b25e0"
+    },
+    "artifacts/experiment/jatm_s34/independent_review_p0_20261012/current_tail_golden/NUMERICAL_EQUIVALENCE.json": {
+      "status": "PRESENT",
+      "bytes": 3959,
+      "sha256": "sha256:954e6cad42f76a86afbd6c608a143f104d4a815019b826e4f53227498a685897"
+    },
+    "artifacts/experiment/jatm_s34/annual_2017_bounded_v2_20261012/E1/E1_SUMMARY.json": {
+      "status": "PRESENT",
+      "bytes": 5208198,
+      "sha256": "sha256:600ad233834edd027589fe871ce1abe03f0d10c5cd2bc2688815862357666fb0"
+    },
+    "artifacts/experiment/jatm_s34/annual_2017_bounded_v2_20261012/SHARED_V1/SHARED_ANNUAL_MANIFEST.json": {
+      "status": "PRESENT",
+      "bytes": 4917,
+      "sha256": "sha256:d80956bc82d88d900a1738e8e1bfa1a454ee48e2f817716a8a8311c31b6bffad"
+    },
+    "artifacts/experiment/jatm_s34/shared_cloud_integration_20261012/shared/CACHE_MANIFEST.json": {
+      "status": "PRESENT",
+      "bytes": 3824,
+      "sha256": "sha256:a94743c4a905731a7c5a52794e5f29a88af1665eb0333701e3061de8f0c2f881"
+    },
+    "artifacts/experiment/jatm_s34/e2_e3_exact_development_v2/E2_E3_SUMMARY.json": {
+      "status": "PRESENT",
+      "bytes": 107338,
+      "sha256": "sha256:b1f13c8195eb11d93a7d1ac984808ba0cbc162e152968e6a3ce5d6bac92af2e6"
+    },
+    "artifacts/experiment/jatm_s34/independent_review_p0_20261012/real_cache_final/evaluation/E2_E3_SUMMARY.json": {
+      "status": "PRESENT",
+      "bytes": 422389,
+      "sha256": "sha256:20085a0d3abbc65ceb63ece2fa415f26c922d37ffc2f11b28be499ac56905f53"
+    },
+    "tmp/p1_cached_acceptance_probe.json": {
+      "status": "PRESENT",
+      "bytes": 7793,
+      "sha256": "sha256:e5fd2544b1c223257a05429dbeaa6fcaf79c6c84e1ca3ee8653bab1973de76ca"
+    },
+    "tmp/p1_policy_cached_acceptance_probe.json": {
+      "status": "PRESENT",
+      "bytes": 942,
+      "sha256": "sha256:0e030c6817b30e5b3ea2e9d0a6559a5e92dc952e4ea978168e67596824258582"
+    }
+  },
+  "manuscript_archives": {
+    "initial_archive": {
+      "status": "PRESENT",
+      "path": "D:\\Download_all\\Rolling_Airline_Recovery.zip",
+      "bytes": 465629,
+      "sha256": "sha256:69cd21f1151be29da44bf8c0dea608b931425d030ba1a101a52146f6ef83ff25",
+      "sections": {
+        "sections/04_implement.tex": "sha256:40a6b897193d3fdc7ea7fce2d3e80c5bb4be037fac3347e30f1e157a923f9f45"
+      }
+    },
+    "corrected_20260825": {
+      "status": "PRESENT",
+      "path": "D:\\Download_all\\Rolling_Airline_Recovery_full_corrected_20260825.zip",
+      "bytes": 460480,
+      "sha256": "sha256:1ed31a2f08808222eb23a3d8f96a2df934508eaa59420072800c3001fa951357",
+      "sections": {
+        "sections/04_implement.tex": "sha256:9b65f2a7d78a0839be3edd985c448524de1a6f1cbd3342f4f9466b3c28afa61f"
+      }
+    },
+    "intermediate_8": {
+      "status": "PRESENT",
+      "path": "D:\\Download_all\\Rolling_Airline_Recovery (8).zip",
+      "bytes": 63972,
+      "sha256": "sha256:e877406e44e75804ad4485e33a81ea099d18e47a3fadb33892cb94ae7abd5482",
+      "sections": {
+        "sections/04_implement.tex": "sha256:e5673ada2eb1f1acf19c766bce8c787e3336e34714f028201487c124bd78efe0"
+      }
+    },
+    "current_62": {
+      "status": "PRESENT",
+      "path": "D:\\Download_all\\Rolling_Airline_Recovery (62).zip",
+      "bytes": 1946285,
+      "sha256": "sha256:5bc8cb0d48a58575ea7b8dbbe81986bee8b562f6b957f8abfb89893e57bc6888",
+      "sections": {
+        "sections/03_methodology.tex": "sha256:e5025bc8747b1da7a21bb5906403d180e0289fece2b97baf5a86629635779696",
+        "sections/04_implement.tex": "sha256:2156b3ed01c289434a98886ec4b0df191c63c1d66ac76f0c8973810d1ed43e06",
+        "sections/05_experiment.tex": "sha256:b30cd20b1ae67fc4067fcadf3137c10090af15cf6d53c10ad381f0f72b954a4e",
+        "SUPPLEMENT.tex": "sha256:90ad35920638fb5be59c4bca3aa4dd2ace16dfa6082537d40d9a6b8adfe6d503"
+      }
+    }
+  },
+  "historical_excerpts_sha256": "sha256:51928d2167fb5f3fe78efd3253b99b1f2e28fc967bf8f95c306d0817ed22fb0d",
+  "active_model_retrained": false,
+  "full_annual_experiment_run": false,
+  "cloud_connected": false,
+  "final_test_access_count_this_audit": 0
+}

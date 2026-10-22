@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -57,6 +58,9 @@ PARENT_REGISTRY_PATH = ROOT / "registries" / "v2_scientific_freeze.json"
 PARENT_REGISTRY_FILE_SHA256 = (
     "sha256:2b89976da5158f0fee87222daef33a8b3b617d61ece94ade00a001869134afdd"
 )
+PARENT_REGISTRY_DECLARED_WORKTREE_SHA256 = (
+    "sha256:bf6b3891079c947af192e3e23e2d80a2fbcfba3d082e2833ac574bb9932347bc"
+)
 PARENT_REGISTRY_BLOB_OID_FIELD = (
     "sha256:a8c43beffbdefaf2ca9c573ec7730ae9a2f55ce3"
 )
@@ -64,6 +68,9 @@ PARENT_REGISTRY_BLOB_OID_FIELD = (
 M2_V5_REGISTRY_PATH = ROOT / "registries" / "m2_data2_formal_cu_v5.json"
 M2_V5_REGISTRY_FILE_SHA256 = (
     "sha256:25ee9641abf72777d14af0711e7ad46db5de5779170396fb377049458d59b637"
+)
+M2_V5_REGISTRY_DECLARED_WORKTREE_SHA256 = (
+    "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1"
 )
 PASSENGER_SUPERSESSION_V3_PATH = (
     ROOT / "registries" / "passenger_reference_supersession_v3.json"
@@ -126,6 +133,9 @@ COHORT_MANIFEST_PATH = ROOT / "formal" / "FINAL_TEST_COHORT_MANIFEST_V1.json"
 COHORT_MANIFEST_FILE_SHA256 = (
     "sha256:5024f6b0af07d7a71b3d341921925617cfe40b0b1131322c319972521cb19073"
 )
+COHORT_MANIFEST_DECLARED_WORKTREE_SHA256 = (
+    "sha256:b47906154cda463b39221ddfd5e1b13a671d2a09fb58c361ec057cf648a1a554"
+)
 EXECUTED_COHORT_MANIFEST_SHA256 = (
     "sha256:3e10f0e125ed70f6487bda0f0864c9191ddde9ab2d539514a520879b0131d26f"
 )
@@ -138,8 +148,15 @@ INSTRUCTION_REPO_PATH = (
     / "docs"
     / "AirSlot_V2_Phase7_Final_Test_OneShot_Instruction_R2_20260919.md"
 )
+#: Optional external copy of the instruction document. The in-repo copy
+#: (INSTRUCTION_REPO_PATH) is the runtime authority; this external path is
+#: only checked for byte-identity when it exists, and is otherwise treated as
+#: optional. It no longer creates a hard runtime dependency on D:\Download_all.
 INSTRUCTION_DOWNLOAD_PATH = Path(
-    r"D:\Download_all\AirSlot_V2_Phase7_Final_Test_OneShot_Instruction_R2_20260919.md"
+    os.environ.get(
+        "AIRSLOT_PHASE7_INSTRUCTION_DOWNLOAD_PATH",
+        str(INSTRUCTION_REPO_PATH),
+    )
 )
 FINAL_TEST_V2_ROOT = ROOT / "artifacts" / "experiment" / "final_test_v2"
 LEGACY_FINAL_TEST_ROOT = ROOT / "artifacts" / "experiment" / "final_test"
@@ -323,6 +340,7 @@ __all__ = [
     "STAGE2_AUTHORITY_RECONCILIATION_PATH",
     "STAGE2_PRIMARY_SOLVER",
     "COHORT_AUTHORITY_PATH",
+    "COHORT_MANIFEST_DECLARED_WORKTREE_SHA256",
     "COHORT_MANIFEST_FILE_SHA256",
     "COHORT_MANIFEST_PATH",
     "COMMIT_RE",
@@ -352,6 +370,7 @@ __all__ = [
     "LEGACY_FINAL_TEST_ROOT",
     "M2_REFERENCE_FILE_SHA256",
     "M2_REFERENCE_PATH",
+    "M2_V5_REGISTRY_DECLARED_WORKTREE_SHA256",
     "M2_V5_REGISTRY_FILE_SHA256",
     "M2_V5_REGISTRY_PATH",
     "M3_NUMERICAL_COMPARISON_TOLERANCE",
@@ -360,6 +379,7 @@ __all__ = [
     "NOMINAL_TURNAROUND_Q20",
     "NOMINAL_U_MAX",
     "PARENT_REGISTRY_BLOB_OID_FIELD",
+    "PARENT_REGISTRY_DECLARED_WORKTREE_SHA256",
     "PARENT_REGISTRY_FILE_SHA256",
     "PARENT_REGISTRY_PATH",
     "PARENT_TAG",

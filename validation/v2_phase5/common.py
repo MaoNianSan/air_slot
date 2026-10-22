@@ -231,6 +231,8 @@ def state_scenario_from_coordinates(
     scenario_weight: float,
     stage: OperationalStage,
     t_ib_minutes: float | None,
+    t_ib_signed_minutes: float | None = None,
+    sobt_relative_minutes: float | None = None,
     d_ob_minutes: float | None,
     d_tx_minutes: float | None,
     d_to_minutes: float | None,
@@ -245,6 +247,8 @@ def state_scenario_from_coordinates(
         scenario_weight=float(scenario_weight),
         stage=stage,
         t_ib_minutes=t_ib_minutes,
+        t_ib_signed_minutes=t_ib_signed_minutes,
+        sobt_relative_minutes=sobt_relative_minutes,
         d_ob_minutes=d_ob_minutes,
         d_tx_minutes=d_tx_minutes,
         d_to_minutes=d_to_minutes,
@@ -264,6 +268,7 @@ def state_set_from_m1_scenarios(
     node_id: str,
     stage: OperationalStage,
     representation: StateRepresentationSpec,
+    sobt_relative_minutes: float | None = None,
 ) -> StateScenarioSet:
     """Adapt frozen ``M1V2Scenario`` draws to the shared state contract."""
 
@@ -285,6 +290,11 @@ def state_set_from_m1_scenarios(
                 scenario_weight=scenario.scenario_weight,
                 stage=scenario_stage,
                 t_ib_minutes=None if support is SupportState.ABSTAIN else t_ib,
+                t_ib_signed_minutes=(
+                    None if support is SupportState.ABSTAIN
+                    else _signed_event_minutes(scenario.t_ib_a00_utc, scenario.decision_time_utc)
+                ),
+                sobt_relative_minutes=sobt_relative_minutes,
                 d_ob_minutes=None if support is SupportState.ABSTAIN else d_ob,
                 d_tx_minutes=None if support is SupportState.ABSTAIN else d_tx,
                 d_to_minutes=None if support is SupportState.ABSTAIN else d_to,
@@ -303,6 +313,18 @@ def state_set_from_m1_scenarios(
         representation=representation,
         scenarios=tuple(rows),
     )
+
+
+def _signed_event_minutes(event_time_utc: str | None, decision_time_utc: str | None) -> float | None:
+    """Return signed T_IB - decision_time in minutes, preserving observed TURN events."""
+    if event_time_utc is None or decision_time_utc is None:
+        return None
+    from datetime import datetime
+    event = datetime.fromisoformat(str(event_time_utc).replace("Z", "+00:00"))
+    decision = datetime.fromisoformat(str(decision_time_utc).replace("Z", "+00:00"))
+    if event.tzinfo is None or decision.tzinfo is None:
+        raise ValueError("SIGNED_T_IB_REQUIRES_TIMEZONE_AWARE_UTC")
+    return float((event - decision).total_seconds() / 60.0)
 
 
 def state_set_from_source_rows(
@@ -428,6 +450,8 @@ def build_node_binding(
     destination_airport_id: str,
     decision_time: Any,
     bundle: M2ReferenceBundle,
+    continuity_contract: str = "LEGACY_A_V1",
+    sobt_relative_minutes: float | None = None,
 ) -> NodeBinding:
     """Resolve the seven-formula reference binding for one Development node.
 
@@ -496,6 +520,8 @@ def build_node_binding(
         downstream_exposure=float(audit["reference_values"]["downstream_exposure"]),
         itinerary_threshold_minutes=ITINERARY_THRESHOLD_MINUTES,
         service_threshold_minutes=SERVICE_THRESHOLD_MINUTES,
+        continuity_contract=continuity_contract,
+        sobt_relative_minutes=sobt_relative_minutes,
     )
     audit["status"] = "SUPPORTED"
     audit["reason_codes"] = []
@@ -576,7 +602,7 @@ def load_authorities() -> Authorities:
         raise Phase5GuardError("PHASE5_REGISTRY_FINAL_TEST_ACCESS_VIOLATION")
     taxi_reference, _, reference_audit = _load_references(PROJECT_ROOT)
 
-    from exp.exp2.development_inputs import _reference_payloads
+    from exp.inputs.development import _reference_payloads
 
     bundle = load_data2_reference_bundle(_reference_payloads())
     corrected_turnaround = read_json(CORRECTED_TURNAROUND_REFERENCE_PATH)
@@ -665,7 +691,7 @@ def load_development_bridge():
     reloading per model.
     """
 
-    from exp.exp1.formal_inputs import load_exact_inputs
+    from exp.inputs.formal import load_exact_inputs
 
     cache, rows, mapping, taxi_reference, manifest = load_exact_inputs()
     if len(rows) != DEVELOPMENT_NODE_COUNT:

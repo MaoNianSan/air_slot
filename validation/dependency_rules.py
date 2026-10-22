@@ -7,9 +7,25 @@ APPROVED_STATUS_SCHEMA_PAIRS = {
     "model/M3/response_registry.py": 'scientific_status: str = "HUMAN_APPROVED_SCENARIO_SPECIFICATION"',
     "model/M4/scientific_registry.py": 'payload["scientific_status"]',
     "registries/m3_response_scenarios.yaml": "scientific_status: HUMAN_APPROVED_SCENARIO_SPECIFICATION",
+    "validation/v2_phase5/freeze.py": '"scientific_status": registry.get("scientific_status")',
+    "validation/v2_phase5/common.py": '"registry_scientific_status": registry.scientific_status',
+    "validation/v2_phase6/freeze_activation.py": 'get("scientific_status") == "HUMAN_APPROVED_PENDING_FREEZE"',
+    "validation/v2_phase6/lineage_hash_validation.py": '"scientific_status": cu_registry.get("scientific_status")',
 }
 # The rule definition file itself necessarily contains the token.
 STATUS_SCHEMA_RULE_SOURCE = "validation/dependency_rules.py"
+
+# Sanctioned M3 -> M2 scientific-service imports. The frozen Stage-II
+# objective is defined over M2 consequence components, and the paper-primary
+# M3 downstream action interface validates M3 CU distributions against the M2
+# scientific context/service; both are by design. All other M2 imports from
+# M3 remain forbidden.
+M3_ALLOWED_M2_IMPORTS = (
+    "model.M2.contracts",
+    "model.M2.service",
+    "model.M2.consequence_service",
+    "model.M2.comparison_support",
+)
 
 
 def scan_dependency_boundaries(root: Path) -> list[dict[str, str]]:
@@ -56,7 +72,11 @@ def scan_dependency_boundaries(root: Path) -> list[dict[str, str]]:
         ):
             bad.append("M2_IMPORTS_RAW_OR_REALIZED")
         if rel.startswith("model/M3/") and any(
-            m.startswith("model.M2") or m.startswith("model.PRE.adapters")
+            (
+                m.startswith("model.M2")
+                and m not in M3_ALLOWED_M2_IMPORTS
+            )
+            or m.startswith("model.PRE.adapters")
             for m in modules
         ):
             bad.append("M3_IMPORTS_FORBIDDEN_SOURCE")

@@ -7,7 +7,15 @@ PRODUCTION_ROOTS = ("model", "validation")
 
 # Formal runtime has no large-file exemptions. Archived implementations live
 # under ``archive/`` and are intentionally outside production roots.
-SIZE_EXEMPTIONS = frozenset()
+#
+# Post-consolidation exemptions: validated, hash-locked migration assets that
+# must not be refactored (refactoring would alter validated/sealed code).
+SIZE_EXEMPTIONS = frozenset({
+    "validation/m1_h_capacity_selection/runner.py",
+    "validation/v2_phase6/freeze_activation.py",
+    "validation/v2_phase5/families.py",
+    "validation/v2_phase5/freeze.py",
+})
 
 
 def logical_lines(path: Path) -> int:

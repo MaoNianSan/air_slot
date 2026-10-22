@@ -44,6 +44,10 @@ from model.common.value_objects import FrozenModel
 
 __all__ = [
     "DOMAIN_BY_COMPONENT",
+    "DOMAIN_EMPHASIS_FLIGHT_VIEW",
+    "DOMAIN_EMPHASIS_PASSENGER_VIEW",
+    "DOMAIN_EMPHASIS_RESOURCE_VIEW",
+    "DOMAIN_EMPHASIS_VIEW_WEIGHTS",
     "EQUAL_COMPONENT_VIEW",
     "NOMINAL_COMPARISON_SUPPORT_RULE",
     "PRIMARY_AGGREGATION_VIEW",
@@ -66,6 +70,24 @@ PRIMARY_AGGREGATION_VIEW = "PRIMARY_DOMAIN_BALANCED"
 
 #: Appendix robustness view, recorded but not the primary mapping.
 EQUAL_COMPONENT_VIEW = "EQUAL_COMPONENT"
+
+#: Post-hoc consequence-domain emphasis views used by the read-only
+#: ``CONSEQUENCE_DOMAIN_EMPHASIS_ROBUSTNESS`` stress test. Each view leaves the
+#: manuscript's within-domain aggregation and the common-support expectation
+#: untouched and re-weights only the three domain values ``(F, P, R)``. They are
+#: symmetric stress-test scenarios, **not** elicited airline preferences, they are
+#: never the default, and they never replace the primary specification.
+DOMAIN_EMPHASIS_FLIGHT_VIEW = "DOMAIN_EMPHASIS_FLIGHT"
+DOMAIN_EMPHASIS_PASSENGER_VIEW = "DOMAIN_EMPHASIS_PASSENGER"
+DOMAIN_EMPHASIS_RESOURCE_VIEW = "DOMAIN_EMPHASIS_RESOURCE"
+
+#: ``view -> (w_F, w_P, w_R)``. The three emphasis vectors are rotations of one
+#: another; the balanced profile is the primary view above, not an entry here.
+DOMAIN_EMPHASIS_VIEW_WEIGHTS: dict[str, tuple[float, float, float]] = {
+    DOMAIN_EMPHASIS_FLIGHT_VIEW: (0.50, 0.25, 0.25),
+    DOMAIN_EMPHASIS_PASSENGER_VIEW: (0.25, 0.50, 0.25),
+    DOMAIN_EMPHASIS_RESOURCE_VIEW: (0.25, 0.25, 0.50),
+}
 
 DOMAIN_BY_COMPONENT: dict[str, str] = {
     "F_continuity": "F",
@@ -246,6 +268,12 @@ def phi_c(
     the three domains,
     ``Phi_C = (1/3)[mean(F) + mean(P) + R]``. ``EQUAL_COMPONENT`` is the
     appendix robustness view and is never the default.
+
+    The ``DOMAIN_EMPHASIS_*`` views are the post-hoc robustness scenarios of the
+    consequence-domain emphasis stress test. They reuse the primary view's domain
+    construction exactly and differ **only** in the three domain weights, so the
+    balanced branch above stays the primary implementation and is never rerouted
+    through the weighted expression.
     """
 
     missing = [
@@ -267,6 +295,21 @@ def phi_c(
         return (flight + passenger + operating) / 3.0
     if view == EQUAL_COMPONENT_VIEW:
         return sum(values.values()) / len(CONSEQUENCE_COMPONENTS)
+    emphasis_weights = DOMAIN_EMPHASIS_VIEW_WEIGHTS.get(view)
+    if emphasis_weights is not None:
+        emphasis_flight = (
+            values["F_continuity"] + values["F_execution"] + values["F_propagation"]
+        ) / 3.0
+        emphasis_passenger = (
+            values["P_time"] + values["P_itinerary"] + values["P_service"]
+        ) / 3.0
+        emphasis_operating = values["R_operating"]
+        weight_flight, weight_passenger, weight_operating = emphasis_weights
+        return (
+            weight_flight * emphasis_flight
+            + weight_passenger * emphasis_passenger
+            + weight_operating * emphasis_operating
+        )
     raise ContractError(f"M2_CS_UNKNOWN_AGGREGATION_VIEW:{view}")
 
 

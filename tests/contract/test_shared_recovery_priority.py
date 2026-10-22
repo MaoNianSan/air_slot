@@ -7,7 +7,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from exp.exp2.priority import add_domain_scores
+from exp.shared.priority_population import add_domain_scores
 from exp.shared.contracts import (
     PRIORITY_CONTRACT_VERSION,
     SHARED_PRIORITY_AUTHORITY,

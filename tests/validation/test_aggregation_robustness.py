@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from exp.exp2.protocol import COMPONENTS
-from exp.exp4.triage import _views
+from exp.shared.protocol_constants import COMPONENTS
+from exp.shared.screening_triage import _views
 from validation.materialize_aggregation_robustness import (
     BASELINE_EXPECTED,
     BASELINE_SIMILAR_EXPECTED,

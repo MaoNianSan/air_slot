@@ -23,13 +23,38 @@ raw data (read only) -> PRE -> M1 -> M2 -> M3 -> M4
 differences stop at PRE. Model code must not create caches, indexes, temporary
 files, or documentation inside either data root.
 
-The old Exp1-Exp4 implementation and old Section 5 paper-result pipeline are
-retired. There is no active `exp/` package, and the future experiment suite has
-not yet been redesigned. No model import or execution path may depend on an old
-experiment output.
+`data1/` is not distributed with this checkout. The current V2 chain reads
+`data2/` only: no module under `exp/` or `formal/` references `data1`, the
+`data1_2019` adapter stays declared in `registries/` as a contract, and every
+test that would need those raw files skips itself with
+`configured data1 root unavailable`.
+
+The old Exp1-Exp4 implementation and the old Section 5 paper-result pipeline
+are retired as primary authorities. Their drivers were removed from the working
+tree on 2026-10-21 (they remain retrievable from Git history), while the modules
+still used by the current chain were extracted into `exp/inputs/` (the data
+input chain) and `exp/shared/` (analysis helpers). The frozen results under
+`artifacts/experiment/final_test/` are untouched and remain historical
+development evidence.
+
+Current experiment and reporting layers:
+
+- `exp/jatm_section4/` — M1 history-encoder capacity selection (H8/H16/H32;
+  H16 is the frozen primary).
+- `exp/jatm_section5/` — hash-locked Section-5 development layer
+  (attention/recovery/information/robustness).
+- `formal/v2_phase7/` — the sealed, audited Final-Test runner and read-only
+  paper-facing projections (epoch evidence under
+  `artifacts/experiment/final_test_v2_stage_matched_canonical_v2/`).
+- `artifacts/paper_results_v2_final_test_rmb/stage_q_sensitivity/` — the
+  Stage x screening-capacity (q) supplementary analysis.
+
+Stage-II solver authority: exact enumeration is the production path;
+Pyomo+HiGHS is parity-only (see `REPOSITORY_AUTHORITY.md`).
 
 Authoritative current documentation:
 
+- [Repository authority](REPOSITORY_AUTHORITY.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Data and evidence boundary](docs/DATA_AND_EVIDENCE_BOUNDARY.md)
 - [Action and decision contract](docs/ACTION_DECISION_CONTRACT.md)

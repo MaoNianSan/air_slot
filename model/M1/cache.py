@@ -126,7 +126,12 @@ class M1CanonicalRaggedStore:
     active: Mapping[str, torch.Tensor]
 
     @classmethod
-    def from_partitions(cls, partitions: Mapping[str, Sequence[M1TrainingExample]]):
+    def from_partitions(
+        cls,
+        partitions: Mapping[str, Sequence[M1TrainingExample]],
+        *,
+        final_test_start: date = date(2019, 10, 1),
+    ):
         unknown = set(partitions) - set(ALLOWED_SPLITS)
         if unknown:
             raise ValueError(f"M1_CACHE_SPLIT_NOT_ALLOWED:{sorted(unknown)}")
@@ -134,7 +139,7 @@ class M1CanonicalRaggedStore:
         canonical: dict[str, torch.Tensor] = {}
         for split in ALLOWED_SPLITS:
             for example in partitions.get(split, ()):
-                if example.episode_date >= date(2019, 10, 1):
+                if example.episode_date >= final_test_start:
                     raise ValueError("M1_CACHE_FINAL_TEST_EXAMPLE_REJECTED")
                 values = (
                     example.values.detach().cpu().to(dtype=torch.float32).contiguous()
@@ -358,13 +363,16 @@ class M1DevelopmentBaseCache:
         static_feature_names: Sequence[str] | None = None,
         provenance: Mapping[str, object] | None = None,
         feature_schema_hash: str | None = None,
+        final_test_start: date = date(2019, 10, 1),
     ):
         missing_contracts = set(REQUIRED_CONTRACT_HASHES) - set(contract_hashes)
         if missing_contracts:
             raise ValueError(
                 f"M1_CACHE_CONTRACT_HASH_MISSING:{sorted(missing_contracts)}"
             )
-        store = M1CanonicalRaggedStore.from_partitions(partitions)
+        store = M1CanonicalRaggedStore.from_partitions(
+            partitions, final_test_start=final_test_start
+        )
         return cls.from_store(
             store=store,
             normalization=normalization,

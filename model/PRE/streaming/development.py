@@ -57,11 +57,13 @@ def pre_contract_hash(root: Path) -> str:
     return content_id({str(path.relative_to(root)): _file_hash(path) for path in paths})
 
 
-def source_hashes(root: Path) -> dict[str, str]:
-    paths = ontime_paths(root, months=(7, 8, 9))
+def source_hashes(root: Path, *, year: int = 2019) -> dict[str, str]:
+    paths = ontime_paths(root, months=(7, 8, 9), year=year)
     data2_root = root / "data2"
     paths += tuple(
-        sorted((data2_root / "raw" / "weather" / "noaa" / "2019").glob("*.csv"))
+        sorted(
+            (data2_root / "raw" / "weather" / "noaa" / str(year)).glob("*.csv")
+        )
     )
     paths += (
         data2_root / "refs" / "weather_station_map.csv",
@@ -287,14 +289,15 @@ def _merge_episode(
         )
 
 
-def _heartbeat(started: float, *, month: int, episodes: int, nodes: int) -> None:
+def _heartbeat(started: float, *, month: int, episodes: int, nodes: int,
+               year: int = 2019) -> None:
     process = psutil.Process()
     print(
         json.dumps(
             {
                 "TIMESTAMP": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "PHASE": "PRE_DEVELOPMENT_STREAM",
-                "CURRENT_MONTH": f"2019-{month:02d}",
+                "CURRENT_MONTH": f"{year}-{month:02d}",
                 "EPISODES_PROCESSED": episodes,
                 "DECISION_NODES_PROCESSED": nodes,
                 "ELAPSED_SECONDS": round(time.perf_counter() - started, 3),
@@ -325,7 +328,17 @@ def run_development_pre_stream(
     minimum_history_nodes: int = 2,
     heartbeat_seconds: float = 45.0,
     max_episodes: int | None = None,
+    year: int = 2019,
+    dataset_instance_id: str = "data2_2019",
+    split_resolver=None,
 ) -> dict:
+    """M4b: ``year`` / ``dataset_instance_id`` / ``split_resolver``
+    parameterize the development stream for the data2_2017_2022 instance.
+    The defaults reproduce the legacy data2_2019 behavior exactly."""
+    resolve_split = split_resolver or split_for_date
+    development_start = date(year, 8, 1)
+    development_end = date(year, 9, 30)
+    final_test_start = date(year, 10, 1)
     if (
         max_episodes is not None
         and manifest_path.name == "PRE_DEVELOPMENT_STREAM_MANIFEST.json"
@@ -337,16 +350,17 @@ def run_development_pre_stream(
     registry_hash_value = registry_hash(root)
     config_hash_value = config_hash(root)
     contract_hash = pre_contract_hash(root)
-    sources = source_hashes(root)
+    sources = source_hashes(root, year=year)
     run_key = content_id(
         {
             "sources": sources,
             "registry_hash": registry_hash_value,
             "config_hash": config_hash_value,
             "PRE_contract_hash": contract_hash,
-            "development_start": DEVELOPMENT_START.isoformat(),
-            "development_end": DEVELOPMENT_END.isoformat(),
+            "development_start": development_start.isoformat(),
+            "development_end": development_end.isoformat(),
             "minimum_history_nodes": minimum_history_nodes,
+            "dataset_instance_id": dataset_instance_id,
         }
     )
     counts = StreamCounts()
@@ -366,7 +380,8 @@ def run_development_pre_stream(
             prior_peak_rss_mb = float(payload.get("peak_rss_mb", 0.0))
             peak_rss_mb = max(peak_rss_mb, prior_peak_rss_mb)
     paths = {
-        month: path for month, path in zip((7, 8, 9), ontime_paths(root, (7, 8, 9)))
+        month: path
+        for month, path in zip((7, 8, 9), ontime_paths(root, (7, 8, 9), year=year))
     }
     zones = load_timezones(root / "data2" / "refs" / "us_airport_timezones.csv")
     replay_lag = int(scientific.parameters["data2_weather_replay_lag_minutes"].value)
@@ -374,11 +389,12 @@ def run_development_pre_stream(
     weather, weather_audit = weather_index(
         root / "data2",
         replay_lag,
-        start_inclusive=date(2019, 7, 31),
-        end_exclusive=FINAL_TEST_START,
+        start_inclusive=date(year, 7, 31),
+        end_exclusive=final_test_start,
+        stamp_year=str(year),
     )
     publisher = ProductionPREPublisher.from_project()
-    target_support = publisher.target_support("data2_2019")
+    target_support = publisher.target_support(dataset_instance_id)
     stopped_early = False
     last_heartbeat = time.perf_counter()
     for month in (7, 8, 9):
@@ -393,7 +409,7 @@ def run_development_pre_stream(
             counts.source_rows_skipped += skipped
             chunk = list(previous_rows) + current_rows
             by_id = {row["flight_id"]: row for row in chunk}
-            month_key = f"2019-{month:02d}"
+            month_key = f"{year}-{month:02d}"
             episodes = []
             for episode in build_data2_episode_records(chunk):
                 if (
@@ -402,7 +418,8 @@ def run_development_pre_stream(
                 ):
                     continue
                 counts.candidate_episodes += 1
-                containment = episode_containment_from_rows(episode, by_id)
+                containment = episode_containment_from_rows(
+                    episode, by_id, split_resolver=resolve_split)
                 if not containment.allowed:
                     counts.cross_split_removed_episodes += 1
                     counts.cross_split_removed_nodes += _node_count(episode)
@@ -426,6 +443,7 @@ def run_development_pre_stream(
                         month=month,
                         episodes=counts.pre_published_episodes,
                         nodes=counts.decision_nodes,
+                        year=year,
                     )
                     last_heartbeat = now
                 if (
@@ -438,7 +456,7 @@ def run_development_pre_stream(
             del chunk, by_id, episodes
         del current_rows
         gc.collect()
-        completed_months.append(f"2019-{month:02d}")
+        completed_months.append(f"{year}-{month:02d}")
         cumulative_elapsed = elapsed_before + (time.perf_counter() - started)
         resume_payload = {
             "schema_version": "AIR_SLOT_PRE_DEVELOPMENT_STREAM_RESUME_V1",
@@ -473,8 +491,8 @@ def run_development_pre_stream(
         "scientific_config_hash": config_hash_value,
         "PRE_contract_hash": contract_hash,
         "development_date_bounds": {
-            "start": DEVELOPMENT_START.isoformat(),
-            "end": DEVELOPMENT_END.isoformat(),
+            "start": development_start.isoformat(),
+            "end": development_end.isoformat(),
         },
         "minimum_history_nodes_for_count": minimum_history_nodes,
         "counts": counts.as_dict(),

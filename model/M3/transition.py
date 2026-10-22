@@ -40,6 +40,7 @@ class TransitionContext(FrozenModel):
     sobt_minutes: float
     turnaround_lower_bound_minutes: float = Field(ge=0.0)
     reference_id: str = Field(default="M3_TRAIN_TURNAROUND_LOWER_BOUND", min_length=1)
+    time_coordinate_contract: str = "R_IB_LEGACY_V1"
 
 
 def _quantity(value: float | None, name: str, scenario_id: int) -> float:
@@ -53,7 +54,12 @@ def off_block_boundary(
 ) -> float:
     """``LB^OB = max(SOBT, T_IB + T^{turn,lb})``."""
 
-    t_ib = _quantity(state.t_ib_minutes, "T_IB", state.scenario_id)
+    if context.time_coordinate_contract == "JATM_STAGE2_SIGNED_T_IB_V1":
+        t_ib = _quantity(state.t_ib_signed_minutes, "T_IB_SIGNED", state.scenario_id)
+    elif context.time_coordinate_contract == "R_IB_LEGACY_V1":
+        t_ib = _quantity(state.t_ib_minutes, "T_IB", state.scenario_id)
+    else:
+        raise ContractError("M3_TRANSITION_TIME_COORDINATE_CONTRACT_UNKNOWN")
     return max(
         context.sobt_minutes, t_ib + context.turnaround_lower_bound_minutes
     )
@@ -90,6 +96,8 @@ def apply_recovery(
         scenario_weight=state.scenario_weight,
         stage=state.stage,
         t_ib_minutes=state.t_ib_minutes,
+        t_ib_signed_minutes=state.t_ib_signed_minutes,
+        sobt_relative_minutes=state.sobt_relative_minutes,
         d_ob_minutes=d_ob_after,
         d_tx_minutes=d_tx,
         d_to_minutes=d_ob_after + d_tx,

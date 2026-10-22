@@ -16,10 +16,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from exp.exp2 import protocol
-from exp.exp2.bootstrap import percentile_interval, run_bootstrap
-from exp.exp2.priority import base_sample, rank_base_sample
-from exp.exp2.similar_delay import (
+from exp.shared import protocol_constants as protocol
+from exp.shared.priority_bootstrap import percentile_interval, run_bootstrap
+from exp.shared.priority_population import base_sample, rank_base_sample
+from exp.shared.similar_delay import (
     aggregate_episode_pairs,
     build_similar_delay_pairs,
     summarize_episode_pairs,
@@ -29,6 +29,9 @@ from exp.shared.resampling import bootstrap_plan, episode_ids
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHORITY = "860befd20e968ba702b1aad99e618830a3a6acfe"
+# FINAL/OUTPUT stay relative by design: every use joins them onto the ``root``
+# argument (default ROOT, derived from __file__), so callers can materialize
+# into a scratch root without ever touching the published tree.
 FINAL = Path("artifacts/experiment/final_test")
 OUTPUT = FINAL / "section5_secondary"
 EXP2 = FINAL / "exp2"

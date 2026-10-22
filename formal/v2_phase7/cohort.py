@@ -8,6 +8,7 @@ from . import constants as C
 from .errors import _require
 from .materialization import (
     _read_json,
+    _require_canonical_text_hash,
     _require_file_hash,
     _sha256_bytes,
 )
@@ -21,9 +22,10 @@ def validate_cohort_reference() -> dict[str, Any]:
         C.COHORT_AUTHORITY_FILE_SHA256,
         "COHORT_AUTHORITY_FILE_HASH",
     )
-    _require_file_hash(
+    _require_canonical_text_hash(
         C.COHORT_MANIFEST_PATH,
         C.COHORT_MANIFEST_FILE_SHA256,
+        C.COHORT_MANIFEST_DECLARED_WORKTREE_SHA256,
         "COHORT_MANIFEST_FILE_HASH",
     )
     authority = _read_json(C.COHORT_AUTHORITY_PATH)

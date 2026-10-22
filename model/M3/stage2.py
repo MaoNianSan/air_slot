@@ -1,4 +1,4 @@
-"""M3 Stage-II recovery decision (Phase 3, Freeze R2 authority).
+"""M3 Stage-II recovery decision (Phase 3, post-R2 solver authority).
 
 Manuscript section 4 Stage-II problem, defined over the finite
 five-minute grid:
@@ -7,11 +7,14 @@ five-minute grid:
 ``u* = argmin_{u in U_i(theta)} J(u; lambda)`` (ties resolve to the smaller
 ``u``), ``V = J(0) - J(u*)``.
 
-The formal production path is the frozen Pyomo one-hot model solved by
-HiGHS. Exact enumeration of the same finite grid remains an independent
-deterministic oracle for reconciliation and testing. The baseline action
-``u = 0`` is the no-new-intervention counterfactual: it is reported as a
-typed baseline outcome, never as a recommendation of a template action.
+The production authority is exact enumeration of the finite action grid
+(``enumerate_recovery_decision``), per the post-R2 ruling
+``HUMAN_GATE_B0A_SOLVER_AUTHORITY_RULING_20260919``. The Pyomo+HiGHS backend
+(``model.M3.solver``) is retained strictly as an independent parity /
+regression tool and for historical-artifact compatibility; it never produces
+a canonical Stage-II decision. The baseline action ``u = 0`` is the
+no-new-intervention counterfactual: it is reported as a typed baseline
+outcome, never as a recommendation of a template action.
 """
 
 from __future__ import annotations
@@ -266,11 +269,12 @@ def solve_recovery(
     policy: RecoveryPolicy | None = None,
     solver_backend: Callable[..., RecoveryDecision] | None = None,
 ) -> RecoveryDecision:
-    """Solve Stage II with the frozen formal Pyomo+HiGHS authority.
+    """Solve Stage II with the frozen enumeration production authority.
 
-    ``solver_backend`` is an internal injection point used by reconciliation
-    tests to substitute the exact oracle without changing scientific inputs.
-    Production callers leave it unset.
+    ``solver_backend`` is an internal injection point used by parity and
+    reconciliation tooling to substitute a different backend (e.g. the
+    Pyomo+HiGHS parity solver) without changing scientific inputs. Production
+    callers leave it unset and always receive the exact-enumeration decision.
     """
 
     if not is_actionable(state_set.stage):
@@ -283,9 +287,7 @@ def solve_recovery(
             headroom_summary=headroom_summary,
             policy=policy,
         )
-    from model.M3.solver import solve_stage2_with_highs
-
-    return solve_stage2_with_highs(
+    return enumerate_recovery_decision(
         state_set,
         context=context,
         service=service,

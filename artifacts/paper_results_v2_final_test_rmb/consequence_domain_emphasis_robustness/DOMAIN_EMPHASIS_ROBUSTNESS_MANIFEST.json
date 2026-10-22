@@ -1,0 +1,505 @@
+{
+  "analysis_name": "CONSEQUENCE_DOMAIN_EMPHASIS_ROBUSTNESS",
+  "analysis_type": "POST_HOC_ROBUSTNESS",
+  "experiment": "CONSEQUENCE_DOMAIN_EMPHASIS_ROBUSTNESS",
+  "split": "FINAL_TEST",
+  "primary_profile": "BALANCED",
+  "primary_weight_profile": "BALANCED",
+  "primary_weight_profile_changed": false,
+  "primary_default_view_unchanged": true,
+  "weight_profiles": [
+    "BALANCED",
+    "FLIGHT_EMPHASIS",
+    "PASSENGER_EMPHASIS",
+    "RESOURCE_EMPHASIS"
+  ],
+  "domain_weight_profiles": [
+    {
+      "profile_id": "BALANCED",
+      "aggregation_view": "PRIMARY_DOMAIN_BALANCED",
+      "domain_weights": {
+        "F": 0.3333333333333333,
+        "P": 0.3333333333333333,
+        "R": 0.3333333333333333
+      },
+      "role": "PRIMARY_REFERENCE_SPECIFICATION_FROZEN"
+    },
+    {
+      "profile_id": "FLIGHT_EMPHASIS",
+      "aggregation_view": "DOMAIN_EMPHASIS_FLIGHT",
+      "domain_weights": {
+        "F": 0.5,
+        "P": 0.25,
+        "R": 0.25
+      },
+      "role": "SYMMETRIC_POST_HOC_STRESS_SCENARIO"
+    },
+    {
+      "profile_id": "PASSENGER_EMPHASIS",
+      "aggregation_view": "DOMAIN_EMPHASIS_PASSENGER",
+      "domain_weights": {
+        "F": 0.25,
+        "P": 0.5,
+        "R": 0.25
+      },
+      "role": "SYMMETRIC_POST_HOC_STRESS_SCENARIO"
+    },
+    {
+      "profile_id": "RESOURCE_EMPHASIS",
+      "aggregation_view": "DOMAIN_EMPHASIS_RESOURCE",
+      "domain_weights": {
+        "F": 0.25,
+        "P": 0.25,
+        "R": 0.5
+      },
+      "role": "SYMMETRIC_POST_HOC_STRESS_SCENARIO"
+    }
+  ],
+  "weights_reselected": false,
+  "weights_learned": false,
+  "weights_calibrated": false,
+  "expert_elicitation_used": false,
+  "weight_search_performed": false,
+  "weight_optimization_performed": false,
+  "model_retrained": false,
+  "model_recalibrated": false,
+  "parameter_reselected": false,
+  "final_test_cohort_changed": false,
+  "consequence_components_changed": false,
+  "component_normalization_changed": false,
+  "component_availability_changed": false,
+  "consequence_mapping_changed": false,
+  "in_domain_aggregation_changed": false,
+  "scenario_weights_changed": false,
+  "effort_cost_changed": false,
+  "recovery_grid_changed": false,
+  "stage1_q_changed": false,
+  "stage1_stage_q_grid_rerun": false,
+  "stage1_pooled_stages": false,
+  "stage1_q": 0.1,
+  "stage1_actionable_stages": [
+    "PRE_IB",
+    "POST_IB_PRE_OB"
+  ],
+  "stage1_selector_id": "M3_STAGE1_SHARED_SELECTOR",
+  "stage1_capacity_rule": "K = ceil(q * N)",
+  "stage1_tie_break": "(-score, episode_id, node_id)",
+  "stage2_reference_cohort": "R_STAR",
+  "stage2_cohort_id": "FIXED_REFERENCE_STAGE_II_COHORT",
+  "stage2_reference_cohort_changed": false,
+  "stage2_N": 16,
+  "stage2_r_star_stage_counts": {
+    "PRE_IB": 3,
+    "POST_IB_PRE_OB": 13
+  },
+  "stage2_lambda": 0.25,
+  "stage2_u_max": 45.0,
+  "stage2_turnaround_lower_bound_q": 41.0,
+  "stage2_action_floor_minutes": 5.0,
+  "stage2_action_selector": "EXACT_ENUMERATION_OVER_FINITE_ACTION_GRID",
+  "stage2_tie_break": "SMALLEST_U",
+  "bootstrap_used": false,
+  "significance_testing_used": false,
+  "confidence_intervals_reported": false,
+  "robustness_threshold_defined": false,
+  "decision_margin_quantities_reported": false,
+  "manuscript_claim_emitted": false,
+  "expected_row_counts": {
+    "DOMAIN_EMPHASIS_STAGE1_PROFILE_SHORTLIST_SUMMARY.csv": 6,
+    "DOMAIN_EMPHASIS_STAGE1_DELAY_SUMMARY.csv": 8,
+    "DOMAIN_EMPHASIS_STAGE1_INFORMATION_SUMMARY.csv": 24,
+    "DOMAIN_EMPHASIS_STAGE2_HJ_ACTION_SUMMARY.csv": 3,
+    "DOMAIN_EMPHASIS_STAGE2_INFORMATION_SUMMARY.csv": 12,
+    "DOMAIN_EMPHASIS_STAGE2_CHAIN_RECORDS.parquet": 496,
+    "DOMAIN_EMPHASIS_STAGE1_CHAIN_RECORDS.parquet": 2496
+  },
+  "observed_row_counts": {
+    "DOMAIN_EMPHASIS_STAGE1_PROFILE_SHORTLIST_SUMMARY.csv": 6,
+    "DOMAIN_EMPHASIS_STAGE1_DELAY_SUMMARY.csv": 8,
+    "DOMAIN_EMPHASIS_STAGE1_INFORMATION_SUMMARY.csv": 24,
+    "DOMAIN_EMPHASIS_STAGE2_HJ_ACTION_SUMMARY.csv": 3,
+    "DOMAIN_EMPHASIS_STAGE2_INFORMATION_SUMMARY.csv": 12,
+    "DOMAIN_EMPHASIS_STAGE2_CHAIN_RECORDS.parquet": 496,
+    "DOMAIN_EMPHASIS_STAGE1_CHAIN_RECORDS.parquet": 2496
+  },
+  "row_counts_are_exact": true,
+  "write_mode": "STAGED_TRANSACTIONAL_MATERIALIZATION",
+  "partial_output_exposed": false,
+  "staging_directory": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness.__staging__",
+  "manifest_self_hash_included": false,
+  "manifest_self_hash_reason": "SELF_REFERENTIAL_HASH_NOT_DEFINED",
+  "git_head": "af93743e1b417319dc6aa5dc0f84c80cac4a9fc2",
+  "branch": "v2/paper-primary",
+  "head_start": "af93743e1b417319dc6aa5dc0f84c80cac4a9fc2",
+  "preexisting_untracked": [
+    "$null",
+    "artifacts/diagnostics/v2_phase7/STAGE_MATCHED_PRE_OPEN_GATE.json",
+    "artifacts/experiment/final_test_v2_stage_matched/",
+    "artifacts/experiment/final_test_v2_stage_matched_canonical_v1/",
+    "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/checkpoints/",
+    "artifacts/paper_results_v2_final_test_rmb/decision_margin_diagnostic/",
+    "artifacts/paper_results_v2_final_test_rmb/stage_q_sensitivity/STAGE_Q_SCREENING_RECORDS.parquet",
+    "formal/JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V1.json",
+    "formal/JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V1.md",
+    "formal/v2_phase7/consequence_domain_emphasis_robustness.py",
+    "formal/v2_phase7/decision_margin_diagnostic.py",
+    "tests/m2/test_domain_emphasis_views.py",
+    "tests/phase7/test_consequence_domain_emphasis_robustness.py",
+    "tests/phase7/test_decision_margin_diagnostic.py"
+  ],
+  "tracked_modifications_start": [
+    "model/M2/comparison_support.py"
+  ],
+  "preexisting_implementation_modifications": [
+    "model/M2/comparison_support.py"
+  ],
+  "preexisting_known_test_side_effects": [],
+  "preexisting_unexpected_tracked_modifications": [],
+  "unexpected_tracked_modification_policy": "BLOCKER_NOT_METADATA",
+  "mutation_statement": "The robustness implementation extended the codebase (see preexisting_implementation_modifications), but executing the robustness analysis introduced no additional tracked modifications and did not mutate any sealed or primary artifact.",
+  "analysis_entrypoint": "formal/v2_phase7/consequence_domain_emphasis_robustness.py",
+  "analysis_source_path": "formal/v2_phase7/consequence_domain_emphasis_robustness.py",
+  "analysis_source_sha256": "sha256:8da6f8edb51f55ccb6f32f89bcd83171ca8904211b318b370ea798ed59607bd1",
+  "test_source_path": "tests/phase7/test_consequence_domain_emphasis_robustness.py",
+  "test_source_sha256": "sha256:c38384f85cbd729d45e8076d3cc846d76850caf2b521be8820d49b52c9d22d80",
+  "implementation_authority": {
+    "path": "model/M2/comparison_support.py",
+    "sealed_tree_blob_canonical_lf_sha256": "sha256:79caba2cbefcf284912e39cda927985fcc103a91a88393068c5e12f23e732595",
+    "implementation_authority_file_sha256": "sha256:f7fac1e71774d3334310ba43dc2257ad42907927d0990902fd54bed604d2fb3a",
+    "primary_view_identifier": "PRIMARY_DOMAIN_BALANCED",
+    "primary_default_view_unchanged": true,
+    "note": "INTENTIONAL_ADDITIVE_IMPLEMENTATION_EDIT_PRE_AND_POST_HASHES_ARE_NOT_EXPECTED_TO_MATCH_BALANCED_VIEW_BRANCH_UNCHANGED"
+  },
+  "implementation_source_hashes": {
+    "model/M2/comparison_support.py": "sha256:f7fac1e71774d3334310ba43dc2257ad42907927d0990902fd54bed604d2fb3a",
+    "formal/v2_phase7/consequence_domain_emphasis_robustness.py": "sha256:8da6f8edb51f55ccb6f32f89bcd83171ca8904211b318b370ea798ed59607bd1",
+    "tests/phase7/test_consequence_domain_emphasis_robustness.py": "sha256:c38384f85cbd729d45e8076d3cc846d76850caf2b521be8820d49b52c9d22d80",
+    "tests/m2/test_domain_emphasis_views.py": "sha256:f990ae0e0c638cef88bc69097ee3417423a89db40591fb4ebf174e014eb97b67"
+  },
+  "frozen_science_source_paths": [
+    "model/M2/consequence_service.py",
+    "model/M3/stage1.py",
+    "model/M3/stage2.py",
+    "model/M3/transition.py",
+    "model/M4/evaluation.py",
+    "model/common/consequence_ontology.py"
+  ],
+  "frozen_science_source_hashes": {
+    "model/M2/consequence_service.py": "sha256:5f9f2e3c97b94ffc91eb1ff1f0ece0afd5129ca686e88a14adf233980687e15e",
+    "model/M3/stage1.py": "sha256:eca2d669e74538b27dba0e415069f148b7703efaf817a872a4e9f612bcb8ee6c",
+    "model/M3/stage2.py": "sha256:f0d4e1220b84d072ddf34f449e8d7cf5794da1df7680d2075a09223c435381c6",
+    "model/M3/transition.py": "sha256:aea244a950e75be379a30062f10fa71213e9adb1eeaa15567a86a44a8fb45a33",
+    "model/M4/evaluation.py": "sha256:e492ac0c1a94cf1515ed408f5cbc3034a4bbc6e65942da341992836c0b898b60",
+    "model/common/consequence_ontology.py": "sha256:9d45236b11c0565e8a8975809c96292f75110d9ce8efab58c03d006f5b03dca8"
+  },
+  "run_timestamp": "2026-09-22T10:43:32.231145+00:00",
+  "epoch_root": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2",
+  "epoch_provenance": {
+    "epoch_seal_status": "SEALED_AUDIT_PASS",
+    "epoch_seal_file_sha256": "sha256:eb4a22a2079183f1eca3511c5002334eeccb9f19b282f9781189475ce9c21614",
+    "execution_result_sha256": "sha256:0687b21aef9e09f28ba9a3ad573ac57930af8017ff46450b3000d6266f8fd0fd",
+    "post_execution_audit_sha256": "sha256:efb3c26ad85d3cdc780df26513e3896f9d52c421298a7c2b1e776463bb9be693"
+  },
+  "output_collision": {
+    "collision_check": "NO_PREVIOUS_RESULT",
+    "regeneration": false
+  },
+  "input_artifact_paths": {
+    "checkpoints/ATTENTION_DECISIONS": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\ATTENTION_DECISIONS.json",
+    "checkpoints/CANONICAL_NODES": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CANONICAL_NODES.json",
+    "checkpoints/CONSEQUENCE_VARIANTS": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\CONSEQUENCE_VARIANTS.json",
+    "checkpoints/M4_COMPARISONS": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\M4_COMPARISONS.json",
+    "checkpoints/RECOVERY_DECISIONS": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\RECOVERY_DECISIONS.json",
+    "checkpoints/REFERENCE_RECOVERY_COHORT": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\REFERENCE_RECOVERY_COHORT.json",
+    "checkpoints/STATE_VARIANTS": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\checkpoints\\STATE_VARIANTS.json",
+    "epoch/EPOCH_SEAL.json": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\EPOCH_SEAL.json",
+    "epoch/FINAL_TEST_EXECUTION_RESULT.json": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\FINAL_TEST_EXECUTION_RESULT.json",
+    "epoch/POST_EXECUTION_AUDIT.json": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\POST_EXECUTION_AUDIT.json",
+    "epoch/PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json",
+    "epoch/PAPER_FACING_SECTION5_RESULTS.json": "artifacts\\experiment\\final_test_v2_stage_matched_canonical_v2\\PAPER_FACING_SECTION5_RESULTS.json",
+    "frozen_service/H16_CHECKPOINT": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_HISTORY_PRIMARY\\M1_H16_HISTORY_PRIMARY.pt",
+    "frozen_service/H16_MANIFEST": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_HISTORY_PRIMARY\\M1_H16_HISTORY_PRIMARY_MANIFEST.json",
+    "frozen_service/CURRENT_CHECKPOINT": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_CURRENT_COMPARATOR\\M1_H16_CURRENT_COMPARATOR.pt",
+    "frozen_service/CURRENT_MANIFEST": "D:\\research\\air_slot\\code\\explore\\artifacts\\models\\m1\\M1_H16_CURRENT_COMPARATOR\\M1_H16_CURRENT_COMPARATOR_MANIFEST.json",
+    "frozen_service/TAIL_MANIFEST_PATH": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\m1_positive_tail_continuation_v1\\M1_POSITIVE_TAIL_CONTINUATION_V1.json",
+    "frozen_service/M2_REGISTRY_PATH": "D:\\research\\air_slot\\code\\explore\\registries\\m2_data2_formal_cu_v5.json",
+    "frozen_service/TRAIN_SUPPORT_SUMMARY_PATH": "D:\\research\\air_slot\\code\\explore\\artifacts\\diagnostics\\v2_phase5_development\\TRAIN_TURNAROUND_HEADROOM_SUMMARY.json"
+  },
+  "input_artifact_hashes": {
+    "checkpoints/ATTENTION_DECISIONS": "sha256:fbcf25389312ac799e19f83469369eb9fad1df080e5fed411227211248badd92",
+    "checkpoints/CANONICAL_NODES": "sha256:33ef4199b571af07604493c9054c6828a9d29c489c28f72d70d977befac8c439",
+    "checkpoints/CONSEQUENCE_VARIANTS": "sha256:2b65d255111d99a31d3fe1720ab986cc209f4f3b647ebb0f6169bc402a684d59",
+    "checkpoints/M4_COMPARISONS": "sha256:a5caeedc0cfadf089bba217bfa8279f25515810e6f57358cc37fb0d8c8cd5a9c",
+    "checkpoints/RECOVERY_DECISIONS": "sha256:4561d385ae16d211d9489019b6a7f5b05b92e96654f8409970324f5cd6ce0161",
+    "checkpoints/REFERENCE_RECOVERY_COHORT": "sha256:1f4f35781f760c96b307bac81a069f1b18699a724e180b36a7cdbe7c715e219a",
+    "checkpoints/STATE_VARIANTS": "sha256:3134bf6d495a8fb8fdb121705f54fa2fd4335cc51b0ac139b3835074db050044",
+    "epoch/EPOCH_SEAL.json": "sha256:eb4a22a2079183f1eca3511c5002334eeccb9f19b282f9781189475ce9c21614",
+    "epoch/FINAL_TEST_EXECUTION_RESULT.json": "sha256:0687b21aef9e09f28ba9a3ad573ac57930af8017ff46450b3000d6266f8fd0fd",
+    "epoch/POST_EXECUTION_AUDIT.json": "sha256:efb3c26ad85d3cdc780df26513e3896f9d52c421298a7c2b1e776463bb9be693",
+    "epoch/PAPER_FACING_DELAY_VS_CONSEQUENCE_STAGE1.json": "sha256:94c998c98b78ac49e1722c5070199ed9e2663e4435a7260fa47ee6fd019c9005",
+    "epoch/PAPER_FACING_SECTION5_RESULTS.json": "sha256:4284d15328226665b47b7c7f38bf3f7b84d84602b0fce7fbd7e9123fef9257f7",
+    "frozen_service/H16_CHECKPOINT": "sha256:061c3540c38ad8272982590de437d27064d50b1e023b55b672e77392d2c4ac3b",
+    "frozen_service/H16_MANIFEST": "sha256:ed9b0cc193aa4c29a2a33778ff2edc215e77ed493ed36fdc5ab8e09d71389af7",
+    "frozen_service/CURRENT_CHECKPOINT": "sha256:68a349a2d82f1d2c8c344c30e85777c55c644e63605e01a94364afdce7183ee3",
+    "frozen_service/CURRENT_MANIFEST": "sha256:3f50973c63042471552a68738385c21a54baf63e30ffb0bbb5921af7c19af0e8",
+    "frozen_service/TAIL_MANIFEST_PATH": "sha256:0699061941cd47869b003ba6f4f6c79042bd58b3bf85a011e560c73bc928bb1a",
+    "frozen_service/M2_REGISTRY_PATH": "sha256:03527e107da3635cd1e53c91ea89b0a92e32ed989b37ef15b8d38a68f2d70dc1",
+    "frozen_service/TRAIN_SUPPORT_SUMMARY_PATH": "sha256:27df8b4ea406b48ca7b494e48759edfeaf490a501ce2b6293638bbd7a2cce4c2"
+  },
+  "paper_results_read_only_scope": {
+    "roots": [
+      "artifacts/paper_results_v2_final_test",
+      "artifacts/paper_results_v2_final_test_rmb"
+    ],
+    "designated_transaction_paths": [
+      "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness",
+      "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness.__staging__",
+      "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness.__previous__"
+    ],
+    "files_fingerprinted": 46,
+    "snapshot_digest": "sha256:00c4acd98d38a0111a5135a43d6a9c616ff5ba193c9b8de17c60dedc7d5afd22",
+    "snapshot_unchanged_during_run": true,
+    "other_paper_result_artifacts_may_be_created_changed_or_deleted": false
+  },
+  "output_artifact_paths": {
+    "DOMAIN_EMPHASIS_STAGE1_PROFILE_SHORTLIST_SUMMARY.csv": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE1_PROFILE_SHORTLIST_SUMMARY.csv",
+    "DOMAIN_EMPHASIS_STAGE1_DELAY_SUMMARY.csv": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE1_DELAY_SUMMARY.csv",
+    "DOMAIN_EMPHASIS_STAGE1_INFORMATION_SUMMARY.csv": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE1_INFORMATION_SUMMARY.csv",
+    "DOMAIN_EMPHASIS_STAGE2_HJ_ACTION_SUMMARY.csv": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE2_HJ_ACTION_SUMMARY.csv",
+    "DOMAIN_EMPHASIS_STAGE2_INFORMATION_SUMMARY.csv": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE2_INFORMATION_SUMMARY.csv",
+    "DOMAIN_EMPHASIS_STAGE1_CHAIN_RECORDS.parquet": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE1_CHAIN_RECORDS.parquet",
+    "DOMAIN_EMPHASIS_STAGE2_CHAIN_RECORDS.parquet": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE2_CHAIN_RECORDS.parquet",
+    "DOMAIN_EMPHASIS_ROBUSTNESS_REPORT.md": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_ROBUSTNESS_REPORT.md",
+    "DOMAIN_EMPHASIS_ROBUSTNESS_MANIFEST.json": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_ROBUSTNESS_MANIFEST.json"
+  },
+  "gates": {
+    "gate_a": {
+      "repo_root": "D:\\research\\air_slot\\code\\explore",
+      "branch": "v2/paper-primary",
+      "head_start": "af93743e1b417319dc6aa5dc0f84c80cac4a9fc2",
+      "preexisting_untracked": [
+        "$null",
+        "artifacts/diagnostics/v2_phase7/STAGE_MATCHED_PRE_OPEN_GATE.json",
+        "artifacts/experiment/final_test_v2_stage_matched/",
+        "artifacts/experiment/final_test_v2_stage_matched_canonical_v1/",
+        "artifacts/experiment/final_test_v2_stage_matched_canonical_v2/checkpoints/",
+        "artifacts/paper_results_v2_final_test_rmb/decision_margin_diagnostic/",
+        "artifacts/paper_results_v2_final_test_rmb/stage_q_sensitivity/STAGE_Q_SCREENING_RECORDS.parquet",
+        "formal/JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V1.json",
+        "formal/JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V1.md",
+        "formal/v2_phase7/consequence_domain_emphasis_robustness.py",
+        "formal/v2_phase7/decision_margin_diagnostic.py",
+        "tests/m2/test_domain_emphasis_views.py",
+        "tests/phase7/test_consequence_domain_emphasis_robustness.py",
+        "tests/phase7/test_decision_margin_diagnostic.py"
+      ],
+      "tracked_modifications_start": [
+        "model/M2/comparison_support.py"
+      ],
+      "preexisting_implementation_modifications": [
+        "model/M2/comparison_support.py"
+      ],
+      "preexisting_known_test_side_effects": [],
+      "preexisting_unexpected_tracked_modifications": [],
+      "protected_tracked_modifications": [],
+      "protected_tracked_prefixes": [
+        "artifacts/experiment/final_test_v2",
+        "artifacts/paper_results_v2_final_test",
+        "artifacts/paper_results_v2_final_test_rmb",
+        "registries/",
+        "docs/"
+      ],
+      "protected_tracked_prefix_exemptions": [
+        "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness",
+        "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness.__previous__",
+        "D:\\research\\air_slot\\code\\explore\\artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness.__staging__"
+      ],
+      "unexpected_tracked_modification_policy": "BLOCKER_NOT_METADATA"
+    },
+    "gate_b": {
+      "gate": "B",
+      "status": "PASS",
+      "consequence_priority_points_matched": 952,
+      "consequence_priority_points_expected": 952,
+      "max_abs_priority_deviation": 0.0,
+      "decision_checks": {
+        "PRE_IB": {
+          "cohort_size": 29,
+          "k": 3,
+          "entries_matched": 29,
+          "delay_shortlist_matched": true,
+          "consequence_shortlist_matched": true
+        },
+        "POST_IB_PRE_OB": {
+          "cohort_size": 127,
+          "k": 13,
+          "entries_matched": 127,
+          "delay_shortlist_matched": true,
+          "consequence_shortlist_matched": true
+        }
+      },
+      "headline_checks": {
+        "PRE_IB": {
+          "n_g": 29,
+          "k_g": 3,
+          "a_consequence": 3.2615917421940086,
+          "a_delay": 3.2615917421940086,
+          "L_att": 0.0,
+          "eta_att": 1.0,
+          "changed_position_count": 0,
+          "overlap_count": 3
+        },
+        "POST_IB_PRE_OB": {
+          "n_g": 127,
+          "k_g": 13,
+          "a_consequence": 13.501981165915817,
+          "a_delay": 12.524028798352472,
+          "L_att": 0.07243028675170074,
+          "eta_att": 0.9275697132482993,
+          "changed_position_count": 5,
+          "overlap_count": 8
+        }
+      },
+      "overall_headline_L_att": 0.058337943404071974,
+      "information_comparators": [
+        {
+          "stage": "PRE_IB",
+          "variant": "CURRENT_JOINT",
+          "L_att": 0.0,
+          "overlap_count": 3
+        },
+        {
+          "stage": "PRE_IB",
+          "variant": "HISTORY_POINT",
+          "L_att": 0.6457297347005055,
+          "overlap_count": 0
+        },
+        {
+          "stage": "PRE_IB",
+          "variant": "HISTORY_MARGINAL",
+          "L_att": 0.0,
+          "overlap_count": 3
+        },
+        {
+          "stage": "POST_IB_PRE_OB",
+          "variant": "CURRENT_JOINT",
+          "L_att": 0.023066846080548712,
+          "overlap_count": 10
+        },
+        {
+          "stage": "POST_IB_PRE_OB",
+          "variant": "HISTORY_POINT",
+          "L_att": 0.5361866769295646,
+          "overlap_count": 2
+        },
+        {
+          "stage": "POST_IB_PRE_OB",
+          "variant": "HISTORY_MARGINAL",
+          "L_att": 0.0,
+          "overlap_count": 13
+        }
+      ],
+      "replay_tolerance": {
+        "name": "M3_NUMERICAL_COMPARISON_TOLERANCE",
+        "value": 1e-06,
+        "value_tolerance_for_identity": 1e-12
+      }
+    },
+    "gate_c": {
+      "gate": "C",
+      "status": "PASS",
+      "level1_points_matched": 160,
+      "level1_points_expected": 160,
+      "level1_max_abs_deviation": 0.0,
+      "level2_cases_matched": 64,
+      "level2_cases_expected": 64,
+      "level3_cases_matched": 64,
+      "level3_cases_expected": 64,
+      "level4_comparators": [
+        {
+          "comparator_variant": "CURRENT_JOINT",
+          "L_rec": 0.9070157057407199
+        },
+        {
+          "comparator_variant": "HISTORY_POINT",
+          "L_rec": 0.9536416660613012
+        },
+        {
+          "comparator_variant": "HISTORY_MARGINAL",
+          "L_rec": 0.016464660023900957
+        }
+      ],
+      "replay_path": "SEALED_STATE_VARIANTS_VIA_FROZEN_M3_OBJECTIVE_AND_ENUMERATION_WITH_THE_PROFILE_PARAMETERIZED_AGGREGATION_VIEW"
+    },
+    "gate_d": {
+      "gate": "D",
+      "status": "PASS",
+      "primary_balanced_artifacts_unchanged": true,
+      "sealed_input_hashes_unchanged": true,
+      "frozen_science_source_hashes_unchanged": true,
+      "implementation_source_hashes_unchanged": true,
+      "implementation_authority_unchanged_during_run": true,
+      "implementation_authority_file_sha256_at_run_end": "sha256:f7fac1e71774d3334310ba43dc2257ad42907927d0990902fd54bed604d2fb3a",
+      "r_star_unchanged": {
+        "total": 16,
+        "by_stage": {
+          "PRE_IB": 3,
+          "POST_IB_PRE_OB": 13
+        }
+      },
+      "nominal_q_unchanged": 0.1,
+      "head_stable": true,
+      "paper_results_roots_unchanged": true,
+      "paper_results_files_fingerprinted": 46,
+      "paper_results_snapshot_digest": "sha256:00c4acd98d38a0111a5135a43d6a9c616ff5ba193c9b8de17c60dedc7d5afd22"
+    }
+  },
+  "gate_statuses": {
+    "gate_a_passed": true,
+    "gate_b_passed": true,
+    "gate_c_passed": true,
+    "gate_d_passed": true
+  },
+  "prohibited_column_policy": "NO_P_VALUE_NO_CONFIDENCE_INTERVAL_NO_BOOTSTRAP_NO_PERMUTATION_NO_REGRESSION_NO_MARGIN_NO_CERTIFICATE_NO_ROBUSTNESS_THRESHOLD",
+  "all_gates_passed": true,
+  "head_stable": true,
+  "materialization_mode": "FRESH_ATOMIC_RENAME",
+  "output_artifact_hashes": {
+    "DOMAIN_EMPHASIS_STAGE1_PROFILE_SHORTLIST_SUMMARY.csv": "sha256:0ff989e16490b349a7295c19b86b51ecd9fd393b2621014b434b0c54093cf242",
+    "DOMAIN_EMPHASIS_STAGE1_DELAY_SUMMARY.csv": "sha256:e0573d3ee33e60aef874d62f12f322397c043dcce4bb46b74699a8973c1e9100",
+    "DOMAIN_EMPHASIS_STAGE1_INFORMATION_SUMMARY.csv": "sha256:8517045102662d4b2158b8f10482fc79d81dd44a6fdce35949cd443f5e86e3a9",
+    "DOMAIN_EMPHASIS_STAGE2_HJ_ACTION_SUMMARY.csv": "sha256:9421594f7b30db23965be8f640a6331d083f70f496c4066d4ffd26fb678c3211",
+    "DOMAIN_EMPHASIS_STAGE2_INFORMATION_SUMMARY.csv": "sha256:c8c8cbdfccfdcb71607582dc1bb4fbd400d3a4a759b4d9bcb81c2417671d2967",
+    "DOMAIN_EMPHASIS_STAGE1_CHAIN_RECORDS.parquet": "sha256:0e8c1487fb1e617696a82d637684925c9252d1899650d160fedb392a48104774",
+    "DOMAIN_EMPHASIS_STAGE2_CHAIN_RECORDS.parquet": "sha256:1f9a82b7e4054cf030070d214e122de00ef1ea07449e2651df579b74f8c9cfb3",
+    "DOMAIN_EMPHASIS_ROBUSTNESS_REPORT.md": "sha256:34204872475cb5ffbad81da2012ba0ce7b92f14ff62f8cba3370c4808b0c473b"
+  },
+  "output_artifact_tracking": {
+    "committed_to_git": [
+      "DOMAIN_EMPHASIS_STAGE1_PROFILE_SHORTLIST_SUMMARY.csv",
+      "DOMAIN_EMPHASIS_STAGE1_DELAY_SUMMARY.csv",
+      "DOMAIN_EMPHASIS_STAGE1_INFORMATION_SUMMARY.csv",
+      "DOMAIN_EMPHASIS_STAGE2_HJ_ACTION_SUMMARY.csv",
+      "DOMAIN_EMPHASIS_STAGE2_INFORMATION_SUMMARY.csv",
+      "DOMAIN_EMPHASIS_ROBUSTNESS_REPORT.md",
+      "DOMAIN_EMPHASIS_ROBUSTNESS_MANIFEST.json"
+    ],
+    "local_only_regenerable": {
+      "DOMAIN_EMPHASIS_STAGE1_CHAIN_RECORDS.parquet": {
+        "path": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE1_CHAIN_RECORDS.parquet",
+        "sha256": "sha256:0e8c1487fb1e617696a82d637684925c9252d1899650d160fedb392a48104774",
+        "reason": "PROJECT_ARTIFACT_POLICY: paper-results roots track CSV/JSON/MD only; row-level parquet stays local and is reproducible by re-running this entrypoint"
+      },
+      "DOMAIN_EMPHASIS_STAGE2_CHAIN_RECORDS.parquet": {
+        "path": "artifacts\\paper_results_v2_final_test_rmb\\consequence_domain_emphasis_robustness\\DOMAIN_EMPHASIS_STAGE2_CHAIN_RECORDS.parquet",
+        "sha256": "sha256:1f9a82b7e4054cf030070d214e122de00ef1ea07449e2651df579b74f8c9cfb3",
+        "reason": "PROJECT_ARTIFACT_POLICY: paper-results roots track CSV/JSON/MD only; row-level parquet stays local and is reproducible by re-running this entrypoint"
+      }
+    }
+  },
+  "head_end": "af93743e1b417319dc6aa5dc0f84c80cac4a9fc2",
+  "tracked_modifications_end": [
+    "model/M2/comparison_support.py"
+  ],
+  "tracked_modifications_introduced_by_analysis_run": []
+}

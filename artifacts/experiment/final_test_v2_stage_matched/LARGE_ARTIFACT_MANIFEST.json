@@ -1,0 +1,39 @@
+{
+  "schema_version": "LARGE_ARTIFACT_RELEASE_MANIFEST_V1",
+  "created_at": "2026-10-03",
+  "scope": "artifacts/experiment/final_test_v2_stage_matched/",
+  "reason": "Payloads exceed GitHub's 100 MB per-file hard limit. They are published as GitHub Release assets instead of git objects; the paths remain listed in .gitignore and must not be committed.",
+  "release": {
+    "repository": "MaoNianSan/air_slot",
+    "tag": "large-artifacts-stage-matched-20261003",
+    "url": "https://github.com/MaoNianSan/air_slot/releases/tag/large-artifacts-stage-matched-20261003"
+  },
+  "restore": {
+    "note": "Download each asset and place it at repository_path (relative to the repository root).",
+    "verify_windows": "Get-FileHash -LiteralPath <path> -Algorithm SHA256",
+    "verify_posix": "sha256sum <path>"
+  },
+  "artifacts": [
+    {
+      "repository_path": "artifacts/experiment/final_test_v2_stage_matched/checkpoints/CONSEQUENCE_VARIANTS.json",
+      "asset_name": "CONSEQUENCE_VARIANTS.json",
+      "bytes": 315487067,
+      "sha256": "1262131188da8bee922c4084286f4544b695ee3eb1b1b39c2cb9bdf5b12abbcd"
+    },
+    {
+      "repository_path": "artifacts/experiment/final_test_v2_stage_matched/checkpoints/STATE_VARIANTS.json",
+      "asset_name": "STATE_VARIANTS.json",
+      "bytes": 186079057,
+      "sha256": "f79ecee2f939d1277cd5813cb92301b8d5d14dd6bceb801c49c41b41fe67c549"
+    }
+  ],
+  "versioned_in_git": {
+    "note": "Smaller payloads from the same run stay in version control.",
+    "directory": "artifacts/experiment/final_test_v2_stage_matched/checkpoints/",
+    "example_files": [
+      "CANONICAL_NODES.json",
+      "ATTENTION_DECISIONS.json",
+      "M4_COMPARISONS.json"
+    ]
+  }
+}

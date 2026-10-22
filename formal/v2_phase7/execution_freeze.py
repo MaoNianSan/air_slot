@@ -52,7 +52,11 @@ GOVERNANCE_DELTA_SCOPE = (
     "PAIRED_MARGINAL_INCREMENT_AND_SECTION5_ROBUSTNESS_EXECUTION_ONLY"
 )
 PAPER_PRIMARY_ROOT_ENV = "AIRSLOT_PAPER_PRIMARY_ROOT"
-DEFAULT_PAPER_PRIMARY_ROOT = Path(r"D:\research\air_slot\code\explore")
+# After the authority consolidation the paper-primary content lives in the
+# canonical repository itself; the freeze self-probes this repository and no
+# longer depends on any other worktree path. The environment override is
+# retained for historical validation scenarios only.
+DEFAULT_PAPER_PRIMARY_ROOT = C.ROOT
 FREEZE_JSON_PATH = (
     C.ROOT / "formal" / "JATM_STAGE_MATCHED_FINAL_TEST_FREEZE_V2.json"
 )
@@ -582,7 +586,7 @@ def _paper_primary_cross_contract_snapshot(
 
     probe = """
 import json
-from exp.jatm_section5.contracts import (
+from model.common.section5_contracts import (
     FLATTENED_UNION_SEMANTICS,
     REPRESENTATIONS,
     STAGE1_ACTIONABLE_STAGE_CLASSES,
