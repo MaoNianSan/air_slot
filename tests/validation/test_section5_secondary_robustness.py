@@ -2,6 +2,7 @@
 
 import ast
 import csv
+import hashlib
 import io
 from pathlib import Path
 from unittest.mock import patch
@@ -289,13 +290,37 @@ def test_published_hashes_model_calibration_parameters_and_primary_unchanged(pub
         assert (reporting.ROOT / destination).is_file(), destination
         assert source not in drifted
     recorded_drift = set(baseline["drifted"])
-    assert drifted == recorded_drift, sorted(drifted ^ recorded_drift)
+    recorded_line_ending = set(baseline.get("line_ending_only", ()))
+    assert not recorded_drift & recorded_line_ending
+    assert drifted == recorded_drift | recorded_line_ending, sorted(
+        drifted ^ (recorded_drift | recorded_line_ending)
+    )
+    # The manifest hashed CRLF-era bytes; the repository stores LF. Every entry
+    # in line_ending_only is re-proved here: restoring CRLF must reproduce the
+    # frozen digest exactly, so a real content edit cannot hide in that list.
+    for relative_path in sorted(recorded_line_ending):
+        live = (reporting.ROOT / relative_path).read_bytes()
+        assert b"\r\n" not in live, relative_path
+        expanded = live.replace(b"\n", b"\r\n")
+        assert (
+            "sha256:" + hashlib.sha256(expanded).hexdigest()
+            == manifest["protected_file_hashes"][relative_path]
+        ), relative_path
 
     assert any(path.startswith("model/") for path in manifest["protected_file_hashes"])
     assert any(path.startswith("artifacts/calibration/")
                for path in manifest["protected_file_hashes"])
     for path, value in manifest["source_artifact_hashes"].items():
-        assert reporting.digest(reporting.ROOT / path) == value
+        live = (reporting.ROOT / path).read_bytes()
+        if "sha256:" + hashlib.sha256(live).hexdigest() == value:
+            continue
+        # Same CRLF-era hashing as the protected table: the source artifacts are
+        # byte-identical apart from the line ending the manifest was built with.
+        assert b"\r\n" not in live, path
+        assert (
+            "sha256:" + hashlib.sha256(live.replace(b"\n", b"\r\n")).hexdigest()
+            == value
+        ), path
     IMPLEMENTATION_HASH_DELTAS = {
         "tests/validation/test_section5_secondary_robustness.py",
         "validation/materialize_section5_secondary_robustness.py",

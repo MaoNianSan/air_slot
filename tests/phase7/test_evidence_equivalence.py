@@ -25,7 +25,13 @@ def test_gate_a_refactor_evidence_equivalence(
     generated_dry_run = runner.run_dry_run()
     generated_dry_run_path = tmp_path / "GATE_A_DRY_RUN.json"
     runner._write_json_atomic(generated_dry_run_path, generated_dry_run)
-    assert generated_dry_run_path.read_bytes() == committed_dry_run.read_bytes()
+    # The generator emits CRLF on Windows (text-mode newline translation) while
+    # the repository stores LF. Compare the canonical LF text: any real content
+    # difference still fails.
+    def _canonical(path: Path) -> bytes:
+        return path.read_bytes().replace(b"\r\n", b"\n")
+
+    assert _canonical(generated_dry_run_path) == _canonical(committed_dry_run)
 
     observed_preflight = json.loads(committed_preflight.read_text(encoding="utf-8"))
     historical = runner.historical_epoch_paths()
